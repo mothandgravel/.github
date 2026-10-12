@@ -314,7 +314,7 @@ try {
         const visibleTextFits = element => !element || element.scrollWidth <= element.clientWidth + 2;
         const tracked = [
           heading,
-          ...document.querySelectorAll(".notes-index-entry h2, .sample-body h3, .study-sample, .study-metric"),
+          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric"),
         ];
         return {
           width: window.innerWidth,
@@ -421,6 +421,18 @@ try {
     results.push({ name: `synthetic-scale-${count}`, renderedPerPage: Math.min(count, 20), filtered: count / 2 });
     await scale.close();
   }
+  const motion = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
+  await motion.goto(origin + '/notes/', { waitUntil: 'networkidle' });
+  const stackMotion = () => motion.locator('.stack-hint>span').evaluate(el => getComputedStyle(el).transitionDuration);
+  assert(await stackMotion() === '0.2s', 'Stack feedback missing in ordinary motion');
+  await motion.emulateMedia({ reducedMotion: 'reduce' });
+  assert(await stackMotion() === '0s', 'Stack feedback still animates with reduced motion');
+  await motion.locator('.editorial-stack summary').focus();
+  await motion.keyboard.press('Enter');
+  await motion.keyboard.press('Tab');
+  assert(await motion.evaluate(() => document.activeElement.closest('.stack-entries') !== null), 'Keyboard cannot reach the opened stack');
+  await snap(motion, 'notes-index-open-stack-desktop');
+  await motion.close();
   const fallback = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await fallback.route('**/assets/notes.json', route => route.abort());
   await fallback.goto(origin + '/notes/', { waitUntil: 'networkidle' });
@@ -489,6 +501,7 @@ try {
     await editorialVisitor.locator('#primary-nav a[href="./notes/"]').click();
     assert(editorialVisitor.url().endsWith("/notes/"),
       "The mobile Field Notes navigation did not open the index");
+    await editorialVisitor.locator("#archive-status").waitFor({ state: "visible" });
     assert(await editorialVisitor.locator("#archive-results .notes-index-entry").count() === 2,
       "Field Notes index lost one of the published notes");
     await editorialVisitor.locator('#archive-results a[href="./002-afterlight-nightfall.html"]').first().click();

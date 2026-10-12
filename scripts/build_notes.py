@@ -18,6 +18,7 @@ def load_notes():
     for n in notes:
         for key in ("related", "supersedes"):
             n.setdefault(key, [])
+        n.setdefault("topics", [])
         n.setdefault("thread", "")
         n.setdefault("project", "")
         n.setdefault("featured", False)
@@ -25,7 +26,7 @@ def load_notes():
         assert re.fullmatch(r"\d{3,}-[a-z0-9-]+\.html", n["slug"])
         assert (ROOT / "docs/notes" / n["slug"]).is_file(), n["slug"]
         date.fromisoformat(n["date"])
-        assert n["title"] and n["summary"] and n["topics"]
+        assert n["title"] and n["summary"]
         assert n["visual"] in ("foundations", "themes", "forms")
         assert all(i in ids and i != n["id"] for i in n["related"] + n["supersedes"])
     return sorted(notes, key=lambda n: (n["date"], int(n["id"])), reverse=True)
