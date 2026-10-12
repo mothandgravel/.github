@@ -121,6 +121,8 @@ try {
           parseFloat(getComputedStyle(document.querySelector("#hero-title")).lineHeight)),
         heroHeadingFits: document.querySelector("#hero-title").scrollWidth <=
           document.querySelector("#hero-title").clientWidth + 2,
+        workHeadingFits: document.querySelector("#work-title").scrollWidth <=
+          document.querySelector("#work-title").clientWidth + 2,
         workColumns: getComputedStyle(document.querySelector(".work-grid")).gridTemplateColumns.split(/\s+/).length,
         bandContentFits: (() => {
           const band = document.querySelector(".statement-band").getBoundingClientRect();
@@ -139,6 +141,7 @@ try {
     assert(await page.locator(".bench-ledger").count() === 1, viewport.name + ": studio status is not visible");
     assert(report.bandContentFits, `${viewport.name}: slogan is clipped inside its banner`);
     assert(report.heroHeadingFits, `${viewport.name}: hero headline overflows its container`);
+    assert(report.workHeadingFits, `${viewport.name}: Workbench headline overflows its container`);
     assert(report.heroHeadingLines === 3,
       `${viewport.name}: headline wraps across ${report.heroHeadingLines} lines; target is 3`);
     const expectedColumns = viewport.width <= 660 ? 1 : viewport.width <= 900 ? 2 : 3;
