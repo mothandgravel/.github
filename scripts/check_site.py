@@ -63,11 +63,10 @@ def contrast_ratio(first: str, second: str) -> float:
 
 
 def css_token(style: str, selector: str, token: str) -> str:
-    escaped = re.escape(selector)
-    match = re.search(rf"{escaped}\\s*\\{{([^}}]*)\\}}", style, flags=re.S)
+    match = re.search(re.escape(selector) + r"\s*\{([^}]*)\}", style, flags=re.S)
     if match is None:
         raise ValueError(f"Could not find selector {selector}")
-    prop = re.search(rf"--{re.escape(token)}:\\s*(#[0-9a-fA-F]{{6}})", match.group(1))
+    prop = re.search(r"--" + re.escape(token) + r":\s*(#[0-9a-fA-F]{6})", match.group(1))
     if prop is None:
         raise ValueError(f"Could not find color token --{token} in {selector}")
     return prop.group(1)
