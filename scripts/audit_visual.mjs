@@ -59,7 +59,7 @@ try {
       const panel = document.querySelector(".work-card");
       const background = getComputedStyle(panel).backgroundColor;
       function luminance(color) {
-        const channels = color.match(/[\\d.]+/g)?.slice(0, 3).map(Number);
+        const channels = color.match(/[0-9.]+/g)?.slice(0, 3).map(Number);
         if (!channels || channels.length !== 3) throw new Error(`Unrecognized color: ${color}`);
         const linear = channels.map(channel => {
           const value = channel / 255;
