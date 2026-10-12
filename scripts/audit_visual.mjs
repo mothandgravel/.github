@@ -283,6 +283,25 @@ try {
     await coverResponse.close();
   }
 
+
+  // Exercise the full visitor journey rather than only testing both routes separately.
+  const visitor = await browser.newPage({
+    viewport: { width: 390, height: 844 }, reducedMotion: "reduce",
+  });
+  try {
+    await visitor.goto(origin, { waitUntil: "networkidle" });
+    await visitor.locator('.work-card-link[href="./notes/001-curiosity-with-calluses.html"]').click();
+    await visitor.locator(".note-prose").waitFor();
+    assert(visitor.url().includes("/notes/001-curiosity-with-calluses.html"),
+      "Workbench Field Note link does not navigate to the published note");
+    await visitor.locator('.note-end a[href="../#work"]').click();
+    await visitor.locator("#work-title").waitFor();
+    assert(!visitor.url().includes("/notes/") && visitor.url().endsWith("#work"),
+      "Field Note return link does not navigate to Workbench");
+  } finally {
+    await visitor.close();
+  }
+
   // Without JavaScript, mobile navigation must remain usable.
   const page = await browser.newPage({
     viewport: { width: 390, height: 844 }, javaScriptEnabled: false,
