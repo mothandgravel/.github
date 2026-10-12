@@ -87,7 +87,8 @@ def main() -> int:
     for relative_path in parser.references:
         target = (ROOT / relative_path).resolve()
         check(target.is_relative_to(ROOT.resolve()), f"Path escapes docs/: {relative_path}")
-        check(target.is_file(), f"Missing local asset: {relative_path}")
+        check(target.is_file() or (target.is_dir() and (target / "index.html").is_file()),
+              f"Missing local asset or index page: {relative_path}")
 
     check('<html lang="en"' in html, "Missing HTML language")
     check('name="description"' in html, "Missing search description")
@@ -186,7 +187,7 @@ def main() -> int:
 
     # Each published ratio must agree with the actual palette used by the theme.
     for label, foreground, background, expected in (
-        ("Afterlight primary", "#222423", "#F1EEE6", 15.25),
+        ("Afterlight primary", "#222423", "#FFFCF6", 15.25),
         ("Afterlight quiet", "#565B56", "#E9E4D9", 5.47),
         ("Afterlight brass", "#090A0B", "#9A7946", 4.90),
         ("Nightfall primary", "#F1EEE6", "#202324", 13.65),
