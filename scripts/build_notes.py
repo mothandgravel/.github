@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+"""Generate editorial slots from the public catalog. --check rejects stale output."""
+from pathlib import Path
+from html import escape
+import argparse
+import json
+import re
+from datetime import date
+
+ROOT = Path(__file__).resolve().parents[1]
+CATALOG = ROOT / "docs/assets/notes.json"
+
+
+def load_notes():
+    notes = json.loads(CATALOG.read_text())
+    ids = {n["id"] for n in notes}
+    assert len(ids) == len(notes), "Duplicate note identifier"
+    for n in notes:
+        for key in ("related", "supersedes"):
+            n.setdefault(key, [])
+        n.setdefault("thread", "")
+        n.setdefault("project", "")
+        n.setdefault("featured", False)
+        assert re.fullmatch(r"\d{3,}", n["id"])
+        assert re.fullmatch(r"\d{3,}-[a-z0-9-]+\.html", n["slug"])
+        assert (ROOT / "docs/notes" / n["slug"]).is_file(), n["slug"]
+        date.fromisoformat(n["date"])
+        assert n["title"] and n["summary"] and n["topics"]
+        assert n["visual"] in ("foundations", "themes", "forms")
+        assert all(i in ids and i != n["id"] for i in n["related"] + n["supersedes"])
+    return sorted(notes, key=lambda n: (n["date"], int(n["id"])), reverse=True)
+
+
+def visual(n):
+    if n["visual"] == "themes":
+        return '<div class="editorial-art theme-art" aria-hidden="true"><span class="art-paper"><small>AFTERLIGHT</small><b>Aa</b><i></i></span><span class="art-stone"><small>NIGHTFALL</small><b>Aa</b><i></i></span></div>'
+    if n["visual"] == "forms":
+        return '<div class="editorial-art form-art" aria-hidden="true"><span class="art-circle"></span><span class="art-river"></span><small>FORM / PURPOSE</small></div>'
+    return '<div class="editorial-art foundation-art" aria-hidden="true"><span>?</span><small>AN IDEA NEEDS A REASON</small></div>'
+
+
+def feature(n, prefix, heading):
+    return f'''<article class="note-feature">
+      {visual(n)}
+      <div class="note-feature-copy">
+        <p class="editorial-meta mono">FEATURED / {n['id']} · {escape(n['type'].upper())}</p>
+        <h{heading}><a href="{prefix}{n['slug']}">{escape(n['title'])}</a></h{heading}>
+        <p>{escape(n['summary'])}</p>
+        <a class="editorial-link" href="{prefix}{n['slug']}">Read field note {n['id']} <span aria-hidden="true">↗</span></a>
+      </div>
+    </article>'''
+
+
+def row(n, prefix, heading=3):
+    stamp = date.fromisoformat(n["date"]).strftime("%d %b %Y").upper()
+    return f'''<article class="archive-entry notes-index-entry" data-note-id="{n['id']}">
+      <div class="editorial-meta mono">{n['id']} / {escape(n['type'].upper())}<time datetime="{n['date']}">{stamp}</time></div>
+      <div><h{heading}><a href="{prefix}{n['slug']}">{escape(n['title'])} <span aria-hidden="true">↗</span></a></h{heading}><p>{escape(n['summary'])}</p><p class="archive-topics mono">{' · '.join(map(escape, n['topics']))}</p></div>
+    </article>'''
+
+
+def stack(notes, prefix):
+    count = len(notes)
+    if not count:
+        return ''
+    return f'''<details class="editorial-stack">
+      <summary><span class="mono">RECENT WRITING / {count:02d}</span><strong>Lift the stack.</strong><span class="stack-hint">Open {count} {'note' if count == 1 else 'notes'} <span aria-hidden="true">↗</span></span></summary>
+      <div class="stack-entries">{''.join(row(n, prefix) for n in notes)}</div>
+    </details>'''
+
+
+def replace_slot(path, name, content, check):
+    old = path.read_text()
+    pattern = rf"(<!-- {name}:start -->).*?(<!-- {name}:end -->)"
+    new, count = re.subn(pattern, lambda m: m[1] + '\n' + content + '\n' + m[2], old, flags=re.S)
+    assert count == 1, f"Missing/duplicate slot {name} in {path}"
+    if check:
+        assert new == old, f"Stale editorial output: run python3 scripts/build_notes.py ({path})"
+    else:
+        path.write_text(new)
+
+
+def build(check=False):
+    notes = load_notes()
+    featured = next((n for n in notes if n['featured']), notes[0])
+    recent = [n for n in notes if n['id'] != featured['id']][:3]
+    for path, name, prefix, heading in (
+        (ROOT / 'docs/index.html', 'home-notes', './notes/', 3),
+        (ROOT / 'docs/notes/index.html', 'collection-notes', './', 2),
+    ):
+        replace_slot(path, name, '<div class="editorial-selection">' + feature(featured, prefix, heading) + stack(recent, prefix) + '</div>', check)
+    index = ROOT / 'docs/notes/index.html'
+    replace_slot(index, 'archive', ''.join(row(n, './') for n in notes), check)
+    replace_slot(index, 'note-count', f'<span>{len(notes)} published {"note" if len(notes) == 1 else "notes"}</span>', check)
+    for n in notes:
+        links = ''.join(f'<a class="editorial-link" href="./{other["slug"]}">{escape(other["title"])} <span aria-hidden="true">↗</span></a>' for other in notes if other['id'] in n['related'])
+        thread = [other for other in notes if n['thread'] and other['thread'] == n['thread'] and other['id'] != n['id']]
+        if thread:
+            links += '<p class="mono">CONTINUE THE THREAD</p>' + ''.join(f'<a class="editorial-link" href="./{other["slug"]}">{escape(other["title"])} <span aria-hidden="true">↗</span></a>' for other in thread)
+        revisions = [other for other in notes if n['id'] in other['supersedes']]
+        if revisions:
+            links += '<p class="mono">REVISITED IN</p>' + ''.join(f'<a class="editorial-link" href="./{other["slug"]}">{escape(other["title"])}</a>' for other in revisions)
+        replace_slot(ROOT / 'docs/notes' / n['slug'], 'related-notes', '<aside class="note-related" aria-label="Related Field Notes"><p class="mono">RELATED READING</p>' + links + '</aside>' if links else '', check)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--check', action='store_true')
+    build(parser.parse_args().check)

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 import re
 import struct
 import sys
@@ -85,7 +86,7 @@ def main() -> int:
     for anchor in parser.anchors:
         check(anchor in parser.ids, f"Broken local anchor: #{anchor}")
     for relative_path in parser.references:
-        target = (ROOT / relative_path).resolve()
+        target = (ROOT / urlsplit(relative_path).path).resolve()
         check(target.is_relative_to(ROOT.resolve()), f"Path escapes docs/: {relative_path}")
         check(target.is_file() or (target.is_dir() and (target / "index.html").is_file()),
               f"Missing local asset or index page: {relative_path}")
@@ -136,9 +137,9 @@ def main() -> int:
     # Sprint 02: public work must be real and all outbound actions usable.
     note_file = ROOT / "notes" / "001-curiosity-with-calluses.html"
     check(note_file.is_file(), "Field Note 001 is missing")
-    check(html.count('class="work-card-link"') == 4, "All four Workbench cards need real destinations")
-    check(html.count('class="work-card"') == 4, "Workbench should display four peer cards")
-    check('href="./notes/001-curiosity-with-calluses.html"' in html, "Workbench note link is missing")
+    check(html.count('class="work-card-link"') == 2, "Both Workbench cards need real destinations")
+    check(html.count('class="work-card"') == 2, "Workbench should display two material/source cards")
+    check('href="./notes/001-curiosity-with-calluses.html"' in html, "Homepage editorial note link is missing")
     check('https://github.com/mothandgravel/.github/tree/main/docs' in html, "Workbench source link is missing")
     check('https://github.com/mothandgravel/.github/tree/main/profile/assets' in html, "Workbench brand assets link is missing")
     check('class="bench-ledger"' in html, "Early-days status is missing")
@@ -151,13 +152,11 @@ def main() -> int:
     check(note_index.is_file(), "Field Notes index is missing")
     check(theme_note.is_file(), "Field Note 002 theme study is missing")
     check('href="./notes/"' in html, "Homepage Field Notes navigation must lead to the index")
-    check(html.count('href="./notes/002-afterlight-nightfall.html"') == 1,
-          "Field Note 002 should have a single Workbench destination")
-    card_grid = html.split('<div class="work-grid">', 1)
-    check(len(card_grid) == 2 and 'href="./notes/002-afterlight-nightfall.html"' in
-          card_grid[-1].split('<div class="bench-ledger">', 1)[0],
-          "Field Note 002 must be a full card, not a status-banner footnote")
-    check('graphic-theme-plates' in html, "Theme-study card illustration missing")
+    check(html.count('href="./notes/002-afterlight-nightfall.html"') == 2,
+          "Field Note 002 needs its featured title and reading action")
+    check('id="field-notes"' in html and 'class="note-feature"' in html,
+          "Homepage needs an independent editorial Field Notes section")
+    check('class="editorial-stack"' in html, "Recent-note discovery stack is missing")
     for expected in ("notes/", "notes/001-curiosity-with-calluses.html",
                      "notes/002-afterlight-nightfall.html"):
         check(f"https://mothandgravel.com/{expected}" in (ROOT / "sitemap.xml").read_text(encoding="utf-8"),

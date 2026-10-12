@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - "docs/**"
-      - "scripts/check_site.py"
+      - "scripts/**"
       - ".github/workflows/validate-site.yml"
   pull_request:
     paths:
       - "docs/**"
-      - "scripts/check_site.py"
+      - "scripts/**"
       - ".github/workflows/validate-site.yml"
 
 permissions:
@@ -21,7 +21,14 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+      - name: Verify generated editorial slots and archive behavior
+        run: |
+          python3 scripts/build_notes.py --check
+          node --test scripts/notes_model.test.mjs
       - name: Verify links, assets, accessibility hooks and sitemap
         run: python3 scripts/check_site.py
       - name: Syntax-check browser JavaScript
-        run: node --check docs/assets/site.js
+        run: |
+          node --check docs/assets/site.js
+          node --check docs/assets/notes.mjs
+          node --check docs/assets/notes-model.mjs
