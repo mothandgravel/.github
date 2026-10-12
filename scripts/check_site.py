@@ -45,6 +45,33 @@ class SiteParser(HTMLParser):
                 self.references.append(value)
 
 
+
+def contrast_ratio(first: str, second: str) -> float:
+    """WCAG contrast ratio of two six-digit CSS hex colors."""
+
+    def luminance(value: str) -> float:
+        components = [int(value[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+        linear = [
+            component / 12.92 if component <= 0.04045
+            else ((component + 0.055) / 1.055) ** 2.4
+            for component in components
+        ]
+        return sum(component * weight for component, weight in zip(linear, (0.2126, 0.7152, 0.0722)))
+
+    high, low = sorted((luminance(first), luminance(second)), reverse=True)
+    return (high + 0.05) / (low + 0.05)
+
+
+def css_token(style: str, selector: str, token: str) -> str:
+    escaped = re.escape(selector)
+    match = re.search(rf"{escaped}\\s*\\{{([^}}]*)\\}}", style, flags=re.S)
+    if match is None:
+        raise ValueError(f"Could not find selector {selector}")
+    prop = re.search(rf"--{re.escape(token)}:\\s*(#[0-9a-fA-F]{{6}})", match.group(1))
+    if prop is None:
+        raise ValueError(f"Could not find color token --{token} in {selector}")
+    return prop.group(1)
+
 def main() -> int:
     html_file = ROOT / "index.html"
     check(html_file.is_file(), "Missing docs/index.html")
@@ -74,6 +101,22 @@ def main() -> int:
     check('data-theme="afterlight"' in css, "Light theme styles missing")
     check("prefers-reduced-motion" in css, "Reduced-motion support missing")
     check("@media (max-width:660px)" in css, "Mobile layout support missing")
+    check(".has-js .main-nav" in css, "Progressive enhancement for mobile navigation missing")
+    check('aria-label="Afterlight theme"' in html, "Theme toggle needs a stable accessible label")
+    check('src="./assets/nav-mark.svg"' in html, "Official brand symbol missing from masthead")
+    try:
+        light_accent = css_token(css, ':root[data-theme="afterlight"]', "gold-bright")
+        light_background = css_token(css, ':root[data-theme="afterlight"]', "bg")
+        light_surface = css_token(css, ':root[data-theme="afterlight"]', "surface")
+        light_button_ink = css_token(css, ':root[data-theme="afterlight"]', "accent-ink")
+        check(contrast_ratio(light_accent, light_background) >= 4.5,
+              "Afterlight accent text contrast is below 4.5:1 on background")
+        check(contrast_ratio(light_accent, light_surface) >= 4.5,
+              "Afterlight accent text contrast is below 4.5:1 on panels")
+        check(contrast_ratio(light_button_ink, light_accent) >= 4.5,
+              "Afterlight CTA text contrast is below 4.5:1")
+    except ValueError as error:
+        check(False, str(error))
 
     js = (ROOT / "assets" / "site.js").read_text(encoding="utf-8")
     check('aria-expanded' in js and 'aria-pressed' in js, "Accessible interactive controls not wired")
