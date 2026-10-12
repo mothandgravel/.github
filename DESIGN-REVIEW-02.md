@@ -3,7 +3,7 @@
 **Theme:** From brand to studio  
 **Date:** 13 October 2026  
 **Repository:** `mothandgravel/.github` / GitHub Pages `docs/`  
-**State:** Reviewable implementation; browser evidence and final acceptance must be recorded before merging.
+**State:** Implementation and pre-production design review verified in CI; GitHub Pages production/TLS verification remains pending.
 
 ## Problem
 
@@ -55,16 +55,43 @@ The goal is not to simulate a full software studio. It is to make the current wo
 
 ## Quality gate — run in the PR
 
-- [ ] `python3 scripts/check_site.py` succeeds and checks both HTML pages, real PNG, links and sitemap.
-- [ ] `node --check docs/assets/site.js` and syntax check of design audit succeed.
-- [ ] Desktop/phone screenshots in both Night and Afterlight, plus 320 px narrow-phone screens.
-- [ ] Homepage nav, note back link and three workbench links are usable.
-- [ ] No horizontal overflow or clipped titles on 320, 390, 768, 1024, 1440.
-- [ ] Axe WCAG 2A, 2AA, 2.1AA, 2.2AA sees no violations on homepage and Field Note (1440 and 390).
-- [ ] Dark/light theme persists on both pages after reload.
-- [ ] No-JS homepage navigation remains available.
-- [ ] Reduced motion does not hide content or strand focus.
-- [ ] Actual production checks wait until TLS is stable; do not claim Lighthouse/INP scores from local CI.
+- [x] `python3 scripts/check_site.py` succeeds and checks both HTML pages, real PNG, links and sitemap.
+- [x] `node --check docs/assets/site.js` and syntax check of design audit succeed.
+- [x] Desktop/phone screenshots in both Night and Afterlight, plus 320 px narrow-phone screens.
+- [x] Homepage nav, note back link and three real Workbench destinations are usable.
+- [x] No horizontal overflow or clipped titles on 320, 390, 768, 1024, 1440.
+- [x] Axe WCAG 2A, 2AA, 2.1AA, 2.2AA reports no violations on homepage and Field Note (1440 and 390).
+- [x] Dark/light theme persists on both pages after reload.
+- [x] No-JS homepage navigation remains available.
+- [x] Reduced motion renders all reviewed content; no new JS motion effects were introduced.
+- [ ] Actual production checks wait until TLS is stable; no Lighthouse/INP scores have been claimed.
+
+## Actual design walkthrough — 13 October 2026
+
+**Evidence:** [Static validation, passed](https://github.com/mothandgravel/.github/actions/runs/38316496266) and [Playwright design audit, passed](https://github.com/mothandgravel/.github/actions/runs/38316496246). The latter attached a `landing-design-review` artifact containing **20 screenshots and an `audit.json` report**.
+
+| Surface | Viewports | Finding |
+| --- | --- | --- |
+| Homepage | 320, 390, 768, 1024, 1440 | 0 horizontal overflow; hero and Workbench heading fit; 3 cards and early-days status present |
+| Field Note 001 | 320, 390, 1440 | 0 overflow; headline fits; article and Workbench return link visible |
+| Night + Afterlight | Desktop and phone | 0 axe violations in both pages' scanned views; theme survives reload |
+| Workbench journey | 390 | Actual click to Field Note and return to Workbench passed |
+| Social preview | 1200 × 630 | PNG signature, browser-loadable MIME, HTTP 200 and metadata checks passed |
+| No JavaScript | 390 | Homepage navigation usable and inactive controls hidden |
+
+Computed Workbench text contrast: **5.81–14.14:1** (Night) and **5.15–12.41:1** (Afterlight). These are measured CSS foreground/background ratios for representative card text on five widths, not substitute evidence for the full axe scan.
+
+### Findings corrected during the sprint
+
+- **P1 / 320px overflow:** Original new Workbench heading had a 346px scroll width at 320px. The regression came from forcing the large all-caps `PRESENTATION.` into a narrow line. The 320px type ramp was corrected and the heading-fit check was added to the browser suite. Re-run: 320/320 and no clipping.
+- **P2 / overclaiming complete design evidence:** Workbench copy originally suggested every design decision was inspectable. Changed to a grounded statement that source is public and the design choices are documented.
+- **P1 / visitor continuity:** Added browser navigation coverage for Home → Field Note → Home Workbench, not merely checking the two URLs in isolation.
+
+### Visual critique after viewing screenshots
+
+The desktop Workbench presents three consistently weighted public records rather than generic product advertisements; the status line makes their limited scope explicit. On 320–390px screens the note and Workbench read in a clear single column, the moth illustration retains the original identity and the work links remain recognizable as actions. The restrained editorial typography is still distinctive without a full-bleed animation, and the Night/Afterlight modes both retain readable source text.
+
+The available captures come from **local CI served from the PR branch**. They do **not** verify the production custom domain, certificate, social crawler or real-user performance. Production acceptance remains a separate gate.
 
 ## Review after HTTPS
 
