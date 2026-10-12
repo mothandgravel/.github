@@ -51,6 +51,28 @@ Primary audience: people discovering the maker/studio, collaborators, and prospe
 - No nonessential third-party scripts, tracking, fabricated social proof, or listings of private products.
 - Browser snapshots are saved for both themes and mobile-menu state on PRs; tests run against the code being reviewed, not TLS-dependent production.
 
+## Sprint 01 verified results — 13 October 2026
+
+**CI:** [Static validation](https://github.com/mothandgravel/.github/actions/runs/38310136241) and [browser design audit](https://github.com/mothandgravel/.github/actions/runs/38310136348) **both passed** after the final correction. Browser artifacts include both color themes, five viewport widths, mobile-menu state, and a JavaScript-disabled state.
+
+| Verified behavior | Result |
+| --- | --- |
+| Viewport widths | 320, 390, 768, 1024, 1440 px |
+| Horizontal overflow | None at the five tested widths |
+| Headline | Three readable lines at all tested widths |
+| Responsive work cards | 1 / 2 / 3 columns as designed |
+| Brand assets | All browser images loaded |
+| Mobile nav | Touch/keyboard, Escape focus, destination focus, no-JS fallback passed |
+| WCAG axe sweep | No reported violations in night and Afterlight at tested desktop/phone widths |
+| Computed work-card text contrast, night | 5.81–14.14:1 |
+| Computed work-card text contrast, Afterlight | 5.15–12.41:1 |
+
+**Original audit failure diagnosed:** The first audit ran axe on the same DOM before and immediately after switching themes, and axe reported stale *night-theme text values* against freshly updated light backgrounds. The Afterlight screenshot itself showed darker text. To eliminate this false positive **without weakening the accessibility gate**, the browser audit now reloads into the persisted Afterlight theme, performs a complete axe scan on the fresh document, and independently computes the foreground/background contrast of representative work-card text on **all five** viewports, requiring at least 4.5:1. This also tests that the theme preference survives a reload.
+
+**Visual review:** Desktop hero, 390px Afterlight, 320px Night, mobile menu, and work-card regions were manually inspected from the successful browser-run screenshots. The moth/stone illustration remains legible, mobile headlines and cards do not clip, and navigation states are recognizable. These screenshots are local CI renders, **not** proof of production HTTPS behavior.
+
+**Remaining production gate:** Inspect the deployed `https://mothandgravel.com/` and `www` redirect after TLS provisioning, then collect Lighthouse metrics on the live endpoint. DNS, Pages settings, private products, and a nonexistent contact mailbox were deliberately left unchanged.
+
 ## Next sprint after TLS
 
 1. Inspect the **actual canonical HTTPS site**, the `www` redirect and real mobile viewport behavior.
