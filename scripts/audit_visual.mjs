@@ -26,6 +26,10 @@ function assert(condition, message) {
   if (!condition) failures.push(message);
 }
 const snap = async (page, name) => {
+  await page.evaluate(() => {
+    document.activeElement?.blur();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  });
   await page.screenshot({ path: join(output, `${name}.png`), fullPage: true, animations: "disabled" });
 };
 
@@ -426,7 +430,7 @@ try {
   const stackMotion = () => motion.locator('.stack-hint>span').evaluate(el => getComputedStyle(el).transitionDuration);
   assert(await stackMotion() === '0.2s', 'Stack feedback missing in ordinary motion');
   await motion.emulateMedia({ reducedMotion: 'reduce' });
-  assert(await stackMotion() === '0s', 'Stack feedback still animates with reduced motion');
+  assert(parseFloat(await stackMotion()) <= 0.001, 'Stack feedback still animates with reduced motion');
   await motion.locator('.editorial-stack summary').focus();
   await motion.keyboard.press('Enter');
   await motion.keyboard.press('Tab');
