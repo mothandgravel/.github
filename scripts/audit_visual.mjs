@@ -52,6 +52,44 @@ try {
     return result;
   }
 
+  // Contrast is independently measured from *rendered* text and panel colors.
+  // This catches actual regressions even when an accessibility engine caches stale styles.
+  async function sampleCardContrast(page, label) {
+    const measurements = await page.evaluate(() => {
+      const panel = document.querySelector(".work-card");
+      const background = getComputedStyle(panel).backgroundColor;
+      function luminance(color) {
+        const channels = color.match(/[\\d.]+/g)?.slice(0, 3).map(Number);
+        if (!channels || channels.length !== 3) throw new Error(`Unrecognized color: ${color}`);
+        const linear = channels.map(channel => {
+          const value = channel / 255;
+          return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+        });
+        return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+      }
+      const backgroundLightness = luminance(background);
+      const selectors = [
+        ".work-card-top span:first-child",
+        ".work-card-top span:last-child",
+        ".work-card-content h3",
+        ".work-card-content p",
+      ];
+      return selectors.map(selector => {
+        const foreground = getComputedStyle(document.querySelector(selector)).color;
+        const foregroundLightness = luminance(foreground);
+        const ratio = (Math.max(backgroundLightness, foregroundLightness) + 0.05) /
+          (Math.min(backgroundLightness, foregroundLightness) + 0.05);
+        return { selector, foreground, background, ratio: Number(ratio.toFixed(2)) };
+      });
+    });
+    for (const measurement of measurements) {
+      assert(measurement.ratio >= 4.5,
+        `${label}: insufficient *rendered* text contrast ${measurement.ratio}:1 on ${measurement.selector} ` +
+        `(${measurement.foreground} vs ${measurement.background})`);
+    }
+    return measurements;
+  }
+
   for (const viewport of widths) {
     const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
     const errors = [];
@@ -114,6 +152,7 @@ try {
       `${viewport.name}: hero heading overlaps its action`);
     assert(errors.length === 0, `${viewport.name}: browser errors: ${errors.join("; ")}`);
 
+    report.nightCardContrast = await sampleCardContrast(page, `${viewport.name} night`);
     if (viewport.name === "wide-desktop" || viewport.name === "phone") {
       await page.addScriptTag({ content: axe.source });
       report.axeNight = await accessibilityAudit(page, `${viewport.name} night`);
@@ -125,7 +164,19 @@ try {
     assert(await theme.getAttribute("aria-pressed") === "true", `${viewport.name}: theme not activated`);
     assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
       `${viewport.name}: afterlight data-theme missing`);
+
+    // Axe virtual-node/style caches from the earlier night run may survive a theme
+    // mutation. Reload to exercise persisted Afterlight and audit a fresh DOM.
+    // This is NOT a skip: the fresh page gets a full axe WCAG sweep, and the
+    // rendered text contrast is independently asserted at every viewport.
+    await page.reload({ waitUntil: "networkidle", timeout: 30000 });
+    assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
+      `${viewport.name}: afterlight preference did not persist on reload`);
+    assert(await theme.getAttribute("aria-pressed") === "true",
+      `${viewport.name}: reloaded theme control is not pressed`);
+    report.afterlightCardContrast = await sampleCardContrast(page, `${viewport.name} afterlight`);
     if (viewport.name === "wide-desktop" || viewport.name === "phone") {
+      await page.addScriptTag({ content: axe.source });
       report.axeAfterlight = await accessibilityAudit(page, `${viewport.name} afterlight`);
     }
     await snap(page, `${viewport.name}-afterlight`);
