@@ -108,12 +108,16 @@ def main() -> int:
         light_background = css_token(css, ':root[data-theme="afterlight"]', "bg")
         light_surface = css_token(css, ':root[data-theme="afterlight"]', "surface")
         light_button_ink = css_token(css, ':root[data-theme="afterlight"]', "accent-ink")
+        light_muted = css_token(css, ':root[data-theme="afterlight"]', "muted")
+        light_surface_2 = css_token(css, ':root[data-theme="afterlight"]', "surface-2")
         check(contrast_ratio(light_accent, light_background) >= 4.5,
               "Afterlight accent text contrast is below 4.5:1 on background")
         check(contrast_ratio(light_accent, light_surface) >= 4.5,
               "Afterlight accent text contrast is below 4.5:1 on panels")
         check(contrast_ratio(light_button_ink, light_accent) >= 4.5,
               "Afterlight CTA text contrast is below 4.5:1")
+        check(contrast_ratio(light_muted, light_surface_2) >= 4.5,
+              "Afterlight muted text contrast is below 4.5:1 on stone panels")
     except ValueError as error:
         check(False, str(error))
 
