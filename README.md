@@ -19,3 +19,7 @@ Website: [mothandgravel.com](https://mothandgravel.com)
 Artwork in `profile/assets/` is provided for identifying Moth & Gravel. Publication in this repository does not grant permission to use the Moth & Gravel name or visual marks for unrelated projects.
 
 This repository does **not** publish default organization-wide issue templates, contribution rules, or security policies. Those should be introduced deliberately when public projects need them.
+
+## Website
+
+The [Moth & Gravel landing page](https://mothandgravel.com/) lives in [`docs/`](docs/) as a static GitHub Pages site. Refer to [`SITE.md`](SITE.md) for deployment, DNS, HTTPS, and maintenance. Domain verification and GitHub Pages activation are performed in organization/repository settings, not by committing source files alone.
