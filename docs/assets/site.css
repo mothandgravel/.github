@@ -136,7 +136,7 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .section-lead h2,.ethos-left h2,.contact-inner h2 {font-size:clamp(45px,5.2vw,85px);margin:0}
 .section-lead h2 em {display:inline-block}
 .section-lead p {font-size:17px;color:var(--secondary);line-height:1.75;max-width:390px;margin:0 0 7px}
-.work-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.work-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
 .work-card {background:var(--surface);border:1px solid var(--line-soft);min-width:0;transition:border-color .3s ease,transform .3s ease}
 .work-card:hover {border-color:var(--gold);transform:translateY(-4px)}
 .work-card-top {display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 21px;color:var(--muted);border-bottom:1px solid var(--line-soft)}
@@ -158,6 +158,51 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .stone-a {transform:translate(-25px,-20px) rotate(-22deg);opacity:.85}
 .stone-b {width:75px;height:84px;transform:translate(77px,49px) rotate(34deg);background:#bbb09d}
 .stone-c {width:37px;height:48px;transform:translate(-115px,77px) rotate(26deg);background:#8e816b}
+
+/* Pair of physical-looking palette plates; a study illustration, not an extra UI control. */
+.graphic-theme-study {isolation:isolate}
+.graphic-theme-plates {
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  width:min(72%,350px);
+  height:166px;
+  border:1px solid var(--gold);
+  box-shadow:12px 14px 0 rgba(175,152,112,.13);
+  transform:rotate(-5deg);
+  transition:transform .24s ease;
+}
+.work-card:hover .graphic-theme-plates,
+.work-card:focus-within .graphic-theme-plates {transform:rotate(-2deg) translateY(-3px)}
+.graphic-theme-plate {
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.graphic-theme-plate small {
+  position:absolute;
+  left:14px;
+  top:14px;
+  font-family:var(--mono);
+  font-size:9px;
+  line-height:1.3;
+  font-weight:600;
+  letter-spacing:.065em;
+}
+.graphic-theme-plate strong {font-family:var(--serif);font-weight:400;font-size:91px;line-height:1;font-style:italic}
+.graphic-theme-plate i {position:absolute;bottom:14px;left:14px;width:28px;height:2px}
+.graphic-theme-afterlight {background:#f1eee6;color:#222423}
+.graphic-theme-afterlight i {background:#9a7946}
+.graphic-theme-nightfall {background:#17191b;color:#f1eee6}
+.graphic-theme-nightfall i {background:#d4b37c}
+@media (max-width:660px) {
+  .graphic-theme-plates {height:158px}
+  .graphic-theme-plate strong {font-size:76px}
+  .graphic-theme-plate small {font-size:8px;left:10px}
+}
 .work-card-content {padding:24px 23px 30px;min-height:175px}
 .work-card-content h3 {font-family:var(--sans);text-transform:uppercase;letter-spacing:-.03em;font-size:24px;line-height:1.1;margin-bottom:13px}
 .work-card-content p {font-size:14px;color:var(--secondary);line-height:1.65;margin:0}
@@ -378,22 +423,6 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .terrain-phrase {display:inline-block;white-space:nowrap}
 @media (min-width:901px) and (max-width:1200px) {
   .hero h1 {font-size:clamp(48px,5.45vw,64px)}
-}
-@media (min-width:661px) and (max-width:900px) {
-  .work-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
-  .work-card:last-child {
-    grid-column:1 / -1;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-  }
-  .work-card:last-child .work-card-top {grid-column:1 / -1}
-  .work-card:last-child .work-graphic {height:190px;border-bottom:0;border-right:1px solid var(--line-soft)}
-  .work-card:last-child .work-card-content {
-    min-height:190px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-  }
 }
 
 /* Keep the warm banner legible in both modes, independently of accent ink. */

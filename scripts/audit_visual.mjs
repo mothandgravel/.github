@@ -124,6 +124,11 @@ try {
         workHeadingFits: document.querySelector("#work-title").scrollWidth <=
           document.querySelector("#work-title").clientWidth + 2,
         workColumns: getComputedStyle(document.querySelector(".work-grid")).gridTemplateColumns.split(/\s+/).length,
+        workCards: Array.from(document.querySelectorAll(".work-card")).map(card => {
+          const rect = card.getBoundingClientRect();
+          return { left: Math.round(rect.left), top: Math.round(rect.top),
+            bottom: Math.round(rect.bottom), width: Math.round(rect.width) };
+        }),
         bandContentFits: (() => {
           const band = document.querySelector(".statement-band").getBoundingClientRect();
           const strong = document.querySelector(".band-inner strong");
@@ -137,16 +142,35 @@ try {
     assert(report.documentWidth <= viewport.width + 2,
       `${viewport.name}: horizontal overflow (${report.documentWidth}px > ${viewport.width}px)`);
     assert(report.imagesLoaded, `${viewport.name}: a brand image did not load`);
-    assert(await page.locator(".work-card-link").count() === 3, viewport.name + ": expected 3 working Workbench destinations");
+    assert(await page.locator(".work-card-link").count() === 4, viewport.name + ": expected 4 working Workbench destinations");
+    assert(await page.locator('.work-card .work-card-link[href="./notes/002-afterlight-nightfall.html"]').count() === 1,
+      viewport.name + ": Field Note 002 is not a peer card");
+    assert(await page.locator('.bench-ledger a[href="./notes/"]').count() === 1,
+      viewport.name + ": studio status should link to the Field Notes collection");
     assert(await page.locator(".bench-ledger").count() === 1, viewport.name + ": studio status is not visible");
     assert(report.bandContentFits, `${viewport.name}: slogan is clipped inside its banner`);
     assert(report.heroHeadingFits, `${viewport.name}: hero headline overflows its container`);
     assert(report.workHeadingFits, `${viewport.name}: Workbench headline overflows its container`);
     assert(report.heroHeadingLines === 3,
       `${viewport.name}: headline wraps across ${report.heroHeadingLines} lines; target is 3`);
-    const expectedColumns = viewport.width <= 660 ? 1 : viewport.width <= 900 ? 2 : 3;
+    const expectedColumns = viewport.width <= 660 ? 1 : 2;
     assert(report.workColumns === expectedColumns,
       `${viewport.name}: expected ${expectedColumns} work-card columns, found ${report.workColumns}`);
+    assert(report.workCards.length === 4, `${viewport.name}: expected four equal Workbench cards`);
+    if (report.workCards.length === 4) {
+      const [first, second, third, fourth] = report.workCards;
+      if (expectedColumns === 2) {
+        assert(Math.abs(first.top - second.top) <= 2 && Math.abs(third.top - fourth.top) <= 2 &&
+          third.top >= first.bottom - 1 && second.left > first.left,
+          `${viewport.name}: four cards should form a balanced two-by-two grid`);
+        assert(Math.abs(first.width - fourth.width) <= 2,
+          `${viewport.name}: card columns should have equal widths`);
+      } else {
+        assert(second.top >= first.bottom - 1 && third.top >= second.bottom - 1 &&
+          fourth.top >= third.bottom - 1,
+          `${viewport.name}: four cards should stack without overlaps`);
+      }
+    }
     if (viewport.width <= 390) {
       assert(report.brandMarkVisible, `${viewport.name}: moth symbol missing from mobile masthead`);
     }
@@ -378,6 +402,13 @@ try {
     await visitor.locator("#work-title").waitFor();
     assert(!visitor.url().includes("/notes/") && visitor.url().endsWith("#work"),
       "Field Note return link does not navigate to Workbench");
+    await visitor.locator('.work-card-link[href="./notes/002-afterlight-nightfall.html"]').click();
+    await visitor.locator(".study-heading h1").waitFor();
+    assert(visitor.url().endsWith("/notes/002-afterlight-nightfall.html"),
+      "Workbench Field Note 002 card must navigate to the complete study");
+    await visitor.locator('.note-end a[href="./"]').click();
+    assert(visitor.url().endsWith("/notes/"),
+      "Theme-study back link must navigate to Field Notes index");
   } finally {
     await visitor.close();
   }
