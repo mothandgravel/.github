@@ -55,6 +55,15 @@ try {
         heroImage: box(".hero-visual"),
         heroAction: box(".button-brass"),
         navVisible: getComputedStyle(document.querySelector("#primary-nav")).display !== "none",
+        brandMarkVisible: getComputedStyle(document.querySelector(".brand-stamp")).display !== "none",
+        heroHeadingLines: Math.round(document.querySelector("#hero-title").getBoundingClientRect().height /
+          parseFloat(getComputedStyle(document.querySelector("#hero-title")).lineHeight)),
+        bandContentFits: (() => {
+          const band = document.querySelector(".statement-band").getBoundingClientRect();
+          const strong = document.querySelector(".band-inner strong");
+          return strong.getBoundingClientRect().right <= band.right + 1 &&
+            strong.scrollWidth <= strong.clientWidth + 1;
+        })(),
         imagesLoaded: Array.from(document.images).every(img => img.complete && img.naturalWidth > 0),
       };
     });
@@ -62,6 +71,12 @@ try {
     assert(report.documentWidth <= viewport.width + 2,
       `${viewport.name}: horizontal overflow (${report.documentWidth}px > ${viewport.width}px)`);
     assert(report.imagesLoaded, `${viewport.name}: a brand image did not load`);
+    assert(report.bandContentFits, `${viewport.name}: slogan is clipped inside its banner`);
+    if (viewport.width <= 390) {
+      assert(report.brandMarkVisible, `${viewport.name}: moth symbol missing from mobile masthead`);
+      assert(report.heroHeadingLines <= 3,
+        `${viewport.name}: headline wraps across ${report.heroHeadingLines} lines; target is 3`);
+    }
     assert(report.heroHeading?.height > 40 && report.heroAction,
       `${viewport.name}: headline or primary CTA is missing`);
     assert(report.heroHeading && report.heroAction && 
@@ -116,7 +131,10 @@ try {
     element => getComputedStyle(element).display !== "none");
   const noJSMenuHidden = await page.locator("#menu-toggle").evaluate(
     element => getComputedStyle(element).display === "none");
-  assert(noJSNavVisible && noJSMenuHidden, "No-JS mobile navigation is inaccessible");
+  const noJSThemeHidden = await page.locator("#light-switch").evaluate(
+    element => getComputedStyle(element).display === "none");
+  assert(noJSNavVisible && noJSMenuHidden && noJSThemeHidden,
+    "No-JS mobile navigation is inaccessible or a dead theme toggle is visible");
   await snap(page, "phone-no-javascript");
   await page.close();
 
