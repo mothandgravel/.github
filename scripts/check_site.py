@@ -161,7 +161,7 @@ def main() -> int:
         check('href="../#work"' in note_html, "Field Note must return to the workbench")
         check('rel="canonical"' in note_html, "Field Note is missing its canonical URL")
         check('id="light-switch"' in note_html, "Field Note is missing its functional theme control")
-        for relative in re.findall(r'(?:href|src)="(\\.\\./assets/[^"]+)"', note_html):
+        for relative in re.findall(r'(?:href|src)="(\.\./assets/[^"]+)"', note_html):
             target = (note_file.parent / relative).resolve()
             check(target.is_relative_to(ROOT.resolve()), f"Field Note escapes docs/: {relative}")
             check(target.is_file(), f"Field Note local asset missing: {relative}")
