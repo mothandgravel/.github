@@ -24,7 +24,7 @@ jobs:
           node-version: 22
       - name: Install pinned browser audit dependencies
         run: |
-          npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
           npx playwright install --with-deps chromium
       - name: Launch local static site
         run: |
