@@ -136,7 +136,8 @@ def main() -> int:
     # Sprint 02: public work must be real and all outbound actions usable.
     note_file = ROOT / "notes" / "001-curiosity-with-calluses.html"
     check(note_file.is_file(), "Field Note 001 is missing")
-    check(html.count('class="work-card-link"') == 3, "Expected three real workbench links")
+    check(html.count('class="work-card-link"') == 4, "All four Workbench cards need real destinations")
+    check(html.count('class="work-card"') == 4, "Workbench should display four peer cards")
     check('href="./notes/001-curiosity-with-calluses.html"' in html, "Workbench note link is missing")
     check('https://github.com/mothandgravel/.github/tree/main/docs' in html, "Workbench source link is missing")
     check('https://github.com/mothandgravel/.github/tree/main/profile/assets' in html, "Workbench brand assets link is missing")
@@ -150,8 +151,13 @@ def main() -> int:
     check(note_index.is_file(), "Field Notes index is missing")
     check(theme_note.is_file(), "Field Note 002 theme study is missing")
     check('href="./notes/"' in html, "Homepage Field Notes navigation must lead to the index")
-    check('href="./notes/002-afterlight-nightfall.html"' in html,
-          "Homepage workbench must expose the theme study")
+    check(html.count('href="./notes/002-afterlight-nightfall.html"') == 1,
+          "Field Note 002 should have a single Workbench destination")
+    card_grid = html.split('<div class="work-grid">', 1)
+    check(len(card_grid) == 2 and 'href="./notes/002-afterlight-nightfall.html"' in
+          card_grid[-1].split('<div class="bench-ledger">', 1)[0],
+          "Field Note 002 must be a full card, not a status-banner footnote")
+    check('graphic-theme-plates' in html, "Theme-study card illustration missing")
     for expected in ("notes/", "notes/001-curiosity-with-calluses.html",
                      "notes/002-afterlight-nightfall.html"):
         check(f"https://mothandgravel.com/{expected}" in (ROOT / "sitemap.xml").read_text(encoding="utf-8"),
