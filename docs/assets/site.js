@@ -3,7 +3,6 @@
 
   const root = document.documentElement;
   const themeButton = document.getElementById("light-switch");
-  const themeLabel = themeButton?.querySelector(".switch-label");
   const menuButton = document.getElementById("menu-toggle");
   const navigation = document.getElementById("primary-nav");
   const storageKey = "moth-and-gravel-theme";
@@ -12,8 +11,6 @@
     const isAfterlight = theme === "afterlight";
     root.dataset.theme = isAfterlight ? "afterlight" : "night";
     themeButton?.setAttribute("aria-pressed", String(isAfterlight));
-    themeButton?.setAttribute("aria-label", isAfterlight ? "Switch to night color theme" : "Switch to afterlight color theme");
-    if (themeLabel) themeLabel.textContent = isAfterlight ? "Nightfall" : "Afterlight";
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isAfterlight ? "#f1eee6" : "#17191b");
   }
 
@@ -42,12 +39,37 @@
     menuButton.setAttribute("aria-expanded", String(willOpen));
   });
 
-  navigation?.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+  navigation?.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+    if (!navigation.classList.contains("is-open")) return;
+    closeMenu();
+    // Move keyboard focus to the section selected from the mobile menu.
+    const hash = link.getAttribute("href");
+    if (!hash?.startsWith("#")) return;
+    const target = document.getElementById(hash.slice(1));
+    if (target) {
+      target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: true });
+    }
+  }));
+
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
+    // Escape should never steal focus when the mobile menu is already closed.
+    if (event.key === "Escape" && navigation?.classList.contains("is-open")) {
       closeMenu();
       menuButton?.focus();
     }
+  });
+
+  document.addEventListener("pointerdown", event => {
+    if (navigation?.classList.contains("is-open") &&
+        !navigation.contains(event.target) &&
+        !menuButton?.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  window.matchMedia("(min-width: 901px)").addEventListener("change", event => {
+    if (event.matches) closeMenu();
   });
 
   document.getElementById("year")?.replaceChildren(document.createTextNode(String(new Date().getFullYear())));

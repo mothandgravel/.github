@@ -1,0 +1,47 @@
+name: Landing design audit
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "scripts/audit_visual.mjs"
+      - ".github/workflows/design-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install pinned browser audit dependencies
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
+          npx playwright install --with-deps chromium
+      - name: Launch local static site
+        run: |
+          python3 -m http.server 8793 --bind 127.0.0.1 --directory docs >/tmp/mg-site.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8793/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/mg-site.log
+          exit 1
+      - name: Capture desktop and mobile review / assert interaction health
+        run: node scripts/audit_visual.mjs
+      - name: Upload screenshots and measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: landing-design-review
+          path: artifacts/design-review/
+          if-no-files-found: ignore
+          retention-days: 14

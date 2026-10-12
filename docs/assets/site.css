@@ -14,6 +14,7 @@
   --line-soft: rgba(241,238,230,.13);
   --gold: #af9870;
   --gold-bright: #dfc195;
+  --accent-ink: #17191b;
   --gold-dark: #22201c;
   --raised: #242628;
   --serif: Georgia, "Times New Roman", serif;
@@ -30,18 +31,19 @@
   --surface-2: #ded7cc;
   --ink: #202222;
   --secondary: #4a4a46;
-  --muted: #676760;
+  --muted: #5d5d55;
   --line: rgba(28,31,31,.30);
   --line-soft: rgba(28,31,31,.17);
   --gold: #907449;
-  --gold-bright: #a88855;
+  --gold-bright: #70542b;
+  --accent-ink: #f1eee6;
   --gold-dark: #f1eee6;
   --raised: #ded7cd;
 }
 *,*::before,*::after {box-sizing:border-box}
 html {scroll-behavior:smooth; scroll-padding-top:90px}
 body {margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-body::before {content:"";pointer-events:none;position:fixed;inset:0;z-index:120;opacity:.065;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='74' height='74'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.76' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");mix-blend-mode:soft-light}
+/* Text and illustrations remain crisp: no full-screen compositing noise layer. */
 ::selection {background:var(--gold);color:#17191b}
 a {color:inherit;text-decoration:none}
 button {font:inherit}
@@ -91,7 +93,7 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .hero-actions {display:flex;flex-wrap:wrap;gap:25px;align-items:center}
 .button {min-height:54px;padding:0 21px 0 24px;display:inline-flex;align-items:center;justify-content:space-between;gap:32px;font-size:12px;font-weight:800;letter-spacing:.025em;transition:transform .23s ease,background .23s ease,color .23s ease}
 .button:hover {transform:translateY(-3px)}
-.button-brass {background:var(--gold-bright);color:#17191b}
+.button-brass {background:var(--gold-bright);color:var(--accent-ink)}
 .button-brass:hover {background:#f1d9b4}
 .button-arrow {font-family:var(--body);font-size:22px;font-weight:400;line-height:1}
 .under-link {font-size:12px;font-weight:700;border-bottom:1px solid var(--gold);padding-block:10px;white-space:nowrap}
@@ -188,9 +190,9 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .interlude p {color:var(--muted);margin:0}
 
 /* CONTACT */
-.contact-section {background:#a9936f;color:#17191b}
+.contact-section {background:#9b8057;color:#17191b}
 .contact-inner {display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:end;padding-block:102px 106px}
-.contact-inner .eyebrow {color:#26241f;margin-bottom:32px}
+.contact-inner .eyebrow {color:#17191b;margin-bottom:32px}
 .contact-inner h2 {font-size:clamp(68px,7.9vw,128px)}
 .contact-inner h2 em {color:#f7efe0}
 .contact-right {display:flex;flex-direction:column;align-items:flex-start;padding-bottom:14px}
@@ -316,3 +318,83 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 @media (prefers-reduced-motion:reduce) {
   *,*::before,*::after {animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* UX sprint 01: brand continuity, progressive mobile navigation and legible afterlight. */
+.brand-stamp {background:#17191b;overflow:hidden;flex:0 0 auto}
+.brand-stamp img {display:block;width:100%;height:100%;object-fit:contain}
+:root[data-theme="afterlight"] .button-brass:hover {background:#594222;color:#f1eee6}
+@media (max-width:900px) {
+  /* Without JS, links remain available; with JS, the menu is collapsible. */
+  .main-nav {display:flex}
+  .has-js .main-nav {display:none}
+  .has-js .main-nav.is-open {display:flex}
+  .menu-toggle {display:none}
+  .has-js .menu-toggle {display:flex}
+}
+
+/* UX sprint 01 visual critique: don't clip the typographic band on phones. */
+.light-switch {display:none}
+.has-js .light-switch {display:flex}
+@media (max-width:660px) {
+  .hero h1 {font-size:clamp(34px,10.5vw,72px)}
+  .band-inner {
+    min-height:0;
+    padding:17px 0 19px;
+    display:grid;
+    grid-template-columns:max-content 1fr;
+    column-gap:11px;
+    row-gap:4px;
+    align-items:baseline;
+    white-space:normal;
+  }
+  .band-inner>span:first-child {
+    grid-column:1;
+    grid-row:1;
+    font-size:clamp(22px,6vw,30px);
+    line-height:1.1;
+  }
+  .band-star {grid-column:2;grid-row:1;align-self:center;font-size:15px}
+  .band-inner strong {
+    grid-column:1 / -1;
+    grid-row:2;
+    font-size:clamp(28px,7.1vw,38px);
+    white-space:normal;
+    line-height:1.06;
+  }
+  .light-switch {min-height:44px;width:44px}
+  .menu-toggle {height:44px}
+}
+@media (max-width:365px) {
+  /* A narrow phone shows the moth and an abbreviated label, not a missing mark. */
+  .brand {gap:7px}
+  .brand-stamp {display:flex;width:36px;height:36px}
+  .brand-type {font-size:0}
+  .brand-type::before {content:"M&G";font-size:13px;letter-spacing:.06em;color:var(--ink)}
+  .brand-sub {display:none}
+  .hero h1 {font-size:clamp(33px,10.4vw,38px)}
+}
+
+/* Keep the signature phrase intact at every breakpoint. */
+.terrain-phrase {display:inline-block;white-space:nowrap}
+@media (min-width:901px) and (max-width:1200px) {
+  .hero h1 {font-size:clamp(48px,5.45vw,64px)}
+}
+@media (min-width:661px) and (max-width:900px) {
+  .work-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .work-card:last-child {
+    grid-column:1 / -1;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+  .work-card:last-child .work-card-top {grid-column:1 / -1}
+  .work-card:last-child .work-graphic {height:190px;border-bottom:0;border-right:1px solid var(--line-soft)}
+  .work-card:last-child .work-card-content {
+    min-height:190px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+}
+
+/* Keep the warm banner legible in both modes, independently of accent ink. */
+:root[data-theme="afterlight"] .statement-band {background:#af9870}
