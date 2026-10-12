@@ -39,11 +39,15 @@ try {
         id: item.id,
         impact: item.impact,
         description: item.help,
-        targets: item.nodes.slice(0, 5).map(node => node.target.join(" "))
+        targets: item.nodes.slice(0, 5).map(node => ({
+          path: node.target.join(" "),
+          failureSummary: node.failureSummary,
+          evidence: node.any.map(check => check.data).filter(Boolean)
+        }))
       }));
     });
     for (const violation of result) {
-      failures.push(`${label}: axe ${violation.id} (${violation.impact}) on ${violation.targets.join(", ")}`);
+      failures.push(`${label}: axe ${violation.id} (${violation.impact}) on ${violation.targets.map(item => item.path).join(", ")}`);
     }
     return result;
   }
