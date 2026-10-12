@@ -4,6 +4,7 @@
  * Setup: npm install --no-save playwright@1.55.1; npx playwright install chromium
  */
 import { chromium } from "playwright";
+import axe from "axe-core";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -29,6 +30,24 @@ const snap = async (page, name) => {
 };
 
 try {
+  async function accessibilityAudit(page, label) {
+    const result = await page.evaluate(async () => {
+      const result = await window.axe.run(document, {
+        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] }
+      });
+      return result.violations.map(item => ({
+        id: item.id,
+        impact: item.impact,
+        description: item.help,
+        targets: item.nodes.slice(0, 5).map(node => node.target.join(" "))
+      }));
+    });
+    for (const violation of result) {
+      failures.push(`${label}: axe ${violation.id} (${violation.impact}) on ${violation.targets.join(", ")}`);
+    }
+    return result;
+  }
+
   for (const viewport of widths) {
     const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
     const errors = [];
@@ -91,6 +110,10 @@ try {
       `${viewport.name}: hero heading overlaps its action`);
     assert(errors.length === 0, `${viewport.name}: browser errors: ${errors.join("; ")}`);
 
+    if (viewport.name === "wide-desktop" || viewport.name === "phone") {
+      await page.addScriptTag({ content: axe.source });
+      report.axeNight = await accessibilityAudit(page, `${viewport.name} night`);
+    }
     await snap(page, `${viewport.name}-night`);
     const theme = page.locator("#light-switch");
     assert(await theme.getAttribute("aria-label") === "Afterlight theme", "Theme toggle has an unstable label");
@@ -98,6 +121,9 @@ try {
     assert(await theme.getAttribute("aria-pressed") === "true", `${viewport.name}: theme not activated`);
     assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
       `${viewport.name}: afterlight data-theme missing`);
+    if (viewport.name === "wide-desktop" || viewport.name === "phone") {
+      report.axeAfterlight = await accessibilityAudit(page, `${viewport.name} afterlight`);
+    }
     await snap(page, `${viewport.name}-afterlight`);
 
     if (viewport.width <= 900) {
