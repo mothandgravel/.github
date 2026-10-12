@@ -135,6 +135,8 @@ try {
     assert(report.documentWidth <= viewport.width + 2,
       `${viewport.name}: horizontal overflow (${report.documentWidth}px > ${viewport.width}px)`);
     assert(report.imagesLoaded, `${viewport.name}: a brand image did not load`);
+    assert(await page.locator(".work-card-link").count() === 3, viewport.name + ": expected 3 working Workbench destinations");
+    assert(await page.locator(".bench-ledger").count() === 1, viewport.name + ": studio status is not visible");
     assert(report.bandContentFits, `${viewport.name}: slogan is clipped inside its banner`);
     assert(report.heroHeadingFits, `${viewport.name}: hero headline overflows its container`);
     assert(report.heroHeadingLines === 3,
@@ -207,6 +209,75 @@ try {
 
     results.push({ name: viewport.name, ...report, errors });
     await page.close();
+  }
+
+
+  // The Field Note is a real second page, not a dead home-page card.
+  for (const viewport of [
+    { name: "note-wide-desktop", width: 1440, height: 900 },
+    { name: "note-phone", width: 390, height: 844 },
+    { name: "note-small-phone", width: 320, height: 740 },
+  ]) {
+    const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
+    const noteUrl = origin + "/notes/001-curiosity-with-calluses.html";
+    const response = await page.goto(noteUrl, { waitUntil: "networkidle", timeout: 30000 });
+    assert(response?.status() === 200, viewport.name + ": note did not return HTTP 200");
+    const heading = page.locator(".note-heading h1");
+    assert(await heading.count() === 1, viewport.name + ": Field Note heading missing");
+    const layout = await page.evaluate(() => ({
+      documentWidth: document.documentElement.scrollWidth,
+      viewportWidth: window.innerWidth,
+      articleVisible: Boolean(document.querySelector(".note-prose")),
+      hasWorkbenchReturn: Boolean(document.querySelector('a[href="../#work"]')),
+      headingFits: (() => {
+        const el = document.querySelector(".note-heading h1");
+        return el.scrollWidth <= el.clientWidth + 2;
+      })(),
+      theme: document.documentElement.dataset.theme,
+      ogImage: document.querySelector('meta[property="og:image"]')?.content,
+    }));
+    assert(layout.documentWidth <= viewport.width + 2,
+      viewport.name + ": horizontal overflow (" + layout.documentWidth + "px > " + viewport.width + "px)");
+    assert(layout.headingFits, viewport.name + ": Field Note heading is clipped");
+    assert(layout.articleVisible && layout.hasWorkbenchReturn,
+      viewport.name + ": note article or route back missing");
+    assert(layout.theme === "night", viewport.name + ": note starts in wrong default theme");
+    assert(layout.ogImage === "https://mothandgravel.com/assets/social-cover.png",
+      viewport.name + ": note Open Graph preview mismatch");
+
+    if (viewport.name === "note-wide-desktop" || viewport.name === "note-phone") {
+      await page.addScriptTag({ content: axe.source });
+      await accessibilityAudit(page, viewport.name + " night");
+    }
+    await snap(page, viewport.name + "-night");
+    const themeButton = page.locator("#light-switch");
+    await themeButton.click();
+    await page.reload({ waitUntil: "networkidle" });
+    assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
+      viewport.name + ": Field Note did not preserve Afterlight preference");
+    if (viewport.name === "note-wide-desktop" || viewport.name === "note-phone") {
+      await page.addScriptTag({ content: axe.source });
+      await accessibilityAudit(page, viewport.name + " afterlight");
+    }
+    await snap(page, viewport.name + "-afterlight");
+    results.push({ name: viewport.name, ...layout, noteUrl });
+    await page.close();
+  }
+
+  // Ensure this is a real raster asset, not an SVG-only sharing fallback.
+  const coverResponse = await browser.newPage();
+  try {
+    const resource = await coverResponse.request.get(origin + "/assets/social-cover.png");
+    assert(resource.status() === 200, "Social image did not return HTTP 200");
+    assert((resource.headers()["content-type"] || "").includes("image/png"),
+      "Social preview is not served as image/png");
+    const buffer = await resource.body();
+    assert(buffer.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])),
+      "Social asset is not a real PNG");
+    assert(buffer.length >= 24 && buffer.readUInt32BE(16) === 1200 && buffer.readUInt32BE(20) === 630,
+      "Social preview must be 1200 by 630 pixels");
+  } finally {
+    await coverResponse.close();
   }
 
   // Without JavaScript, mobile navigation must remain usable.
