@@ -24,3 +24,9 @@ test('untrusted URL pagination clamps to reachable results', () => {
   assert.equal(queryNotes(notes, { page: 0.5 }).page, 1);
   assert.equal(queryNotes(notes, { q: 'unknown', page: 4 }).entries.length, 0);
 });
+
+test('a note without optional topic/project metadata remains searchable', () => {
+  const minimal = { id: '501', title: 'An observation', summary: 'Making', date: '2026-10-13', type: 'Note' };
+  assert.equal(queryNotes([minimal], { q: 'observation' }).total, 1);
+  assert.equal(queryNotes([minimal], { topic: 'Interface' }).total, 0);
+});

@@ -1,8 +1,8 @@
 export const PAGE_SIZE = 20;
 export function queryNotes(notes, { q = '', topic = '', sort = 'newest', page = 1 } = {}) {
   const words = q.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-  const filtered = notes.filter(n => (!topic || n.topics.includes(topic)) && words.every(word =>
-    [n.id, n.title, n.summary, n.type, n.project, ...n.topics].join(' ').toLocaleLowerCase().includes(word)));
+  const filtered = notes.filter(n => (!topic || (n.topics || []).includes(topic)) && words.every(word =>
+    [n.id, n.title, n.summary, n.type, n.project, ...(n.topics || [])].join(' ').toLocaleLowerCase().includes(word)));
   filtered.sort((a, b) => {
     if (sort === 'title') return a.title.localeCompare(b.title);
     const direction = sort === 'oldest' ? 1 : -1;

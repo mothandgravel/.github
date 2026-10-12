@@ -5,7 +5,7 @@ if (form) {
   try {
     const response = await fetch(new URL('./notes.json', import.meta.url));
     if (!response.ok) throw new Error('Catalog unavailable');
-    const notes = await response.json();
+    const notes = (await response.json()).map(n => ({ ...n, topics: n.topics || [] }));
     const results = document.querySelector('#archive-results');
     const status = document.querySelector('#archive-status');
     const pager = document.querySelector('#archive-pagination');
