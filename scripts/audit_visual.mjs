@@ -58,6 +58,9 @@ try {
         brandMarkVisible: getComputedStyle(document.querySelector(".brand-stamp")).display !== "none",
         heroHeadingLines: Math.round(document.querySelector("#hero-title").getBoundingClientRect().height /
           parseFloat(getComputedStyle(document.querySelector("#hero-title")).lineHeight)),
+        heroHeadingFits: document.querySelector("#hero-title").scrollWidth <=
+          document.querySelector("#hero-title").clientWidth + 2,
+        workColumns: getComputedStyle(document.querySelector(".work-grid")).gridTemplateColumns.split(/\\s+/).length,
         bandContentFits: (() => {
           const band = document.querySelector(".statement-band").getBoundingClientRect();
           const strong = document.querySelector(".band-inner strong");
@@ -72,10 +75,14 @@ try {
       `${viewport.name}: horizontal overflow (${report.documentWidth}px > ${viewport.width}px)`);
     assert(report.imagesLoaded, `${viewport.name}: a brand image did not load`);
     assert(report.bandContentFits, `${viewport.name}: slogan is clipped inside its banner`);
+    assert(report.heroHeadingFits, `${viewport.name}: hero headline overflows its container`);
+    assert(report.heroHeadingLines === 3,
+      `${viewport.name}: headline wraps across ${report.heroHeadingLines} lines; target is 3`);
+    const expectedColumns = viewport.width <= 660 ? 1 : viewport.width <= 900 ? 2 : 3;
+    assert(report.workColumns === expectedColumns,
+      `${viewport.name}: expected ${expectedColumns} work-card columns, found ${report.workColumns}`);
     if (viewport.width <= 390) {
       assert(report.brandMarkVisible, `${viewport.name}: moth symbol missing from mobile masthead`);
-      assert(report.heroHeadingLines <= 3,
-        `${viewport.name}: headline wraps across ${report.heroHeadingLines} lines; target is 3`);
     }
     assert(report.heroHeading?.height > 40 && report.heroAction,
       `${viewport.name}: headline or primary CTA is missing`);
