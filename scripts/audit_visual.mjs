@@ -5,9 +5,11 @@
  */
 import { chromium } from "playwright";
 import axe from "axe-core";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
+const catalog = JSON.parse(await readFile(new URL('../docs/assets/notes.json', import.meta.url), 'utf8'));
+const featured = catalog.find(n => n.featured) || [...catalog].sort((a, b) => b.date.localeCompare(a.date) || Number(b.id) - Number(a.id))[0];
 const origin = process.env.SITE_URL || "http://127.0.0.1:8793";
 const output = process.env.AUDIT_OUTPUT || "artifacts/design-review";
 const widths = [
@@ -147,8 +149,8 @@ try {
       `${viewport.name}: horizontal overflow (${report.documentWidth}px > ${viewport.width}px)`);
     assert(report.imagesLoaded, `${viewport.name}: a brand image did not load`);
     assert(await page.locator(".work-card-link").count() === 2, viewport.name + ": expected 2 working Workbench destinations");
-    assert(await page.locator('.note-feature .editorial-link[href="./notes/002-afterlight-nightfall.html"]').count() === 1,
-      viewport.name + ": Field Note 002 is not an editorial feature");
+    assert(await page.locator(`.note-feature .editorial-link[href="./notes/${featured.slug}"]`).count() === 1,
+      viewport.name + ": Selected Field Note is not an editorial feature");
     assert(await page.locator('.bench-ledger a[href="./notes/"]').count() === 1,
       viewport.name + ": studio status should link to the Field Notes collection");
     assert(await page.locator(".bench-ledger").count() === 1, viewport.name + ": studio status is not visible");
@@ -342,7 +344,7 @@ try {
       assert(layout.imagesLoaded, label + ": local brand image failed to load");
       assert(browserErrors.length === 0, label + ": browser errors: " + browserErrors.join("; "));
       if (editorial.name === "notes-index") {
-        assert(layout.notes === 2, label + ": index must list exactly two real Field Notes");
+        assert(layout.notes === catalog.length, label + ": index must list the entire public catalog");
       } else {
         assert(layout.specimens === 2 && layout.metrics === 6,
           label + ": missing paired specimens or numeric samples");
@@ -378,7 +380,7 @@ try {
   await archive.goto(origin + '/notes/', { waitUntil: 'networkidle' });
   await archive.locator('#archive-query').fill('bone');
   await archive.locator('#archive-controls button[type="submit"]').click();
-  assert(await archive.locator('#archive-results .archive-entry').count() === 1, 'Search fails to find summary text');
+  assert(await archive.locator('#archive-results [data-note-id="002"]').count() === 1, 'Search fails to find theme-study summary text');
   assert(archive.url().includes('q=bone'), 'Search URL is not shareable');
   await archive.reload({ waitUntil: 'networkidle' });
   assert(await archive.locator('#archive-query').inputValue() === 'bone', 'Search lost on reload');
@@ -386,9 +388,9 @@ try {
   await archive.locator('#archive-topic').selectOption('Identity');
   await archive.locator('#archive-controls button[type="submit"]').click();
   assert(await archive.locator('#archive-results [data-note-id="001"]').count() === 1 &&
-    await archive.locator('#archive-results .archive-entry').count() === 1, 'Topic filter failed');
+    await archive.locator('#archive-results .archive-entry').count() === catalog.filter(n => n.topics.includes('Identity')).length, 'Topic filter failed');
   await archive.goBack({ waitUntil: 'networkidle' });
-  assert(await archive.locator('#archive-results .archive-entry').count() === 2, 'Back does not restore archive state');
+  assert(await archive.locator('#archive-results .archive-entry').count() === Math.min(catalog.length, 20), 'Back does not restore archive state');
   await archive.locator('#archive-query').fill('unmatchable');
   await archive.locator('#archive-controls button[type="submit"]').click();
   assert(await archive.locator('.archive-empty').isVisible(), 'No-result guidance missing');
@@ -440,12 +442,12 @@ try {
   const fallback = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await fallback.route('**/assets/notes.json', route => route.abort());
   await fallback.goto(origin + '/notes/', { waitUntil: 'networkidle' });
-  assert(await fallback.locator('#archive-fallback .archive-entry').count() === 2, 'Failed catalog request loses static archive');
+  assert(await fallback.locator('#archive-fallback .archive-entry').count() === catalog.length, 'Failed catalog request loses static archive');
   assert(await fallback.locator('#archive-controls').isHidden(), 'Failed catalog leaves dead controls');
   await fallback.close();
   const noJSArchive = await browser.newPage({ viewport: { width: 320, height: 740 }, javaScriptEnabled: false });
   await noJSArchive.goto(origin + '/notes/', { waitUntil: 'load' });
-  assert(await noJSArchive.locator('#archive-fallback .archive-entry').count() === 2, 'No-JS archive is incomplete');
+  assert(await noJSArchive.locator('#archive-fallback .archive-entry').count() === catalog.length, 'No-JS archive is incomplete');
   await noJSArchive.locator('.editorial-stack summary').click();
   assert(await noJSArchive.locator('.editorial-stack a').first().isVisible(), 'No-JS stack cannot open');
   await snap(noJSArchive, 'archive-no-javascript-phone');
@@ -474,8 +476,11 @@ try {
   });
   try {
     await visitor.goto(origin, { waitUntil: "networkidle" });
-    await visitor.locator(".editorial-stack summary").click();
-    await visitor.locator('.editorial-stack a[href="./notes/001-curiosity-with-calluses.html"]').click();
+    await visitor.locator('.collection-link').click();
+    await visitor.locator('#archive-status').waitFor({ state: 'visible' });
+    await visitor.locator('#archive-query').fill('001');
+    await visitor.locator('#archive-controls button[type="submit"]').click();
+    await visitor.locator('#archive-results a[href="./001-curiosity-with-calluses.html"]').click();
     await visitor.locator(".note-prose").waitFor();
     assert(visitor.url().includes("/notes/001-curiosity-with-calluses.html"),
       "Workbench Field Note link does not navigate to the published note");
@@ -483,7 +488,11 @@ try {
     await visitor.locator("#work-title").waitFor();
     assert(!visitor.url().includes("/notes/") && visitor.url().endsWith("#work"),
       "Field Note return link does not navigate to Workbench");
-    await visitor.locator('.note-feature .editorial-link[href="./notes/002-afterlight-nightfall.html"]').click();
+    await visitor.locator('.collection-link').click();
+    await visitor.locator('#archive-status').waitFor({ state: 'visible' });
+    await visitor.locator('#archive-query').fill('002');
+    await visitor.locator('#archive-controls button[type="submit"]').click();
+    await visitor.locator('#archive-results a[href="./002-afterlight-nightfall.html"]').click();
     await visitor.locator(".study-heading h1").waitFor();
     assert(visitor.url().endsWith("/notes/002-afterlight-nightfall.html"),
       "Workbench Field Note 002 card must navigate to the complete study");
@@ -506,8 +515,10 @@ try {
     assert(editorialVisitor.url().endsWith("/notes/"),
       "The mobile Field Notes navigation did not open the index");
     await editorialVisitor.locator("#archive-status").waitFor({ state: "visible" });
-    assert(await editorialVisitor.locator("#archive-results .notes-index-entry").count() === 2,
+    assert(await editorialVisitor.locator("#archive-results .notes-index-entry").count() === Math.min(catalog.length, 20),
       "Field Notes index lost one of the published notes");
+    await editorialVisitor.locator('#archive-query').fill('002');
+    await editorialVisitor.locator('#archive-controls button[type="submit"]').click();
     await editorialVisitor.locator('#archive-results a[href="./002-afterlight-nightfall.html"]').first().click();
     assert(editorialVisitor.url().endsWith("/notes/002-afterlight-nightfall.html"),
       "The Field Note 002 index link is broken");
