@@ -43,7 +43,7 @@
 *,*::before,*::after {box-sizing:border-box}
 html {scroll-behavior:smooth; scroll-padding-top:90px}
 body {margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-body::before {content:"";pointer-events:none;position:fixed;inset:0;z-index:120;opacity:.065;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='74' height='74'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.76' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");mix-blend-mode:soft-light}
+/* Text and illustrations remain crisp: no full-screen compositing noise layer. */
 ::selection {background:var(--gold);color:#17191b}
 a {color:inherit;text-decoration:none}
 button {font:inherit}
@@ -190,9 +190,9 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .interlude p {color:var(--muted);margin:0}
 
 /* CONTACT */
-.contact-section {background:#a9936f;color:#17191b}
+.contact-section {background:#9b8057;color:#17191b}
 .contact-inner {display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:end;padding-block:102px 106px}
-.contact-inner .eyebrow {color:#26241f;margin-bottom:32px}
+.contact-inner .eyebrow {color:#17191b;margin-bottom:32px}
 .contact-inner h2 {font-size:clamp(68px,7.9vw,128px)}
 .contact-inner h2 em {color:#f7efe0}
 .contact-right {display:flex;flex-direction:column;align-items:flex-start;padding-bottom:14px}
@@ -395,3 +395,6 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
     justify-content:center;
   }
 }
+
+/* Keep the warm banner legible in both modes, independently of accent ink. */
+:root[data-theme="afterlight"] .statement-band {background:#af9870}
