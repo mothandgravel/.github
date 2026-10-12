@@ -22,6 +22,14 @@ We believe that useful work doesn't have to be ordinary, and unconventional idea
 
 **Strange things. Built properly.**
 
+### On the workbench
+
+- [The studio website](https://mothandgravel.com/) — a small, dependency-free site whose [source is public](https://github.com/mothandgravel/.github/tree/main/docs).
+- [Field Note 001: Curiosity with calluses](https://mothandgravel.com/notes/001-curiosity-with-calluses.html) — the ideas behind the name and the work.
+- [Brand marks and materials](https://github.com/mothandgravel/.github/tree/main/profile/assets) — the moth, the stone and their working forms.
+
+Early days. More software will appear here when it's ready to be public.
+
 ---
 
 <sub>Moth & Gravel · Independent Works · [mothandgravel.com](https://mothandgravel.com)</sub>
