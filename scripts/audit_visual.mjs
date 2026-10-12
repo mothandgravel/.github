@@ -382,6 +382,29 @@ try {
     await visitor.close();
   }
 
+  // Follow the new public navigation path using the actual mobile menu:
+  // Home -> Field Notes -> Study 002 -> Field Notes, with no dead ends.
+  const editorialVisitor = await browser.newPage({
+    viewport: { width: 390, height: 844 }, reducedMotion: "reduce",
+  });
+  try {
+    await editorialVisitor.goto(origin, { waitUntil: "networkidle" });
+    await editorialVisitor.locator("#menu-toggle").click();
+    await editorialVisitor.locator('#primary-nav a[href="./notes/"]').click();
+    assert(editorialVisitor.url().endsWith("/notes/"),
+      "The mobile Field Notes navigation did not open the index");
+    assert(await editorialVisitor.locator(".notes-index-entry").count() === 2,
+      "Field Notes index lost one of the published notes");
+    await editorialVisitor.locator('.notes-index-entry a[href="./002-afterlight-nightfall.html"]').first().click();
+    assert(editorialVisitor.url().endsWith("/notes/002-afterlight-nightfall.html"),
+      "The Field Note 002 index link is broken");
+    await editorialVisitor.locator('.note-end a[href="./"]').click();
+    assert(editorialVisitor.url().endsWith("/notes/"),
+      "The theme study return link did not restore the notes index");
+  } finally {
+    await editorialVisitor.close();
+  }
+
   // Without JavaScript, mobile navigation must remain usable.
   const page = await browser.newPage({
     viewport: { width: 390, height: 844 }, javaScriptEnabled: false,
