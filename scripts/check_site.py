@@ -147,8 +147,8 @@ def main() -> int:
     check(cover.is_file(), "Social-preview PNG is missing")
     if cover.is_file():
         image_header = cover.read_bytes()[:24]
-        check(image_header[:8] == b"\\x89PNG\\r\\n\\x1a\\n", "Social preview is not a valid PNG header")
-        if image_header[:8] == b"\\x89PNG\\r\\n\\x1a\\n":
+        check(image_header[:8] == b"\x89PNG\r\n\x1a\n", "Social preview is not a valid PNG header")
+        if image_header[:8] == b"\x89PNG\r\n\x1a\n":
             check(struct.unpack(">II", image_header[16:24]) == (1200, 630),
                   "Social preview dimensions must be 1200 by 630")
 
@@ -161,7 +161,7 @@ def main() -> int:
         check('href="../#work"' in note_html, "Field Note must return to the workbench")
         check('rel="canonical"' in note_html, "Field Note is missing its canonical URL")
         check('id="light-switch"' in note_html, "Field Note is missing its functional theme control")
-        for relative in note_parser.references:
+        for relative in re.findall(r'(?:href|src)="(\\.\\./assets/[^"]+)"', note_html):
             target = (note_file.parent / relative).resolve()
             check(target.is_relative_to(ROOT.resolve()), f"Field Note escapes docs/: {relative}")
             check(target.is_file(), f"Field Note local asset missing: {relative}")
