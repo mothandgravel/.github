@@ -169,7 +169,7 @@ def main() -> int:
         check(body.count("<h1") == 1, f"{name} should have exactly one h1")
         check('rel="canonical"' in body, f"{name} is missing a canonical URL")
         check('id="light-switch"' in body, f"{name} has no appearance control")
-        for relative in re.findall(r'(?:href|src)="(\\.\\./assets/[^"]+)"', body):
+        for relative in re.findall(r'(?:href|src)="(\.\./assets/[^"]+)"', body):
             target = (file.parent / relative).resolve()
             check(target.is_relative_to(ROOT.resolve()) and target.is_file(),
                   f"{name} has a broken local asset: {relative}")
