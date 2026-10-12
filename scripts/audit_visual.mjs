@@ -60,7 +60,7 @@ try {
           parseFloat(getComputedStyle(document.querySelector("#hero-title")).lineHeight)),
         heroHeadingFits: document.querySelector("#hero-title").scrollWidth <=
           document.querySelector("#hero-title").clientWidth + 2,
-        workColumns: getComputedStyle(document.querySelector(".work-grid")).gridTemplateColumns.split(/\\s+/).length,
+        workColumns: getComputedStyle(document.querySelector(".work-grid")).gridTemplateColumns.split(/\s+/).length,
         bandContentFits: (() => {
           const band = document.querySelector(".statement-band").getBoundingClientRect();
           const strong = document.querySelector(".band-inner strong");
