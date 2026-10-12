@@ -87,7 +87,8 @@ def main() -> int:
     for relative_path in parser.references:
         target = (ROOT / relative_path).resolve()
         check(target.is_relative_to(ROOT.resolve()), f"Path escapes docs/: {relative_path}")
-        check(target.is_file(), f"Missing local asset: {relative_path}")
+        check(target.is_file() or (target.is_dir() and (target / "index.html").is_file()),
+              f"Missing local asset or index page: {relative_path}")
 
     check('<html lang="en"' in html, "Missing HTML language")
     check('name="description"' in html, "Missing search description")
@@ -142,6 +143,60 @@ def main() -> int:
     check('class="bench-ledger"' in html, "Early-days status is missing")
     check('notes/001-curiosity-with-calluses.html' in (ROOT / "sitemap.xml").read_text(encoding="utf-8"),
           "Published Field Note missing from sitemap")
+
+    # Sprint 03: make Field Notes browsable and reject phantom destinations.
+    note_index = ROOT / "notes" / "index.html"
+    theme_note = ROOT / "notes" / "002-afterlight-nightfall.html"
+    check(note_index.is_file(), "Field Notes index is missing")
+    check(theme_note.is_file(), "Field Note 002 theme study is missing")
+    check('href="./notes/"' in html, "Homepage Field Notes navigation must lead to the index")
+    check('href="./notes/002-afterlight-nightfall.html"' in html,
+          "Homepage workbench must expose the theme study")
+    for expected in ("notes/", "notes/001-curiosity-with-calluses.html",
+                     "notes/002-afterlight-nightfall.html"):
+        check(f"https://mothandgravel.com/{expected}" in (ROOT / "sitemap.xml").read_text(encoding="utf-8"),
+              f"Sitemap is missing {expected}")
+
+    extra_pages = {}
+    for name, file in (("field notes index", note_index), ("theme study", theme_note)):
+        if not file.is_file():
+            continue
+        body = file.read_text(encoding="utf-8")
+        extra_pages[name] = body
+        page_parser = SiteParser()
+        page_parser.feed(body)
+        check('<html lang="en"' in body, f"{name} needs an HTML language")
+        check('<main id="main"' in body, f"{name} needs a main landmark")
+        check(body.count("<h1") == 1, f"{name} should have exactly one h1")
+        check('rel="canonical"' in body, f"{name} is missing a canonical URL")
+        check('id="light-switch"' in body, f"{name} has no appearance control")
+        for relative in re.findall(r'(?:href|src)="(\.\./assets/[^"]+)"', body):
+            target = (file.parent / relative).resolve()
+            check(target.is_relative_to(ROOT.resolve()) and target.is_file(),
+                  f"{name} has a broken local asset: {relative}")
+    if note_index.is_file():
+        check('href="./001-curiosity-with-calluses.html"' in extra_pages["field notes index"],
+              "Field Notes index missing Note 001 link")
+        check('href="./002-afterlight-nightfall.html"' in extra_pages["field notes index"],
+              "Field Notes index missing Note 002 link")
+    if theme_note.is_file():
+        theme_html = extra_pages["theme study"]
+        check(theme_html.count('class="study-sample ') == 2, "Theme study needs two color specimens")
+        check(theme_html.count('class="study-metric"') == 6, "Theme study needs six color pair measurements")
+        check('href="./"' in theme_html, "Theme study must link back to the Field Notes index")
+
+    # Each published ratio must agree with the actual palette used by the theme.
+    for label, foreground, background, expected in (
+        ("Afterlight primary", "#222423", "#FFFCF6", 15.25),
+        ("Afterlight quiet", "#565B56", "#E9E4D9", 5.47),
+        ("Afterlight brass", "#090A0B", "#9A7946", 4.90),
+        ("Nightfall primary", "#F1EEE6", "#202324", 13.65),
+        ("Nightfall quiet", "#B5B3AA", "#292D2E", 6.62),
+        ("Nightfall brass", "#17191B", "#D4B37C", 8.85),
+    ):
+        ratio = contrast_ratio(foreground, background)
+        check(ratio >= 4.5 and abs(ratio - expected) < 0.06,
+              f"Incorrect or insufficient WCAG contrast for {label}: {ratio:.2f}")
 
     cover = ROOT / "assets" / "social-cover.png"
     check(cover.is_file(), "Social-preview PNG is missing")

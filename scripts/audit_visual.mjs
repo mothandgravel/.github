@@ -267,6 +267,86 @@ try {
     await page.close();
   }
 
+  // Sprint 03: Field Notes must function as real, readable destinations,
+  // not only as static assets with valid HTML links.
+  for (const editorial of [
+    { name: "notes-index", path: "/notes/", heading: ".notes-index-hero h1" },
+    { name: "note-theme", path: "/notes/002-afterlight-nightfall.html", heading: ".study-heading h1" },
+  ]) {
+    for (const viewport of widths) {
+      const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
+      const browserErrors = [];
+      page.on("pageerror", error => browserErrors.push(error.message));
+      page.on("response", response => {
+        if (response.status() >= 400 && response.url().startsWith(origin)) {
+          browserErrors.push(`HTTP ${response.status()} ${response.url()}`);
+        }
+      });
+
+      const label = `${editorial.name}-${viewport.name}`;
+      const response = await page.goto(origin + editorial.path, { waitUntil: "networkidle", timeout: 30000 });
+      assert(response?.status() === 200, label + ": request failed");
+      const layout = await page.evaluate(selector => {
+        const heading = document.querySelector(selector);
+        const visibleTextFits = element => !element || element.scrollWidth <= element.clientWidth + 2;
+        const tracked = [
+          heading,
+          ...document.querySelectorAll(".notes-index-entry h2, .sample-body h3, .study-sample, .study-metric"),
+        ];
+        return {
+          width: window.innerWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          headingPresent: Boolean(heading),
+          headingFits: visibleTextFits(heading),
+          clippedElements: tracked.filter(element => !visibleTextFits(element))
+            .map(element => element.className || element.tagName),
+          imagesLoaded: Array.from(document.images).every(img => img.complete && img.naturalWidth > 0),
+          notes: document.querySelectorAll(".notes-index-entry").length,
+          specimens: document.querySelectorAll(".study-sample").length,
+          metrics: document.querySelectorAll(".study-metric").length,
+          hasIndexRoute: Boolean(document.querySelector('a[href="./"]')),
+          ogImage: document.querySelector('meta[property="og:image"]')?.content,
+        };
+      }, editorial.heading);
+      assert(layout.documentWidth <= viewport.width + 2,
+        label + ": document overflow " + layout.documentWidth + " > " + viewport.width);
+      assert(layout.headingPresent && layout.headingFits, label + ": heading clipped or missing");
+      assert(layout.clippedElements.length === 0, label + ": clipped editorial elements: " + layout.clippedElements.join(", "));
+      assert(layout.imagesLoaded, label + ": local brand image failed to load");
+      assert(browserErrors.length === 0, label + ": browser errors: " + browserErrors.join("; "));
+      if (editorial.name === "notes-index") {
+        assert(layout.notes === 2, label + ": index must list exactly two real Field Notes");
+      } else {
+        assert(layout.specimens === 2 && layout.metrics === 6,
+          label + ": missing paired specimens or numeric samples");
+        assert(layout.hasIndexRoute, label + ": missing back route to Field Notes");
+      }
+      assert(layout.ogImage === "https://mothandgravel.com/assets/social-cover.png",
+        label + ": social preview URL is missing");
+      const capture = viewport.width === 1440 || viewport.width === 390 || viewport.width === 320;
+      const audit = viewport.width === 1440 || viewport.width === 390;
+      if (audit) {
+        await page.addScriptTag({ content: axe.source });
+        layout.axeNight = await accessibilityAudit(page, label + " night");
+      }
+      if (capture) await snap(page, label + "-night");
+      if (capture) {
+        const toggle = page.locator("#light-switch");
+        await toggle.click();
+        await page.reload({ waitUntil: "networkidle", timeout: 30000 });
+        assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
+          label + ": saved Afterlight preference was not restored");
+        if (audit) {
+          await page.addScriptTag({ content: axe.source });
+          layout.axeAfterlight = await accessibilityAudit(page, label + " afterlight");
+        }
+        await snap(page, label + "-afterlight");
+      }
+      results.push({ name: label, ...layout, browserErrors });
+      await page.close();
+    }
+  }
+
   // Ensure this is a real raster asset, not an SVG-only sharing fallback.
   const coverResponse = await browser.newPage();
   try {
@@ -300,6 +380,29 @@ try {
       "Field Note return link does not navigate to Workbench");
   } finally {
     await visitor.close();
+  }
+
+  // Follow the new public navigation path using the actual mobile menu:
+  // Home -> Field Notes -> Study 002 -> Field Notes, with no dead ends.
+  const editorialVisitor = await browser.newPage({
+    viewport: { width: 390, height: 844 }, reducedMotion: "reduce",
+  });
+  try {
+    await editorialVisitor.goto(origin, { waitUntil: "networkidle" });
+    await editorialVisitor.locator("#menu-toggle").click();
+    await editorialVisitor.locator('#primary-nav a[href="./notes/"]').click();
+    assert(editorialVisitor.url().endsWith("/notes/"),
+      "The mobile Field Notes navigation did not open the index");
+    assert(await editorialVisitor.locator(".notes-index-entry").count() === 2,
+      "Field Notes index lost one of the published notes");
+    await editorialVisitor.locator('.notes-index-entry a[href="./002-afterlight-nightfall.html"]').first().click();
+    assert(editorialVisitor.url().endsWith("/notes/002-afterlight-nightfall.html"),
+      "The Field Note 002 index link is broken");
+    await editorialVisitor.locator('.note-end a[href="./"]').click();
+    assert(editorialVisitor.url().endsWith("/notes/"),
+      "The theme study return link did not restore the notes index");
+  } finally {
+    await editorialVisitor.close();
   }
 
   // Without JavaScript, mobile navigation must remain usable.
