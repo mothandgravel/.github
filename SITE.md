@@ -5,9 +5,10 @@ This repository contains the [Moth & Gravel](https://mothandgravel.com/) website
 ## Site structure
 
 - `docs/index.html` — landing-page content and metadata
+- `docs/notes/` — published Field Notes and independent studio writing
 - `docs/assets/site.css` — colors, layout and responsive styles
 - `docs/assets/site.js` — mobile navigation and appearance controls
-- `docs/assets/` — brand illustrations and icons
+- `docs/assets/` — brand illustrations, icons and a 1200 × 630 social-preview PNG
 - `docs/404.html` — custom not-found page
 - `docs/robots.txt` and `docs/sitemap.xml` — search indexing
 - `profile/README.md` — GitHub organization overview
@@ -29,7 +30,7 @@ python3 scripts/check_site.py
 node --check docs/assets/site.js
 ```
 
-Pull requests also run a browser-based design audit to check responsive layout, navigation, theme behavior and accessibility. See `DESIGN-REVIEW-01.md` for the original design decisions.
+Pull requests also run a browser-based design audit covering the Workbench, Field Notes, appearance modes, social-image metadata, navigation and accessibility. See `DESIGN-REVIEW-01.md` and `DESIGN-REVIEW-02.md` for the design decisions and measured results.
 
 ## Publishing
 
