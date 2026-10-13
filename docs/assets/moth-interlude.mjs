@@ -115,7 +115,7 @@ async function initialise() {
     }
     body.setAttribute('transform',`rotate(${p.bodyPitch} 500 470)`);
     antennae.setAttribute('transform',`rotate(${p.antennaAngle} 500 389)`);
-    shadow.style.transform = `translate3d(${p.x}px,${p.y+layout.source.size*p.scale*.25+10}px,0) translate(-50%,-50%) scaleX(${p.shadow.scale})`;
+    shadow.style.transform = `translate3d(${p.x+6}px,${p.y+layout.source.size*p.scale*.25+10}px,0) translate(-50%,-50%) scaleX(${p.shadow.scale})`;
     shadow.style.opacity = p.shadow.opacity;
     stage.style.setProperty('--moth-light', p.phase === 'settle' ? '.15' : '.06');
   };

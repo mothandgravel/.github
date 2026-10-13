@@ -1,9 +1,9 @@
 /* Optional flight layers; the complete resting stage is in site.css. */
 .moth-traveller,.moth-shadow{position:absolute;left:0;top:0;pointer-events:none;transform-origin:center;}
-.moth-traveller{z-index:3;--moth-wing:#f1eee6;--moth-vein:#17191b;filter:drop-shadow(0 2px 2px #0008);will-change:transform;}
+.moth-traveller{z-index:3;--moth-wing:#f1eee6;--moth-vein:#17191b;filter:drop-shadow(2px 3px 2px #0008);will-change:transform;}
 .moth-traveller svg{display:block;width:100%;height:100%;overflow:visible;}
 .moth-shadow{height:9px;border-radius:50%;background:#000;filter:blur(4px);z-index:2;}
-.moth-stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 45% 65%,rgba(223,193,149,var(--moth-light,0)),transparent 35%);}
+.moth-stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at var(--room-light-x) var(--room-light-y),rgba(223,193,149,var(--moth-light,0)),transparent 65%);}
 .moth-source img{transition:opacity .18s ease;}
 .moth-source-moon{position:absolute;left:46.8%;top:22.6%;width:6.4%;aspect-ratio:1;border-radius:50%;background:#a58b5e;opacity:0;}
 [data-moth-state="playing"] .moth-source img,[data-moth-state="paused"] .moth-source img{opacity:.12;}
