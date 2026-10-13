@@ -2,6 +2,10 @@
 
 **Field study draft — SkyStack Builder.** A renderer migration in progress. This draft is outside the published archive, feed and sitemap.
 
+![A lilac clay pony stands on a small sage-topped island of bone-coloured cubes, surrounded by a thin brass orbit arc.](renderer-studies-assets/009-cover-1600.webp)
+
+*A place to stand, seen from another angle. AI-generated editorial illustration, not a gameplay screenshot or a depiction of measured behaviour.*
+
 Turn an island around and a familiar place can become unfamiliar for the wrong reason. A pony that stood beside a block is suddenly buried in it. The world has not moved. The view has.
 
 That is more than a drawing blemish. A builder asks the player to understand where things are, choose a place and trust the result. If a character slips beneath the ground when the camera turns, the picture stops being a dependable account of the world.
@@ -25,6 +29,10 @@ The better-looking diagnostic is not the repaired game. It has removed details f
 Adding metadata to several side-decoration families has not yet recovered the complete fixture. That result matters too. A plausible place to add code is not necessarily the place responsible for the fault.
 
 ## Keep the details and repair their account of place
+
+![Two panels compare complete rendering with a deliberately incomplete classified-only diagnostic: 192 of 201 body samples and 13 of 20 contact samples versus all samples retained.](renderer-studies-assets/009-contact-comparison.png)
+
+*Recorded counts at the pinned historical revision. This schematic is not a native pixel map; omitting details isolates a cause but does not repair the complete view.*
 
 The next observation should follow the actual packets crossing the missing pixels. A small bevel or patch of soil deserves the same care as the large block beneath it. Its world endpoints belong beside the geometry that creates it, not in a later guess based on screen position.
 

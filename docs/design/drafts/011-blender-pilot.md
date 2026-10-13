@@ -2,6 +2,10 @@
 
 **Field study draft — SkyStack Builder.** A mesh pipeline and the adoption work beyond it. This draft is outside the published archive, feed and sitemap.
 
+![A brass wireframe shrine and a solid clay shrine stand on a paper grid, separated from a small island model in the background.](renderer-studies-assets/011-cover-1600.webp)
+
+*A model on the workbench, an island beyond it. AI-generated editorial illustration, not the actual shrine mesh, a Blender render or evidence of gameplay adoption.*
+
 A small shrine is an encouraging thing to see on a workbench. It has a shape, a palette and a place for its base. Turn it around and it still looks like the same object.
 
 Getting that object into a game asks another set of questions. Where does it meet the ground? What hides it? Can a player select the thing they can actually see? What happens when several copies share the island with weather, characters and buildings?
@@ -25,6 +29,10 @@ The pilot's interaction contract is familiar: orbit, zoom, recenter and select. 
 The pilot also requires a hardware device rather than quietly substituting software rendering. Its bounded smoke mode writes correctness receipts. The documentation explicitly distinguishes those from frame-time measurements.
 
 ## A successful crossing is not the whole journey
+
+![Editable source, geometry transfer and a native GPU pilot lead to a dashed gameplay-adoption boundary with ground contact, occlusion, picking, atmosphere and frame-time checks.](renderer-studies-assets/011-adoption-boundary.png)
+
+*Schematic pipeline. The dashed boundary is proposed adoption work, not a completed delivery path or a claim that the shrine is a default pilot asset.*
 
 The collectible shrine and the pilot's default mesh scene are distinct artifacts. A shrine verification record does not establish that it is one of the meshes currently selected by the default gameplay renderer.
 

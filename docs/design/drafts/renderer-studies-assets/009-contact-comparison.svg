@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+<title id="title">Complete rendering and a deliberately incomplete diagnostic</title>
+<desc id="desc">At the pinned source revision, the full contact fixture retained 192 of 201 body samples and 13 of 20 contact samples. Omitting unclassified later terrain packets retained all samples. This comparison does not establish a completed repair.</desc>
+<rect width="1200" height="650" fill="#17191b"/>
+<g font-family="Georgia,serif" fill="#eee7d5"><text x="64" y="78" font-size="34">A better diagnostic is not the repaired game.</text></g>
+<g fill="#24282a" stroke="#747268"><rect x="64" y="130" width="506" height="400" rx="8"/><rect x="630" y="130" width="506" height="400" rx="8"/></g>
+<g font-family="Arial,sans-serif" font-size="17" fill="#d4b584"><text x="96" y="177">01 / COMPLETE VIEW</text><text x="662" y="177">02 / CLASSIFIED PACKETS ONLY</text></g>
+<g font-family="Georgia,serif" fill="#eee7d5"><text x="96" y="242" font-size="32">The details are still present.</text><text x="662" y="242" font-size="30">Some details are omitted.</text><text x="96" y="310" font-size="28">Body samples: 192 / 201</text><text x="662" y="310" font-size="28">Body samples: 201 / 201</text><text x="96" y="354" font-size="28">Contact samples: 13 / 20</text><text x="662" y="354" font-size="28">Contact samples: 20 / 20</text><text x="96" y="444" font-size="25">Full-contact assertion fails.</text><text x="662" y="444" font-size="25">A cause can be isolated.</text></g>
+<g font-family="Arial,sans-serif" font-size="18" fill="#b5b3aa"><text x="64" y="577">Pinned historical fixture: pony / yaw 45° / pitch 62° / zoom 0.85</text><text x="64" y="609">Schematic comparison of recorded counts, not a gameplay capture or a native pixel map.</text></g>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "generator": "built-in image_gen",
+  "prompts": [
+    {
+      "note": "009",
+      "prompt": "Use case: stylized-concept. Asset type: wide 16:9 editorial cover for Moth & Gravel Field Note 009 about keeping a pony above terrain. Scene: a charcoal stone workbench, a small tactile miniature island made from warm bone-paper isometric cubes and muted sage grass. Subject: one tiny lilac clay pony clearly standing with all four feet on the island beside a taller cube; a thin brass orbit arc behind the island hints at viewing it from different angles. Style: refined handmade editorial still-life illustration, paper grain, soft clay, brushed brass, natural grazing light, warm shadows, restrained charcoal, bone, sage and lilac palette. Composition: generous negative space, elevated three-quarter view, calm and curious rather than toy packaging. Constraints: no words, letters, numbers, UI, logos, watermarks, diagrams, split panels. Feet clearly above and touching ground. Conceptual editorial art, not a game screenshot or representation of actual measured behaviour."
+    },
+    {
+      "note": "010",
+      "prompt": "Use case: stylized-concept. Asset type: wide 16:9 editorial cover for Moth & Gravel Field Note 010 about what a pixel comparison can establish. Scene: warm bone drawing paper on a rough charcoal stone workbench. Subject: three translucent small coloured acetate squares overlapping, muted sage, slate blue and dusty rose, with a brass magnifying lens held above one small overlap by its own handle resting on the surface. Inside the lens subtle paper mosaic squares suggest inspecting colour, without a chart or literal data. Style: quiet tactile photolike editorial illustration, natural soft grazing light, paper texture, restrained charcoal and bone with brushed brass details. Composition: asymmetric still life with generous negative space, elevated three-quarter view, consistent with independent design studio field notes. Constraints: no text, numbers, axes, equations, logos, watermark, hands, computer UI. Not a measured pixel comparison, not a scientific simulation, just an editorial metaphor for examining a small disagreement."
+    },
+    {
+      "note": "011",
+      "prompt": "Use case: stylized-concept. Asset type: wide 16:9 editorial cover for Moth & Gravel Field Note 011 about a Blender asset pilot versus integration in an island. Scene: charcoal stone workbench with a small warm bone-paper folded grid and a tiny muted pastel shrine model. Subject: the same simple shrine represented by a delicate brass wireframe maquette beside a solid clay maquette, separate from a small cluster of sage-topped isometric paper island cubes in the distance; clear physical separation conveys an asset ready for examination but not yet placed into the island. Style: refined handmade editorial still-life illustration, grainy paper, soft matte clay, brushed brass, natural grazing light and warm shadows, restrained charcoal, bone, sage, pale lilac. Composition: elevated three-quarter view, generous negative space, calm curious workshop mood. Constraints: no text, letters, numbers, Blender logo, software UI, watermarks, hands. Conceptual illustration, not a screenshot of Blender or a claim of actual gameplay adoption."
+    }
+  ]
+}

@@ -2,6 +2,10 @@
 
 **Field study draft — SkyStack Builder.** Native rendering experiments and their limits. This draft is outside the published archive, feed and sitemap.
 
+![Three translucent sage, blue and rose sheets overlap on warm paper beneath a brass magnifying lens.](renderer-studies-assets/010-cover-1600.webp)
+
+*Looking closely at a small disagreement. AI-generated editorial metaphor, not measured colour swatches or a rendering test capture.*
+
 Two pictures can look almost the same and disagree at thousands of pixels. Two tests can both turn green and disagree about whether the game is ready.
 
 The useful question is not simply whether there is a difference. It is what the difference measures.
@@ -17,6 +21,10 @@ A native control removes the game from the question: no terrain, actor or depth 
 The first comparison did not prove rounding irrelevant. The second did not prove every visible fault was rounding. Together they show why a single convenient background is a weak witness.
 
 ## A small explanation must not swallow a large failure
+
+![Sequential drawing rounds three blends onto the scene; grouped drawing rounds three blends onto a transparent target, then rounds a final blend onto the scene.](renderer-studies-assets/010-rounding-boundaries.png)
+
+*A conceptual blend sequence. Both paths round intermediate draws; the group changes their destination and adds a final composition. This is not a measured pixel image.*
 
 The larger party-and-actor comparisons contain differences reaching 122 channel levels in an earlier recorded run. A one-level control cannot explain those away.
 

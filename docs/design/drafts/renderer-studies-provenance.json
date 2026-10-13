@@ -8,9 +8,18 @@
     {"file": "010-pixel-evidence.md", "method": "pinned native test source and recorded renderer findings; no new benchmark for this editorial draft"},
     {"file": "011-blender-pilot.md", "method": "pinned generator, committed verification record and pilot documentation; no new Blender or pilot run"}
   ],
-  "images": [],
+  "images": {
+    "covers": "renderer-studies-assets/image-provenance.json",
+    "prompts": "renderer-studies-assets/generation-prompts.json",
+    "method": "Three built-in image_gen editorial covers, encoded without content changes into 1600 and 800 pixel WebP variants",
+    "graphics": [
+      {"file": "renderer-studies-assets/009-contact-comparison.svg", "preview": "renderer-studies-assets/009-contact-comparison.png", "method": "authored SVG; PNG rasterized with Sharp", "scope": "recorded contact counts at the pinned historical source, not a native pixel map"},
+      {"file": "renderer-studies-assets/010-rounding-boundaries.svg", "preview": "renderer-studies-assets/010-rounding-boundaries.png", "method": "authored SVG; PNG rasterized with Sharp", "scope": "conceptual blend and rounding sequence, not measured colour swatches"},
+      {"file": "renderer-studies-assets/011-adoption-boundary.svg", "preview": "renderer-studies-assets/011-adoption-boundary.png", "method": "authored SVG; PNG rasterized with Sharp", "scope": "pipeline schematic with an explicitly unfinished gameplay-adoption boundary"}
+    ]
+  },
   "openChecks": [
-    "Editorial review and illustration choices before publication",
+    "Editorial and visual review before publication",
     "Complete gameplay parity and representative GPU frame-time measurement",
     "Multiple actor, ramp and raised-foreground behaviour",
     "Specific Blender asset adoption inside the default gameplay renderer"
