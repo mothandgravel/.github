@@ -1,0 +1,67 @@
+{
+  "note": "005",
+  "editorial_cover": {
+    "generator": "built-in image_gen",
+    "kind": "conceptual illustration; not a product screenshot",
+    "original_sha256": "9f8f97d4707ba07f3d739d6585a9a76163c3b1f270c2b80cd938655cb7b86982",
+    "original_dimensions": [
+      1672,
+      941
+    ],
+    "prompt": "Use case: stylized-concept. Asset type: a wide 16:9 editorial cover for Moth & Gravel Field Note 005, A green light should mean something. Primary request: an unexpected tactile still life about a reassuring signal and the precise promise behind it. A small vintage-style green glass indicator lamp set in a low quietly worn brass housing sits on a charcoal stone work surface, beside one folded piece of warm bone paper and a short unmarked brass measuring rule. The lamp is illuminated softly, with a restrained jade green glow on the paper and stone, not a flood of green. One precise small light in a large quiet composition. Photo-like editorial illustration, close elevated three-quarter view, generous negative space, realistic material texture and soft warm shadows. Materials: charcoal stone, grainy warm paper, brushed brass and softly frosted green glass. Palette predominantly charcoal, warm bone and brass with green only in the lamp. Elegant, curious, grounded independent design studio tone; slightly asymmetrical arrangement. No writing, no text, no letters, no numbers, no logos, no interface, no diagram, no checkmarks, no digital dashboard, no hands, no cables, no neon technology, no watermark. This is a conceptual editorial cover, not a product screenshot."
+  },
+  "sources": [
+    {
+      "repository": "navivra/geaidnu",
+      "path": "docs/runtime-and-evidence-contracts.md",
+      "blob_sha": "e647dae1d13df66b30d3b727b1c8352b66aaf147",
+      "scope": "documented pre-release runtime/evidence boundaries"
+    },
+    {
+      "repository": "navivra/ajo",
+      "path": "docs/integration-v0.1-results.md",
+      "blob_sha": "39420416ae6d0b896236057b61064dc6be1e334d",
+      "scope": "dated bounded local integration run; cases/subprobes and delivery verdicts stay distinct; not a success-rate sample"
+    },
+    {
+      "repository": "navivra/paja",
+      "path": "docs/book/src/usage/exit-codes.md",
+      "blob_sha": "7c944b80caa0518ffb0e984e5bb7cd5ec935a767",
+      "scope": "documented typed job status and recorded verdict semantics"
+    }
+  ],
+  "source_readback_date": "2026-10-13",
+  "diagrams": {
+    "kind": "repo-native explanatory SVG in article",
+    "scope": "editorial distinction between three questions; not app captures or a shared product UI"
+  },
+  "assets": [
+    {
+      "file": "005-cover-800.webp",
+      "sha256": "017b2c9b2018b14070e57c480ea764ce29437257c5c824ec20118cd53c324e61",
+      "bytes": 70530,
+      "dimensions": [
+        800,
+        450
+      ]
+    },
+    {
+      "file": "005-cover-1600.webp",
+      "sha256": "9927d75cd8eebd37879a9bd1e1e8746289d1a20148bb1dd7f327702c4c08b25a",
+      "bytes": 199594,
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "file": "005-cover-social.jpg",
+      "sha256": "b9875f3e710b844e8bc8b638c7e36fc3a9badd39084d4cb7cb1aebe1f7ee6496",
+      "bytes": 166191,
+      "dimensions": [
+        1200,
+        675
+      ]
+    }
+  ]
+}
