@@ -6,7 +6,7 @@ With the project already saved from the successful listening run:
 
 ```bash
 git pull --ff-only
-python3 scripts/field_audio.py make-all --publish
+python3 -m field_notes_audio make-all --publish
 ```
 
 This covers every published Field Note and every configured episode, including
@@ -48,7 +48,7 @@ The source prose itself stays intact when players are built.
 After merging and waiting for GitHub Pages deployment, validate the actual host:
 
 ```bash
-python3 scripts/field_audio.py verify-live
+python3 -m field_notes_audio verify-live
 ```
 
 This checks the deployed feed against the prepared collection, each MP3's HEAD,
@@ -60,8 +60,8 @@ Podcast app registration is separate from supplying a usable RSS subscription.
 In your existing checkout, update the branch with `git pull --ff-only`. Then:
 
 ```bash
-python3 scripts/field_audio.py setup --project "$FIELD_AUDIO_PROJECT"
-python3 scripts/field_audio.py make workbench-001
+python3 -m field_notes_audio setup --project "$FIELD_AUDIO_PROJECT"
+python3 -m field_notes_audio make workbench-001
 ```
 
 `setup` remembers your project, verifies authentication and checks billing when
@@ -89,7 +89,7 @@ recognized transcript, original input script, timings and review metadata.
 To subtitle the narration you have already generated, without making new audio:
 
 ```bash
-python3 scripts/field_audio.py captions note-001
+python3 -m field_notes_audio captions note-001
 ```
 
 Episode IDs find the latest completed recording. You no longer need to find its
@@ -117,7 +117,7 @@ submission can incur another charge. Confirmed failed transcription jobs require
 
 The first user-run narration succeeded globally after repeated EU HTTP 502s.
 It sounded too slow. Try faster playback in the listening page, or generate the
-brisk comparison with `python3 scripts/field_audio.py make note-001-brisk`.
+brisk comparison with `python3 -m field_notes_audio make note-001-brisk`.
 Delivery pace is a request, not an enforced timing constraint. New runs print
 actual duration and average script words per minute, including pauses.
 
@@ -163,7 +163,7 @@ Changing project does not borrow the previous project's saved bucket.
 To save different defaults:
 
 ```bash
-python3 scripts/field_audio.py setup --project "$FIELD_AUDIO_PROJECT" --endpoint eu --location eu
+python3 -m field_notes_audio setup --project "$FIELD_AUDIO_PROJECT" --endpoint eu --location eu
 ```
 
 EU setup chooses a separate `-eu` bucket and requires European storage. An
@@ -186,10 +186,10 @@ check that service agent's permissions before starting a replacement job.
 ## Advanced commands and limits
 
 ```bash
-python3 scripts/field_audio.py check
-python3 scripts/field_audio.py plan workbench-001
-python3 scripts/field_audio.py generate workbench-001
-python3 scripts/field_audio.py captions note-001 --dry-run
+python3 -m field_notes_audio check
+python3 -m field_notes_audio plan workbench-001
+python3 -m field_notes_audio generate workbench-001
+python3 -m field_notes_audio captions note-001 --dry-run
 ```
 
 `check` and `plan` are offline: no authentication, uploads or paid requests.
@@ -309,3 +309,35 @@ resolve that Git divergence before retrying; completed media remains saved.
 - [Cloud Storage bucket resource and privacy settings](https://docs.cloud.google.com/storage/docs/json_api/v1/buckets)
 - [Create a bucket through the JSON API](https://docs.cloud.google.com/storage/docs/json_api/v1/buckets/insert)
 
+
+## Python development and layout
+
+The runtime uses Python 3.10+ and the standard library. From the repository root,
+run `python3 -m field_notes_audio`; the existing
+`python3 scripts/field_audio.py` launcher remains compatible and needs no package
+installation. Saved settings, recordings, fingerprints and operation journals
+stay under `artifacts/audio/`; scripts and source hashes under `audio/` keep their
+identity when implementation files move.
+
+| Location | Responsibility |
+| --- | --- |
+| `field_notes_audio/` | Importable synthesis, captions, workflow, release and site modules |
+| `field_notes_audio/cli.py` | Argument parsing and command dispatch |
+| `field_notes_audio/storage.py` / `locks.py` | Atomic state, streaming hashes and process ownership |
+| `tests/audio/` | Offline unit, recovery and publication checks |
+| `tools/check_audio.py` | Contributor quality gate |
+| `scripts/field_audio.py` / `build_audio.py` | Compatibility launchers for existing commands and editorial builds |
+| `audio/` | Reviewed narration scripts, catalog and workflow documentation |
+
+```bash
+uv sync --locked --dev
+uv run python tools/check_audio.py
+```
+
+The gate checks Ruff formatting and idioms, offline tests, request bounds and
+generated audio site slots. The pinned development tool is optional for running
+the audio CLI. Hosted CI also checks the browser interface with synthetic media.
+State reads reject duplicate fields and nonobject JSON; failed state replacement
+keeps the previous outcome. Media hashing and PCM assembly use bounded buffers.
+Broad request catches remain only where an interrupted acknowledgement must
+preserve an uncertain outcome; they do not authorize a paid retry.

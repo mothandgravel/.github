@@ -5,11 +5,13 @@ on:
     paths:
       - "docs/**"
       - "scripts/**"
+      - "field_notes_audio/**"
       - ".github/workflows/validate-site.yml"
   pull_request:
     paths:
       - "docs/**"
       - "scripts/**"
+      - "field_notes_audio/**"
       - ".github/workflows/validate-site.yml"
 
 permissions:
@@ -44,3 +46,4 @@ jobs:
           node --check docs/assets/loose-end-v2.mjs
           node --check docs/assets/loose-end-model-v2.mjs
           node --check scripts/audit_loose_end.mjs
+
