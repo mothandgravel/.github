@@ -33,3 +33,6 @@ jobs:
           node --check docs/assets/notes.mjs
           node --check docs/assets/notes-model.mjs
           node --check scripts/audit_performance.mjs
+          node --check docs/assets/loose-end.mjs
+          node --check docs/assets/loose-end-model.mjs
+          node --check scripts/audit_loose_end.mjs
