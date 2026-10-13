@@ -1,1 +1,394 @@
-[]
+[
+  {
+    "id": "note-001",
+    "title": "Curiosity with calluses.",
+    "kind": "note",
+    "description": "Two unlikely words. One independent studio. Why strange ideas still need to hold up in the real world.",
+    "note_id": "001",
+    "slug": "001-curiosity-with-calluses.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-001-f525e3a06dd4f501.mp3",
+    "bytes": 2392460,
+    "audio_sha256": "f525e3a06dd4f50185422c4a1cffc9d7b3c1a841962d0a2fa273a0fe33a58dfa",
+    "script_sha256": "eff44a6f4df4c4b1b3c1a647d0ec2e04b488002f028e298464bf0d7a2f7e1f1c",
+    "source_sha256": {
+      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
+    },
+    "duration_seconds": 199.291,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-001-f525e3a06dd4f501-0d949aede38b6e9b.srt",
+    "vtt": "assets/audio/note-001-f525e3a06dd4f501-0d949aede38b6e9b.vtt",
+    "transcript": "assets/audio/note-001-f525e3a06dd4f501-0d949aede38b6e9b.txt",
+    "cues": "assets/audio/note-001-f525e3a06dd4f501-0d949aede38b6e9b.json",
+    "files_sha256": {
+      "srt": "3d47850972baf7da06b5066168a60b9910dddb0be334242c75339e0d89d748f0",
+      "vtt": "02eaef7988cb94d59b9fff7e0edfecd4736f8d25c031c463ae44405daec5bf38",
+      "transcript": "41c04c4433435bee8525b85fe3141871dd91188b4673b8777047cdfdce59a4fb",
+      "cues": "1e6fb4fef419595f104ef0bf0f7c986e6c8131eed2e097beb2742f7156328601"
+    }
+  },
+  {
+    "id": "workbench-001",
+    "title": "What does the interface let you believe?",
+    "kind": "conversation",
+    "description": "A listening edition from the Moth & Gravel workbench.",
+    "note_id": null,
+    "slug": null,
+    "language": "en-US",
+    "audio": "assets/audio/workbench-001-5c5cdda3f0895d22.mp3",
+    "bytes": 6102764,
+    "audio_sha256": "5c5cdda3f0895d22d835b8bb382d78d543ede0deb7dfff2fb43e29ed5141a6c8",
+    "script_sha256": "4d05d083cc1809ebb49f0a658fbe14024efa51d3a51521c3b093aef2e5989a0b",
+    "source_sha256": {
+      "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86",
+      "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2",
+      "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
+    },
+    "duration_seconds": 508.473,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.srt",
+    "vtt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.vtt",
+    "transcript": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.txt",
+    "cues": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.json",
+    "files_sha256": {
+      "srt": "84792b10eecb9ab5720cb81656c11f665411960dcf1b294638ca27f4b318c467",
+      "vtt": "c0678968ccf040676e2a8445c9198350241385709877b7158eac7773d2cfa85c",
+      "transcript": "cf3149f0bb49ecd5cfc10dfb12d07dd68fc7082796eb4207859414697a408b76",
+      "cues": "ec50e71051293e788040b553927b6c9b66b30262cda880e227a0b2a59e76922d"
+    }
+  },
+  {
+    "id": "note-001-brisk",
+    "title": "Curiosity with calluses. — brisk narration comparison",
+    "kind": "comparison",
+    "description": "A listening edition from the Moth & Gravel workbench.",
+    "note_id": null,
+    "slug": null,
+    "language": "en-US",
+    "audio": "assets/audio/note-001-brisk-6d6fabd422aafba0.mp3",
+    "bytes": 1950956,
+    "audio_sha256": "6d6fabd422aafba036bdf0678f6e2be3175df636fd8df3d5ff7eaf02898059b5",
+    "script_sha256": "eff44a6f4df4c4b1b3c1a647d0ec2e04b488002f028e298464bf0d7a2f7e1f1c",
+    "source_sha256": {
+      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
+    },
+    "duration_seconds": 162.491,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.srt",
+    "vtt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.vtt",
+    "transcript": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.txt",
+    "cues": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.json",
+    "files_sha256": {
+      "srt": "60b3115929b459b97a28842edb6e67155cb9121e1559e82170a9c8327f918c56",
+      "vtt": "e2088543f8fb55faaa5996f70764f8bd08f432b35f4bc264c2da0dc68cae4b57",
+      "transcript": "c329e63f0f0d58a1032dd9d60d6c27d0df77b821e183ed85596a7afc6b5d3766",
+      "cues": "b02a242248f8b2a0cd10d2bdc1cee8a1f4ed3f39cf836efa133c93ff7056da21"
+    }
+  },
+  {
+    "id": "note-002",
+    "title": "Afterlight / Nightfall.",
+    "kind": "note",
+    "description": "A practical study in bone, charcoal and brass—and what an expressive identity owes to legible interfaces.",
+    "note_id": "002",
+    "slug": "002-afterlight-nightfall.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-002-158efeb38052ccf6.mp3",
+    "bytes": 5094188,
+    "audio_sha256": "158efeb38052ccf652885b8867d4c38c6ad5b2361ec5a98fc0a1296e41fabdde",
+    "script_sha256": "30cf800a3aa44b5df32892d2331e999817fa9ed2d76bb00c9b6abf11259df299",
+    "source_sha256": {
+      "002": "4435183aca81e27a938f8854206518876967752bc827b259c02d03810c5e4e4c"
+    },
+    "duration_seconds": 424.422,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-002-158efeb38052ccf6-4ef136768363cf01.srt",
+    "vtt": "assets/audio/note-002-158efeb38052ccf6-4ef136768363cf01.vtt",
+    "transcript": "assets/audio/note-002-158efeb38052ccf6-4ef136768363cf01.txt",
+    "cues": "assets/audio/note-002-158efeb38052ccf6-4ef136768363cf01.json",
+    "files_sha256": {
+      "srt": "2986785c760fb849f48b3b5a5b0baba50e4ffa65868406a0e856f511cfb32525",
+      "vtt": "cf2de17c87e8e259cb15182837cbca7d66a4330aa1eddd9e150c1cbc99293b40",
+      "transcript": "6b0e2e72057aa788fcd1ee21d85a016ce5bab7e6bc6e651b8303871aea363b96",
+      "cues": "a5053606448967f4484869a893cf1dfe1be47c6afd2add6a87f4e1dad8bef4c8"
+    }
+  },
+  {
+    "id": "note-003",
+    "title": "A metaphor has to earn its place.",
+    "kind": "note",
+    "description": "River, Circle and Focus: how an expressive interface helps someone recover context and continue the work. A Decision Docket design study.",
+    "note_id": "003",
+    "slug": "003-metaphor-earns-its-place.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-003-09abd76ea3a952c6.mp3",
+    "bytes": 5782508,
+    "audio_sha256": "09abd76ea3a952c6028a2dee41cf54ad32e80b73b5d0d1903e226cdd9c7026e7",
+    "script_sha256": "bc836011b1ad32e8a9ab091be32dd89c25c36e9b48beee59363546a66e192e84",
+    "source_sha256": {
+      "003": "ea69c49fd916319d2c723c3539749d6821fd1f848cefa6b1e9ee983f9042ba5a"
+    },
+    "duration_seconds": 481.793,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.srt",
+    "vtt": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.vtt",
+    "transcript": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.txt",
+    "cues": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.json",
+    "files_sha256": {
+      "srt": "8fdbb6c6e774895ab8d58ec198c9c2bdbf84a871c574d7cb9e6217453fa3889d",
+      "vtt": "0aab2dbbb2ee76b7d25c3154a226bfc4f1f8ba07b000f96c9359b5e373ed851b",
+      "transcript": "50fa1586d202351fca98594cd548b6a141205563c702358e9f68c8d47f22a18f",
+      "cues": "bfb6016a760f5fd3e953ce89a6e2a0477020106b9a891bdba709ef8a6548fafd"
+    }
+  },
+  {
+    "id": "note-004",
+    "title": "A control should stay where you left it.",
+    "kind": "note",
+    "description": "A decorative portrait moved the words and Switch control by 72 pixels. A small Decision Docket fix in keeping the work still.",
+    "note_id": "004",
+    "slug": "004-controls-stay-put.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-004-f913221d86a23608.mp3",
+    "bytes": 4059692,
+    "audio_sha256": "f913221d86a2360832acc245d7217b6841b1068be4d0bc213bdc41b3cd7ba8c8",
+    "script_sha256": "60a94b620b977fb89628cfcf39c2134835215e9642193955d27d0437a8d74eef",
+    "source_sha256": {
+      "004": "babd8cddfe78219c1b9a7f7f3d8c5f4daf0ceabeddb525035fb3c7f3b41e006a"
+    },
+    "duration_seconds": 338.222,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.srt",
+    "vtt": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.vtt",
+    "transcript": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.txt",
+    "cues": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.json",
+    "files_sha256": {
+      "srt": "2ea46520926a4e2dc4e3303b21764314dffa06d02ff6e3541b47159e420730ba",
+      "vtt": "36138022442aed83efd69726852a5affe779d8126df11f51305b4912668edec4",
+      "transcript": "d3fb1354881ab2cdc1f6932a50446e16cf57405c7f729bd2fc29c1d716024385",
+      "cues": "0a94215b32aefddc2d4f8d800f5437023525e58e64951df329334310625f19af"
+    }
+  },
+  {
+    "id": "note-005",
+    "title": "A green light should mean something.",
+    "kind": "note",
+    "description": "Running, passing and delivered: three different questions behind one reassuring colour. A study across the wider workbench.",
+    "note_id": "005",
+    "slug": "005-green-light.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-005-07e7cd28a96bc3e5.mp3",
+    "bytes": 4082156,
+    "audio_sha256": "07e7cd28a96bc3e57ca2401cfd8a6b9012e7d6840327347cb85c5af3722cf3f2",
+    "script_sha256": "f1566b64bb12f0b4d4ef69530e56aeb2f00f221d2722d924c9f29ec4b1705569",
+    "source_sha256": {
+      "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86"
+    },
+    "duration_seconds": 340.102,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-005-07e7cd28a96bc3e5-8d7e1945fda9efea.srt",
+    "vtt": "assets/audio/note-005-07e7cd28a96bc3e5-8d7e1945fda9efea.vtt",
+    "transcript": "assets/audio/note-005-07e7cd28a96bc3e5-8d7e1945fda9efea.txt",
+    "cues": "assets/audio/note-005-07e7cd28a96bc3e5-8d7e1945fda9efea.json",
+    "files_sha256": {
+      "srt": "f89614d29c376cd6f9215b54f7a1d8c15590053c5f847b214caed4aafbcebb12",
+      "vtt": "b6ecb02b1628d55f53cecdcb2781206d31dc0de47ebdeb6ffc28e28079469e04",
+      "transcript": "647e753d4dec3b08bf6fe42899d9d031c46f2879268cd422f15a221839aff091",
+      "cues": "603b86aa5667eb64aed8c35a4b71e04b254692a2c0a1799f3652bdebd3827508"
+    }
+  },
+  {
+    "id": "note-006",
+    "title": "A map should leave room for doubt.",
+    "kind": "note",
+    "description": "A little robot, four views and the space it has not established. A study in maps and uncertainty from the Kitronik buggy workbench.",
+    "note_id": "006",
+    "slug": "006-map-leaves-room.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-006-d0b458d4923095bc.mp3",
+    "bytes": 4819436,
+    "audio_sha256": "d0b458d4923095bcfddad049513525ae5d1a8e87bae93514b791d988ae4413fa",
+    "script_sha256": "96f78229141be15ba1fa5d2308c2427fe6367135072c9c5deca2946b6ce5016c",
+    "source_sha256": {
+      "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2"
+    },
+    "duration_seconds": 401.542,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-006-d0b458d4923095bc-ffa73d7605e66ee7.srt",
+    "vtt": "assets/audio/note-006-d0b458d4923095bc-ffa73d7605e66ee7.vtt",
+    "transcript": "assets/audio/note-006-d0b458d4923095bc-ffa73d7605e66ee7.txt",
+    "cues": "assets/audio/note-006-d0b458d4923095bc-ffa73d7605e66ee7.json",
+    "files_sha256": {
+      "srt": "eefcb70e6c752d4f7a58878bfb41b15e196d442c7c857604a29991b6930dcc60",
+      "vtt": "6a930b9ebc0f1caa92ed2bf25f9d26a0281a31644f56c1fef103111fc1201eed",
+      "transcript": "5c07df6b2a3396c75d24dc755bfd60d877ac483374e1043b053c8465c7d1c096",
+      "cues": "45bad44494d39d5d1043252db62652800434bc3413b11afc78760068ceab97b8"
+    }
+  },
+  {
+    "id": "note-007",
+    "title": "Fast signals. Slow eyes.",
+    "kind": "note",
+    "description": "A little machine sends numbers. A person needs a place to look. A study in telemetry, freshness and attention from the Kitronik buggy workbench.",
+    "note_id": "007",
+    "slug": "007-fast-signals.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-007-5ca4f0c601af080b.mp3",
+    "bytes": 3162572,
+    "audio_sha256": "5ca4f0c601af080bcf81cfce721495c0d6ccb6598b53bf38312af08403ec2a7b",
+    "script_sha256": "1d44f7777a5cf715b3ce2f7eb3ede219316691bcac3d8252ca7bb21f4d422e7e",
+    "source_sha256": {
+      "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
+    },
+    "duration_seconds": 263.462,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-007-5ca4f0c601af080b-ab164fb87062f3cb.srt",
+    "vtt": "assets/audio/note-007-5ca4f0c601af080b-ab164fb87062f3cb.vtt",
+    "transcript": "assets/audio/note-007-5ca4f0c601af080b-ab164fb87062f3cb.txt",
+    "cues": "assets/audio/note-007-5ca4f0c601af080b-ab164fb87062f3cb.json",
+    "files_sha256": {
+      "srt": "4afff142bbc2e01f8effd3b8ca991c2e325cc22dac01dd939c5fef9614984255",
+      "vtt": "3121e06870b249dd0f4d9d7c969a24edd1e276df74a51ba319723c8b21437de4",
+      "transcript": "72091a777cc27ffb354602ade32c58416809bd6571d7b55dc749da76b1eaa3bc",
+      "cues": "d337155113f5e57bbb70d40479c9e45bbe472e9f463058d1910e9cdf6d977d22"
+    }
+  },
+  {
+    "id": "note-008",
+    "title": "A whole staircase. One undo.",
+    "kind": "note",
+    "description": "The player made one thing. Preview, placement and undo should agree about what that thing was. A SkyStack Builder design study.",
+    "note_id": "008",
+    "slug": "008-one-undo.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-008-f8e14bd8ddf1ff0a.mp3",
+    "bytes": 3735116,
+    "audio_sha256": "f8e14bd8ddf1ff0af5890235ef17a73a7ee8fe28334fd4e10cdb18580f08b06a",
+    "script_sha256": "0feb19df9be39a121a63d0b0760836d41413f69cf14125fa7a40109375ca23cf",
+    "source_sha256": {
+      "008": "ea3230624d80ddf17788625ace18e59470384e95eafb178e0323f3aabc2281e5"
+    },
+    "duration_seconds": 311.182,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-008-f8e14bd8ddf1ff0a-423b7cd528bdee72.srt",
+    "vtt": "assets/audio/note-008-f8e14bd8ddf1ff0a-423b7cd528bdee72.vtt",
+    "transcript": "assets/audio/note-008-f8e14bd8ddf1ff0a-423b7cd528bdee72.txt",
+    "cues": "assets/audio/note-008-f8e14bd8ddf1ff0a-423b7cd528bdee72.json",
+    "files_sha256": {
+      "srt": "d3d56d5ae75b5744066e26a0868718aed96b3ebe014f0047507bee630a7e36c7",
+      "vtt": "61a4358463f97678e6ea37b1d6d9339d13c4d582fb90b960c82fe55810b1cd8d",
+      "transcript": "869351449acd303d9a762c713e0cb3e34abc68b4fc879238f90d681a5be2c1ab",
+      "cues": "3016cb5c33d81e17ca8b3f0d41bdf858c7e1212db0cf91fab75b08b3ba24a459"
+    }
+  },
+  {
+    "id": "note-009",
+    "title": "A place to stand.",
+    "kind": "note",
+    "description": "A pony, a turn of the camera and a place that needs to stay dependable. A SkyStack Builder study in looking and belonging.",
+    "note_id": "009",
+    "slug": "009-place-to-stand.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-009-19f3908d3bb186f0.mp3",
+    "bytes": 3549932,
+    "audio_sha256": "19f3908d3bb186f0999a2c424396cf94cc4a77df54929f1e98dc9bbc209ba3b5",
+    "script_sha256": "c5a54de68acaa58aec7fd91b998ebb9b22c8045c531553551d77e079df037cde",
+    "source_sha256": {
+      "009": "6965dfb7a275c9765517a69d8f3d223c6a91ce53899f2f8475615b70ccd513ae"
+    },
+    "duration_seconds": 295.742,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-009-19f3908d3bb186f0-d341b7f1f95bf22c.srt",
+    "vtt": "assets/audio/note-009-19f3908d3bb186f0-d341b7f1f95bf22c.vtt",
+    "transcript": "assets/audio/note-009-19f3908d3bb186f0-d341b7f1f95bf22c.txt",
+    "cues": "assets/audio/note-009-19f3908d3bb186f0-d341b7f1f95bf22c.json",
+    "files_sha256": {
+      "srt": "4fbad6c8789eaabac55c0969356796e31eefc5b0826ba0c85312e976195768d7",
+      "vtt": "28927dec25793159976d60ce99c8fd7a82d8e25090687d19ebff08cb14763a3a",
+      "transcript": "9b6b480dc856b39913ee0142b24c3b339f93ee8dcd96c8205e2d31627166c6c8",
+      "cues": "1141d155f6ad0a66cc9567fc2ef2f9508f15e03eea06a8500afe4044331b54a1"
+    }
+  },
+  {
+    "id": "note-010",
+    "title": "Almost the same.",
+    "kind": "note",
+    "description": "Two pictures almost agree. What does the difference tell us, and what does it leave open? A SkyStack Builder study in looking closely.",
+    "note_id": "010",
+    "slug": "010-almost-the-same.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-010-c50992f7285240b4.mp3",
+    "bytes": 3506732,
+    "audio_sha256": "c50992f7285240b43ab7e51f01a452ddbec44b0c3a65fda83f07b42d0595e3dc",
+    "script_sha256": "db7d60008f14a9d5c4be71831aedb2e57889dddbb5b53c79718c41568e0cfa0c",
+    "source_sha256": {
+      "010": "b96bebb9d51944a4ece00a86255bb3e5c213b144d3d3f1e1b8db188affceeca2"
+    },
+    "duration_seconds": 292.142,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-010-c50992f7285240b4-4e779119619cbbac.srt",
+    "vtt": "assets/audio/note-010-c50992f7285240b4-4e779119619cbbac.vtt",
+    "transcript": "assets/audio/note-010-c50992f7285240b4-4e779119619cbbac.txt",
+    "cues": "assets/audio/note-010-c50992f7285240b4-4e779119619cbbac.json",
+    "files_sha256": {
+      "srt": "3487fbfddd344f5518687b73cb7d4e7181a35286117d0a1d63d1cae82cf63861",
+      "vtt": "e45bf1db373ad39774f5f69b474827c0115fbf364e389aff688d95983ddf7b52",
+      "transcript": "cd6a590339f5afb39c78e1b68b209a518396b0b2ee41dc1eb13ad1d2080f09ff",
+      "cues": "3dc9347b4ee588ebbdc8f6218298c182a7fca311b3df046ba64b88ce3c6a7a74"
+    }
+  },
+  {
+    "id": "note-011",
+    "title": "A model needs a place.",
+    "kind": "note",
+    "description": "A small shrine leaves the modelling bench. Its neighbours bring new questions about looking, choosing and belonging. A SkyStack Builder design study.",
+    "note_id": "011",
+    "slug": "011-model-needs-a-place.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-011-05d4f1bd64e8ebea.mp3",
+    "bytes": 3275468,
+    "audio_sha256": "05d4f1bd64e8ebeaa6f7986182242988625a191d67c8ce7fe947f795d5772ac3",
+    "script_sha256": "de58f73259b178e8411ca57afed6a3542fb22a924c0d515aa8e0230dc642217c",
+    "source_sha256": {
+      "011": "fe0683656bfdc4d5420baa4585033c2d6642cdeaf3d5a515ced788698fac23e7"
+    },
+    "duration_seconds": 272.862,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-011-05d4f1bd64e8ebea-200c722209dced46.srt",
+    "vtt": "assets/audio/note-011-05d4f1bd64e8ebea-200c722209dced46.vtt",
+    "transcript": "assets/audio/note-011-05d4f1bd64e8ebea-200c722209dced46.txt",
+    "cues": "assets/audio/note-011-05d4f1bd64e8ebea-200c722209dced46.json",
+    "files_sha256": {
+      "srt": "c9b1be5b230033d48d68fc7129eb7bafeadedd9edbecce5ce86272ba9cf4ec40",
+      "vtt": "78504c00bb533b696a5eff5c122a70253e63b1b3893c29292354d0a117ddbdaf",
+      "transcript": "c0603fb0da92e6560d656637e74b6c907b2d7ee8f542f4200b379e0c08adbb10",
+      "cues": "8180a4410d46f02445e0ed07d085e7831ae164686e41ba4e0ef9a6c384f66062"
+    }
+  }
+]

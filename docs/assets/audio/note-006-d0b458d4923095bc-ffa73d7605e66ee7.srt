@@ -1,0 +1,399 @@
+1
+00:00:00,000 --> 00:00:07,720
+Moth and Gravel. Field Note 6. A
+map should leave room for doubt.
+
+2
+00:00:08,640 --> 00:00:11,840
+An AI narrated edition of the
+published note.
+
+3
+00:00:12,880 --> 00:00:18,280
+When a few points become a room,
+give a little robot a way to
+
+4
+00:00:18,280 --> 00:00:22,520
+sense what is nearby, then put
+its readings on a screen.
+
+5
+00:00:23,680 --> 00:00:28,480
+A few colored points become a
+shape. Soon, it is tempting to
+
+6
+00:00:28,480 --> 00:00:33,280
+see a room. The display has made
+a powerful suggestion from a
+
+7
+00:00:33,280 --> 00:00:37,560
+modest collection of readings.
+That is the interesting part of
+
+8
+00:00:37,560 --> 00:00:42,280
+our Kitronik buggy experiment.
+The machine has an ultrasonic
+
+9
+00:00:42,280 --> 00:00:47,120
+sensor, a pair of motors, and a
+way to report what it has found.
+
+10
+00:00:47,720 --> 00:00:52,080
+Python tools give those reports
+a form someone can look at.
+
+11
+00:00:52,720 --> 00:00:57,040
+Somewhere between the sensor and
+the picture, a design question
+
+12
+00:00:57,080 --> 00:01:01,440
+appears. How much certainty
+should a map be allowed to
+
+13
+00:01:01,440 --> 00:01:08,360
+borrow from its own appearance?
+Leave the unseen space open. The
+
+14
+00:01:08,360 --> 00:01:13,440
+current firmware starts its grid
+at a neutral prior. A cell has
+
+15
+00:01:13,440 --> 00:01:17,640
+not become an empty piece of
+floor simply because nothing has
+
+16
+00:01:17,640 --> 00:01:22,600
+been drawn there. As scans
+arrive, the map accumulates
+
+17
+00:01:22,600 --> 00:01:28,080
+evidence. Traversed parts of a
+sensor beam receive free space
+
+18
+00:01:28,120 --> 00:01:33,520
+updates. It's end point receives
+occupied space updates.
+
+19
+00:01:34,440 --> 00:01:38,360
+Confidence affects the
+contribution. Overlapping
+
+20
+00:01:38,360 --> 00:01:42,680
+observations can strengthen or
+revise the picture. The
+
+21
+00:01:42,680 --> 00:01:46,400
+distinction matters to the
+person reading it. Free,
+
+22
+00:01:46,640 --> 00:01:52,400
+occupied, and undecided are
+three different answers. A quiet
+
+23
+00:01:52,400 --> 00:01:56,440
+neutral region leaves the
+question visible. Filling
+
+24
+00:01:56,440 --> 00:02:00,360
+everything with reassuring space
+would make the picture easier to
+
+25
+00:02:00,360 --> 00:02:07,680
+like and harder to trust. O1,
+free. Evidence of free space.
+
+26
+00:02:08,440 --> 00:02:13,280
+The stored value is below 80.
+Observations have moved it
+
+27
+00:02:13,280 --> 00:02:21,520
+toward free. O2, unclassified. A
+question remains. Values from 80
+
+28
+00:02:21,520 --> 00:02:28,360
+through 170 stay unclassified.
+The starting value is 128.
+
+29
+00:02:29,400 --> 00:02:35,720
+O3, occupied. Evidence of an
+obstacle. The stored value is
+
+30
+00:02:35,720 --> 00:02:41,240
+above 170. Observations have
+moved it toward occupied.
+
+31
+00:02:42,280 --> 00:02:46,840
+Three classifications in the
+current firmware. Explanatory
+
+32
+00:02:46,840 --> 00:02:50,800
+symbols and exact stored value
+thresholds, rather than a
+
+33
+00:02:50,800 --> 00:02:55,560
+product screen or measured
+probabilities. A classification
+
+34
+00:02:55,560 --> 00:03:00,280
+describes accumulated evidence.
+It is not a guarantee about the
+
+35
+00:03:00,280 --> 00:03:05,120
+floor. In the Python scan
+viewer, the neutral region
+
+36
+00:03:05,160 --> 00:03:09,640
+occupies most of the saved
+example. In the camera overlay,
+
+37
+00:03:09,840 --> 00:03:14,200
+unclassified cells remain
+unpainted, while free and
+
+38
+00:03:14,200 --> 00:03:19,280
+occupied classifications add
+color. Those are two ways to let
+
+39
+00:03:19,280 --> 00:03:24,920
+uncertainty survive the drawing.
+The drawing has a point of view.
+
+40
+00:03:25,920 --> 00:03:30,560
+A polar plot shows readings
+around the sensor. A top-down
+
+41
+00:03:30,560 --> 00:03:36,480
+view turns them into a shape. An
+occupancy grid shows accumulated
+
+42
+00:03:36,480 --> 00:03:41,800
+belief about space. The distance
+profile makes individual
+
+43
+00:03:41,800 --> 00:03:47,120
+readings easier to compare. The
+saved scan visualizer puts these
+
+44
+00:03:47,120 --> 00:03:52,160
+views beside each other. They
+share an input, but each makes
+
+45
+00:03:52,160 --> 00:03:57,200
+something easier to notice. A
+gap can be obvious in one and
+
+46
+00:03:57,200 --> 00:04:01,800
+disappear into the overall
+impression of another. One saved
+
+47
+00:04:01,800 --> 00:04:07,200
+sample. Four ways to look. The
+repository's Python renderer,
+
+48
+00:04:07,320 --> 00:04:12,440
+called offline, with its saved
+12-point sample. This older
+
+49
+00:04:12,440 --> 00:04:18,560
+sample contains a 32 x 32 grid.
+Current firmware defines 64 x
+
+50
+00:04:18,560 --> 00:04:23,160
+64. The sample's physical
+capture origin is not
+
+51
+00:04:23,160 --> 00:04:26,400
+established. Open the full-size
+figure.
+
+52
+00:04:31,680 --> 00:04:36,480
+That is useful. A companion view
+can question the attractive one.
+
+53
+00:04:37,120 --> 00:04:41,200
+It also gives the display a
+responsibility. The reader
+
+54
+00:04:41,200 --> 00:04:44,960
+should be able to understand
+what the marks represent, which
+
+55
+00:04:44,960 --> 00:04:48,360
+frame they belong to, and
+whether they came from a current
+
+56
+00:04:48,360 --> 00:04:54,200
+observation or a saved example.
+The robot moves, and the room
+
+57
+00:04:54,200 --> 00:04:55,360
+should stay put.
+
+58
+00:05:00,160 --> 00:05:04,400
+The current grid belongs to a
+world frame with an origin at
+
+59
+00:05:04,400 --> 00:05:09,640
+the start. The robot's estimated
+position changes inside it.
+
+60
+00:05:10,440 --> 00:05:14,520
+Keeping the map in that frame
+lets observations from different
+
+61
+00:05:14,520 --> 00:05:19,400
+positions accumulate into one
+place. But position is part of
+
+62
+00:05:19,400 --> 00:05:23,600
+the estimate too. This
+experiment uses motor time
+
+63
+00:05:23,600 --> 00:05:27,840
+kinematics with selective
+heading correction. A camera
+
+64
+00:05:27,840 --> 00:05:30,960
+marker provides an another
+estimate of where the robot
+
+65
+00:05:30,960 --> 00:05:36,040
+might be, connected to the map
+through calibration. The overlay
+
+66
+00:05:36,040 --> 00:05:39,080
+can draw the two trails
+together, making their
+
+67
+00:05:39,080 --> 00:05:43,440
+disagreement available to
+inspect. The interesting design
+
+68
+00:05:43,440 --> 00:05:47,320
+opportunity is a display that
+gives someone a way to notice
+
+69
+00:05:47,440 --> 00:05:51,920
+when the alignment deserves
+another look. Let the picture
+
+70
+00:05:51,960 --> 00:05:56,680
+stay provisional. There is
+pleasure in a little machine
+
+71
+00:05:56,680 --> 00:06:01,800
+slowly giving a space a shape.
+Colors, rays, and a moving
+
+72
+00:06:01,800 --> 00:06:05,280
+marker can make an otherwise
+difficult stream of numbers
+
+73
+00:06:05,320 --> 00:06:09,640
+approachable. The display earns
+that pleasure when its limits
+
+74
+00:06:09,640 --> 00:06:13,600
+remain readable, where it has
+evidence, where it has an
+
+75
+00:06:13,600 --> 00:06:18,240
+estimate, and where it still has
+a question. That is what we
+
+76
+00:06:18,240 --> 00:06:22,760
+would test next. Ask someone to
+point out the parts the robot
+
+77
+00:06:22,760 --> 00:06:27,680
+has not established. Ask which
+position they believe and why.
+
+78
+00:06:28,400 --> 00:06:33,480
+Show an old reading beside a new
+one. Watch what they infer from
+
+79
+00:06:33,480 --> 00:06:38,840
+a blank area. The map does not
+have to settle every doubt. It
+
+80
+00:06:38,840 --> 00:06:41,560
+has to leave room for the useful
+ones.
+

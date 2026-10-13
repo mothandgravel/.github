@@ -1,0 +1,1019 @@
+[
+  {
+    "start": 0.04,
+    "end": 5.2,
+    "text": "This is Moth and Gravel, Field\nNotes. Today, a question that",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 5.2,
+    "end": 9.52,
+    "text": "connects three studies. What\ndoes an interface let you",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 9.52,
+    "end": 14.08,
+    "text": "believe? This is an AI generated\nconversation adapted from the",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 14.08,
+    "end": 17.76,
+    "text": "published notes. The source\nstudies concern software",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 17.76,
+    "end": 22.48,
+    "text": "contracts, a little robot's map,\nand a telemetry dashboard. All",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 22.48,
+    "end": 26.56,
+    "text": "three give a person a quick\npicture. A green light, a",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 26.56,
+    "end": 31.2,
+    "text": "colored map, a number that sits\nquietly on a gauge. The picture",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 31.2,
+    "end": 35.12,
+    "text": "can feel more certain than the\ninformation behind it. Let's",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 35.12,
+    "end": 38.96,
+    "text": "start with the green light. It\nis a very efficient piece of",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 38.96,
+    "end": 44.16,
+    "text": "design. One glance, one small\nexhale. The thing is all right.",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 44.48,
+    "end": 49.36,
+    "text": "What thing? And all right in\nwhat sense? A service can be",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 49.36,
+    "end": 54.96,
+    "text": "running, a test can pass, a\nresult can be delivered. Those",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 54.96,
+    "end": 58.28,
+    "text": "answer different questions, even\nwhen the interface gives them",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 58.28,
+    "end": 62.72,
+    "text": "the same color. Field Note 5\nfollows that distinction across",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 62.72,
+    "end": 67.32,
+    "text": "three projects. In Gayanu, which\nis being developed as a",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 67.32,
+    "end": 71.84,
+    "text": "workspace companion, a healthy\nruntime is an observation about",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 71.84,
+    "end": 75.88,
+    "text": "the runtime. Whether a feature\nmeets its acceptance conditions",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 75.88,
+    "end": 79.68,
+    "text": "needs its own evidence. The\nsource contract also keeps a",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 79.68,
+    "end": 85.52,
+    "text": "failed runtime probe unknown. If\nthe observation did not succeed,",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 85.68,
+    "end": 89.68,
+    "text": "it has not established that the\napplication stopped. That sounds",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 89.68,
+    "end": 94.0,
+    "text": "like a small wording distinction\nuntil someone acts on the wrong",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 94.0,
+    "end": 98.76,
+    "text": "version. It becomes even more\ninteresting in Ajo, which checks",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 98.8,
+    "end": 102.92,
+    "text": "agent plans and records their\nexecution. The note describes a",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 102.92,
+    "end": 107.0,
+    "text": "local integration report in\nwhich all 34 acceptance cases",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 107.0,
+    "end": 111.48,
+    "text": "passed. The delivery records\nstill included incomplete,",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 111.64,
+    "end": 115.36,
+    "text": "unknown, and unresolved\noutcomes. That is possible",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 115.36,
+    "end": 119.64,
+    "text": "because some cases are meant to\npreserve those outcomes. If a",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 119.64,
+    "end": 124.28,
+    "text": "case asks the mechanism to\nrefuse an unsafe next step, a",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 124.28,
+    "end": 129.12,
+    "text": "correct refusal is a pass. If\nthe acknowledgement was lost,",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 129.32,
+    "end": 133.76,
+    "text": "keeping that outcome unknown can\nalso be correct. The report",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 133.76,
+    "end": 137.96,
+    "text": "records six verified delivery\nsub-probes separately from the",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 137.96,
+    "end": 141.96,
+    "text": "passing cases. A concise\nheadline needs a route back to",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 141.96,
+    "end": 145.92,
+    "text": "that distinction. And those\nfixtures are not a sample for",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 145.92,
+    "end": 150.0,
+    "text": "calculating a general delivery\nsuccess rate. The note is",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 150.0,
+    "end": 153.68,
+    "text": "reading bounded results. It does\nnot establish production",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 153.68,
+    "end": 158.16,
+    "text": "reliability or release\nreadiness. Paja, a build tool",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 158.16,
+    "end": 162.96,
+    "text": "for spare machines, gives green\na more modest job. Every",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 162.96,
+    "end": 166.96,
+    "text": "configured step exited with\nzero. It's recorded result",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 166.96,
+    "end": 170.36,
+    "text": "distinguishes failed steps,\ninfrastructure failures,",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 170.44,
+    "end": 174.8,
+    "text": "cancellation, and timeouts. That\nboundary can be understood.",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 175.08,
+    "end": 178.76,
+    "text": "Inspect the recipe, then ask\nwhether the configured steps",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 178.8,
+    "end": 183.24,
+    "text": "establish what you care about.\nThe indicator has a clear job.",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 183.44,
+    "end": 187.4,
+    "text": "It does not have to quietly\npromise every possible property",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 187.4,
+    "end": 192.24,
+    "text": "of the software. So, the useful\ndesign question is, what can",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 192.24,
+    "end": 197.04,
+    "text": "this green light honestly let's\none stop worrying about? And",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 197.04,
+    "end": 200.92,
+    "text": "what still deserves a question\nof its own? The same problem",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 200.92,
+    "end": 205.4,
+    "text": "turns up in Field Note 6 about\nthe Kitronic Buggy. A little",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 205.4,
+    "end": 209.68,
+    "text": "robot has an ultrasonic sensor,\nmotors, and tools for giving its",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 209.68,
+    "end": 213.72,
+    "text": "readings a visual form. A few\ncolored points begin to look",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 213.72,
+    "end": 217.8,
+    "text": "like a room. A drawing is\npersuasive. A blank region can",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 217.8,
+    "end": 221.04,
+    "text": "look like empty floor even when\nthe machine is not established",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 221.04,
+    "end": 224.2,
+    "text": "that the space is free. The\ncurrent firmware begins its",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 224.2,
+    "end": 228.48,
+    "text": "occupancy grid at a neutral\nprior. As observations arrive,",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 228.48,
+    "end": 231.88,
+    "text": "parts of the sensor beam receive\nfree space updates and the",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 231.88,
+    "end": 236.0,
+    "text": "endpoint receives occupied space\nupdates. Confidence affects the",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 236.0,
+    "end": 239.36,
+    "text": "contribution and later\nobservations can strengthen or",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 239.36,
+    "end": 243.8,
+    "text": "revise the picture. There are\nthree answers to preserve. Free,",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 244.04,
+    "end": 247.84,
+    "text": "occupied, and undecided. The\nstored value thresholds are not",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 247.84,
+    "end": 252.0,
+    "text": "probabilities. Values below 80\nare classified as free. Values",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 252.0,
+    "end": 257.12,
+    "text": "above 170 are occupied. Values\nfrom 80 through 170 remain",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 257.12,
+    "end": 262.04,
+    "text": "unclassified. The initial value\nis 128. In the camera overlay,",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 262.08,
+    "end": 265.64,
+    "text": "unclassified cells remain\nunpainted. That leaves the",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 265.64,
+    "end": 269.56,
+    "text": "unanswered question visible. The\nsaved scan viewer also offers",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 269.56,
+    "end": 274.12,
+    "text": "several views of the same input.\nA polar plot, a top-down view,",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 274.16,
+    "end": 278.48,
+    "text": "an occupancy grid, and a\ndistance profile. One view can",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 278.48,
+    "end": 281.68,
+    "text": "question the attractive one, but\nthe person needs to know which",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 281.68,
+    "end": 285.04,
+    "text": "frame the marks belong to and\nwhether they came from a current",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 285.04,
+    "end": 288.8,
+    "text": "observation or a saved example.\nPosition is part of the estimate",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 288.8,
+    "end": 292.52,
+    "text": "too. The grid belongs to a world\nframe while the robot's",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 292.52,
+    "end": 296.56,
+    "text": "estimated position changes\ninside it. The source uses motor",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 296.56,
+    "end": 300.76,
+    "text": "time kinematics with selective\nheading correction. A calibrated",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 300.76,
+    "end": 304.72,
+    "text": "camera marker supplies another\nposition estimate. Showing two",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 304.72,
+    "end": 307.88,
+    "text": "trails together can make a\ndisagreement visible. It does",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 307.88,
+    "end": 311.2,
+    "text": "not establish that either trail\nis accurate. This note reads",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 311.2,
+    "end": 315.16,
+    "text": "mapping source and an offline\nreplay of saved sample data. It",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 315.16,
+    "end": 318.8,
+    "text": "does not establish calibrated\nmap accuracy, safe navigation,",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 318.8,
+    "end": 322.0,
+    "text": "or full simultaneous\nlocalization and mapping. No",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 322.0,
+    "end": 325.08,
+    "text": "live hardware or camera session\nwas run for the note. The",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 325.08,
+    "end": 329.0,
+    "text": "proposed reader study is still\nahead. Ask someone which parts",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 329.0,
+    "end": 333.44,
+    "text": "the robot has not established.\nAsk which position they believe",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 333.48,
+    "end": 337.76,
+    "text": "and why. Watch what they infer\nfrom a blank area. That is a",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 337.76,
+    "end": 340.68,
+    "text": "concrete way to ask whether\nuncertainty survived the",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 340.68,
+    "end": 344.24,
+    "text": "drawing. It is also a question\nabout attention, which brings us",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 344.24,
+    "end": 349.48,
+    "text": "to Field Note 7. Fast signals,\nslow eyes. The telemetry",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 349.48,
+    "end": 352.56,
+    "text": "dashboard keeps the latest\nreceived readings in shared",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 352.56,
+    "end": 356.4,
+    "text": "state. The interface draws its\ngauges from that state, then",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 356.4,
+    "end": 360.68,
+    "text": "schedules its next update 33\nmilliseconds later. That is a",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 360.68,
+    "end": 364.6,
+    "text": "requested pause after drawing,\nnot a measured frame rate. The",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 364.6,
+    "end": 367.52,
+    "text": "drawing takes time. Other work\nin the window takes time.",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 367.84,
+    "end": 370.92,
+    "text": "Calling it 30 frames per second\nwould claim something the source",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 370.92,
+    "end": 375.64,
+    "text": "reading is not measured. A quiet\nnumber creates another question.",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 376.08,
+    "end": 379.72,
+    "text": "It can stay on screen after the\nmachine has stopped sending",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 379.72,
+    "end": 383.76,
+    "text": "packets. Without a condition\nbeside it, the last answer can",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 383.76,
+    "end": 388.12,
+    "text": "look like the present answer. At\na refresh, the dashboard checks",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 388.12,
+    "end": 392.12,
+    "text": "the age of the latest packet.\nLess than half a second gets the",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 392.12,
+    "end": 395.84,
+    "text": "label connected. At half a\nsecond or more, the label",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 395.84,
+    "end": 400.24,
+    "text": "becomes stale data. The gauges\nstill show the latest received",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 400.24,
+    "end": 405.64,
+    "text": "values. So, the number remains\navailable, but its relationship",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 405.64,
+    "end": 409.88,
+    "text": "to now has changed. And the\nlabel changes when the next",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 409.88,
+    "end": 414.08,
+    "text": "interface update checks the age\nrather than at a separately",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 414.08,
+    "end": 418.44,
+    "text": "established instant. A stale\npacket does not establish the",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 418.44,
+    "end": 422.4,
+    "text": "robot's physical state. The\ndesign needs to help someone",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 422.4,
+    "end": 426.52,
+    "text": "notice the gap without turning\nevery arrival into a demand for",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 426.52,
+    "end": 430.8,
+    "text": "attention. The latest packet\ngauges do not retain every",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 430.8,
+    "end": 434.8,
+    "text": "intermediate value. Packet\ncounters and a recent arrival",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 434.8,
+    "end": 437.64,
+    "text": "rate view provided different\nkind of evidence about the",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 437.64,
+    "end": 442.4,
+    "text": "stream. A calm display and a\ndetailed record serve different",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 442.4,
+    "end": 446.64,
+    "text": "kinds of attention. That is the\nshared thread. Each picture",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 446.64,
+    "end": 450.28,
+    "text": "needs a clear account of what it\nknows. A green light needs a",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 450.28,
+    "end": 455.64,
+    "text": "scope. A map needs room for\nundecided space. A current value",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 455.68,
+    "end": 460.08,
+    "text": "needs a condition about\nfreshness. And each study has a",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 460.08,
+    "end": 464.52,
+    "text": "practical next question. Can a\nperson tell running from",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 464.52,
+    "end": 468.32,
+    "text": "delivered? Can they find the\nspace the robot has not",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 468.32,
+    "end": 472.44,
+    "text": "established? Can they notice\nwhen a reading has become old?",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 472.72,
+    "end": 476.56,
+    "text": "Those are proposed questions,\nnot completed comprehension",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 476.56,
+    "end": 480.84,
+    "text": "studies. Their answers will\nmatter more than how reassuring",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 480.84,
+    "end": 484.36,
+    "text": "the pictures feel to their\nmakers. You have been listening",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 484.36,
+    "end": 488.92,
+    "text": "to Moth and Gravel, Field Notes.\nWhat does the interface let you",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 488.92,
+    "end": 493.4,
+    "text": "believe? The written sources are\nnotes 5, 6, and 7 at",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 493.4,
+    "end": 497.04,
+    "text": "mothandgravel.com. They keep the\ndetailed boundaries,",
+    "speakers": [
+      "1"
+    ]
+  },
+  {
+    "start": 497.08,
+    "end": 501.64,
+    "text": "illustrations, and study scope\navailable to inspect. A useful",
+    "speakers": [
+      "1",
+      "2"
+    ]
+  },
+  {
+    "start": 501.64,
+    "end": 506.08,
+    "text": "interface gives someone a place\nto look and a reason to trust",
+    "speakers": [
+      "2"
+    ]
+  },
+  {
+    "start": 506.08,
+    "end": 508.4,
+    "text": "what that place actually\nestablishes.",
+    "speakers": [
+      "2"
+    ]
+  }
+]

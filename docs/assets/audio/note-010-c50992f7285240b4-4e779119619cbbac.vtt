@@ -1,0 +1,282 @@
+WEBVTT
+
+1
+00:00:00.280 --> 00:00:08.720
+Moth and Gravel Field Note 10
+Almost the same An AI narrated
+
+2
+00:00:08.720 --> 00:00:13.760
+edition of the published note
+Lay three translucent sheets
+
+3
+00:00:13.800 --> 00:00:18.040
+over a color Gather them
+together first, then lay the
+
+4
+00:00:18.040 --> 00:00:23.200
+group down You might expect the
+same picture In Sky Stack
+
+5
+00:00:23.200 --> 00:00:27.280
+Builders Rendering Experiments,
+that small change can leave a
+
+6
+00:00:27.280 --> 00:00:31.960
+small difference The order of
+the work stays familiar The
+
+7
+00:00:31.960 --> 00:00:36.960
+place where it happens changes
+How closely should two pictures
+
+8
+00:00:36.960 --> 00:00:42.200
+agree before we call them the
+same A difference needs a place
+
+9
+00:00:42.320 --> 00:00:46.840
+to look The experimental
+renderer gathers some painted
+
+10
+00:00:46.840 --> 00:00:51.800
+content into a transparent layer
+before placing it over the scene
+
+11
+00:00:52.680 --> 00:00:57.600
+Each draw rounds its color into
+the available range The final
+
+12
+00:00:57.600 --> 00:01:02.480
+composition adds another place
+where that can happen A simple
+
+13
+00:01:02.480 --> 00:01:07.080
+test sets the island aside and
+draws three overlapping
+
+14
+00:01:07.080 --> 00:01:11.440
+translucent rectangles On a
+green background, the two
+
+15
+00:01:11.440 --> 00:01:16.320
+approaches match exactly On
+another background, thousands of
+
+16
+00:01:16.320 --> 00:01:20.680
+pixels differ by a single level
+in a color channel The
+
+17
+00:01:20.680 --> 00:01:26.600
+background matters A tidy answer
+from one convenient example can
+
+18
+00:01:26.600 --> 00:01:32.520
+leave another question untouched
+Two ways to assemble a picture A
+
+19
+00:01:32.520 --> 00:01:37.480
+conceptual diagram of drawing
+and rounding Not a measured
+
+20
+00:01:37.480 --> 00:01:44.560
+pixel image Open the full-size
+diagram Small is a description,
+
+21
+00:01:44.720 --> 00:01:49.200
+not a verdict A one-level
+difference tells us something
+
+22
+00:01:49.200 --> 00:01:54.520
+about the machinery It leaves
+the design question open Does
+
+23
+00:01:54.520 --> 00:01:58.520
+the difference appear along an
+edge Does it flicker as the
+
+24
+00:01:58.520 --> 00:02:03.280
+camera moves Does it change the
+separation between a character
+
+25
+00:02:03.320 --> 00:02:08.360
+and the ground A count alone
+cannot say how the picture feels
+
+26
+00:02:08.520 --> 00:02:13.840
+to someone trying to use it The
+wider scene comparisons also
+
+27
+00:02:13.840 --> 00:02:18.800
+contain much larger differences
+The small rounding example gives
+
+28
+00:02:18.800 --> 00:02:24.000
+us a useful explanation for one
+kind of disagreement The rest
+
+29
+00:02:24.040 --> 00:02:30.040
+still needs attention Look at
+the whole island A close
+
+30
+00:02:30.040 --> 00:02:34.600
+inspection and a whole view
+serve different purposes One
+
+31
+00:02:34.600 --> 00:02:39.080
+helps find a cause The other
+lets us ask whether the place
+
+32
+00:02:39.080 --> 00:02:43.800
+still holds together Remove a
+troublesome detail and a
+
+33
+00:02:43.800 --> 00:02:49.160
+comparison may become easier to
+understand Put it back before
+
+34
+00:02:49.160 --> 00:02:54.360
+judging the island The edge,
+shadow, or patch of ground may
+
+35
+00:02:54.360 --> 00:02:58.240
+be exactly what gives the player
+a sense of where something
+
+36
+00:02:58.240 --> 00:03:03.120
+belongs The next study would
+show the complete views at the
+
+37
+00:03:03.120 --> 00:03:07.880
+size and pace of play Let
+someone turn the camera and
+
+38
+00:03:07.880 --> 00:03:12.160
+choose a block Ask what caught
+their eye, what seemed to
+
+39
+00:03:12.160 --> 00:03:17.240
+change, and whether that change
+made a choice harder Keep the
+
+40
+00:03:17.240 --> 00:03:22.520
+close comparison beside those
+observations It gives a specific
+
+41
+00:03:22.520 --> 00:03:26.960
+disagreement somewhere to live
+without asking it to decide the
+
+42
+00:03:26.960 --> 00:03:32.960
+whole experience Leave room for
+another look There is pleasure
+
+43
+00:03:32.960 --> 00:03:37.480
+in getting two pictures to agree
+There is useful work in
+
+44
+00:03:37.480 --> 00:03:42.720
+understanding why they don't A
+pixel can give the investigation
+
+45
+00:03:42.760 --> 00:03:47.000
+a starting point The person
+looking at the island gives it a
+
+46
+00:03:47.000 --> 00:03:52.480
+reason to continue Study Scope
+Source Reading
+
+47
+00:03:54.760 --> 00:04:00.520
+This study reads Native
+Rendering Controls and recorded
+
+48
+00:04:00.520 --> 00:04:07.240
+scene comparisons The rectangle
+example found an exact match on
+
+49
+00:04:07.240 --> 00:04:12.120
+one background and a one-level
+channel difference on another
+
+50
+00:04:12.880 --> 00:04:18.160
+The illustrations explain the
+question They are not rendering
+
+51
+00:04:18.160 --> 00:04:24.320
+captures No new benchmark or
+player study was run for this
+
+52
+00:04:24.320 --> 00:04:30.280
+note The comparison does not
+establish that a small color
+
+53
+00:04:30.280 --> 00:04:35.720
+difference is always harmless or
+that the complete renderer is
+
+54
+00:04:35.720 --> 00:04:40.960
+ready The proposed observation
+remains to be done
+
+55
+00:04:43.080 --> 00:04:47.880
+You have been listening to Moth
+and Gravel Field Notes The
+
+56
+00:04:47.880 --> 00:04:52.160
+written edition is at
+mothandgravel.com
+
