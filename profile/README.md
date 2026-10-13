@@ -32,7 +32,7 @@ We believe that useful work doesn't have to be ordinary, and unconventional idea
 - [Follow Field Notes by RSS](https://mothandgravel.com/notes/feed.xml) — curious questions and working answers, as they appear.
 - [Brand marks and materials](https://github.com/mothandgravel/.github/tree/main/profile/assets) — the moth, the stone and their working forms.
 
-Early days. Our work spans a growing pipeline, including projects developed under Navivra. Field Notes keep the curious questions and working answers in view as the products take shape.
+Early days. Our work spans a growing pipeline. Field Notes keep the curious questions and working answers in view as the products take shape.
 
 ---
 
