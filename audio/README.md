@@ -136,6 +136,16 @@ substantive differences without silently rewriting the captions. Case,
 punctuation and `&`/`and` are normalized for comparison. Similarity is not proof
 that the audio said the right words; review stays pending even for a match.
 
+Chirp can return trailing caption cues entirely after the measured recording
+ends. If SRT and WebVTT timings agree and the cues form an ordered suffix, those
+cues are excluded from playback and retained with their original text and times
+in `cues.json` (`timing_omissions`) and `captions.json`
+(`caption_timing_omissions`). The listening page and terminal report the omission.
+The original `operation.json` and recognized transcript text remain unchanged for
+review. Cues that straddle the recording's end, reversed or unordered starts, and
+responses without any usable in-recording cues still block export. Resuming a
+saved completed job performs this recovery locally, without another Cloud call.
+
 Individual `make` and `captions` commands do not publish. `make-all` prepares
 completed site assets; `--publish` or `publish` explicitly pushes them to a PR.
 Original recordings, job state and Cloud settings stay in ignored `artifacts/`.

@@ -259,7 +259,7 @@ def caption_time(value: str) -> float:
 def parse_captions(
     text: str, duration: float, vtt: bool = False, recover_timing: bool = False
 ) -> list[dict]:
-    """Keep invalid numeric ends only for extract_recognition's bounded recovery."""
+    """Keep numeric timing faults for extract_recognition's bounded recovery."""
     normalized = text.lstrip("\ufeff").replace("\r\n", "\n").strip()
     if vtt:
         if not re.match(r"^WEBVTT(?:\s|$)", normalized):
@@ -278,9 +278,9 @@ def parse_captions(
             raise ValueError("Invalid caption timing line")
         start, end = caption_time(match[1]), caption_time(match[2])
         content = "\n".join(lines[timing + 1 :]).strip()
-        if not content or not 0 <= start < duration + 0.5:
+        if not content or start < 0:
             raise ValueError("Empty caption or timing outside the finished recording")
-        if not recover_timing and not start < end <= duration + 0.5:
+        if not recover_timing and not 0 <= start < end <= duration + 0.5:
             raise ValueError("Empty caption or timing outside the finished recording")
         if cues:
             if start <= cues[-1]["start"]:
@@ -373,6 +373,23 @@ def extract_recognition(operation: dict, uri: str, duration: float) -> dict:
         for a, b in zip(srt_cues, cues, strict=False)
     ):
         raise ValueError("SRT and WebVTT timings differ")
+    # A trailing recognition artifact cannot be played after the measured EOF.
+    # Do not move it into the recording or remove its text from the transcript.
+    # Validate ordering and cross-format agreement before excluding this suffix.
+    caption_omissions = []
+    while cues and cues[-1]["start"] >= duration + 0.5 and cues[-1]["end"] > cues[-1]["start"]:
+        cue = cues.pop()
+        srt_cues.pop()
+        caption_omissions.append(
+            {
+                "cue_index": len(cues),
+                **cue,
+                "reason": "caption starts after the finished recording",
+            }
+        )
+    if not cues:
+        raise ValueError("No caption cues occur within the finished recording")
+    caption_omissions.reverse()
     caption_adjustments = []
     for index, cue in enumerate(cues):
         following = cues[index + 1] if index + 1 < len(cues) else None
@@ -394,7 +411,7 @@ def extract_recognition(operation: dict, uri: str, duration: float) -> dict:
             )
             cue["end"] = following["start"]
             srt_cues[index]["end"] = following["start"]
-    if caption_adjustments:
+    if caption_adjustments or caption_omissions:
         srt, vtt = render_captions(srt_cues), render_captions(cues, vtt=True)
         parse_captions(srt, duration)
         parse_captions(vtt, duration, vtt=True)
@@ -421,6 +438,7 @@ def extract_recognition(operation: dict, uri: str, duration: float) -> dict:
         "word_timing_status": timing_status,
         "word_timing_issues": timing_issues,
         "caption_timing_adjustments": caption_adjustments,
+        "caption_timing_omissions": caption_omissions,
     }
 
 
@@ -531,6 +549,7 @@ def export_result(
             "audio_sha256": plan["audio_sha256"],
             "cues": recognized["cues"],
             "timing_adjustments": recognized["caption_timing_adjustments"],
+            "timing_omissions": recognized["caption_timing_omissions"],
         },
     )
     comparison = (
@@ -558,6 +577,7 @@ def export_result(
             "word_timing_status": recognized["word_timing_status"],
             "word_timing_issue_count": len(recognized["word_timing_issues"]),
             "caption_timing_adjustments": recognized["caption_timing_adjustments"],
+            "caption_timing_omissions": recognized["caption_timing_omissions"],
             "detected_speaker_ids": sorted(
                 {w["speaker"] for w in recognized["words"] if w["speaker"] is not None}
             ),
@@ -585,6 +605,12 @@ def export_result(
         timing_notice += (
             f" {len(recognized['caption_timing_adjustments'])} caption ends adjusted "
             "to the next recorded caption start. Original response retained in operation.json."
+        )
+    if recognized["caption_timing_omissions"]:
+        timing_notice += (
+            f" {len(recognized['caption_timing_omissions'])} trailing captions beyond the "
+            "finished recording excluded from playback and retained in cues.json for review. "
+            "Recognized transcript text and the original response are preserved."
         )
     if timing_notice:
         report(timing_notice.strip())
