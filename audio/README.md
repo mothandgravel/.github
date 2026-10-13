@@ -274,7 +274,9 @@ Keep input while its job runs and through listening review.
 
 Offline tests use documented Google response shapes and synthetic audio. They
 cover source preservation, timings, privacy, saved settings, caching and recovery.
-The live subtitle request still needs its first run in your Cloud project.
+The first collection has been generated and transcribed in the authenticated user
+session: 13 real episodes, including all 11 Field Notes. Listening review remains
+pending; Cloud success is not a claim of word-for-word narration accuracy.
 
 ## Publication files and validation
 
@@ -289,6 +291,13 @@ podcast feed. Its `--check` verifies media hashes, actual audio duration, subtit
 consistency, current source fingerprints and square podcast artwork. The existing
 article RSS is unchanged. New audio versions get new asset URLs, while an episode's
 podcast GUID and publication date remain stable.
+
+The duration comparison allows at most 100 milliseconds for MP3 delay/padding
+differences between FFmpeg releases. The first real collection reports 50–66 ms
+differences with identical file hashes and lengths. Larger duration differences
+still fail, and byte lengths and SHA-256 hashes must match exactly. Saved public
+durations, recording bytes and caption timestamps are not rewritten for this
+compatibility allowance.
 
 Offline Python tests cover generation, caching, all-note publication, new-note
 scripts, completeness, provenance, corruption, RSS metadata and interrupted jobs.

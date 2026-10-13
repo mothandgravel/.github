@@ -207,6 +207,23 @@ class ReleaseTests(unittest.TestCase):
         self.assertNotIn("settings.json", json.dumps(release.release_state()))
         self.assertNotIn("operation.json", json.dumps(release.release_state()))
 
+    def test_mp3_duration_allows_bounded_cross_version_delay_and_padding(self):
+        entries, _ = self.prepare()
+        original_duration = entries[0]["duration_seconds"]
+        path = self.root / "docs/assets/audio/episodes.json"
+        for difference in (-0.099, -0.053, 0.053, 0.099):
+            with self.subTest(difference=difference):
+                entries[0]["duration_seconds"] = original_duration + difference
+                audio.write_json(path, entries)
+                loaded = build_audio.load_entries(self.root)
+                self.assertEqual(loaded[0]["duration_seconds"], original_duration + difference)
+        for difference in (-0.101, 0.101):
+            with self.subTest(difference=difference):
+                entries[0]["duration_seconds"] = original_duration + difference
+                audio.write_json(path, entries)
+                with self.assertRaisesRegex(ValueError, "actual recording: note-001"):
+                    build_audio.load_entries(self.root)
+
     def test_empty_manifest_does_not_advertise_nonexistent_audio(self):
         build_audio.build(root=self.root)
         page = (self.root / "docs/notes/index.html").read_text()

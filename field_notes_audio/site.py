@@ -20,6 +20,9 @@ from field_notes_audio.storage import digest_file
 
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = "https://mothandgravel.com"
+# FFmpeg releases account for MP3 encoder delay/padding differently. The same
+# verified 24 kHz MP3 can differ by 53 ms; allow up to 100 ms, not media changes.
+MP3_DURATION_TOLERANCE_SECONDS = 0.1
 NS = {
     "atom": "http://www.w3.org/2005/Atom",
     "itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
@@ -101,8 +104,12 @@ def load_entries(root: Path = ROOT) -> list[dict]:
         audio = media_path(root, e["audio"])
         if audio.stat().st_size != e["bytes"] or digest_file(audio) != e["audio_sha256"]:
             raise ValueError(f"Published MP3 changed: {e['id']}")
-        if abs(probe_audio(audio) - duration) > 0.05:
-            raise ValueError("Published duration differs from the actual recording")
+        measured_duration = probe_audio(audio)
+        if abs(measured_duration - duration) > MP3_DURATION_TOLERANCE_SECONDS:
+            raise ValueError(
+                f"Published duration differs from the actual recording: {e['id']} "
+                f"({duration:.3f}s saved, {measured_duration:.3f}s measured)"
+            )
         for kind in ("srt", "vtt", "transcript", "cues"):
             file = media_path(root, e[kind])
             if digest_file(file) != e["files_sha256"][kind]:
