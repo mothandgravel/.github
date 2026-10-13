@@ -1,6 +1,6 @@
 // A browser draft is a visitor's words, never a generated diagnosis or estimate.
 export const draftKey = 'mg-loose-end-v1';
-export const roomKey = 'mg-workbench-v1';
+export const roomKey = 'mg-mending-workbench-v1';
 export const fields = ['intent', 'making', 'difficulty', 'people', 'outcome', 'constraints'];
 export const intents = ['I have an idea.', 'Something isn’t working.', 'I need another pair of eyes.', 'I can’t quite name it yet.'];
 export const labels = ['Starting point', 'What I’m trying to make or change', 'Where it gets difficult', 'Who encounters it', 'A useful change would look like', 'Constraints'];

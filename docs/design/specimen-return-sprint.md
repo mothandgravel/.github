@@ -1,6 +1,6 @@
 # Specimen room / the second visit
 
-The first loose end → workbench journey introduces comparison, annotation and a local draft direction. This sprint prototypes a complete return to that fictional visitor study at `/workbench/return/`. Private enquiry delivery is separate. No account, shared server state, notification or real studio response is introduced.
+The first loose end → workbench journey introduces comparison, annotation and a local draft direction. This sprint prototypes a complete return to that fictional mending study at `/workbench/return/`. Private enquiry delivery is separate. No account, shared server state, notification or real studio response is introduced.
 
 ## The question
 
@@ -10,8 +10,8 @@ The room keeps the studio's bone/charcoal/brass materials, italic heading and re
 
 ## Complete staged visit
 
-1. Arrive at an explicitly staged return. Revision 2 adds an uncertain entrance; the hypotheses and earlier studio/visitor observations are labelled fictional.
-2. Inspect revised reason-first, earlier reason-first or earlier host-first sketches. A note freezes its revision when the editor opens, even if the inspected revision changes before saving. Cancel writes nothing. Earlier first-visit local observations remain read-only and never receive a fabricated studio reply.
+1. Arrive at an explicitly staged return. Revision 2 adds a way to show the worn part; the hypotheses and earlier studio/visitor observations are labelled fictional.
+2. Inspect revised damage-first, earlier damage-first or earlier object-first sketches. A note freezes its revision when the editor opens, even if the inspected revision changes before saving. Cancel writes nothing. Earlier first-visit local observations remain read-only and never receive a fabricated studio reply.
 3. Correct the fictional studio interpretation explicitly. Corrections accumulate as local records; typing is not submission and no simulated automated answer follows.
 4. Keep a direction to test, reopen the starting question or explicitly leave it unresolved. Each recorded direction belongs to revision 2; the earlier records remain in history. Radio selection alone records nothing. These are local drafts, not approval.
 5. See a conditional proposed next conversation/test, export the carried brief and local records, return/reload, or clear just this return visit. The original brief and first-visit draft survive this clear.
@@ -33,3 +33,7 @@ The proposed durable entities are a project question, immutable artifact revisio
 Before implementing those contracts, observe someone completing the staged return: ask which sketch the earlier note concerns, what changed, whether their new direction is approval, and what they expect on the next visit. Keyboard, reduced-motion, large-text and phone walks belong to that observation. Current browser checks establish the scripted prototype's behaviour and accessibility constraints, not real-client comprehension or durable collaboration.
 
 The pilot should start with one real question and a named next step. No fees, availability, booking, ownership or response-time promises are invented here. Resend remains a separate enquiry channel and prerequisite only where an actual private handoff is needed.
+
+## Study identity
+
+The specimen is a mending notebook for worn jackets and bags. Its first comparison begins with the object or the damage; revision 2 adds “Show the worn part.” This is an illustrative option, not an upload feature. Workbench records use `mg-mending-workbench-v1` and return records use `mg-mending-return-v1`. Earlier example records remain in their original storage keys and are never relabelled or imported into this study. The carried loose-end brief keeps its existing key and remains separate.
