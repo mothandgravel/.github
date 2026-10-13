@@ -1,0 +1,27 @@
+name: Private enquiry contract
+on:
+  pull_request:
+    paths: ["services/enquiries/**", ".github/workflows/enquiries.yml"]
+  push:
+    paths: ["services/enquiries/**", ".github/workflows/enquiries.yml"]
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: npm
+          cache-dependency-path: services/enquiries/package-lock.json
+      - run: npm ci --ignore-scripts --prefix services/enquiries
+      - run: npm test --prefix services/enquiries
+      - name: Build and smoke-test the disabled container
+        run: |
+          docker build -t mg-enquiries-test services/enquiries
+          docker run --detach --name mg-enquiries-test -p 127.0.0.1:8787:8787 mg-enquiries-test
+          curl --fail --retry 10 --retry-connrefused --retry-delay 1 http://127.0.0.1:8787/config > /tmp/mg-enquiry-config.json
+          node -e 'const c=JSON.parse(require("fs").readFileSync("/tmp/mg-enquiry-config.json"));if(c.accepting!==false)process.exit(1)'
+          docker stop mg-enquiries-test

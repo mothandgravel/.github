@@ -1,0 +1,14 @@
+{
+  "cover": {
+    "asset": "receipt-cover.webp",
+    "tool": "built-in imagegen",
+    "classification": "generated editorial metaphor; not a production capture",
+    "prompt": "Use case: illustration-story\nAsset type: editorial cover for Moth & Gravel Field Note draft 'A receipt should say what arrived'.\nPrimary request: a quiet, strange editorial still life: a small blank bone-coloured paper receipt held securely beneath a single rough dark stone; an unsealed paper envelope beside it has a narrow brass-coloured thread extending into darkness. The receipt is present and tangible; the far end of the thread is unseen.\nStyle/medium: tactile analogue collage with restrained photographic paper and stone textures, subtle grain, deliberate imperfect cut edges. Studio palette bone paper, charcoal, muted brass.\nComposition/framing: wide landscape, generous negative space, objects concentrated near centre, editorial rather than product advertisement.\nLighting/mood: low angled soft light, curious and calm.\nConstraints: no readable writing, typography, numbers, green check marks, logos, people, software screenshots, interface elements or watermark. This is a visual metaphor, not a diagram.",
+    "processing": "Lossless dimensions retained; encoded WebP quality 88 for review."
+  },
+  "figure": {
+    "asset": "receipt-evidence.svg",
+    "method": "authored SVG",
+    "classification": "conceptual evidence boundary; no live status represented"
+  }
+}

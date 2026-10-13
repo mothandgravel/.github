@@ -6,7 +6,7 @@ The landing should help someone recognize their difficulty, articulate it and se
 
 The public `/questions/` journey asks for a starting point, an intended change, the difficulty and people involved, a useful outcome and optional constraints. Only a few words describing the starting question are necessary. “I can’t quite name it yet” is a legitimate entrance. Guided stages enhance a complete static question sheet.
 
-The result is an editable plain-text brief assembled from the visitor's words. It can be copied or downloaded without an account. Manual edits survive a return to the answers and a return from the example workbench. Rebuilding from answers is explicit. The studio has not received the brief; it is not a diagnosis, quote or agreed scope.
+The result is an editable plain-text brief assembled from the visitor's words. It can be copied or downloaded without an account. Manual edits survive a return to the answers and a return from the example workbench. Rebuilding from answers is explicit. Preparing or keeping a brief does not submit it; it is not a diagnosis, quote or agreed scope. Private sending is a separate explicit action, hidden until a verified service is configured.
 
 Choosing **Carry it to the workbench** places a bounded draft in browser session storage and opens `/workbench/` in the same tab. No answers are placed in URLs or sent to a server. Clearing removes the saved question and recorded preview actions. Closing the tab normally ends the session; browsers may restore session storage when restoring tabs. The page is not a secure vault. Downloaded copies remain with the visitor. If storage is unavailable, the brief remains available for download and the ordinary example can still be opened.
 
@@ -75,3 +75,11 @@ Browser verification lives in `scripts/audit_loose_end.mjs`: the real journey, e
 The landing's existing static, browser and cold-load budgets remain required. The prototype is proposed through a PR; live-site publication and a real private pilot are separate outcomes.
 
 Primary form guidance: [GOV.UK question pages](https://design-system.service.gov.uk/patterns/question-pages/) and [structuring forms](https://www.gov.uk/service-manual/design/form-structure). The relevant principles are necessary questions, legitimate uncertainty, focused stages and useful branching when answers change the questions asked. This first slice uses the same short question sequence across the four entrances; there is no invented branching or generated assessment.
+
+## Next slice: a receipt before a promise
+
+The separately hosted [Resend enquiry service](../../services/enquiries/README.md) saves the exact reviewed name, email and brief plus its delivery job in one private transaction. The website can acknowledge that record independently of email delivery. Its public config is disabled in this change; no sender, studio inbox, live host or credentials are invented. A receiving subdomain and explicit operator replies prepare private correspondence without pretending the public example workbench has become an authenticated client room.
+
+Retries keep one frozen snapshot, reference and capability. A lost response is uncertain; check/retry recovers the same receipt. Verified delivery is evidence from a mail server, never a human read. The illustrated [Field Note 008 draft](drafts/008-receipt.md) follows this design question. It remains outside the published catalog, feed and sitemap.
+
+Priority after a controlled private rehearsal: define one useful first engagement and its concrete output, boundaries and real commercial terms. A focused question review is a candidate: examine one difficulty, inspect available evidence, return a reasoned next move and what would change it. Fees, timing and availability need the studio's decisions; the site should not fabricate them. Then build an authenticated client-room pilot around one real engagement, permissions and recoverable decisions. The public workbench remains clearly an example.

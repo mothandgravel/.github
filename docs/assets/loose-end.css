@@ -63,3 +63,7 @@
 @media(max-width:900px) { .journey-layout { grid-template-columns:1fr;gap:40px; }.question-sheet { order:-1; }.journey-aside { max-width:650px; }.room-grid { grid-template-columns:1fr; } }
 @media(max-width:660px) { .journey-heading { padding-top:36px; }.journey-heading h1 { font-size:clamp(42px,10.5vw,64px); }.journey-actions { gap:12px; }.journey-actions .button { width:100%; }.question-sheet,.room-card { padding:23px 18px; }.artifact-view { padding:25px 10px; } }
 @media print { .site-header,.journey-aside,.journey-actions,.journey-footer,.journey-status,[data-enhance],#journey-controls { display:none!important; }[data-step] { display:block!important; }.journey-layout,.room-grid { display:block; }textarea { border:0!important; }.question-sheet,.room-card { break-inside:avoid;box-shadow:none;margin-bottom:20px; } }
+/* Private handoff only appears after the configured service confirms readiness. */
+#private-enquiry { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+#private-enquiry input:not([type="radio"]) { display:block; width:100%; max-width:100%; box-sizing:border-box; font:inherit; padding:.8rem; margin:.4rem 0 1rem; color:inherit; background:transparent; border:1px solid currentColor; border-radius:0; }
+#private-enquiry textarea[readonly] { min-height:14rem; }

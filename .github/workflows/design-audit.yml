@@ -6,6 +6,7 @@ on:
       - "docs/**"
       - "scripts/audit_visual.mjs"
       - "scripts/audit_loose_end.mjs"
+      - "scripts/audit_enquiry.mjs"
       - ".github/workflows/design-audit.yml"
   workflow_dispatch:
 
@@ -40,6 +41,7 @@ jobs:
         run: |
           node scripts/audit_visual.mjs
           node scripts/audit_loose_end.mjs
+          node scripts/audit_enquiry.mjs
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4
