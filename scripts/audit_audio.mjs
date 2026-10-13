@@ -113,8 +113,13 @@ try {
       check((await page.locator('[data-queue-transcript]').getAttribute('href')) === entries[4].transcript,'Late transcript changed the download link');
       await page.unroute(delayed);
     }
+    await page.locator('audio').evaluate(a => { a.playbackRate = 2; });
+    await page.waitForFunction(() => document.querySelector('[data-audio-speed]').value === '2');
     await page.locator(`[data-queue-index="${expectedCount - 1}"]`).click();
     await page.waitForFunction(() => !document.querySelector('audio').paused && document.querySelector('audio').readyState >= 2);
+    check(await page.locator('audio').evaluate(a => a.playbackRate === 2),'Episode change lost the native speed choice');
+    await page.locator('[data-audio-speed]').selectOption('1.15');
+    check(await page.locator('audio').evaluate(a => a.playbackRate === 1.15),'Custom speed did not replace the native choice');
     await page.locator('audio').evaluate(a => {a.currentTime = a.duration - .05;});
     await page.waitForFunction(() => document.querySelector('[data-audio-status]').textContent.includes('end of the archive'));
     check(await page.locator('[data-queue-next]').isDisabled(),'Queue wraps past its final item');
@@ -136,6 +141,7 @@ try {
   check(await nojs.locator('.audio-cues').isVisible(),'Transcript needs JavaScript');
   check(await nojs.locator('audio').getAttribute('controls') !== null,'No-JavaScript player missing');
   check(!(await nojs.locator('[data-audio-speed]').isVisible()),'Dead speed control is visible without JavaScript');
+  check(!(await nojs.locator('[data-audio-default-speed]').isVisible()),'No-JavaScript playback claims an inactive speed enhancement');
   await nojs.goto(base + '/notes/');
   await nojs.locator('.archive-session>summary').click();
   await nojs.locator('.audio-queue-sheet>summary').click();

@@ -27,6 +27,11 @@ frame, typography and hierarchy carry the studio identity; keyboard and
 no-JavaScript playback remain usable. No waveform decoration, new font download,
 animation dependency or account flow is introduced.
 
+The enhanced 1.15× hint is shown only when JavaScript has actually applied that
+default. Changing speed in native media controls updates the authored picker,
+including a native rate not listed initially; the selected rate survives an
+episode change. Ordinary no-JavaScript playback retains native browser behaviour.
+
 ## Review captures
 
 Before and after the article player, at 390 px in Night:

@@ -4,9 +4,24 @@ function setupPlayer(root) {
   const audio = root.querySelector('audio');
   const speed = root.querySelector('[data-audio-speed]');
   const status = root.querySelector('[data-audio-status]');
-  const applyRate = () => { audio.defaultPlaybackRate = playbackRate(speed.value); audio.playbackRate = playbackRate(speed.value); };
+  const applyRate = () => {
+    const nativeOption = speed.selectedOptions[0]?.hasAttribute('data-native-rate');
+    const rate = nativeOption ? Number(speed.value) : playbackRate(speed.value);
+    const validRate = Number.isFinite(rate) && rate > 0 && rate <= 16 ? rate : DEFAULT_RATE;
+    audio.defaultPlaybackRate = validRate; audio.playbackRate = validRate;
+  };
   speed.value = String(DEFAULT_RATE); applyRate();
+  audio.addEventListener('ratechange', () => {
+    const value = String(audio.playbackRate);
+    if (![...speed.options].some(option => option.value === value)) {
+      speed.querySelector('[data-native-rate]')?.remove();
+      const option = document.createElement('option'); option.value = value;
+      option.textContent = value + '×'; option.setAttribute('data-native-rate', ''); speed.append(option);
+    }
+    speed.value = value;
+  });
   speed.closest('label').hidden = false;
+  root.querySelector('[data-audio-default-speed]')?.removeAttribute('hidden');
   const follow = root.querySelector('[data-audio-follow]');
   if (follow) root.querySelector('[data-audio-follow-control]').hidden = false;
   speed.addEventListener('change', applyRate);
