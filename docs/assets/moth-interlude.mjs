@@ -42,6 +42,8 @@ async function initialise() {
   const body = svg.querySelector('#moth-body');
   const antennae = svg.querySelector('#moth-antennae');
   if (wings.some(wing => !wing.node) || !body || !antennae) throw new Error('Interlude rig incomplete');
+  let renderer;
+  room.dataset.mothRenderer = 'svg';
   const play = room.querySelector('[data-moth-play]');
   const pause = room.querySelector('[data-moth-pause]');
   const finish = room.querySelector('[data-moth-finish]');
@@ -85,7 +87,7 @@ async function initialise() {
     const size = Math.min(68, box.width * .18);
     return {width:box.width,height:box.height,
       source:{x:source.left-box.left + source.width*.495,y:source.top-box.top + source.height*.52,size:source.width*.75},
-      perch:{x:perch.left-box.left + perch.width*.5,y:perch.top-box.top-size*197/750,size},
+      perch:{x:perch.left-box.left + perch.width*.5,y:perch.top-box.top-size*(renderer?.contactOffset??197/750),size},
       question:rectIn(room.querySelector('.moth-question'),box)};
   }
   function safeGeometry(candidate) {
@@ -115,16 +117,21 @@ async function initialise() {
     }
     body.setAttribute('transform',`rotate(${p.bodyPitch} 500 470)`);
     antennae.setAttribute('transform',`rotate(${p.antennaAngle} 500 389)`);
+    if (renderer && !renderer.render(p,time,Math.max(102,layout.source.size))) {
+      renderer.dispose();renderer = undefined;svg.removeAttribute('hidden');room.dataset.mothRenderer = 'svg';
+      interrupt();return false;
+    }
     shadow.style.transform = `translate3d(${p.x+6}px,${p.y+layout.source.size*p.scale*.25+10}px,0) translate(-50%,-50%) scaleX(${p.shadow.scale})`;
     shadow.style.opacity = p.shadow.opacity;
     stage.style.setProperty('--moth-light', p.phase === 'settle' ? '.15' : '.06');
+    return true;
   };
   const tick = now => {
     frame = 0;
     if (state !== 'playing') return;
     if (still() || !visible) return end();
     elapsed = Math.min(DURATION, now-started);
-    paint(elapsed);
+    if (!paint(elapsed)) return;
     if (elapsed >= DURATION) return end('A question worth following.');
     frame = requestAnimationFrame(tick);
   };
@@ -146,7 +153,7 @@ async function initialise() {
     elapsed = 0; started = performance.now();
     setState('playing'); status.textContent = '';
     play.textContent = 'Watch again';
-    paint(0); frame = requestAnimationFrame(tick);
+    if (paint(0)) frame = requestAnimationFrame(tick);
   };
   play.addEventListener('click',()=>begin(true));
   pause.addEventListener('click',() => {
@@ -190,6 +197,18 @@ async function initialise() {
   reduced.addEventListener('change',()=>{
     interrupt();setState('idle');status.textContent = reduced.matches ? 'Still, by preference.' : '';
   });
+  // The source rig remains a complete flight fallback. A failed or lost GPU
+  // never strands the question or replaces native controls with an error flow.
+  if (!reduced.matches) {
+    try {
+      const { createMothRenderer } = await import('./moth-webgl.mjs');
+      renderer = await createMothRenderer(traveller,()=>{
+        renderer = undefined;svg.removeAttribute('hidden');room.dataset.mothRenderer = 'svg';
+        interrupt();
+      });
+      svg.setAttribute('hidden','');room.dataset.mothRenderer = 'webgl';
+    } catch { /* Keep the source-derived SVG performance. */ }
+  }
   const observer = new IntersectionObserver(entries=>{
     const entry = entries[0];
     observed = true;
