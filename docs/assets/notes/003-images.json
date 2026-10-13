@@ -1,0 +1,79 @@
+{
+  "cover": {
+    "kind": "generated editorial illustration",
+    "tool": "built-in image_gen",
+    "source_sha256": "f9e85faa32e0494a3e055d75beb510e38b131f8687efa524906ea736c0d1408d",
+    "description": "Vellum ribbon, six charcoal ceramic markers and a warm paper folio with a brass bookmark. An interpretation of time, perspective and focus; not a product screenshot.",
+    "files": [
+      "003-cover-800.webp",
+      "003-cover-1600.webp",
+      "003-cover-social.jpg"
+    ],
+    "prompt": "Use case: stylized-concept. Asset type: a wide editorial cover image, landscape 16:9, for Moth & Gravel Field Note 003, titled outside the image 'A metaphor has to earn its place'. Primary request: a sophisticated, tactile editorial illustration about finding one's way back to complex work: River (time), Circle (perspective), Focus (one thing to read). Create an abstract physical paper-and-ceramic assemblage rather than an interface mockup. A gently winding narrow ribbon of translucent warm vellum runs diagonally through the composition, six small charcoal ceramic markers form a restrained circular arrangement, and a single warm-bone paper folio with one brass bookmark creates a focal point. These three forms should feel part of one considered composition, with enough visible hierarchy to hold a cover at thumbnail size. Materials: uncoated warm paper, smooth matte charcoal, restrained brushed brass, soft ceramic edges; subtle real material texture only. Style: crafted editorial still life rendered as an elegant art-directed illustration, restrained rather than whimsical, with soft directional light, delicate continuous contact shadows and plentiful quiet space. Palette: warm bone and ivory, charcoal and deep ink, small brass accents. Background: flat warm-bone studio plane with a slight tonal falloff; balanced composition suitable for both a dark and a warm-ivory website. No text, lettering, logos, moth emblems, UI screenshots, phone frames, furniture, pedestal tables, pebbles, water landscapes, human figures, neon, dashboards, glassmorphism or fake product screens. The illustration is an interpretation of reading, not an image of a finished application.",
+    "optimized_assets": [
+      {
+        "file": "003-cover-800.webp",
+        "sha256": "4f5de59525963ea46e9dd8d3aa1de51b1b8661bc9160b0d52df1e04fb0c1cbc0",
+        "bytes": 24070,
+        "dimensions": [
+          800,
+          450
+        ]
+      },
+      {
+        "file": "003-cover-1600.webp",
+        "sha256": "6699db949fe3198bda5fd11c9b86c6d48d06a529c9c1a42024eedd2e3bb64ab9",
+        "bytes": 85064,
+        "dimensions": [
+          1600,
+          900
+        ]
+      },
+      {
+        "file": "003-cover-social.jpg",
+        "sha256": "e58fa28d9f851d182b5baeb8437f7f7103cde520f7aeffcda4476090fbca0c1c",
+        "bytes": 108205,
+        "dimensions": [
+          1200,
+          675
+        ]
+      }
+    ]
+  },
+  "native_captures": [
+    {
+      "file": "003-circle-android.webp",
+      "kind": "native-emulator-capture",
+      "appearance": "Docket light",
+      "fixture": "synthetic demo",
+      "source_revision": "a505c66f4029832ab086ec738633182fca0d07e0",
+      "source_run": 38265712218,
+      "source_file": "Circle-ready-phone-light-docket.png",
+      "source_sha256": "f619131b7f361aaf0bfd21470b19826844c728f7d8ee3a09649ca795d9693ebe",
+      "sha256": "3347013e66a523293cc99926e9780d3e8ab1742059801dfed309026630d8f761",
+      "dimensions": [
+        1080,
+        2337
+      ],
+      "encoding": "lossless WebP; original pixels and dimensions preserved",
+      "validation": "Capture run incomplete; static rendering only, not proof of interaction or device performance."
+    },
+    {
+      "file": "003-river-android.webp",
+      "kind": "native-emulator-capture",
+      "appearance": "Docket light",
+      "fixture": "synthetic demo",
+      "source_revision": "86b6a90a7b36df540008b323bccdef5d14cda855",
+      "source_run": 38267746415,
+      "source_file": "River-ready-phone-light-docket.png",
+      "source_sha256": "f269d941a38ea2a4348513f850682d353f82358f2ba440e3c2d8856d59effcfd",
+      "sha256": "eafc483064369b39d008fdf0e8779159281abc229164afae49955895998a9af5",
+      "dimensions": [
+        1080,
+        2337
+      ],
+      "encoding": "lossless WebP; original pixels and dimensions preserved",
+      "validation": "Capture run incomplete; static rendering only, not proof of interaction or device performance."
+    }
+  ]
+}

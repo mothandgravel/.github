@@ -57,6 +57,12 @@
       "002"
     ],
     "visual": "forms",
-    "featured": true
+    "featured": true,
+    "cover": {
+      "small": "003-cover-800.webp",
+      "large": "003-cover-1600.webp",
+      "width": 1600,
+      "height": 900
+    }
   }
 ]
