@@ -47,6 +47,22 @@ const snap = async (page, name) => {
   await page.screenshot({ path: join(output, `${name}.png`), fullPage: true, animations: "disabled" });
 };
 
+async function assertLandingStyleParity(page, label) {
+  const measure = () => page.evaluate(() => {
+    const properties = ['display', 'font-size', 'font-family', 'line-height', 'color',
+      'background-color', 'padding', 'margin', 'width', 'height', 'grid-template-columns', 'gap'];
+    return [...document.querySelectorAll('body *')].filter(el => !['SCRIPT', 'STYLE'].includes(el.tagName))
+      .map(el => ({ name: el.id || el.className?.baseVal || el.className || el.tagName,
+        values: properties.map(property => getComputedStyle(el).getPropertyValue(property)) }));
+  });
+  const before = await measure();
+  const full = await page.addStyleTag({ url: origin + '/assets/site.css' });
+  const after = await measure();
+  await full.evaluate(el => el.remove());
+  const changed = before.filter((entry, index) => JSON.stringify(entry.values) !== JSON.stringify(after[index]?.values));
+  assert(changed.length === 0, label + ': generated landing styles differ from authored styles on ' + changed.map(e => e.name).join(', '));
+}
+
 try {
   async function accessibilityAudit(page, label) {
     const result = await page.evaluate(async () => {
@@ -161,6 +177,7 @@ try {
 
     assert(report.documentWidth <= viewport.width + 2,
       `${viewport.name}: horizontal overflow (${report.documentWidth}px > ${viewport.width}px)`);
+    await assertLandingStyleParity(page, viewport.name);
     assert(report.imagesLoaded, `${viewport.name}: a brand image did not load`);
     assert(await page.locator(".work-card-link").count() === 2, viewport.name + ": expected 2 working Workbench destinations");
     assert(await page.locator(`.note-feature .editorial-link[href="./notes/${featured.slug}"]`).count() === 1,

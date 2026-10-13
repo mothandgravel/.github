@@ -1,9 +1,71 @@
 #!/usr/bin/env python3
 """One render-ready homepage response, derived from the authored stylesheet."""
 from pathlib import Path
+from html.parser import HTMLParser
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class LandingElements(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        # Menu/root classes appear only after enhancement, but their styles must ship.
+        self.classes = {'has-js', 'is-open'}
+        self.ids = set()
+
+    def handle_starttag(self, tag, attrs):
+        values = dict(attrs)
+        self.classes.update(values.get('class', '').split())
+        if values.get('id'):
+            self.ids.add(values['id'])
+
+
+def used_rules(css, elements):
+    """Select rules for the generated landing, retaining media and state behavior.
+
+    The authored CSS uses ordinary qualified rules, media queries and keyframes.
+    Strings are tokens, so braces/commas inside quoted values remain untouched.
+    """
+    tokens = re.findall(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|[^{}"\']+|[{}]', css)
+
+    def select(start, end):
+        selected = []
+        cursor = start
+        while cursor < end:
+            opening = cursor
+            while opening < end and tokens[opening] != '{':
+                opening += 1
+            if opening == end:
+                assert not ''.join(tokens[cursor:end]).strip(), 'Unsupported CSS statement'
+                break
+            depth, closing = 1, opening + 1
+            while depth and closing < end:
+                depth += (tokens[closing] == '{') - (tokens[closing] == '}')
+                closing += 1
+            assert depth == 0, 'Unbalanced authored CSS'
+            header = ''.join(tokens[cursor:opening]).strip()
+            body = ''.join(tokens[opening + 1:closing - 1])
+            if header.startswith(('@media', '@supports')):
+                body = select(opening + 1, closing - 1)
+                if body:
+                    selected.append(header + '{' + body + '}')
+            elif header.startswith('@'):
+                assert header.startswith('@keyframes'), 'Unsupported CSS at-rule'
+                selected.append(header + '{' + body + '}')
+            else:
+                branches = []
+                for selector in header.split(','):
+                    classes = set(re.findall(r'\.([A-Za-z_-][\w-]*)', selector))
+                    ids = set(re.findall(r'#([A-Za-z_-][\w-]*)', selector))
+                    if classes <= elements.classes and ids <= elements.ids:
+                        branches.append(selector.strip())
+                if branches:
+                    selected.append(','.join(branches) + '{' + body + '}')
+            cursor = closing
+        return '\n'.join(selected)
+
+    return select(0, len(tokens))
 
 
 def build(check=False):
@@ -21,10 +83,13 @@ def build(check=False):
     css = '\n'.join([core, editorial, covers, invitations, answers])
     # Preserve CSS tokens and quoted content; only comments/line indentation leave.
     css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
+    elements = LandingElements()
+    path = ROOT / 'docs/index.html'
+    elements.feed(path.read_text())
+    css = used_rules(css, elements)
     css = '\n'.join(line.strip() for line in css.splitlines() if line.strip())
     assert '</style' not in css.lower()
     block = '<!-- home-style:start -->\n<style>\n' + css + '\n</style>\n<!-- home-style:end -->'
-    path = ROOT / 'docs/index.html'
     old = path.read_text()
     if '<!-- home-style:start -->' in old:
         new, count = re.subn(r'<!-- home-style:start -->.*?<!-- home-style:end -->',
