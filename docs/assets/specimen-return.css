@@ -1,0 +1,8 @@
+.return-arrival {margin:32px 0;border-left:4px solid var(--gold-bright)}
+.return-arrival li {margin:12px 0}.return-arrival ul{padding-left:24px}
+#return-brief pre {white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}
+.return-record {border-top:1px solid var(--line);padding:18px 0;overflow-wrap:anywhere}
+.return-record blockquote{white-space:pre-wrap}
+#return-note-editor,#interpretation-form {border-top:1px solid var(--line);padding-top:22px;margin-top:22px}
+#revision-drawing svg{width:100%;height:auto;display:block}
+#return-choice-history li{margin:12px 0;overflow-wrap:anywhere}
