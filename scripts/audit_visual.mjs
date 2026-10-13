@@ -302,6 +302,7 @@ try {
   for (const editorial of [
     { name: "notes-index", path: "/notes/", heading: ".notes-index-hero h1" },
     { name: "note-theme", path: "/notes/002-afterlight-nightfall.html", heading: ".study-heading h1" },
+    { name: "note-metaphor", path: "/notes/003-metaphor-earns-its-place.html", heading: ".metaphor-heading h1" },
   ]) {
     for (const viewport of widths) {
       const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
@@ -321,7 +322,7 @@ try {
         const visibleTextFits = element => !element || element.scrollWidth <= element.clientWidth + 2;
         const tracked = [
           heading,
-          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric"),
+          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status"),
         ];
         return {
           width: window.innerWidth,
@@ -346,10 +347,16 @@ try {
       assert(browserErrors.length === 0, label + ": browser errors: " + browserErrors.join("; "));
       if (editorial.name === "notes-index") {
         assert(layout.notes === Math.min(catalog.length, 20), label + ": index must list the entire public catalog");
-      } else {
+      } else if (editorial.name === "note-theme") {
         assert(layout.specimens === 2 && layout.metrics === 6,
           label + ": missing paired specimens or numeric samples");
         assert(layout.hasIndexRoute, label + ": missing back route to Field Notes");
+      }
+      if (editorial.name === 'note-metaphor') {
+        assert(await page.locator('.metaphor-panel').count() === 3, label + ': conceptual triptych missing');
+        assert(await page.locator('#native-status').count() === 1, label + ': prototype status missing');
+        assert(await page.locator('.note-related a[href="./002-afterlight-nightfall.html"]').count() === 1,
+          label + ': related theme study missing');
       }
       assert(layout.ogImage === "https://mothandgravel.com/assets/social-cover.png",
         label + ": social preview URL is missing");
@@ -454,6 +461,16 @@ try {
   await snap(noJSArchive, 'archive-no-javascript-phone');
   await noJSArchive.close();
 
+  const newNote = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  await newNote.goto(origin, { waitUntil: 'networkidle' });
+  await newNote.locator('.note-feature .editorial-link').click();
+  await newNote.locator('.metaphor-heading h1').waitFor();
+  assert(newNote.url().endsWith('/notes/003-metaphor-earns-its-place.html'), 'Featured note 003 route failed');
+  await newNote.locator('.note-aside a[href="#native-status"]').click();
+  assert(newNote.url().endsWith('#native-status'), 'Native study status link failed');
+  await newNote.locator('.note-related a[href="./002-afterlight-nightfall.html"]').click();
+  await newNote.locator('.study-heading h1').waitFor();
+  await newNote.close();
   // Ensure this is a real raster asset, not an SVG-only sharing fallback.
   const coverResponse = await browser.newPage();
   try {

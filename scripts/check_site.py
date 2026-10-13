@@ -160,13 +160,14 @@ def main() -> int:
     check('id="field-notes"' in html and 'class="note-feature"' in html,
           "Homepage needs an independent editorial Field Notes section")
     check('class="editorial-stack"' in html, "Recent-note discovery stack is missing")
-    for expected in ("notes/", "notes/001-curiosity-with-calluses.html",
-                     "notes/002-afterlight-nightfall.html"):
+    for expected in ["notes/"] + ["notes/" + note["slug"] for note in catalog]:
         check(f"https://mothandgravel.com/{expected}" in (ROOT / "sitemap.xml").read_text(encoding="utf-8"),
               f"Sitemap is missing {expected}")
 
     extra_pages = {}
-    for name, file in (("field notes index", note_index), ("theme study", theme_note)):
+    for name, file in [("field notes index", note_index), ("theme study", theme_note)] + [
+        ("note " + note["id"], ROOT / "notes" / note["slug"]) for note in catalog
+    ]:
         if not file.is_file():
             continue
         body = file.read_text(encoding="utf-8")
@@ -182,6 +183,20 @@ def main() -> int:
             target = (file.parent / relative).resolve()
             check(target.is_relative_to(ROOT.resolve()) and target.is_file(),
                   f"{name} has a broken local asset: {relative}")
+    for note in catalog:
+        path = ROOT / 'notes' / note['slug']
+        note_source = path.read_text(encoding='utf-8')
+        check(f'https://mothandgravel.com/notes/{note["slug"]}' in note_source,
+              f'{note["id"]} canonical route missing')
+        page_parser = SiteParser()
+        page_parser.feed(note_source)
+        for anchor in page_parser.anchors:
+            check(anchor in page_parser.ids, f'{note["id"]} broken local anchor #{anchor}')
+        for relative in re.findall(r'(?:href|src)="(\.\.?/[^\"]+)"', note_source):
+            target = (path.parent / urlsplit(relative).path).resolve()
+            check(target.is_relative_to(ROOT.resolve()) and (target.is_file() or
+                  (target.is_dir() and (target / 'index.html').is_file())),
+                  f'{note["id"]} broken local destination {relative}')
     if note_index.is_file():
         check('href="./001-curiosity-with-calluses.html"' in extra_pages["field notes index"],
               "Field Notes index missing Note 001 link")

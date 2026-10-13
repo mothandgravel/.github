@@ -870,3 +870,35 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 @media (prefers-reduced-motion:reduce) {
   .stack-hint>span { transition:none; }
 }
+
+/* Field Note 003: explanatory drawings share the studio's materials. */
+.metaphor-heading h1 { font-size:clamp(40px,8.1vw,120px); }
+.metaphor-note .note-aside { flex-wrap:wrap; }
+.metaphor-note .note-aside a { color:var(--gold-bright);display:inline-block;min-height:44px; }
+.metaphor-figure { margin:38px 0 52px; }
+.metaphor-triptych { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px; }
+.metaphor-panel { min-width:0;border:1px solid var(--line);padding:19px 17px 22px;background:var(--surface); }
+.note-prose .metaphor-panel>p.mono { color:var(--gold-bright);font-size:10px;margin:0; }
+.metaphor-panel svg { display:block;width:100%;height:auto;margin:18px 0 22px;overflow:visible; }
+.metaphor-panel h3 { font-family:var(--serif);font-weight:400;font-style:italic;font-size:23px;line-height:1.2;letter-spacing:-.02em;margin-bottom:14px; }
+.note-prose .metaphor-panel>p:not(.mono) { font-size:14px;line-height:1.65;margin:0; }
+.metaphor-figure figcaption { color:var(--muted);font-size:9px;line-height:1.8;margin-top:14px; }
+.diagram-river { fill:none;stroke:var(--secondary);stroke-width:28;stroke-linecap:round;opacity:.22; }
+.diagram-current { fill:none;stroke:var(--gold-bright);stroke-width:2;stroke-linecap:round; }
+.diagram-marker { fill:var(--surface);stroke:var(--gold-bright);stroke-width:2; }
+.diagram-table { fill:var(--surface-2);stroke:var(--line);stroke-width:1.5; }
+.diagram-seats { fill:var(--surface);stroke:var(--secondary);stroke-width:1.5; }
+.diagram-selected { fill:var(--surface-2);stroke:var(--gold-bright);stroke-width:2.5; }
+.diagram-paper { fill:var(--surface-2);stroke:var(--secondary);stroke-width:1.5; }
+.diagram-copy { fill:none;stroke:var(--secondary);stroke-width:2; }
+.native-study-status { padding:27px;border:1px solid var(--line);background:var(--surface);margin-top:50px;scroll-margin-top:100px; }
+.note-prose .native-study-status>p.mono { font-size:10px;color:var(--gold-bright); }
+.note-prose .native-study-status h2 { font-size:27px;margin-top:22px; }
+.note-prose .native-study-status p { font-size:15px; }
+.note-prose .native-study-status p:last-child { margin-bottom:0; }
+@media (max-width:660px) {
+  .metaphor-triptych { grid-template-columns:1fr;gap:16px; }
+  .metaphor-panel { padding:22px; }
+  .metaphor-panel svg { max-width:240px;margin:18px auto 22px; }
+  .native-study-status { padding:22px; }
+}
