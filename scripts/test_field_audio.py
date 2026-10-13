@@ -5,8 +5,11 @@ import io
 import json
 import math
 from pathlib import Path
+import selectors
 import shutil
 import struct
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -125,7 +128,7 @@ class AudioTests(unittest.TestCase):
         plan = audio.make_plan("note-001", "gemini-2.5-pro-tts", "eu")
         return plan, root / "artifacts/audio/note-001" / plan["fingerprint"][:16]
 
-    @unittest.skipUnless(shutil.which("ffmpeg"), "FFmpeg unavailable")
+    @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "FFmpeg tools unavailable")
     def test_saved_chunks_reused_and_corruption_blocks_regeneration(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -147,6 +150,43 @@ class AudioTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "missing or changed"):
                     audio.generate(self.generate_args())
                 self.assertEqual(synth.call_count, 1)
+
+    def test_competing_process_cannot_submit_or_write_an_active_recording(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            plan, output = self.run_context(root)
+            output.mkdir(parents=True)
+            holder = subprocess.Popen([sys.executable, "-u", "-c",
+                "import sys\nfrom pathlib import Path\n"
+                "sys.path.insert(0, sys.argv[1])\nfrom field_captions import run_lock\n"
+                "with run_lock(Path(sys.argv[2]), 'audio'):\n"
+                " print('locked', flush=True)\n sys.stdin.readline()\n",
+                str(Path(audio.__file__).resolve().parent), str(output)],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            try:
+                with selectors.DefaultSelector() as ready:
+                    ready.register(holder.stdout, selectors.EVENT_READ)
+                    self.assertTrue(ready.select(timeout=5), "The lock holder did not start")
+                self.assertEqual(holder.stdout.readline().strip(), "locked")
+                with patch.object(audio, "ROOT", root), patch.object(audio, "make_plan", return_value=plan), \
+                     patch.object(audio.shutil, "which", return_value="installed"), \
+                     patch.object(audio, "access_token") as auth, \
+                     patch.object(audio, "synthesize") as synth, redirect_stdout(io.StringIO()):
+                    with self.assertRaisesRegex(ValueError, "Another audio command"):
+                        audio.generate(self.generate_args())
+                    auth.assert_not_called()
+                    synth.assert_not_called()
+                self.assertEqual({p.name for p in output.iterdir()}, {".lock"})
+            finally:
+                try:
+                    holder.communicate("\n", timeout=5)
+                except subprocess.TimeoutExpired:
+                    holder.kill()
+                    holder.communicate(timeout=5)
+            self.assertEqual(holder.returncode, 0)
+            from field_captions import run_lock
+            with run_lock(output, "audio"):
+                pass  # Exiting the other process releases its lock.
 
     def test_uncertain_request_is_not_repeated_automatically(self):
         with tempfile.TemporaryDirectory() as directory:
