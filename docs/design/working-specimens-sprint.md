@@ -22,6 +22,8 @@ A small optional module adds pointer handling to the artifact planes. It is fetc
 
 ## ARRVL / motion notes
 
+The follow-up [ARRVL motion study](arrvl-motion-study.md) records additional live observations and a focused light-and-handling sprint before the proper 3D moth.
+
 The owner drew attention to ARRVL’s crisp liveliness and almost three-dimensional feel. Direct browser review of https://arrvl.studio/ on 2026-10-13 showed an orange grid introduction, a dark textured visual with isolated white marks, and a light selected-work composition with large type and separate image/label surfaces. Navigation and scrolling were inspected; these observations are not measurements of animation timing, user response or loading performance.
 
 The translation is a handling light, with the existing bone, charcoal and brass character:
