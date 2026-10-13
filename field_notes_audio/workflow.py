@@ -13,6 +13,7 @@ import zipfile
 from pathlib import Path
 
 from field_notes_audio import audio, captions
+from field_notes_audio.progress import raise_if_stopped, report, timed
 from field_notes_audio.storage import read_object
 
 DEFAULTS = {"endpoint": "global", "location": "us", "model": "gemini-2.5-pro-tts", "auth": "gcloud"}
@@ -112,13 +113,13 @@ def setup(args: argparse.Namespace) -> None:
         raise ValueError(f"Missing tools: {', '.join(missing)}.{hint}")
     # Authenticate before making any resource changes; tokens never reach the settings file.
     audio.access_token(args.auth)
-    print(f"Prepare Google Cloud project: {args.project}", flush=True)
+    report(f"Prepare Google Cloud project: {args.project}", flush=True)
     try:
         billing = gcloud(
             ["billing", "projects", "describe", args.project, "--format=value(billingEnabled)"]
         )
     except RuntimeError:
-        print(
+        report(
             "Billing status is not readable by this account; continuing with the existing project.",
             flush=True,
         )
@@ -130,7 +131,7 @@ def setup(args: argparse.Namespace) -> None:
     number = gcloud(["projects", "describe", args.project, "--format=value(projectNumber)"])
     if not re.fullmatch(r"[0-9]+", number):
         raise ValueError("Google did not return the selected project's number")
-    print("Enable speech generation, transcription and storage APIs (safe to repeat).", flush=True)
+    report("Enable speech generation, transcription and storage APIs (safe to repeat).", flush=True)
     gcloud(
         [
             "services",
@@ -148,7 +149,7 @@ def setup(args: argparse.Namespace) -> None:
     except captions.CloudError as exc:
         if exc.code != 404:
             raise
-        print(f"Create private working bucket: gs://{args.bucket}", flush=True)
+        report(f"Create private working bucket: gs://{args.bucket}", flush=True)
         body = {
             "name": args.bucket,
             "location": "EU" if args.location == "eu" else "US",
@@ -201,10 +202,10 @@ def setup(args: argparse.Namespace) -> None:
         "prepared": resource_key(args),
     }
     audio.write_json(settings_path(), settings)
-    print(
+    report(
         f"Saved defaults: TTS {args.endpoint}; captions {args.location}; private bucket {args.bucket}."
     )
-    print("Ready. Next: python3 scripts/field_audio.py make workbench-001")
+    report("Ready. Next: python3 scripts/field_audio.py make workbench-001")
 
 
 def ensure_setup(args: argparse.Namespace) -> None:
@@ -287,7 +288,7 @@ def bundle(directory: Path) -> Path:
         temporary.replace(target)
     finally:
         temporary.unlink(missing_ok=True)
-    print(f"Portable listening bundle: {target}")
+    report(f"Portable listening bundle: {target}")
     return target
 
 
@@ -313,7 +314,7 @@ def open_listening(path: Path) -> None:
         if os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"):
             webbrowser.open(path.as_uri())
     except (OSError, subprocess.SubprocessError, webbrowser.Error):
-        print(f"Open the listening page manually: {path}")
+        report(f"Open the listening page manually: {path}")
 
 
 def finish(directory: Path | None, no_open: bool) -> None:
@@ -327,22 +328,25 @@ def finish(directory: Path | None, no_open: bool) -> None:
 def make(args: argparse.Namespace) -> Path | None:
     # Validate the reviewed source before preparing Cloud resources.
     audio.make_plan(args.episode, args.model, args.endpoint)
-    caption_model = read_settings().get("caption_model", "chirp_3")
-    if caption_model not in {"chirp_3", "long"} or (
-        caption_model == "chirp_3" and args.location == "global"
-    ):
-        raise ValueError(
-            "Saved caption model/location is unsupported; use Chirp 3 in us/eu or long in global"
-        )
+    caption_model(args)
     ensure_setup(args)
-    path = audio.generate(args)
+    raise_if_stopped(args)
+    with timed("generation_and_encoding"):
+        path = audio.generate(args)
+    raise_if_stopped(args)
+    return caption_recording(path, args)
+
+
+def caption_recording(path: Path, args: argparse.Namespace) -> Path | None:
+    """Submit or resume captions for this recording without calling synthesis."""
+    model = caption_model(args)
     caption_args = argparse.Namespace(
         command="captions",
         audio=path,
         project=args.project,
         bucket=args.bucket,
         location=args.location,
-        model=caption_model,
+        model=model,
         language=None,
         diarize=None,
         auth=args.auth,
@@ -353,9 +357,21 @@ def make(args: argparse.Namespace) -> Path | None:
         restart_failed=args.restart_failed,
     )
     prepare_captions(caption_args)
-    directory = captions.run(caption_args)
+    caption_args._cancel_event = getattr(args, "_cancel_event", None)
+    with timed("captioning_and_wait"):
+        directory = captions.run(caption_args)
     finish(directory, args.no_open)
     return directory
+
+
+def caption_model(args: argparse.Namespace) -> str:
+    """Freeze a validated model across the batch's submission and polling phases."""
+    model = getattr(args, "_caption_model", None) or read_settings().get("caption_model", "chirp_3")
+    if model not in {"chirp_3", "long"} or (model == "chirp_3" and args.location == "global"):
+        raise ValueError(
+            "Saved caption model/location is unsupported; use Chirp 3 in us/eu or long in global"
+        )
+    return model
 
 
 def add_arguments(commands: argparse._SubParsersAction) -> None:

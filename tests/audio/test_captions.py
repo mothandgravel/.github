@@ -8,6 +8,7 @@ import json
 import shutil
 import subprocess
 import tempfile
+import threading
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -342,6 +343,25 @@ class CaptionRecoveryTests(unittest.TestCase):
         )
         self.assertEqual((output / "audio.mp3").read_bytes(), self.audio.read_bytes())
         self.assertTrue((output / "listen.html").exists())
+
+    def test_stop_during_upload_does_not_submit_a_new_transcription(self):
+        stop = threading.Event()
+
+        def upload(*_):
+            stop.set()
+            return "1"
+
+        with (
+            patch.object(captions.shutil, "which", return_value="installed"),
+            patch.object(captions, "ensure_upload", side_effect=upload),
+            patch.object(captions, "cloud_json") as cloud,
+            redirect_stdout(io.StringIO()),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "stop requested"):
+                captions.run(self.args(_cancel_event=stop))
+        cloud.assert_not_called()
+        output = next((self.root / "captions").iterdir())
+        self.assertFalse((output / "state.json").exists())
 
     def test_pending_job_resumes_polling_instead_of_resubmitting(self):
         with (

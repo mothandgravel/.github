@@ -310,6 +310,41 @@ resolve that Git divergence before retrying; completed media remains saved.
 - [Create a bucket through the JSON API](https://docs.cloud.google.com/storage/docs/json_api/v1/buckets/insert)
 
 
+## Processing speed and measurement
+
+`make-all` uses three local workers by default. `--jobs 1` reduces local concurrency;
+`--jobs 4` increases it (maximum 8). Each episode's chunks stay ordered and its
+recording lock remains exclusive. Caption jobs are submitted with no blocking
+wait while subsequent recordings are synthesized. The collection then resumes
+the saved jobs and exports their results; this phase never calls synthesis.
+Publication still requires every configured episode to complete.
+
+Google access tokens are reused only in memory, separately for gcloud and ADC,
+with a five-minute refresh interval and invalidation after an authentication
+rejection. A rejected paid submission is not automatically resent. Read-only
+operation polling can refresh authentication and retry safely. Interrupting a
+batch cancels queued work; active requests finish and save their outcomes.
+
+After each completed processing pass (including an incomplete collection),
+`artifacts/audio/processing-times.json` records wall time and elapsed stages for
+authentication, synthesis requests, Cloud reads/writes, encoding and captions.
+Stages are nested: do not add stage totals as if they were separate wall time.
+The file contains no tokens, request text or Cloud URIs. Network failures retain
+their exception class and elapsed attempt time in the existing chunk state.
+
+The current default model remains unchanged to preserve cached recordings.
+Google describes `gemini-2.5-flash-tts` as optimized for lower latency, whereas Pro
+targets control over structured audio. Switching `--model` creates different
+recording fingerprints and can generate new billable audio; compare a short
+sample before switching an archive. Streaming is a separate option for earlier
+playback, not a guarantee that the entire collection and subtitles finish sooner.
+The current transcription requests use normal processing, not discounted
+dynamic batching (which can wait up to 24 hours).
+
+Sources: [Gemini-TTS models and streaming](https://docs.cloud.google.com/text-to-speech/docs/gemini-tts),
+[TTS quotas](https://docs.cloud.google.com/text-to-speech/quotas), and
+[transcription processing strategies](https://docs.cloud.google.com/speech-to-text/docs/reference/rest/v2/projects.locations.recognizers/batchRecognize).
+
 ## Python development and layout
 
 The runtime uses Python 3.10+ and the standard library. From the repository root,

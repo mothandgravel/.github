@@ -15,13 +15,16 @@ import json
 import re
 import shutil
 import subprocess
+import time
 import wave
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib import error, request
 
+from field_notes_audio import auth as google_auth
 from field_notes_audio.locks import run_lock
+from field_notes_audio.progress import raise_if_stopped, report, timed
 from field_notes_audio.storage import digest_file, read_object, write_json
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -255,31 +258,23 @@ def make_plan(identifier: str, model: str, endpoint: str, root: Path = ROOT) -> 
 
 
 def summarize(plan: dict) -> None:
-    print(f"{plan['episode']['id']}: {plan['episode']['title']}")
-    print(
+    report(f"{plan['episode']['id']}: {plan['episode']['title']}")
+    report(
         f"{plan['word_count']} script words; about {plan['estimated_minutes']} minutes at the {plan['target_wpm']} wpm target"
     )
-    print(f"{len(plan['requests'])} bounded requests; {plan['model']}; endpoint {plan['endpoint']}")
-    print(
+    report(
+        f"{len(plan['requests'])} bounded requests; {plan['model']}; endpoint {plan['endpoint']}"
+    )
+    report(
         f"Estimated speech output: ${plan['estimated_output_cost_usd']:.4f} USD (text input and retries extra)"
     )
-    print(
+    report(
         "Pace is a delivery request, not an enforced timing constraint. Duration and cost are estimates."
     )
 
 
 def access_token(auth: str) -> str:
-    command = ["gcloud", "auth"]
-    if auth == "adc":
-        command.append("application-default")
-    command.append("print-access-token")
-    result = subprocess.run(command, capture_output=True, text=True, timeout=90)
-    if result.returncode or not result.stdout.strip():
-        raise RuntimeError(
-            "Google authentication failed. Authorize Cloud Shell, or run gcloud auth login locally."
-        )
-    # The token stays in memory. Never print it or include it in request artifacts.
-    return result.stdout.strip()
+    return google_auth.access_token(auth)
 
 
 def synthesize(data: dict, project: str, endpoint: str, token: str) -> bytes:
@@ -293,8 +288,13 @@ def synthesize(data: dict, project: str, endpoint: str, token: str) -> bytes:
             "Content-Type": "application/json",
         },
     )
-    with request.urlopen(req, timeout=180) as response:
-        result = json.load(response)
+    try:
+        with timed("tts_request"), request.urlopen(req, timeout=180) as response:
+            result = json.load(response)
+    except error.HTTPError as exc:
+        if exc.code == 401:
+            google_auth.invalidate_token(token)
+        raise
     try:
         audio = base64.b64decode(result["audioContent"], validate=True)
     except (KeyError, ValueError) as exc:
@@ -416,6 +416,7 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
     write_json(directory / "plan.json", plan)
     paths = []
     for index, data in enumerate(plan["requests"], start=1):
+        raise_if_stopped(args)
         wav_path = directory / f"chunk-{index:03d}.wav"
         state_path = directory / f"chunk-{index:03d}.json"
         expected = digest(json.dumps(data, sort_keys=True).encode("utf-8"))
@@ -426,15 +427,17 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
                     f"Cached audio chunk {index} is missing or changed; move this run aside to regenerate"
                 )
             validate_wav(wav_path.read_bytes())
-            print(f"Chunk {index}/{len(plan['requests'])}: reuse saved audio")
+            report(f"Chunk {index}/{len(plan['requests'])}: reuse saved audio")
         else:
             if state.get("status") in {"requesting", "uncertain"} and not args.retry_uncertain:
                 raise ValueError(
                     f"Chunk {index} has an uncertain prior attempt. --retry-uncertain can incur another charge."
                 )
             token = access_token(args.auth)
+            raise_if_stopped(args)
             write_json(state_path, {"status": "requesting", "request_sha256": expected})
-            print(f"Chunk {index}/{len(plan['requests'])}: generate", flush=True)
+            report(f"Chunk {index}/{len(plan['requests'])}: generate", flush=True)
+            attempt_start = time.perf_counter()
             try:
                 audio = synthesize(data, args.project, args.endpoint, token)
                 wav_path.write_bytes(audio)
@@ -464,8 +467,16 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
                     f"Google returned HTTP {exc.code}{label}. {http_guidance(exc.code, args.episode)} "
                     f"Diagnostic: {state_path.relative_to(ROOT)}"
                 ) from None
-            except Exception:
-                write_json(state_path, {"status": "uncertain", "request_sha256": expected})
+            except Exception as exc:
+                write_json(
+                    state_path,
+                    {
+                        "status": "uncertain",
+                        "request_sha256": expected,
+                        "failure_kind": type(exc).__name__,
+                        "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
+                    },
+                )
                 raise RuntimeError(
                     "No completed audio was saved. Re-run to inspect state; an uncertain retry can incur another charge."
                 ) from None
@@ -486,32 +497,34 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
             raise ValueError(
                 "Cached input script is missing or changed; move this run aside to regenerate"
             )
-        print(f"Reuse completed recording: {mp3_path.relative_to(ROOT)}")
+        report(f"Reuse completed recording: {mp3_path.relative_to(ROOT)}")
         return mp3_path
-    duration = combine_wavs(paths, directory / "master.wav")
-    result = subprocess.run(
-        [
-            "ffmpeg",
-            "-hide_banner",
-            "-y",
-            "-i",
-            str(directory / "master.wav"),
-            "-af",
-            "loudnorm=I=-19:TP=-1.5:LRA=7:print_format=json",
-            "-ar",
-            "24000",
-            "-ac",
-            "1",
-            "-c:a",
-            "libmp3lame",
-            "-b:a",
-            "96k",
-            str(directory / "episode.tmp.mp3"),
-        ],
-        capture_output=True,
-        text=True,
-        timeout=180,
-    )
+    with timed("audio_assembly"):
+        duration = combine_wavs(paths, directory / "master.wav")
+    with timed("mp3_encoding"):
+        result = subprocess.run(
+            [
+                "ffmpeg",
+                "-hide_banner",
+                "-y",
+                "-i",
+                str(directory / "master.wav"),
+                "-af",
+                "loudnorm=I=-19:TP=-1.5:LRA=7:print_format=json",
+                "-ar",
+                "24000",
+                "-ac",
+                "1",
+                "-c:a",
+                "libmp3lame",
+                "-b:a",
+                "96k",
+                str(directory / "episode.tmp.mp3"),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=180,
+        )
     if result.returncode:
         raise RuntimeError("Audio encoding failed. Saved WAV chunks can be reused on the next run.")
     probe = subprocess.run(
@@ -566,13 +579,13 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
             "listening_review": "pending",
         },
     )
-    print(f"Ready to listen: {directory.relative_to(ROOT)}/episode.mp3")
-    print(
+    report(f"Ready to listen: {directory.relative_to(ROOT)}/episode.mp3")
+    report(
         f"Generated duration: {int(mp3_duration // 60)}:{int(mp3_duration % 60):02d}; "
         f"average {plan['word_count'] * 60 / mp3_duration:.0f} script words per minute, including pauses"
     )
-    print(
+    report(
         "Source script is saved as transcript.txt; it has not been verified against the generated speech."
     )
-    print("Nothing has been uploaded or published. Listen before choosing a voice or publishing.")
+    report("Nothing has been uploaded or published. Listen before choosing a voice or publishing.")
     return directory / "episode.mp3"

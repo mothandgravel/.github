@@ -18,7 +18,9 @@ from pathlib import Path
 from urllib import error, parse, request
 
 from field_notes_audio.audio import access_token, digest, http_diagnostic, write_json
+from field_notes_audio.auth import invalidate_token
 from field_notes_audio.locks import run_lock
+from field_notes_audio.progress import raise_if_stopped, report, timed
 from field_notes_audio.storage import digest_file, read_object
 
 
@@ -99,12 +101,21 @@ def cloud_json(
         },
     )
     try:
-        with request.urlopen(req, timeout=60) as response:
+        stage = (
+            "stt_submit"
+            if ":batchRecognize" in url
+            else "cloud_read"
+            if data is None
+            else "cloud_write"
+        )
+        with timed(stage), request.urlopen(req, timeout=60) as response:
             result = json.load(response)
         if not isinstance(result, dict):
             raise ValueError("Google returned a JSON response that is not an object")
         return result
     except error.HTTPError as exc:
+        if exc.code == 401:
+            invalidate_token(token)
         try:
             diagnostic = http_diagnostic(exc, token)
         except (OSError, ValueError, TypeError):
@@ -119,11 +130,13 @@ def poll_operation(url: str, project: str, auth: str) -> dict:
             return cloud_json(url, project, auth)
         except (CloudError, error.URLError, TimeoutError) as exc:  # noqa: PERF203 - retry only independent reads
             retryable = (
-                not isinstance(exc, CloudError) or exc.code in {408, 429} or 500 <= exc.code <= 599
+                not isinstance(exc, CloudError)
+                or exc.code in {401, 408, 429}
+                or 500 <= exc.code <= 599
             )
             if not retryable or attempt == 3:
                 raise
-            print(
+            report(
                 f"Polling interrupted; retrying in {2**attempt} seconds. Saved job will be reused.",
                 flush=True,
             )
@@ -574,16 +587,16 @@ def export_result(
             "to the next recorded caption start. Original response retained in operation.json."
         )
     if timing_notice:
-        print(timing_notice.strip())
+        report(timing_notice.strip())
     (directory / "listen.html").write_text(
         listening_preview(
             plan["title"], recognized["cues"], plan.get("language", "en-US"), timing_notice
         ),
         encoding="utf-8",
     )
-    print(f"Captions ready: {directory}/captions.srt")
-    print(f"Listen with the timed transcript: {directory}/listen.html")
-    print(
+    report(f"Captions ready: {directory}/captions.srt")
+    report(f"Listen with the timed transcript: {directory}/listen.html")
+    report(
         f"Script comparison: {len(comparison['differences'])} differences to review; no text was automatically corrected."
     )
 
@@ -650,16 +663,17 @@ def run(args: argparse.Namespace) -> Path | None:
         "request": payload,
         "fingerprint": fingerprint,
     }
-    print(
+    report(
         f"Caption existing recording: {duration / 60:.2f} minutes; {args.model}; location {args.location}"
     )
-    print("No speech synthesis. Transcription and private Cloud Storage have separate charges.")
+    report("No speech synthesis. Transcription and private Cloud Storage have separate charges.")
     if args.dry_run:
-        print(json.dumps(plan, ensure_ascii=False, indent=2))
-        print("Dry run only; nothing uploaded or submitted.")
+        report(json.dumps(plan, ensure_ascii=False, indent=2))
+        report("Dry run only; nothing uploaded or submitted.")
         return
     if not shutil.which("gcloud"):
         raise ValueError("Captioning requires an authenticated gcloud session")
+    raise_if_stopped(args)
     directory.mkdir(parents=True, exist_ok=True)
     with run_lock(directory):
         state_path = directory / "state.json"
@@ -684,10 +698,11 @@ def run(args: argparse.Namespace) -> Path | None:
             operation = read_object(directory / "operation.json")
         else:
             if not state.get("operation"):
-                print(f"Upload or reuse private input: {uri}", flush=True)
+                report(f"Upload or reuse private input: {uri}", flush=True)
                 generation = ensure_upload(
                     content, args.bucket, object_name, args.project, args.auth
                 )
+                raise_if_stopped(args)
                 (directory / "audio.mp3").write_bytes(content)
                 write_json(
                     state_path,
@@ -739,10 +754,11 @@ def run(args: argparse.Namespace) -> Path | None:
             deadline = time.monotonic() + args.wait
             progress_at = time.monotonic() + 30
             while not operation.get("done"):
+                raise_if_stopped(args)
                 write_json(directory / "operation.json", operation)
                 if time.monotonic() >= deadline:
-                    print(f"Transcription is running: {state['operation']}")
-                    print(
+                    report(f"Transcription is running: {state['operation']}")
+                    report(
                         "Repeat the same command to resume polling; no new job will be submitted."
                     )
                     return
@@ -753,7 +769,7 @@ def run(args: argparse.Namespace) -> Path | None:
                     args.auth,
                 )
                 if time.monotonic() >= progress_at and not operation.get("done"):
-                    print(
+                    report(
                         "Transcription is still running; waiting automatically. Ctrl-C saves your place.",
                         flush=True,
                     )
@@ -779,7 +795,7 @@ def run(args: argparse.Namespace) -> Path | None:
             (directory / "audio.mp3").write_bytes(content)
         aliases = [s["alias"] for s in metadata.get("speakers", [])]
         export_result(directory, operation, plan, script, aliases)
-        print(
+        report(
             f"Private input is retained at {uri}; keep it until review is complete, then remove it if no longer needed."
         )
         return directory

@@ -10,6 +10,7 @@ import struct
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 import wave
 from contextlib import redirect_stdout
@@ -241,6 +242,30 @@ class AudioTests(unittest.TestCase):
 
             with run_lock(output, "audio"):
                 pass  # Exiting the other process releases its lock.
+
+    def test_stop_during_authentication_prevents_a_new_paid_request(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            plan, output = self.run_context(root)
+            args = self.generate_args()
+            args._cancel_event = threading.Event()
+
+            def authenticate(_):
+                args._cancel_event.set()
+                return "in-memory-token"
+
+            with (
+                patch.object(audio, "ROOT", root),
+                patch.object(audio, "make_plan", return_value=plan),
+                patch.object(audio.shutil, "which", return_value="installed"),
+                patch.object(audio, "access_token", side_effect=authenticate),
+                patch.object(audio, "synthesize") as synth,
+                redirect_stdout(io.StringIO()),
+            ):
+                with self.assertRaisesRegex(RuntimeError, "stop requested"):
+                    audio.generate(args)
+            synth.assert_not_called()
+            self.assertFalse((output / "chunk-001.json").exists())
 
     def test_uncertain_request_is_not_repeated_automatically(self):
         with tempfile.TemporaryDirectory() as directory:

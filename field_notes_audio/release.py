@@ -7,6 +7,7 @@ import json
 import re
 import shutil
 import subprocess
+import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,6 +15,7 @@ from urllib import request
 
 from field_notes_audio import audio, captions, workflow
 from field_notes_audio import site as build_audio
+from field_notes_audio.progress import Timings
 from field_notes_audio.storage import read_object
 
 
@@ -443,6 +445,9 @@ def verify_live() -> None:
 
 
 def make_all(args: argparse.Namespace) -> None:
+    jobs = getattr(args, "jobs", 3)
+    if type(jobs) is not int or not 1 <= jobs <= 8:
+        raise ValueError("--jobs must be between 1 and 8")
     if args.publish and not args.dry_run:
         publication_remote()
         assert_clean_or_prepared()
@@ -491,20 +496,37 @@ def make_all(args: argparse.Namespace) -> None:
             audio.summarize(plan)
         return
     workflow.ensure_setup(args)
-    completed, issues = [], []
-    for episode in episodes:
-        print(f"\n=== {episode['id']} ===", flush=True)
-        single = argparse.Namespace(**{**vars(args), "episode": episode["id"]})
-        single.no_open = True  # One batch must not open nine browser tabs.
-        try:
-            directory = workflow.make(single)
-            if directory is None:
-                issues.append(f"{episode['id']}: transcription is still running")
-            else:
-                completed.append((episode, directory))
-        except (ValueError, RuntimeError, OSError, subprocess.SubprocessError) as exc:
-            issues.append(f"{episode['id']}: {exc}")
-            print(issues[-1], flush=True)
+    args._caption_model = workflow.caption_model(args)
+    from field_notes_audio.runner import run_episodes
+
+    print(
+        f"Process up to {jobs} episodes concurrently; --jobs 1 uses one local worker.",
+        flush=True,
+    )
+    recorder = Timings()
+    start = time.perf_counter()
+    results = run_episodes(episodes, args, recorder)
+    elapsed = time.perf_counter() - start
+    completed = [(result.episode, result.directory) for result in results if result.issue is None]
+    issues = [
+        f"{result.episode['id']}: {result.issue}" for result in results if result.issue is not None
+    ]
+    timing_path = audio.ROOT / "artifacts/audio/processing-times.json"
+    audio.write_json(
+        timing_path,
+        {
+            "version": 1,
+            "jobs": jobs,
+            "model": args.model,
+            "endpoint": args.endpoint,
+            "wall_seconds": round(elapsed, 4),
+            "episode_seconds": {
+                result.episode["id"]: round(result.seconds, 4) for result in results
+            },
+            "stages": recorder.events(),
+        },
+    )
+    print(f"Batch processing: {elapsed:.1f}s wall time. Stage timings: {timing_path}")
     if issues:
         print("\nSaved progress; remaining work:")
         for issue in issues:
@@ -532,6 +554,9 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
     sub.add_argument("--model", choices=audio.MODELS)
     sub.add_argument("--auth", choices=("gcloud", "adc"))
     sub.add_argument("--wait", type=int, default=900)
+    sub.add_argument(
+        "--jobs", type=int, default=3, help="Concurrent episode pipelines, 1–8; default 3"
+    )
     sub.add_argument("--retry-uncertain", action="store_true")
     sub.add_argument("--restart-failed", action="store_true")
     sub.add_argument(
