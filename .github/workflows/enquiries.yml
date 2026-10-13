@@ -22,6 +22,18 @@ jobs:
         run: |
           docker build -t mg-enquiries-test services/enquiries
           docker run --detach --name mg-enquiries-test -p 127.0.0.1:8787:8787 mg-enquiries-test
-          curl --fail --retry 10 --retry-connrefused --retry-delay 1 http://127.0.0.1:8787/config > /tmp/mg-enquiry-config.json
+          ready=false
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8787/config > /tmp/mg-enquiry-config.json; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          docker logs mg-enquiries-test
+          if [ "$ready" != true ]; then exit 1; fi
           node -e 'const c=JSON.parse(require("fs").readFileSync("/tmp/mg-enquiry-config.json"));if(c.accepting!==false)process.exit(1)'
           docker stop mg-enquiries-test
+      - name: Remove smoke-test container
+        if: always()
+        run: docker rm --force mg-enquiries-test || true
