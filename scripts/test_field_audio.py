@@ -66,6 +66,22 @@ class AudioTests(unittest.TestCase):
         dialogue = "Explore: " + paragraph + "\n\nQuestion: What does it establish?"
         self.assertEqual(audio.chunk_script(self.dialogue(), dialogue), [dialogue])
 
+    def test_brisk_comparison_uses_same_script_and_distinct_delivery_request(self):
+        baseline = audio.make_plan("note-001", "gemini-2.5-pro-tts", "global")
+        brisk = audio.make_plan("note-001-brisk", "gemini-2.5-pro-tts", "global")
+        self.assertEqual(baseline["script"], brisk["script"])
+        self.assertEqual(baseline["episode"]["speakers"], brisk["episode"]["speakers"])
+        self.assertEqual(brisk["target_wpm"], 170)
+        self.assertNotEqual(baseline["fingerprint"], brisk["fingerprint"])
+        self.assertLess(brisk["estimated_minutes"], baseline["estimated_minutes"])
+
+    def test_dialogue_estimate_excludes_unspoken_aliases(self):
+        episode = self.dialogue() | {"source_sha256": {}, "id": "example", "target_wpm": 140,
+                                    "language": "en-US"}
+        with patch.object(audio, "load_episode", return_value=(episode, "Explore: One two.\nQuestion: Three four.")):
+            plan = audio.make_plan("example", "gemini-2.5-pro-tts", "global")
+        self.assertEqual(plan["word_count"], 4)
+
     def test_source_revision_blocks_stale_audio(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

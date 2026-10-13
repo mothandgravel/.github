@@ -6,9 +6,13 @@ Two listening experiments, using the published website as their source:
 | --- | --- | --- | --- |
 | `note-001` | Narrated edition of *Curiosity with calluses* | 001 | Charon |
 | `workbench-001` | *What does the interface let you believe?* | 005, 006, 007 | Explore: Kore; Question: Charon |
+| `note-001-brisk` | Same narration script; brisker delivery comparison | 001 | Charon |
 
-The scripts are ready for a first listening experiment. Audio has **not** been
-generated or auditioned yet. The dialogue is an editorial adaptation, not a
+The first user-run narration completed through the global endpoint after repeated
+EU HTTP 502 responses. Initial listening feedback found it too slow. The brisk
+comparison keeps the same script and voice, removes the unhurried direction, and
+requests lively conversational delivery at about 170 words per minute. Its audio
+has not yet been generated or auditioned. The dialogue is an editorial adaptation, not a
 conversation with project authors. Its opening discloses the AI format. Neither
 pilot adds claims of measured usability, reliability or live robot observations.
 
@@ -71,11 +75,12 @@ does not provide these Cloud API permissions or speech credits.
 6. Generate the short narration first:
 
    ```bash
-   python3 scripts/field_audio.py generate note-001 --project "$FIELD_AUDIO_PROJECT"
+   python3 scripts/field_audio.py generate note-001 --project "$FIELD_AUDIO_PROJECT" --endpoint global
    ```
 
    The runner defaults to **Gemini 2.5 Pro TTS**, English and the **EU** speech
-   endpoint. It prints the MP3 path when complete. In Cloud Shell Editor, locate
+   endpoint; this command explicitly selects **global**, which worked for the
+   first user-run pilot. It prints the MP3 path when complete. In Cloud Shell Editor, locate
    that file under `artifacts/audio/note-001/` and download it to listen locally.
    Download the neighboring `transcript.txt` and `episode.json` as well. The full
    path is also accepted by Cloud Shell's **More → Download** file action.
@@ -83,7 +88,7 @@ does not provide these Cloud API permissions or speech credits.
 
    ```bash
    python3 scripts/field_audio.py plan workbench-001
-   python3 scripts/field_audio.py generate workbench-001 --project "$FIELD_AUDIO_PROJECT"
+   python3 scripts/field_audio.py generate workbench-001 --project "$FIELD_AUDIO_PROJECT" --endpoint global
    ```
 
 No API keys or service-account key files are needed for this first run. The runner
@@ -104,9 +109,24 @@ The neighboring transcript is the **input script**, not a speech-to-text verifie
 transcript. `episode.json` records listening review as pending. Keep the scripts'
 spoken uncertainty and source limitations when making editorial revisions.
 
+If the narration feels slow, compare the existing recording at 1.25× playback
+first. For a new natural delivery, use the separately identified brisk variant:
+
+```bash
+python3 scripts/field_audio.py plan note-001-brisk --endpoint global
+python3 scripts/field_audio.py generate note-001-brisk --project "$FIELD_AUDIO_PROJECT" --endpoint global
+```
+
+The existing recording remains in its original output directory. The pace in the
+prompt is a request, not a guaranteed duration. New completed runs print actual
+duration and average input-script words per minute, including pauses; the metadata
+retains those values. This does not establish spoken-word accuracy. The runner
+does not accelerate the generated MP3 in post-production.
+
 ## Cost, request limits and interrupted runs
 
-`plan` estimates speech output at 140 words per minute, 25 audio tokens per second
+`plan` estimates speech output at each episode's target pace (140 words per minute
+for the original pilots; 170 for the brisk comparison), 25 audio tokens per second
 and Google's listed Gemini 2.5 rates: $20/million audio tokens for Pro or
 $10/million for Flash. Text input, retries, taxes and future hosting are additional.
 It is an estimate, not a cap; actual speech duration and charges can differ.

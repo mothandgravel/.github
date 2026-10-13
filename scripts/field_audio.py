@@ -113,6 +113,9 @@ def load_episode(identifier: str, root: Path = ROOT) -> tuple[dict, str]:
             raise ValueError("Unknown prebuilt voice")
     if not 0 < len(episode["prompt"].encode("utf-8")) <= 1000:
         raise ValueError("Delivery prompt must fit in 1,000 UTF-8 bytes")
+    target_wpm = episode.get("target_wpm", 140)
+    if type(target_wpm) is not int or not 100 <= target_wpm <= 220:
+        raise ValueError("The planning pace must be an integer from 100 to 220 words per minute")
     notes = catalog(root)
     if not episode["notes"] or set(episode["source_sha256"]) != set(episode["notes"]):
         raise ValueError("Every source note must have an article fingerprint")
@@ -204,25 +207,27 @@ def payload(episode: dict, text: str, model: str) -> dict:
 def make_plan(identifier: str, model: str, endpoint: str, root: Path = ROOT) -> dict:
     episode, text = load_episode(identifier, root)
     chunks = chunk_script(episode, text)
-    words = len(re.findall(r"\b[\w’'-]+\b", text))
-    minutes = words / 140
+    spoken_text = text if len(episode["speakers"]) == 1 else re.sub(r"(?m)^[A-Za-z][A-Za-z0-9]*:\s*", "", text)
+    words = len(re.findall(r"\b[\w’'-]+\b", spoken_text))
+    target_wpm = episode.get("target_wpm", 140)
+    minutes = words / target_wpm
     requests = [payload(episode, c, model) for c in chunks]
     fingerprint = digest(json.dumps({"endpoint": endpoint, "requests": requests,
                                     "source_sha256": episode["source_sha256"]},
                                    sort_keys=True, ensure_ascii=False).encode("utf-8"))
     return {"episode": episode, "script": text, "script_sha256": digest(text.encode("utf-8")),
             "fingerprint": fingerprint, "model": model, "endpoint": endpoint,
-            "word_count": words, "estimated_minutes_at_140_wpm": round(minutes, 2),
+            "word_count": words, "target_wpm": target_wpm, "estimated_minutes": round(minutes, 2),
             "estimated_output_cost_usd": round(minutes * 60 * 25 * MODELS[model] / 1_000_000, 4),
             "requests": requests}
 
 
 def summarize(plan: dict) -> None:
     print(f"{plan['episode']['id']}: {plan['episode']['title']}")
-    print(f"{plan['word_count']} words; about {plan['estimated_minutes_at_140_wpm']} minutes at 140 wpm")
+    print(f"{plan['word_count']} script words; about {plan['estimated_minutes']} minutes at the {plan['target_wpm']} wpm target")
     print(f"{len(plan['requests'])} bounded requests; {plan['model']}; endpoint {plan['endpoint']}")
     print(f"Estimated speech output: ${plan['estimated_output_cost_usd']:.4f} USD (text input and retries extra)")
-    print("Estimate is based on script length, not a measured duration or a spending cap.")
+    print("Pace is a delivery request, not an enforced timing constraint. Duration and cost are estimates.")
 
 
 def access_token(auth: str) -> str:
@@ -391,8 +396,12 @@ def generate(args) -> None:
                "source_sha256": plan["episode"]["source_sha256"], "script_sha256": plan["script_sha256"],
                "audio_sha256": digest(audio), "bytes": len(audio), "duration_seconds": round(mp3_duration, 3),
                "wav_duration_seconds": round(duration, 3),
+               "script_word_count": plan["word_count"], "target_wpm": plan["target_wpm"],
+               "average_script_words_per_minute": round(plan["word_count"] * 60 / mp3_duration, 1),
                "fingerprint": plan["fingerprint"], "listening_review": "pending"})
     print(f"Ready to listen: {directory.relative_to(ROOT)}/episode.mp3")
+    print(f"Generated duration: {int(mp3_duration // 60)}:{int(mp3_duration % 60):02d}; "
+          f"average {plan['word_count'] * 60 / mp3_duration:.0f} script words per minute, including pauses")
     print("Source script is saved as transcript.txt; it has not been verified against the generated speech.")
     print("Nothing has been uploaded or published. Listen before choosing a voice or publishing.")
 

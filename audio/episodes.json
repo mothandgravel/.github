@@ -17,7 +17,8 @@
     "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
     "source_sha256": {
       "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
-    }
+    },
+    "target_wpm": 140
   },
   {
     "id": "workbench-001",
@@ -45,6 +46,28 @@
       "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86",
       "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2",
       "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
-    }
+    },
+    "target_wpm": 140
+  },
+  {
+    "id": "note-001-brisk",
+    "title": "Curiosity with calluses. — brisk narration comparison",
+    "format": "narration",
+    "script": "scripts/note-001.txt",
+    "language": "en-US",
+    "notes": [
+      "001"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a lively, thoughtful independent studio essay. Warm, clear and conversational English at about 170 words per minute. Keep a steady forward momentum with compact natural pauses. Deliver short sentences directly and connect the ideas fluidly. Keep numbers and negations clear. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
+    },
+    "target_wpm": 170
   }
 ]
