@@ -247,6 +247,17 @@ Repeating replaces generated caption files; keep editorial corrections in a
 separate copy. `operation.json` and `state.json` retain resumable provider state.
 Raw recognition output stays available when caption validation fails.
 
+If Google returns invalid word offsets, the exporter retains those entries in
+`words.json` and uses the validated caption cues for playback. Transcript text
+is preserved; speaker labels are omitted when word timing is incomplete. If an
+otherwise ordered caption has a reversed, out-of-range or overlapping end, its
+end is bounded by the next recorded caption start. Adjustments appear in
+`cues.json`, `captions.json` and the listening review; the original
+`operation.json` is unchanged. Invalid starts, disagreement between SRT/WebVTT
+timing, or a bad final end without a following caption still block export.
+After pulling a parser fix, repeat the command to re-export the saved completed
+response locally; do not restart transcription for a local export failure.
+
 The private content-addressed input is retained until you choose to remove the
 exact URI printed by the script. No bucket or unrelated objects are deleted.
 Keep input while its job runs and through listening review.
@@ -297,3 +308,4 @@ resolve that Git divergence before retrying; completed media remains saved.
 - [Create a private working bucket](https://docs.cloud.google.com/sdk/gcloud/reference/storage/buckets/create)
 - [Cloud Storage bucket resource and privacy settings](https://docs.cloud.google.com/storage/docs/json_api/v1/buckets)
 - [Create a bucket through the JSON API](https://docs.cloud.google.com/storage/docs/json_api/v1/buckets/insert)
+

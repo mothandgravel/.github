@@ -148,7 +148,8 @@ def caption_time(value):
     return int(found[1] or 0) * 3600 + int(found[2]) * 60 + int(found[3]) + int(found[4]) / 1000
 
 
-def parse_captions(text, duration, vtt=False):
+def parse_captions(text, duration, vtt=False, recover_timing=False):
+    """Keep invalid numeric ends only for extract_recognition's bounded recovery."""
     normalized = text.lstrip("\ufeff").replace("\r\n", "\n").strip()
     if vtt:
         if not re.match(r"^WEBVTT(?:\s|$)", normalized):
@@ -167,14 +168,31 @@ def parse_captions(text, duration, vtt=False):
             raise ValueError("Invalid caption timing line")
         start, end = caption_time(match[1]), caption_time(match[2])
         content = "\n".join(lines[timing + 1:]).strip()
-        if not content or not 0 <= start < end <= duration + .5:
+        if not content or not 0 <= start < duration + .5:
             raise ValueError("Empty caption or timing outside the finished recording")
-        if cues and start < cues[-1]["end"] - .001:
-            raise ValueError("Caption cues overlap or are out of order")
+        if not recover_timing and not start < end <= duration + .5:
+            raise ValueError("Empty caption or timing outside the finished recording")
+        if cues:
+            if start <= cues[-1]["start"]:
+                raise ValueError("Caption cues are out of order or have duplicate starts")
+            if not recover_timing and start < cues[-1]["end"] - .001:
+                raise ValueError("Caption cues overlap or are out of order")
         cues.append({"start": start, "end": end, "text": content})
     if not cues:
         raise ValueError("Google returned no caption cues")
     return cues
+
+
+def render_captions(cues, vtt=False):
+    def timestamp(value):
+        milliseconds = round(value * 1000)
+        seconds, fraction = divmod(milliseconds, 1000)
+        minutes, seconds = divmod(seconds, 60)
+        hours, minutes = divmod(minutes, 60)
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}{'.' if vtt else ','}{fraction:03d}"
+    blocks = [f"{index}\n{timestamp(cue['start'])} --> {timestamp(cue['end'])}\n{cue['text']}"
+              for index, cue in enumerate(cues, 1)]
+    return ("WEBVTT\n\n" if vtt else "") + "\n\n".join(blocks) + "\n"
 
 
 def extract_recognition(operation, uri, duration):
@@ -186,37 +204,68 @@ def extract_recognition(operation, uri, duration):
     if file_result.get("error", {}).get("code", 0):
         raise ValueError(f"Google failed this file: {file_result['error'].get('message', 'unknown error')}")
     inline = file_result.get("inlineResult", {})
-    words, passages = [], []
-    for result in inline.get("transcript", {}).get("results", []):
+    words, passages, timing_issues = [], [], []
+    for result_index, result in enumerate(inline.get("transcript", {}).get("results", [])):
         alternatives = result.get("alternatives", [])
         if not alternatives:
             continue
         top = alternatives[0]
         if top.get("transcript"):
             passages.append(top["transcript"].strip())
-        for word in top.get("words", []):
-            start = seconds(word.get("startOffset", "0s"))
-            end = seconds(word.get("endOffset", "0s"))
-            text = word.get("word", "")
-            if not isinstance(text, str) or not text.strip() or not 0 <= start <= end <= duration + .5:
-                raise ValueError("Invalid recognized word or timing")
-            if words and start < words[-1]["start"]:
-                raise ValueError("Word timings are out of order")
+        for word_index, word in enumerate(top.get("words", [])):
+            try:
+                start = seconds(word.get("startOffset", "0s"))
+                end = seconds(word.get("endOffset", "0s"))
+                text = word.get("word", "")
+                if not isinstance(text, str) or not text.strip() or not 0 <= start <= end <= duration + .5:
+                    raise ValueError("Invalid recognized word or timing")
+                if words and start < words[-1]["start"]:
+                    raise ValueError("Word timings are out of order")
+            except ValueError as exc:
+                # Chirp can return corrupt word offsets alongside valid caption cues.
+                # Preserve its evidence; never guess replacement word timestamps.
+                timing_issues.append({"result_index": result_index, "word_index": word_index,
+                                      "reason": str(exc), "word": word})
+                continue
             speaker = word.get("speakerLabel")
             words.append({"text": text, "start": start, "end": end,
                           "speaker": str(speaker) if speaker is not None else None})
-    if not passages or not words:
-        raise ValueError("Google returned no transcript or word offsets; the saved response can be inspected offline")
+    if not passages:
+        raise ValueError("Google returned no transcript; the saved response can be inspected offline")
     srt, vtt = inline.get("srtCaptions", ""), inline.get("vttCaptions", "")
-    srt_cues = parse_captions(srt, duration)
-    cues = parse_captions(vtt, duration, vtt=True)
+    srt_cues = parse_captions(srt, duration, recover_timing=True)
+    cues = parse_captions(vtt, duration, vtt=True, recover_timing=True)
     if len(srt_cues) != len(cues) or any(abs(a["start"] - b["start"]) > .01 or
                                       abs(a["end"] - b["end"]) > .01 for a, b in zip(srt_cues, cues)):
         raise ValueError("SRT and WebVTT timings differ")
+    caption_adjustments = []
+    for index, cue in enumerate(cues):
+        following = cues[index + 1] if index + 1 < len(cues) else None
+        invalid_end = not cue["start"] < cue["end"] <= duration + .5
+        overlaps = following is not None and cue["end"] > following["start"]
+        if invalid_end or overlaps:
+            if following is None:
+                raise ValueError("Invalid final caption end; no following caption start can bound it")
+            # Bound the earlier cue by the next observed onset, not guessed word times.
+            caption_adjustments.append({"cue_index": index, "original_end": cue["end"],
+                                        "end": following["start"],
+                                        "reason": "invalid caption end" if invalid_end else "overlaps next caption"})
+            cue["end"] = following["start"]
+            srt_cues[index]["end"] = following["start"]
+    if caption_adjustments:
+        srt, vtt = render_captions(srt_cues), render_captions(cues, vtt=True)
+        parse_captions(srt, duration)
+        parse_captions(vtt, duration, vtt=True)
+    timing_status = "unavailable" if not words else "partial" if timing_issues else "complete"
     for cue in cues:
-        cue["speakers"] = sorted({w["speaker"] for w in words if w["speaker"] is not None
-                                  and w["end"] > cue["start"] and w["start"] < cue["end"]})
-    return {"transcript": "\n\n".join(passages), "words": words, "cues": cues, "srt": srt, "vtt": vtt}
+        # Partial word offsets cannot establish all speakers in a caption.
+        cue["speakers"] = []
+        if timing_status == "complete":
+            cue["speakers"] = sorted({w["speaker"] for w in words if w["speaker"] is not None
+                                      and w["end"] > cue["start"] and w["start"] < cue["end"]})
+    return {"transcript": "\n\n".join(passages), "words": words, "cues": cues, "srt": srt, "vtt": vtt,
+            "word_timing_status": timing_status, "word_timing_issues": timing_issues,
+            "caption_timing_adjustments": caption_adjustments}
 
 
 def compare_script(script, transcript, aliases):
@@ -233,8 +282,9 @@ def compare_script(script, transcript, aliases):
             "differences": differences, "note": "Recognition differences need listening review; similarity is not proof of speech fidelity."}
 
 
-def listening_preview(title, cues, language="en-US"):
+def listening_preview(title, cues, language="en-US", timing_notice=""):
     data = json.dumps(cues, ensure_ascii=False).replace("<", "\\u003c")
+    notice = f'<p class="muted">{escape(timing_notice)}</p>' if timing_notice else ""
     return f'''<!doctype html>
 <html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{escape(title)} — Listening review</title>
@@ -248,6 +298,7 @@ background:transparent;color:inherit;font:inherit;cursor:pointer}}.cue[aria-curr
 label{{display:inline-block;padding:10px 0;margin-right:16px}}select{{font:inherit;background:#33312c;color:inherit;padding:4px;border:1px solid #c0bbaf}}nav{{display:flex;gap:18px;flex-wrap:wrap}}</style>
 <main><p class="label">MOTH &amp; GRAVEL / FIELD NOTES</p><h1>{escape(title)}</h1>
 <p class="muted">Listening review. Machine-generated captions; transcription and speaker detection need checking.</p>
+{notice}
 <audio id="player" aria-label="Episode audio" controls preload="none" src="audio.mp3"></audio>
 <nav aria-label="Downloads"><a href="captions.srt" download>SRT</a><a href="captions.vtt" download>WebVTT</a>
 <a href="transcript.txt" download>Transcript</a></nav>
@@ -287,8 +338,10 @@ def export_result(directory, operation, plan, script, aliases):
     (directory / "captions.srt").write_text(recognized["srt"], encoding="utf-8")
     (directory / "captions.vtt").write_text(recognized["vtt"], encoding="utf-8")
     (directory / "transcript.txt").write_text(recognized["transcript"] + "\n", encoding="utf-8")
-    write_json(directory / "words.json", {"audio_sha256": plan["audio_sha256"], "words": recognized["words"]})
-    write_json(directory / "cues.json", {"audio_sha256": plan["audio_sha256"], "cues": recognized["cues"]})
+    write_json(directory / "words.json", {"audio_sha256": plan["audio_sha256"], "words": recognized["words"],
+               "timing_status": recognized["word_timing_status"], "timing_issues": recognized["word_timing_issues"]})
+    write_json(directory / "cues.json", {"audio_sha256": plan["audio_sha256"], "cues": recognized["cues"],
+               "timing_adjustments": recognized["caption_timing_adjustments"]})
     comparison = compare_script(script, recognized["transcript"], aliases) if script else {
         "review_status": "pending", "differences": [], "note": "No input script was supplied for comparison."}
     write_json(directory / "comparison.json", comparison)
@@ -297,11 +350,25 @@ def export_result(directory, operation, plan, script, aliases):
                "operation": operation["name"], "model": plan["model"], "location": plan["location"],
                "language": plan.get("language", "en-US"),
                "generated_at": datetime.now(timezone.utc).isoformat(), "review_status": "pending",
+               "word_timing_status": recognized["word_timing_status"],
+               "word_timing_issue_count": len(recognized["word_timing_issues"]),
+               "caption_timing_adjustments": recognized["caption_timing_adjustments"],
                "detected_speaker_ids": sorted({w["speaker"] for w in recognized["words"] if w["speaker"] is not None}),
                "files": {p: digest((directory / p).read_bytes()) for p in
                          ("captions.srt", "captions.vtt", "transcript.txt", "words.json", "cues.json")}})
+    timing_notice = ""
+    if recognized["word_timing_status"] != "complete":
+        timing_notice = (f"Word timing is {recognized['word_timing_status']}: "
+                         f"{len(recognized['word_timing_issues'])} invalid entries retained in words.json. "
+                         "Playback uses validated SRT/WebVTT caption timing; transcript text is preserved. "
+                         "Speaker labels are omitted.")
+    if recognized["caption_timing_adjustments"]:
+        timing_notice += (f" {len(recognized['caption_timing_adjustments'])} caption ends adjusted "
+                          "to the next recorded caption start. Original response retained in operation.json.")
+    if timing_notice:
+        print(timing_notice.strip())
     (directory / "listen.html").write_text(listening_preview(plan["title"], recognized["cues"],
-                                                           plan.get("language", "en-US")), encoding="utf-8")
+                                                           plan.get("language", "en-US"), timing_notice), encoding="utf-8")
     print(f"Captions ready: {directory}/captions.srt")
     print(f"Listen with the timed transcript: {directory}/listen.html")
     print(f"Script comparison: {len(comparison['differences'])} differences to review; no text was automatically corrected.")
@@ -431,3 +498,4 @@ def run(args):
         export_result(directory, operation, plan, script, aliases)
         print(f"Private input is retained at {uri}; keep it until review is complete, then remove it if no longer needed.")
         return directory
+

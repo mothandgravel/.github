@@ -58,12 +58,73 @@ class CaptionFormatTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "timings differ"):
             captions.extract_recognition(payload, uri, 4)
 
-    def test_malformed_word_offset_is_rejected(self):
+    def test_invalid_word_offsets_do_not_discard_valid_captions_or_transcript(self):
+        uri = "gs://bucket/source.mp3"
+        for changes in ({"endOffset": "NaNs"}, {"endOffset": "995.040s"},
+                        {"startOffset": "1.1s", "endOffset": "0.2s"},
+                        {"startOffset": "0.1s", "endOffset": "1.4s"}, {"word": ""}):
+            with self.subTest(changes=changes):
+                payload = operation(uri)
+                inline = payload["response"]["results"][uri]["inlineResult"]
+                word = inline["transcript"]["results"][0]["alternatives"][0]["words"][2]
+                word.update(changes)
+                original = json.dumps(payload)
+                recognized = captions.extract_recognition(payload, uri, 4)
+                self.assertEqual(recognized["transcript"], "Hello world. Another question.")
+                self.assertEqual(recognized["srt"], inline["srtCaptions"])
+                self.assertEqual(recognized["vtt"], inline["vttCaptions"])
+                self.assertEqual(len(recognized["words"]), 3)
+                self.assertEqual(recognized["word_timing_status"], "partial")
+                self.assertEqual(recognized["word_timing_issues"][0]["word"], word)
+                self.assertTrue(all(not cue["speakers"] for cue in recognized["cues"]))
+                self.assertEqual(json.dumps(payload), original)
+
+    def test_caption_ends_use_the_next_observed_start_and_preserve_text(self):
         uri = "gs://bucket/source.mp3"
         payload = operation(uri)
-        payload["response"]["results"][uri]["inlineResult"]["transcript"]["results"][0]["alternatives"][0]["words"][0]["endOffset"] = "NaNs"
-        with self.assertRaises(ValueError):
-            captions.extract_recognition(payload, uri, 4)
+        inline = payload["response"]["results"][uri]["inlineResult"]
+        cues = [{"start": 177.6, "end": 192.6, "text": "First caption."},
+                {"start": 182.24, "end": 186.2, "text": "Next caption."},
+                {"start": 236.52, "end": 73.4, "text": "Reversed end."},
+                {"start": 238.04, "end": 241.36, "text": "Following caption."}]
+        inline["srtCaptions"] = captions.render_captions(cues)
+        inline["vttCaptions"] = captions.render_captions(cues, vtt=True)
+        original = json.dumps(payload)
+        recognized = captions.extract_recognition(payload, uri, 338.4)
+        self.assertEqual([cue["text"] for cue in recognized["cues"]], [cue["text"] for cue in cues])
+        self.assertEqual([cue["start"] for cue in recognized["cues"]], [cue["start"] for cue in cues])
+        self.assertEqual([cue["end"] for cue in recognized["cues"]], [182.24, 186.2, 238.04, 241.36])
+        self.assertEqual(len(recognized["caption_timing_adjustments"]), 2)
+        self.assertEqual(recognized["caption_timing_adjustments"][1]["original_end"], 73.4)
+        captions.parse_captions(recognized["srt"], 338.4)
+        captions.parse_captions(recognized["vtt"], 338.4, vtt=True)
+        self.assertEqual(json.dumps(payload), original)
+
+    def test_uncertain_caption_starts_or_final_ends_still_block_export(self):
+        uri = "gs://bucket/source.mp3"
+        for cues in ([{"start": 1, "end": 2, "text": "One."}, {"start": 1, "end": 3, "text": "Two."}],
+                     [{"start": 2, "end": 3, "text": "One."}, {"start": 1, "end": 2, "text": "Two."}],
+                     [{"start": 5, "end": 6, "text": "Outside audio."}],
+                     [{"start": 1, "end": .5, "text": "Invalid final end."}],
+                     [{"start": 1, "end": 995.04, "text": "Invalid final end."}]):
+            with self.subTest(cues=cues):
+                payload = operation(uri)
+                inline = payload["response"]["results"][uri]["inlineResult"]
+                inline["srtCaptions"] = captions.render_captions(cues)
+                inline["vttCaptions"] = captions.render_captions(cues, vtt=True)
+                with self.assertRaises(ValueError):
+                    captions.extract_recognition(payload, uri, 4)
+
+    def test_valid_captions_can_be_used_without_usable_word_timings(self):
+        uri = "gs://bucket/source.mp3"
+        for words in ([], [{"word": "Hello", "endOffset": "995s"}]):
+            payload = operation(uri)
+            inline = payload["response"]["results"][uri]["inlineResult"]
+            inline["transcript"]["results"][0]["alternatives"][0]["words"] = words
+            recognized = captions.extract_recognition(payload, uri, 4)
+            self.assertEqual(recognized["word_timing_status"], "unavailable")
+            self.assertEqual(len(recognized["cues"]), 2)
+            self.assertEqual(recognized["transcript"], "Hello world. Another question.")
 
     def test_script_comparison_keeps_a_missing_negation_visible(self):
         comparison = captions.compare_script("Explore: It cannot establish safety.", "It can establish safety.", ["Explore"])
@@ -169,6 +230,39 @@ class CaptionRecoveryTests(unittest.TestCase):
             self.assertEqual(len(cloud.call_args_list[0].args), 4)  # submission with request body
             self.assertEqual(len(cloud.call_args_list[1].args), 3)  # poll only
 
+    def test_saved_response_recovers_bad_timing_without_another_cloud_request(self):
+        payload = operation(self.uri)
+        inline = payload["response"]["results"][self.uri]["inlineResult"]
+        inline["transcript"]["results"][0]["alternatives"][0]["words"][0]["endOffset"] = "995.040s"
+        inline["srtCaptions"] = inline["srtCaptions"].replace("00:00:01,000", "00:00:01,500")
+        inline["vttCaptions"] = inline["vttCaptions"].replace("00:00:01.000", "00:00:01.500")
+        with patch.object(captions.shutil, "which", return_value="installed"), \
+             patch.object(captions, "ensure_upload", return_value="1"), \
+             patch.object(captions, "cloud_json", return_value=payload), \
+             patch.object(captions, "extract_recognition", side_effect=ValueError("Invalid recognized word or timing")), \
+             redirect_stdout(io.StringIO()):
+            with self.assertRaises(ValueError):
+                captions.run(self.args())
+        output = next((self.root / "captions").iterdir())
+        original_response = (output / "operation.json").read_bytes()
+        with patch.object(captions.shutil, "which", return_value="installed"), \
+             patch.object(captions, "cloud_json") as cloud, patch.object(captions, "ensure_upload") as upload, \
+             redirect_stdout(io.StringIO()) as log:
+            captions.run(self.args())
+            cloud.assert_not_called()
+            upload.assert_not_called()
+        self.assertEqual((output / "operation.json").read_bytes(), original_response)
+        self.assertEqual((output / "transcript.txt").read_text().strip(), "Hello world. Another question.")
+        details = json.loads((output / "words.json").read_text())
+        self.assertEqual(details["timing_status"], "partial")
+        self.assertEqual(details["timing_issues"][0]["word"]["endOffset"], "995.040s")
+        metadata = json.loads((output / "captions.json").read_text())
+        self.assertEqual(metadata["word_timing_issue_count"], 1)
+        self.assertEqual(len(metadata["caption_timing_adjustments"]), 1)
+        captions.parse_captions((output / "captions.srt").read_text(), 4.1)
+        self.assertIn("Playback uses validated SRT/WebVTT", log.getvalue())
+        self.assertIn("caption ends adjusted", (output / "listen.html").read_text())
+
     def test_lost_submission_acknowledgement_requires_explicit_retry(self):
         with patch.object(captions.shutil, "which", return_value="installed"), \
              patch.object(captions, "ensure_upload", return_value="1"), \
@@ -244,3 +338,4 @@ class CaptionRecoveryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
