@@ -14,7 +14,7 @@ def build(check=False):
     organization = {
         '@type': 'Organization', '@id': DOMAIN + '#studio',
         'name': 'Moth & Gravel', 'url': DOMAIN,
-        'description': 'An independent software and design studio in Finland. Useful tools and thoughtful interfaces, from cloud and mobile software to physical devices.',
+        'description': 'An independent software and design studio based in Finland. Useful tools and thoughtful interfaces, with an invitation to questions from anywhere.',
         'logo': DOMAIN + 'assets/nav-mark.svg',
         'location': {'@type': 'Place', 'name': 'Finland'},
         'founder': {'@type': 'Person', 'name': 'slideep'},
@@ -23,7 +23,7 @@ def build(check=False):
     website = {'@type': 'WebSite', '@id': DOMAIN + '#website', 'url': DOMAIN,
                'name': 'Moth & Gravel', 'inLanguage': 'en',
                'publisher': {'@id': organization['@id']}}
-    pages = [(ROOT / 'docs/index.html', DOMAIN, 'Moth & Gravel — Software & Design Studio, Finland', None),
+    pages = [(ROOT / 'docs/index.html', DOMAIN, 'Moth & Gravel — Independent Software & Design Studio', None),
              (ROOT / 'docs/notes/index.html', DOMAIN + 'notes/', 'Field Notes — Moth & Gravel', None)]
     pages += [(ROOT / 'docs/notes' / n['slug'], DOMAIN + 'notes/' + n['slug'], n['title'], n) for n in notes]
     for path, url, title, note in pages:

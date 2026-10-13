@@ -518,6 +518,15 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
   white-space: nowrap;
 }
 
+/* Landing responsive rules stay with the landing styles. */
+@media (max-width:660px) {
+  .bench-ledger { grid-template-columns: 1fr; gap: 17px; padding: 22px 19px; }
+  .work-card-content { min-height: 0; }
+  .work-card-link { padding-top: 22px; }
+  /* A real 320px-width headline must not become a horizontally clipped poster. */
+  .section-lead h2 { font-size: clamp(34px, 10.5vw, 44px); }
+}
+
 /* SPRINT 02 / FIELD NOTES
    Type stays readable rather than trying to imitate a historical facsimile. */
 .note-back {
@@ -649,11 +658,6 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
   .note-heading { padding: 68px 0 65px; }
 }
 @media (max-width:660px) {
-  .bench-ledger { grid-template-columns: 1fr; gap: 17px; padding: 22px 19px; }
-  .work-card-content { min-height: 0; }
-  .work-card-link { padding-top: 22px; }
-  /* A real 320px-width headline must not become a horizontally clipped poster. */
-  .section-lead h2 { font-size: clamp(34px, 10.5vw, 44px); }
   .note-back { display: none; }
   .note-meta { flex-wrap: wrap; gap: 6px 15px; font-size: 9px; }
   .note-meta span:last-child { display: none; }

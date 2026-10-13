@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#17191b">
-  <meta name="description" content="Moth & Gravel is an independent software and design studio in Finland. Useful tools, thoughtful interfaces and design studies across software and physical devices.">
+  <meta name="description" content="Moth & Gravel is an independent software and design studio based in Finland. Useful tools, thoughtful interfaces and an invitation to curious questions from anywhere.">
   <meta name="robots" content="index, follow">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Moth & Gravel">
-  <meta property="og:title" content="Moth & Gravel — Software &amp; Design Studio, Finland">
+  <meta property="og:title" content="Moth & Gravel — Independent Software &amp; Design Studio">
   <meta property="og:description" content="Drawn to light. Built for rough ground. Independent software and useful things.">
   <meta property="og:url" content="https://mothandgravel.com/">
   <meta property="og:image" content="https://mothandgravel.com/assets/social-cover.png">
@@ -501,6 +501,12 @@ font-family: var(--mono);
 font-size: 10px;
 white-space: nowrap;
 }
+@media (max-width:660px) {
+.bench-ledger { grid-template-columns: 1fr; gap: 17px; padding: 22px 19px; }
+.work-card-content { min-height: 0; }
+.work-card-link { padding-top: 22px; }
+.section-lead h2 { font-size: clamp(34px, 10.5vw, 44px); }
+}
 .main-nav a[aria-current="page"] { color:var(--gold-bright);text-decoration:underline;text-underline-offset:6px; }
 .field-notes-section { border-top:1px solid var(--line); }
 .section-kicker a { color:var(--gold-bright);text-underline-offset:4px; }
@@ -661,9 +667,9 @@ white-space: nowrap;
 <!-- home-style:end -->
   <script>document.documentElement.classList.add("has-js")</script>
   <script src="./assets/site.js" defer></script>
-  <title>Moth & Gravel — Software &amp; Design Studio, Finland</title>
+  <title>Moth & Gravel — Independent Software &amp; Design Studio</title>
 <!-- discovery:start -->
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://mothandgravel.com/#studio","name":"Moth & Gravel","url":"https://mothandgravel.com/","description":"An independent software and design studio in Finland. Useful tools and thoughtful interfaces, from cloud and mobile software to physical devices.","logo":"https://mothandgravel.com/assets/nav-mark.svg","location":{"@type":"Place","name":"Finland"},"founder":{"@type":"Person","name":"slideep"},"sameAs":["https://github.com/mothandgravel"]},{"@type":"WebSite","@id":"https://mothandgravel.com/#website","url":"https://mothandgravel.com/","name":"Moth & Gravel","inLanguage":"en","publisher":{"@id":"https://mothandgravel.com/#studio"}},{"@type":"WebPage","@id":"https://mothandgravel.com/#page","url":"https://mothandgravel.com/","name":"Moth & Gravel — Software & Design Studio, Finland","inLanguage":"en","isPartOf":{"@id":"https://mothandgravel.com/#website"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://mothandgravel.com/#studio","name":"Moth & Gravel","url":"https://mothandgravel.com/","description":"An independent software and design studio based in Finland. Useful tools and thoughtful interfaces, with an invitation to questions from anywhere.","logo":"https://mothandgravel.com/assets/nav-mark.svg","location":{"@type":"Place","name":"Finland"},"founder":{"@type":"Person","name":"slideep"},"sameAs":["https://github.com/mothandgravel"]},{"@type":"WebSite","@id":"https://mothandgravel.com/#website","url":"https://mothandgravel.com/","name":"Moth & Gravel","inLanguage":"en","publisher":{"@id":"https://mothandgravel.com/#studio"}},{"@type":"WebPage","@id":"https://mothandgravel.com/#page","url":"https://mothandgravel.com/","name":"Moth & Gravel — Independent Software & Design Studio","inLanguage":"en","isPartOf":{"@id":"https://mothandgravel.com/#website"}}]}</script>
 <!-- discovery:end -->
 </head>
 <body>
@@ -702,7 +708,7 @@ white-space: nowrap;
         <div class="hero-copy">
           <p class="eyebrow"><span class="line-mark" aria-hidden="true"></span> MADE FOR INTERESTING QUESTIONS</p>
           <h1 id="hero-title">Drawn to <em>light.</em><br>Built for <span class="terrain-phrase"><span class="rough-word">rough</span> ground.</span></h1>
-          <p class="hero-intro">An independent software and design studio in Finland. We make useful tools and thoughtful interfaces, from cloud and mobile software to things with wires. Curious questions, rough prototypes, answers that hold.</p>
+          <p class="hero-intro">An independent software and design studio, based in Finland. Useful tools and thoughtful interfaces, from cloud and mobile software to things with wires. Bring us a question from anywhere.</p>
           <div class="hero-actions">
             <a class="button button-brass" href="#contact">Bring us a question <span class="button-arrow" aria-hidden="true">↗</span></a>
             <a class="under-link" href="#field-notes">Follow the questions <span aria-hidden="true">↗</span></a>
@@ -836,7 +842,7 @@ white-space: nowrap;
           <p>AI is part of the making; architecture, constraints and judgment stay close to hand. Field Notes keep the useful discoveries and stubborn questions in view. The questions travel between projects. So do we.</p>
           <div class="studio-answers" aria-label="A few useful answers">
             <details><summary>What does the studio make?</summary><p>Independent software and useful tools. The work crosses cloud services, mobile interfaces, microcontrollers and physical devices. Field Notes show the design questions inside that work.</p></details>
-            <details><summary>Where is Moth &amp; Gravel based?</summary><p>Finland. The studio’s public record lives here: source, materials and studies from across the workbench.</p></details>
+            <details><summary>Where is Moth &amp; Gravel based?</summary><p>Based in Finland. Open to questions from anywhere. The studio’s public record lives here: source, materials and studies from across the workbench.</p></details>
             <details><summary>How can I get in touch?</summary><p><a href="#contact">Bring us a question.</a> Tell us what you are trying to make and where it gets difficult. The current signal route opens a public GitHub issue and requires an account; keep private details out of it.</p></details>
           </div>
           <a class="editorial-link" href="./notes/001-curiosity-with-calluses.html">The story of two unlikely words <span aria-hidden="true">↗</span></a>

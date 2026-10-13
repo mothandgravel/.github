@@ -142,6 +142,7 @@ try {
           document.querySelector("#hero-title").clientWidth + 2,
         workHeadingFits: document.querySelector("#work-title").scrollWidth <=
           document.querySelector("#work-title").clientWidth + 2,
+        ledgerColumns: getComputedStyle(document.querySelector(".bench-ledger")).gridTemplateColumns.split(/\s+/).length,
         workColumns: getComputedStyle(document.querySelector(".work-grid")).gridTemplateColumns.split(/\s+/).length,
         workCards: Array.from(document.querySelectorAll(".work-card")).map(card => {
           const rect = card.getBoundingClientRect();
@@ -177,6 +178,7 @@ try {
     assert(report.workHeadingFits, `${viewport.name}: Workbench headline overflows its container`);
     assert(report.heroHeadingLines === 3,
       `${viewport.name}: headline wraps across ${report.heroHeadingLines} lines; target is 3`);
+    if (viewport.width <= 660) assert(report.ledgerColumns === 1, viewport.name + ": workbench status must use a readable single column");
     const expectedColumns = viewport.width <= 660 ? 1 : 2;
     assert(report.workColumns === expectedColumns,
       `${viewport.name}: expected ${expectedColumns} work-card columns, found ${report.workColumns}`);

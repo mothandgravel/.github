@@ -252,7 +252,7 @@ def main() -> int:
                       'Machine-readable collection differs from the published archive')
         except (ValueError, KeyError, StopIteration, AttributeError) as error:
             check(False, f'{file.name}: invalid discovery graph ({error})')
-    check('studio-answers' in html and 'studio in Finland' in html,
+    check('studio-answers' in html and 'based in Finland' in html,
           'Machine identity must be backed by visible useful answers and location')
     check('href="#contact">Bring us a question' in html, 'Missing early enquiry invitation')
     robots = (ROOT / 'robots.txt').read_text()
