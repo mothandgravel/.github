@@ -62,10 +62,6 @@ async function inspectFirstWork(page, label, theme, width) {
   await page.keyboard.press('Enter');
   assert(await example.getAttribute('open') !== null, label + ': example cannot be opened with keyboard');
   assert(/fictional workbench study, not a client result/.test(await example.innerText()), label + ': example masquerades as delivered work');
-  if ([390,1440].includes(width)) {
-    await page.evaluate(()=>document.activeElement?.blur());
-    await sheet.screenshot({path:join(output,`first-work-${width}-${theme}.png`),animations:'disabled',style:'.site-header,.skip-link{visibility:hidden!important}'});
-  }
 }
 
 async function inspectSpecimens(page, label, theme, width) {
@@ -89,8 +85,12 @@ async function inspectSpecimens(page, label, theme, width) {
   await page.keyboard.press('Enter');
   assert(await drawer.locator('a').first().isVisible(), label + ': source drawer cannot be opened');
   await page.keyboard.press('Enter');
+}
+
+async function captureLandingSections(page, theme, width) {
   if ([390,1440].includes(width)) {
     await page.evaluate(() => document.activeElement?.blur());
+    await page.locator('#first-work').screenshot({path:join(output,`first-work-${width}-${theme}.png`),animations:'disabled',style:'.site-header,.skip-link{visibility:hidden!important}'});
     await page.locator('.work-grid').screenshot({path:join(output, `specimens-${width}-${theme}.png`),animations:'disabled',style:'.site-header,.skip-link{visibility:hidden!important}'});
   }
 }
@@ -282,6 +282,7 @@ try {
       await page.addScriptTag({ content: axe.source });
       report.axeNight = await accessibilityAudit(page, `${viewport.name} night`);
     }
+    await captureLandingSections(page, 'night', viewport.width);
     await snap(page, `${viewport.name}-night`);
     const theme = page.locator("#light-switch");
     assert(await theme.getAttribute("aria-label") === "Afterlight theme", "Theme toggle has an unstable label");
@@ -306,6 +307,7 @@ try {
       await page.addScriptTag({ content: axe.source });
       report.axeAfterlight = await accessibilityAudit(page, `${viewport.name} afterlight`);
     }
+    await captureLandingSections(page, 'afterlight', viewport.width);
     await snap(page, `${viewport.name}-afterlight`);
 
     if (viewport.width <= 900) {
@@ -727,10 +729,15 @@ try {
   // Optional depth responds to inspection; text/controls and native reading stay stable.
   const handling = await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
   try {
+    let depthFetched = false;
+    handling.on('response', response => { if (response.url().endsWith('/assets/specimens.mjs')) depthFetched = true; });
     await handling.goto(origin,{waitUntil:'networkidle'});
+    assert(!depthFetched, 'Handling light: below-fold enhancement was fetched during opening');
     const card = handling.locator('#specimen-skystack');
     const plane = card.locator('.specimen-plane');
     await plane.scrollIntoViewIfNeeded();
+    await handling.waitForFunction(()=>document.querySelector('#specimen-skystack .specimen-plane').hasAttribute('data-depth-ready'));
+    assert(depthFetched, 'Handling light: material enhancement did not load on inspection');
     // Let the browser deliver visibility observers after the programmatic scroll.
     await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     const box = await plane.boundingBox();

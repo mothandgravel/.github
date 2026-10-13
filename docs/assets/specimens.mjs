@@ -34,6 +34,7 @@ const plates = [...document.querySelectorAll('.specimen-plane')].map(plane => {
   figure.addEventListener('pointerleave', reset);
   figure.addEventListener('pointercancel', reset);
   card.addEventListener('focusin', reset);
+  plane.setAttribute('data-depth-ready', '');
   return { figure, reset, visibility(value) { visible = value; if (!value) reset(); } };
 });
 const resetAll = () => plates.forEach(plate => plate.reset());

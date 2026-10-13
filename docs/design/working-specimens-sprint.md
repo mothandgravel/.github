@@ -18,7 +18,7 @@ The portfolio informed the choice of Ajo as a different kind of material from pl
 
 The desktop composition gives three different materials equal places on the bench. At laptop/phone widths the full artifacts stack; no panel is cropped to manufacture a thumbnail. Full-size image links keep the original render inspectable. Scope is visible in each figure caption, with the exact interpretation available in the native disclosure. The site source and brand marks remain available in a studio-drawer disclosure rather than occupying the project places.
 
-A small optional module adds pointer handling to the artifact planes. There is no viewer dependency, web font or remote data fetch. Images are lazy-loaded with dimensions; authored styles are included through the existing homepage builder. No user actions, AI calls, device activity or live recovery are run by the page. No photos or footage are generated as evidence. Existing private-enquiry and client-room work remains separate.
+A small optional module adds pointer handling to the artifact planes. It is fetched only after initial loading and when the bench enters the viewport. Generated CSS trims syntax whitespace while preserving strings and calc spacing; the homepage drops tag-line indentation to keep the response small. There is no viewer dependency, web font or remote data fetch. Images are lazy-loaded with dimensions; authored styles are included through the existing homepage builder. No user actions, AI calls, device activity or live recovery are run by the page. No photos or footage are generated as evidence. Existing private-enquiry and client-room work remains separate.
 
 ## ARRVL / motion notes
 
@@ -35,7 +35,7 @@ The module coalesces pointer events into one animation-frame update, observes vi
 
 ## Review and next observation
 
-The browser review checks every artifact and study route, all working-record disclosures, full-size assets, keyboard access, native script-free reading, both themes, overflow and style parity. Cold-load budgets remain required. The C++ source replay and source hashes are recorded independently of the browser checks.
+Accessibility runs before screenshot instrumentation hides the sticky header for section captures. The browser review checks every artifact and study route, all working-record disclosures, full-size assets, keyboard access, native script-free reading, both themes, overflow and style parity. Cold-load budgets remain required. The C++ source replay and source hashes are recorded independently of the browser checks.
 
 Ask someone to identify which specimen is a fresh replay, which is a saved simulator case and which is an offline sample render. Ask what each proves and what they would inspect next. Ask whether the question suggests a difficulty they could bring to the studio. Those comprehension observations have not been run; scripted checks do not establish interest, credibility or conversions.
 

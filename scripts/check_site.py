@@ -156,7 +156,7 @@ def main() -> int:
             check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['assetSha256'],
                   f"Specimen asset differs from recorded output: {item['id']}")
     check((ROOT / 'assets/specimens/sky-stamp-footprints.svg').is_file(), 'Missing native footprint replay')
-    check('src="./assets/specimens.mjs"' in html, 'Optional specimen handling module missing')
+    check("import('./assets/specimens.mjs')" in html, 'Optional specimen handling module missing')
 
     check('https://github.com/mothandgravel/.github/tree/main/docs' in html, "Workbench source link is missing")
     check('https://github.com/mothandgravel/.github/tree/main/profile/assets' in html, "Workbench brand assets link is missing")
