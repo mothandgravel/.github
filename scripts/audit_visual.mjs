@@ -509,6 +509,13 @@ try {
       "Social asset is not a real PNG");
     assert(buffer.length >= 24 && buffer.readUInt32BE(16) === 1200 && buffer.readUInt32BE(20) === 630,
       "Social preview must be 1200 by 630 pixels");
+    const feed = await coverResponse.request.get(origin + '/notes/feed.xml');
+    assert(feed.status() === 200, 'RSS feed did not return HTTP 200');
+    const feedState = await coverResponse.evaluate(xml => {
+      const doc = new DOMParser().parseFromString(xml, 'application/xml');
+      return { valid: !doc.querySelector('parsererror'), items: doc.querySelectorAll('item').length };
+    }, await feed.text());
+    assert(feedState.valid && feedState.items === catalog.length, 'Browser could not read the published RSS catalog');
   } finally {
     await coverResponse.close();
   }
@@ -520,7 +527,7 @@ try {
   });
   try {
     await visitor.goto(origin, { waitUntil: "networkidle" });
-    await visitor.locator('.collection-link').click();
+    await visitor.locator('.field-note-routes a[href="./notes/#archive"]').click();
     await visitor.locator('#archive-status').waitFor({ state: 'visible' });
     await visitor.locator('#archive-query').fill('001');
     await visitor.locator('#archive-controls button[type="submit"]').click();
@@ -532,7 +539,7 @@ try {
     await visitor.locator("#work-title").waitFor();
     assert(!visitor.url().includes("/notes/") && visitor.url().endsWith("#work"),
       "Field Note return link does not navigate to Workbench");
-    await visitor.locator('.collection-link').click();
+    await visitor.locator('.field-note-routes a[href="./notes/#archive"]').click();
     await visitor.locator('#archive-status').waitFor({ state: 'visible' });
     await visitor.locator('#archive-query').fill('002');
     await visitor.locator('#archive-controls button[type="submit"]').click();
