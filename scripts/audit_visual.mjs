@@ -753,8 +753,19 @@ try {
     await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     await handling.mouse.move(box.x + box.width * .8, box.y + box.height * .3);
     await handling.waitForFunction(()=>document.querySelector('[data-handled]'));
+    const documentBox = selector => card.locator(selector).evaluate(el=>{
+      const b=el.getBoundingClientRect();return {x:b.x+scrollX,y:b.y+scrollY,width:b.width,height:b.height};
+    });
+    const keyboardTextBefore = await documentBox('h3');
+    const keyboardControlBefore = await documentBox('summary');
     await card.locator('summary').focus();
+    await handling.waitForTimeout(350);
     assert(await plane.getAttribute('data-handled') === null, 'Handling light: keyboard focus did not reset material');
+    // Focusing a card must not lift its title or the control itself.
+    assert(JSON.stringify(keyboardTextBefore) === JSON.stringify(await documentBox('h3')), 'Handling light: keyboard focus moved reading text');
+    assert(JSON.stringify(keyboardControlBefore) === JSON.stringify(await documentBox('summary')), 'Handling light: keyboard focus moved the working-record control');
+    assert(await card.evaluate(el=>getComputedStyle(el).transform==='none'), 'Handling light: keyboard focus still transforms the card');
+    assert(await card.locator('summary').evaluate(el=>getComputedStyle(el).outlineStyle !== 'none'), 'Working record: keyboard focus has no visible outline');
     await handling.keyboard.press('Enter');
     assert(await card.locator('details').getAttribute('open') !== null, 'Handling light: working record cannot open');
     await handling.keyboard.press('Enter');
@@ -766,6 +777,26 @@ try {
     await handling.waitForFunction(()=>document.querySelector('[data-handled]'));
     await handling.mouse.move(0,0);
     await handling.waitForFunction(()=>!document.querySelector('[data-handled]'));
+    const handleAgain = async () => {
+      await plane.scrollIntoViewIfNeeded();
+      await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+      const b = await plane.boundingBox();
+      await handling.mouse.move(0,0);
+      await handling.mouse.move(b.x + b.width * .8,b.y + b.height * .3);
+      await handling.waitForFunction(()=>document.querySelector('[data-handled]'));
+    };
+    await handleAgain();
+    await card.locator('.work-specimen').dispatchEvent('pointercancel');
+    assert(await plane.getAttribute('data-handled') === null, 'Handling light: cancelled pointer left material tilted');
+    await handleAgain();
+    await handling.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+    await handling.waitForFunction(()=>!document.querySelector('[data-handled]'));
+    await handleAgain();
+    await handling.evaluate(()=>window.dispatchEvent(new Event('blur')));
+    assert(await plane.getAttribute('data-handled') === null, 'Handling light: lost window focus left material tilted');
+    await handleAgain();
+    await handling.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));
+    assert(await plane.getAttribute('data-handled') === null, 'Handling light: pagehide left material tilted');
     results.push({name:'specimen-handling',depth:true,readingStable:true,preferenceChange:true,keyboardReset:true,leaveReset:true});
   } finally { await handling.close(); }
   const touch = await browser.newPage({viewport:{width:390,height:844},hasTouch:true,isMobile:true,reducedMotion:'no-preference'});

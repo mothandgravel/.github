@@ -153,7 +153,7 @@
         }
       ],
       "asset": "../assets/specimens/sky-stamp-footprints.svg",
-      "assetSha256": "c2789c66f9ded1df58844cb42bbc6206f48af4353646c097daea23d8f8b79b39",
+      "assetSha256": "924f5707e5abf477fa96d440b491944eac8196eacd84d9d3ed521ad092bd53b3",
       "harnessSha256": "fdacb3c5b1eab06e13178a7646390c9632d87654584fb5ea5643aa36408e1a74",
       "limits": "Footprint helpers only. No Windows game, placement handler, spending, undo or player trial executed."
     },

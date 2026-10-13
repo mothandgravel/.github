@@ -111,7 +111,7 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .visual-window::before {content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(215,209,191,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(215,209,191,.025) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(#000,transparent 85%);pointer-events:none}
 .visual-window::after {content:"";position:absolute;width:72%;aspect-ratio:1;top:13%;left:14%;border:1px solid rgba(190,164,123,.25);border-radius:50%;pointer-events:none}
 .visual-halo {position:absolute;top:8%;left:15%;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(175,152,112,.19) 0,rgba(175,152,112,.03) 43%,transparent 70%);filter:blur(14px)}
-.moth-art {position:absolute;width:min(108%,850px);max-width:none;height:auto;left:50%;top:44%;transform:translate(-50%,-50%);filter:drop-shadow(0 10px 30px rgba(0,0,0,.2));animation:float-moth 8s ease-in-out infinite}
+.moth-art {position:absolute;width:min(108%,850px);max-width:none;height:auto;left:50%;top:44%;transform:translate(-50%,-50%);filter:drop-shadow(0 10px 30px rgba(0,0,0,.2));animation:none}
 .frame-line {position:absolute;width:1px;background:rgba(241,238,230,.13);height:26%;top:36%}
 .frame-line-a {left:8%}.frame-line-b{right:8%}
 .specimen-index {position:absolute;bottom:32px;left:26px;z-index:2;color:#bcb4a4;font-size:9px}
@@ -120,7 +120,7 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .hero-bottomline {padding:19px 0;border-top:1px solid var(--line-soft);border-bottom:none}
 .scroll-cue {display:inline-flex;gap:23px;align-items:center;color:var(--gold-bright)}
 .scroll-cue span {font-size:17px}
-@keyframes float-moth {0%,100% {transform:translate(-50%,-50%)} 50% {transform:translate(-50%,calc(-50% - 10px))}}
+
 
 /* BAR */
 .statement-band {background:var(--gold);color:#17191b;overflow:hidden}
@@ -474,10 +474,6 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .work-card-link:focus-visible {
   color: var(--gold-bright);
   border-color: currentColor;
-}
-.work-card-link:hover span,
-.work-card-link:focus-visible span {
-  transform: translate(2px,-2px);
 }
 .bench-ledger {
   margin-top: 17px;
@@ -1089,7 +1085,8 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 @media (max-width:660px) { .work-specimen { padding:22px 18px; }.trace-pair { gap:10px; }.trace-pair>div { padding:16px 10px; } }
 
 /* Handling light: move the material, keep the reading surface still. */
-.work-card:hover{ transform:none; }
+.work-card:hover,.work-card:focus-within{ transform:none; }
+.specimen-record summary:focus-visible,.work-sources summary:focus-visible{ outline:2px solid var(--gold-bright);outline-offset:5px; }
 .work-specimen{ perspective:900px; }
 .specimen-plane{ transform-origin:50% 50%;transition:transform .24s ease,box-shadow .24s ease; }
 .specimen-plane>a{ display:block;min-height:44px; }
@@ -1098,4 +1095,51 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .work-card:has(.specimen-record[open]) .specimen-plane{ box-shadow:0 0 0 1px var(--line),0 10px 24px -18px var(--gold); }
 @media (prefers-reduced-motion:reduce),(hover:none),(pointer:coarse){
 .specimen-plane,.specimen-plane[data-handled]{ transform:none;transition:none; }
+}
+
+/* A complete resting composition; flight resources arrive only on inspection. */
+.moth-interlude{margin-block:48px 80px;}
+.moth-stage{position:relative;height:268px;overflow:hidden;background:#17191b;color:#f1eee6;border:1px solid var(--line);}
+.moth-stage-label{position:absolute;left:28px;top:20px;color:#bcb4a4;font-size:10px;}
+.moth-source{position:absolute;left:30px;top:48px;width:144px;height:144px;}
+.moth-source img{display:block;width:100%;height:100%;}
+.moth-perch{position:absolute;left:calc(58% - 173px);top:74%;width:42px;height:1px;background:#af9870;}
+.moth-question{position:absolute;right:42px;top:64px;width:42%;z-index:4;}
+.moth-question h2{font:400 clamp(30px,3.4vw,46px)/1.12 var(--serif);margin:0 0 14px;}
+.moth-question a{display:inline-flex;align-items:center;gap:20px;min-height:44px;font-size:14px;color:#dfc195;text-decoration:underline;text-underline-offset:4px;}
+.moth-caption{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:88px;border-bottom:1px solid var(--line);}
+.moth-caption p{font:14px/1.6 var(--body);color:var(--secondary);margin:0;}
+.moth-controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;min-height:44px;width:300px;}
+@media(max-width:900px){.moth-stage{height:360px;}.moth-source{left:18px;top:32px;width:108px;height:108px;}.moth-stage-label{left:18px;top:16px;font-size:9px;}.moth-perch{left:70%;top:34%;}.moth-question{top:auto;bottom:26px;right:18px;width:76%;}.moth-question h2{font-size:clamp(22px,8.2vw,32px);overflow-wrap:anywhere;}.moth-caption{align-items:start;flex-direction:column;gap:8px;padding-block:18px;}.moth-controls{width:100%;max-width:300px;}}
+
+/* One light above the bench: paper edges, stone mass, a brass landing. */
+:root{--room-light-x:26%;--room-light-y:12%;--paper-edge:#f1eee625;--contact-shadow:#0005;}
+:root[data-theme="afterlight"]{--paper-edge:#fff9;--contact-shadow:#20222230;}
+.visual-window{background:radial-gradient(ellipse at var(--room-light-x) var(--room-light-y),#af98701a,transparent 65%),linear-gradient(160deg,#1a1c1c,#101314 65%);}
+.visual-halo{top:-4%;left:-8%;}
+.specimen-plane{position:relative;background:linear-gradient(135deg,var(--paper-edge),transparent 42%);box-shadow:inset 1px 1px var(--paper-edge),6px 9px 18px -12px var(--contact-shadow);}
+.specimen-plane::after{content:"";position:absolute;top:0;left:0;width:42px;height:1px;background:var(--gold-bright);pointer-events:none;}
+.specimen-plane[data-arriving]::after{animation:plate-arrival .38s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--plate-delay,0ms);}
+@keyframes plate-arrival{from{transform:translateX(-8px);opacity:.3;}to{transform:none;opacity:1;}}
+.specimen-plane[data-handled]{box-shadow:inset 1px 1px var(--paper-edge),8px 13px 22px -12px var(--contact-shadow);}
+.work-card:has(.specimen-record[open]) .specimen-plane{box-shadow:inset 1px 1px var(--paper-edge),0 0 0 1px var(--gold),6px 9px 18px -12px var(--contact-shadow);}
+.specimen-record summary::marker,.work-sources summary::marker{color:var(--gold-bright);}
+.first-work-sheet{background:linear-gradient(135deg,var(--paper-edge),transparent 42%),var(--surface);box-shadow:inset 1px 1px var(--paper-edge),6px 9px 20px -16px var(--contact-shadow);}
+.moth-interlude::before{content:"";display:block;width:112px;height:28px;margin:0 0 20px 26%;border-top:1px solid var(--line);border-right:1px solid var(--gold);}
+.moth-stage{background:radial-gradient(ellipse at var(--room-light-x) var(--room-light-y),#dfc19512,transparent 65%),#17191b;box-shadow:inset 1px 1px #f1eee625,6px 9px 22px -14px var(--contact-shadow);}
+.moth-perch{background:linear-gradient(90deg,#dfc195,#af9870);box-shadow:2px 3px 2px #0008;}
+
+/* An action acknowledges attention without relocating its label or hit area. */
+.button,.button:hover{transform:none;}
+.button,.under-link,.editorial-link,.line-link,.work-card-link,.moth-question a{transition:background .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease;}
+.button-arrow,.under-link span,.editorial-link span,.line-link span,.work-card-link span,.moth-question a span{display:inline-block;transition:transform .2s ease;}
+.under-link:hover,.editorial-link:hover,.line-link:hover,.work-card-link:hover{border-color:var(--gold-bright);}
+.button:active{box-shadow:inset 0 0 0 2px var(--accent-ink);}
+@media(hover:hover) and (pointer:fine){
+.button:hover .button-arrow,.under-link:hover span,.editorial-link:hover span,.line-link:hover span,.work-card-link:hover span,.moth-question a:hover span{transform:translate(2px,-2px);}
+}
+.button:focus-visible .button-arrow,.under-link:focus-visible span,.editorial-link:focus-visible span,.line-link:focus-visible span,.work-card-link:focus-visible span,.moth-question a:focus-visible span{transform:none;}
+@media(prefers-reduced-motion:reduce){
+.specimen-plane[data-arriving]::after{animation:none;}
+.button-arrow,.under-link span,.editorial-link span,.line-link span,.work-card-link span,.moth-question a span{transform:none!important;transition:none;}
 }
