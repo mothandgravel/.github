@@ -39,7 +39,8 @@ try {
   await page.addScriptTag({content:axe.source});const violations=await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations);
   assert.deepEqual(violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})),[]);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-  await page.evaluate(()=>{document.activeElement?.blur();window.scrollTo(0,0);});
+  await page.evaluate(()=>{document.activeElement?.blur();document.documentElement.style.scrollBehavior="auto";window.scrollTo({top:0,behavior:"instant"});});
+  await page.waitForFunction(()=>scrollY===0);
   await page.screenshot({path:output+'/enquiry-'+theme+'-'+width+'.png',fullPage:true});results.push({theme,width,posts,receipt:'saved',email:'accepted',axeViolations:0});
   await context.close();
  }
