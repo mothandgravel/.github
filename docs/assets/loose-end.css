@@ -1,0 +1,62 @@
+/* A question takes shape; the site's existing palette and type do the work. */
+.journey-main { padding-block:38px 80px; }
+.journey-top { display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--gold-bright);border-bottom:1px solid var(--line);padding-bottom:22px; }
+.journey-heading { padding:54px 0 40px;max-width:950px; }
+.journey-heading h1 { font:900 clamp(50px,7vw,100px)/1 var(--sans);text-transform:uppercase;letter-spacing:-.055em;margin-bottom:26px; }
+.journey-heading h1 em { font-family:var(--serif);font-weight:400;text-transform:none;color:var(--gold-bright); }
+.journey-heading>p { font:400 clamp(19px,2vw,27px)/1.55 var(--serif);max-width:680px;color:var(--secondary); }
+.journey-layout { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:5vw;align-items:start; }
+.journey-aside { border-top:1px solid var(--gold);padding-top:24px;color:var(--secondary); }
+.journey-aside h2 { color:var(--ink);font:400 27px/1.3 var(--serif); }
+.journey-aside p { font-size:15px;line-height:1.8; }
+.journey-aside a { color:var(--gold-bright); }
+.journey-main a:not(.brand):not(.button) { text-decoration:underline;text-underline-offset:4px; }
+.question-sheet,.room-card { border:1px solid var(--line);background:var(--surface);padding:clamp(20px,3vw,42px);min-width:0; }
+.question-sheet { box-shadow:8px 8px 0 var(--surface-2); }
+.question-sheet fieldset,.room-card fieldset { border:0;padding:0;margin:0 0 24px;min-width:0; }
+.question-sheet legend,.question-sheet h2,.room-card h2 { font:400 clamp(26px,3vw,40px)/1.25 var(--serif);letter-spacing:-.025em;margin-bottom:24px;width:100%; }
+.question-sheet legend:focus,.question-sheet h2:focus { outline:2px solid var(--gold-bright);outline-offset:6px; }
+.question-sheet label:not(.choice),.room-card label:not(.choice) { display:block;font-weight:600;margin:24px 0 9px; }
+.question-sheet textarea,.room-card textarea { width:100%;resize:vertical;min-height:125px;border:1px solid var(--gold);border-radius:0;background:var(--bg);color:var(--ink);padding:15px;font:400 16px/1.65 var(--body); }
+.question-sheet textarea:focus-visible,.room-card textarea:focus-visible { outline:2px solid var(--gold-bright);outline-offset:4px; }
+.question-sheet textarea::placeholder,.room-card textarea::placeholder { color:var(--muted);opacity:1; }
+.question-help { color:var(--secondary);font-size:15px;line-height:1.7; }
+.question-error { color:var(--ink);border-left:3px solid var(--gold-bright);padding-left:12px; }
+.choice { display:flex;align-items:center;gap:15px;min-height:56px;border:1px solid var(--line);padding:14px 16px;margin:10px 0;cursor:pointer;font-size:16px; }
+.choice:has(input:checked) { border-color:var(--gold-bright);background:var(--surface-2); }
+.choice input { accent-color:var(--gold-bright);width:20px;height:20px;flex-shrink:0;margin:0; }
+.choice:focus-within { outline:2px solid var(--gold-bright);outline-offset:3px; }
+.journey-actions { display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:25px; }
+.journey-actions button,.room-card button { cursor:pointer;border:1px solid var(--line); }
+.quiet-button { background:transparent;color:var(--ink);font:600 14px/1.5 var(--body);min-height:48px;padding:11px 16px;cursor:pointer; }
+.quiet-button:hover { border-color:var(--gold-bright); }
+.question-progress { color:var(--gold-bright);padding-bottom:20px;margin-bottom:25px;border-bottom:1px solid var(--line); }
+#brief-text { min-height:440px; }
+.journey-status { color:var(--gold-bright);line-height:1.7;min-height:28px;margin-top:24px; }
+.journey-footer { border-top:1px solid var(--line);padding-top:30px;margin-top:50px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--secondary); }
+.room-banner { border-left:3px solid var(--gold-bright);padding:12px 20px;background:var(--surface);margin-bottom:30px;max-width:850px; }
+.room-banner p { margin:0; }
+.room-grid { display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:22px;align-items:start; }
+.room-card { position:relative; }
+.room-card .mono { color:var(--gold-bright); }
+.room-card h3 { font:400 26px/1.3 var(--serif); }
+.room-card p,.room-card li { color:var(--secondary);font-size:16px;line-height:1.75; }
+.room-card dt { color:var(--gold-bright);margin-top:22px;font-size:14px; }
+.room-card dd { margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere; }
+.room-card dl { margin:0; }
+.room-span { grid-column:1/-1; }
+.artifact-view { padding:30px 20px;background:var(--bg);border:1px solid var(--line);margin:24px 0; }
+.artifact-view svg { display:block;width:100%;height:auto;max-width:420px;margin:auto; }
+.artifact-view svg text { fill:var(--ink);font-family:var(--body); }
+.artifact-view svg .sample-accent { fill:var(--gold-bright); }
+.artifact-view svg .sample-ink { fill:var(--accent-ink); }
+.artifact-view svg .sample-line { fill:none;stroke:var(--gold); }
+.room-card figcaption { color:var(--muted);font-size:14px;line-height:1.7;margin-top:20px; }
+.room-card details { border-top:1px solid var(--line);padding-top:20px;margin-top:25px; }
+.room-card summary { cursor:pointer;min-height:44px;font-weight:600; }
+.room-card blockquote { padding-left:20px;border-left:2px solid var(--gold);margin:24px 0;white-space:pre-wrap;overflow-wrap:anywhere; }
+.room-card pre { white-space:pre-wrap;overflow-wrap:anywhere;font:400 15px/1.7 var(--body); }
+.room-card .question-help { font-size:14px; }
+@media(max-width:900px) { .journey-layout { grid-template-columns:1fr;gap:40px; }.question-sheet { order:-1; }.journey-aside { max-width:650px; }.room-grid { grid-template-columns:1fr; } }
+@media(max-width:660px) { .journey-heading { padding-top:36px; }.journey-heading h1 { font-size:clamp(42px,10.5vw,64px); }.journey-actions { gap:12px; }.journey-actions .button { width:100%; }.question-sheet,.room-card { padding:23px 18px; }.artifact-view { padding:25px 10px; } }
+@media print { .site-header,.journey-aside,.journey-actions,.journey-footer,.journey-status,[data-enhance],#journey-controls { display:none!important; }[data-step] { display:block!important; }.journey-layout,.room-grid { display:block; }textarea { border:0!important; }.question-sheet,.room-card { break-inside:avoid;box-shadow:none;margin-bottom:20px; } }

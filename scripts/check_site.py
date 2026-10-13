@@ -165,7 +165,8 @@ def main() -> int:
     check(all(item.findtext('guid') == item.findtext('link') for item in feed_items),
           'RSS links must use the stable article identities')
     featured = next((n for n in catalog if n.get('featured')), sorted(catalog, key=lambda n: int(n['id']), reverse=True)[0])
-    check(html.count(f'href="./notes/{featured["slug"]}"') == 2,
+    feature_html = re.search(r'<article class="note-feature">(.*?)</article>', html, re.S)
+    check(feature_html is not None and feature_html.group(1).count(f'href="./notes/{featured["slug"]}"') == 2,
           "Selected Field Note needs its featured title and reading action")
     check('id="field-notes"' in html and 'class="note-feature"' in html,
           "Homepage needs an independent editorial Field Notes section")
@@ -254,6 +255,29 @@ def main() -> int:
             check(False, f'{file.name}: invalid discovery graph ({error})')
     check('studio-answers' in html and 'based in Finland' in html,
           'Machine identity must be backed by visible useful answers and location')
+    for route in ('questions', 'workbench'):
+        path = ROOT / route / 'index.html'
+        check(path.is_file(), f'Missing {route} journey')
+        if not path.is_file():
+            continue
+        source = path.read_text()
+        journey = SiteParser()
+        journey.feed(source)
+        check(source.count('<h1') == 1 and '<main id="main"' in source,
+              f'{route}: missing unique heading or main landmark')
+        check(f'https://mothandgravel.com/{route}/' in source,
+              f'{route}: missing canonical identity')
+        for anchor in journey.anchors:
+            check(anchor in journey.ids, f'{route}: broken local anchor #{anchor}')
+        for relative in re.findall(r'(?:href|src)="(\.\.?/[^\"]+)"', source):
+            target = (path.parent / urlsplit(relative).path).resolve()
+            check(target.is_relative_to(ROOT.resolve()) and (target.is_file() or
+                  (target.is_dir() and (target / 'index.html').is_file())),
+                  f'{route}: broken local destination {relative}')
+    preview = (ROOT / 'workbench/index.html').read_text()
+    check('noindex, follow' in preview, 'Example workbench must be labelled outside search indexing')
+    check('https://mothandgravel.com/workbench/' not in (ROOT / 'sitemap.xml').read_text(),
+          'Example workbench must stay out of the published-content sitemap')
     check('href="#contact">Bring us a question' in html, 'Missing early enquiry invitation')
     robots = (ROOT / 'robots.txt').read_text()
     check('Allow: /' in robots and 'Disallow: /' not in robots,

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17191b">
+  <meta name="description" content="An example of a shared project space: inspect an approach, pin an observation and keep a draft choice.">
+  <meta name="robots" content="noindex, follow">
+  <meta name="color-scheme" content="dark light">
+  <link rel="canonical" href="https://mothandgravel.com/workbench/">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/site.css">
+  <link rel="stylesheet" href="../assets/loose-end.css">
+  <script>document.documentElement.classList.add("has-js")</script>
+  <script src="../assets/site.js" defer></script>
+  <script type="module" src="../assets/loose-end.mjs"></script>
+  <title>A shared workbench / Preview — Moth &amp; Gravel</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to the work</a>
+  <header class="site-header" id="top">
+    <div class="header-inner shell">
+      <a class="brand" href="../" aria-label="Moth and Gravel home">
+        <span class="brand-stamp" aria-hidden="true"><img src="../assets/nav-mark.svg" width="44" height="44" alt=""></span>
+        <span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span>
+      </a>
+      <nav class="main-nav" id="primary-nav" aria-label="Main navigation"><a href="../">The studio</a><a href="../notes/">Field Notes</a><a href="../questions/">Bring a question</a></nav>
+      <div class="header-actions">
+        <button class="light-switch" id="light-switch" type="button" aria-pressed="false" aria-label="Afterlight theme">
+          <span class="switch-orb" aria-hidden="true"></span>
+          <span class="switch-label">Afterlight</span>
+        </button>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+          <span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="journey-main shell">
+
+    <div class="journey-top mono"><span>THE SHARED WORKBENCH / OPEN STUDY</span><a href="../questions/">Back to your question ↗</a></div>
+    <div class="journey-heading"><h1>Still on<br><em>the bench.</em></h1><p>The question. The attempts. The part that needs your eyes. A place to see how the work is taking shape.</p></div>
+    <div class="room-banner"><p><strong>Example workbench.</strong> The visitor check-in study below is fictional. Observations and choices are local drafts; nothing is sent to the studio. This is a public preview, not a private client account.</p></div>
+    <div id="workbench-preview" class="room-grid">
+      <section class="room-card room-span" id="your-question" hidden><p class="mono">YOUR LOOSE END / CARRIED FROM THIS TAB</p><h2>The words we started with.</h2><p id="original-question"></p><p class="question-help">Your question is separate from the example study below.</p><details><summary>Open your original answers</summary><dl></dl></details><details><summary>Your edited brief</summary><pre id="carried-brief"></pre></details></section>
+      <section class="room-card room-span"><p class="mono">EXAMPLE / THE QUESTION WE’RE WORKING ON</p><h2>Where should a visitor check-in begin?</h2><p>A meeting guest knows their host. A courier may only know the delivery. Can the first screen welcome both without asking either to guess?</p></section>
+      <section class="room-card"><p class="mono">01 / ON THE BENCH</p><h2>Two possible beginnings.</h2><p>Look at the same arrival from two directions.</p><fieldset data-enhance hidden><legend class="question-help">Choose an example to inspect</legend><label class="choice"><input type="radio" name="surface" value="host" checked>Ask for the host first</label><label class="choice"><input type="radio" name="surface" value="reason">Ask for the reason first</label></fieldset>
+        <figure class="artifact-view"><div data-surface="host"><svg viewBox="0 0 420 280" role="img" aria-labelledby="host-title host-desc"><title id="host-title">Host-first check-in example</title><desc id="host-desc">A sketch asks who you are visiting, offers a host search, and has a Continue button.</desc><rect x="1" y="1" width="418" height="278" rx="3" class="sample-line"/><text x="28" y="38" font-size="11" class="sample-accent">A VISITOR ARRIVES / EXAMPLE</text><text x="28" y="91" font-size="25">Who are you visiting?</text><rect x="28" y="119" width="364" height="52" class="sample-line"/><text x="43" y="151" font-size="16">Search for your host</text><rect x="28" y="206" width="364" height="46" class="sample-accent"/><text x="45" y="235" font-size="16" class="sample-ink">Continue →</text></svg></div><div data-surface="reason"><svg viewBox="0 0 420 340" role="img" aria-labelledby="reason-title reason-desc"><title id="reason-title">Reason-first check-in example</title><desc id="reason-desc">A sketch asks what brings you here, with choices for a meeting or a delivery, and a Continue button.</desc><rect x="1" y="1" width="418" height="338" rx="3" class="sample-line"/><text x="28" y="38" font-size="11" class="sample-accent">A VISITOR ARRIVES / EXAMPLE</text><text x="28" y="91" font-size="25">What brings you here?</text><rect x="28" y="119" width="364" height="52" class="sample-line"/><text x="43" y="151" font-size="16">A meeting</text><rect x="28" y="185" width="364" height="52" class="sample-line"/><text x="43" y="217" font-size="16">A delivery</text><rect x="28" y="268" width="364" height="46" class="sample-accent"/><text x="45" y="297" font-size="16" class="sample-ink">Continue →</text></svg></div><figcaption id="artifact-caption">Example sketches / two possible beginnings. These illustrate the question; the drawn controls are not a working kiosk.</figcaption></figure>
+        <button class="quiet-button" id="mark-wrong" type="button" data-enhance hidden>This feels wrong</button>
+        <section id="annotation-panel" hidden aria-labelledby="annotation-heading"><h3 id="annotation-heading">You don’t have to know why yet.</h3><p id="annotation-context" class="question-help"></p><label for="annotation">What caught your attention?</label><textarea id="annotation" maxlength="1800" placeholder="I’m looking at this and wondering…"></textarea><div class="journey-actions"><button class="button button-brass" id="pin-observation" type="button">Pin an observation →</button><button class="quiet-button" id="cancel-observation" type="button">Cancel</button></div></section>
+        <details><summary>What we left aside</summary><h3>A single search for everything.</h3><p>In this fictional study, we set aside one search box for hosts, appointments and deliveries. It looked simpler, but expected visitors to understand the building’s categories before they could begin.</p><p>The route stays here with its reason. We could revisit it if a test shows people already understand those categories.</p></details>
+      </section>
+      <section class="room-card"><p class="mono">02 / YOUR NEXT DECISION</p><h2>Which beginning should we test?</h2><p>Host first gives meeting guests a direct route. Reason first gives different arrivals a visible entrance, but adds a choice for everyone.</p><p>We have no usability result yet. Choosing an approach here only prepares a local draft for a possible test.</p>
+        <fieldset data-enhance hidden><legend class="question-help">Your draft choice</legend><label class="choice"><input type="radio" name="choice" value="host">Test host first</label><label class="choice"><input type="radio" name="choice" value="reason">Test reason first</label><label class="choice"><input type="radio" name="choice" value="open">Keep the question open</label></fieldset>
+        <button class="button button-brass" id="record-choice" type="button" data-enhance hidden>Record a draft choice →</button><p id="recorded-choice">No draft choice recorded.</p>
+        <details open><summary>What would change our minds?</summary><p>Observe a meeting guest and a courier attempting both beginnings. Watch where they hesitate and what they believe the screen is asking. Revise the approach using that evidence.</p></details>
+      </section>
+      <section class="room-card"><p class="mono">03 / WHAT RESISTED</p><h2>One arrival isn’t every arrival.</h2><p>The working doubt: a host search may feel obvious to someone who visits offices often. That assumption may fail for deliveries, contractors or someone arriving without a named contact.</p><p>This is a hypothesis in an example study, not an observed client result.</p></section>
+      <section class="room-card"><p class="mono">04 / WHAT WE’RE CARRYING FORWARD</p><h2>A doubt worth keeping.</h2><blockquote id="annotation-record">No observation pinned yet.</blockquote><p>Your observation and draft choice can be downloaded together. If this browser permits tab storage, recorded drafts survive a reload in this tab.</p><div class="journey-actions" data-enhance hidden><button class="quiet-button" id="download-room" type="button">Download the workbench draft ↓</button><button class="quiet-button" id="clear-room" type="button">Clear this tab’s draft</button></div></section>
+    </div>
+    <p id="draft-status" class="journey-status" role="status"></p>
+    <noscript><p>Both example sketches and the reasoning are available without JavaScript. Pinning an observation, recording a draft choice and carrying your brief need JavaScript.</p></noscript>
+    <div class="journey-footer"><a href="../questions/">Bring your own loose end ↗</a><a href="../notes/">Follow the real questions / Field Notes ↗</a></div>
+  </main>
+  <footer class="shell journey-footer"><a href="../">Moth &amp; Gravel / Independent works</a><span class="mono">DRAWN TO LIGHT. BUILT FOR ROUGH GROUND.</span></footer>
+</body>
+</html>

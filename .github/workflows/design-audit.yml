@@ -5,6 +5,7 @@ on:
     paths:
       - "docs/**"
       - "scripts/audit_visual.mjs"
+      - "scripts/audit_loose_end.mjs"
       - ".github/workflows/design-audit.yml"
   workflow_dispatch:
 
@@ -36,7 +37,9 @@ jobs:
           cat /tmp/mg-site.log
           exit 1
       - name: Capture desktop and mobile review / assert interaction health
-        run: node scripts/audit_visual.mjs
+        run: |
+          node scripts/audit_visual.mjs
+          node scripts/audit_loose_end.mjs
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4
