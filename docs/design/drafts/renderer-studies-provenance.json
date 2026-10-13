@@ -1,0 +1,18 @@
+{
+  "sourceRepository": "digablesolutions/sky-stack-builder",
+  "sourceCommit": "d68bdc6e182548e62f9c093470be327b4bd6fb93",
+  "editorialReviewDate": "2026-10-13",
+  "publication": "editorial drafts only; no archive, feed or sitemap additions",
+  "notes": [
+    {"file": "009-pony-visibility.md", "method": "pinned source and recorded native results; complete contact fixture rerun and still failing"},
+    {"file": "010-pixel-evidence.md", "method": "pinned native test source and recorded renderer findings; no new benchmark for this editorial draft"},
+    {"file": "011-blender-pilot.md", "method": "pinned generator, committed verification record and pilot documentation; no new Blender or pilot run"}
+  ],
+  "images": [],
+  "openChecks": [
+    "Editorial review and illustration choices before publication",
+    "Complete gameplay parity and representative GPU frame-time measurement",
+    "Multiple actor, ramp and raised-foreground behaviour",
+    "Specific Blender asset adoption inside the default gameplay renderer"
+  ]
+}
