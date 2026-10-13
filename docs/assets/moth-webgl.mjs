@@ -70,13 +70,11 @@ export async function createMothRenderer(container, onLost) {
     gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.clearColor(0,0,0,0);
     container.append(canvas);
     let lastPose;
-    const render=(pose,time,width)=>{
+    const render=(pose,_time,width)=>{
       if(disposed||gl.isContextLost())return false;
       const w=Math.max(1,Math.round(width*Math.min(devicePixelRatio||1,2))),h=Math.round(w*430/750);
       if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}
-      const moving=['lift','travel','inspect','depart'].includes(pose.phase);
-      const bank=moving?Math.sin(time*.0018)*.27:.12;
-      const pitch=moving?Math.sin(time*.0023)*.045:0;
+      const bank=pose.volumeBank??.12,pitch=pose.volumePitch??0;
       const key=[w,h,bank,pitch,pose.heading,pose.bodyPitch,pose.antennaAngle,...Object.values(names).map(name=>pose[name].compression)];
       if(lastPose&&key.every((value,i)=>value===lastPose[i]))return true;
       lastPose=key;
