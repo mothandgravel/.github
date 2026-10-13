@@ -156,7 +156,12 @@ def main() -> int:
             check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['assetSha256'],
                   f"Specimen asset differs from recorded output: {item['id']}")
     check((ROOT / 'assets/specimens/sky-stamp-footprints.svg').is_file(), 'Missing native footprint replay')
-    check("import('./assets/specimens.mjs')" in html, 'Optional specimen handling module missing')
+    check("['.work-grid','./assets/specimens.mjs']" in html, 'Optional specimen handling module missing')
+    check("['#moth-interlude','./assets/moth-interlude.mjs']" in html, 'Optional moth scene loader missing')
+    check('id="moth-interlude"' in html and 'id="moth-question"' in html, 'Moth interlude resting composition missing')
+    for path in ('moth-interlude.mjs', 'moth-choreography.mjs', 'moth-interlude.css', 'moth-rig.svg'):
+        check((ROOT / 'assets' / path).is_file(), f'Moth scene resource missing: {path}')
+    check('animation:float-moth' not in css, 'Hero still has an endless moth loop')
 
     check('https://github.com/mothandgravel/.github/tree/main/docs' in html, "Workbench source link is missing")
     check('https://github.com/mothandgravel/.github/tree/main/profile/assets' in html, "Workbench brand assets link is missing")

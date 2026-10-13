@@ -42,6 +42,7 @@ reduced.addEventListener('change', resetAll);
 fine.addEventListener('change', resetAll);
 document.addEventListener('visibilitychange', resetAll);
 window.addEventListener('pagehide', resetAll);
+window.addEventListener('blur', resetAll);
 if ('IntersectionObserver' in window) {
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) plates.find(plate => plate.figure === entry.target)?.visibility(entry.isIntersecting);

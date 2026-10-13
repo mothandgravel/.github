@@ -111,7 +111,7 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .visual-window::before {content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(215,209,191,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(215,209,191,.025) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(#000,transparent 85%);pointer-events:none}
 .visual-window::after {content:"";position:absolute;width:72%;aspect-ratio:1;top:13%;left:14%;border:1px solid rgba(190,164,123,.25);border-radius:50%;pointer-events:none}
 .visual-halo {position:absolute;top:8%;left:15%;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(175,152,112,.19) 0,rgba(175,152,112,.03) 43%,transparent 70%);filter:blur(14px)}
-.moth-art {position:absolute;width:min(108%,850px);max-width:none;height:auto;left:50%;top:44%;transform:translate(-50%,-50%);filter:drop-shadow(0 10px 30px rgba(0,0,0,.2));animation:float-moth 8s ease-in-out infinite}
+.moth-art {position:absolute;width:min(108%,850px);max-width:none;height:auto;left:50%;top:44%;transform:translate(-50%,-50%);filter:drop-shadow(0 10px 30px rgba(0,0,0,.2));animation:none}
 .frame-line {position:absolute;width:1px;background:rgba(241,238,230,.13);height:26%;top:36%}
 .frame-line-a {left:8%}.frame-line-b{right:8%}
 .specimen-index {position:absolute;bottom:32px;left:26px;z-index:2;color:#bcb4a4;font-size:9px}
@@ -120,7 +120,7 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .hero-bottomline {padding:19px 0;border-top:1px solid var(--line-soft);border-bottom:none}
 .scroll-cue {display:inline-flex;gap:23px;align-items:center;color:var(--gold-bright)}
 .scroll-cue span {font-size:17px}
-@keyframes float-moth {0%,100% {transform:translate(-50%,-50%)} 50% {transform:translate(-50%,calc(-50% - 10px))}}
+
 
 /* BAR */
 .statement-band {background:var(--gold);color:#17191b;overflow:hidden}
@@ -1089,7 +1089,8 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 @media (max-width:660px) { .work-specimen { padding:22px 18px; }.trace-pair { gap:10px; }.trace-pair>div { padding:16px 10px; } }
 
 /* Handling light: move the material, keep the reading surface still. */
-.work-card:hover{ transform:none; }
+.work-card:hover,.work-card:focus-within{ transform:none; }
+.specimen-record summary:focus-visible,.work-sources summary:focus-visible{ outline:2px solid var(--gold-bright);outline-offset:5px; }
 .work-specimen{ perspective:900px; }
 .specimen-plane{ transform-origin:50% 50%;transition:transform .24s ease,box-shadow .24s ease; }
 .specimen-plane>a{ display:block;min-height:44px; }
@@ -1099,3 +1100,18 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 @media (prefers-reduced-motion:reduce),(hover:none),(pointer:coarse){
 .specimen-plane,.specimen-plane[data-handled]{ transform:none;transition:none; }
 }
+
+/* A complete resting composition; flight resources arrive only on inspection. */
+.moth-interlude{margin-block:48px 80px;}
+.moth-stage{position:relative;height:268px;overflow:hidden;background:#17191b;color:#f1eee6;border:1px solid var(--line);}
+.moth-stage-label{position:absolute;left:28px;top:20px;color:#bcb4a4;font-size:10px;}
+.moth-source{position:absolute;left:30px;top:48px;width:144px;height:144px;}
+.moth-source img{display:block;width:100%;height:100%;}
+.moth-perch{position:absolute;left:calc(58% - 173px);top:74%;width:42px;height:1px;background:#af9870;}
+.moth-question{position:absolute;right:42px;top:64px;width:42%;z-index:4;}
+.moth-question h2{font:400 clamp(30px,3.4vw,46px)/1.12 var(--serif);margin:0 0 14px;}
+.moth-question a{display:inline-flex;align-items:center;gap:20px;min-height:44px;font-size:14px;color:#dfc195;text-decoration:underline;text-underline-offset:4px;}
+.moth-caption{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:88px;border-bottom:1px solid var(--line);}
+.moth-caption p{font:14px/1.6 var(--body);color:var(--secondary);margin:0;}
+.moth-controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;min-height:44px;width:300px;}
+@media(max-width:900px){.moth-stage{height:360px;}.moth-source{left:18px;top:32px;width:108px;height:108px;}.moth-stage-label{left:18px;top:16px;font-size:9px;}.moth-perch{left:70%;top:34%;}.moth-question{top:auto;bottom:26px;right:18px;width:76%;}.moth-question h2{font-size:clamp(22px,8.2vw,32px);overflow-wrap:anywhere;}.moth-caption{align-items:start;flex-direction:column;gap:8px;padding-block:18px;}.moth-controls{width:100%;max-width:300px;}}
