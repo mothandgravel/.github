@@ -8,7 +8,7 @@ const {chromium} = require('playwright');
 const root = resolve(process.env.AUDIO_AUDIT_ROOT || 'artifacts/audio-site-qa/docs');
 const output = resolve(process.env.AUDIO_AUDIT_OUTPUT || 'artifacts/audio-site-qa');
 await mkdir(output, {recursive:true});
-const syntheticMedia = !process.env.AUDIO_AUDIT_ROOT;
+const syntheticMedia = root !== resolve('docs');
 const expectedCount = JSON.parse(await readFile(root + '/assets/audio/episodes.json','utf8')).length;
 const types = {'.html':'text/html', '.css':'text/css', '.js':'text/javascript', '.mjs':'text/javascript', '.svg':'image/svg+xml', '.webp':'image/webp', '.png':'image/png', '.jpg':'image/jpeg', '.mp3':'audio/mpeg', '.vtt':'text/vtt', '.json':'application/json', '.xml':'application/xml', '.txt':'text/plain'};
 const server = createServer(async (req, res) => {
@@ -69,8 +69,12 @@ try {
     await page.locator('[data-queue-start]').click();
     check(await page.locator('audio').evaluate(a => a.paused),'Pause action does not pause');
     await page.locator('[data-queue-start]').click();
+    await page.waitForFunction(() => !document.querySelector('audio').paused && document.querySelector('[data-queue-start]').textContent === 'Pause');
     await page.locator('audio').evaluate(a => {a.currentTime = a.duration - .05;});
-    await page.waitForFunction(() => document.querySelector('[data-queue-index="1"]').getAttribute('aria-current') === 'true');
+    await page.waitForFunction(() => document.querySelector('[data-queue-index="1"]').getAttribute('aria-current') === 'true').catch(async error => {
+      console.log(await page.locator('audio').evaluate(a => ({duration:a.duration,currentTime:a.currentTime,paused:a.paused,ended:a.ended,seeking:a.seeking,readyState:a.readyState,mediaError:a.error?.message})));
+      throw error;
+    });
     await page.waitForFunction(() => !document.querySelector('audio').paused && document.querySelector('audio').readyState >= 2);
     check(await page.locator('audio').evaluate(a => a.playbackRate === 1.15),'Advancing changed playback speed');
     await page.locator('[data-queue-auto]').uncheck();

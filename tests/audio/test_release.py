@@ -43,6 +43,8 @@ class ReleaseTests(unittest.TestCase):
                 "1",
                 "-c:a",
                 "libmp3lame",
+                "-b:a",
+                "96k",
                 str(path),
             ],
             check=True,

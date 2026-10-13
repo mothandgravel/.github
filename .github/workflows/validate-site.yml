@@ -36,6 +36,10 @@ jobs:
       - name: Syntax-check browser JavaScript
         run: |
           node --check docs/assets/specimens.mjs
+          node --check docs/assets/moth-interlude.mjs
+          node --check docs/assets/moth-choreography.mjs
+          node --check scripts/audit_moth.mjs
+          node --check scripts/audit_handling.mjs
           node --check docs/assets/site.js
           node --check docs/assets/notes.mjs
           node --check docs/assets/notes-model.mjs

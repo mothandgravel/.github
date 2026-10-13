@@ -5,7 +5,8 @@ studio's colours, but gave the archive a large, permanently expanded control
 panel. This sprint restores the reading hierarchy and treats listening as an
 editorial edition, with ordinary controls carrying the work.
 
-Reviewed against current main (`611f887`) and the real 13-episode collection.
+Reviewed against current main (`699e877`), including the finite moth scene, and
+the real 13-episode collection.
 The recordings, source fingerprints, subtitle timing and podcast identities are
 unchanged. This is a design and browser review, not a human listening review.
 
@@ -56,9 +57,11 @@ before inspecting them; the assertions about the actual copy remain intact.
 The local comparison used three cold loads per profile, the same host and
 Lighthouse 13.5.0 with Playwright's Chromium 140 headless shell. The managed local
 environment cannot launch full Chromium's process singleton; hosted CI keeps its
-existing full Chromium runner. Mobile median FCP changed from 1,050.8 ms to
-930.3 ms, LCP from 1,205.6 ms to 1,202.4 ms; TBT and CLS were zero. Desktop FCP
-was 273.9 ms before and 270.2 ms after. All four Lighthouse categories scored
+existing full Chromium runner. The final comparison uses the same latest-main
+content in both copies, with offscreen rendering enabled only in the candidate.
+Mobile median FCP changed from 1,031.3 ms to 970.3 ms, LCP from 1,202.7 ms to
+1,202.5 ms; TBT and CLS were zero. Desktop FCP was 247.4 ms before and 267.9 ms
+after, both within budget. All four Lighthouse categories scored
 100 in this local comparison. These are lab observations, not a field-speed
 promise; hosted CI must confirm its own result.
 
@@ -73,9 +76,12 @@ and [the CSS property documentation](https://developer.mozilla.org/en-US/docs/We
   pause, caption seeking, queue advance/end, selected writing, transcript failure
   and stale-response handling, no JavaScript and zero axe violations.
 - A synthetic-media version of the same audit remains in CI. The local audit
-  server now serves image/JavaScript MIME types and MP3 byte ranges correctly.
+  server now serves image/JavaScript MIME types and MP3 byte ranges correctly;
+  synthetic MP3s use the production encoding: mono, 24 kHz and 96 kbit/s.
 - The wider landing audit covers responsive headings, specimen interaction,
   first-engagement scope, fragment navigation, themes and no-JavaScript access.
+- The integrated moth and material-handling audits pass with the new rendering
+  rules, including motion preference changes, pause/replay and static fallbacks.
 
 Real narration and machine recognition still require listening review for names,
 negations, qualifications and voice identity. Publishing the collection does not
