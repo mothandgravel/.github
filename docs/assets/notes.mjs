@@ -40,8 +40,6 @@ if (form) {
         const article = element('article', '', 'archive-entry notes-index-entry');
         article.dataset.noteId = n.id;
         const meta = element('div', `${n.id} / ${n.type.toUpperCase()}`, 'editorial-meta mono');
-        const time = element('time', new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(n.date + 'T00:00:00Z')).toUpperCase());
-        time.dateTime = n.date; meta.append(time);
         const body = element('div');
         const heading = element('h3');
         const link = element('a', n.title);

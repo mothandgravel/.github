@@ -6,7 +6,7 @@ export function queryNotes(notes, { q = '', topic = '', sort = 'newest', page = 
   filtered.sort((a, b) => {
     if (sort === 'title') return a.title.localeCompare(b.title);
     const direction = sort === 'oldest' ? 1 : -1;
-    return direction * (a.date.localeCompare(b.date) || Number(a.id) - Number(b.id));
+    return direction * (Number(a.id) - Number(b.id));
   });
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const current = Math.min(pages, Math.max(1, Number.isFinite(Number(page)) ? Math.floor(Number(page)) : 1));

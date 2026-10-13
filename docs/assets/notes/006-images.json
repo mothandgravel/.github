@@ -1,0 +1,98 @@
+{
+  "note": "006",
+  "editorial_cover": {
+    "prompt": "Use case: stylized-concept. Asset type: wide 16:9 editorial cover for Moth & Gravel Field Note 006, A map should leave room for doubt. An unexpected tactile still life about a map that remains unfinished: a thin warm bone paper sheet on a charcoal stone workbench, with a few quiet pencil-like graphite traces suggesting incomplete room edges, a delicate arc of tiny brushed brass markers and one small pebble near the edge of the explored area. Most of the paper remains blank; the unfinished traces stop with intent rather than enclosing a complete room. Elevated three-quarter view, photo-like editorial illustration, soft grazing light and natural warm shadows, generous negative space, curious and grounded independent design studio mood. Materials grainy vellum paper, charcoal stone, brushed brass, one rough small pebble. Restrained bone, charcoal and brass palette. No words, letters, numbers, logos, axis labels, interface, robot, electronics, hands, neon, watermark. This is conceptual editorial artwork about incomplete knowledge, not a measured diagram, floor plan, product screenshot or photograph of hardware.",
+    "generator": "built-in image_gen",
+    "kind": "conceptual illustration; not a measured map or hardware photograph",
+    "original_sha256": "59754b7f64c80aedc71f6b1f582faf5ce418748541e6ac193ce16843528e1b1d",
+    "original_dimensions": [
+      1672,
+      941
+    ]
+  },
+  "source_tree_sha": "907ca61254bc88ec4cd2794e47425c71fb69b8f5",
+  "source_readback_date": "2026-10-13",
+  "sources": [
+    {
+      "repository": "digablesolutions/kitronik-buggy",
+      "path": "tools/scan_visualizer.py",
+      "blob_sha": "e23f758fc680825d14bc104e9b79c0df63235da1"
+    },
+    {
+      "repository": "digablesolutions/kitronik-buggy",
+      "path": "tools/sample_data/scan_box_test.json",
+      "blob_sha": "c59b61e48bc2a277c8bac7d1b9492294b6746b3f"
+    },
+    {
+      "repository": "digablesolutions/kitronik-buggy",
+      "path": "tools/ar_overlay.py",
+      "blob_sha": "cea6183ca1bf4a53c776c4d5b1109df7738f3d37"
+    },
+    {
+      "repository": "digablesolutions/kitronik-buggy",
+      "path": "firmware/src/app/occupancy_grid.c",
+      "blob_sha": "470d3f57b2896ee70d33ffd28b127e955eab2baf"
+    },
+    {
+      "repository": "digablesolutions/kitronik-buggy",
+      "path": "firmware/src/app/occupancy_grid.h",
+      "blob_sha": "a39623556c27df2b745e17c160c33332a0c6704f"
+    },
+    {
+      "repository": "digablesolutions/kitronik-buggy",
+      "path": "firmware/src/config/tuning.h",
+      "blob_sha": "6df46d283121e3a7202845627b03b390b3cfafc1"
+    }
+  ],
+  "offline_replay": {
+    "asset": "006-scan-replay.webp",
+    "method": "Existing plot_results(scan_data, grid_parts, save_path=...) called with repository sample using MPLBACKEND=Agg. Functional renderer code unchanged; the local text copy has its own hash. No live listener, hardware, camera or microphone session.",
+    "renderer_local_sha256": "d59509e36244d4cc7d3a94544a14e285d1c31c552bea4487fa476dca59c27d59",
+    "sample_local_sha256": "774709f525fe521c2af97ffee085acbb4dc3935b553140d44106fe5a735a89e3",
+    "export_png_sha256": "fba29137de7496272b71111480ca4b6daff17633a8f0bc9711db710681c3e040",
+    "sample_scope": "12 readings, older 32x32 grid, physical capture origin not established; distinct from current 64x64 firmware",
+    "derivative": "Lossless WebP, original 2100x1800 pixels retained"
+  },
+  "diagrams": {
+    "kind": "repo-native explanatory SVG and text in article",
+    "scope": "Current free <80, unclassified 80..170 inclusive, occupied >170; prior 128. Not measured probabilities or product screens."
+  },
+  "assets": [
+    {
+      "file": "006-cover-1600.webp",
+      "sha256": "fc4dd06e6b5999e8641e9c6938eb45b11b90ae616ff63641c3cbc4413b7b0f27",
+      "bytes": 183388,
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "file": "006-cover-800.webp",
+      "sha256": "37d7b03bd91a69c291eee6d9775a1c8fd5f72bdab07e8b7eab36efe95aca4407",
+      "bytes": 55244,
+      "dimensions": [
+        800,
+        450
+      ]
+    },
+    {
+      "file": "006-cover-social.jpg",
+      "sha256": "d124df327b2e10560e0f7ae7ee615c4a5a972f22eb2b58fd421b3374c1b2c16c",
+      "bytes": 187629,
+      "dimensions": [
+        1200,
+        675
+      ]
+    },
+    {
+      "file": "006-scan-replay.webp",
+      "sha256": "ebae89ce7cb6d920eaaddc37255362ed4e0a94a6ea271a29d983381733c7f1ed",
+      "bytes": 131744,
+      "dimensions": [
+        2100,
+        1800
+      ]
+    }
+  ]
+}

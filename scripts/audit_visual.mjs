@@ -9,7 +9,7 @@ import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const catalog = JSON.parse(await readFile(new URL('../docs/assets/notes.json', import.meta.url), 'utf8'));
-const ordered = [...catalog].sort((a, b) => b.date.localeCompare(a.date) || Number(b.id) - Number(a.id));
+const ordered = [...catalog].sort((a, b) => Number(b.id) - Number(a.id));
 const featured = ordered.find(n => n.featured) || ordered[0];
 const origin = process.env.SITE_URL || "http://127.0.0.1:8793";
 const output = process.env.AUDIT_OUTPUT || "artifacts/design-review";
@@ -317,6 +317,7 @@ try {
     { name: "note-metaphor", path: "/notes/003-metaphor-earns-its-place.html", heading: ".metaphor-heading h1" },
     { name: "note-stability", path: "/notes/004-controls-stay-put.html", heading: ".stability-heading h1" },
     { name: "note-green", path: "/notes/005-green-light.html", heading: ".green-heading h1" },
+    { name: "note-map", path: "/notes/006-map-leaves-room.html", heading: ".map-heading h1" },
   ]) {
     for (const viewport of widths) {
       const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
@@ -337,11 +338,12 @@ try {
         const visibleTextFits = element => !element || element.scrollWidth <= element.clientWidth + 2;
         const tracked = [
           heading,
-          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status, .native-capture, .note-cover-figure, .stability-panel, .stability-panel h3, .signal-panel, .signal-panel h3"),
+          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status, .native-capture, .note-cover-figure, .stability-panel, .stability-panel h3, .signal-panel, .signal-panel h3, .scan-replay"),
         ];
         return {
           width: window.innerWidth,
           documentWidth: document.documentElement.scrollWidth,
+          publicationDates: [...document.querySelectorAll(".note-meta, .editorial-meta")].some(el => el.querySelector("time") || /\b\d{1,2} [A-Z]{3} \d{4}\b/.test(el.textContent)),
           headingPresent: Boolean(heading),
           headingFits: visibleTextFits(heading),
           clippedElements: tracked.filter(element => !visibleTextFits(element))
@@ -358,6 +360,7 @@ try {
         label + ": document overflow " + layout.documentWidth + " > " + viewport.width);
       assert(layout.headingPresent && layout.headingFits, label + ": heading clipped or missing");
       assert(layout.clippedElements.length === 0, label + ": clipped editorial elements: " + layout.clippedElements.join(", "));
+      assert(!layout.publicationDates, label + ": visible Field Note publication dates remain");
       assert(layout.imagesLoaded, label + ": local brand image failed to load");
       assert(browserErrors.length === 0, label + ": browser errors: " + browserErrors.join("; "));
       if (editorial.name === "notes-index") {
@@ -385,7 +388,14 @@ try {
         assert(await page.locator('.signal-panel').count() === 3, label + ': indicator questions missing');
         assert(await page.locator('#study-status').count() === 1, label + ': source scope missing');
       }
-      const expectedCover = editorial.name === 'note-green'
+      if (editorial.name === 'note-map') {
+        assert(await page.locator('.map-panel').count() === 3, label + ': classification explanation missing');
+        assert(await page.locator('.scan-replay img').count() === 1, label + ': offline render missing');
+        assert(await page.locator('#study-status').count() === 1, label + ': sample scope missing');
+      }
+      const expectedCover = editorial.name === 'note-map'
+        ? 'https://mothandgravel.com/assets/notes/006-cover-social.jpg'
+        : editorial.name === 'note-green'
         ? 'https://mothandgravel.com/assets/notes/005-cover-social.jpg'
         : editorial.name === 'note-stability'
         ? 'https://mothandgravel.com/assets/notes/004-cover-social.jpg'
@@ -485,17 +495,20 @@ try {
   await fallback.goto(origin + '/notes/', { waitUntil: 'networkidle' });
   assert(await fallback.locator('#archive-fallback .archive-entry').count() === catalog.length, 'Failed catalog request loses static archive');
   assert(await fallback.locator('#archive-controls').isHidden(), 'Failed catalog leaves dead controls');
+  assert(await fallback.locator('.editorial-meta time').count() === 0, 'Failed-catalog fallback retains publication dates');
   await fallback.close();
   const noJSArchive = await browser.newPage({ viewport: { width: 320, height: 740 }, javaScriptEnabled: false });
   await noJSArchive.goto(origin + '/notes/', { waitUntil: 'load' });
   assert(await noJSArchive.locator('#archive-fallback .archive-entry').count() === catalog.length, 'No-JS archive is incomplete');
   await noJSArchive.locator('.editorial-stack summary').click();
   assert(await noJSArchive.locator('.editorial-stack a').first().isVisible(), 'No-JS stack cannot open');
+  assert(await noJSArchive.locator('.editorial-meta time').count() === 0, 'No-JS collection retains publication dates');
   await snap(noJSArchive, 'archive-no-javascript-phone');
   await noJSArchive.close();
 
   const newNote = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   await newNote.goto(origin, { waitUntil: 'networkidle' });
+  assert(await newNote.locator('.editorial-meta time').count() === 0, 'Homepage stack retains publication dates');
   await newNote.locator('.note-feature .editorial-link').click();
   await newNote.locator('.note-heading h1').waitFor();
   assert(newNote.url().endsWith('/notes/' + featured.slug), 'Featured note route failed');
