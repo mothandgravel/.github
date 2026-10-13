@@ -1,0 +1,32 @@
+[
+  {
+    "id": "001",
+    "slug": "001-curiosity-with-calluses.html",
+    "title": "Curiosity with calluses.",
+    "summary": "Two unlikely words. One independent studio. Why strange ideas still need to hold up in the real world.",
+    "date": "2026-10-13",
+    "type": "Foundations",
+    "topics": ["Identity", "Making"],
+    "project": "Moth & Gravel",
+    "thread": "",
+    "related": ["002"],
+    "supersedes": [],
+    "visual": "foundations",
+    "featured": false
+  },
+  {
+    "id": "002",
+    "slug": "002-afterlight-nightfall.html",
+    "title": "Afterlight / Nightfall.",
+    "summary": "A practical study in bone, charcoal and brass—and what an expressive identity owes to legible interfaces.",
+    "date": "2026-10-13",
+    "type": "Design study",
+    "topics": ["Interface", "Materials"],
+    "project": "Moth & Gravel",
+    "thread": "reading-first-interfaces",
+    "related": ["001"],
+    "supersedes": [],
+    "visual": "themes",
+    "featured": true
+  }
+]

@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="../assets/site.css">
   <script>document.documentElement.classList.add("has-js")</script>
   <script src="../assets/site.js" defer></script>
+  <script type="module" src="../assets/notes.mjs"></script>
   <meta name="description" content="Moth & Gravel Field Notes — observations about materials, software, ideas and the work of making useful things.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Field Notes — Moth &amp; Gravel">
@@ -33,12 +34,15 @@
         <span class="brand-stamp" aria-hidden="true"><img src="../assets/nav-mark.svg" alt="" width="44" height="44"></span>
         <span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span>
       </a>
+      <nav class="main-nav" id="primary-nav" aria-label="Main navigation">
+        <a href="../#work">Workbench</a><a href="./" aria-current="page">Field notes</a><a href="../#ethos">The thinking</a>
+      </nav>
       <div class="header-actions">
-        <a class="note-back mono" href="../#work">← THE WORKBENCH</a>
         <button class="light-switch" id="light-switch" type="button" aria-pressed="false" aria-label="Afterlight theme">
           <span class="switch-orb" aria-hidden="true"></span>
           <span class="switch-label">Afterlight</span>
         </button>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></button>
       </div>
     </div>
   </header>
@@ -46,21 +50,55 @@
     <div class="note-meta mono"><span>FIELD NOTES / INDEX</span><span>INDEPENDENT WORKS</span><span>OPEN ENTRIES</span></div>
     <div class="notes-index-hero">
       <p class="eyebrow"><span class="line-mark" aria-hidden="true"></span> NOTES ON MAKING</p>
-      <h1>Small observations.<br><em>Long half-lives.</em></h1>
-      <p>Not announcements. Not a manifesto carved in stone. Just working notes about curious ideas, imperfect materials and the useful things that survive contact with reality.</p>
+      <h1>Observations from<br><em>the workbench.</em></h1>
+      <p>Experiments, design decisions and discoveries from the work of making useful things. Read the latest, lift a small stack of recent writing, or find your own route through the collection.</p>
     </div>
-    <div class="notes-index-list" aria-label="Published Field Notes">
-      <article class="notes-index-entry">
-        <div class="notes-entry-meta mono"><span>001 / FOUNDATIONS</span><span>13 OCT 2026</span></div>
-        <div><h2><a href="./001-curiosity-with-calluses.html">Curiosity<br><em>with calluses.</em></a></h2><p>Two unlikely words. One independent studio. The argument for asking stranger questions and building better things.</p></div>
-        <span class="notes-entry-arrow" aria-hidden="true">↗</span>
-      </article>
-      <article class="notes-index-entry">
-        <div class="notes-entry-meta mono"><span>002 / DESIGN STUDY</span><span>13 OCT 2026</span></div>
-        <div><h2><a href="./002-afterlight-nightfall.html">Afterlight.<br><em>Nightfall.</em></a></h2><p>A small study in charcoal, bone and brass—and why an interesting visual identity must still let people read.</p></div>
-        <span class="notes-entry-arrow" aria-hidden="true">↗</span>
-      </article>
-    </div>
+    <div class="collection-count mono"><!-- note-count:start -->
+<span>2 published notes</span>
+<!-- note-count:end --><a href="#archive">BROWSE THE ARCHIVE ↓</a></div>
+    <!-- collection-notes:start -->
+<div class="editorial-selection"><article class="note-feature">
+      <div class="editorial-art theme-art" aria-hidden="true"><span class="art-paper"><small>AFTERLIGHT</small><b>Aa</b><i></i></span><span class="art-stone"><small>NIGHTFALL</small><b>Aa</b><i></i></span></div>
+      <div class="note-feature-copy">
+        <p class="editorial-meta mono">FEATURED / 002 · DESIGN STUDY</p>
+        <h2><a href="./002-afterlight-nightfall.html">Afterlight / Nightfall.</a></h2>
+        <p>A practical study in bone, charcoal and brass—and what an expressive identity owes to legible interfaces.</p>
+        <a class="editorial-link" href="./002-afterlight-nightfall.html">Read field note 002 <span aria-hidden="true">↗</span></a>
+      </div>
+    </article><details class="editorial-stack">
+      <summary><span class="mono">RECENT WRITING / 01</span><strong>Lift the stack.</strong><span class="stack-hint">Open 1 note <span aria-hidden="true">↗</span></span></summary>
+      <div class="stack-entries"><article class="archive-entry notes-index-entry" data-note-id="001">
+      <div class="editorial-meta mono">001 / FOUNDATIONS<time datetime="2026-10-13">13 OCT 2026</time></div>
+      <div><h3><a href="./001-curiosity-with-calluses.html">Curiosity with calluses. <span aria-hidden="true">↗</span></a></h3><p>Two unlikely words. One independent studio. Why strange ideas still need to hold up in the real world.</p><p class="archive-topics mono">Identity · Making</p></div>
+    </article></div>
+    </details></div>
+<!-- collection-notes:end -->
+    <section id="archive" class="notes-archive" aria-labelledby="archive-title">
+      <div class="archive-heading"><div><p class="editorial-meta mono">THE COMPLETE COLLECTION</p><h2 id="archive-title" tabindex="-1">Find a field note.</h2></div><p>By subject, by name, or by a question that stuck.</p></div>
+      <form id="archive-controls" class="archive-controls" role="search" aria-label="Find Field Notes" hidden>
+        <div class="archive-search"><label for="archive-query">Search notes</label><input id="archive-query" name="q" type="search" placeholder="A title, topic or idea" maxlength="200"></div>
+        <div><label for="archive-topic">Topic</label><select id="archive-topic" name="topic"><option value="">All topics</option></select></div>
+        <div><label for="archive-sort">Order</label><select id="archive-sort" name="sort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option></select></div>
+        <button class="archive-button" type="submit">Find notes <span aria-hidden="true">↗</span></button>
+        <button class="archive-reset" id="archive-reset" type="button" hidden>Clear filters</button>
+      </form>
+      <p id="archive-status" class="archive-status mono" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+      <div id="archive-fallback" class="notes-index-list">
+        <!-- archive:start -->
+<article class="archive-entry notes-index-entry" data-note-id="002">
+      <div class="editorial-meta mono">002 / DESIGN STUDY<time datetime="2026-10-13">13 OCT 2026</time></div>
+      <div><h3><a href="./002-afterlight-nightfall.html">Afterlight / Nightfall. <span aria-hidden="true">↗</span></a></h3><p>A practical study in bone, charcoal and brass—and what an expressive identity owes to legible interfaces.</p><p class="archive-topics mono">Interface · Materials</p></div>
+    </article><article class="archive-entry notes-index-entry" data-note-id="001">
+      <div class="editorial-meta mono">001 / FOUNDATIONS<time datetime="2026-10-13">13 OCT 2026</time></div>
+      <div><h3><a href="./001-curiosity-with-calluses.html">Curiosity with calluses. <span aria-hidden="true">↗</span></a></h3><p>Two unlikely words. One independent studio. Why strange ideas still need to hold up in the real world.</p><p class="archive-topics mono">Identity · Making</p></div>
+    </article>
+<!-- archive:end -->
+      </div>
+      <div id="archive-results" class="notes-index-list" hidden></div>
+      <nav id="archive-pagination" class="archive-pagination" aria-label="Archive pages" hidden>
+        <button class="archive-button" id="archive-previous" type="button">← Previous</button><span id="archive-page" class="mono"></span><button class="archive-button" id="archive-next" type="button">Next →</button>
+      </nav>
+    </section>
     <div class="notes-index-end mono"><span>MORE NOTES AS THE WORK EARNS THEM.</span><a href="../#work">BACK TO THE WORKBENCH ↗</a></div>
   </main>
   <footer class="site-footer">
