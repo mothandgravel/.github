@@ -324,7 +324,7 @@ def http_guidance(code: int, episode: str) -> str:
     return "Inspect the saved provider diagnostic and audio/README.md before repeating the request."
 
 
-def generate(args) -> None:
+def generate(args) -> Path:
     if not re.fullmatch(r"[a-z][a-z0-9-]{4,28}[a-z0-9]", args.project or ""):
         raise ValueError("Provide a valid Google Cloud project ID with --project (not its display name or number)")
     if not all(shutil.which(name) for name in ("gcloud", "ffmpeg", "ffprobe")):
@@ -333,6 +333,12 @@ def generate(args) -> None:
     summarize(plan)
     directory = ROOT / "artifacts/audio" / args.episode / plan["fingerprint"][:16]
     directory.mkdir(parents=True, exist_ok=True)
+    from field_captions import run_lock
+    with run_lock(directory, "audio"):
+        return generate_locked(args, plan, directory)
+
+
+def generate_locked(args, plan, directory) -> Path:
     write_json(directory / "plan.json", plan)
     paths = []
     for index, data in enumerate(plan["requests"], start=1):
@@ -371,6 +377,16 @@ def generate(args) -> None:
                 write_json(state_path, {"status": "uncertain", "request_sha256": expected})
                 raise RuntimeError("No completed audio was saved. Re-run to inspect state; an uncertain retry can incur another charge.") from None
         paths.append(wav_path)
+    metadata_path = directory / "episode.json"
+    mp3_path = directory / "episode.mp3"
+    if metadata_path.exists() and mp3_path.exists():
+        metadata = json.loads(metadata_path.read_text())
+        if metadata.get("fingerprint") != plan["fingerprint"] or metadata.get("audio_sha256") != digest(mp3_path.read_bytes()):
+            raise ValueError("Cached MP3 is missing or changed; move this run aside to regenerate")
+        if not (directory / "transcript.txt").exists() or digest((directory / "transcript.txt").read_text().strip().encode()) != plan["script_sha256"]:
+            raise ValueError("Cached input script is missing or changed; move this run aside to regenerate")
+        print(f"Reuse completed recording: {mp3_path.relative_to(ROOT)}")
+        return mp3_path
     duration = combine_wavs(paths, directory / "master.wav")
     result = subprocess.run(["ffmpeg", "-hide_banner", "-y", "-i", str(directory / "master.wav"),
                              "-af", "loudnorm=I=-19:TP=-1.5:LRA=7:print_format=json", "-ar", "24000",
@@ -393,6 +409,7 @@ def generate(args) -> None:
     write_json(directory / "episode.json", {"version": 1, "id": args.episode,
                "title": plan["episode"]["title"], "generated_at": datetime.now(timezone.utc).isoformat(),
                "model": args.model, "endpoint": args.endpoint, "speakers": plan["episode"]["speakers"],
+               "language": plan["episode"]["language"],
                "source_sha256": plan["episode"]["source_sha256"], "script_sha256": plan["script_sha256"],
                "audio_sha256": digest(audio), "bytes": len(audio), "duration_seconds": round(mp3_duration, 3),
                "wav_duration_seconds": round(duration, 3),
@@ -404,6 +421,7 @@ def generate(args) -> None:
           f"average {plan['word_count'] * 60 / mp3_duration:.0f} script words per minute, including pauses")
     print("Source script is saved as transcript.txt; it has not been verified against the generated speech.")
     print("Nothing has been uploaded or published. Listen before choosing a voice or publishing.")
+    return directory / "episode.mp3"
 
 
 def main(argv=None) -> int:
@@ -412,19 +430,23 @@ def main(argv=None) -> int:
     commands.add_parser("check", help="Validate all source fingerprints, scripts and request boundaries offline")
     from field_captions import add_arguments, run as run_captions
     add_arguments(commands)
+    import field_workflow as workflow
+    workflow.add_arguments(commands)
     for name in ("plan", "generate"):
         sub = commands.add_parser(name)
         sub.add_argument("episode")
-        sub.add_argument("--model", choices=MODELS, default="gemini-2.5-pro-tts")
-        sub.add_argument("--endpoint", choices=ENDPOINTS, default="eu")
+        sub.add_argument("--model", choices=MODELS)
+        sub.add_argument("--endpoint", choices=ENDPOINTS)
         if name == "plan":
             sub.add_argument("--json", action="store_true", help="Print the bounded requests; contains no credentials")
         else:
-            sub.add_argument("--project", default=os.environ.get("GOOGLE_CLOUD_PROJECT"))
-            sub.add_argument("--auth", choices=("gcloud", "adc"), default="gcloud")
+            sub.add_argument("--project")
+            sub.add_argument("--auth", choices=("gcloud", "adc"))
             sub.add_argument("--retry-uncertain", action="store_true")
     args = parser.parse_args(argv)
     try:
+        if args.command in {"setup", "make", "generate", "captions"}:
+            workflow.resolve_defaults(args, discover_project=not getattr(args, "dry_run", False))
         if args.command == "check":
             episodes = json.loads((ROOT / "audio/episodes.json").read_text(encoding="utf-8"))
             for episode in episodes:
@@ -435,6 +457,11 @@ def main(argv=None) -> int:
                 summarize(plan)
             print(f"Checked {len(episodes)} pilot scripts; no Google requests made.")
         elif args.command == "plan":
+            saved = workflow.read_settings()
+            args.model = args.model or saved.get("model", "gemini-2.5-pro-tts")
+            args.endpoint = args.endpoint or saved.get("endpoint", "global")
+            if args.model not in MODELS or args.endpoint not in ENDPOINTS:
+                raise ValueError("Invalid model or endpoint in saved settings")
             plan = make_plan(args.episode, args.model, args.endpoint)
             if args.json:
                 print(json.dumps(plan, ensure_ascii=False, indent=2))
@@ -442,10 +469,25 @@ def main(argv=None) -> int:
                 summarize(plan)
                 print("Dry run only; no Google requests made.")
         elif args.command == "captions":
-            run_captions(args)
+            workflow.prepare_captions(args)
+            # Check request support before preparing resources.
+            if args.model == "chirp_3" and args.location == "global":
+                raise ValueError("Chirp 3 captions use --location us or eu")
+            if not args.dry_run:
+                workflow.ensure_setup(args)
+            workflow.finish(run_captions(args), args.no_open)
+        elif args.command == "setup":
+            workflow.setup(args)
+        elif args.command == "make":
+            if not 0 <= args.wait <= 3600:
+                raise ValueError("--wait must be between 0 and 3600 seconds")
+            workflow.make(args)
         else:
             generate(args)
         return 0
+    except KeyboardInterrupt:
+        print("\nStopped. Repeat the same command to resume saved audio and transcription jobs.", file=sys.stderr)
+        return 130
     except (ValueError, RuntimeError, OSError, subprocess.SubprocessError, wave.Error) as exc:
         print(f"Audio setup: {exc}", file=sys.stderr)
         return 1

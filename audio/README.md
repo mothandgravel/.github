@@ -1,337 +1,212 @@
 # Field Notes audio pilot
 
-Two listening experiments, using the published website as their source:
+## The short workflow
 
-| Episode | Format | Sources | Initial voices |
+In your existing checkout, update the branch with `git pull --ff-only`. Then:
+
+```bash
+python3 scripts/field_audio.py setup --project "$FIELD_AUDIO_PROJECT"
+python3 scripts/field_audio.py make workbench-001
+```
+
+`setup` remembers your project, verifies authentication and checks billing when
+readable. It enables the four Google APIs and creates or verifies a private
+working bucket in that project. It makes no speech requests. The defaults are
+**global TTS** (the endpoint that worked in the first listening run) and **US
+Chirp 3 transcription**. These are separate processing locations.
+
+`make` generates or reuses the audio, uploads that recording to the private
+bucket, creates subtitles and a synchronized transcript, and waits automatically
+for up to 15 minutes. Two-voice English recordings request speaker detection
+automatically. On a desktop or WSL it attempts to open the listening page. The
+page has 1×, 1.15×, 1.25× and 1.5× playback, clickable captions and downloads.
+
+The portable result has a stable path:
+
+```text
+artifacts/audio/workbench-001/episode.zip
+```
+
+Unzip it and open `listen.html`; keep the neighboring files together. In Cloud
+Shell, use **More → Download** for this ZIP. It contains the MP3, SRT, WebVTT,
+recognized transcript, original input script, timings and review metadata.
+
+To subtitle the narration you have already generated, without making new audio:
+
+```bash
+python3 scripts/field_audio.py captions note-001
+```
+
+Episode IDs find the latest completed recording. You no longer need to find its
+hashed output directory, repeat the project/bucket flags, add a diarization flag,
+or rerun a command every 45 seconds. An explicit MP3 path still works if you
+want to choose an older recording. When `make` or `captions` has no prepared
+settings, it performs setup automatically, using the project from your flags,
+environment, saved settings or current `gcloud` configuration.
+
+If interrupted or still running after the wait limit, repeat the same command.
+Completed speech chunks and MP3s are reused; saved transcription operations are
+polled, rather than submitted again. Transient polling errors retry safely.
+An uncertain **paid submission** still requires `--retry-uncertain`, since another
+submission can incur another charge. Confirmed failed transcription jobs require
+`--restart-failed` after repairing the cause.
+
+## Episodes and listening review
+
+| Episode | Format | Sources | Voices |
 | --- | --- | --- | --- |
-| `note-001` | Narrated edition of *Curiosity with calluses* | 001 | Charon |
-| `workbench-001` | *What does the interface let you believe?* | 005, 006, 007 | Explore: Kore; Question: Charon |
-| `note-001-brisk` | Same narration script; brisker delivery comparison | 001 | Charon |
+| `note-001` | *Curiosity with calluses*, original narration | 001 | Charon |
+| `note-001-brisk` | Same narration, compact pauses and 170 wpm delivery request | 001 | Charon |
+| `workbench-001` | *What does the interface let you believe?*, conversation | 005, 006, 007 | Explore: Kore; Question: Charon |
 
-The first user-run narration completed through the global endpoint after repeated
-EU HTTP 502 responses. Initial listening feedback found it too slow. The brisk
-comparison keeps the same script and voice, removes the unhurried direction, and
-requests lively conversational delivery at about 170 words per minute. Its audio
-has not yet been generated or auditioned. The dialogue is an editorial adaptation, not a
-conversation with project authors. Its opening discloses the AI format. Neither
-pilot adds claims of measured usability, reliability or live robot observations.
+The first user-run narration succeeded globally after repeated EU HTTP 502s.
+It sounded too slow. Try faster playback in the listening page, or generate the
+brisk comparison with `python3 scripts/field_audio.py make note-001-brisk`.
+Delivery pace is a request, not an enforced timing constraint. New runs print
+actual duration and average script words per minute, including pauses.
 
-## First run in Google Cloud Shell
+The conversation is an editorial adaptation with an AI-format disclosure in its
+opening. It is not a conversation with project authors and adds no claims of
+measured usability, reliability or live robot observations.
 
-Google Workspace is your account environment. Speech generation additionally
-requires a Google Cloud project with billing enabled, the relevant APIs enabled,
-and permissions for the account making the calls. A Workspace subscription alone
-does not provide these Cloud API permissions or speech credits.
+Listen for complete sentences, names, numbers, negations, qualifications, natural
+pauses and the final ending. Detected speakers remain **Speaker 1 / Speaker 2**;
+they are not automatically identified as Explore / Question. Pronunciation and
+speaker identities need listening review.
 
-1. Open [Google Cloud Console](https://console.cloud.google.com/), select the
-   intended existing project, and open **Activate Cloud Shell** (`>_`). Use the
-   intended Workspace account. When Google asks to authorize Cloud Shell, approve
-   that session within Google's own interface.
-2. Run the following, replacing `YOUR_PROJECT_ID` with the project ID, not the
-   display name or numeric project number:
+The source recording's `transcript.txt` is the **input script**. The caption
+folder's `transcript.txt` is **recognized speech**. The comparison highlights
+substantive differences without silently rewriting the captions. Case,
+punctuation and `&`/`and` are normalized for comparison. Similarity is not proof
+that the audio said the right words; review stays pending even for a match.
 
-   ```bash
-   export FIELD_AUDIO_PROJECT='YOUR_PROJECT_ID'
-   gcloud config set project "$FIELD_AUDIO_PROJECT"
-   gcloud auth list --filter=status:ACTIVE --format='value(account)'
-   gcloud billing projects describe "$FIELD_AUDIO_PROJECT" --format='value(billingEnabled)'
-   ```
+Nothing is published by these commands. Source articles and reviewed scripts
+remain in Git; recordings and local settings remain in ignored `artifacts/`.
 
-   Confirm that the account/project are correct and that billing reports `True`.
-   A billing permission error is not proof that billing is disabled: check the
-   selected project's Billing page or ask its billing administrator.
-3. Enable the APIs in that project:
+## Requirements and saved settings
 
-   ```bash
-   gcloud services enable texttospeech.googleapis.com aiplatform.googleapis.com --project="$FIELD_AUDIO_PROJECT"
-   ```
+Python 3.10+, Google Cloud CLI, FFmpeg and ffprobe are required. No Python packages,
+API keys or service-account key files are needed. If FFmpeg is missing on WSL or
+Cloud Shell, install it with `sudo apt-get update && sudo apt-get install -y ffmpeg`.
+Locally, sign into the intended account with `gcloud auth login`; in Cloud Shell,
+authorize the session in Google's interface. Setup does not choose a new account,
+attach a billing account or grant broad IAM roles.
 
-   Google documents `aiplatform.endpoints.predict` as required for Gemini TTS,
-   including calls through Cloud Text-to-Speech. If it is missing, a project
-   administrator can grant **Vertex AI User** (`roles/aiplatform.user`) to the
-   account you confirmed above. The caller also needs permission to use the
-   project's enabled services (`serviceusage.services.use`), typically supplied
-   by **Service Usage Consumer**. Enabling APIs requires an administrator with
-   `serviceusage.services.enable`. Do not grant Owner just to generate audio.
-4. Open this branch in a separate checkout:
+A Workspace subscription does not supply Cloud API billing or permissions.
+Billing must already be linked to the chosen project. An unreadable billing
+status is reported but does not imply billing is disabled. If billing is explicitly
+disabled, setup links to that project's Billing page and stops.
 
-   ```bash
-   git clone --branch studio/field-notes-audio --single-branch https://github.com/mothandgravel/.github.git mothandgravel-audio
-   cd mothandgravel-audio
-   python3 scripts/field_audio.py check
-   python3 scripts/field_audio.py plan note-001
-   ```
+Settings are saved at `artifacts/audio/settings.json`, without credentials.
+Project precedence: `--project`, `FIELD_AUDIO_PROJECT`, `GOOGLE_CLOUD_PROJECT`,
+saved project, current `gcloud` project. Bucket precedence: `--bucket`,
+`FIELD_AUDIO_BUCKET`, saved bucket in the same project, generated bucket name.
+Changing project does not borrow the previous project's saved bucket.
 
-   The checks and plan are offline. They require no credentials and make no paid
-   requests. If the directory already exists, use that checkout rather than
-   cloning over it. After this PR is merged, clone `main` instead.
-5. Generation requires FFmpeg. If `command -v ffmpeg` finds nothing, install it:
-
-   ```bash
-   sudo apt-get update
-   sudo apt-get install -y ffmpeg
-   ```
-
-6. Generate the short narration first:
-
-   ```bash
-   python3 scripts/field_audio.py generate note-001 --project "$FIELD_AUDIO_PROJECT" --endpoint global
-   ```
-
-   The runner defaults to **Gemini 2.5 Pro TTS**, English and the **EU** speech
-   endpoint; this command explicitly selects **global**, which worked for the
-   first user-run pilot. It prints the MP3 path when complete. In Cloud Shell Editor, locate
-   that file under `artifacts/audio/note-001/` and download it to listen locally.
-   Download the neighboring `transcript.txt` and `episode.json` as well. The full
-   path is also accepted by Cloud Shell's **More → Download** file action.
-7. Try the conversation once the narration works:
-
-   ```bash
-   python3 scripts/field_audio.py plan workbench-001
-   python3 scripts/field_audio.py generate workbench-001 --project "$FIELD_AUDIO_PROJECT" --endpoint global
-   ```
-
-No API keys or service-account key files are needed for this first run. The runner
-gets a short-lived token from `gcloud`, keeps it in memory, and sends it only to
-the selected Google API. Do not paste tokens or credential files into chat or Git.
-
-## What to listen for
-
-- Does the narrator sound like the studio's writing: calm, curious and precise?
-- Are the pauses natural, including transitions between generated chunks?
-- Do names such as Geaidnu, Ajo, Paja and Kitronik need pronunciation directions?
-- Are numbers, negations and qualifications spoken completely and correctly?
-- Does the two-voice conversation hold attention without sounding theatrical?
-- Does the final sentence finish? An MP3 file existing does not establish script
-  fidelity, pronunciation quality or completeness of the generated speech.
-
-The neighboring transcript is the **input script**, not a speech-to-text verified
-transcript. `episode.json` records listening review as pending. Keep the scripts'
-spoken uncertainty and source limitations when making editorial revisions.
-
-If the narration feels slow, compare the existing recording at 1.25× playback
-first. For a new natural delivery, use the separately identified brisk variant:
+To save different defaults:
 
 ```bash
-python3 scripts/field_audio.py plan note-001-brisk --endpoint global
-python3 scripts/field_audio.py generate note-001-brisk --project "$FIELD_AUDIO_PROJECT" --endpoint global
+python3 scripts/field_audio.py setup --project "$FIELD_AUDIO_PROJECT" --endpoint eu --location eu
 ```
 
-The existing recording remains in its original output directory. The pace in the
-prompt is a request, not a guaranteed duration. New completed runs print actual
-duration and average input-script words per minute, including pauses; the metadata
-retains those values. This does not establish spoken-word accuracy. The runner
-does not accelerate the generated MP3 in post-production.
+EU setup chooses a separate `-eu` bucket and requires European storage. An
+existing bucket is reused only if it belongs to the selected project and has
+public access prevention enforced. Setup does not change an existing bucket's
+policy or remove its data; choose a new `--bucket` name if necessary.
 
-## Cost, request limits and interrupted runs
+The caller needs API-enablement permission for setup, permission to use the
+project's services, `aiplatform.endpoints.predict` for Gemini TTS, Cloud Speech
+Client permissions for transcription and operation reads, and bucket/object
+read and object-create permissions. Vertex AI User and Service Usage Consumer
+are typical least-privilege roles for generation. A project administrator can
+grant missing permissions. Do not grant Owner just to run this pilot.
 
-`plan` estimates speech output at each episode's target pace (140 words per minute
-for the original pilots; 170 for the brisk comparison), 25 audio tokens per second
-and Google's listed Gemini 2.5 rates: $20/million audio tokens for Pro or
-$10/million for Flash. Text input, retries, taxes and future hosting are additional.
-It is an estimate, not a cap; actual speech duration and charges can differ.
+The Speech service agent must also be able to read the input MP3. Its managed
+Speech service-agent role includes storage access; using a bucket in the same
+project simplifies the setup. If a completed job reports input access denied,
+check that service agent's permissions before starting a replacement job.
 
-Requests keep each text chunk below 3,000 UTF-8 bytes and prompt plus text below
-4,000. They therefore fit both individual field limits and the stricter prose
-description in Google's dialogue documentation. Small chunks also avoid the
-approximately 655-second output ceiling. No words or dialogue speaker identities
-are intentionally dropped to satisfy a limit.
+## Advanced commands and limits
 
-Each completed chunk has a fingerprint and audio hash. Re-run the **same command**
-to reuse those chunks. Changing a voice, script, model, delivery prompt, endpoint
-or source article creates a separate run. Network errors or interruptions that
-leave the outcome uncertain stop the run instead of automatically repeating a
-paid request. After inspecting the saved run, `--retry-uncertain` explicitly
-allows repeating that chunk and may incur an additional charge.
+```bash
+python3 scripts/field_audio.py check
+python3 scripts/field_audio.py plan workbench-001
+python3 scripts/field_audio.py generate workbench-001
+python3 scripts/field_audio.py captions note-001 --dry-run
+```
 
-WAV chunks are joined with a 200 ms section pause. FFmpeg applies mono podcast
+`check` and `plan` are offline: no authentication, uploads or paid requests.
+`generate` makes audio only, using your saved defaults. `captions --dry-run`
+inspects a recording locally without Cloud setup, authentication or mutations;
+project settings must already be saved or provided in the environment/flags.
+
+Flags override defaults for that invocation: `--model` and `--endpoint` for
+synthesis; `--model`, `--location`, `--language` and `--diarize`/`--no-diarize`
+for captions. `--auth adc` uses an existing Application Default Credentials
+login. `--no-open` prevents launching the listening page. `--wait 0` submits or
+checks once and returns; other wait limits accept 0–3600 seconds.
+
+The caption default is Chirp 3, with word offsets and native Google SRT/WebVTT
+outputs. Recordings must fit within 20 minutes and 100 MB. `--model long
+--location global --no-diarize` is an optional caption alternative. Transcription
+and private storage have separate charges from synthesis.
+
+Speech plans estimate output at the script's target pace, 25 audio tokens per
+second and Google's listed Gemini 2.5 rates: $20/million audio tokens for Pro,
+$10/million for Flash. Text input, retries, taxes and storage are additional.
+Estimates and budget alerts are not spending caps.
+
+Requests preserve words and dialogue speaker labels, keeping text below 3,000
+UTF-8 bytes and prompt plus text below 4,000. Completed chunks have request and
+audio hashes. Changes to voice, script, model, prompt, endpoint or source article
+create separate runs. Source edits block stale-script generation until reviewed.
+Concurrent generation or caption commands cannot submit the same run twice.
+
+FFmpeg joins WAV chunks with a 200 ms section pause, applies mono podcast
 loudness processing targeting -19 LUFS / -1.5 dBTP and encodes a 96 kbps MP3.
-The processing log is retained. These settings do not replace listening review.
+Processing logs, provenance and measured duration remain beside the recording.
+Repeating a completed run verifies and reuses its MP3 without reencoding it.
 
-For a cheaper model comparison, use `--model gemini-2.5-flash-tts` with both `plan`
-and `generate`. To compare voices, edit `audio/episodes.json`, run `check`, then
-generate again. Generation is manual; ordinary CI never calls Google or bills
-the project. Newer Gemini 3.8 TTS preview models use a different API and are not
-accepted by this Cloud Text-to-Speech pilot runner.
+## Troubleshooting and recovery
 
-## Local WSL alternative
-
-Install the [Google Cloud CLI](https://docs.cloud.google.com/sdk/docs/install),
-FFmpeg and Python 3.10 or later. Run `gcloud auth login` with your intended Google
-account, then use the same project/API/check/generation steps above. If you prefer
-Application Default Credentials, run `gcloud auth application-default login`,
-set its quota project, and pass `--auth adc`. The REST runner does not require a
-Python Google SDK or an OpenAI account/key.
-
-## Troubleshooting the first request
-
-| Result | Check |
+| Result | Next step |
 | --- | --- |
-| Authentication failed / 401 | Authorize the Cloud Shell session; locally sign into the intended account. |
-| 403 | Correct project, linked billing, enabled APIs, permission to use project services, and `aiplatform.endpoints.predict`. Organization policies may require an administrator. |
-| 400 | Inspect the credential-free requests with `plan EPISODE --json`; verify model, language, voices and EU endpoint availability against current Google docs. |
-| 429 | Inspect quota in Google Cloud. Avoid rapidly repeating a paid run; saved completed chunks are reusable. |
-| 500 / 502 / 503 / 504 | The service or an upstream gateway failed. After a short pause, repeat the same command with `--retry-uncertain`. This response alone does not establish a billing/IAM issue. Provider status/message is saved in the chunk JSON without credentials. |
-| Interrupted request | Inspect the chunk state. An explicit uncertain retry may produce another billable generation. |
-| Note changed | Re-read the updated article and revise the audio script. Refresh its article hash only after review; do not suppress the stale-source check. |
+| Authentication / 401 | Authorize Cloud Shell or run `gcloud auth login` locally. |
+| 403 | Inspect the saved diagnostic; check selected project, API and IAM permissions. |
+| 400 | Inspect `plan EPISODE --json` and model/language/voice support. |
+| TTS 429 or 5xx | Wait, then repeat with `--retry-uncertain`; another charge is possible. Global is now the default. |
+| Interrupted paid submission | Inspect saved state, then use `--retry-uncertain` if repeating is appropriate. |
+| Transcription still running | Repeat the same command; the existing operation resumes. Increase `--wait` if desired. |
+| Confirmed failed transcription | Repair the cause, then repeat with `--restart-failed`; a new job is billable. |
+| Source note changed | Review/revise the script before updating its article fingerprint. |
+| Working bucket unavailable | Run `setup` again with a new dedicated `--bucket`. |
 
-For example, retry a failed first narration on the same EU endpoint:
+Provider diagnostics are bounded and stripped of credentials. Server errors do
+not establish a billing or IAM problem. Automatic retries apply only to operation
+reads, never uncertain speech synthesis or transcription submissions.
 
-```bash
-python3 scripts/field_audio.py generate note-001 --project "$FIELD_AUDIO_PROJECT" --retry-uncertain
-```
+Completed captions are re-exported locally from the saved Google response.
+Repeating replaces generated caption files; keep editorial corrections in a
+separate copy. `operation.json` and `state.json` retain resumable provider state.
+Raw recognition output stays available when caption validation fails.
 
-If the EU endpoint repeatedly returns a gateway/server failure, one diagnostic
-alternative is `--endpoint global`. It uses a different processing location and
-a separate output/cache directory; it does not silently replace EU processing.
-Use that option only when global processing is appropriate for the sources.
-Both an uncertain retry and a different-endpoint attempt can incur another charge.
+The private content-addressed input is retained until you choose to remove the
+exact URI printed by the script. No bucket or unrelated objects are deleted.
+Keep input while its job runs and through listening review.
 
-Set a small billing alert in the selected project if useful. Google Cloud budget
-alerts notify; they **do not** cap spending.
-
-## Subtitles and a synchronized transcript
-
-Caption the **finished MP3** after choosing the voice and pace. This command uses
-Google Speech-to-Text V2 and never calls the synthesis API. It uploads only that
-MP3 to a private working bucket, submits one batch transcription, then downloads
-SRT, WebVTT and native word timings. The original input script remains untouched.
-
-### One-time Cloud setup
-
-Use the same `FIELD_AUDIO_PROJECT` as the successful narration run:
-
-```bash
-gcloud services enable speech.googleapis.com storage.googleapis.com --project="$FIELD_AUDIO_PROJECT"
-export FIELD_AUDIO_BUCKET="${FIELD_AUDIO_PROJECT}-field-notes-audio"
-gcloud storage buckets create "gs://$FIELD_AUDIO_BUCKET" \
-  --project="$FIELD_AUDIO_PROJECT" --location=US \
-  --uniform-bucket-level-access --public-access-prevention
-```
-
-For an existing working bucket, set its name in `FIELD_AUDIO_BUCKET` instead.
-The runner requires **public access prevention enforced** before uploading;
-setting it on an existing dedicated private bucket is:
-
-```bash
-gcloud storage buckets update "gs://$FIELD_AUDIO_BUCKET" --public-access-prevention
-```
-
-The caller needs **Cloud Speech Client** (`roles/speech.client`) for recognition
-and operation reads, along with `storage.buckets.get`, `storage.objects.get` and
-`storage.objects.create` on the working bucket, and permission to use project
-services. Project Owners may already have these permissions. A project/bucket
-administrator can grant missing permissions. The Speech-to-Text service agent
-also needs access to read the input; its Google-managed Speech service-agent role
-includes Cloud Storage access. A bucket in the same project simplifies that setup.
-An operation that reports input access denied needs its service-agent permissions
-checked before starting a replacement job.
-
-The default caption model is **Chirp 3**, in the **US speech multi-region**.
-This is a separate service/location from the TTS global endpoint. For European
-processing, use `--location eu` and an appropriate EU working bucket. The caption
-pilot accepts MP3s up to 20 minutes, matching Chirp 3's documented word-offset
-limit, and no larger than 100 MB. `--model long --location global` is an optional
-captioning alternative without this pilot's diarization option.
-
-### Caption an existing recording
-
-For the first completed narration, the recorded output path was:
-
-```bash
-python3 scripts/field_audio.py captions \
-  artifacts/audio/note-001/2cb5fa1b4551ae68/episode.mp3 \
-  --project "$FIELD_AUDIO_PROJECT" --bucket "$FIELD_AUDIO_BUCKET" --dry-run
-```
-
-The dry run checks the file, duration and provenance locally. It makes no Google
-requests and creates no caption artifacts. Remove `--dry-run` to transcribe:
-
-```bash
-python3 scripts/field_audio.py captions \
-  artifacts/audio/note-001/2cb5fa1b4551ae68/episode.mp3 \
-  --project "$FIELD_AUDIO_PROJECT" --bucket "$FIELD_AUDIO_BUCKET"
-```
-
-For the brisk edition or conversation, substitute the MP3 path printed by that
-generation run. Add `--diarize` for the two-voice English conversation. Detected
-speaker IDs stay **Speaker 1 / Speaker 2**, rather than automatically becoming
-Explore / Question; those identities need listening review.
-
-Batch recognition is asynchronous. Each invocation polls for up to 45 seconds.
-If the command reports that the job is still running, repeat the same command:
-it resumes the saved operation and **does not submit another transcription**.
-A file lock prevents concurrent commands from submitting the same job twice.
-
-Completed results live in a separate `captions/<run-id>/` directory beside the
-recording:
-
-| File | Meaning |
-| --- | --- |
-| `captions.srt` | Google's timed subtitles for video tools, including Kdenlive. |
-| `captions.vtt` | Google's WebVTT captions for web playback. |
-| `transcript.txt` | Recognized speech, distinct from the original input script. |
-| `words.json` / `cues.json` | Timings and detected speaker IDs, tied to the MP3 hash. |
-| `comparison.json` | Script/transcription differences for listening review. |
-| `captions.json` | Audio/script fingerprints, output hashes and pending review status. |
-| `listen.html` / `audio.mp3` | Local listening page and a copy of the finished recording. |
-| `operation.json` / `state.json` | Saved provider response and resumable job state. |
-
-Open `listen.html` to review the captions with the recording. Playback highlights
-the current cue, selecting a cue seeks to that point, and Follow playback can be
-turned off while reading. The page includes caption/transcript downloads and a
-no-JavaScript transcript link. The preview works from local files; if a browser
-blocks local audio, serve that caption directory with `python3 -m http.server`.
-
-Names, numbers, missing negations and speaker boundaries deserve a listen. The
-comparison normalizes case, punctuation and `&`/`and`, but preserves substantive
-differences; it never silently rewrites captions to match the intended script.
-Similarity is not proof that the audio said the right words. Review remains
-pending even if the normalized texts match. No captions are published to the site.
-
-### Recovery and cleanup
-
-- Repeating a completed command re-exports cached recognition locally, without
-  another upload or paid request. Editing a copy of an SRT/VTT is fine; repeating
-  the command replaces those generated files from the saved response.
-- If submission loses its acknowledgement, the runner stops. Only
-  `--retry-uncertain` permits another submission; it may incur another charge.
-- A rejected submission, such as HTTP 403, can be repeated after repairing its
-  cause. A confirmed failed operation requires `--restart-failed` after repair;
-  its previous provider response is retained as `failed-operation.json`.
-- Caption errors in a completed response leave the raw response available for
-  inspection. They do not trigger another transcription automatically.
-- The content-addressed Cloud Storage input is retained. Keep it while its job
-  runs; after review, delete the exact input URI printed by the runner if desired.
-  No bucket or unrelated objects are automatically deleted.
-- Transcription and working-bucket storage have separate charges. Check current
-  [Speech-to-Text pricing](https://cloud.google.com/speech-to-text/pricing).
-
-The Google caption request and live transcription still need a first run in your
-Cloud project. Offline tests cover documented response shapes, timing bounds,
-script differences, source matching, privacy configuration and recovery. Browser
-checks use synthetic audio/caption fixtures, not a claim about the real voice.
+Offline tests use documented Google response shapes and synthetic audio. They
+cover source preservation, timings, privacy, saved settings, caching and recovery.
+The live subtitle request still needs its first run in your Cloud project.
 
 ## Publication after the listening pilot
 
-The first two MP3s stay in ignored `artifacts/`; nothing changes the live site.
-Choose the format, voices and any pronunciation fixes after listening. The next
-site change can then add real audio rather than empty controls:
-
-- A native per-note player with `preload="none"`, duration, AI narration disclosure
-  and the reviewed transcript.
-- An archive listening queue and a separate `notes/podcast.xml` containing only
-  reviewed, complete episodes. Keep the article RSS feed available.
-- Stable episode GUIDs, MP3 enclosure URLs/byte lengths/media types and square
-  podcast artwork. Verify HEAD and byte-range requests on the actual media host.
-- Record script, source and audio fingerprints in episode metadata; flag revised
-  source articles for editorial review before regenerating.
-
-For this tiny pilot, local generation plus manual publishing is sufficient. The
-caption working bucket remains private and is separate from future public media
-hosting. A GitHub Actions identity can follow once the listening experience is
-chosen. Use Workload Identity Federation for CI instead of a long-lived JSON key.
-Do not put Google authentication or generation calls in visitor-facing code.
+After voice, pace, pronunciations and transcript have been reviewed, the next
+site change can add per-note players, a listening queue and a separate podcast
+RSS feed. Real reviewed media, stable episode GUIDs, enclosure URLs and square
+artwork are needed; verify the media host's HEAD and byte-range support.
+The article RSS remains available. The private transcription bucket is separate
+from future public podcast hosting. CI currently validates offline only. Future
+CI generation should use Workload Identity Federation, without stored JSON keys.
 
 ## Sources checked for this setup
 
@@ -347,3 +222,5 @@ Do not put Google authentication or generation calls in visitor-facing code.
 - [Chirp 3 regions, word offsets and diarization](https://docs.cloud.google.com/speech-to-text/docs/models/chirp-3)
 - [Speech permissions and service-agent Cloud Storage access](https://docs.cloud.google.com/iam/docs/roles-permissions/speech)
 - [Create a private working bucket](https://docs.cloud.google.com/sdk/gcloud/reference/storage/buckets/create)
+- [Cloud Storage bucket resource and privacy settings](https://docs.cloud.google.com/storage/docs/json_api/v1/buckets)
+- [Create a bucket through the JSON API](https://docs.cloud.google.com/storage/docs/json_api/v1/buckets/insert)

@@ -10,6 +10,8 @@ on:
       - "scripts/test_field_audio.py"
       - "scripts/field_captions.py"
       - "scripts/test_field_captions.py"
+      - "scripts/field_workflow.py"
+      - "scripts/test_field_workflow.py"
       - ".github/workflows/audio-pilot.yml"
   pull_request:
     paths:
@@ -20,6 +22,8 @@ on:
       - "scripts/test_field_audio.py"
       - "scripts/field_captions.py"
       - "scripts/test_field_captions.py"
+      - "scripts/field_workflow.py"
+      - "scripts/test_field_workflow.py"
       - ".github/workflows/audio-pilot.yml"
 
 permissions:

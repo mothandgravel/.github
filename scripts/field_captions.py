@@ -29,17 +29,20 @@ class CloudError(RuntimeError):
 
 def add_arguments(commands):
     sub = commands.add_parser("captions", help="Transcribe an existing MP3 into SRT, VTT and a listening review")
-    sub.add_argument("audio", type=Path)
-    sub.add_argument("--project", required=True)
-    sub.add_argument("--bucket", required=True, help="Name of an existing private working bucket, without gs://")
-    sub.add_argument("--location", choices=("us", "eu", "global"), default="us")
-    sub.add_argument("--model", choices=("chirp_3", "long"), default="chirp_3")
-    sub.add_argument("--language", choices=("en-US", "en-GB", "fi-FI"), default="en-US")
-    sub.add_argument("--diarize", action="store_true", help="Ask Chirp 3 to detect speakers; IDs are not identities")
-    sub.add_argument("--auth", choices=("gcloud", "adc"), default="gcloud")
+    sub.add_argument("audio", help="Episode ID or MP3 path; episode IDs find the latest saved recording")
+    sub.add_argument("--project")
+    sub.add_argument("--bucket", help="Private working bucket; otherwise use saved settings or create one")
+    sub.add_argument("--location", choices=("us", "eu", "global"))
+    sub.add_argument("--model", choices=("chirp_3", "long"))
+    sub.add_argument("--language", choices=("en-US", "en-GB", "fi-FI"))
+    import argparse
+    sub.add_argument("--diarize", action=argparse.BooleanOptionalAction, default=None,
+                     help="Detect speakers automatically for English two-voice episodes; IDs are not identities")
+    sub.add_argument("--auth", choices=("gcloud", "adc"))
     sub.add_argument("--script", type=Path, help="Optional input script; defaults to the neighboring transcript.txt")
     sub.add_argument("--dry-run", action="store_true", help="Inspect locally; no authentication, upload or paid job")
-    sub.add_argument("--wait", type=int, default=45, help="Poll for up to 0–60 seconds per invocation")
+    sub.add_argument("--wait", type=int, default=900, help="Wait up to this many seconds (0–3600); default 15 minutes")
+    sub.add_argument("--no-open", action="store_true", help="Do not open the completed listening page")
     sub.add_argument("--retry-uncertain", action="store_true", help="Allow a new submission after a lost acknowledgement")
     sub.add_argument("--restart-failed", action="store_true", help="Start a new job after repairing a confirmed failed job")
 
@@ -59,6 +62,19 @@ def cloud_json(url, project, auth, data=None, media=False):
         except (OSError, ValueError, TypeError):
             diagnostic = {"http_status": exc.code}
         raise CloudError(diagnostic) from None
+
+
+def poll_operation(url, project, auth):
+    """Retry only reads: polling cannot create another billable transcription job."""
+    for attempt in range(4):
+        try:
+            return cloud_json(url, project, auth)
+        except (CloudError, error.URLError, TimeoutError) as exc:
+            retryable = not isinstance(exc, CloudError) or exc.code in {408, 429} or 500 <= exc.code <= 599
+            if not retryable or attempt == 3:
+                raise
+            print(f"Polling interrupted; retrying in {2 ** attempt} seconds. Saved job will be reused.", flush=True)
+            time.sleep(2 ** attempt)
 
 
 def probe_audio(path):
@@ -229,13 +245,14 @@ a{{color:#dfc28a}}audio{{width:100%;margin:16px 0}}.label{{font-size:12px;letter
 .cue{{display:block;width:100%;padding:14px 12px;text-align:left;border:0;border-bottom:1px solid #444;
 background:transparent;color:inherit;font:inherit;cursor:pointer}}.cue[aria-current=true]{{background:#33312c;border-left:3px solid #dfc28a}}
 .cue:focus-visible{{outline:2px solid #dfc28a;outline-offset:-3px}}.stamp{{display:block;font-size:12px;color:#c0bbaf}}
-label{{display:inline-block;padding:10px 0}}nav{{display:flex;gap:18px;flex-wrap:wrap}}</style>
+label{{display:inline-block;padding:10px 0;margin-right:16px}}select{{font:inherit;background:#33312c;color:inherit;padding:4px;border:1px solid #c0bbaf}}nav{{display:flex;gap:18px;flex-wrap:wrap}}</style>
 <main><p class="label">MOTH &amp; GRAVEL / FIELD NOTES</p><h1>{escape(title)}</h1>
 <p class="muted">Listening review. Machine-generated captions; transcription and speaker detection need checking.</p>
 <audio id="player" aria-label="Episode audio" controls preload="none" src="audio.mp3"></audio>
 <nav aria-label="Downloads"><a href="captions.srt" download>SRT</a><a href="captions.vtt" download>WebVTT</a>
 <a href="transcript.txt" download>Transcript</a></nav>
 <label><input id="follow" type="checkbox" checked> Follow playback</label>
+<label for="speed">Playback speed <select id="speed"><option value="1">1×</option><option value="1.15">1.15×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select></label>
 <p id="status" role="status">Select a caption to listen from that point.</p>
 <div id="transcript" role="region" aria-label="Timed transcript" lang="{escape(language)}"></div>
 <noscript><p>Open the <a href="transcript.txt">readable transcript</a> and use the audio controls above.</p></noscript></main>
@@ -244,6 +261,7 @@ label{{display:inline-block;padding:10px 0}}nav{{display:flex;gap:18px;flex-wrap
 const cues=JSON.parse(document.getElementById('cue-data').textContent);
 const player=document.getElementById('player'),list=document.getElementById('transcript');
 const follow=document.getElementById('follow'),status=document.getElementById('status');
+document.getElementById('speed').addEventListener('change',event=>{{player.playbackRate=Number(event.target.value);}});
 const clock=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
 const buttons=cues.map(cue=>{{
   const button=document.createElement('button');button.type='button';button.className='cue';
@@ -289,13 +307,13 @@ def export_result(directory, operation, plan, script, aliases):
 
 
 @contextmanager
-def run_lock(directory):
+def run_lock(directory, label="caption"):
     import fcntl  # Cloud Shell and WSL; OS releases the lock even after interruption.
     with (directory / ".lock").open("a") as handle:
         try:
             fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
-            raise ValueError("Another caption command is using this recording; wait for it to finish") from None
+            raise ValueError(f"Another {label} command is using this recording; wait for it to finish") from None
         try:
             yield
         finally:
@@ -311,8 +329,8 @@ def run(args):
         raise ValueError("Chirp 3 transcription uses --location us or eu; this is independent of the TTS endpoint")
     if args.diarize and (args.model != "chirp_3" or args.language == "fi-FI"):
         raise ValueError("This pilot supports diarization with Chirp 3 English recordings")
-    if not 0 <= args.wait <= 60:
-        raise ValueError("--wait must be between 0 and 60 seconds")
+    if not 0 <= args.wait <= 3600:
+        raise ValueError("--wait must be between 0 and 3600 seconds")
     path = args.audio.resolve(strict=True)
     if path.suffix.lower() != ".mp3" or not path.is_file() or not 0 < path.stat().st_size <= 100_000_000:
         raise ValueError("Provide a finished MP3 no larger than 100 MB")
@@ -386,16 +404,20 @@ def run(args):
                          "storage_generation": generation}
                 write_json(state_path, state)
             else:
-                operation = cloud_json(operation_url(state["operation"], args.location, args.project), args.project, args.auth)
+                operation = poll_operation(operation_url(state["operation"], args.location, args.project), args.project, args.auth)
             deadline = time.monotonic() + args.wait
+            progress_at = time.monotonic() + 30
             while not operation.get("done"):
                 write_json(directory / "operation.json", operation)
                 if time.monotonic() >= deadline:
                     print(f"Transcription is running: {state['operation']}")
-                    print("Repeat the same captions command to resume polling; no new job will be submitted.")
+                    print("Repeat the same command to resume polling; no new job will be submitted.")
                     return
                 time.sleep(min(3, max(0, deadline - time.monotonic())))
-                operation = cloud_json(operation_url(state["operation"], args.location, args.project), args.project, args.auth)
+                operation = poll_operation(operation_url(state["operation"], args.location, args.project), args.project, args.auth)
+                if time.monotonic() >= progress_at and not operation.get("done"):
+                    print("Transcription is still running; waiting automatically. Ctrl-C saves your place.", flush=True)
+                    progress_at = time.monotonic() + 30
             write_json(directory / "operation.json", operation)
             file_error = operation.get("response", {}).get("results", {}).get(uri, {}).get("error", {})
             if operation.get("error") or file_error.get("code", 0):
@@ -407,3 +429,4 @@ def run(args):
         aliases = [s["alias"] for s in metadata.get("speakers", [])]
         export_result(directory, operation, plan, script, aliases)
         print(f"Private input is retained at {uri}; keep it until review is complete, then remove it if no longer needed.")
+        return directory
