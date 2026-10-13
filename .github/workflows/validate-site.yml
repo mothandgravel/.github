@@ -25,6 +25,7 @@ jobs:
         run: |
           python3 scripts/build_notes.py --check
           node --test scripts/notes_model.test.mjs
+          node --test scripts/loose_end_model.test.mjs
       - name: Verify links, assets, accessibility hooks and sitemap
         run: python3 scripts/check_site.py
       - name: Syntax-check browser JavaScript

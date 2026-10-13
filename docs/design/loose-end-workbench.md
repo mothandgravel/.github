@@ -31,6 +31,25 @@ The style reuses the established site tokens, system fonts, masthead and appeara
 
 When scripts are disabled or the journey module fails, the full question sheet, both sketches and the rejected approach remain readable. Guided controls are hidden until initialization. Plain text is inserted with `textContent`; carried drafts are versioned and bounded. Recorded actions report storage failure honestly. The preview can keep one observation and one draft choice; it is not a complete collaboration record.
 
+## Optional ground, after the question
+
+PR 13 made timing, money and existing material possible only inside one broad constraints answer. The follow-up separates them into three native disclosures, closed by default. The visitor decides which are relevant. A timing answer can distinguish a real deadline from a rough window; the budget can be an amount/range with any currency, or “not set yet”; existing material can be a description or a literal link. No fixed project packages or studio availability are implied. Links are not automatically fetched and attachments are not accepted by this static preview.
+
+These details are optional at every entrance. Unanswered follow-ups are omitted from the brief and carried-answer list, keeping a short question short. Answered follow-ups survive download, explicit handoff and return. Earlier version-1 drafts remain readable. The bounded brief capacity now covers every answer at its maximum length, including the final material, without silently truncating it. A cleared draft also closes the disclosures. The chosen entrance changes supporting prompts: exploring an idea, describing a failure, seeking another pair of eyes or starting with something unnamed. It does not invent a diagnosis or classify people into a commercial package.
+
+## What is still missing
+
+| Piece | Current boundary | Next concrete work |
+| --- | --- | --- |
+| Private enquiry delivery | Brief stays in the browser; public GitHub remains the actual contact route | Connect a verified private inbox/endpoint and provide an explicit review-and-send action. Avoid collecting contact details before there is a destination. |
+| Delivery acknowledgement | No send is attempted by this prototype | Distinguish received, failed and unknown outcomes; keep the brief available and avoid duplicate enquiries when retrying. |
+| First engagement | No fixed offer, price, availability or response promise is published | Agree the first bounded deliverable and explain what the client leaves with: a focused review, tested prototype or technical investigation are candidates. |
+| Real project room | Public fictional example, one local observation and one local draft choice | Authenticated membership, private project data, multiple artifact revisions, conversations and a durable decision record. |
+| Return and progress | Same-tab draft restoration is available | Show meaningful changes since the client's last visit, unresolved questions and one clear next action. |
+| Evidence with real people | Browser behavior is checked; commercial and human usefulness are unmeasured | Try the intake and one real project room, then revise using observed confusion and the quality of the resulting conversations. |
+
+Private delivery and real client access are the highest-priority steps after the public intake. They need an actual verified destination and project access system; the current owner instruction keeps the disclosed GitHub route until a private channel is supplied. Public copy should keep naming what the present action does. An invitation to make a brief must not silently become a promise that the studio received it.
+
 ## The private pilot that follows
 
 Build one real project room around an agreed, bounded question. Its first visit should answer: what are we trying to resolve, what can I inspect, what do you need from me, and what happens next? Subsequent visits should show the meaningful changes since the client's last visit, unresolved observations and the evidence behind decisions. The room remains useful when there is no new activity.

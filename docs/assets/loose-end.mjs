@@ -1,4 +1,4 @@
-import { fields, intents, labels, draftKey, roomKey, normalizeDraft, readDraft, briefText } from './loose-end-model.mjs';
+import { fields, followups, briefLimit, intents, labels, draftKey, roomKey, normalizeDraft, readDraft, briefText } from './loose-end-model.mjs';
 
 const intake = document.getElementById('loose-end');
 const status = document.getElementById('draft-status');
@@ -33,8 +33,19 @@ if (intake) {
     generatedBrief = briefText(saved);
     try {
       const edited = JSON.parse(storage().getItem(draftKey)).brief;
-      brief.value = typeof edited === 'string' ? edited.slice(0, 14000) : generatedBrief;
+      brief.value = typeof edited === 'string' ? edited.slice(0, briefLimit) : generatedBrief;
     } catch { brief.value = generatedBrief; }
+  }
+  for (const key of followups) if (document.getElementById(key).value) document.getElementById(key).closest('details').open = true;
+  const guides = [
+    ['Describe the possibility you want to explore. You do not need a finished specification.', 'What might stop this being useful? A worry or unanswered question is enough.', 'What would let you decide whether the idea is worth taking further?'],
+    ['Tell us what should happen and what happens instead.', 'Describe the moment where it breaks down, and what someone tries next.', 'What could someone do reliably if this difficulty were resolved?'],
+    ['Tell us what you are weighing up, or what you would like another pair of eyes on.', 'What would you like us to challenge or inspect?', 'What would help: clearer trade-offs, a testable next step, or a second opinion?'],
+    ['A rough description will do. Tell us what caught your attention.', 'An awkward moment is often more useful than a list of features.', 'Tell us what someone could do, understand or stop worrying about.'],
+  ];
+  function updateGuides() {
+    const guide = guides[intents.indexOf(answers().intent)];
+    ['making-help', 'difficulty-help', 'outcome-help'].forEach((id, i) => { document.getElementById(id).textContent = guide[i]; });
   }
   function validate() {
     const making = document.getElementById('making');
@@ -43,6 +54,7 @@ if (intake) {
   }
   function show(value, focus = true, record = true) {
     step = value;
+    updateGuides();
     if (record && guidedHistory) {
       try { history.pushState({ mgLooseEnd: true, step }, ''); } catch { guidedHistory = false; }
     }
@@ -86,7 +98,7 @@ if (intake) {
   document.getElementById('carry-question').addEventListener('click', () => {
     try {
       const saved = storage(); if (!saved) throw new Error('Storage unavailable');
-      saved.setItem(draftKey, JSON.stringify({ version: 1, answers: answers(), brief: brief.value.slice(0, 14000) }));
+      saved.setItem(draftKey, JSON.stringify({ version: 1, answers: answers(), brief: brief.value.slice(0, briefLimit) }));
       // New handoff replaces the room's previous experimental annotations.
       saved.removeItem(roomKey);
       location.assign('../workbench/');
@@ -95,6 +107,7 @@ if (intake) {
   document.getElementById('clear-draft').addEventListener('click', () => {
     clearSaved();
     for (const key of fields) if (key !== 'intent') document.getElementById(key).value = '';
+    intake.querySelectorAll('[data-followup]').forEach(el => { el.open = false; });
     intake.querySelectorAll('input[name="intent"]').forEach(el => { el.checked = el.value === intents[3]; });
     document.getElementById('making').removeAttribute('aria-invalid'); document.getElementById('making-error').hidden = true;
     brief.value = ''; generatedBrief = ''; show(0); announce('Your answers and workbench draft were cleared from this tab. Downloaded copies remain yours.');
@@ -113,11 +126,12 @@ if (room) {
     document.getElementById('original-question').textContent = draft.making;
     const list = original.querySelector('dl');
     fields.forEach((key, i) => {
+      if (followups.includes(key) && !draft[key]) return;
       const dt = document.createElement('dt'); dt.textContent = labels[i];
       const dd = document.createElement('dd'); dd.textContent = draft[key] || 'Still open.'; list.append(dt, dd);
     });
     let edited = null; try { edited = JSON.parse(saved.getItem(draftKey)).brief; } catch {}
-    document.getElementById('carried-brief').textContent = typeof edited === 'string' ? edited.slice(0, 14000) : briefText(draft);
+    document.getElementById('carried-brief').textContent = typeof edited === 'string' ? edited.slice(0, briefLimit) : briefText(draft);
   }
   let state = { surface: 'host', note: '', noteSurface: 'host', choice: '' };
   try {
