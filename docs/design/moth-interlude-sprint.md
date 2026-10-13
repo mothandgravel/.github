@@ -28,6 +28,8 @@ The scene’s module, choreography, rig and motion CSS are loaded only when this
 
 Watch again replays. If its controls are visible but the stage is not sufficiently in view, the explicit action first centres the stage. Pause freezes the rendered pose; Resume continues from that time. Finish and Escape restore the mark. Leaving the stage, window focus loss, pagehide, hidden-document notification or resize ends the passage rather than resuming in a new position. Relevant control focus returns to replay, or to the real question link when replay is unavailable; unrelated keyboard focus is left alone.
 
+Independent runtime review found a queued-replay seam: cancelling the centring scroll could leave a pending request that played on a later return. Complete stage exit, wheel/touch movement, scroll-navigation keys and outside pointer/focus now cancel that request. The browser regression aborts centring, returns to the room and verifies it remains quiet until replay is explicitly requested again.
+
 The question, caption and link stay still, above noninteractive decorative flight layers. Reduced motion retains the mark. With script disabled, or a failed module/rig/stylesheet, the mark and actual question route remain readable; dead controls stay hidden. The scene has no perpetual clock after completion.
 
 ## Critique and verification

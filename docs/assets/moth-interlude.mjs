@@ -46,7 +46,7 @@ async function initialise() {
   const pause = room.querySelector('[data-moth-pause]');
   const finish = room.querySelector('[data-moth-finish]');
   const status = room.querySelector('[data-moth-status]');
-  let frame = 0, started = 0, elapsed = 0, layout, visible = false, fits = true, pendingPlay = false, state = 'idle';
+  let frame = 0, started = 0, elapsed = 0, layout, visible = false, observed = false, fits = true, pendingPlay = false, state = 'idle';
   const still = () => reduced.matches || document.hidden;
   const remember = () => {
     seen = true;
@@ -58,7 +58,7 @@ async function initialise() {
     pause.textContent = value === 'paused' ? 'Resume' : 'Pause';
     pause.disabled = !['playing','paused'].includes(value);
     finish.disabled = !['playing','paused'].includes(value);
-    play.disabled = reduced.matches || !fits || value === 'playing' || value === 'paused';
+    play.disabled = reduced.matches || !observed || !fits || value === 'playing' || value === 'paused';
   };
   const end = (message = '', restoreFocus = false) => {
     const focusedControl = [pause,finish].includes(document.activeElement);
@@ -160,12 +160,22 @@ async function initialise() {
   });
   finish.addEventListener('click',()=>end('Still again.',true));
   document.addEventListener('keydown',event => {
+    if (['PageUp','PageDown','Home','End','ArrowUp','ArrowDown',' '].includes(event.key)) pendingPlay = false;
     if (event.key === 'Escape') {
       pendingPlay = false;
       if (state !== 'idle') end('', room.contains(document.activeElement));
     }
   });
   const interrupt = () => { pendingPlay = false;if (state !== 'idle') end(); };
+  const cancelPending = () => { pendingPlay = false; };
+  window.addEventListener('wheel',cancelPending,{passive:true});
+  window.addEventListener('touchmove',cancelPending,{passive:true});
+  document.addEventListener('pointerdown',event=>{
+    if (!room.contains(event.target)) cancelPending();
+  },{capture:true});
+  document.addEventListener('focusin',event=>{
+    if (!room.contains(event.target)) cancelPending();
+  });
   const remeasure = () => {
     interrupt();
     if (visible) {
@@ -182,6 +192,8 @@ async function initialise() {
   });
   const observer = new IntersectionObserver(entries=>{
     const entry = entries[0];
+    observed = true;
+    if (!entry.isIntersecting) pendingPlay = false;
     visible = entry.isIntersecting && entry.intersectionRatio >= .7;
     if (!visible && state !== 'idle') interrupt();
     else fits = safeGeometry(measure());

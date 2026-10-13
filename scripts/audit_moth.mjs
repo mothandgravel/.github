@@ -112,6 +112,16 @@ try {
   assert(await page.locator('#making').isVisible(),'Question route cannot reach the editable starting question');
   await page.close();
 
+  const aborted = await browser.newPage({viewport:{width:390,height:740},reducedMotion:'no-preference'});
+  await aborted.addInitScript(()=>sessionStorage.setItem('moth-and-gravel-interlude-seen','yes'));
+  await aborted.goto(origin,{waitUntil:'networkidle'});await ready(aborted);await aborted.waitForTimeout(100);
+  await aborted.evaluate(()=>{const s=document.querySelector('.moth-stage').getBoundingClientRect();scrollTo({top:scrollY+s.top+260,behavior:'instant'});});
+  await aborted.waitForTimeout(100);await aborted.locator('[data-moth-play]').click();
+  await aborted.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await aborted.waitForTimeout(250);
+  await ready(aborted);await aborted.waitForTimeout(250);
+  assert(await room(aborted).getAttribute('data-moth-state')==='idle','Aborted pending replay starts unexpectedly on return');
+  await start(aborted);await state(aborted,'playing');await aborted.close();
+
   for (const settings of [
     {label:'reduced',reducedMotion:'reduce'},
     {label:'no-js',javaScriptEnabled:false},
