@@ -162,6 +162,34 @@ class AudioTests(unittest.TestCase):
                 self.assertEqual(state["status"], "failed")
                 self.assertEqual(state["http_status"], 403)
 
+    def test_gateway_failure_records_diagnostic_and_gives_retry_guidance(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            plan, output = self.run_context(root)
+            body = json.dumps({"error": {"status": "UNAVAILABLE", "message":
+                              "Upstream unavailable; authorization: Bearer in-memory-token"}}).encode()
+            gateway = error.HTTPError("https://example.test", 502, "Bad Gateway", {}, io.BytesIO(body))
+            with patch.object(audio, "ROOT", root), patch.object(audio, "make_plan", return_value=plan), \
+                 patch.object(audio.shutil, "which", return_value="installed"), \
+                 patch.object(audio, "access_token", return_value="in-memory-token"), \
+                 patch.object(audio, "synthesize", side_effect=gateway), redirect_stdout(io.StringIO()):
+                with self.assertRaisesRegex(RuntimeError, "--retry-uncertain") as caught:
+                    audio.generate(self.generate_args())
+                self.assertNotIn("Check API enablement, billing, permissions and quota", str(caught.exception))
+                state = json.loads((output / "chunk-001.json").read_text())
+                self.assertEqual(state["status"], "uncertain")
+                self.assertEqual(state["provider_status"], "UNAVAILABLE")
+                self.assertNotIn("in-memory-token", json.dumps(state))
+                self.assertIn("Upstream unavailable", state["provider_message"])
+
+    def test_plain_text_gateway_diagnostic_is_bounded_and_redacted(self):
+        body = ("<html><title>Bad Gateway</title>Bearer secret-value " + "detail " * 2000).encode()
+        failure = error.HTTPError("https://example.test", 502, "Bad Gateway", {}, io.BytesIO(body))
+        diagnostic = audio.http_diagnostic(failure, "secret-value")
+        self.assertIn("Bad Gateway", diagnostic["provider_message"])
+        self.assertNotIn("secret-value", diagnostic["provider_message"])
+        self.assertLessEqual(len(diagnostic["provider_message"]), 500)
+
 
 if __name__ == "__main__":
     unittest.main()

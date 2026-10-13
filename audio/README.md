@@ -151,8 +151,21 @@ Python Google SDK or an OpenAI account/key.
 | 403 | Correct project, linked billing, enabled APIs, permission to use project services, and `aiplatform.endpoints.predict`. Organization policies may require an administrator. |
 | 400 | Inspect the credential-free requests with `plan EPISODE --json`; verify model, language, voices and EU endpoint availability against current Google docs. |
 | 429 | Inspect quota in Google Cloud. Avoid rapidly repeating a paid run; saved completed chunks are reusable. |
+| 500 / 502 / 503 / 504 | The service or an upstream gateway failed. After a short pause, repeat the same command with `--retry-uncertain`. This response alone does not establish a billing/IAM issue. Provider status/message is saved in the chunk JSON without credentials. |
 | Interrupted request | Inspect the chunk state. An explicit uncertain retry may produce another billable generation. |
 | Note changed | Re-read the updated article and revise the audio script. Refresh its article hash only after review; do not suppress the stale-source check. |
+
+For example, retry a failed first narration on the same EU endpoint:
+
+```bash
+python3 scripts/field_audio.py generate note-001 --project "$FIELD_AUDIO_PROJECT" --retry-uncertain
+```
+
+If the EU endpoint repeatedly returns a gateway/server failure, one diagnostic
+alternative is `--endpoint global`. It uses a different processing location and
+a separate output/cache directory; it does not silently replace EU processing.
+Use that option only when global processing is appropriate for the sources.
+Both an uncertain retry and a different-endpoint attempt can incur another charge.
 
 Set a small billing alert in the selected project if useful. Google Cloud budget
 alerts notify; they **do not** cap spending.
@@ -181,6 +194,7 @@ Do not put Google authentication or generation calls in visitor-facing code.
 
 - [Gemini TTS: APIs, permissions, EU endpoint, models and byte limits](https://docs.cloud.google.com/text-to-speech/docs/gemini-tts)
 - [Authenticate to Cloud Text-to-Speech](https://docs.cloud.google.com/text-to-speech/docs/authentication)
+- [Google model API guidance for transient server errors and retries](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/retry-strategy)
 - [Authorize Cloud Shell](https://docs.cloud.google.com/shell/docs/auth)
 - [Speech pricing](https://cloud.google.com/text-to-speech/pricing)
 - [Budget alerts do not cap spending](https://docs.cloud.google.com/billing/docs/how-to/budgets)

@@ -277,6 +277,48 @@ def combine_wavs(paths: list[Path], target: Path) -> float:
     return duration
 
 
+def http_diagnostic(exc: error.HTTPError, token: str) -> dict:
+    """Keep bounded provider diagnostics, never request headers or credentials."""
+    result = {"http_status": exc.code}
+    raw = exc.read(8192).decode("utf-8", errors="replace")
+    try:
+        body = json.loads(raw)
+        provider = body.get("error", {}) if isinstance(body, dict) else {}
+        if not isinstance(provider, dict):
+            provider = {}
+        status = provider.get("status", "")
+        if isinstance(status, str) and re.fullmatch(r"[A-Z_]{1,64}", status):
+            result["provider_status"] = status
+        message = provider.get("message", "")
+    except ValueError:
+        # Gateways can return HTML or plain text rather than Google's JSON error.
+        message = re.sub(r"<[^>]*>", " ", raw)
+    if isinstance(message, str) and message:
+        message = message.replace(token, "[redacted]") if token else message
+        message = re.sub(r"(?i)Bearer\s+\S+", "Bearer [redacted]", message)
+        message = re.sub(r"(?i)(access_token|refresh_token|api_key|authorization)\s*[:=]\s*\S+",
+                         r"\1=[redacted]", message)
+        result["provider_message"] = re.sub(r"\s+", " ", message).strip()[:500]
+    return result
+
+
+def http_guidance(code: int, episode: str) -> str:
+    if 500 <= code <= 599:
+        return ("The service or an upstream gateway failed; this response does not establish a billing or IAM problem. "
+                "No completed audio was saved for this chunk. After a short pause, repeat the same generate command "
+                "with --retry-uncertain. A retry can incur another charge.")
+    if code in {408, 429}:
+        return ("The request timed out or capacity/quota was unavailable. Wait before retrying, then repeat the same "
+                "generate command with --retry-uncertain. A retry can incur another charge; inspect quota if 429 persists.")
+    if code == 401:
+        return "Authorize Cloud Shell or sign into the intended Google account with gcloud auth login."
+    if code == 403:
+        return "Check the selected project, API enablement, billing and permissions; see audio/README.md."
+    if code == 400:
+        return f"Inspect the bounded request with plan {episode} --json; check model, language and voice support."
+    return "Inspect the saved provider diagnostic and audio/README.md before repeating the request."
+
+
 def generate(args) -> None:
     if not re.fullmatch(r"[a-z][a-z0-9-]{4,28}[a-z0-9]", args.project or ""):
         raise ValueError("Provide a valid Google Cloud project ID with --project (not its display name or number)")
@@ -311,8 +353,15 @@ def generate(args) -> None:
                                        "audio_sha256": digest(audio), "duration_seconds": validate_wav(audio)})
             except error.HTTPError as exc:
                 status = "failed" if 400 <= exc.code < 500 and exc.code not in {408, 429} else "uncertain"
-                write_json(state_path, {"status": status, "request_sha256": expected, "http_status": exc.code})
-                raise RuntimeError(f"Google returned HTTP {exc.code}. Check API enablement, billing, permissions and quota; see audio/README.md.") from None
+                try:
+                    diagnostic = http_diagnostic(exc, token)
+                except (OSError, ValueError, TypeError):
+                    diagnostic = {"http_status": exc.code}
+                write_json(state_path, {"status": status, "request_sha256": expected, **diagnostic})
+                detail = diagnostic.get("provider_status") or diagnostic.get("provider_message")
+                label = f" ({detail})" if detail else ""
+                raise RuntimeError(f"Google returned HTTP {exc.code}{label}. {http_guidance(exc.code, args.episode)} "
+                                   f"Diagnostic: {state_path.relative_to(ROOT)}") from None
             except Exception:
                 write_json(state_path, {"status": "uncertain", "request_sha256": expected})
                 raise RuntimeError("No completed audio was saved. Re-run to inspect state; an uncertain retry can incur another charge.") from None
