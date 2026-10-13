@@ -1,0 +1,184 @@
+{
+  "selection": "The owner authorised selection from the portfolio strategy and Navivra repositories. Planning material informed the shortlist; no customer research, pricing hypotheses or employment material is reproduced.",
+  "artifacts": [
+    {
+      "id": "ajo",
+      "project": "Ajo",
+      "classification": "recorded simulator trace",
+      "source": {
+        "repository": "navivra/ajo",
+        "revision": "ec205b9925add515b2b7408cbc8ee73737fcec55",
+        "path": "results/conformance.json",
+        "blob": "3b5b3cfc0cbe0eeca35664ef47eed8e035e89c36"
+      },
+      "method": "Selected recorded OCaml lost-query simulator case; not a new native or deployed run",
+      "selection": {
+        "case": "lost-query",
+        "host": "ocaml",
+        "recorded": true,
+        "live": false,
+        "stages": [
+          {
+            "status": "OUTCOME_UNKNOWN",
+            "dispatches": 1,
+            "operationAttempts": 1,
+            "receiverApplications": 1,
+            "receiverRequests": 1,
+            "phases": [
+              "start"
+            ]
+          },
+          {
+            "status": "SUCCEEDED",
+            "dispatches": 2,
+            "operationAttempts": 1,
+            "receiverApplications": 1,
+            "receiverRequests": 1,
+            "phases": [
+              "start",
+              "query"
+            ]
+          }
+        ]
+      },
+      "limits": "Historical saved simulator output read this session. No new host run, real agent task, deployed recovery or independent usability result."
+    },
+    {
+      "id": "skystack",
+      "project": "SkyStack Builder",
+      "classification": "fresh native footprint replay",
+      "source": {
+        "repository": "digablesolutions/sky-stack-builder",
+        "revision": "33f5c034227b81466a0e9e06bc442206e457d398",
+        "files": [
+          {
+            "path": "src/world.h",
+            "sha256": "99298bd47c81fb47f41ef1d604ec6843460460aea45706466e8429e8d7848093"
+          },
+          {
+            "path": "src/app/build_stamps.h",
+            "sha256": "17b30f619258b4bd23cb7b960db0f010bcf0f0b4343aec5fcef47484c9becfcb"
+          }
+        ]
+      },
+      "method": "Unmodified world/stamp headers compiled with g++ -std=c++17 -O2 in an isolated host harness; ResolveBuildStamp, bounds and duplicate helpers called at anchor 9,9 in an 18x18 world. SVG renders returned cell coordinates.",
+      "output": [
+        {
+          "mode": "single",
+          "anchor": [
+            9,
+            9
+          ],
+          "outOfBounds": false,
+          "duplicates": false,
+          "cells": [
+            [
+              9,
+              9
+            ]
+          ]
+        },
+        {
+          "mode": "platform",
+          "anchor": [
+            9,
+            9
+          ],
+          "outOfBounds": false,
+          "duplicates": false,
+          "cells": [
+            [
+              9,
+              9
+            ],
+            [
+              10,
+              9
+            ],
+            [
+              9,
+              10
+            ],
+            [
+              10,
+              10
+            ]
+          ]
+        },
+        {
+          "mode": "line",
+          "anchor": [
+            9,
+            9
+          ],
+          "outOfBounds": false,
+          "duplicates": false,
+          "cells": [
+            [
+              8,
+              9
+            ],
+            [
+              9,
+              9
+            ],
+            [
+              10,
+              9
+            ]
+          ]
+        },
+        {
+          "mode": "run-east",
+          "anchor": [
+            9,
+            9
+          ],
+          "outOfBounds": false,
+          "duplicates": false,
+          "cells": [
+            [
+              9,
+              9
+            ],
+            [
+              10,
+              9
+            ],
+            [
+              11,
+              9
+            ]
+          ]
+        }
+      ],
+      "asset": "../assets/specimens/sky-stamp-footprints.svg",
+      "assetSha256": "c2789c66f9ded1df58844cb42bbc6206f48af4353646c097daea23d8f8b79b39",
+      "harnessSha256": "fdacb3c5b1eab06e13178a7646390c9632d87654584fb5ea5643aa36408e1a74",
+      "limits": "Footprint helpers only. No Windows game, placement handler, spending, undo or player trial executed."
+    },
+    {
+      "id": "kitronik",
+      "project": "Kitronik buggy",
+      "classification": "saved sample rendered offline",
+      "asset": "../assets/notes/006-scan-replay.webp",
+      "assetSha256": "ebae89ce7cb6d920eaaddc37255362ed4e0a94a6ea271a29d983381733c7f1ed",
+      "existingProvenance": "../assets/notes/006-images.json",
+      "source": [
+        {
+          "repository": "digablesolutions/kitronik-buggy",
+          "path": "tools/scan_visualizer.py",
+          "blob_sha": "e23f758fc680825d14bc104e9b79c0df63235da1"
+        },
+        {
+          "repository": "digablesolutions/kitronik-buggy",
+          "path": "tools/sample_data/scan_box_test.json",
+          "blob_sha": "c59b61e48bc2a277c8bac7d1b9492294b6746b3f"
+        }
+      ],
+      "sourceTree": "907ca61254bc88ec4cd2794e47425c71fb69b8f5",
+      "method": "Existing plot_results(scan_data, grid_parts, save_path=...) called with repository sample using MPLBACKEND=Agg. Functional renderer code unchanged; the local text copy has its own hash. No live listener, hardware, camera or microphone session.",
+      "limits": "12 readings, older 32x32 grid, physical capture origin not established; distinct from current 64x64 firmware; no fresh physical run or accuracy claim."
+    }
+  ]
+}
