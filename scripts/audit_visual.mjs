@@ -316,6 +316,7 @@ try {
     { name: "note-theme", path: "/notes/002-afterlight-nightfall.html", heading: ".study-heading h1" },
     { name: "note-metaphor", path: "/notes/003-metaphor-earns-its-place.html", heading: ".metaphor-heading h1" },
     { name: "note-stability", path: "/notes/004-controls-stay-put.html", heading: ".stability-heading h1" },
+    { name: "note-green", path: "/notes/005-green-light.html", heading: ".green-heading h1" },
   ]) {
     for (const viewport of widths) {
       const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
@@ -336,7 +337,7 @@ try {
         const visibleTextFits = element => !element || element.scrollWidth <= element.clientWidth + 2;
         const tracked = [
           heading,
-          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status, .native-capture, .note-cover-figure, .stability-panel, .stability-panel h3"),
+          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status, .native-capture, .note-cover-figure, .stability-panel, .stability-panel h3, .signal-panel, .signal-panel h3"),
         ];
         return {
           width: window.innerWidth,
@@ -380,7 +381,13 @@ try {
         assert(await page.locator('.stability-panel').count() === 2, label + ': loading comparison missing');
         assert(await page.locator('#study-status').count() === 1, label + ': component scope missing');
       }
-      const expectedCover = editorial.name === 'note-stability'
+      if (editorial.name === 'note-green') {
+        assert(await page.locator('.signal-panel').count() === 3, label + ': indicator questions missing');
+        assert(await page.locator('#study-status').count() === 1, label + ': source scope missing');
+      }
+      const expectedCover = editorial.name === 'note-green'
+        ? 'https://mothandgravel.com/assets/notes/005-cover-social.jpg'
+        : editorial.name === 'note-stability'
         ? 'https://mothandgravel.com/assets/notes/004-cover-social.jpg'
         : editorial.name === 'note-metaphor'
         ? 'https://mothandgravel.com/assets/notes/003-cover-social.jpg'
