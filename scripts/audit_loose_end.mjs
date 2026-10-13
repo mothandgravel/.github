@@ -192,6 +192,23 @@ try {
   results.push({label:'storage-denied',passed:true});
   await blocked.close();
 
+  // A cached six-field page must still be able to use its published modules.
+  const legacy = await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  const currentHTML=await readFile(new URL('../docs/questions/index.html',import.meta.url),'utf8');
+  const legacyHTML=currentHTML.replace(/<details data-followup>.*?<\/details>/gs,'').replace('loose-end-v2.mjs','loose-end.mjs');
+  await legacy.route('**/questions/',route=>route.fulfill({contentType:'text/html',body:legacyHTML}));
+  const legacyPage=await legacy.newPage();
+  const legacyErrors=[];legacyPage.on('pageerror',e=>legacyErrors.push(e.message));
+  await legacyPage.goto(origin+'/questions/');
+  await makeBrief(legacyPage,'A question from an older page.');
+  assert((await legacyPage.locator('#brief-text').inputValue()).includes('older page'),'Previously published question modules must remain usable');
+  await legacyPage.locator('#carry-question').click();
+  await legacyPage.locator('#your-question').waitFor({state:'visible'});
+  assert((await legacyPage.locator('#original-question').innerText()).includes('older page'),'Older page must hand its question to the current workbench');
+  assert(legacyErrors.length===0,'Cached older page errors: '+legacyErrors.join(', '));
+  results.push({label:'cached-six-field-page',passed:true});
+  await legacy.close();
+
   for (const fallback of ['no-javascript','module-unavailable']) {
     const context=await browser.newContext({viewport:{width:320,height:740},javaScriptEnabled:fallback!=='no-javascript',reducedMotion:'reduce'});
     if (fallback==='module-unavailable') await context.route('**/assets/loose-end*.mjs',route=>route.abort());

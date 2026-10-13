@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fields, followups, briefLimit, normalizeDraft, briefText, readDraft } from '../docs/assets/loose-end-model.mjs';
+import { fields, followups, briefLimit, normalizeDraft, briefText, readDraft } from '../docs/assets/loose-end-model-v2.mjs';
 
 test('a short question does not acquire unanswered commercial follow-ups', () => {
   const brief = briefText({making:'An idea worth testing.'});
