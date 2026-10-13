@@ -31,6 +31,7 @@ We believe that useful work doesn't have to be ordinary, and unconventional idea
 - [Field Note 004: A control should stay where you left it](https://mothandgravel.com/notes/004-controls-stay-put.html) — a small loading change that keeps the work still.
 - [Field Note 005: A green light should mean something](https://mothandgravel.com/notes/005-green-light.html) — running, passing and delivered across the wider workbench.
 - [Field Note 006: A map should leave room for doubt](https://mothandgravel.com/notes/006-map-leaves-room.html) — a little robot, four views and the space it has not established.
+- [Field Note 007: Fast signals. Slow eyes.](https://mothandgravel.com/notes/007-fast-signals.html) — telemetry, freshness and a place for human attention.
 - [Follow Field Notes by RSS](https://mothandgravel.com/notes/feed.xml) — curious questions and working answers, as they appear.
 - [Brand marks and materials](https://github.com/mothandgravel/.github/tree/main/profile/assets) — the moth, the stone and their working forms.
 

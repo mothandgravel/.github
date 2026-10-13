@@ -164,7 +164,7 @@ def main() -> int:
           'RSS identities must match the published catalog')
     check(all(item.findtext('guid') == item.findtext('link') for item in feed_items),
           'RSS links must use the stable article identities')
-    featured = next((n for n in catalog if n.get('featured')), sorted(catalog, key=lambda n: (n['date'], int(n['id'])), reverse=True)[0])
+    featured = next((n for n in catalog if n.get('featured')), sorted(catalog, key=lambda n: int(n['id']), reverse=True)[0])
     check(html.count(f'href="./notes/{featured["slug"]}"') == 2,
           "Selected Field Note needs its featured title and reading action")
     check('id="field-notes"' in html and 'class="note-feature"' in html,
@@ -217,6 +217,47 @@ def main() -> int:
         check(theme_html.count('class="study-sample ') == 2, "Theme study needs two color specimens")
         check(theme_html.count('class="study-metric"') == 6, "Theme study needs six color pair measurements")
         check('href="./"' in theme_html, "Theme study must link back to the Field Notes index")
+
+    # Discovery must survive a text-only request and agree with the public record.
+    for file in [ROOT / 'index.html', note_index] + [ROOT / 'notes' / n['slug'] for n in catalog]:
+        source = file.read_text()
+        blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', source, re.S)
+        check(len(blocks) == 1, f'{file.name}: expected one generated identity graph')
+        if len(blocks) != 1:
+            continue
+        try:
+            data = json.loads(blocks[0])
+            graph = data['@graph']
+            check(data['@context'] == 'https://schema.org', f'{file.name}: unknown schema context')
+            studio = next(n for n in graph if n['@type'] == 'Organization')
+            check(studio['name'] == 'Moth & Gravel' and studio['founder']['name'] == 'slideep',
+                  f'{file.name}: public studio identity disagrees with visible copy')
+            check(studio['location']['name'] == 'Finland', f'{file.name}: public location differs')
+            check(all(n['@type'] != 'LocalBusiness' for n in graph), f'{file.name}: unverified local business claim')
+            page = next(n for n in graph if n['@type'] in ('WebPage', 'CollectionPage'))
+            canonical = re.search(r'<link rel="canonical" href="([^"]+)"', source).group(1)
+            check(page['url'] == canonical, f'{file.name}: schema and canonical URL differ')
+            if file.name[0].isdigit():
+                note = next(n for n in catalog if n['slug'] == file.name)
+                article = next(n for n in graph if n['@type'] == 'BlogPosting')
+                check(article['headline'] == note['title'] and article['description'] == note['summary'],
+                      f'{file.name}: article identity disagrees with the public catalog')
+                check(article['mainEntityOfPage']['@id'] == page['@id'], f'{file.name}: article page reference broken')
+                check(article['author']['@id'] == studio['@id'], f'{file.name}: unverified author')
+                meta = re.search(r'<div class="note-meta mono">(.*?)</div>', source).group(1)
+                check(not re.search(r'\d{2} [A-Z]{3} \d{4}', meta), f'{file.name}: publication stamp returned')
+            elif file == note_index:
+                listing = next(n for n in graph if n['@type'] == 'ItemList')
+                check({n['url'] for n in listing['itemListElement']} == expected_feed_urls,
+                      'Machine-readable collection differs from the published archive')
+        except (ValueError, KeyError, StopIteration, AttributeError) as error:
+            check(False, f'{file.name}: invalid discovery graph ({error})')
+    check('studio-answers' in html and 'based in Finland' in html,
+          'Machine identity must be backed by visible useful answers and location')
+    check('href="#contact">Bring us a question' in html, 'Missing early enquiry invitation')
+    robots = (ROOT / 'robots.txt').read_text()
+    check('Allow: /' in robots and 'Disallow: /' not in robots,
+          'Published text must be crawlable')
 
     # Each published ratio must agree with the actual palette used by the theme.
     for label, foreground, background, expected in (

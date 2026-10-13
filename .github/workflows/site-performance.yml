@@ -1,0 +1,52 @@
+name: Site performance and discovery
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "scripts/**"
+      - ".github/workflows/site-performance.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cold-load:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install pinned audit tools
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts lighthouse@13.5.0 playwright@1.55.1
+          npx playwright install --with-deps chromium
+      - name: Serve the candidate and immutable base revision
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.sha }}
+        run: |
+          mkdir -p /tmp/mg-performance-before
+          git archive "$BASE_SHA" docs | tar -x -C /tmp/mg-performance-before
+          python3 -m http.server 8793 --bind 127.0.0.1 --directory docs >/tmp/mg-candidate.log 2>&1 &
+          python3 -m http.server 8794 --bind 127.0.0.1 --directory /tmp/mg-performance-before/docs >/tmp/mg-baseline.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8793/ >/dev/null && curl -fsS http://127.0.0.1:8794/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Compare cold loads and enforce the opening budget
+        env:
+          LIVE_URL: https://mothandgravel.com/
+        run: node scripts/audit_performance.mjs
+      - name: Preserve full reports and measurement conditions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: landing-performance-review
+          path: artifacts/performance/
+          retention-days: 14

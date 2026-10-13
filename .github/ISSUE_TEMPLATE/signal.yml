@@ -4,7 +4,7 @@ title: "A signal in the dark: "
 body:
   - type: markdown
     attributes:
-      value: "This is a public conversation with Moth & Gravel. What caught your eye?"
+      value: "This is a public conversation with Moth & Gravel. Keep private information out. Tell us what you are trying to make, where it gets difficult, and what a useful outcome would look like."
   - type: textarea
     id: signal
     attributes:
