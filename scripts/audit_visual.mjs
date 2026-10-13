@@ -28,7 +28,13 @@ const results = [];
 function assert(condition, message) {
   if (!condition) failures.push(message);
 }
+async function loadPageImages(page) {
+  for (const img of await page.locator('img').all()) await img.scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => [...document.images].every(img => img.complete && img.naturalWidth > 0));
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+}
 const snap = async (page, name) => {
+  await loadPageImages(page);
   await page.evaluate(() => {
     document.activeElement?.blur();
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -109,6 +115,7 @@ try {
 
     await page.goto(origin, { waitUntil: "networkidle", timeout: 30000 });
     await page.locator("#hero-title").waitFor();
+    await loadPageImages(page);
     const report = await page.evaluate(() => {
       const box = selector => {
         const element = document.querySelector(selector);
@@ -317,12 +324,13 @@ try {
       const label = `${editorial.name}-${viewport.name}`;
       const response = await page.goto(origin + editorial.path, { waitUntil: "networkidle", timeout: 30000 });
       assert(response?.status() === 200, label + ": request failed");
+      await loadPageImages(page);
       const layout = await page.evaluate(selector => {
         const heading = document.querySelector(selector);
         const visibleTextFits = element => !element || element.scrollWidth <= element.clientWidth + 2;
         const tracked = [
           heading,
-          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status"),
+          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status, .native-capture, .note-cover-figure"),
         ];
         return {
           width: window.innerWidth,
@@ -353,13 +361,19 @@ try {
         assert(layout.hasIndexRoute, label + ": missing back route to Field Notes");
       }
       if (editorial.name === 'note-metaphor') {
+        assert(await page.locator('.native-capture img').count() === 2, label + ': real Android captures missing');
+        await page.locator('.native-capture img').last().scrollIntoViewIfNeeded();
+        await page.waitForFunction(() => [...document.querySelectorAll('.native-capture img')].every(img => img.complete && img.naturalWidth > 0));
+        assert(await page.locator('.note-cover-figure img').count() === 1, label + ': editorial cover missing');
         assert(await page.locator('.metaphor-panel').count() === 3, label + ': conceptual triptych missing');
         assert(await page.locator('#native-status').count() === 1, label + ': prototype status missing');
         assert(await page.locator('.note-related a[href="./002-afterlight-nightfall.html"]').count() === 1,
           label + ': related theme study missing');
       }
-      assert(layout.ogImage === "https://mothandgravel.com/assets/social-cover.png",
-        label + ": social preview URL is missing");
+      const expectedCover = editorial.name === 'note-metaphor'
+        ? 'https://mothandgravel.com/assets/notes/003-cover-social.jpg'
+        : 'https://mothandgravel.com/assets/social-cover.png';
+      assert(layout.ogImage === expectedCover, label + ': social preview URL is missing');
       const capture = viewport.width === 1440 || viewport.width === 390 || viewport.width === 320;
       const audit = viewport.width === 1440 || viewport.width === 390;
       if (audit) {

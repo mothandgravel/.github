@@ -904,3 +904,32 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
   .metaphor-panel svg { max-width:240px;margin:18px auto 22px; }
   .native-study-status { padding:22px; }
 }
+
+/* Photographic editorial cover and authentic, readable native study captures. */
+.editorial-cover { display:block;height:auto;aspect-ratio:16/9; }
+.editorial-cover picture,.editorial-cover img { display:block;width:100%;height:100%; }
+.editorial-cover img { object-fit:cover; }
+.metaphor-heading { max-width:none;display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center; }
+.metaphor-heading h1 { font-size:clamp(40px,7vw,100px); }
+.metaphor-intro { min-width:0; }
+.note-cover-figure { min-width:0;margin:0; }
+.note-cover-figure picture,.note-cover-figure img { display:block;width:100%;height:auto; }
+.note-cover-figure img { border:1px solid var(--line); }
+.note-cover-figure figcaption { color:var(--muted);font-size:13px;line-height:1.6;margin-top:14px;max-width:55ch; }
+.native-capture-pair { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin:40px 0 20px; }
+.native-capture { margin:0;min-width:0; }
+.native-capture>a { display:block;padding:18px;background:var(--surface);border:1px solid var(--line); }
+.native-capture img { display:block;width:100%;height:auto;max-width:320px;margin:auto; }
+.native-capture figcaption { color:var(--secondary);font-size:14px;line-height:1.7;margin-top:17px; }
+.native-capture figcaption strong { display:block;color:var(--ink);font-family:var(--serif);font-style:italic;font-weight:400;font-size:21px;line-height:1.3;margin-bottom:10px; }
+.native-capture figcaption span { display:block; }
+.native-capture code { font-family:var(--mono);font-size:12px; }
+.note-prose .native-capture-note { font-size:13px;line-height:1.7;color:var(--muted);margin:0 0 45px; }
+@media (max-width:900px) {
+  .metaphor-heading { grid-template-columns:1fr;gap:34px; }
+  .note-cover-figure { max-width:700px; }
+}
+@media (max-width:660px) {
+  .native-capture-pair { grid-template-columns:1fr;gap:32px; }
+  .native-capture>a { padding:15px; }
+}

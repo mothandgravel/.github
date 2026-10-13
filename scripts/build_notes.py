@@ -25,6 +25,10 @@ def load_notes():
         assert re.fullmatch(r"\d{3,}", n["id"])
         assert re.fullmatch(r"\d{3,}-[a-z0-9-]+\.html", n["slug"])
         assert (ROOT / "docs/notes" / n["slug"]).is_file(), n["slug"]
+        if n.get('cover'):
+            for key in ('small', 'large'):
+                assert re.fullmatch(r'[a-z0-9-]+\.webp', n['cover'][key])
+                assert (ROOT / 'docs/assets/notes' / n['cover'][key]).is_file()
         date.fromisoformat(n["date"])
         assert n["title"] and n["summary"]
         assert n["visual"] in ("foundations", "themes", "forms")
@@ -32,7 +36,11 @@ def load_notes():
     return sorted(notes, key=lambda n: (n["date"], int(n["id"])), reverse=True)
 
 
-def visual(n):
+def visual(n, asset_prefix):
+    if n.get('cover'):
+        cover = n['cover']
+        return f'<div class="editorial-art editorial-cover" aria-hidden="true"><picture><source srcset="{asset_prefix}{cover["small"]} 800w, {asset_prefix}{cover["large"]} 1600w" sizes="(max-width: 760px) 100vw, 65vw"><img src="{asset_prefix}{cover["large"]}" alt="" width="{cover["width"]}" height="{cover["height"]}" loading="lazy" decoding="async"></picture></div>'
+
     if n["visual"] == "themes":
         return '<div class="editorial-art theme-art" aria-hidden="true"><span class="art-paper"><small>AFTERLIGHT</small><b>Aa</b><i></i></span><span class="art-stone"><small>NIGHTFALL</small><b>Aa</b><i></i></span></div>'
     if n["visual"] == "forms":
@@ -42,7 +50,7 @@ def visual(n):
 
 def feature(n, prefix, heading):
     return f'''<article class="note-feature">
-      {visual(n)}
+      {visual(n, '../assets/notes/' if prefix == './' else './assets/notes/')}
       <div class="note-feature-copy">
         <p class="editorial-meta mono">FEATURED / {n['id']} · {escape(n['type'].upper())}</p>
         <h{heading}><a href="{prefix}{n['slug']}">{escape(n['title'])}</a></h{heading}>
