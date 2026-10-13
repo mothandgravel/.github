@@ -229,5 +229,30 @@
       "kind": "note",
       "note_id": "007"
     }
+  },
+  {
+    "id": "note-008",
+    "title": "A whole staircase. One undo.",
+    "format": "narration",
+    "script": "scripts/note-008.txt",
+    "language": "en-US",
+    "notes": [
+      "008"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "008": "48ea0f5bee4ed607c47fc0ffbbf88f1694df513c59a64fc8193db737fde2701b"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "008"
+    }
   }
 ]

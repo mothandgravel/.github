@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+      - name: Install media inspection tools for published audio
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Verify generated editorial slots and archive behavior
         run: |
           python3 scripts/build_notes.py --check

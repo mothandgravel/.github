@@ -1,0 +1,43 @@
+{
+  "sourceRepository": "digablesolutions/sky-stack-builder",
+  "sourceCommit": "33f5c034227b81466a0e9e06bc442206e457d398",
+  "method": "pinned source inspection; native tests inspected, not executed",
+  "assets": [
+    {
+      "file": "gesture-boundary.svg",
+      "sha256": "c5557f309fe259438623fad58c7d67d01a9431579a8e6ad2520dc9baddec6c80",
+      "method": "authored SVG",
+      "classification": "source-derived contract sketch; separate scenarios",
+      "notGameCapture": true
+    },
+    {
+      "file": "one-gesture.svg",
+      "sha256": "ad471ab5667e3f2105ebfe6ae94013b222319334dc3c427434d02ddfc0f4c911",
+      "method": "authored SVG",
+      "classification": "editorial metaphor",
+      "notGameCapture": true
+    }
+  ],
+  "publication": "Catalogued source-based design study; native gameplay and player comprehension remain unverified",
+  "openChecks": [
+    "Native Windows gameplay capture",
+    "Placement/refusal/undo behaviour in the native app",
+    "Player expectations before Undo",
+    "Editorial review before publication"
+  ],
+  "rasterExports": {
+    "method": "Chromium rasterization of authored SVG; Pillow WebP/JPEG encoding",
+    "files": [
+      "008-cover-800.webp",
+      "008-cover-1600.webp",
+      "008-cover-social.jpg"
+    ]
+  },
+  "publicAssetHashes": {
+    "008-one-gesture.svg": "ad471ab5667e3f2105ebfe6ae94013b222319334dc3c427434d02ddfc0f4c911",
+    "008-gesture-boundary.svg": "c5557f309fe259438623fad58c7d67d01a9431579a8e6ad2520dc9baddec6c80",
+    "008-cover-social.jpg": "84c54be568f28580306dba79b8594a00ced8c5e5b09c11c58f957a025f3fb6ca",
+    "008-cover-800.webp": "87d80b57bf8589b146734d45be5ea4d31a661123e7501f962736b70acfd2d3db",
+    "008-cover-1600.webp": "7d67ac6401fe87da5e8892bc1aa6d5f1764c8c216872de8568aa83031d9eed20"
+  }
+}

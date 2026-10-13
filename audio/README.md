@@ -9,7 +9,7 @@ git pull --ff-only
 python3 scripts/field_audio.py make-all --publish
 ```
 
-This covers every published Field Note and every configured episode: seven notes,
+This covers every published Field Note and every configured episode: eight notes,
 the two-voice conversation and the brisk comparison. It reuses completed recordings
 and transcription jobs, generates and subtitles the rest, then commits and pushes
 only the prepared listening files to the current PR branch. It does not push to
@@ -112,6 +112,7 @@ submission can incur another charge. Confirmed failed transcription jobs require
 | --- | --- | --- | --- |
 | `note-001` | *Curiosity with calluses*, original narration | 001 | Charon |
 | `note-001-brisk` | Same narration, compact pauses and 170 wpm delivery request | 001 | Charon |
+| `note-002`–`note-008` | Narrated editions of the remaining published notes | 002–008 | Charon |
 | `workbench-001` | *What does the interface let you believe?*, conversation | 005, 006, 007 | Explore: Kore; Question: Charon |
 
 The first user-run narration succeeded globally after repeated EU HTTP 502s.
