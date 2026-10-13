@@ -8,7 +8,7 @@
 
 ### Drawn to light. Built for rough ground.
 
-**Independent software and useful tools.**
+**An independent software and design studio, based in Finland.**
 
 Curious by nature. Grounded by design.
 
@@ -24,18 +24,30 @@ We believe that useful work doesn't have to be ordinary, and unconventional idea
 
 ### On the workbench
 
-- [The studio website](https://mothandgravel.com/) — a small, dependency-free site whose [source is public](https://github.com/mothandgravel/.github/tree/main/docs).
-- [Field Note 001: Curiosity with calluses](https://mothandgravel.com/notes/001-curiosity-with-calluses.html) — the ideas behind the name and the work.
-- [Field Note 002: Afterlight / Nightfall](https://mothandgravel.com/notes/002-afterlight-nightfall.html) — a study of material, light and readable interfaces.
-- [Field Note 003: A metaphor has to earn its place](https://mothandgravel.com/notes/003-metaphor-earns-its-place.html) — River, Circle and Focus in Decision Docket’s native design study, developed under Navivra.
-- [Field Note 004: A control should stay where you left it](https://mothandgravel.com/notes/004-controls-stay-put.html) — a small loading change that keeps the work still.
-- [Field Note 005: A green light should mean something](https://mothandgravel.com/notes/005-green-light.html) — running, passing and delivered across the wider workbench.
-- [Field Note 006: A map should leave room for doubt](https://mothandgravel.com/notes/006-map-leaves-room.html) — a little robot, four views and the space it has not established.
-- [Field Note 007: Fast signals. Slow eyes.](https://mothandgravel.com/notes/007-fast-signals.html) — telemetry, freshness and a place for human attention.
-- [Follow Field Notes by RSS](https://mothandgravel.com/notes/feed.xml) — curious questions and working answers, as they appear.
+- [The studio](https://mothandgravel.com/) — useful tools and thoughtful interfaces, from cloud and mobile software to things with wires. The [site’s source is public](https://github.com/mothandgravel/.github/tree/main/docs).
+- [Working specimens](https://mothandgravel.com/#work) — a saved Ajo recovery trace, footprints from SkyStack Builder’s native code, and a Kitronik buggy scan seen four ways. Working records and open questions as the products take shape.
+- [Shape a loose end](https://mothandgravel.com/questions/) — make an editable brief to keep. Nothing is sent automatically.
+- [An example shared workbench](https://mothandgravel.com/workbench/) — fictional sketches, approaches and a doubt worth keeping.
 - [Brand marks and materials](https://github.com/mothandgravel/.github/tree/main/profile/assets) — the moth, the stone and their working forms.
 
-Early days. Our work spans a growing pipeline. Field Notes keep the curious questions and working answers in view as the products take shape.
+### Field Notes
+
+[Browse the full archive](https://mothandgravel.com/notes/): what we tried, what resisted, and what changed our minds.
+
+Recent studies from the SkyStack Builder workbench:
+
+- [008: A whole staircase. One undo.](https://mothandgravel.com/notes/008-one-undo.html) — preview, placement and undo should agree about the thing the player made.
+- [009: A place to stand.](https://mothandgravel.com/notes/009-place-to-stand.html) — a pony, a turn of the camera and a place that needs to stay dependable.
+- [010: Almost the same.](https://mothandgravel.com/notes/010-almost-the-same.html) — two pictures almost agree. What does the difference tell us?
+- [011: A model needs a place.](https://mothandgravel.com/notes/011-model-needs-a-place.html) — a small shrine leaves the modelling bench, and its neighbours bring new questions.
+
+[Listen to the archive](https://mothandgravel.com/notes/#listen-archive) — AI-narrated editions of every published note, with subtitles and machine-generated transcripts, plus a workbench conversation and a narration comparison.
+
+Follow the [written notes by RSS](https://mothandgravel.com/notes/feed.xml) or subscribe to the separate [podcast feed](https://mothandgravel.com/notes/podcast.xml).
+
+### Bring us a question
+
+Based in Finland. Open to questions from anywhere. [Start with the question sheet](https://mothandgravel.com/questions/) or [write to us on GitHub](https://github.com/mothandgravel/.github/issues/new?template=signal.yml). The GitHub conversation is public and requires an account; leave private details out.
 
 ---
 
