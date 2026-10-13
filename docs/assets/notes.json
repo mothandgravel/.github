@@ -54,13 +54,39 @@
     ],
     "project": "Decision Docket / Navivra",
     "related": [
-      "002"
+      "002",
+      "004"
+    ],
+    "visual": "forms",
+    "featured": false,
+    "cover": {
+      "small": "003-cover-800.webp",
+      "large": "003-cover-1600.webp",
+      "width": 1600,
+      "height": 900
+    }
+  },
+  {
+    "id": "004",
+    "slug": "004-controls-stay-put.html",
+    "title": "A control should stay where you left it.",
+    "summary": "A decorative portrait moved the words and Switch control by 72 pixels. A small Decision Docket fix in keeping the work still.",
+    "date": "2026-10-13",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "Decision Docket / Navivra",
+    "related": [
+      "003"
     ],
     "visual": "forms",
     "featured": true,
     "cover": {
-      "small": "003-cover-800.webp",
-      "large": "003-cover-1600.webp",
+      "small": "004-cover-800.webp",
+      "large": "004-cover-1600.webp",
       "width": 1600,
       "height": 900
     }

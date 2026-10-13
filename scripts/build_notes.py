@@ -6,6 +6,9 @@ import argparse
 import json
 import re
 from datetime import date
+from email.utils import format_datetime
+from datetime import datetime, timezone
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "docs/assets/notes.json"
@@ -91,6 +94,37 @@ def replace_slot(path, name, content, check):
 
 def build(check=False):
     notes = load_notes()
+    # The published catalog is also the feed: unpublished research never enters it.
+    ET.register_namespace('atom', 'http://www.w3.org/2005/Atom')
+    rss = ET.Element('rss', version='2.0')
+    channel = ET.SubElement(rss, 'channel')
+    for tag, value in (
+        ('title', 'Moth & Gravel — Field Notes'),
+        ('link', 'https://mothandgravel.com/notes/'),
+        ('description', 'Curious questions, working answers. Notes from an independent software workbench.'),
+        ('language', 'en'),
+    ):
+        ET.SubElement(channel, tag).text = value
+    ET.SubElement(channel, '{http://www.w3.org/2005/Atom}link',
+                  href='https://mothandgravel.com/notes/feed.xml', rel='self', type='application/rss+xml')
+    for note in notes:
+        item = ET.SubElement(channel, 'item')
+        url = 'https://mothandgravel.com/notes/' + note['slug']
+        for tag, value in (('title', note['title']), ('link', url), ('description', note['summary'])):
+            ET.SubElement(item, tag).text = value
+        ET.SubElement(item, 'guid', isPermaLink='true').text = url
+        ET.SubElement(item, 'pubDate').text = format_datetime(
+            datetime.combine(date.fromisoformat(note['date']), datetime.min.time(), tzinfo=timezone.utc),
+            usegmt=True)
+        for topic in note['topics']:
+            ET.SubElement(item, 'category').text = topic
+    ET.indent(rss)
+    feed = ET.tostring(rss, encoding='unicode', xml_declaration=True) + '\n'
+    feed_path = ROOT / 'docs/notes/feed.xml'
+    if check:
+        assert feed_path.read_text() == feed, 'Stale RSS feed: run python3 scripts/build_notes.py'
+    else:
+        feed_path.write_text(feed)
     featured = next((n for n in notes if n['featured']), notes[0])
     recent = [n for n in notes if n['id'] != featured['id']][:3]
     for path, name, prefix, heading in (

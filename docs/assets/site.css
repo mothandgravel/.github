@@ -933,3 +933,37 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
   .native-capture-pair { grid-template-columns:1fr;gap:32px; }
   .native-capture>a { padding:15px; }
 }
+
+/* Field Note 004: a static explanation of measured loading geometry. */
+.illustrated-heading { max-width:none;display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center; }
+.illustrated-heading>div { min-width:0; }
+.stability-heading h1 { font-size:clamp(38px,6vw,86px); }
+.stability-note .note-aside { flex-wrap:wrap; }
+.stability-note .note-aside a { color:var(--gold-bright);display:inline-block;min-height:44px; }
+.stability-proof { margin:40px 0 50px; }
+.stability-pair { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px; }
+.stability-panel { min-width:0;border:1px solid var(--line);background:var(--surface);padding:24px 20px; }
+.note-prose .stability-panel>p.mono { color:var(--gold-bright);font-size:10px;line-height:1.8;min-height:36px;margin:0; }
+.stability-panel svg { display:block;width:100%;height:auto;max-width:300px;margin:14px auto; }
+.stability-ghost { fill:none;stroke:var(--secondary);stroke-width:1.5;stroke-dasharray:4 4;opacity:.6; }
+.stability-portrait { fill:var(--surface);stroke:var(--gold-bright);stroke-width:1.5; }
+.stability-panel h3 { font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.4;margin:0 0 12px; }
+.stability-panel h3 span { font-size:48px;color:var(--gold-bright); }
+.note-prose .stability-panel>p:not(.mono) { font-size:14px;line-height:1.7;margin:0; }
+.stability-proof figcaption { font-size:13px;color:var(--muted);line-height:1.7;margin-top:17px; }
+@media (max-width:900px) {
+  .illustrated-heading { grid-template-columns:1fr;gap:34px; }
+}
+@media (max-width:660px) {
+  .stability-pair { grid-template-columns:1fr; }
+}
+
+/* Invitations to follow the work, meet its makers, and leave a signal. */
+.field-note-routes { display:flex;flex-wrap:wrap;gap:22px 40px;margin-top:28px; }
+.studio-section .section-lead { align-items:start; }
+.section-lead .studio-copy { max-width:580px; }
+.studio-copy p { max-width:none;margin:0 0 24px; }
+.studio-copy .editorial-link { font-size:15px; }
+.contact-right .contact-route-note { font-family:var(--sans);font-size:13px;line-height:1.6;margin:16px 0 24px;max-width:32ch; }
+.contact-feed { display:inline-flex;align-items:center;gap:10px;min-height:44px;color:#17191b;border-bottom:1px solid #17191b;font-size:14px; }
+.contact-feed:focus-visible { outline:2px solid #17191b;outline-offset:5px; }

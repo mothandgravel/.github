@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Moth &amp; Gravel — Field Notes</title>
+    <link>https://mothandgravel.com/notes/</link>
+    <description>Curious questions, working answers. Notes from an independent software workbench.</description>
+    <language>en</language>
+    <atom:link href="https://mothandgravel.com/notes/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A control should stay where you left it.</title>
+      <link>https://mothandgravel.com/notes/004-controls-stay-put.html</link>
+      <description>A decorative portrait moved the words and Switch control by 72 pixels. A small Decision Docket fix in keeping the work still.</description>
+      <guid isPermaLink="true">https://mothandgravel.com/notes/004-controls-stay-put.html</guid>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 GMT</pubDate>
+      <category>Interface</category>
+      <category>Interaction</category>
+      <category>Making</category>
+    </item>
+    <item>
+      <title>A metaphor has to earn its place.</title>
+      <link>https://mothandgravel.com/notes/003-metaphor-earns-its-place.html</link>
+      <description>River, Circle and Focus: how an expressive interface helps someone recover context and continue the work. A Decision Docket design study.</description>
+      <guid isPermaLink="true">https://mothandgravel.com/notes/003-metaphor-earns-its-place.html</guid>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 GMT</pubDate>
+      <category>Interface</category>
+      <category>Interaction</category>
+      <category>Making</category>
+    </item>
+    <item>
+      <title>Afterlight / Nightfall.</title>
+      <link>https://mothandgravel.com/notes/002-afterlight-nightfall.html</link>
+      <description>A practical study in bone, charcoal and brass—and what an expressive identity owes to legible interfaces.</description>
+      <guid isPermaLink="true">https://mothandgravel.com/notes/002-afterlight-nightfall.html</guid>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 GMT</pubDate>
+      <category>Interface</category>
+      <category>Materials</category>
+    </item>
+    <item>
+      <title>Curiosity with calluses.</title>
+      <link>https://mothandgravel.com/notes/001-curiosity-with-calluses.html</link>
+      <description>Two unlikely words. One independent studio. Why strange ideas still need to hold up in the real world.</description>
+      <guid isPermaLink="true">https://mothandgravel.com/notes/001-curiosity-with-calluses.html</guid>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 GMT</pubDate>
+      <category>Identity</category>
+      <category>Making</category>
+    </item>
+  </channel>
+</rss>

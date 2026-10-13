@@ -97,6 +97,8 @@ def main() -> int:
     check('rel="canonical"' in html, "Missing canonical URL")
     check("https://mothandgravel.com/" in html, "Canonical domain not found")
     check("https://github.com/mothandgravel" in html, "Missing genuine GitHub contact link")
+    check('issues/new?template=signal.yml' in html, "Missing public signal route")
+    check('id="studio"' in html, "Missing studio introduction")
     check(len(parser.ids) >= 8, "Expected semantic page landmarks")
 
     css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
@@ -154,6 +156,14 @@ def main() -> int:
     check(theme_note.is_file(), "Field Note 002 theme study is missing")
     check('href="./notes/"' in html, "Homepage Field Notes navigation must lead to the index")
     catalog = json.loads((ROOT / 'assets' / 'notes.json').read_text())
+    feed = ET.parse(ROOT / 'notes/feed.xml').getroot()
+    feed_items = feed.findall('channel/item')
+    expected_feed_urls = {'https://mothandgravel.com/notes/' + n['slug'] for n in catalog}
+    check(len(feed_items) == len(catalog), 'RSS feed must contain each published note once')
+    check({item.findtext('guid') for item in feed_items} == expected_feed_urls,
+          'RSS identities must match the published catalog')
+    check(all(item.findtext('guid') == item.findtext('link') for item in feed_items),
+          'RSS links must use the stable article identities')
     featured = next((n for n in catalog if n.get('featured')), sorted(catalog, key=lambda n: (n['date'], int(n['id'])), reverse=True)[0])
     check(html.count(f'href="./notes/{featured["slug"]}"') == 2,
           "Selected Field Note needs its featured title and reading action")
