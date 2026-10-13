@@ -731,6 +731,8 @@ try {
     const card = handling.locator('#specimen-skystack');
     const plane = card.locator('.specimen-plane');
     await plane.scrollIntoViewIfNeeded();
+    // Let the browser deliver visibility observers after the programmatic scroll.
+    await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     const box = await plane.boundingBox();
     const textBefore = await card.locator('h3').boundingBox();
     await handling.mouse.move(box.x + box.width * .85, box.y + box.height * .25);
@@ -741,6 +743,7 @@ try {
     await handling.waitForFunction(()=>!document.querySelector('[data-handled]'));
     assert(await plane.evaluate(el=>getComputedStyle(el).transform === 'none'), 'Handling light: changed motion preference left depth active');
     await handling.emulateMedia({reducedMotion:'no-preference'});
+    await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     await handling.mouse.move(box.x + box.width * .8, box.y + box.height * .3);
     await handling.waitForFunction(()=>document.querySelector('[data-handled]'));
     await card.locator('summary').focus();
@@ -750,6 +753,7 @@ try {
     await handling.keyboard.press('Enter');
     await handling.evaluate(()=>document.activeElement?.blur());
     await plane.scrollIntoViewIfNeeded();
+    await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     const nextBox = await plane.boundingBox();
     await handling.mouse.move(nextBox.x + nextBox.width * .8, nextBox.y + nextBox.height * .3);
     await handling.waitForFunction(()=>document.querySelector('[data-handled]'));
