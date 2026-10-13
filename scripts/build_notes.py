@@ -36,7 +36,7 @@ def load_notes():
         assert n["title"] and n["summary"]
         assert n["visual"] in ("foundations", "themes", "forms")
         assert all(i in ids and i != n["id"] for i in n["related"] + n["supersedes"])
-    return sorted(notes, key=lambda n: (n["date"], int(n["id"])), reverse=True)
+    return sorted(notes, key=lambda n: int(n["id"]), reverse=True)
 
 
 def visual(n, asset_prefix):
@@ -64,9 +64,8 @@ def feature(n, prefix, heading):
 
 
 def row(n, prefix, heading=3):
-    stamp = date.fromisoformat(n["date"]).strftime("%d %b %Y").upper()
     return f'''<article class="archive-entry notes-index-entry" data-note-id="{n['id']}">
-      <div class="editorial-meta mono">{n['id']} / {escape(n['type'].upper())}<time datetime="{n['date']}">{stamp}</time></div>
+      <div class="editorial-meta mono">{n['id']} / {escape(n['type'].upper())}</div>
       <div><h{heading}><a href="{prefix}{n['slug']}">{escape(n['title'])} <span aria-hidden="true">↗</span></a></h{heading}><p>{escape(n['summary'])}</p><p class="archive-topics mono">{' · '.join(map(escape, n['topics']))}</p></div>
     </article>'''
 

@@ -23,7 +23,7 @@
     "id": "002",
     "slug": "002-afterlight-nightfall.html",
     "title": "Afterlight / Nightfall.",
-    "summary": "A practical study in bone, charcoal and brass—and what an expressive identity owes to legible interfaces.",
+    "summary": "A practical study in bone, charcoal and brass\u2014and what an expressive identity owes to legible interfaces.",
     "date": "2026-10-13",
     "type": "Design study",
     "topics": [
@@ -56,7 +56,8 @@
     "related": [
       "002",
       "004",
-      "005"
+      "005",
+      "006"
     ],
     "visual": "forms",
     "featured": false,
@@ -108,13 +109,40 @@
     "project": "Across the workbench",
     "related": [
       "003",
-      "004"
+      "004",
+      "006"
+    ],
+    "visual": "forms",
+    "featured": false,
+    "cover": {
+      "small": "005-cover-800.webp",
+      "large": "005-cover-1600.webp",
+      "width": 1600,
+      "height": 900
+    }
+  },
+  {
+    "id": "006",
+    "slug": "006-map-leaves-room.html",
+    "title": "A map should leave room for doubt.",
+    "summary": "A little robot, four views and the space it has not established. A study in maps and uncertainty from the Kitronik buggy workbench.",
+    "date": "2026-10-13",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Robotics",
+      "Making"
+    ],
+    "project": "Kitronik buggy",
+    "related": [
+      "003",
+      "005"
     ],
     "visual": "forms",
     "featured": true,
     "cover": {
-      "small": "005-cover-800.webp",
-      "large": "005-cover-1600.webp",
+      "small": "006-cover-800.webp",
+      "large": "006-cover-1600.webp",
       "width": 1600,
       "height": 900
     }

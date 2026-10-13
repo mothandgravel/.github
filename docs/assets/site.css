@@ -822,7 +822,6 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .archive-status { color:var(--muted);font-size:11px;margin-bottom:20px; }
 .archive-entry { display:grid;grid-template-columns:170px minmax(0,1fr);gap:36px;align-items:start;padding:28px 0;border-bottom:1px solid var(--line); }
 .archive-entry .editorial-meta { display:flex;flex-direction:column;gap:9px;margin:0; }
-.archive-entry time { color:var(--muted); }
 .archive-entry h3 { font-family:var(--sans);font-size:27px;line-height:1.2;letter-spacing:-.02em;margin:0 0 12px;overflow-wrap:anywhere; }
 .archive-entry h3 a:hover { color:var(--gold-bright); }
 .archive-entry h3 a { display:inline-block;min-height:44px; }
@@ -984,3 +983,14 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
   .signal-triptych { grid-template-columns:1fr; }
   .signal-panel { padding:24px; }
 }
+
+/* Field Note 006: the saved scan stays inspectable at its original resolution. */
+.map-heading h1 { font-size:clamp(38px,6vw,86px); }
+.map-note .note-aside { flex-wrap:wrap; }
+.map-note .note-aside a { color:var(--gold-bright);display:inline-block;min-height:44px; }
+.scan-replay { margin:40px 0 45px;min-width:0; }
+.scan-replay>a { display:block;border:1px solid var(--line);background:#fff; }
+.scan-replay img { display:block;width:100%;height:auto; }
+.scan-replay figcaption { font-size:13px;color:var(--secondary);line-height:1.7;margin-top:17px; }
+.scan-replay figcaption strong { display:block;font-family:var(--serif);font-size:22px;font-style:italic;font-weight:400;color:var(--ink);margin-bottom:10px; }
+.scan-replay figcaption a { display:inline-block;min-height:44px;color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px; }

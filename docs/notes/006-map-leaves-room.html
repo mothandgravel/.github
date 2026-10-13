@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17191b">
+  <meta name="description" content="A little robot, four views and the space it has not established. A design study in maps and uncertainty. Field note 006.">
+  <meta name="robots" content="index, follow">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Moth & Gravel">
+  <meta property="og:title" content="A map should leave room for doubt — Moth & Gravel">
+  <meta property="og:description" content="A map can make a handful of readings feel like a room. How do we keep its unanswered questions visible?">
+  <meta property="og:url" content="https://mothandgravel.com/notes/006-map-leaves-room.html">
+  <meta property="og:image" content="https://mothandgravel.com/assets/notes/006-cover-social.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Unfinished graphite room edges and a few brass markers on warm paper, with a small pebble beside the unexplored space.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mothandgravel.com/assets/notes/006-cover-social.jpg">
+  <link rel="alternate" type="application/rss+xml" title="Moth &amp; Gravel — Field Notes" href="https://mothandgravel.com/notes/feed.xml">
+  <link rel="canonical" href="https://mothandgravel.com/notes/006-map-leaves-room.html">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/site.css">
+  <script>document.documentElement.classList.add("has-js")</script>
+  <script src="../assets/site.js" defer></script>
+  <title>A map should leave room for doubt — Moth &amp; Gravel</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to note</a>
+  <header class="site-header">
+    <div class="header-inner shell">
+      <a class="brand" href="../" aria-label="Moth and Gravel home">
+        <span class="brand-stamp" aria-hidden="true"><img src="../assets/nav-mark.svg" alt="" width="44" height="44"></span>
+        <span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span>
+      </a>
+      <nav class="main-nav" id="primary-nav" aria-label="Main navigation">
+        <a href="../#work">Workbench</a><a href="./" >Field notes</a><a href="../#ethos">The thinking</a>
+      </nav>
+      <div class="header-actions">
+        <button class="light-switch" id="light-switch" type="button" aria-pressed="false" aria-label="Afterlight theme">
+          <span class="switch-orb" aria-hidden="true"></span>
+          <span class="switch-label">Afterlight</span>
+        </button>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="note-main shell map-note">
+    <div class="note-meta mono"><span>FIELD NOTE / 006</span><span>DESIGN STUDY</span></div>
+    <div class="note-heading illustrated-heading map-heading">
+      <div>
+        <p class="eyebrow"><span class="line-mark" aria-hidden="true"></span> NOTES ON MAPS AND UNCERTAINTY</p>
+        <h1>A map should<br>leave room<br><em>for doubt.</em></h1>
+        <p class="note-deck">A little robot. A handful of readings. The curious space between a picture and a room.</p>
+      </div>
+      <figure class="note-cover-figure">
+        <picture><source srcset="../assets/notes/006-cover-800.webp 800w, ../assets/notes/006-cover-1600.webp 1600w" sizes="(max-width: 900px) 100vw, 48vw"><img src="../assets/notes/006-cover-1600.webp" width="1600" height="900" alt="Unfinished graphite room edges and a few brass markers on warm paper, with a small pebble beside the unexplored space." fetchpriority="high" decoding="async"></picture>
+        <figcaption>A drawing with space left open. An AI-generated editorial illustration.</figcaption>
+      </figure>
+    </div>
+    <div class="note-rule" aria-hidden="true"><span>✳</span></div>
+    <div class="note-body">
+      <aside class="note-aside mono" aria-label="Field note context">
+        <p>THE WORKBENCH<br>KITRONIK BUGGY</p>
+        <p>THE SUBJECT<br>ROBOTICS / INTERFACE</p>
+        <p>THE MATERIAL<br>SOURCE / SAVED SCAN</p>
+        <a href="#study-status">READ THE STUDY SCOPE ↓</a>
+      </aside>
+      <article class="note-prose">
+        <h2>When a few points become a room</h2>
+        <p>Give a little robot a way to sense what is nearby, then put its readings on a screen. A few coloured points become a shape. Soon it is tempting to see a room.</p>
+        <p>The display has made a powerful suggestion from a modest collection of readings.</p>
+        <p>That is the interesting part of our Kitronik buggy experiment. The machine has an ultrasonic sensor, a pair of motors and a way to report what it has found. Python tools give those reports a form someone can look at. Somewhere between the sensor and the picture, a design question appears: how much certainty should a map be allowed to borrow from its own appearance?</p>
+
+        <h2>Leave the unseen space open</h2>
+        <p>The current firmware starts its grid at a neutral prior. A cell has not become an empty piece of floor simply because nothing has been drawn there.</p>
+        <p>As scans arrive, the map accumulates evidence. Traversed parts of a sensor beam receive free-space updates. Its endpoint receives occupied-space updates. Confidence affects the contribution. Overlapping observations can strengthen or revise the picture.</p>
+        <p>The distinction matters to the person reading it. Free, occupied and undecided are three different answers. A quiet neutral region leaves the question visible. Filling everything with reassuring space would make the picture easier to like and harder to trust.</p>
+        <figure class="signal-figure map-classifications" aria-labelledby="classification-caption">
+          <div class="signal-triptych">
+            <div class="signal-panel map-panel"><p class="mono">01 / FREE</p><svg viewBox="0 0 220 130" aria-hidden="true" focusable="false"><rect class="diagram-paper" x="57" y="14" width="106" height="102" rx="2"/><path class="diagram-current" d="M82 68l18 18 38-42"/></svg><h3>Evidence of free space.</h3><p>The stored value is below 80. Observations have moved it toward free.</p></div>
+            <div class="signal-panel map-panel"><p class="mono">02 / UNCLASSIFIED</p><svg viewBox="0 0 220 130" aria-hidden="true" focusable="false"><rect class="diagram-paper" x="57" y="14" width="106" height="102" rx="2"/><path class="diagram-copy" d="M95 53c0-22 33-22 33 0 0 12-18 12-18 26 M110 94v2"/></svg><h3>A question remains.</h3><p>Values from 80 through 170 stay unclassified. The starting value is 128.</p></div>
+            <div class="signal-panel map-panel"><p class="mono">03 / OCCUPIED</p><svg viewBox="0 0 220 130" aria-hidden="true" focusable="false"><rect class="diagram-paper" x="57" y="14" width="106" height="102" rx="2"/><path class="diagram-current" d="M79 49h62 M79 65h62 M79 81h62"/></svg><h3>Evidence of an obstacle.</h3><p>The stored value is above 170. Observations have moved it toward occupied.</p></div>
+          </div>
+          <figcaption id="classification-caption">Three classifications in the current firmware. Explanatory symbols and exact stored-value thresholds, rather than a product screen or measured probabilities. A classification describes accumulated evidence; it is not a guarantee about the floor.</figcaption>
+        </figure>
+        <p>In the Python scan viewer, the neutral region occupies most of the saved example. In the camera overlay, unclassified cells remain unpainted while free and occupied classifications add colour. Those are two ways to let uncertainty survive the drawing.</p>
+
+        <h2>The drawing has a point of view</h2>
+        <p>A polar plot shows readings around the sensor. A top-down view turns them into a shape. An occupancy grid shows accumulated belief about space. The distance profile makes individual readings easier to compare.</p>
+        <p>The saved-scan visualizer puts these views beside each other. They share an input, but each makes something easier to notice. A gap can be obvious in one and disappear into the overall impression of another.</p>
+        <figure class="scan-replay" aria-labelledby="scan-caption">
+          <a href="../assets/notes/006-scan-replay.webp" aria-label="Open the full-size offline scan replay"><img src="../assets/notes/006-scan-replay.webp" width="2100" height="1800" loading="lazy" decoding="async" alt="Four panels from the Python scan renderer: twelve polar readings, their top-down shape, a mostly neutral occupancy grid with diagonal occupied patches, and a distance profile."></a>
+          <figcaption id="scan-caption"><strong>One saved sample. Four ways to look.</strong>The repository’s Python renderer, called offline with its saved twelve-point sample. This older sample contains a 32 × 32 grid; current firmware defines 64 × 64. The sample’s physical capture origin is not established. <a href="../assets/notes/006-scan-replay.webp">Open the full-size figure ↗</a></figcaption>
+        </figure>
+        <p>That is useful. A companion view can question the attractive one.</p>
+        <p>It also gives the display a responsibility. The reader should be able to understand what the marks represent, which frame they belong to and whether they came from a current observation or a saved example.</p>
+
+        <h2>The robot moves and the room should stay put</h2>
+        <p>The current grid belongs to a world frame, with an origin at the start. The robot’s estimated position changes inside it. Keeping the map in that frame lets observations from different positions accumulate into one place.</p>
+        <p>But position is part of the estimate too. This experiment uses motor-time kinematics with selective heading correction. A camera marker provides another estimate of where the robot might be, connected to the map through calibration.</p>
+        <p>The overlay can draw the two trails together, making their disagreement available to inspect. The interesting design opportunity is a display that gives someone a way to notice when the alignment deserves another look.</p>
+
+        <h2>Let the picture stay provisional</h2>
+        <p>There is pleasure in a little machine slowly giving a space a shape. Colours, rays and a moving marker can make an otherwise difficult stream of numbers approachable.</p>
+        <p>The display earns that pleasure when its limits remain readable: where it has evidence, where it has an estimate and where it still has a question.</p>
+        <p>That is what we would test next. Ask someone to point out the parts the robot has not established. Ask which position they believe, and why. Show an old reading beside a new one. Watch what they infer from a blank area.</p>
+        <p>The map does not have to settle every doubt. It has to leave room for the useful ones.</p>
+
+        <aside class="native-study-status" id="study-status" aria-labelledby="study-status-title">
+          <p class="mono">STUDY SCOPE / SOURCE AND SAVED SAMPLE</p>
+          <h2 id="study-status-title">A picture to question.</h2>
+          <p>This study reads the Kitronik buggy’s mapping and Python viewer source, with an offline render of repository sample data. The replay’s older 32 × 32 grid is distinct from the current 64 × 64 firmware grid, which uses 10 cm cells. The cover is editorial artwork; the four-panel figure is actual renderer output.</p>
+          <p>The mapping source updates occupancy with a separate pose estimate. This reading and saved replay do not establish full SLAM, calibrated map accuracy, safe navigation or measured reader comprehension. No live hardware or camera session was run for this note. The proposed reader questions remain the next study.</p>
+        </aside>
+      </article>
+    </div>
+    <div class="note-end">
+      <p class="mono">END OF FIELD NOTE / 006</p>
+      <a class="button button-brass" href="./">All Field Notes <span class="button-arrow" aria-hidden="true">↗</span></a>
+      <a class="under-link" href="../#field-notes">Back to the studio <span aria-hidden="true">↗</span></a>
+    </div>
+    <!-- related-notes:start -->
+<aside class="note-related" aria-label="Related Field Notes"><p class="mono">RELATED READING</p><a class="editorial-link" href="./005-green-light.html">A green light should mean something. <span aria-hidden="true">↗</span></a><a class="editorial-link" href="./003-metaphor-earns-its-place.html">A metaphor has to earn its place. <span aria-hidden="true">↗</span></a></aside>
+<!-- related-notes:end -->
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <a class="footer-brand" href="../">MOTH <span>&amp;</span> GRAVEL <small>INDEPENDENT WORKS</small></a>
+      <div class="footer-end mono"><span>© <span id="year">2026</span> MOTH &amp; GRAVEL</span><a href="../">HOME ↑</a></div>
+    </div>
+  </footer>
+</body>
+</html>
