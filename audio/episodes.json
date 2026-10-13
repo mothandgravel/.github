@@ -247,12 +247,87 @@
     ],
     "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
     "source_sha256": {
-      "008": "48ea0f5bee4ed607c47fc0ffbbf88f1694df513c59a64fc8193db737fde2701b"
+      "008": "ea3230624d80ddf17788625ace18e59470384e95eafb178e0323f3aabc2281e5"
     },
     "target_wpm": 140,
     "publication": {
       "kind": "note",
       "note_id": "008"
+    }
+  },
+  {
+    "id": "note-009",
+    "title": "A place to stand.",
+    "format": "narration",
+    "script": "scripts/note-009.txt",
+    "language": "en-US",
+    "notes": [
+      "009"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "009": "6965dfb7a275c9765517a69d8f3d223c6a91ce53899f2f8475615b70ccd513ae"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "009"
+    }
+  },
+  {
+    "id": "note-010",
+    "title": "Almost the same.",
+    "format": "narration",
+    "script": "scripts/note-010.txt",
+    "language": "en-US",
+    "notes": [
+      "010"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "010": "b96bebb9d51944a4ece00a86255bb3e5c213b144d3d3f1e1b8db188affceeca2"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "010"
+    }
+  },
+  {
+    "id": "note-011",
+    "title": "A model needs a place.",
+    "format": "narration",
+    "script": "scripts/note-011.txt",
+    "language": "en-US",
+    "notes": [
+      "011"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "011": "fe0683656bfdc4d5420baa4585033c2d6642cdeaf3d5a515ced788698fac23e7"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "011"
     }
   }
 ]

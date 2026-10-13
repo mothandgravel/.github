@@ -48,18 +48,12 @@ The island can keep its weather, critters and pastel strangeness. Underneath it,
 
 A little room to try. A way back that fits the gesture.
 
-Source and limits
+STUDY SCOPE / SOURCE READING
 
-Reviewed source: digablesolutions/sky-stack-builder at 33f5c034227b81466a0e9e06bc442206e457d398 .
+A gesture to question.
 
-Stamp vocabulary and footprint: single, 2×2 platform, three-cell line and three-cell run; selected shape/direction and bounds helpers.
+This study reads SkyStack Builder’s stamp, placement and undo implementation. The source describes complete-footprint checks, grouped placement and an attempted reversal with material refunds. The illustrations are authored explanations, not game captures.
 
-Placement handler: validation, spending rollback, placement rollback and one BatchPlace history entry.
-
-Validation and undo: occupancy/cost checks, expected top-block checks, batch removal and refunds.
-
-Existing native tests: footprint, orientation, bounds and duplicate-cell cases. These were inspected, not executed for this editorial study.
-
-No Windows build, native gameplay capture, player study or end-to-end undo verification was performed here. Source inspection supports the described implementation paths; it does not establish every rollback path or player outcome. The older stamp plan/index still lists unfinished work, so this study uses the pinned implementation rather than treating that planning status as delivery evidence.
+No native game session or player study was run for this note. Source reading does not establish every failure path or what a player expects Undo to do. The proposed observation remains the next study.
 
 You have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.

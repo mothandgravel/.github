@@ -194,6 +194,31 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual((self.root / "audio/scripts/note-001.txt").read_bytes(), original)
         audio.load_episode("note-" + new_id, self.root)
 
+    def test_script_candidate_keeps_study_limits_and_omits_context_sidebar(self):
+        note = audio.catalog(self.root)["008"]
+        path = self.root / "docs/notes" / note["slug"]
+        path.write_text('<article class="note-prose"><p>A possible repair.</p>'
+            '<aside class="note-aside"><p>DECORATIVE CONTEXT</p></aside>'
+            '<aside class="native-study-status"><h2>Study scope</h2>'
+            '<p>No native session or player study was run.</p></aside>'
+            '<p>The observation remains to be done.</p></article>')
+        _, script = release.script_candidate(self.root, note)
+        self.assertIn("No native session or player study was run.", script)
+        self.assertIn("The observation remains to be done.", script)
+        self.assertNotIn("DECORATIVE CONTEXT", script)
+
+    def test_sync_does_not_accept_changed_source_for_an_existing_recording(self):
+        note = audio.catalog(self.root)["001"]
+        path = self.root / "docs/notes" / note["slug"]
+        path.write_text(path.read_text().replace('<article class="note-prose">',
+            '<article class="note-prose"><p>A revised published claim.</p>', 1))
+        original = (self.root / "audio/scripts/note-001.txt").read_bytes()
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(release.sync_catalog(), [])
+        self.assertEqual((self.root / "audio/scripts/note-001.txt").read_bytes(), original)
+        with self.assertRaisesRegex(ValueError, "Note 001 changed"):
+            audio.load_episode("note-001", self.root)
+
     def test_batch_pending_job_preserves_progress_and_does_not_publish(self):
         args = argparse.Namespace(command="make-all", project="audio-pilot-project", bucket="private-bucket",
             model="gemini-2.5-pro-tts", endpoint="global", location="us", auth="gcloud", wait=0,

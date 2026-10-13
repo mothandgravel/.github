@@ -39,5 +39,12 @@
     "008-cover-social.jpg": "84c54be568f28580306dba79b8594a00ced8c5e5b09c11c58f957a025f3fb6ca",
     "008-cover-800.webp": "87d80b57bf8589b146734d45be5ea4d31a661123e7501f962736b70acfd2d3db",
     "008-cover-1600.webp": "7d67ac6401fe87da5e8892bc1aa6d5f1764c8c216872de8568aa83031d9eed20"
-  }
+  },
+  "sourceFiles": [
+    "src/app/build_stamps.h",
+    "src/app/game_app_input.cpp",
+    "src/app/game_app_state.cpp",
+    "tests/SkyStackBuilder.Tests/main.cpp"
+  ],
+  "editorialScope": "Source references retained here; reader-facing article uses the shared study-scope block."
 }

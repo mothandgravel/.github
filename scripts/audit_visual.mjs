@@ -349,6 +349,9 @@ try {
     { name: "note-green", path: "/notes/005-green-light.html", heading: ".green-heading h1" },
     { name: "note-map", path: "/notes/006-map-leaves-room.html", heading: ".map-heading h1" },
     { name: "note-skystack", path: "/notes/008-one-undo.html", heading: ".telemetry-heading h1" },
+    { name: "note-009", path: "/notes/009-place-to-stand.html", heading: ".telemetry-heading h1", social: "https://mothandgravel.com/assets/notes/009-cover-social.jpg" },
+    { name: "note-010", path: "/notes/010-almost-the-same.html", heading: ".telemetry-heading h1", social: "https://mothandgravel.com/assets/notes/010-cover-social.jpg" },
+    { name: "note-011", path: "/notes/011-model-needs-a-place.html", heading: ".telemetry-heading h1", social: "https://mothandgravel.com/assets/notes/011-cover-social.jpg" },
     { name: "note-telemetry", path: "/notes/007-fast-signals.html", heading: ".telemetry-heading h1" },
   ]) {
     for (const viewport of widths) {
@@ -429,7 +432,14 @@ try {
         assert(await page.locator('.freshness-panel').count() === 2, label + ': reading moments missing');
         assert(await page.locator('#study-status').count() === 1, label + ': source scope missing');
       }
-      const expectedCover = editorial.name === 'note-skystack'
+      if (editorial.social) {
+        assert(await page.locator('.note-cover-figure img').count() === 1, label + ': editorial cover missing');
+        assert(await page.locator('.freshness-figure img[src$=".svg"]').count() === 1, label + ': scalable study diagram missing');
+        assert(await page.locator('#study-status').count() === 1, label + ': study scope missing');
+        assert(layout.hasIndexRoute, label + ': missing back route to Field Notes');
+        assert(!/digablesolutions|\b[0-9a-f]{40}\b/.test(await page.locator('.note-prose').innerText()), label + ': repository identifiers leaked into reading copy');
+      }
+      const expectedCover = editorial.social || (editorial.name === 'note-skystack'
         ? 'https://mothandgravel.com/assets/notes/008-cover-social.jpg'
         : editorial.name === 'note-telemetry'
         ? 'https://mothandgravel.com/assets/notes/007-cover-social.jpg'
@@ -441,7 +451,7 @@ try {
         ? 'https://mothandgravel.com/assets/notes/004-cover-social.jpg'
         : editorial.name === 'note-metaphor'
         ? 'https://mothandgravel.com/assets/notes/003-cover-social.jpg'
-        : 'https://mothandgravel.com/assets/social-cover.png';
+        : 'https://mothandgravel.com/assets/social-cover.png');
       assert(layout.ogImage === expectedCover, label + ': social preview URL is missing');
       const capture = viewport.width === 1440 || viewport.width === 390 || viewport.width === 320;
       const audit = viewport.width === 1440 || viewport.width === 390;

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+<title id="title">The mesh pilot and the gameplay adoption boundary</title>
+<desc id="desc">Editable Blender source, converted geometry, and a native GPU pilot describe a pipeline. Gameplay adoption remains a separate gate involving ground contact, occlusion, picking, atmosphere, and representative frame-time measurement. The diagram does not assert that the collectible shrine is a default pilot asset.</desc>
+<rect width="1200" height="650" fill="#17191b"/>
+<text x="64" y="78" fill="#eee7d5" font-family="Georgia,serif" font-size="34">A mesh can cross the pipeline before it joins the island.</text>
+<g fill="#24282a" stroke="#747268"><rect x="64" y="158" width="280" height="165" rx="8"/><rect x="460" y="158" width="280" height="165" rx="8"/><rect x="856" y="158" width="280" height="165" rx="8"/></g>
+<g font-family="Arial,sans-serif" font-size="18" fill="#d4b584"><text x="91" y="198">EDITABLE SOURCE</text><text x="487" y="198">GEOMETRY TRANSFER</text><text x="883" y="198">NATIVE GPU PILOT</text></g>
+<g font-family="Georgia,serif" fill="#eee7d5" font-size="25"><text x="91" y="247">Shape and origin</text><text x="91" y="284">Kept revisions</text><text x="487" y="247">Bounds and normals</text><text x="487" y="284">Explicit conversion</text><text x="883" y="247">Depth and selection</text><text x="883" y="284">Bounded checks</text></g>
+<g stroke="#d4b584" stroke-width="3" fill="none"><path d="M362 240h78m-12-10 12 10-12 10M758 240h78m-12-10 12 10-12 10"/><path stroke-dasharray="8 8" d="M996 337v61H204v26"/><rect x="64" y="426" width="1072" height="132" rx="8" stroke-dasharray="8 8"/></g>
+<g font-family="Georgia,serif" fill="#eee7d5"><text x="92" y="470" font-size="28">Gameplay adoption remains a separate gate.</text><text x="92" y="520" font-size="22">Ground contact · Occlusion · Picking · Atmosphere · Representative frame time</text></g>
+<text x="64" y="609" fill="#b5b3aa" font-family="Arial,sans-serif" font-size="18">Schematic pipeline; dashed boundary is proposed work, not a completed delivery path.</text>
+</svg>

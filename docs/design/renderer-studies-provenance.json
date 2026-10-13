@@ -1,0 +1,181 @@
+{
+  "sourceRepository": "digablesolutions/sky-stack-builder",
+  "sourceCommit": "d68bdc6e182548e62f9c093470be327b4bd6fb93",
+  "editorialReviewDate": "2026-10-13",
+  "publication": "Published source-based design studies 009\u2013011; native gameplay and player observation remain separate work.",
+  "notes": [
+    {
+      "file": "../notes/009-place-to-stand.html",
+      "method": "pinned historical source and recorded native contact results; historical fixture, not the current renderer status",
+      "sourceReferences": [
+        "https://github.com/digablesolutions/sky-stack-builder/tree/d68bdc6e182548e62f9c093470be327b4bd6fb93",
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/docs/gpu-parity-status.md",
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/tests/SkyStackBuilder.Tests/main.cpp",
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/src/render/game_app_render.cpp",
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/src/render/direct3d_backend.cpp"
+      ]
+    },
+    {
+      "file": "../notes/010-almost-the-same.html",
+      "method": "pinned native test source and recorded renderer findings; no new benchmark for this editorial draft",
+      "sourceReferences": [
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/tests/SkyStackBuilder.Tests/main.cpp",
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/docs/gpu-parity-status.md",
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/src/render/direct3d_backend.cpp"
+      ]
+    },
+    {
+      "file": "../notes/011-model-needs-a-place.html",
+      "method": "pinned generator, committed verification record and pilot documentation; no new Blender or pilot run",
+      "sourceReferences": [
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/assets/blender/exports/collectible-shrine-v1/verification.json",
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/scripts/blender/generate_collectible_shrine.py",
+        "https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/tools/blender_gpu_pilot/README.md"
+      ]
+    }
+  ],
+  "images": {
+    "method": "AI-generated editorial covers with two existing responsive WebP exports; authored SVG diagrams used directly; JPEG social exports from the existing cover images.",
+    "graphics": [
+      {
+        "file": "../assets/notes/009-contact-comparison.svg",
+        "method": "authored SVG; displayed directly without duplicate raster exports",
+        "scope": "recorded contact counts at the pinned historical source, not a native pixel map"
+      },
+      {
+        "file": "../assets/notes/010-rounding-boundaries.svg",
+        "method": "authored SVG; displayed directly without duplicate raster exports",
+        "scope": "conceptual blend and rounding sequence, not measured colour swatches"
+      },
+      {
+        "file": "../assets/notes/011-adoption-boundary.svg",
+        "method": "authored SVG; displayed directly without duplicate raster exports",
+        "scope": "pipeline schematic with an explicitly unfinished gameplay-adoption boundary"
+      }
+    ]
+  },
+  "openChecks": [
+    "Complete gameplay parity and representative GPU frame-time measurement",
+    "Multiple actor, ramp and raised-foreground behaviour",
+    "Specific Blender asset adoption inside the default gameplay renderer"
+  ],
+  "editorialRevision": "Publication in the shared Field Notes shell; source identifiers remain in this editorial record. Historical contact comparison is explicitly historical; proposed player studies have not been run.",
+  "covers": {
+    "generator": "built-in image_gen",
+    "classification": "conceptual editorial illustrations, not gameplay or Blender screenshots",
+    "assets": [
+      {
+        "note": "009",
+        "original_sha256": "b8297e97ec88702489aa439e5b0413c5e27d829e3c7d760e95e4e693179c0892",
+        "original_dimensions": [
+          1672,
+          941
+        ],
+        "variants": [
+          {
+            "file": "009-cover-1600.webp",
+            "dimensions": [
+              1600,
+              900
+            ],
+            "bytes": 170280,
+            "sha256": "fb2835e51e2dfa57322184bf3c152f46b2a2af9e94c62469a31cda2a30f0286d"
+          },
+          {
+            "file": "009-cover-800.webp",
+            "dimensions": [
+              800,
+              450
+            ],
+            "bytes": 65664,
+            "sha256": "b57320e3bef5064412a844893dad64805c9e8e58c0fc27301fd468ed9ac01e6a"
+          }
+        ]
+      },
+      {
+        "note": "010",
+        "original_sha256": "f98d9a8be8d6e32587469ad9d333817301ac00cc38ddc4ac64c3c6d65764ddfe",
+        "original_dimensions": [
+          1672,
+          941
+        ],
+        "variants": [
+          {
+            "file": "010-cover-1600.webp",
+            "dimensions": [
+              1600,
+              900
+            ],
+            "bytes": 237038,
+            "sha256": "33367fc628558a4e7050775b8e1a20e4f5ad863619bd8d29a4c90ade812b4f08"
+          },
+          {
+            "file": "010-cover-800.webp",
+            "dimensions": [
+              800,
+              450
+            ],
+            "bytes": 80450,
+            "sha256": "82b19b34a0712c0280851fd78a7f75aa5290b0883daa58cbabb1afae3ef20f23"
+          }
+        ]
+      },
+      {
+        "note": "011",
+        "original_sha256": "a8d4f6cfbaf3262b629100f94ccf3238817bd704a01bc2b5df759918e0feaef0",
+        "original_dimensions": [
+          1672,
+          941
+        ],
+        "variants": [
+          {
+            "file": "011-cover-1600.webp",
+            "dimensions": [
+              1600,
+              900
+            ],
+            "bytes": 166306,
+            "sha256": "38d61a50363151a7c8988a67a1fe097e5ad2ad91a4055b683d2e51e113556f4b"
+          },
+          {
+            "file": "011-cover-800.webp",
+            "dimensions": [
+              800,
+              450
+            ],
+            "bytes": 65908,
+            "sha256": "9781c90b555e1706499f0ffa94d1a873c56435fc8ff6823df8df44f149229c6e"
+          }
+        ]
+      }
+    ]
+  },
+  "prompts": [
+    {
+      "note": "009",
+      "prompt": "Use case: stylized-concept. Asset type: wide 16:9 editorial cover for Moth & Gravel Field Note 009 about keeping a pony above terrain. Scene: a charcoal stone workbench, a small tactile miniature island made from warm bone-paper isometric cubes and muted sage grass. Subject: one tiny lilac clay pony clearly standing with all four feet on the island beside a taller cube; a thin brass orbit arc behind the island hints at viewing it from different angles. Style: refined handmade editorial still-life illustration, paper grain, soft clay, brushed brass, natural grazing light, warm shadows, restrained charcoal, bone, sage and lilac palette. Composition: generous negative space, elevated three-quarter view, calm and curious rather than toy packaging. Constraints: no words, letters, numbers, UI, logos, watermarks, diagrams, split panels. Feet clearly above and touching ground. Conceptual editorial art, not a game screenshot or representation of actual measured behaviour."
+    },
+    {
+      "note": "010",
+      "prompt": "Use case: stylized-concept. Asset type: wide 16:9 editorial cover for Moth & Gravel Field Note 010 about what a pixel comparison can establish. Scene: warm bone drawing paper on a rough charcoal stone workbench. Subject: three translucent small coloured acetate squares overlapping, muted sage, slate blue and dusty rose, with a brass magnifying lens held above one small overlap by its own handle resting on the surface. Inside the lens subtle paper mosaic squares suggest inspecting colour, without a chart or literal data. Style: quiet tactile photolike editorial illustration, natural soft grazing light, paper texture, restrained charcoal and bone with brushed brass details. Composition: asymmetric still life with generous negative space, elevated three-quarter view, consistent with independent design studio field notes. Constraints: no text, numbers, axes, equations, logos, watermark, hands, computer UI. Not a measured pixel comparison, not a scientific simulation, just an editorial metaphor for examining a small disagreement."
+    },
+    {
+      "note": "011",
+      "prompt": "Use case: stylized-concept. Asset type: wide 16:9 editorial cover for Moth & Gravel Field Note 011 about a Blender asset pilot versus integration in an island. Scene: charcoal stone workbench with a small warm bone-paper folded grid and a tiny muted pastel shrine model. Subject: the same simple shrine represented by a delicate brass wireframe maquette beside a solid clay maquette, separate from a small cluster of sage-topped isometric paper island cubes in the distance; clear physical separation conveys an asset ready for examination but not yet placed into the island. Style: refined handmade editorial still-life illustration, grainy paper, soft matte clay, brushed brass, natural grazing light and warm shadows, restrained charcoal, bone, sage, pale lilac. Composition: elevated three-quarter view, generous negative space, calm curious workshop mood. Constraints: no text, letters, numbers, Blender logo, software UI, watermarks, hands. Conceptual illustration, not a screenshot of Blender or a claim of actual gameplay adoption."
+    }
+  ],
+  "publicAssetHashes": {
+    "009-cover-800.webp": "b57320e3bef5064412a844893dad64805c9e8e58c0fc27301fd468ed9ac01e6a",
+    "009-contact-comparison.svg": "9fc991e905a721bee1332fcd7050a681931e5e4e2116c332578f17c89604001c",
+    "009-cover-social.jpg": "e3460ec81c6215f9aa648180451fa39fc8f8a3e30032a0257b7c12144f4a5733",
+    "009-cover-1600.webp": "fb2835e51e2dfa57322184bf3c152f46b2a2af9e94c62469a31cda2a30f0286d",
+    "010-rounding-boundaries.svg": "deec354c6065ae07b863942498086b680d6a776c0f730f82852e12e5eed5fe3e",
+    "010-cover-1600.webp": "33367fc628558a4e7050775b8e1a20e4f5ad863619bd8d29a4c90ade812b4f08",
+    "010-cover-800.webp": "82b19b34a0712c0280851fd78a7f75aa5290b0883daa58cbabb1afae3ef20f23",
+    "010-cover-social.jpg": "33d8fafd3b33b7cb4098be65b1e4137dbcf36750401cddadf04e8a5759ffda35",
+    "011-cover-800.webp": "9781c90b555e1706499f0ffa94d1a873c56435fc8ff6823df8df44f149229c6e",
+    "011-cover-1600.webp": "38d61a50363151a7c8988a67a1fe097e5ad2ad91a4055b683d2e51e113556f4b",
+    "011-cover-social.jpg": "164fc810abda1db66f6202d2907bc369cbe4e56e14d5be10aa3588e182ae5d34",
+    "011-adoption-boundary.svg": "6462cf152ae966be9f5d358041176db25829c61e1d4e0a7f215ada3cb54ccc63"
+  }
+}

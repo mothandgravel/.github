@@ -193,10 +193,89 @@
       "004"
     ],
     "visual": "forms",
-    "featured": true,
+    "featured": false,
     "cover": {
       "small": "008-cover-800.webp",
       "large": "008-cover-1600.webp",
+      "width": 1600,
+      "height": 900
+    }
+  },
+  {
+    "id": "009",
+    "slug": "009-place-to-stand.html",
+    "title": "A place to stand.",
+    "summary": "A pony, a turn of the camera and a place that needs to stay dependable. A SkyStack Builder study in looking and belonging.",
+    "date": "2026-10-13",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "SkyStack Builder",
+    "related": [
+      "008",
+      "010",
+      "011"
+    ],
+    "visual": "forms",
+    "featured": true,
+    "cover": {
+      "small": "009-cover-800.webp",
+      "large": "009-cover-1600.webp",
+      "width": 1600,
+      "height": 900
+    }
+  },
+  {
+    "id": "010",
+    "slug": "010-almost-the-same.html",
+    "title": "Almost the same.",
+    "summary": "Two pictures almost agree. What does the difference tell us, and what does it leave open? A SkyStack Builder study in looking closely.",
+    "date": "2026-10-13",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "SkyStack Builder",
+    "related": [
+      "005",
+      "009"
+    ],
+    "visual": "forms",
+    "featured": false,
+    "cover": {
+      "small": "010-cover-800.webp",
+      "large": "010-cover-1600.webp",
+      "width": 1600,
+      "height": 900
+    }
+  },
+  {
+    "id": "011",
+    "slug": "011-model-needs-a-place.html",
+    "title": "A model needs a place.",
+    "summary": "A small shrine leaves the modelling bench. Its neighbours bring new questions about looking, choosing and belonging. A SkyStack Builder design study.",
+    "date": "2026-10-13",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "SkyStack Builder",
+    "related": [
+      "004",
+      "009"
+    ],
+    "visual": "forms",
+    "featured": false,
+    "cover": {
+      "small": "011-cover-800.webp",
+      "large": "011-cover-1600.webp",
       "width": 1600,
       "height": 900
     }

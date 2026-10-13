@@ -61,6 +61,39 @@ def publication_remote():
     return remote, branch
 
 
+def script_candidate(root, note):
+    """Keep the essay and study limits; omit decorative context sidebars."""
+    class ScriptReader(audio.ProseReader):
+        def __init__(self):
+            super().__init__()
+            self.asides = []
+        def handle_starttag(self, tag, attrs):
+            if tag == "aside":
+                hidden = "native-study-status" not in dict(attrs).get("class", "").split()
+                self.asides.append(hidden)
+                self.parts.append("\n\n")
+                if hidden:
+                    self.hidden += 1
+            super().handle_starttag(tag, attrs)
+        def handle_endtag(self, tag):
+            super().handle_endtag(tag)
+            if tag == "aside":
+                if self.asides.pop():
+                    self.hidden = max(0, self.hidden - 1)
+                self.parts.append("\n\n")
+            elif not self.hidden and tag in {"strong", "span", "code"}:
+                self.parts.append(" ")
+    source = audio.source_article(root, note)
+    reader = ScriptReader(); reader.feed(source); reader.close()
+    body = re.sub(r"(?<=[.!?])(?=[A-Z])", " ", reader.text())
+    body = body.replace(" ↗", "").replace(" × ", " by ").replace(" px ", " pixels ").replace(" ms ", " milliseconds ")
+    body = re.sub(r"(\d+(?:\.\d+)?):1\b", r"\1 to one.", body)
+    script = (f"Moth and Gravel. Field Note {int(note['id'])}. {note['title']}\n\n"
+              "An AI-narrated edition of the published note.\n\n" + body +
+              "\n\nYou have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.\n")
+    return source, script
+
+
 def sync_catalog():
     """Freeze complete prose for newly published notes; never refresh stale scripts."""
     root = audio.ROOT
@@ -68,17 +101,6 @@ def sync_catalog():
     episodes = json.loads(path.read_text())
     existing = {e.get("publication", {}).get("note_id") for e in episodes if e.get("publication", {}).get("kind") == "note"}
     base = next(e for e in episodes if e["id"] == "note-001")
-    class ScriptReader(audio.ProseReader):
-        def handle_starttag(self, tag, attrs):
-            if tag == "aside":
-                self.hidden += 1
-            super().handle_starttag(tag, attrs)
-        def handle_endtag(self, tag):
-            super().handle_endtag(tag)
-            if tag == "aside":
-                self.hidden = max(0, self.hidden - 1)
-            elif not self.hidden and tag in {"strong", "span", "code"}:
-                self.parts.append(" ")
     added = []
     for note in audio.catalog(root).values():
         if note["id"] in existing:
@@ -88,14 +110,7 @@ def sync_catalog():
         identifier = "note-" + note["id"]
         if any(e["id"] == identifier for e in episodes):
             raise ValueError("An existing episode ID has no primary publication mapping")
-        source = audio.source_article(root, note)
-        reader = ScriptReader(); reader.feed(source)
-        body = re.sub(r"(?<=[.!?])(?=[A-Z])", " ", reader.text())
-        body = body.replace(" ↗", "").replace(" × ", " by ").replace(" px ", " pixels ").replace(" ms ", " milliseconds ")
-        body = re.sub(r"(\d+(?:\.\d+)?):1\b", r"\1 to one.", body)
-        script = (f"Moth and Gravel. Field Note {int(note['id'])}. {note['title']}\n\n"
-                  "An AI-narrated edition of the published note.\n\n" + body +
-                  "\n\nYou have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.\n")
+        source, script = script_candidate(root, note)
         target = root / "audio/scripts" / (identifier + ".txt")
         if target.exists():
             raise ValueError("A script candidate already exists; review it before adding the episode")
