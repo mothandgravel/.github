@@ -47,7 +47,11 @@ const snap = async (page, name) => {
   await page.screenshot({ path: join(output, `${name}.png`), fullPage: true, animations: "disabled" });
 };
 
-async function assertLandingStyleParity(page, label) {
+async function assertLandingStyleParity(viewport, label) {
+  // Probe a fresh page so hover/focus and capture instrumentation cannot interfere.
+  const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
+  try {
+  await page.goto(origin, { waitUntil: "networkidle" });
   const measure = () => page.evaluate(() => {
     const properties = ['display', 'font-size', 'font-family', 'line-height', 'color',
       'background-color', 'padding', 'margin', 'width', 'height', 'grid-template-columns', 'gap'];
@@ -61,6 +65,7 @@ async function assertLandingStyleParity(page, label) {
   await full.evaluate(el => el.remove());
   const changed = before.filter((entry, index) => JSON.stringify(entry.values) !== JSON.stringify(after[index]?.values));
   assert(changed.length === 0, label + ': generated landing styles differ from authored styles on ' + changed.map(e => e.name).join(', '));
+  } finally { await page.close(); }
 }
 
 try {
@@ -276,7 +281,7 @@ try {
     }
 
     // Keep the temporary comparison stylesheet out of review captures.
-    await assertLandingStyleParity(page, viewport.name);
+    await assertLandingStyleParity(viewport, viewport.name);
     results.push({ name: viewport.name, ...report, errors });
     await page.close();
   }
