@@ -323,6 +323,7 @@ try {
     { name: "note-stability", path: "/notes/004-controls-stay-put.html", heading: ".stability-heading h1" },
     { name: "note-green", path: "/notes/005-green-light.html", heading: ".green-heading h1" },
     { name: "note-map", path: "/notes/006-map-leaves-room.html", heading: ".map-heading h1" },
+    { name: "note-telemetry", path: "/notes/007-fast-signals.html", heading: ".telemetry-heading h1" },
   ]) {
     for (const viewport of widths) {
       const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
@@ -343,7 +344,7 @@ try {
         const visibleTextFits = element => !element || element.scrollWidth <= element.clientWidth + 2;
         const tracked = [
           heading,
-          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status, .native-capture, .note-cover-figure, .stability-panel, .stability-panel h3, .signal-panel, .signal-panel h3, .scan-replay"),
+          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status, .native-capture, .note-cover-figure, .stability-panel, .stability-panel h3, .signal-panel, .signal-panel h3, .scan-replay, .freshness-panel, .freshness-panel h3"),
         ];
         return {
           width: window.innerWidth,
@@ -398,7 +399,13 @@ try {
         assert(await page.locator('.scan-replay img').count() === 1, label + ': offline render missing');
         assert(await page.locator('#study-status').count() === 1, label + ': sample scope missing');
       }
-      const expectedCover = editorial.name === 'note-map'
+      if (editorial.name === 'note-telemetry') {
+        assert(await page.locator('.freshness-panel').count() === 2, label + ': reading moments missing');
+        assert(await page.locator('#study-status').count() === 1, label + ': source scope missing');
+      }
+      const expectedCover = editorial.name === 'note-telemetry'
+        ? 'https://mothandgravel.com/assets/notes/007-cover-social.jpg'
+        : editorial.name === 'note-map'
         ? 'https://mothandgravel.com/assets/notes/006-cover-social.jpg'
         : editorial.name === 'note-green'
         ? 'https://mothandgravel.com/assets/notes/005-cover-social.jpg'
@@ -523,9 +530,19 @@ try {
   assert(newNote.url().endsWith('/notes/' + featured.slug), 'Featured note route failed');
   await newNote.locator('.note-aside a').click();
   assert(newNote.url().endsWith('#study-status'), 'Component study scope link failed');
-  await newNote.locator('.note-related a[href="./003-metaphor-earns-its-place.html"]').click();
-  await newNote.locator('.metaphor-heading h1').waitFor();
+  const neighbor = catalog.find(n => n.id === featured.related[0]);
+  await newNote.locator(`.note-related a[href="./${neighbor.slug}"]`).click();
+  await newNote.locator('.note-heading h1').waitFor();
+  assert(newNote.url().endsWith('/notes/' + neighbor.slug), 'Related reading route failed');
   await newNote.close();
+  const enquiry = await browser.newPage({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
+  await enquiry.goto(origin, { waitUntil: 'load' });
+  await enquiry.locator('.hero-actions a[href="#contact"]').click();
+  assert(enquiry.url().endsWith('#contact'), 'Hero enquiry does not reach contact');
+  assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Enquiry route is hidden');
+  await enquiry.locator('.studio-answers summary').first().click();
+  assert(await enquiry.locator('.studio-answers details').first().getAttribute('open') !== null, 'Useful answers fail without JavaScript');
+  await enquiry.close();
   // Ensure this is a real raster asset, not an SVG-only sharing fallback.
   const coverResponse = await browser.newPage();
   try {

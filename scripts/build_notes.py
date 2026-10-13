@@ -9,6 +9,7 @@ from datetime import date
 from email.utils import format_datetime
 from datetime import datetime, timezone
 import xml.etree.ElementTree as ET
+from build_discovery import build as build_discovery
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "docs/assets/notes.json"
@@ -148,4 +149,6 @@ def build(check=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
-    build(parser.parse_args().check)
+    check = parser.parse_args().check
+    build(check)
+    build_discovery(check)

@@ -1,0 +1,55 @@
+{
+  "note": "007",
+  "editorial_cover": {
+    "prompt": "Use case: stylized-concept. Asset type: a wide 16:9 editorial cover for Moth & Gravel Field Note 007, Fast signals. Slow eyes. Primary request: a quiet tactile still life about a fast signal arriving and a human taking time to read it. A single small brass tuning fork rests diagonally beside a narrow ribbon of warm bone paper on a charcoal stone workbench. A few tiny graphite ripple marks on the paper fade into generous blank space. The fork is sharp and still, the paper slightly curled, no visible movement effects. Close elevated three-quarter view, photolike editorial illustration, natural soft grazing light and warm shadows, grainy paper, brushed worn brass, rough charcoal stone. Restrained bone, charcoal and brass palette. Curious, grounded independent design studio mood, asymmetric composition with lots of negative space. No text, letters, numbers, logo, hands, robot, dashboard, circuit board, watermark, neon. A conceptual illustration about signal and attention, not measured data or a hardware photo.",
+    "generator": "built-in image_gen",
+    "kind": "conceptual illustration; not a hardware photograph",
+    "original_sha256": "31e55ae392d68a7c2db327e1781b5ef83c4ebed746198296b5ffd94c3052c602",
+    "original_dimensions": [
+      1672,
+      941
+    ]
+  },
+  "source_readback_date": "2026-10-13",
+  "sources": [
+    {
+      "repository": "digablesolutions/kitronik-buggy",
+      "path": "tools/telemetry_gui.py",
+      "blob_sha": "850938dfa3405ab9059cc20a863fd8f680aacd02",
+      "scope": "receiver latest readings; 33 ms next-update schedule; age <0.5 seconds Connected, otherwise Stale data at the next check"
+    }
+  ],
+  "diagrams": {
+    "kind": "repo-native SVG and explanatory text",
+    "scope": "Fictional 0.2 s and 0.6 s refresh examples around the exact source threshold; schematic positions, no measured timing trace or product screenshot"
+  },
+  "assets": [
+    {
+      "file": "007-cover-1600.webp",
+      "bytes": 172136,
+      "sha256": "aaa8363e9328dcb8bea2b866b90c9f9443926a9ee5a5fa96f6df2e1eadc8b5a2",
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "file": "007-cover-800.webp",
+      "bytes": 62424,
+      "sha256": "235f5dc5dd974fccddd09002e12f13e7a1f37e44d1eacd22550eeba1b61ce0b7",
+      "dimensions": [
+        800,
+        450
+      ]
+    },
+    {
+      "file": "007-cover-social.jpg",
+      "bytes": 187583,
+      "sha256": "67267bd3d218e6f17deb2f30f02b70825c36e746f9e6d5d7981c023a029e3dde",
+      "dimensions": [
+        1200,
+        675
+      ]
+    }
+  ]
+}

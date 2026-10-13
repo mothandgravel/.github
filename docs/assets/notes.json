@@ -110,7 +110,8 @@
     "related": [
       "003",
       "004",
-      "006"
+      "006",
+      "007"
     ],
     "visual": "forms",
     "featured": false,
@@ -136,13 +137,40 @@
     "project": "Kitronik buggy",
     "related": [
       "003",
-      "005"
+      "005",
+      "007"
+    ],
+    "visual": "forms",
+    "featured": false,
+    "cover": {
+      "small": "006-cover-800.webp",
+      "large": "006-cover-1600.webp",
+      "width": 1600,
+      "height": 900
+    }
+  },
+  {
+    "id": "007",
+    "slug": "007-fast-signals.html",
+    "title": "Fast signals. Slow eyes.",
+    "summary": "A little machine sends numbers. A person needs a place to look. A study in telemetry, freshness and attention from the Kitronik buggy workbench.",
+    "date": "2026-10-13",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Robotics",
+      "Interaction"
+    ],
+    "project": "Kitronik buggy",
+    "related": [
+      "005",
+      "006"
     ],
     "visual": "forms",
     "featured": true,
     "cover": {
-      "small": "006-cover-800.webp",
-      "large": "006-cover-1600.webp",
+      "small": "007-cover-800.webp",
+      "large": "007-cover-1600.webp",
       "width": 1600,
       "height": 900
     }
