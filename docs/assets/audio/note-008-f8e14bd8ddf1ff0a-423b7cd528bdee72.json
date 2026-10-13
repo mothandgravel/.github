@@ -1,0 +1,386 @@
+[
+  {
+    "start": 0.16,
+    "end": 7.5600000000000005,
+    "text": "Moth and Gravel, Field Note 8. A\nwhole staircase, one undo, an AI",
+    "speakers": []
+  },
+  {
+    "start": 7.5600000000000005,
+    "end": 11.28,
+    "text": "narrated edition of the\npublished note. The thing you",
+    "speakers": []
+  },
+  {
+    "start": 11.28,
+    "end": 15.48,
+    "text": "just tried, you meant to build a\nlittle way across the island,",
+    "speakers": []
+  },
+  {
+    "start": 15.84,
+    "end": 20.16,
+    "text": "three pieces perhaps, a run of\nramps, something the pony could",
+    "speakers": []
+  },
+  {
+    "start": 20.16,
+    "end": 25.68,
+    "text": "try. You place it, look again,\nand change your mind. How many",
+    "speakers": []
+  },
+  {
+    "start": 25.68,
+    "end": 29.76,
+    "text": "times should you have to undo?\nThe machine can count the",
+    "speakers": []
+  },
+  {
+    "start": 29.76,
+    "end": 33.76,
+    "text": "pieces. The player has a\ndifferent unit, the thing they",
+    "speakers": []
+  },
+  {
+    "start": 33.76,
+    "end": 39.4,
+    "text": "just tried. That is the small\ndesign question inside Sky Stack",
+    "speakers": []
+  },
+  {
+    "start": 39.4,
+    "end": 44.36,
+    "text": "Builders stamp tools. This rough\nWindows prototype lets a player",
+    "speakers": []
+  },
+  {
+    "start": 44.36,
+    "end": 48.6,
+    "text": "work with single blocks, a small\nplatform, a line, or a",
+    "speakers": []
+  },
+  {
+    "start": 48.6,
+    "end": 53.8,
+    "text": "three-cell run labeled stairs.\nThe run follows the selected",
+    "speakers": []
+  },
+  {
+    "start": 53.8,
+    "end": 58.28,
+    "text": "shape and direction. It does not\nsolve a whole staircase for you.",
+    "speakers": []
+  },
+  {
+    "start": 58.64,
+    "end": 63.16,
+    "text": "The exist- -ing ground still\nmatters. The interesting part is",
+    "speakers": []
+  },
+  {
+    "start": 63.16,
+    "end": 68.76,
+    "text": "where the gesture begins and\nends. Before the click, a stamp",
+    "speakers": []
+  },
+  {
+    "start": 68.76,
+    "end": 72.76,
+    "text": "needs a footprint you can\ninspect. Every proposed cell",
+    "speakers": []
+  },
+  {
+    "start": 72.76,
+    "end": 76.84,
+    "text": "belongs to the preview. If one\npart would leave the island,",
+    "speakers": []
+  },
+  {
+    "start": 76.88,
+    "end": 80.8,
+    "text": "meet an occupied cell, hit the\nheight limit, or cost more",
+    "speakers": []
+  },
+  {
+    "start": 80.8,
+    "end": 84.76,
+    "text": "material than you have, the\nwhole proposal must remain a",
+    "speakers": []
+  },
+  {
+    "start": 84.76,
+    "end": 89.64,
+    "text": "proposal. Without that boundary,\na click can leave two placed",
+    "speakers": []
+  },
+  {
+    "start": 89.64,
+    "end": 94.8,
+    "text": "pieces and one unexplained gap.\nThe player has to discover what",
+    "speakers": []
+  },
+  {
+    "start": 94.8,
+    "end": 99.32,
+    "text": "happened, count what was spent,\nand repair a shape they never",
+    "speakers": []
+  },
+  {
+    "start": 99.32,
+    "end": 104.12,
+    "text": "asked to build. The source\nvalidates the complete footprint",
+    "speakers": []
+  },
+  {
+    "start": 104.12,
+    "end": 109.16,
+    "text": "before spending or placement. It\nalso includes rollback paths for",
+    "speakers": []
+  },
+  {
+    "start": 109.16,
+    "end": 113.92,
+    "text": "spending and placement failures.\nThat is the machinery behind a",
+    "speakers": []
+  },
+  {
+    "start": 113.92,
+    "end": 119.04,
+    "text": "simple expectation. Either this\nlittle thing fits, or it stays",
+    "speakers": []
+  },
+  {
+    "start": 119.04,
+    "end": 124.36,
+    "text": "in your hand. Open the full-size\ncontract sketch, authored",
+    "speakers": []
+  },
+  {
+    "start": 124.36,
+    "end": 128.92,
+    "text": "explanation, not a game\nscreenshot. Source derived",
+    "speakers": []
+  },
+  {
+    "start": 128.92,
+    "end": 134.0,
+    "text": "contract sketch. The blocked\nexample is an alternative to",
+    "speakers": []
+  },
+  {
+    "start": 134.0,
+    "end": 139.2,
+    "text": "successful placement, not a step\nthat leads to it. Three cells",
+    "speakers": []
+  },
+  {
+    "start": 139.2,
+    "end": 144.4,
+    "text": "illustrate the east-facing ramp\nrun. After the click, a",
+    "speakers": []
+  },
+  {
+    "start": 144.4,
+    "end": 150.08,
+    "text": "successful multi-cell stamp goes\ninto history as one batch. One",
+    "speakers": []
+  },
+  {
+    "start": 150.12,
+    "end": 154.92,
+    "text": "undo attempts to remove that\nbatch and refund its materials.",
+    "speakers": []
+  },
+  {
+    "start": 155.68,
+    "end": 159.76,
+    "text": "The source checks that every\ntarget still has the expected",
+    "speakers": []
+  },
+  {
+    "start": 159.76,
+    "end": 165.56,
+    "text": "block at its top before removal.\nIf those checks fail, it reports",
+    "speakers": []
+  },
+  {
+    "start": 165.72,
+    "end": 170.08,
+    "text": "undo failed and keeps the\nhistory entry. It does not",
+    "speakers": []
+  },
+  {
+    "start": 170.08,
+    "end": 174.24,
+    "text": "promise that the world can\nalways be wound backwards. That",
+    "speakers": []
+  },
+  {
+    "start": 174.24,
+    "end": 178.96,
+    "text": "limit matters. A reassuring\nlabel should not turn a changed",
+    "speakers": []
+  },
+  {
+    "start": 178.96,
+    "end": 181.96,
+    "text": "world into somebody else's\ncleanup job.",
+    "speakers": []
+  },
+  {
+    "start": 183.08,
+    "end": 187.64,
+    "text": "There are tradeoffs. A bounded\nstamp is quicker to preview and",
+    "speakers": []
+  },
+  {
+    "start": 187.68,
+    "end": 192.08,
+    "text": "easier to understand than a\nfree-form blueprint editor. It",
+    "speakers": []
+  },
+  {
+    "start": 192.08,
+    "end": 196.32,
+    "text": "also offers fewer shapes.\nGrouping the gesture makes",
+    "speakers": []
+  },
+  {
+    "start": 196.32,
+    "end": 200.68,
+    "text": "reversal coherent, but undoing\none piece within the group",
+    "speakers": []
+  },
+  {
+    "start": 200.72,
+    "end": 205.4,
+    "text": "remains a separate editing task.\nSomething worth trying again.",
+    "speakers": []
+  },
+  {
+    "start": 205.96,
+    "end": 209.92,
+    "text": "The hypothesis is that a player\nwill explore more freely when",
+    "speakers": []
+  },
+  {
+    "start": 209.92,
+    "end": 214.8,
+    "text": "the preview, material cost, and\nreversal all describe the same",
+    "speakers": []
+  },
+  {
+    "start": 214.8,
+    "end": 219.6,
+    "text": "gesture. We have not measured\nthat with players here. A useful",
+    "speakers": []
+  },
+  {
+    "start": 219.6,
+    "end": 224.32,
+    "text": "next observation is small. Ask\nsomeone to place a three-cell",
+    "speakers": []
+  },
+  {
+    "start": 224.32,
+    "end": 229.64,
+    "text": "run, reject a blocked proposal,\nand undo a successful one.",
+    "speakers": []
+  },
+  {
+    "start": 230.36,
+    "end": 235.84,
+    "text": "Before they press undo, ask what\nthey expect to disappear. Watch",
+    "speakers": []
+  },
+  {
+    "start": 235.84,
+    "end": 239.88,
+    "text": "whether the result matches the\nthing they believed they made.",
+    "speakers": []
+  },
+  {
+    "start": 241.08,
+    "end": 244.64,
+    "text": "The island can keep its weather,\ncritters, and pastel",
+    "speakers": []
+  },
+  {
+    "start": 244.64,
+    "end": 249.96,
+    "text": "strangeness. Underneath it, the\neditor needs a dependable idea",
+    "speakers": []
+  },
+  {
+    "start": 250.0,
+    "end": 256.68,
+    "text": "of that thing I just did. A\nlittle room to try, a way back",
+    "speakers": []
+  },
+  {
+    "start": 256.72,
+    "end": 263.16,
+    "text": "that fits the gesture. Study\nScope Slash Source Reading. A",
+    "speakers": []
+  },
+  {
+    "start": 263.16,
+    "end": 268.92,
+    "text": "gesture to question. This study\nreads Sky Stack Builders stamp",
+    "speakers": []
+  },
+  {
+    "start": 269.2,
+    "end": 273.4,
+    "text": "placement and undo\nimplementation. The source",
+    "speakers": []
+  },
+  {
+    "start": 273.4,
+    "end": 277.6,
+    "text": "describes complete footprint\nchecks, grouped placement, and",
+    "speakers": []
+  },
+  {
+    "start": 277.6,
+    "end": 281.52,
+    "text": "an attempted reversal with\nmaterial refunds. The",
+    "speakers": []
+  },
+  {
+    "start": 281.52,
+    "end": 285.68,
+    "text": "illustrations are authored\nexplanations, not game captures.",
+    "speakers": []
+  },
+  {
+    "start": 286.36,
+    "end": 290.24,
+    "text": "No native game session or player\nstudy was run for this note.",
+    "speakers": []
+  },
+  {
+    "start": 291.0,
+    "end": 294.92,
+    "text": "Source reading does not\nestablish every failure path or",
+    "speakers": []
+  },
+  {
+    "start": 294.92,
+    "end": 300.12,
+    "text": "what a player expects undo to\ndo. The proposed observation",
+    "speakers": []
+  },
+  {
+    "start": 300.12,
+    "end": 305.44,
+    "text": "remains the next study. You have\nbeen listening to Moth and",
+    "speakers": []
+  },
+  {
+    "start": 305.44,
+    "end": 311.0,
+    "text": "Gravel Field Notes. The written\nedition is at mothandgravel.com.",
+    "speakers": []
+  }
+]

@@ -6,6 +6,10 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const seenKey = 'moth-and-gravel-interlude-seen';
 let seen = false;
 try { seen = sessionStorage.getItem(seenKey) === 'yes'; } catch { /* One visit still works. */ }
+const remember = () => {
+  seen = true;
+  try { sessionStorage.setItem(seenKey,'yes'); } catch { /* One visit still works. */ }
+};
 
 if (stage && 'IntersectionObserver' in window) initialise().catch(() => {
   // The resting mark and real question link remain complete without enhancement.
@@ -13,6 +17,16 @@ if (stage && 'IntersectionObserver' in window) initialise().catch(() => {
 });
 
 async function initialise() {
+  let startupController;
+  const earlyInterrupt = () => { remember();startupController?.abort(); };
+  const earlyKey = event => { if(event.key==='Escape')earlyInterrupt(); };
+  const earlyVisibility = () => { if(document.hidden)earlyInterrupt(); };
+  window.addEventListener('blur',earlyInterrupt);
+  window.addEventListener('pagehide',earlyInterrupt);
+  document.addEventListener('keydown',earlyKey);
+  document.addEventListener('visibilitychange',earlyVisibility);
+  reduced.addEventListener('change',earlyInterrupt);
+  try {
   const css = document.createElement('link');
   css.rel = 'stylesheet';
   css.href = new URL('./moth-interlude.css', import.meta.url).href;
@@ -50,10 +64,6 @@ async function initialise() {
   const status = room.querySelector('[data-moth-status]');
   let frame = 0, started = 0, elapsed = 0, layout, visible = false, observed = false, fits = true, pendingPlay = false, state = 'idle';
   const still = () => reduced.matches || document.hidden;
-  const remember = () => {
-    seen = true;
-    try { sessionStorage.setItem(seenKey,'yes'); } catch { /* One visit still works. */ }
-  };
   const setState = value => {
     state = value;
     room.dataset.mothState = value;
@@ -169,11 +179,13 @@ async function initialise() {
   document.addEventListener('keydown',event => {
     if (['PageUp','PageDown','Home','End','ArrowUp','ArrowDown',' '].includes(event.key)) pendingPlay = false;
     if (event.key === 'Escape') {
+      if (!observed) suppressAutomatic();
       pendingPlay = false;
       if (state !== 'idle') end('', room.contains(document.activeElement));
     }
   });
   const interrupt = () => { pendingPlay = false;if (state !== 'idle') end(); };
+  const suppressAutomatic = () => { remember();startupController?.abort();interrupt(); };
   const cancelPending = () => { pendingPlay = false; };
   window.addEventListener('wheel',cancelPending,{passive:true});
   window.addEventListener('touchmove',cancelPending,{passive:true});
@@ -190,24 +202,34 @@ async function initialise() {
       status.textContent = reduced.matches ? 'Still, by preference.' : fits ? '' : 'Still, in this view.';
     }
   };
-  document.addEventListener('visibilitychange',interrupt);
-  window.addEventListener('pagehide',interrupt);
-  window.addEventListener('blur',interrupt);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)suppressAutomatic();else interrupt();});
+  window.addEventListener('pagehide',suppressAutomatic);
+  window.addEventListener('blur',suppressAutomatic);
   window.addEventListener('resize',remeasure);
   reduced.addEventListener('change',()=>{
-    interrupt();setState('idle');status.textContent = reduced.matches ? 'Still, by preference.' : '';
+    suppressAutomatic();setState('idle');status.textContent = reduced.matches ? 'Still, by preference.' : '';
   });
   // The source rig remains a complete flight fallback. A failed or lost GPU
   // never strands the question or replaces native controls with an error flow.
   if (!reduced.matches) {
+    const controller = new AbortController();startupController = controller;
+    let rejectAbort;
+    const aborted = new Promise((_,reject)=>{rejectAbort=reject;});
+    const onAbort = () => rejectAbort(new DOMException('Interlude setup cancelled','AbortError'));
+    controller.signal.addEventListener('abort',onAbort,{once:true});
+    const deadline = setTimeout(()=>controller.abort(),1800);
     try {
-      const { createMothRenderer } = await import('./moth-webgl.mjs');
-      renderer = await createMothRenderer(traveller,()=>{
-        renderer = undefined;svg.removeAttribute('hidden');room.dataset.mothRenderer = 'svg';
-        interrupt();
-      });
+      const setup = async () => {
+        const { createMothRenderer } = await import('./moth-webgl.mjs');
+        if(controller.signal.aborted)throw new DOMException('Interlude setup cancelled','AbortError');
+        return createMothRenderer(traveller,()=>{
+          renderer = undefined;svg.removeAttribute('hidden');room.dataset.mothRenderer = 'svg';interrupt();
+        },controller.signal);
+      };
+      renderer = await Promise.race([setup(),aborted]);
       svg.setAttribute('hidden','');room.dataset.mothRenderer = 'webgl';
     } catch { /* Keep the source-derived SVG performance. */ }
+    finally {clearTimeout(deadline);controller.signal.removeEventListener('abort',onAbort);startupController = undefined;}
   }
   const observer = new IntersectionObserver(entries=>{
     const entry = entries[0];
@@ -221,7 +243,7 @@ async function initialise() {
     if (visible && pendingPlay && !still()) begin();
     else if (visible && !seen) {
       remember();
-      if (!still() && fits) begin();
+      if (!still() && fits && document.hasFocus()) begin();
     }
   },{threshold:[0,.7,1]});
   if ('ResizeObserver' in window) new ResizeObserver(remeasure).observe(stage);
@@ -230,4 +252,11 @@ async function initialise() {
   room.dataset.mothReady = 'true';
   if (reduced.matches) status.textContent = 'Still, by preference.';
   observer.observe(stage);
+  } finally {
+    window.removeEventListener('blur',earlyInterrupt);
+    window.removeEventListener('pagehide',earlyInterrupt);
+    document.removeEventListener('keydown',earlyKey);
+    document.removeEventListener('visibilitychange',earlyVisibility);
+    reduced.removeEventListener('change',earlyInterrupt);
+  }
 }

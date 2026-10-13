@@ -765,6 +765,15 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 /* Field Notes: one editorial feature, a small discoverable stack, a dense archive. */
 .main-nav a[aria-current="page"] { color:var(--gold-bright);text-decoration:underline;text-underline-offset:6px; }
 .field-notes-section { border-top:1px solid var(--line); }
+/* Keep the first paint focused on the masthead and studio introduction.
+   Offscreen editions remain searchable and accessible; remember rendered sizes. */
+.hero~.field-notes-section,.hero~.work-section,.hero~.first-work-section,.hero~.ethos-section,.hero~.studio-section,.hero~.contact-section {
+  content-visibility:auto;
+  contain-intrinsic-block-size:auto 900px;
+}
+@media (max-width:760px) {
+  .hero~.field-notes-section,.hero~.work-section { contain-intrinsic-block-size:auto 1600px; }
+}
 .section-kicker a { color:var(--gold-bright);text-underline-offset:4px; }
 .section-kicker a:hover { text-decoration:underline; }
 .editorial-selection { display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:28px;align-items:start; }

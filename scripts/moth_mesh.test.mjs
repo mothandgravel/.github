@@ -29,6 +29,14 @@ test('all articulated parts have actual depth, finite vertices and unit normals'
 });
 test('malformed model cannot silently become an empty performance',()=>{
   assert.throws(()=>buildMothMeshes({version:1,wings:[],antennae:[]}),/Invalid/);
+  for(const damage of [
+    m=>{m.wings[0].pivot[0]='broken';},m=>{m.wings[0].outline[0][0]=null;},
+    m=>{m.wings[0].outline[0][0]=NaN;},m=>{m.wings[0].outline[0][0]=900;},
+    m=>{m.wings[0].name=m.wings[1].name;},m=>{m.wings[0].outline=[[200,400],[200,400],[200,400]];},
+    m=>{m.antennae[0]=[];},m=>{m.viewBox[2]=800;},
+    m=>{m.antennae=m.antennae.map(()=>Array.from({length:13},()=>[491,389]));},
+    m=>{const w=m.wings.find(w=>w.name==='wing-soft-fore');w.veins=Array.from({length:10},()=>w.veins.flat());},
+  ]){const model=structuredClone(source);damage(model);assert.throws(()=>buildMothMeshes(model),/Invalid/);}
 });
 test('volume attitude stays continuous at every performance boundary',()=>{
   const layout={width:800,height:430,source:{x:150,y:170,size:108},perch:{x:420,y:300,size:68}};

@@ -3,7 +3,7 @@ import { buildMothMeshes } from './moth-mesh.mjs';
 const vertex = `
 attribute vec3 a_position; attribute vec3 a_normal; attribute vec3 a_color;
 uniform mat4 u_model;
-varying vec3 v_normal; varying vec3 v_color; varying vec3 v_surface;
+varying mediump vec3 v_normal; varying mediump vec3 v_color; varying mediump vec3 v_surface;
 void main(){
   vec4 p=u_model*vec4(a_position,1.0);
   gl_Position=vec4(p.x/397.5,p.y/227.9,-p.z/700.0,1.0);
@@ -11,12 +11,13 @@ void main(){
 }`;
 const fragment = `
 precision mediump float;
-uniform vec3 u_light; uniform float u_paper; varying vec3 v_normal; varying vec3 v_color; varying vec3 v_surface;
+uniform vec3 u_light; uniform float u_paper; varying mediump vec3 v_normal; varying mediump vec3 v_color; varying mediump vec3 v_surface;
 void main(){
   vec3 n=normalize(v_normal); if(!gl_FrontFacing)n=-n;
   float diffuse=max(dot(n,u_light),0.0);
-  float grain=fract(sin(dot(floor(v_surface.xy*1.4),vec2(12.9898,78.233)))*43758.5453);
-  float rim=pow(1.0-abs(n.z),2.0)*.12;
+  // Small bounded inputs also work on genuine mobile mediump hardware.
+  float grain=.5+.25*sin(v_surface.x*.73)+.25*sin(v_surface.y*.91);
+  float edge=clamp(1.0-abs(n.z),0.0,1.0); float rim=edge*edge*.12;
   vec3 light=vec3(.34+.07*u_paper)+vec3(.74,.70,.62)*diffuse;
   gl_FragColor=vec4(v_color*(light+rim)*(.97+grain*.04),1.0);
 }`;
@@ -30,9 +31,12 @@ const hinge=(pivot,rotation)=>multiply(translate(...pivot),multiply(rotation,tra
 const names={'wing-soft-fore':'softFore','wing-soft-hind':'softHind','wing-stone-fore':'stoneFore','wing-stone-hind':'stoneHind'};
 
 /** A bounded GPU surface. The interlude owns the only clock; pause keeps its pixels. */
-export async function createMothRenderer(container, onLost) {
+export async function createMothRenderer(container, onLost, signal) {
+  const requireActive=()=>{if(signal?.aborted)throw new DOMException('Moth setup cancelled','AbortError');};
+  requireActive();
   const canvas=document.createElement('canvas');
   canvas.className='moth-volume';canvas.setAttribute('aria-hidden','true');canvas.hidden=true;
+  canvas.width=1;canvas.height=1;
   const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false,preserveDrawingBuffer:true,depth:true,stencil:false});
   if(!gl)throw new Error('WebGL unavailable');
   const shaders=[],buffers=[];
@@ -40,15 +44,18 @@ export async function createMothRenderer(container, onLost) {
   const cleanup=()=>{
     if(disposed)return;disposed=true;
     canvas.removeEventListener('webglcontextlost',lost);
-    if(!gl.isContextLost()){buffers.forEach(b=>gl.deleteBuffer(b));shaders.forEach(s=>gl.deleteShader(s));if(program)gl.deleteProgram(program);}
+    signal?.removeEventListener('abort',cleanup);
+    if(!gl.isContextLost()){gl.bindBuffer(gl.ARRAY_BUFFER,null);gl.useProgram(null);buffers.forEach(b=>gl.deleteBuffer(b));shaders.forEach(s=>gl.deleteShader(s));if(program)gl.deleteProgram(program);}
     canvas.remove();
   };
   const lost=event=>{event.preventDefault();cleanup();onLost();};
   canvas.addEventListener('webglcontextlost',lost);
+  signal?.addEventListener('abort',cleanup,{once:true});
   try {
-    const response=await fetch(new URL('./moth-model.json',import.meta.url));
+    const response=await fetch(new URL('./moth-model.json',import.meta.url),{signal});
     if(!response.ok)throw new Error('Moth model unavailable');
     const meshes=buildMothMeshes(await response.json());
+    requireActive();
     if(disposed||gl.isContextLost())throw new Error('Moth context lost during setup');
     const compile=(type,source)=>{
       const shader=gl.createShader(type);if(!shader)throw new Error('Moth shader allocation failed');
@@ -65,15 +72,17 @@ export async function createMothRenderer(container, onLost) {
     const parts=meshes.map(mesh=>{
       const buffer=gl.createBuffer();if(!buffer)throw new Error('Moth buffer allocation failed');buffers.push(buffer);
       gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,mesh.data,gl.STATIC_DRAW);
+      if(gl.getError()!==gl.NO_ERROR)throw new Error('Moth buffer upload failed');
       return {name:mesh.name,pivot:mesh.pivot,buffer,count:mesh.data.length/9};
     });
     gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.clearColor(0,0,0,0);
     container.append(canvas);
-    let lastPose;
+    let lastPose,firstDraw=true;
     const render=(pose,_time,width)=>{
       if(disposed||gl.isContextLost())return false;
       const w=Math.max(1,Math.round(width*Math.min(devicePixelRatio||1,2))),h=Math.round(w*430/750);
-      if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}
+      const resized=canvas.width!==w||canvas.height!==h;
+      if(resized){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}
       const bank=pose.volumeBank??.12,pitch=pose.volumePitch??0;
       const key=[w,h,bank,pitch,pose.heading,pose.bodyPitch,pose.antennaAngle,...Object.values(names).map(name=>pose[name].compression)];
       if(lastPose&&key.every((value,i)=>value===lastPose[i]))return true;
@@ -100,6 +109,7 @@ export async function createMothRenderer(container, onLost) {
         attributes.forEach((location,i)=>{gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,3,gl.FLOAT,false,36,i*12);});
         gl.drawArrays(gl.TRIANGLES,0,part.count);
       }
+      if(firstDraw||resized){firstDraw=false;if(gl.getError()!==gl.NO_ERROR)return false;}
       canvas.hidden=false;
       return true;
     };

@@ -1,0 +1,326 @@
+1
+00:00:00,280 --> 00:00:05,840
+Moth and Gravel Field Note 5. A
+green light should mean
+
+2
+00:00:05,840 --> 00:00:10,800
+something. An AI narrated
+edition of the published note.
+
+3
+00:00:11,600 --> 00:00:17,200
+What exactly is all right? A
+green light is wonderfully
+
+4
+00:00:17,200 --> 00:00:23,840
+efficient. One glance, one small
+exhale. The thing is all right.
+
+5
+00:00:24,320 --> 00:00:29,600
+You can turn your attention
+elsewhere. But what exactly is
+
+6
+00:00:29,720 --> 00:00:35,680
+all right? As we work across our
+software pipeline, that small
+
+7
+00:00:35,680 --> 00:00:41,560
+question keeps returning. A
+process is running. A job has
+
+8
+00:00:41,560 --> 00:00:48,160
+ended. A checked plan has passed
+its expected case. Each deserves
+
+9
+00:00:48,160 --> 00:00:53,400
+a clear answer. Each asks
+something different. The color
+
+10
+00:00:53,400 --> 00:00:58,240
+can travel more easily than the
+meaning. Start with the
+
+11
+00:00:58,240 --> 00:01:03,680
+question. Gaiden is being
+developed as a calm workspace
+
+12
+00:01:03,680 --> 00:01:09,760
+companion. It brings the current
+issue, repositories, services,
+
+13
+00:01:09,800 --> 00:01:15,000
+and evidence into one place. Its
+contract makes an important
+
+14
+00:01:15,000 --> 00:01:20,400
+distinction. A healthy runtime
+is an observation about the
+
+15
+00:01:20,400 --> 00:01:26,600
+runtime. Feature acceptance
+needs its own evidence. That
+
+16
+00:01:26,600 --> 00:01:31,200
+distinction belongs in the
+interface. A person should be
+
+17
+00:01:31,200 --> 00:01:35,680
+able to see a service running
+without having to infer that the
+
+18
+00:01:35,680 --> 00:01:41,720
+intended work has been verified.
+The contract also keeps a failed
+
+19
+00:01:41,720 --> 00:01:47,360
+runtime probe unknown. An
+observation that did not succeed
+
+20
+00:01:47,400 --> 00:01:52,200
+cannot establish that an
+application stopped. This is a
+
+21
+00:01:52,200 --> 00:01:57,200
+small wording problem with a
+large consequence. The interface
+
+22
+00:01:57,240 --> 00:02:00,520
+has to leave room for what it
+could not learn.
+
+23
+00:02:02,040 --> 00:02:09,200
+O1, observation. Is it running?
+A runtime observation answers a
+
+24
+00:02:09,200 --> 00:02:15,600
+question about the service's
+present state. O2, expectation.
+
+25
+00:02:16,120 --> 00:02:21,840
+Did the case behave as expected?
+A case can pass by correctly
+
+26
+00:02:21,840 --> 00:02:26,840
+refusing unsafe step or
+preserving an unknown outcome.
+
+27
+00:02:27,560 --> 00:02:33,880
+O3, evidence. Is the result
+established? Delivery needs
+
+28
+00:02:33,880 --> 00:02:39,040
+evidence of its own. Missing
+observations remain visible.
+
+29
+00:02:39,800 --> 00:02:44,800
+Three questions to keep
+distinct. Explanatory drawings,
+
+30
+00:02:44,960 --> 00:02:50,040
+not screenshots, or proposed
+shared product interface. The
+
+31
+00:02:50,040 --> 00:02:54,360
+labels summarize the documented
+boundaries described in this
+
+32
+00:02:54,360 --> 00:03:00,280
+note. A passing case can
+preserve a question. A Yedo
+
+33
+00:03:00,320 --> 00:03:05,480
+checks agent plans and records
+their execution. Its local
+
+34
+00:03:05,480 --> 00:03:11,000
+integration report contains a
+useful wrinkle. Every acceptance
+
+35
+00:03:11,000 --> 00:03:15,720
+case in the final run passed
+while the delivery records still
+
+36
+00:03:15,720 --> 00:03:21,760
+included incomplete, unknown,
+and unresolved outcomes. Those
+
+37
+00:03:21,760 --> 00:03:27,240
+outcomes can be correct. A case
+designed to refuse an unsafe
+
+38
+00:03:27,240 --> 00:03:32,640
+next step passes when the
+refusal holds. A case designed
+
+39
+00:03:32,640 --> 00:03:36,240
+to preserve a lost
+acknowledgment passes when the
+
+40
+00:03:36,240 --> 00:03:41,640
+missing answer remains missing.
+The local integration report
+
+41
+00:03:41,680 --> 00:03:46,640
+records six verified delivery
+sub-probes separately from its
+
+42
+00:03:46,640 --> 00:03:52,240
+34 passing cases. The
+distinction is the story. It
+
+43
+00:03:52,240 --> 00:03:56,840
+lets a reviewer understand both
+the mechanism's behavior and the
+
+44
+00:03:56,840 --> 00:04:01,920
+work actually established. These
+are different boundary fixtures,
+
+45
+00:04:02,120 --> 00:04:05,960
+not a sample from which to
+calculate a general success
+
+46
+00:04:05,960 --> 00:04:11,120
+rate. A tidy summary must give
+the reader a way back to that
+
+47
+00:04:11,120 --> 00:04:16,880
+difference. The boundary can be
+modest. Parja, a build tool for
+
+48
+00:04:16,880 --> 00:04:21,800
+spare machines, gives green a
+narrow job. Every configured
+
+49
+00:04:21,800 --> 00:04:26,600
+step exited with zero. Its
+result file records step
+
+50
+00:04:26,600 --> 00:04:31,240
+outcomes and typed statuses
+distinguish a failed step, an
+
+51
+00:04:31,240 --> 00:04:36,280
+infrastructure failure,
+cancellation, and timeouts. That
+
+52
+00:04:36,280 --> 00:04:40,480
+is a useful boundary because it
+can be explained. The person can
+
+53
+00:04:40,480 --> 00:04:44,000
+inspect the recipe and decide
+whether its steps answer the
+
+54
+00:04:44,000 --> 00:04:48,040
+question they care about. The
+color does not have to carry an
+
+55
+00:04:48,040 --> 00:04:51,600
+unspoken claim about every
+possible property of the
+
+56
+00:04:51,600 --> 00:04:57,080
+software. It also matters where
+the verdict comes from. Parja
+
+57
+00:04:57,080 --> 00:05:00,680
+uses the recorded result and
+exit codes rather than
+
+58
+00:05:00,680 --> 00:05:04,400
+discovering success in an
+encouraging sentence buried in a
+
+59
+00:05:04,400 --> 00:05:11,120
+log. Give uncertainty a place of
+its own. So does a refusal that
+
+60
+00:05:11,120 --> 00:05:15,480
+prevented a mistaken action.
+Neither should require a person
+
+61
+00:05:15,480 --> 00:05:20,160
+to guess whether the tool has
+lost track of the work. Across
+
+62
+00:05:20,160 --> 00:05:24,280
+these projects, the question is
+becoming more specific. What can
+
+63
+00:05:24,280 --> 00:05:28,440
+this indicator honestly let
+someone stop worrying about?
+
+64
+00:05:28,920 --> 00:05:33,360
+That is the promise a green
+light should keep. You have been
+
+65
+00:05:33,360 --> 00:05:40,080
+listening to Moth and Gravel
+Field Notes. The written edition
+is at mothandgravel.com.
+

@@ -1,0 +1,338 @@
+[
+  {
+    "start": 0.28,
+    "end": 8.72,
+    "text": "Moth and Gravel Field Note 10\nAlmost the same An AI narrated",
+    "speakers": []
+  },
+  {
+    "start": 8.72,
+    "end": 13.76,
+    "text": "edition of the published note\nLay three translucent sheets",
+    "speakers": []
+  },
+  {
+    "start": 13.8,
+    "end": 18.04,
+    "text": "over a color Gather them\ntogether first, then lay the",
+    "speakers": []
+  },
+  {
+    "start": 18.04,
+    "end": 23.2,
+    "text": "group down You might expect the\nsame picture In Sky Stack",
+    "speakers": []
+  },
+  {
+    "start": 23.2,
+    "end": 27.28,
+    "text": "Builders Rendering Experiments,\nthat small change can leave a",
+    "speakers": []
+  },
+  {
+    "start": 27.28,
+    "end": 31.96,
+    "text": "small difference The order of\nthe work stays familiar The",
+    "speakers": []
+  },
+  {
+    "start": 31.96,
+    "end": 36.96,
+    "text": "place where it happens changes\nHow closely should two pictures",
+    "speakers": []
+  },
+  {
+    "start": 36.96,
+    "end": 42.2,
+    "text": "agree before we call them the\nsame A difference needs a place",
+    "speakers": []
+  },
+  {
+    "start": 42.32,
+    "end": 46.84,
+    "text": "to look The experimental\nrenderer gathers some painted",
+    "speakers": []
+  },
+  {
+    "start": 46.84,
+    "end": 51.8,
+    "text": "content into a transparent layer\nbefore placing it over the scene",
+    "speakers": []
+  },
+  {
+    "start": 52.68,
+    "end": 57.6,
+    "text": "Each draw rounds its color into\nthe available range The final",
+    "speakers": []
+  },
+  {
+    "start": 57.6,
+    "end": 62.48,
+    "text": "composition adds another place\nwhere that can happen A simple",
+    "speakers": []
+  },
+  {
+    "start": 62.48,
+    "end": 67.08,
+    "text": "test sets the island aside and\ndraws three overlapping",
+    "speakers": []
+  },
+  {
+    "start": 67.08,
+    "end": 71.44,
+    "text": "translucent rectangles On a\ngreen background, the two",
+    "speakers": []
+  },
+  {
+    "start": 71.44,
+    "end": 76.32,
+    "text": "approaches match exactly On\nanother background, thousands of",
+    "speakers": []
+  },
+  {
+    "start": 76.32,
+    "end": 80.68,
+    "text": "pixels differ by a single level\nin a color channel The",
+    "speakers": []
+  },
+  {
+    "start": 80.68,
+    "end": 86.6,
+    "text": "background matters A tidy answer\nfrom one convenient example can",
+    "speakers": []
+  },
+  {
+    "start": 86.6,
+    "end": 92.52,
+    "text": "leave another question untouched\nTwo ways to assemble a picture A",
+    "speakers": []
+  },
+  {
+    "start": 92.52,
+    "end": 97.48,
+    "text": "conceptual diagram of drawing\nand rounding Not a measured",
+    "speakers": []
+  },
+  {
+    "start": 97.48,
+    "end": 104.56,
+    "text": "pixel image Open the full-size\ndiagram Small is a description,",
+    "speakers": []
+  },
+  {
+    "start": 104.72,
+    "end": 109.2,
+    "text": "not a verdict A one-level\ndifference tells us something",
+    "speakers": []
+  },
+  {
+    "start": 109.2,
+    "end": 114.52,
+    "text": "about the machinery It leaves\nthe design question open Does",
+    "speakers": []
+  },
+  {
+    "start": 114.52,
+    "end": 118.52,
+    "text": "the difference appear along an\nedge Does it flicker as the",
+    "speakers": []
+  },
+  {
+    "start": 118.52,
+    "end": 123.28,
+    "text": "camera moves Does it change the\nseparation between a character",
+    "speakers": []
+  },
+  {
+    "start": 123.32,
+    "end": 128.36,
+    "text": "and the ground A count alone\ncannot say how the picture feels",
+    "speakers": []
+  },
+  {
+    "start": 128.52,
+    "end": 133.84,
+    "text": "to someone trying to use it The\nwider scene comparisons also",
+    "speakers": []
+  },
+  {
+    "start": 133.84,
+    "end": 138.8,
+    "text": "contain much larger differences\nThe small rounding example gives",
+    "speakers": []
+  },
+  {
+    "start": 138.8,
+    "end": 144.0,
+    "text": "us a useful explanation for one\nkind of disagreement The rest",
+    "speakers": []
+  },
+  {
+    "start": 144.04,
+    "end": 150.04,
+    "text": "still needs attention Look at\nthe whole island A close",
+    "speakers": []
+  },
+  {
+    "start": 150.04,
+    "end": 154.6,
+    "text": "inspection and a whole view\nserve different purposes One",
+    "speakers": []
+  },
+  {
+    "start": 154.6,
+    "end": 159.08,
+    "text": "helps find a cause The other\nlets us ask whether the place",
+    "speakers": []
+  },
+  {
+    "start": 159.08,
+    "end": 163.8,
+    "text": "still holds together Remove a\ntroublesome detail and a",
+    "speakers": []
+  },
+  {
+    "start": 163.8,
+    "end": 169.16,
+    "text": "comparison may become easier to\nunderstand Put it back before",
+    "speakers": []
+  },
+  {
+    "start": 169.16,
+    "end": 174.36,
+    "text": "judging the island The edge,\nshadow, or patch of ground may",
+    "speakers": []
+  },
+  {
+    "start": 174.36,
+    "end": 178.24,
+    "text": "be exactly what gives the player\na sense of where something",
+    "speakers": []
+  },
+  {
+    "start": 178.24,
+    "end": 183.12,
+    "text": "belongs The next study would\nshow the complete views at the",
+    "speakers": []
+  },
+  {
+    "start": 183.12,
+    "end": 187.88,
+    "text": "size and pace of play Let\nsomeone turn the camera and",
+    "speakers": []
+  },
+  {
+    "start": 187.88,
+    "end": 192.16,
+    "text": "choose a block Ask what caught\ntheir eye, what seemed to",
+    "speakers": []
+  },
+  {
+    "start": 192.16,
+    "end": 197.24,
+    "text": "change, and whether that change\nmade a choice harder Keep the",
+    "speakers": []
+  },
+  {
+    "start": 197.24,
+    "end": 202.52,
+    "text": "close comparison beside those\nobservations It gives a specific",
+    "speakers": []
+  },
+  {
+    "start": 202.52,
+    "end": 206.96,
+    "text": "disagreement somewhere to live\nwithout asking it to decide the",
+    "speakers": []
+  },
+  {
+    "start": 206.96,
+    "end": 212.96,
+    "text": "whole experience Leave room for\nanother look There is pleasure",
+    "speakers": []
+  },
+  {
+    "start": 212.96,
+    "end": 217.48,
+    "text": "in getting two pictures to agree\nThere is useful work in",
+    "speakers": []
+  },
+  {
+    "start": 217.48,
+    "end": 222.72,
+    "text": "understanding why they don't A\npixel can give the investigation",
+    "speakers": []
+  },
+  {
+    "start": 222.76,
+    "end": 227.0,
+    "text": "a starting point The person\nlooking at the island gives it a",
+    "speakers": []
+  },
+  {
+    "start": 227.0,
+    "end": 232.48,
+    "text": "reason to continue Study Scope\nSource Reading",
+    "speakers": []
+  },
+  {
+    "start": 234.76,
+    "end": 240.52,
+    "text": "This study reads Native\nRendering Controls and recorded",
+    "speakers": []
+  },
+  {
+    "start": 240.52,
+    "end": 247.24,
+    "text": "scene comparisons The rectangle\nexample found an exact match on",
+    "speakers": []
+  },
+  {
+    "start": 247.24,
+    "end": 252.12,
+    "text": "one background and a one-level\nchannel difference on another",
+    "speakers": []
+  },
+  {
+    "start": 252.88,
+    "end": 258.16,
+    "text": "The illustrations explain the\nquestion They are not rendering",
+    "speakers": []
+  },
+  {
+    "start": 258.16,
+    "end": 264.32,
+    "text": "captures No new benchmark or\nplayer study was run for this",
+    "speakers": []
+  },
+  {
+    "start": 264.32,
+    "end": 270.28,
+    "text": "note The comparison does not\nestablish that a small color",
+    "speakers": []
+  },
+  {
+    "start": 270.28,
+    "end": 275.72,
+    "text": "difference is always harmless or\nthat the complete renderer is",
+    "speakers": []
+  },
+  {
+    "start": 275.72,
+    "end": 280.96,
+    "text": "ready The proposed observation\nremains to be done",
+    "speakers": []
+  },
+  {
+    "start": 283.08,
+    "end": 287.88,
+    "text": "You have been listening to Moth\nand Gravel Field Notes The",
+    "speakers": []
+  },
+  {
+    "start": 287.88,
+    "end": 292.16,
+    "text": "written edition is at\nmothandgravel.com",
+    "speakers": []
+  }
+]

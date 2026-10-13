@@ -49,6 +49,8 @@ const snap = async (page, name) => {
 
 async function inspectFirstWork(page, label, theme, width) {
   const sheet = page.locator('#first-work');
+  // Bring deferred-rendered content into view before checking its rendered copy.
+  await sheet.scrollIntoViewIfNeeded();
   assert(await sheet.locator('h2').isVisible(), label + ': first engagement is missing');
   const geometry = await sheet.evaluate(el => {
     const targets = [el, ...el.querySelectorAll('h2,h3,.button')];
@@ -56,6 +58,7 @@ async function inspectFirstWork(page, label, theme, width) {
   });
   assert(geometry, label + ': first-engagement heading, material or action is clipped');
   assert(await sheet.locator('a.button[href="./questions/"]').count() === 1, label + ': first engagement does not reach the brief');
+  await sheet.locator('.first-work-foot').scrollIntoViewIfNeeded();
   assert(/Before any paid work/.test(await sheet.locator('.first-work-foot').innerText()), label + ': paid-work boundary missing');
   const example = sheet.locator('.first-work-example');
   await example.locator('summary').focus();

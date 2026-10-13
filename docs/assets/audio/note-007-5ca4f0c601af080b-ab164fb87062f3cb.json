@@ -1,0 +1,332 @@
+[
+  {
+    "start": 0.0,
+    "end": 7.36,
+    "text": "Moth and Gravel. Field Note 7\nFast signals, slow eyes.",
+    "speakers": []
+  },
+  {
+    "start": 8.68,
+    "end": 13.72,
+    "text": "An AI narrated edition of the\npublished note. A place to look.",
+    "speakers": []
+  },
+  {
+    "start": 14.84,
+    "end": 18.4,
+    "text": "A little machine can send\nnumbers faster than a person can",
+    "speakers": []
+  },
+  {
+    "start": 18.4,
+    "end": 22.52,
+    "text": "make sense of them. Put every\narrival on a screen and the",
+    "speakers": []
+  },
+  {
+    "start": 22.52,
+    "end": 27.08,
+    "text": "display begins to feel busy.\nKeep the latest value and",
+    "speakers": []
+  },
+  {
+    "start": 27.08,
+    "end": 30.48,
+    "text": "something else becomes possible.\nA place to look.",
+    "speakers": []
+  },
+  {
+    "start": 31.72,
+    "end": 35.8,
+    "text": "The Katronic Buggies Python\ntelemetry dashboard makes that",
+    "speakers": []
+  },
+  {
+    "start": 35.8,
+    "end": 40.48,
+    "text": "choice. A receiver replaces the\ncurrent readings when a packet",
+    "speakers": []
+  },
+  {
+    "start": 40.48,
+    "end": 46.2,
+    "text": "arrives. The Tkinter interface\nreads that shared state, draws",
+    "speakers": []
+  },
+  {
+    "start": 46.2,
+    "end": 50.72,
+    "text": "the gauges, and schedules its\nnext update 33 milliseconds",
+    "speakers": []
+  },
+  {
+    "start": 50.72,
+    "end": 56.24,
+    "text": "later. That interval describes\nthe requested pause after an",
+    "speakers": []
+  },
+  {
+    "start": 56.24,
+    "end": 60.72,
+    "text": "update. It does not establish a\nmeasure measured frame rate. The",
+    "speakers": []
+  },
+  {
+    "start": 60.72,
+    "end": 64.36,
+    "text": "work of drawing and whatever\nelse the window is doing takes",
+    "speakers": []
+  },
+  {
+    "start": 64.36,
+    "end": 65.24,
+    "text": "time, too.",
+    "speakers": []
+  },
+  {
+    "start": 67.72,
+    "end": 72.68,
+    "text": "A current value needs a\ncondition. A value can stay on",
+    "speakers": []
+  },
+  {
+    "start": 72.68,
+    "end": 76.48,
+    "text": "screen after the machine has\nstopped speaking. Without",
+    "speakers": []
+  },
+  {
+    "start": 76.48,
+    "end": 81.32,
+    "text": "another cue, the last answer can\nlook like the present one. The",
+    "speakers": []
+  },
+  {
+    "start": 81.32,
+    "end": 85.32,
+    "text": "dashboard has a small correction\nfor that impression. At a",
+    "speakers": []
+  },
+  {
+    "start": 85.32,
+    "end": 89.6,
+    "text": "refresh, it checks how long it\nhas been since the last packet.",
+    "speakers": []
+  },
+  {
+    "start": 90.04,
+    "end": 94.6,
+    "text": "Less than half a second gets\nconnected label. At half a",
+    "speakers": []
+  },
+  {
+    "start": 94.6,
+    "end": 99.8,
+    "text": "second or more, the label\nbecomes stale data. The gauges",
+    "speakers": []
+  },
+  {
+    "start": 99.8,
+    "end": 103.44,
+    "text": "still draw from the latest\npacket. The number can remain",
+    "speakers": []
+  },
+  {
+    "start": 103.44,
+    "end": 107.4,
+    "text": "useful, but its relationship to\nnow has changed.",
+    "speakers": []
+  },
+  {
+    "start": 109.44,
+    "end": 115.8,
+    "text": "O1 at a refresh. The packet is\nstill recent. One fictional",
+    "speakers": []
+  },
+  {
+    "start": 115.8,
+    "end": 121.12,
+    "text": "refresh 0.2 seconds after\narrival, the source's label is",
+    "speakers": []
+  },
+  {
+    "start": 121.32,
+    "end": 127.92,
+    "text": "connected. O2 at a later\nrefresh. The same packet has",
+    "speakers": []
+  },
+  {
+    "start": 127.92,
+    "end": 134.36,
+    "text": "aged. No new packet. A fictional\nrefresh at 0.6 seconds, the",
+    "speakers": []
+  },
+  {
+    "start": 134.36,
+    "end": 137.2,
+    "text": "source's label is stale data.",
+    "speakers": []
+  },
+  {
+    "start": 138.68,
+    "end": 142.92,
+    "text": "One arrival, two reading\nmoments. The first marker is",
+    "speakers": []
+  },
+  {
+    "start": 142.92,
+    "end": 148.08,
+    "text": "packet arrival. The dashed line\nmarks the source's 0.5 second",
+    "speakers": []
+  },
+  {
+    "start": 148.08,
+    "end": 152.6,
+    "text": "boundary. These are schematic\nexamples, not a measured timing",
+    "speakers": []
+  },
+  {
+    "start": 152.6,
+    "end": 158.0,
+    "text": "trace or dashboard screenshot.\nThe label changes when the next",
+    "speakers": []
+  },
+  {
+    "start": 158.0,
+    "end": 162.48,
+    "text": "GUI update checks the age. That\ndistinction is the design",
+    "speakers": []
+  },
+  {
+    "start": 162.48,
+    "end": 167.12,
+    "text": "question. How long can a reading\nsit still before stillness",
+    "speakers": []
+  },
+  {
+    "start": 167.12,
+    "end": 171.72,
+    "text": "begins to suggest confidence? A\nrhythm is a choice about",
+    "speakers": []
+  },
+  {
+    "start": 171.72,
+    "end": 176.72,
+    "text": "attention. Latest packet state\ngives someone a place to glance",
+    "speakers": []
+  },
+  {
+    "start": 176.72,
+    "end": 180.76,
+    "text": "for the most recent readings.\nThose gauges do not preserve",
+    "speakers": []
+  },
+  {
+    "start": 180.8,
+    "end": 185.28,
+    "text": "every intermediate value. The\ndashboard also keeps packet",
+    "speakers": []
+  },
+  {
+    "start": 185.28,
+    "end": 189.68,
+    "text": "counters and a recent arrival\nrate view, a different kind of",
+    "speakers": []
+  },
+  {
+    "start": 189.68,
+    "end": 195.24,
+    "text": "evidence about the stream. A\nquiet display and a detailed",
+    "speakers": []
+  },
+  {
+    "start": 195.24,
+    "end": 200.04,
+    "text": "record serve different kinds of\nattention. A motor value, a",
+    "speakers": []
+  },
+  {
+    "start": 200.04,
+    "end": 204.12,
+    "text": "battery reading, and a brief\nloss of contact need different",
+    "speakers": []
+  },
+  {
+    "start": 204.12,
+    "end": 208.24,
+    "text": "amounts of concern. More\nfrequent repainting cannot",
+    "speakers": []
+  },
+  {
+    "start": 208.24,
+    "end": 212.52,
+    "text": "decide which difference matters.\nThe interface has to give the",
+    "speakers": []
+  },
+  {
+    "start": 212.52,
+    "end": 216.48,
+    "text": "person a way to notice an\nimportant change without making",
+    "speakers": []
+  },
+  {
+    "start": 216.48,
+    "end": 219.16,
+    "text": "every arrival demand a turn of\nthe head.",
+    "speakers": []
+  },
+  {
+    "start": 221.04,
+    "end": 225.72,
+    "text": "Let quiet mean something. The\nnext study would compare the",
+    "speakers": []
+  },
+  {
+    "start": 225.72,
+    "end": 229.92,
+    "text": "same readings under steady\ndelivery, a short gap, and an",
+    "speakers": []
+  },
+  {
+    "start": 229.92,
+    "end": 234.32,
+    "text": "extended silence. Ask what the\nperson believes the robot is",
+    "speakers": []
+  },
+  {
+    "start": 234.32,
+    "end": 239.64,
+    "text": "doing. Ask when they notice the\nreading has become old. Keep the",
+    "speakers": []
+  },
+  {
+    "start": 239.64,
+    "end": 243.96,
+    "text": "stale condition visible while\nthey decide. There is a useful",
+    "speakers": []
+  },
+  {
+    "start": 243.96,
+    "end": 249.08,
+    "text": "kind of calm here. A display\nthat lets someone look away,",
+    "speakers": []
+  },
+  {
+    "start": 249.4,
+    "end": 255.56,
+    "text": "then return with a clear idea of\nhow much it still knows. You",
+    "speakers": []
+  },
+  {
+    "start": 255.56,
+    "end": 260.2,
+    "text": "have been listening to Moth and\nGravel Field Notes. The written",
+    "speakers": []
+  },
+  {
+    "start": 260.2,
+    "end": 263.52,
+    "text": "edition is at mothandgravel.com.",
+    "speakers": []
+  }
+]

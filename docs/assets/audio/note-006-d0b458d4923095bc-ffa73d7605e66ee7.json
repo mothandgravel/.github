@@ -1,0 +1,482 @@
+[
+  {
+    "start": 0.0,
+    "end": 7.72,
+    "text": "Moth and Gravel. Field Note 6. A\nmap should leave room for doubt.",
+    "speakers": []
+  },
+  {
+    "start": 8.64,
+    "end": 11.84,
+    "text": "An AI narrated edition of the\npublished note.",
+    "speakers": []
+  },
+  {
+    "start": 12.88,
+    "end": 18.28,
+    "text": "When a few points become a room,\ngive a little robot a way to",
+    "speakers": []
+  },
+  {
+    "start": 18.28,
+    "end": 22.52,
+    "text": "sense what is nearby, then put\nits readings on a screen.",
+    "speakers": []
+  },
+  {
+    "start": 23.68,
+    "end": 28.48,
+    "text": "A few colored points become a\nshape. Soon, it is tempting to",
+    "speakers": []
+  },
+  {
+    "start": 28.48,
+    "end": 33.28,
+    "text": "see a room. The display has made\na powerful suggestion from a",
+    "speakers": []
+  },
+  {
+    "start": 33.28,
+    "end": 37.56,
+    "text": "modest collection of readings.\nThat is the interesting part of",
+    "speakers": []
+  },
+  {
+    "start": 37.56,
+    "end": 42.28,
+    "text": "our Kitronik buggy experiment.\nThe machine has an ultrasonic",
+    "speakers": []
+  },
+  {
+    "start": 42.28,
+    "end": 47.12,
+    "text": "sensor, a pair of motors, and a\nway to report what it has found.",
+    "speakers": []
+  },
+  {
+    "start": 47.72,
+    "end": 52.08,
+    "text": "Python tools give those reports\na form someone can look at.",
+    "speakers": []
+  },
+  {
+    "start": 52.72,
+    "end": 57.04,
+    "text": "Somewhere between the sensor and\nthe picture, a design question",
+    "speakers": []
+  },
+  {
+    "start": 57.08,
+    "end": 61.44,
+    "text": "appears. How much certainty\nshould a map be allowed to",
+    "speakers": []
+  },
+  {
+    "start": 61.44,
+    "end": 68.36,
+    "text": "borrow from its own appearance?\nLeave the unseen space open. The",
+    "speakers": []
+  },
+  {
+    "start": 68.36,
+    "end": 73.44,
+    "text": "current firmware starts its grid\nat a neutral prior. A cell has",
+    "speakers": []
+  },
+  {
+    "start": 73.44,
+    "end": 77.64,
+    "text": "not become an empty piece of\nfloor simply because nothing has",
+    "speakers": []
+  },
+  {
+    "start": 77.64,
+    "end": 82.6,
+    "text": "been drawn there. As scans\narrive, the map accumulates",
+    "speakers": []
+  },
+  {
+    "start": 82.6,
+    "end": 88.08,
+    "text": "evidence. Traversed parts of a\nsensor beam receive free space",
+    "speakers": []
+  },
+  {
+    "start": 88.12,
+    "end": 93.52,
+    "text": "updates. It's end point receives\noccupied space updates.",
+    "speakers": []
+  },
+  {
+    "start": 94.44,
+    "end": 98.36,
+    "text": "Confidence affects the\ncontribution. Overlapping",
+    "speakers": []
+  },
+  {
+    "start": 98.36,
+    "end": 102.68,
+    "text": "observations can strengthen or\nrevise the picture. The",
+    "speakers": []
+  },
+  {
+    "start": 102.68,
+    "end": 106.4,
+    "text": "distinction matters to the\nperson reading it. Free,",
+    "speakers": []
+  },
+  {
+    "start": 106.64,
+    "end": 112.4,
+    "text": "occupied, and undecided are\nthree different answers. A quiet",
+    "speakers": []
+  },
+  {
+    "start": 112.4,
+    "end": 116.44,
+    "text": "neutral region leaves the\nquestion visible. Filling",
+    "speakers": []
+  },
+  {
+    "start": 116.44,
+    "end": 120.36,
+    "text": "everything with reassuring space\nwould make the picture easier to",
+    "speakers": []
+  },
+  {
+    "start": 120.36,
+    "end": 127.68,
+    "text": "like and harder to trust. O1,\nfree. Evidence of free space.",
+    "speakers": []
+  },
+  {
+    "start": 128.44,
+    "end": 133.28,
+    "text": "The stored value is below 80.\nObservations have moved it",
+    "speakers": []
+  },
+  {
+    "start": 133.28,
+    "end": 141.52,
+    "text": "toward free. O2, unclassified. A\nquestion remains. Values from 80",
+    "speakers": []
+  },
+  {
+    "start": 141.52,
+    "end": 148.36,
+    "text": "through 170 stay unclassified.\nThe starting value is 128.",
+    "speakers": []
+  },
+  {
+    "start": 149.4,
+    "end": 155.72,
+    "text": "O3, occupied. Evidence of an\nobstacle. The stored value is",
+    "speakers": []
+  },
+  {
+    "start": 155.72,
+    "end": 161.24,
+    "text": "above 170. Observations have\nmoved it toward occupied.",
+    "speakers": []
+  },
+  {
+    "start": 162.28,
+    "end": 166.84,
+    "text": "Three classifications in the\ncurrent firmware. Explanatory",
+    "speakers": []
+  },
+  {
+    "start": 166.84,
+    "end": 170.8,
+    "text": "symbols and exact stored value\nthresholds, rather than a",
+    "speakers": []
+  },
+  {
+    "start": 170.8,
+    "end": 175.56,
+    "text": "product screen or measured\nprobabilities. A classification",
+    "speakers": []
+  },
+  {
+    "start": 175.56,
+    "end": 180.28,
+    "text": "describes accumulated evidence.\nIt is not a guarantee about the",
+    "speakers": []
+  },
+  {
+    "start": 180.28,
+    "end": 185.12,
+    "text": "floor. In the Python scan\nviewer, the neutral region",
+    "speakers": []
+  },
+  {
+    "start": 185.16,
+    "end": 189.64,
+    "text": "occupies most of the saved\nexample. In the camera overlay,",
+    "speakers": []
+  },
+  {
+    "start": 189.84,
+    "end": 194.2,
+    "text": "unclassified cells remain\nunpainted, while free and",
+    "speakers": []
+  },
+  {
+    "start": 194.2,
+    "end": 199.28,
+    "text": "occupied classifications add\ncolor. Those are two ways to let",
+    "speakers": []
+  },
+  {
+    "start": 199.28,
+    "end": 204.92,
+    "text": "uncertainty survive the drawing.\nThe drawing has a point of view.",
+    "speakers": []
+  },
+  {
+    "start": 205.92,
+    "end": 210.56,
+    "text": "A polar plot shows readings\naround the sensor. A top-down",
+    "speakers": []
+  },
+  {
+    "start": 210.56,
+    "end": 216.48,
+    "text": "view turns them into a shape. An\noccupancy grid shows accumulated",
+    "speakers": []
+  },
+  {
+    "start": 216.48,
+    "end": 221.8,
+    "text": "belief about space. The distance\nprofile makes individual",
+    "speakers": []
+  },
+  {
+    "start": 221.8,
+    "end": 227.12,
+    "text": "readings easier to compare. The\nsaved scan visualizer puts these",
+    "speakers": []
+  },
+  {
+    "start": 227.12,
+    "end": 232.16,
+    "text": "views beside each other. They\nshare an input, but each makes",
+    "speakers": []
+  },
+  {
+    "start": 232.16,
+    "end": 237.2,
+    "text": "something easier to notice. A\ngap can be obvious in one and",
+    "speakers": []
+  },
+  {
+    "start": 237.2,
+    "end": 241.8,
+    "text": "disappear into the overall\nimpression of another. One saved",
+    "speakers": []
+  },
+  {
+    "start": 241.8,
+    "end": 247.2,
+    "text": "sample. Four ways to look. The\nrepository's Python renderer,",
+    "speakers": []
+  },
+  {
+    "start": 247.32,
+    "end": 252.44,
+    "text": "called offline, with its saved\n12-point sample. This older",
+    "speakers": []
+  },
+  {
+    "start": 252.44,
+    "end": 258.56,
+    "text": "sample contains a 32 x 32 grid.\nCurrent firmware defines 64 x",
+    "speakers": []
+  },
+  {
+    "start": 258.56,
+    "end": 263.16,
+    "text": "64. The sample's physical\ncapture origin is not",
+    "speakers": []
+  },
+  {
+    "start": 263.16,
+    "end": 266.4,
+    "text": "established. Open the full-size\nfigure.",
+    "speakers": []
+  },
+  {
+    "start": 271.68,
+    "end": 276.48,
+    "text": "That is useful. A companion view\ncan question the attractive one.",
+    "speakers": []
+  },
+  {
+    "start": 277.12,
+    "end": 281.2,
+    "text": "It also gives the display a\nresponsibility. The reader",
+    "speakers": []
+  },
+  {
+    "start": 281.2,
+    "end": 284.96,
+    "text": "should be able to understand\nwhat the marks represent, which",
+    "speakers": []
+  },
+  {
+    "start": 284.96,
+    "end": 288.36,
+    "text": "frame they belong to, and\nwhether they came from a current",
+    "speakers": []
+  },
+  {
+    "start": 288.36,
+    "end": 294.2,
+    "text": "observation or a saved example.\nThe robot moves, and the room",
+    "speakers": []
+  },
+  {
+    "start": 294.2,
+    "end": 295.36,
+    "text": "should stay put.",
+    "speakers": []
+  },
+  {
+    "start": 300.16,
+    "end": 304.4,
+    "text": "The current grid belongs to a\nworld frame with an origin at",
+    "speakers": []
+  },
+  {
+    "start": 304.4,
+    "end": 309.64,
+    "text": "the start. The robot's estimated\nposition changes inside it.",
+    "speakers": []
+  },
+  {
+    "start": 310.44,
+    "end": 314.52,
+    "text": "Keeping the map in that frame\nlets observations from different",
+    "speakers": []
+  },
+  {
+    "start": 314.52,
+    "end": 319.4,
+    "text": "positions accumulate into one\nplace. But position is part of",
+    "speakers": []
+  },
+  {
+    "start": 319.4,
+    "end": 323.6,
+    "text": "the estimate too. This\nexperiment uses motor time",
+    "speakers": []
+  },
+  {
+    "start": 323.6,
+    "end": 327.84,
+    "text": "kinematics with selective\nheading correction. A camera",
+    "speakers": []
+  },
+  {
+    "start": 327.84,
+    "end": 330.96,
+    "text": "marker provides an another\nestimate of where the robot",
+    "speakers": []
+  },
+  {
+    "start": 330.96,
+    "end": 336.04,
+    "text": "might be, connected to the map\nthrough calibration. The overlay",
+    "speakers": []
+  },
+  {
+    "start": 336.04,
+    "end": 339.08,
+    "text": "can draw the two trails\ntogether, making their",
+    "speakers": []
+  },
+  {
+    "start": 339.08,
+    "end": 343.44,
+    "text": "disagreement available to\ninspect. The interesting design",
+    "speakers": []
+  },
+  {
+    "start": 343.44,
+    "end": 347.32,
+    "text": "opportunity is a display that\ngives someone a way to notice",
+    "speakers": []
+  },
+  {
+    "start": 347.44,
+    "end": 351.92,
+    "text": "when the alignment deserves\nanother look. Let the picture",
+    "speakers": []
+  },
+  {
+    "start": 351.96,
+    "end": 356.68,
+    "text": "stay provisional. There is\npleasure in a little machine",
+    "speakers": []
+  },
+  {
+    "start": 356.68,
+    "end": 361.8,
+    "text": "slowly giving a space a shape.\nColors, rays, and a moving",
+    "speakers": []
+  },
+  {
+    "start": 361.8,
+    "end": 365.28,
+    "text": "marker can make an otherwise\ndifficult stream of numbers",
+    "speakers": []
+  },
+  {
+    "start": 365.32,
+    "end": 369.64,
+    "text": "approachable. The display earns\nthat pleasure when its limits",
+    "speakers": []
+  },
+  {
+    "start": 369.64,
+    "end": 373.6,
+    "text": "remain readable, where it has\nevidence, where it has an",
+    "speakers": []
+  },
+  {
+    "start": 373.6,
+    "end": 378.24,
+    "text": "estimate, and where it still has\na question. That is what we",
+    "speakers": []
+  },
+  {
+    "start": 378.24,
+    "end": 382.76,
+    "text": "would test next. Ask someone to\npoint out the parts the robot",
+    "speakers": []
+  },
+  {
+    "start": 382.76,
+    "end": 387.68,
+    "text": "has not established. Ask which\nposition they believe and why.",
+    "speakers": []
+  },
+  {
+    "start": 388.4,
+    "end": 393.48,
+    "text": "Show an old reading beside a new\none. Watch what they infer from",
+    "speakers": []
+  },
+  {
+    "start": 393.48,
+    "end": 398.84,
+    "text": "a blank area. The map does not\nhave to settle every doubt. It",
+    "speakers": []
+  },
+  {
+    "start": 398.84,
+    "end": 401.56,
+    "text": "has to leave room for the useful\nones.",
+    "speakers": []
+  }
+]

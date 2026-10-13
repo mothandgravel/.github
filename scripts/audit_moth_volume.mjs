@@ -76,10 +76,14 @@ try {
   assert(await page.locator('.moth-traveller svg').isVisible(),'Context loss cannot replay fallback');
   await page.locator('[data-moth-finish]').click();await page.close();
 
-  for(const fault of ['moth-webgl.mjs','moth-mesh.mjs','moth-model.json','bad-model','no-webgl','shader']){
+  for(const fault of ['moth-webgl.mjs','moth-mesh.mjs','moth-model.json','bad-model','bad-pivot','no-webgl','shader','upload','framebuffer']){
     const fallback=await browser.newPage({viewport:{width:390,height:900}});
     const errors=[];fallback.on('pageerror',e=>errors.push(e.message));
     if(fault==='bad-model')await fallback.route('**/moth-model.json',r=>r.fulfill({body:'{}',contentType:'application/json'}));
+    else if(fault==='bad-pivot')await fallback.route('**/moth-model.json',async r=>{
+      const response=await r.fetch(),model=await response.json();model.wings[0].pivot[0]='broken';
+      await r.fulfill({body:JSON.stringify(model),contentType:'application/json'});
+    });
     else if(fault==='no-webgl')await fallback.addInitScript(()=>{
       const original=HTMLCanvasElement.prototype.getContext;
       HTMLCanvasElement.prototype.getContext=function(type,...args){return type==='webgl'?null:original.call(this,type,...args);};
@@ -88,8 +92,16 @@ try {
       const original=WebGLRenderingContext.prototype.getShaderParameter;
       WebGLRenderingContext.prototype.getShaderParameter=function(shader,p){return p===this.COMPILE_STATUS?false:original.call(this,shader,p);};
     });
+    else if(fault==='upload'||fault==='framebuffer')await fallback.addInitScript(fault=>{
+      const getError=WebGLRenderingContext.prototype.getError;
+      WebGLRenderingContext.prototype.getError=function(){const error=window.injectedGPUError;if(error){window.injectedGPUError=0;return error;}return getError.call(this);};
+      if(fault==='upload')WebGLRenderingContext.prototype.bufferData=function(){window.injectedGPUError=this.OUT_OF_MEMORY;};
+      else {const draw=WebGLRenderingContext.prototype.drawArrays;WebGLRenderingContext.prototype.drawArrays=function(...args){window.injectedGPUError=this.INVALID_FRAMEBUFFER_OPERATION;return draw.apply(this,args);};}
+    },fault);
     else await fallback.route('**/'+fault,r=>r.abort());
-    await fallback.goto(origin,{waitUntil:'networkidle'});await ready(fallback);await state(fallback,'playing');
+    await fallback.goto(origin,{waitUntil:'networkidle'});await ready(fallback);
+    if(fault==='framebuffer'){await state(fallback,'idle');await fallback.locator('[data-moth-play]').click();}
+    await state(fallback,'playing');
     assert(await fallback.locator('#moth-interlude').getAttribute('data-moth-renderer')==='svg',fault+': failed enhancement strands scene');
     assert(await fallback.locator('.moth-traveller svg').isVisible(),fault+': source flight not visible');
     assert(await fallback.locator('.moth-volume').count()===0,fault+': leaked partial GPU surface');
@@ -101,6 +113,54 @@ try {
   reduced.on('request',r=>requests.push(r.url()));await reduced.goto(origin,{waitUntil:'networkidle'});await ready(reduced);
   assert(!requests.some(u=>/moth-(webgl|mesh|model)/.test(u)),'Reduced entry fetched 3D resources');
   assert(await reduced.locator('.moth-volume').count()===0,'Reduced entry allocated GPU surface');await reduced.close();
+
+  for(const resource of ['moth-webgl.mjs','moth-model.json']){
+    const delayed=await browser.newPage({viewport:{width:390,height:900}}),errors=[];
+    delayed.on('pageerror',e=>errors.push(e.message));let release;
+    const hold=new Promise(r=>release=r);
+    await delayed.route('**/'+resource,async r=>{await hold;await r.continue().catch(()=>{});});
+    await delayed.goto(origin,{waitUntil:'networkidle'});await ready(delayed);await state(delayed,'playing');
+    assert(await delayed.locator('#moth-interlude').getAttribute('data-moth-renderer')==='svg',resource+': stalled setup blocks fallback');
+    await delayed.locator('[data-moth-finish]').click();release();await delayed.waitForTimeout(350);
+    assert(await delayed.locator('.moth-volume').count()===0,resource+': late setup leaks a GPU surface');
+    assert(await delayed.locator('#moth-interlude').getAttribute('data-moth-state')==='idle',resource+': late setup restarts flight');
+    assert(errors.length===0,resource+': late promise rejection');await delayed.close();
+  }
+  for(const event of ['blur','pagehide','Escape','reduced']){
+    const cancelled=await browser.newPage({viewport:{width:390,height:900}});let release,requested;
+    const hold=new Promise(r=>release=r),hit=new Promise(r=>requested=r);
+    await cancelled.route('**/moth-model.json',async r=>{requested();await hold;await r.continue().catch(()=>{});});
+    await cancelled.goto(origin,{waitUntil:'networkidle'});await cancelled.locator('#moth-interlude').scrollIntoViewIfNeeded();await hit;
+    if(event==='Escape')await cancelled.keyboard.press('Escape');
+    else if(event==='reduced')await cancelled.emulateMedia({reducedMotion:'reduce'});
+    else await cancelled.evaluate(name=>dispatchEvent(new Event(name)),event);
+    await cancelled.locator('[data-moth-ready]').waitFor();await cancelled.waitForTimeout(100);
+    assert(await cancelled.locator('#moth-interlude').getAttribute('data-moth-state')==='idle',event+': interrupted setup autoplays late');
+    assert(await cancelled.locator('.moth-volume').count()===0,event+': cancelled setup allocated a canvas');
+    release();await cancelled.waitForTimeout(100);
+    assert(await cancelled.locator('#moth-interlude').getAttribute('data-moth-state')==='idle',event+': late response restarts flight');
+    if(event==='reduced')await cancelled.emulateMedia({reducedMotion:'no-preference'});
+    await cancelled.locator('[data-moth-play]').click();await state(cancelled,'playing');
+    assert(await cancelled.locator('.moth-traveller svg').isVisible(),event+': explicit fallback replay unavailable');
+    await cancelled.close();
+  }
+  const early=await browser.newPage({viewport:{width:390,height:900}});let releaseRig,rigRequested;
+  const holdRig=new Promise(r=>releaseRig=r),rigHit=new Promise(r=>rigRequested=r);
+  await early.route('**/moth-rig.svg',async r=>{rigRequested();await holdRig;await r.continue().catch(()=>{});});
+  await early.goto(origin,{waitUntil:'networkidle'});await early.locator('#moth-interlude').scrollIntoViewIfNeeded();await rigHit;
+  await early.evaluate(()=>dispatchEvent(new Event('blur')));releaseRig();
+  await early.locator('[data-moth-ready]').waitFor();await early.waitForTimeout(100);
+  assert(await early.locator('#moth-interlude').getAttribute('data-moth-state')==='idle','Core rig delay loses early interruption');
+  await early.locator('[data-moth-play]').click();await state(early,'playing');
+  assert(await early.locator('[data-moth-finish]').isEnabled(),'Early interruption loses explicit replay');await early.close();
+  for(const dpr of [1.25,2,3]){
+    const scaled=await browser.newPage({viewport:{width:390,height:900},deviceScaleFactor:dpr});
+    await scaled.goto(origin,{waitUntil:'networkidle'});await ready(scaled);await phase(scaled,'travel');await scaled.locator('[data-moth-pause]').click();
+    const sample=await pixels(scaled);
+    assert(sample.occupied>100&&sample.error===0,'DPR '+dpr+': missing GPU pixels');
+    assert(sample.width<=216&&sample.height<=124,'DPR '+dpr+': GPU buffer exceeds cap');
+    await scaled.close();
+  }
 
   const proof=await browser.newPage({viewport:{width:800,height:600}});await proof.goto(origin,{waitUntil:'networkidle'});
   const envelope=await proof.evaluate(async()=>{

@@ -115,8 +115,29 @@ function antennae(source) {
 }
 
 export function buildMothMeshes(source) {
-  if(source.version!==1||source.wings?.length!==4||source.antennae?.length!==2)throw new TypeError('Invalid studio moth model');
-  return [...source.wings.map(wing=>({name:wing.name,pivot:sourcePoint(wing.pivot,0),data:wing.outline?paper(wing):gravel(wing)})),
+  validateModel(source);
+  const meshes=[...source.wings.map(wing=>({name:wing.name,pivot:sourcePoint(wing.pivot,0),data:wing.outline?paper(wing):gravel(wing)})),
     {name:'moth-body',pivot:[5,50,18],data:body(source)},
     {name:'moth-antennae',pivot:[5,131,25],data:antennae(source)}];
+  if(meshes.some(mesh=>!mesh.data.length||mesh.data.some(value=>!Number.isFinite(value)))
+    ||meshes.reduce((n,mesh)=>n+mesh.data.length/27,0)>5000)throw new TypeError('Invalid studio moth model');
+  return meshes;
+}
+
+function validateModel(source) {
+  const fail=()=>{throw new TypeError('Invalid studio moth model');};
+  const point=p=>Array.isArray(p)&&p.length===2&&p.every(n=>typeof n==='number'&&Number.isFinite(n))&&p[0]>=120&&p[0]<=870&&p[1]>=305&&p[1]<=735;
+  const line=(p,min=2,max=256)=>Array.isArray(p)&&p.length>=min&&p.length<=max&&p.every(point);
+  const polygon=p=>line(p,3)&&Math.abs(p.reduce((a,v,i)=>a+v[0]*p[(i+1)%p.length][1]-p[(i+1)%p.length][0]*v[1],0))>1;
+  if(!source||source.version!==1||source.source!=='moth-rig.svg'||!Array.isArray(source.viewBox)
+    ||source.viewBox.join(',')!=='120,305,750,430'||!/^[a-f0-9]{64}$/.test(source.sourceSha256||'')
+    ||!Array.isArray(source.wings)||source.wings.length!==4||!Array.isArray(source.antennae)||source.antennae.length!==2)fail();
+  const expected=new Set(['wing-soft-hind','wing-stone-hind','wing-soft-fore','wing-stone-fore']);
+  for(const wing of source.wings){
+    if(!wing||!expected.delete(wing.name)||!point(wing.pivot))fail();
+    if(wing.name.includes('soft')){
+      if(!polygon(wing.outline)||!Array.isArray(wing.veins)||wing.veins.length>10||!wing.veins.every(p=>line(p)))fail();
+    }else if(!Array.isArray(wing.stones)||!wing.stones.length||wing.stones.length>32||!wing.stones.every(p=>line(p,3,16)&&polygon(p)))fail();
+  }
+  if(!source.antennae.every(p=>line(p)))fail();
 }

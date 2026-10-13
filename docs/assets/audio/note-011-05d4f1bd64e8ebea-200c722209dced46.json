@@ -1,0 +1,362 @@
+[
+  {
+    "start": 0.12,
+    "end": 7.08,
+    "text": "Moth and Gravel. Field Note 11.\nA model needs a place. An AI",
+    "speakers": []
+  },
+  {
+    "start": 7.08,
+    "end": 11.8,
+    "text": "narrated edition of the\npublished note. A small shrine",
+    "speakers": []
+  },
+  {
+    "start": 11.8,
+    "end": 15.64,
+    "text": "looks promising on the\nworkbench. It has a shape, a",
+    "speakers": []
+  },
+  {
+    "start": 15.64,
+    "end": 19.84,
+    "text": "palette, and a base. Turn it\naround, and there is something",
+    "speakers": []
+  },
+  {
+    "start": 19.84,
+    "end": 23.84,
+    "text": "pleasing to look at from the\nother side too. Now give it a",
+    "speakers": []
+  },
+  {
+    "start": 23.84,
+    "end": 28.76,
+    "text": "place on the island. Where does\nit meet the ground? What can",
+    "speakers": []
+  },
+  {
+    "start": 28.76,
+    "end": 33.24,
+    "text": "stand in front of it? When\nsomeone points at its roof, what",
+    "speakers": []
+  },
+  {
+    "start": 33.24,
+    "end": 38.24,
+    "text": "do they select? The object has\nacquired neighbors. That changes",
+    "speakers": []
+  },
+  {
+    "start": 38.24,
+    "end": 43.56,
+    "text": "the questions. Keep a way back\nto the material. Sky Stack",
+    "speakers": []
+  },
+  {
+    "start": 43.56,
+    "end": 47.36,
+    "text": "Builders Blender experiments\nkeep the editable model beside",
+    "speakers": []
+  },
+  {
+    "start": 47.36,
+    "end": 51.96,
+    "text": "its exported geometry. Checks\nfollow its size, origin,",
+    "speakers": []
+  },
+  {
+    "start": 52.16,
+    "end": 56.92,
+    "text": "surfaces and materials through\nthat journey. Those details have",
+    "speakers": []
+  },
+  {
+    "start": 56.92,
+    "end": 61.32,
+    "text": "a practical purpose. An object\nshould arrive at the size we",
+    "speakers": []
+  },
+  {
+    "start": 61.32,
+    "end": 65.84,
+    "text": "meant, with its base where we\nexpect it. If it doesn't, there",
+    "speakers": []
+  },
+  {
+    "start": 65.84,
+    "end": 69.32,
+    "text": "should be a way back to the\nmaterial that made it. The",
+    "speakers": []
+  },
+  {
+    "start": 69.32,
+    "end": 73.6,
+    "text": "generation script keeps existing\nrevisions rather than silently",
+    "speakers": []
+  },
+  {
+    "start": 73.6,
+    "end": 77.52,
+    "text": "replacing them. An earlier\nattempt remains available to",
+    "speakers": []
+  },
+  {
+    "start": 77.52,
+    "end": 83.08,
+    "text": "return to, compare, or try\ndifferently. Looking becomes",
+    "speakers": []
+  },
+  {
+    "start": 83.08,
+    "end": 88.76,
+    "text": "doing. A separate native pilot\ndraws real mesh geometry and",
+    "speakers": []
+  },
+  {
+    "start": 88.76,
+    "end": 94.08,
+    "text": "gives it a small set of\ncontrols. Orbit, zoom, recenter,",
+    "speakers": []
+  },
+  {
+    "start": 94.28,
+    "end": 98.6,
+    "text": "and select. A click and the\nbeginning of a drag can look",
+    "speakers": []
+  },
+  {
+    "start": 98.6,
+    "end": 103.68,
+    "text": "much alike. The pilot gives them\na boundary. A small click",
+    "speakers": []
+  },
+  {
+    "start": 103.68,
+    "end": 109.12,
+    "text": "selects. Moving far enough\nbegins an orbit. Losing focus or",
+    "speakers": []
+  },
+  {
+    "start": 109.12,
+    "end": 113.28,
+    "text": "mouse capture clears the\ngesture. That is a modest detail",
+    "speakers": []
+  },
+  {
+    "start": 113.28,
+    "end": 117.2,
+    "text": "with a large place in the\nexperience. Someone came to",
+    "speakers": []
+  },
+  {
+    "start": 117.2,
+    "end": 120.6,
+    "text": "choose an object. The view\nshould not move away from them",
+    "speakers": []
+  },
+  {
+    "start": 120.6,
+    "end": 125.16,
+    "text": "by accident. Someone came to\nlook around. The object should",
+    "speakers": []
+  },
+  {
+    "start": 125.16,
+    "end": 129.8,
+    "text": "not be selected merely because\nthat movement began over it. The",
+    "speakers": []
+  },
+  {
+    "start": 129.8,
+    "end": 134.08,
+    "text": "model is becoming something a\nperson can act upon. Give it",
+    "speakers": []
+  },
+  {
+    "start": 134.08,
+    "end": 139.04,
+    "text": "neighbors. From material to a\nplace in the world. The final",
+    "speakers": []
+  },
+  {
+    "start": 139.04,
+    "end": 143.56,
+    "text": "boundary marks work still to\ninvestigate. The diagram does",
+    "speakers": []
+  },
+  {
+    "start": 143.56,
+    "end": 147.88,
+    "text": "not show completed gameplay\nadoption. Open the full size",
+    "speakers": []
+  },
+  {
+    "start": 147.88,
+    "end": 152.36,
+    "text": "diagram. The shrine's asset\nchecks and the pilot's mesh",
+    "speakers": []
+  },
+  {
+    "start": 152.36,
+    "end": 156.2,
+    "text": "scene are separate pieces of\nwork. Together, they give us",
+    "speakers": []
+  },
+  {
+    "start": 156.2,
+    "end": 160.12,
+    "text": "useful material for the next\nexperiment. They do not yet show",
+    "speakers": []
+  },
+  {
+    "start": 160.12,
+    "end": 163.52,
+    "text": "the shrine living among the\ngame's terrain, weather, and",
+    "speakers": []
+  },
+  {
+    "start": 163.52,
+    "end": 168.12,
+    "text": "characters. A roof that is easy\nto select alone may become",
+    "speakers": []
+  },
+  {
+    "start": 168.16,
+    "end": 172.56,
+    "text": "awkward beside a taller block. A\nbase that looks settled on an",
+    "speakers": []
+  },
+  {
+    "start": 172.56,
+    "end": 176.68,
+    "text": "empty grid may float above a\nslope. Put several copies",
+    "speakers": []
+  },
+  {
+    "start": 176.68,
+    "end": 181.08,
+    "text": "together, and their silhouettes\nmay stop feeling distinct. These",
+    "speakers": []
+  },
+  {
+    "start": 181.08,
+    "end": 185.24,
+    "text": "are questions about the object\nin company. Try one place",
+    "speakers": []
+  },
+  {
+    "start": 185.24,
+    "end": 190.0,
+    "text": "properly. The next study would\nchoose one asset and one use for",
+    "speakers": []
+  },
+  {
+    "start": 190.0,
+    "end": 195.0,
+    "text": "it. Put it somewhere the player\nhas a reason to visit. Look from",
+    "speakers": []
+  },
+  {
+    "start": 195.0,
+    "end": 199.68,
+    "text": "both sides and from above. Try\nselecting it with a neighbor in",
+    "speakers": []
+  },
+  {
+    "start": 199.68,
+    "end": 204.0,
+    "text": "the way. Ask what the object\nseems to be for and what the",
+    "speakers": []
+  },
+  {
+    "start": 204.0,
+    "end": 207.68,
+    "text": "person expects to happen when\nthey choose it. Observe the",
+    "speakers": []
+  },
+  {
+    "start": 207.68,
+    "end": 211.88,
+    "text": "scene's performance as well as\nits appearance. Keep the earlier",
+    "speakers": []
+  },
+  {
+    "start": 211.88,
+    "end": 216.8,
+    "text": "representation available for\ncomparison. A beautiful model is",
+    "speakers": []
+  },
+  {
+    "start": 216.8,
+    "end": 220.8,
+    "text": "a beginning. There is another\nkind of satisfaction in finding",
+    "speakers": []
+  },
+  {
+    "start": 220.8,
+    "end": 226.04,
+    "text": "where it belongs. Study scope,\nsource reading. Material on the",
+    "speakers": []
+  },
+  {
+    "start": 226.04,
+    "end": 231.44,
+    "text": "workbench. This study reads the\nBlender Generation Root, a",
+    "speakers": []
+  },
+  {
+    "start": 231.44,
+    "end": 235.72,
+    "text": "committed shrine verification\nrecord, and the separate native",
+    "speakers": []
+  },
+  {
+    "start": 235.72,
+    "end": 240.68,
+    "text": "mesh pilot's documentation. It\ndoes not establish that the",
+    "speakers": []
+  },
+  {
+    "start": 240.68,
+    "end": 245.44,
+    "text": "shrine is part of the default\nplayable scene. The cover is",
+    "speakers": []
+  },
+  {
+    "start": 245.44,
+    "end": 250.76,
+    "text": "editorial artwork, and the\ndiagram is a schematic. No new",
+    "speakers": []
+  },
+  {
+    "start": 250.76,
+    "end": 256.16,
+    "text": "Blender render, pilot session,\ngameplay capture, or performance",
+    "speakers": []
+  },
+  {
+    "start": 256.16,
+    "end": 260.88,
+    "text": "measurement was made for this\nnote. The proposed study of the",
+    "speakers": []
+  },
+  {
+    "start": 260.88,
+    "end": 264.28,
+    "text": "object among its neighbors\nremains to be done.",
+    "speakers": []
+  },
+  {
+    "start": 265.8,
+    "end": 269.6,
+    "text": "You have been listening to Moth\nand Gravel Field Notes. The",
+    "speakers": []
+  },
+  {
+    "start": 269.6,
+    "end": 272.84,
+    "text": "written edition is at\nmothandgravel.com.",
+    "speakers": []
+  }
+]

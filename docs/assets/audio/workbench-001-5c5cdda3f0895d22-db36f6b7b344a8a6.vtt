@@ -1,0 +1,617 @@
+WEBVTT
+
+1
+00:00:00.040 --> 00:00:05.200
+This is Moth and Gravel, Field
+Notes. Today, a question that
+
+2
+00:00:05.200 --> 00:00:09.520
+connects three studies. What
+does an interface let you
+
+3
+00:00:09.520 --> 00:00:14.080
+believe? This is an AI generated
+conversation adapted from the
+
+4
+00:00:14.080 --> 00:00:17.760
+published notes. The source
+studies concern software
+
+5
+00:00:17.760 --> 00:00:22.480
+contracts, a little robot's map,
+and a telemetry dashboard. All
+
+6
+00:00:22.480 --> 00:00:26.560
+three give a person a quick
+picture. A green light, a
+
+7
+00:00:26.560 --> 00:00:31.200
+colored map, a number that sits
+quietly on a gauge. The picture
+
+8
+00:00:31.200 --> 00:00:35.120
+can feel more certain than the
+information behind it. Let's
+
+9
+00:00:35.120 --> 00:00:38.960
+start with the green light. It
+is a very efficient piece of
+
+10
+00:00:38.960 --> 00:00:44.160
+design. One glance, one small
+exhale. The thing is all right.
+
+11
+00:00:44.480 --> 00:00:49.360
+What thing? And all right in
+what sense? A service can be
+
+12
+00:00:49.360 --> 00:00:54.960
+running, a test can pass, a
+result can be delivered. Those
+
+13
+00:00:54.960 --> 00:00:58.280
+answer different questions, even
+when the interface gives them
+
+14
+00:00:58.280 --> 00:01:02.720
+the same color. Field Note 5
+follows that distinction across
+
+15
+00:01:02.720 --> 00:01:07.320
+three projects. In Gayanu, which
+is being developed as a
+
+16
+00:01:07.320 --> 00:01:11.840
+workspace companion, a healthy
+runtime is an observation about
+
+17
+00:01:11.840 --> 00:01:15.880
+the runtime. Whether a feature
+meets its acceptance conditions
+
+18
+00:01:15.880 --> 00:01:19.680
+needs its own evidence. The
+source contract also keeps a
+
+19
+00:01:19.680 --> 00:01:25.520
+failed runtime probe unknown. If
+the observation did not succeed,
+
+20
+00:01:25.680 --> 00:01:29.680
+it has not established that the
+application stopped. That sounds
+
+21
+00:01:29.680 --> 00:01:34.000
+like a small wording distinction
+until someone acts on the wrong
+
+22
+00:01:34.000 --> 00:01:38.760
+version. It becomes even more
+interesting in Ajo, which checks
+
+23
+00:01:38.800 --> 00:01:42.920
+agent plans and records their
+execution. The note describes a
+
+24
+00:01:42.920 --> 00:01:47.000
+local integration report in
+which all 34 acceptance cases
+
+25
+00:01:47.000 --> 00:01:51.480
+passed. The delivery records
+still included incomplete,
+
+26
+00:01:51.640 --> 00:01:55.360
+unknown, and unresolved
+outcomes. That is possible
+
+27
+00:01:55.360 --> 00:01:59.640
+because some cases are meant to
+preserve those outcomes. If a
+
+28
+00:01:59.640 --> 00:02:04.280
+case asks the mechanism to
+refuse an unsafe next step, a
+
+29
+00:02:04.280 --> 00:02:09.120
+correct refusal is a pass. If
+the acknowledgement was lost,
+
+30
+00:02:09.320 --> 00:02:13.760
+keeping that outcome unknown can
+also be correct. The report
+
+31
+00:02:13.760 --> 00:02:17.960
+records six verified delivery
+sub-probes separately from the
+
+32
+00:02:17.960 --> 00:02:21.960
+passing cases. A concise
+headline needs a route back to
+
+33
+00:02:21.960 --> 00:02:25.920
+that distinction. And those
+fixtures are not a sample for
+
+34
+00:02:25.920 --> 00:02:30.000
+calculating a general delivery
+success rate. The note is
+
+35
+00:02:30.000 --> 00:02:33.680
+reading bounded results. It does
+not establish production
+
+36
+00:02:33.680 --> 00:02:38.160
+reliability or release
+readiness. Paja, a build tool
+
+37
+00:02:38.160 --> 00:02:42.960
+for spare machines, gives green
+a more modest job. Every
+
+38
+00:02:42.960 --> 00:02:46.960
+configured step exited with
+zero. It's recorded result
+
+39
+00:02:46.960 --> 00:02:50.360
+distinguishes failed steps,
+infrastructure failures,
+
+40
+00:02:50.440 --> 00:02:54.800
+cancellation, and timeouts. That
+boundary can be understood.
+
+41
+00:02:55.080 --> 00:02:58.760
+Inspect the recipe, then ask
+whether the configured steps
+
+42
+00:02:58.800 --> 00:03:03.240
+establish what you care about.
+The indicator has a clear job.
+
+43
+00:03:03.440 --> 00:03:07.400
+It does not have to quietly
+promise every possible property
+
+44
+00:03:07.400 --> 00:03:12.240
+of the software. So, the useful
+design question is, what can
+
+45
+00:03:12.240 --> 00:03:17.040
+this green light honestly let's
+one stop worrying about? And
+
+46
+00:03:17.040 --> 00:03:20.920
+what still deserves a question
+of its own? The same problem
+
+47
+00:03:20.920 --> 00:03:25.400
+turns up in Field Note 6 about
+the Kitronic Buggy. A little
+
+48
+00:03:25.400 --> 00:03:29.680
+robot has an ultrasonic sensor,
+motors, and tools for giving its
+
+49
+00:03:29.680 --> 00:03:33.720
+readings a visual form. A few
+colored points begin to look
+
+50
+00:03:33.720 --> 00:03:37.800
+like a room. A drawing is
+persuasive. A blank region can
+
+51
+00:03:37.800 --> 00:03:41.040
+look like empty floor even when
+the machine is not established
+
+52
+00:03:41.040 --> 00:03:44.200
+that the space is free. The
+current firmware begins its
+
+53
+00:03:44.200 --> 00:03:48.480
+occupancy grid at a neutral
+prior. As observations arrive,
+
+54
+00:03:48.480 --> 00:03:51.880
+parts of the sensor beam receive
+free space updates and the
+
+55
+00:03:51.880 --> 00:03:56.000
+endpoint receives occupied space
+updates. Confidence affects the
+
+56
+00:03:56.000 --> 00:03:59.360
+contribution and later
+observations can strengthen or
+
+57
+00:03:59.360 --> 00:04:03.800
+revise the picture. There are
+three answers to preserve. Free,
+
+58
+00:04:04.040 --> 00:04:07.840
+occupied, and undecided. The
+stored value thresholds are not
+
+59
+00:04:07.840 --> 00:04:12.000
+probabilities. Values below 80
+are classified as free. Values
+
+60
+00:04:12.000 --> 00:04:17.120
+above 170 are occupied. Values
+from 80 through 170 remain
+
+61
+00:04:17.120 --> 00:04:22.040
+unclassified. The initial value
+is 128. In the camera overlay,
+
+62
+00:04:22.080 --> 00:04:25.640
+unclassified cells remain
+unpainted. That leaves the
+
+63
+00:04:25.640 --> 00:04:29.560
+unanswered question visible. The
+saved scan viewer also offers
+
+64
+00:04:29.560 --> 00:04:34.120
+several views of the same input.
+A polar plot, a top-down view,
+
+65
+00:04:34.160 --> 00:04:38.480
+an occupancy grid, and a
+distance profile. One view can
+
+66
+00:04:38.480 --> 00:04:41.680
+question the attractive one, but
+the person needs to know which
+
+67
+00:04:41.680 --> 00:04:45.040
+frame the marks belong to and
+whether they came from a current
+
+68
+00:04:45.040 --> 00:04:48.800
+observation or a saved example.
+Position is part of the estimate
+
+69
+00:04:48.800 --> 00:04:52.520
+too. The grid belongs to a world
+frame while the robot's
+
+70
+00:04:52.520 --> 00:04:56.560
+estimated position changes
+inside it. The source uses motor
+
+71
+00:04:56.560 --> 00:05:00.760
+time kinematics with selective
+heading correction. A calibrated
+
+72
+00:05:00.760 --> 00:05:04.720
+camera marker supplies another
+position estimate. Showing two
+
+73
+00:05:04.720 --> 00:05:07.880
+trails together can make a
+disagreement visible. It does
+
+74
+00:05:07.880 --> 00:05:11.200
+not establish that either trail
+is accurate. This note reads
+
+75
+00:05:11.200 --> 00:05:15.160
+mapping source and an offline
+replay of saved sample data. It
+
+76
+00:05:15.160 --> 00:05:18.800
+does not establish calibrated
+map accuracy, safe navigation,
+
+77
+00:05:18.800 --> 00:05:22.000
+or full simultaneous
+localization and mapping. No
+
+78
+00:05:22.000 --> 00:05:25.080
+live hardware or camera session
+was run for the note. The
+
+79
+00:05:25.080 --> 00:05:29.000
+proposed reader study is still
+ahead. Ask someone which parts
+
+80
+00:05:29.000 --> 00:05:33.440
+the robot has not established.
+Ask which position they believe
+
+81
+00:05:33.480 --> 00:05:37.760
+and why. Watch what they infer
+from a blank area. That is a
+
+82
+00:05:37.760 --> 00:05:40.680
+concrete way to ask whether
+uncertainty survived the
+
+83
+00:05:40.680 --> 00:05:44.240
+drawing. It is also a question
+about attention, which brings us
+
+84
+00:05:44.240 --> 00:05:49.480
+to Field Note 7. Fast signals,
+slow eyes. The telemetry
+
+85
+00:05:49.480 --> 00:05:52.560
+dashboard keeps the latest
+received readings in shared
+
+86
+00:05:52.560 --> 00:05:56.400
+state. The interface draws its
+gauges from that state, then
+
+87
+00:05:56.400 --> 00:06:00.680
+schedules its next update 33
+milliseconds later. That is a
+
+88
+00:06:00.680 --> 00:06:04.600
+requested pause after drawing,
+not a measured frame rate. The
+
+89
+00:06:04.600 --> 00:06:07.520
+drawing takes time. Other work
+in the window takes time.
+
+90
+00:06:07.840 --> 00:06:10.920
+Calling it 30 frames per second
+would claim something the source
+
+91
+00:06:10.920 --> 00:06:15.640
+reading is not measured. A quiet
+number creates another question.
+
+92
+00:06:16.080 --> 00:06:19.720
+It can stay on screen after the
+machine has stopped sending
+
+93
+00:06:19.720 --> 00:06:23.760
+packets. Without a condition
+beside it, the last answer can
+
+94
+00:06:23.760 --> 00:06:28.120
+look like the present answer. At
+a refresh, the dashboard checks
+
+95
+00:06:28.120 --> 00:06:32.120
+the age of the latest packet.
+Less than half a second gets the
+
+96
+00:06:32.120 --> 00:06:35.840
+label connected. At half a
+second or more, the label
+
+97
+00:06:35.840 --> 00:06:40.240
+becomes stale data. The gauges
+still show the latest received
+
+98
+00:06:40.240 --> 00:06:45.640
+values. So, the number remains
+available, but its relationship
+
+99
+00:06:45.640 --> 00:06:49.880
+to now has changed. And the
+label changes when the next
+
+100
+00:06:49.880 --> 00:06:54.080
+interface update checks the age
+rather than at a separately
+
+101
+00:06:54.080 --> 00:06:58.440
+established instant. A stale
+packet does not establish the
+
+102
+00:06:58.440 --> 00:07:02.400
+robot's physical state. The
+design needs to help someone
+
+103
+00:07:02.400 --> 00:07:06.520
+notice the gap without turning
+every arrival into a demand for
+
+104
+00:07:06.520 --> 00:07:10.800
+attention. The latest packet
+gauges do not retain every
+
+105
+00:07:10.800 --> 00:07:14.800
+intermediate value. Packet
+counters and a recent arrival
+
+106
+00:07:14.800 --> 00:07:17.640
+rate view provided different
+kind of evidence about the
+
+107
+00:07:17.640 --> 00:07:22.400
+stream. A calm display and a
+detailed record serve different
+
+108
+00:07:22.400 --> 00:07:26.640
+kinds of attention. That is the
+shared thread. Each picture
+
+109
+00:07:26.640 --> 00:07:30.280
+needs a clear account of what it
+knows. A green light needs a
+
+110
+00:07:30.280 --> 00:07:35.640
+scope. A map needs room for
+undecided space. A current value
+
+111
+00:07:35.680 --> 00:07:40.080
+needs a condition about
+freshness. And each study has a
+
+112
+00:07:40.080 --> 00:07:44.520
+practical next question. Can a
+person tell running from
+
+113
+00:07:44.520 --> 00:07:48.320
+delivered? Can they find the
+space the robot has not
+
+114
+00:07:48.320 --> 00:07:52.440
+established? Can they notice
+when a reading has become old?
+
+115
+00:07:52.720 --> 00:07:56.560
+Those are proposed questions,
+not completed comprehension
+
+116
+00:07:56.560 --> 00:08:00.840
+studies. Their answers will
+matter more than how reassuring
+
+117
+00:08:00.840 --> 00:08:04.360
+the pictures feel to their
+makers. You have been listening
+
+118
+00:08:04.360 --> 00:08:08.920
+to Moth and Gravel, Field Notes.
+What does the interface let you
+
+119
+00:08:08.920 --> 00:08:13.400
+believe? The written sources are
+notes 5, 6, and 7 at
+
+120
+00:08:13.400 --> 00:08:17.040
+mothandgravel.com. They keep the
+detailed boundaries,
+
+121
+00:08:17.080 --> 00:08:21.640
+illustrations, and study scope
+available to inspect. A useful
+
+122
+00:08:21.640 --> 00:08:26.080
+interface gives someone a place
+to look and a reason to trust
+
+123
+00:08:26.080 --> 00:08:28.400
+what that place actually
+establishes.
+
