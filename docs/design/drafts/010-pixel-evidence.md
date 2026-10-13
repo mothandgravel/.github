@@ -1,53 +1,57 @@
-# 010 / What one pixel can prove
+# 010 / Almost the same.
 
-**Field study draft — SkyStack Builder.** Native rendering experiments and their limits. This draft is outside the published archive, feed and sitemap.
+**Field study draft — SkyStack Builder.** Notes on small differences and knowing where to look. Outside the published archive, feed and sitemap.
 
 ![Three translucent sage, blue and rose sheets overlap on warm paper beneath a brass magnifying lens.](renderer-studies-assets/010-cover-1600.webp)
 
-*Looking closely at a small disagreement. AI-generated editorial metaphor, not measured colour swatches or a rendering test capture.*
+*Looking closely at a small disagreement. AI-generated editorial illustration, not measured colour swatches.*
 
-Two pictures can look almost the same and disagree at thousands of pixels. Two tests can both turn green and disagree about whether the game is ready.
+Lay three translucent sheets over a colour. Gather them together first, then lay the group down. You might expect the same picture.
 
-The useful question is not simply whether there is a difference. It is what the difference measures.
+In SkyStack Builder's rendering experiments, that small change can leave a small difference. The order of the work stays familiar. The place where it happens changes.
 
-## Rounding has a place in the picture
+How closely should two pictures agree before we call them the same?
 
-SkyStack's experimental renderer saves painted content into a transparent GPU layer, then combines it with the scene later. That can preserve an intended relationship without moving all the terrain drawing after the actors.
+## A difference needs a place to look
 
-There is a small cost to changing where painting happens. An eight-bit colour target rounds the result after drawing. Three translucent packets drawn one after another onto the scene do not necessarily produce the same bytes as the same packets first combined into a transparent layer and then placed over the scene.
+The experimental renderer gathers some painted content into a transparent layer before placing it over the scene. Each draw rounds its colour into the available range. The final composition adds another place where that can happen.
 
-A native control removes the game from the question: no terrain, actor or depth test, just three overlapping translucent rectangles. On a pure-green background, the chosen example matches exactly. On an RGB background of 37, 113, 197, it differs at 4,000 pixels. The largest difference is one level in a colour channel.
+A simple test sets the island aside and draws three overlapping translucent rectangles. On a green background, the two approaches match exactly. On another background, thousands of pixels differ by a single level in a colour channel.
 
-The first comparison did not prove rounding irrelevant. The second did not prove every visible fault was rounding. Together they show why a single convenient background is a weak witness.
+The background matters. A tidy answer from one convenient example can leave another question untouched.
 
-## A small explanation must not swallow a large failure
+![Sequential drawing blends three shapes onto the scene. Grouped drawing blends them onto a transparent layer before placing that layer onto the scene, adding a final rounding step.](renderer-studies-assets/010-rounding-boundaries.png)
 
-![Sequential drawing rounds three blends onto the scene; grouped drawing rounds three blends onto a transparent target, then rounds a final blend onto the scene.](renderer-studies-assets/010-rounding-boundaries.png)
+*Two ways to assemble a picture. A conceptual diagram of drawing and rounding, not a measured pixel image.*
 
-*A conceptual blend sequence. Both paths round intermediate draws; the group changes their destination and adds a final composition. This is not a measured pixel image.*
+## Small is a description, not a verdict
 
-The larger party-and-actor comparisons contain differences reaching 122 channel levels in an earlier recorded run. A one-level control cannot explain those away.
+A one-level difference tells us something about the machinery. It leaves the design question open.
 
-Other controls separate actor-only changes from party changes, missing coverage from added coverage, and supporting terrain from foreground terrain. Each removes one possible explanation. None is a substitute for the whole scene.
+Does the difference appear along an edge? Does it flicker as the camera moves? Does it change the separation between a character and the ground? A count alone cannot say how the picture feels to someone trying to use it.
 
-Even an exact match can have a narrow meaning. A backend proof can preserve a half-opacity actor beneath a later terrain rectangle exactly. That says something valuable about the composition rule. It does not say the gameplay renderer has assigned every terrain detail the right depth, or that several overlapping actors will work the same way.
+The wider scene comparisons also contain much larger differences. The small rounding example gives us a useful explanation for one kind of disagreement. The rest still needs attention.
 
-## Keep the test attached to its question
+## Look at the whole island
 
-A useful result carries its conditions with it. Which scene? Which camera? Which renderer mode? Which reference? Did the process finish, or did someone merely stop watching it?
+A close inspection and a whole view serve different purposes. One helps find a cause. The other lets us ask whether the place still holds together.
 
-Those details need not become a wall of numbers for the player. They belong in the workbench record so that a calm public claim has something solid underneath it.
+Remove a troublesome detail and a comparison may become easier to understand. Put it back before judging the island. The edge, shadow or patch of ground may be exactly what gives the player a sense of where something belongs.
 
-The next comparison should preserve the original full-scene assertion while separating any intended correction from accidental colour changes. A test that removes troublesome geometry may explain a failure. It cannot certify the geometry it removed.
+The next study would show the complete views at the size and pace of play. Let someone turn the camera and choose a block. Ask what caught their eye, what seemed to change and whether that change made a choice harder.
 
-One pixel can prove a particular disagreement. Read carefully, it can also keep a team from claiming more than it knows.
+Keep the close comparison beside those observations. It gives a specific disagreement somewhere to live, without asking it to decide the whole experience.
 
-## Source and limits
+## Leave room for another look
 
-- [Native layer controls](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/tests/SkyStackBuilder.Tests/main.cpp) include `TestPainterVisibilityLayer` and the party ownership fixtures.
-- [The recorded findings](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/docs/gpu-parity-status.md) distinguish the exact fractional-foreground proof, the group-rounding counterexample and failing full-scene comparisons.
-- [The backend](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/src/render/direct3d_backend.cpp) contains the corresponding GPU paths.
+There is pleasure in getting two pictures to agree. There is useful work in understanding why they don't.
 
-The figures are fixture results recorded in the renderer work, not perceptual tolerances established with players. This editorial draft adds no new benchmark and makes no claim that a one-level difference is always harmless. Full renderer acceptance remains incomplete.
+A pixel can give the investigation a starting point. The person looking at the island gives it a reason to continue.
 
-Related draft: [Keeping a pony above the ground](009-pony-visibility.md).
+## Study scope / A small comparison
+
+This study reads native rendering controls and recorded scene comparisons. The rectangle example found an exact match on one background and a one-level channel difference on another. Those conditions and the detailed results remain in the editorial provenance record.
+
+The illustrations explain the question; they are not rendering captures. No new benchmark or player study was run for this note. The comparison does not establish that a small colour difference is always harmless, or that the complete renderer is ready. The proposed observation remains to be done.
+
+Related draft: [A place to stand.](009-pony-visibility.md).

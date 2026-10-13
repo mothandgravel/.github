@@ -1,52 +1,59 @@
-# 009 / Keeping a pony above the ground
+# 009 / A place to stand.
 
-**Field study draft — SkyStack Builder.** A renderer migration in progress. This draft is outside the published archive, feed and sitemap.
+**Field study draft — SkyStack Builder.** Notes on looking and belonging. Outside the published archive, feed and sitemap.
 
 ![A lilac clay pony stands on a small sage-topped island of bone-coloured cubes, surrounded by a thin brass orbit arc.](renderer-studies-assets/009-cover-1600.webp)
 
-*A place to stand, seen from another angle. AI-generated editorial illustration, not a gameplay screenshot or a depiction of measured behaviour.*
+*A place to stand, seen from another angle. AI-generated editorial illustration, not a gameplay capture.*
 
-Turn an island around and a familiar place can become unfamiliar for the wrong reason. A pony that stood beside a block is suddenly buried in it. The world has not moved. The view has.
+A pony stands beside a block. Turn the island a little and its feet disappear into the ground.
 
-That is more than a drawing blemish. A builder asks the player to understand where things are, choose a place and trust the result. If a character slips beneath the ground when the camera turns, the picture stops being a dependable account of the world.
+Nothing has moved except the view.
 
-## One view needs several kinds of depth
+A small island asks for a particular kind of trust. The player looks, chooses a place and tries something there. The picture needs to keep its account of where things are, even as the camera wanders.
 
-SkyStack's Direct3D migration keeps the game's shared camera and projection. That preserves a common language for looking and picking. It does not automatically tell every painted detail where it belongs in three dimensions.
+## The ground has to keep its word
 
-A block face can carry a depth plane. Its outline needs the depths of its actual endpoints. A character's artwork has another complication: some of the image extends below the point where its feet meet the ground. Treating every part as an ordinary upright sheet can let the supporting block cut off the feet.
+SkyStack Builder's renderer experiments begin with that agreement. The game keeps a shared camera for drawing and choosing a place. But a common view does not give every drawn detail a dependable position within it.
 
-The experimental renderer recognises a support surface and a receiver block. It also tries to keep later terrain drawing beneath a nearer actor without making the actor immune to genuinely raised foreground blocks. Those are separate obligations. Fixing one by ignoring the other would exchange buried feet for a pony visible through a wall.
+The broad face of a block is one thing. A bevel, a patch of soil and the edge of a pony's foot each need to belong somewhere too. If their depth is guessed badly, a small detail can cover something that ought to be in front of it.
 
-## An incomplete picture can answer a useful question
+Let the pony show through everything and the feet return. So does a different problem: a raised block can no longer hide the pony when it should.
 
-One native contact fixture places a pony among neighbouring grass blocks, at 45 degrees of yaw, 62 degrees of pitch and 0.85 zoom. The complete experimental render retains 192 of 201 high-coverage body samples and 13 of 20 contact samples. It still fails the full-contact assertion.
+The useful answer has to preserve both relationships. Feet meet the ground. A wall can still stand in the way.
 
-A deliberately incomplete diagnostic draws only later terrain packets with known depth metadata. That version retains all 201 body samples and all 20 contact samples.
+## Take a little away and look again
 
-The better-looking diagnostic is not the repaired game. It has removed details from the picture. What it provides is a narrower question: which of the remaining authored packets paint over those pixels, and what geometry should describe their depth?
+During an earlier investigation, one fixed camera view lost part of the pony's body and much of its contact with the ground. A second version left out some terrain details. All the sampled parts of the pony returned.
 
-Adding metadata to several side-decoration families has not yet recovered the complete fixture. That result matters too. A plausible place to add code is not necessarily the place responsible for the fault.
+That comparison gave the work a place to look. Something among the omitted details deserved closer attention.
 
-## Keep the details and repair their account of place
+It also left the island incomplete. The patches and edges that make a place feel particular were part of the picture we wanted to keep.
 
-![Two panels compare complete rendering with a deliberately incomplete classified-only diagnostic: 192 of 201 body samples and 13 of 20 contact samples versus all samples retained.](renderer-studies-assets/009-contact-comparison.png)
+![Two panels compare an earlier complete rendering with a diagnostic that omits some terrain details. The complete view retains 192 of 201 body samples and 13 of 20 contact samples; the diagnostic retains all sampled points.](renderer-studies-assets/009-contact-comparison.png)
 
-*Recorded counts at the pinned historical revision. This schematic is not a native pixel map; omitting details isolates a cause but does not repair the complete view.*
+*An earlier investigation, in two views. Recorded sample counts from one camera position; this schematic is not a game capture or a statement of the renderer's current condition.*
 
-The next observation should follow the actual packets crossing the missing pixels. A small bevel or patch of soil deserves the same care as the large block beneath it. Its world endpoints belong beside the geometry that creates it, not in a later guess based on screen position.
+## Keep the small things
 
-After that correction, the whole picture must pass again. Turn the camera. Put a raised block in front. Test a ramp. Keep the same picking and placement behaviour. Then measure the frame time on the laptop where the game will be played.
+A patch of soil deserves an account of where it belongs, just as the large block beneath it does. The repair has to let both remain in the picture.
 
-The island's atmosphere depends on these small agreements. A pony should belong to the ground without disappearing into it.
+There is a design question underneath the drawing work: which small agreements make a strange place feel dependable?
 
-## Source and limits
+A player may never notice a correctly hidden hoof. They notice when a turn of the camera makes the island contradict itself. That interruption can reach beyond the pony. Is this a place I can build? Will the block I choose be the one I meant?
 
-Pinned implementation: [SkyStack Builder at d68bdc6](https://github.com/digablesolutions/sky-stack-builder/tree/d68bdc6e182548e62f9c093470be327b4bd6fb93).
+## Turn the island again
 
-- [Renderer status and native-test receipts](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/docs/gpu-parity-status.md) records the complete and classified-only comparisons. The named local receipt files are not bundled with this editorial draft.
-- [Contact fixture](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/tests/SkyStackBuilder.Tests/main.cpp), [packet generation](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/src/render/game_app_render.cpp), and [GPU composition](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/src/render/direct3d_backend.cpp) define the experiment.
+The next player study would keep the whole scene present. Turn the camera. Put a raised block in front of the pony. Try a ramp. Ask someone to choose a place beside it, then look from another side.
 
-The complete contact test was run and still fails. These counts describe one fixture, not all actors or camera angles. The underlay path remains opt-in; this note does not establish full parity, frame-time improvement or player comprehension. There are no gameplay screenshots in this draft.
+Watch where they hesitate and what they believe is touching the ground. A rendering test can check sampled pixels. The person can tell us whether the place still makes sense.
 
-Related draft: [What one pixel can prove](010-pixel-evidence.md).
+The island has room for pastel weather and improbable creatures. Its ground should be something they can stand on.
+
+## Study scope / An earlier view
+
+This study reads an earlier renderer investigation and its recorded native-test results. The comparison describes one historical camera fixture and an intentionally incomplete diagnostic; it does not describe the current renderer's test status. Exact source references and conditions are kept in the editorial provenance record.
+
+The cover is editorial artwork and the comparison is a schematic of recorded counts. No new game capture, player observation or performance measurement was made for this note. The proposed player study remains to be done.
+
+Related draft: [Almost the same.](010-pixel-evidence.md).

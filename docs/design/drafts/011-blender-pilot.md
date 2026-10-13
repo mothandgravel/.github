@@ -1,53 +1,61 @@
-# 011 / Bringing a Blender model into a playable island
+# 011 / A model needs a place.
 
-**Field study draft — SkyStack Builder.** A mesh pipeline and the adoption work beyond it. This draft is outside the published archive, feed and sitemap.
+**Field study draft — SkyStack Builder.** Notes on making an object belong. Outside the published archive, feed and sitemap.
 
 ![A brass wireframe shrine and a solid clay shrine stand on a paper grid, separated from a small island model in the background.](renderer-studies-assets/011-cover-1600.webp)
 
-*A model on the workbench, an island beyond it. AI-generated editorial illustration, not the actual shrine mesh, a Blender render or evidence of gameplay adoption.*
+*A model on the workbench, an island beyond it. AI-generated editorial illustration, not the actual shrine or a game capture.*
 
-A small shrine is an encouraging thing to see on a workbench. It has a shape, a palette and a place for its base. Turn it around and it still looks like the same object.
+A small shrine looks promising on the workbench. It has a shape, a palette and a base. Turn it around and there is something pleasing to look at from the other side too.
 
-Getting that object into a game asks another set of questions. Where does it meet the ground? What hides it? Can a player select the thing they can actually see? What happens when several copies share the island with weather, characters and buildings?
+Now give it a place on the island.
 
-The modelling tool can help answer the first set of questions without settling the second.
+Where does it meet the ground? What can stand in front of it? When someone points at its roof, what do they select?
 
-## Give the asset a recoverable route
+The object has acquired neighbours. That changes the questions.
 
-SkyStack's Blender lane keeps editable source and exported geometry. The collectible-shrine verification record reports 292 triangles, a zero origin, preserved round-trip bounds, finite nondegenerate normals and opaque materials.
+## Keep a way back to the material
 
-Those checks describe an asset contract. They help catch a model that changes size in transit, acquires an unexpected offset or carries invalid surface data. They do not tell us whether the shrine sits correctly among the game's other objects.
+SkyStack Builder's Blender experiments keep the editable model beside its exported geometry. Checks follow its size, origin, surfaces and materials through that journey.
 
-The generation script also refuses to overwrite an existing revision. That is a small but useful boundary: a new experiment should not silently replace the material someone may need to return to.
+Those details have a practical purpose. An object should arrive at the size we meant, with its base where we expect it. If it doesn't, there should be a way back to the material that made it.
 
-## Test a mesh as a mesh
+The generation script keeps existing revisions rather than silently replacing them. An earlier attempt remains available to return to, compare or try differently.
 
-The separate Direct3D pilot loads converted GLB geometry into vertex and index buffers. It uses a depth buffer and an object-ID target for selection. A screenshot of Blender is not standing in for the object.
+## Looking becomes doing
 
-The pilot's interaction contract is familiar: orbit, zoom, recenter and select. Its documented click-and-drag boundary distinguishes a small click from an orbit gesture; losing capture or focus clears the gesture. These details matter when a model stops being something to admire and becomes something to use.
+A separate native pilot draws real mesh geometry and gives it a small set of controls: orbit, zoom, recenter and select.
 
-The pilot also requires a hardware device rather than quietly substituting software rendering. Its bounded smoke mode writes correctness receipts. The documentation explicitly distinguishes those from frame-time measurements.
+A click and the beginning of a drag can look much alike. The pilot gives them a boundary. A small click selects; moving far enough begins an orbit. Losing focus or mouse capture clears the gesture.
 
-## A successful crossing is not the whole journey
+That is a modest detail with a large place in the experience. Someone came to choose an object. The view should not move away from them by accident. Someone came to look around. The object should not be selected merely because that movement began over it.
 
-![Editable source, geometry transfer and a native GPU pilot lead to a dashed gameplay-adoption boundary with ground contact, occlusion, picking, atmosphere and frame-time checks.](renderer-studies-assets/011-adoption-boundary.png)
+The model is becoming something a person can act upon.
 
-*Schematic pipeline. The dashed boundary is proposed adoption work, not a completed delivery path or a claim that the shrine is a default pilot asset.*
+## Give it neighbours
 
-The collectible shrine and the pilot's default mesh scene are distinct artifacts. A shrine verification record does not establish that it is one of the meshes currently selected by the default gameplay renderer.
+![Editable source, geometry transfer and a separate native mesh pilot lead to an unfinished gameplay stage: ground contact, occlusion, selection, atmosphere and frame-time checks.](renderer-studies-assets/011-adoption-boundary.png)
 
-Nor does a functioning standalone mesh window establish the complete island's performance. Immutable buffers may be a sensible rendering ingredient, but the final frame also includes terrain, actors, atmosphere, interface and the order in which they meet.
+*From material to a place in the world. The final boundary marks work still to investigate; the diagram does not show completed gameplay adoption.*
 
-The next adoption step should name a specific asset and a specific gameplay use. Put it at an authoritative world anchor. Inspect it from both sides and from above. Select it beside an occluder. Measure a representative scene before and after the change. Keep the original asset masters and a way to compare the previous representation.
+The shrine's asset checks and the pilot's mesh scene are separate pieces of work. Together they give us useful material for the next experiment. They do not yet show the shrine living among the game's terrain, weather and characters.
 
-That makes the pilot useful without asking it to promise an island it has not yet built.
+A roof that is easy to select alone may become awkward beside a taller block. A base that looks settled on an empty grid may float above a slope. Put several copies together and their silhouettes may stop feeling distinct.
 
-## Source and limits
+These are questions about the object in company.
 
-- [Shrine verification](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/assets/blender/exports/collectible-shrine-v1/verification.json) records the asset checks above.
-- [Revision-preserving Blender generator](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/scripts/blender/generate_collectible_shrine.py) defines the source/export route.
-- [Native pilot documentation](https://github.com/digablesolutions/sky-stack-builder/blob/d68bdc6e182548e62f9c093470be327b4bd6fb93/tools/blender_gpu_pilot/README.md) describes its real-mesh path, controls, smoke mode and adoption boundary.
+## Try one place properly
 
-This note reads the pinned source and committed verification record. It does not report a new Blender render, a fresh pilot run or a measured gameplay speedup. The shrine's default gameplay adoption and complete renderer parity remain unestablished. No pilot or game screenshots are presented here.
+The next study would choose one asset and one use for it. Put it somewhere the player has a reason to visit. Look from both sides and from above. Try selecting it with a neighbour in the way.
 
-Related draft: [Keeping a pony above the ground](009-pony-visibility.md).
+Ask what the object seems to be for and what the person expects to happen when they choose it. Observe the scene's performance as well as its appearance. Keep the earlier representation available for comparison.
+
+A beautiful model is a beginning. There is another kind of satisfaction in finding where it belongs.
+
+## Study scope / Material on the workbench
+
+This study reads the Blender generation route, a committed shrine verification record and the separate native mesh pilot's documentation. It does not establish that the shrine is part of the default playable scene. Exact source references and asset checks remain in the editorial provenance record.
+
+The cover is editorial artwork and the diagram is a schematic. No new Blender render, pilot session, gameplay capture or performance measurement was made for this note. The proposed study of the object among its neighbours remains to be done.
+
+Related draft: [A place to stand.](009-pony-visibility.md).

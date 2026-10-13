@@ -1,0 +1,33 @@
+name: Specimen return prototype
+on:
+  pull_request:
+    paths: ["docs/workbench/**", "docs/assets/specimen-*.mjs", "docs/assets/specimen-return.css", "scripts/audit_specimen.mjs", ".github/workflows/specimen-return.yml"]
+permissions:
+  contents: read
+jobs:
+  return-visit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
+          npx playwright install --with-deps chromium
+      - run: |
+          node --check docs/assets/specimen-model.mjs
+          node --check docs/assets/specimen-return.mjs
+          python3 -m http.server 8793 --bind 127.0.0.1 --directory docs >/tmp/specimen-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8793/ >/dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/audit_specimen.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: specimen-return-review
+          path: artifacts/design-review/
+          retention-days: 14

@@ -167,10 +167,36 @@
       "006"
     ],
     "visual": "forms",
-    "featured": true,
+    "featured": false,
     "cover": {
       "small": "007-cover-800.webp",
       "large": "007-cover-1600.webp",
+      "width": 1600,
+      "height": 900
+    }
+  },
+  {
+    "id": "008",
+    "slug": "008-one-undo.html",
+    "title": "A whole staircase. One undo.",
+    "summary": "The player made one thing. Preview, placement and undo should agree about what that thing was. A SkyStack Builder design study.",
+    "date": "2026-10-13",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "SkyStack Builder",
+    "related": [
+      "003",
+      "004"
+    ],
+    "visual": "forms",
+    "featured": true,
+    "cover": {
+      "small": "008-cover-800.webp",
+      "large": "008-cover-1600.webp",
       "width": 1600,
       "height": 900
     }

@@ -348,6 +348,7 @@ try {
     { name: "note-stability", path: "/notes/004-controls-stay-put.html", heading: ".stability-heading h1" },
     { name: "note-green", path: "/notes/005-green-light.html", heading: ".green-heading h1" },
     { name: "note-map", path: "/notes/006-map-leaves-room.html", heading: ".map-heading h1" },
+    { name: "note-skystack", path: "/notes/008-one-undo.html", heading: ".telemetry-heading h1" },
     { name: "note-telemetry", path: "/notes/007-fast-signals.html", heading: ".telemetry-heading h1" },
   ]) {
     for (const viewport of widths) {
@@ -428,7 +429,9 @@ try {
         assert(await page.locator('.freshness-panel').count() === 2, label + ': reading moments missing');
         assert(await page.locator('#study-status').count() === 1, label + ': source scope missing');
       }
-      const expectedCover = editorial.name === 'note-telemetry'
+      const expectedCover = editorial.name === 'note-skystack'
+        ? 'https://mothandgravel.com/assets/notes/008-cover-social.jpg'
+        : editorial.name === 'note-telemetry'
         ? 'https://mothandgravel.com/assets/notes/007-cover-social.jpg'
         : editorial.name === 'note-map'
         ? 'https://mothandgravel.com/assets/notes/006-cover-social.jpg'
