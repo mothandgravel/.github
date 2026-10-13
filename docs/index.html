@@ -155,19 +155,6 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold-bright);outlin
 .work-card:hover{border-color:var(--gold);transform:translateY(-4px)}
 .work-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 21px;color:var(--muted);border-bottom:1px solid var(--line-soft)}
 .work-card-top span:last-child{color:var(--gold-bright)}
-.work-graphic{height:260px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 60% 45%,rgba(175,152,112,.10),transparent 65%),var(--surface-2);border-bottom:1px solid var(--line-soft)}
-.work-graphic::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:35px 35px;opacity:.24}
-.graphic-annotation{position:absolute;bottom:16px;left:20px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;line-height:1.5;color:var(--muted)}
-.graphic-window{position:relative;width:150px;height:134px;border:1px solid var(--gold);display:flex;flex-direction:column;justify-content:center;gap:15px;padding:18px;transform:rotate(-7deg);box-shadow:10px 10px 0 rgba(175,152,112,.15)}
-.graphic-window::before{content:"";position:absolute;top:14px;right:14px;width:8px;height:8px;border:1px solid var(--gold);border-radius:50%}
-.graphic-window>span:first-child{position:absolute;top:8px;left:14px;font-family:var(--mono);font-size:9px;color:var(--gold-bright)}
-.graphic-signal{display:block;height:3px;width:83%;background:var(--gold);margin-top:2px}
-.graphic-signal:nth-of-type(3){width:55%;background:var(--ink)}
-.graphic-signal.last{width:72%;opacity:.45}
-.stone{position:absolute;width:130px;height:150px;clip-path:polygon(38% 0,85% 16%,100% 51%,70% 100%,18% 86%,0 39%);border:1px solid var(--gold);background:linear-gradient(145deg,var(--gold) 0%,#8b785d 40%,#534f44 90%)}
-.stone-a{transform:translate(-25px,-20px) rotate(-22deg);opacity:.85}
-.stone-b{width:75px;height:84px;transform:translate(77px,49px) rotate(34deg);background:#bbb09d}
-.stone-c{width:37px;height:48px;transform:translate(-115px,77px) rotate(26deg);background:#8e816b}
 .work-card-content{padding:24px 23px 30px;min-height:175px}
 .work-card-content h3{font-family:var(--sans);text-transform:uppercase;letter-spacing:-.03em;font-size:24px;line-height:1.1;margin-bottom:13px}
 .work-card-content p{font-size:14px;color:var(--secondary);line-height:1.65;margin:0}
@@ -211,7 +198,6 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold-bright);outlin
 .hero h1{font-size:clamp(60px,6.3vw,82px)}
 .hero-copy{padding-block:64px}
 .visual-frame{min-height:550px}
-.work-graphic{height:220px}
 .work-card-content h3{font-size:21px}
 .ethos-grid{gap:5vw}}
 @media (max-width:900px){.site-header .header-inner{height:72px}
@@ -230,7 +216,6 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold-bright);outlin
 .work-grid{gap:10px}
 .work-card-content{padding:20px 17px}
 .work-card-content h3{font-size:19px}
-.work-graphic{height:190px}
 .ethos-grid{grid-template-columns:1fr;gap:55px}
 .ethos-left h2{padding-top:40px}
 .ethos-seal{margin-top:35px;width:100px;height:100px;font-size:38px}
@@ -273,7 +258,6 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold-bright);outlin
 .section-lead h2,.ethos-left h2{font-size:clamp(46px,11vw,70px)}
 .section-lead p{font-size:15px}
 .work-grid{grid-template-columns:1fr;gap:15px}
-.work-graphic{height:230px}
 .work-card-content{min-height:0;padding:22px 20px 28px}
 .work-card-content h3{font-size:24px}
 .ethos-grid{padding-block:75px;gap:42px}
@@ -527,10 +511,52 @@ white-space: nowrap;
 .first-work-label,.first-work-example summary{ padding:22px 20px; }
 .first-work-example>div{ padding-inline:20px; }
 .first-work-parts li{ padding:24px 20px; }}
+.work-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+.work-card{ display:flex;flex-direction:column; }
+.work-card-top{ flex-wrap:wrap;align-items:baseline; }
+.work-card-top span{ font-size:10px; }
+.work-specimen{ margin:0;padding:22px 20px;border-bottom:1px solid var(--line);min-width:0; }
+.work-specimen>a{ display:block;min-height:44px; }
+.work-specimen img{ display:block;width:100%;height:280px;object-fit:contain; }
+.work-specimen figcaption{ font-size:12px;line-height:1.6;color:var(--secondary);margin-top:18px;min-height:58px; }
+.work-card-content{ display:flex;flex-direction:column;flex:1; }
+.work-card-content h3{ font-size:clamp(24px,2.3vw,32px);overflow-wrap:anywhere; }
+.work-card-content .work-card-link{ margin-top:auto; }
+.specimen-record{ border-top:1px solid var(--line);margin-top:24px;padding-top:16px; }
+.specimen-record summary{ cursor:pointer;min-height:44px;font-weight:600;line-height:1.5;font-size:14px; }
+.work-card-content .specimen-record p{ margin-top:14px; }
+.trace-pair{ display:grid;grid-template-columns:1fr 1fr;gap:14px;min-height:280px; }
+.trace-pair>div{ min-width:0;padding:16px 12px;background:var(--bg);border:1px solid var(--line); }
+.trace-pair .mono{ color:var(--gold-bright);font-size:9px;line-height:1.6;display:block; }
+.trace-pair strong{ font:400 24px/1.15 var(--serif);display:block;margin:20px 0 14px; }
+.trace-pair p{ font-size:12px;line-height:1.6;color:var(--secondary); }
+.trace-pair .trace-count{ margin-top:20px; }
+.trace-count b{ font:400 32px/1 var(--serif);color:var(--gold-bright);display:block;margin-bottom:6px; }
+.work-sources{ border-bottom:1px solid var(--line);padding:24px 0; }
+.work-sources summary{ cursor:pointer;min-height:44px;font-size:17px;font-weight:600; }
+.work-sources p{ color:var(--secondary);font-size:15px;line-height:1.7;max-width:65ch; }
+.work-sources a{ display:inline-block;min-height:44px;color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px;margin-right:20px; }
+@media (max-width:1100px){.work-grid{ grid-template-columns:1fr; }
+.work-specimen img{ height:auto;max-height:380px; }
+.work-specimen figcaption{ min-height:0; }
+.trace-pair{ min-height:0; }
+.work-card-top span{ font-size:11px; }}
+@media (max-width:660px){.work-specimen{ padding:22px 18px; }
+.trace-pair{ gap:10px; }
+.trace-pair>div{ padding:16px 10px; }}
+.work-card:hover{ transform:none; }
+.work-specimen{ perspective:900px; }
+.specimen-plane{ transform-origin:50% 50%;transition:transform .24s ease,box-shadow .24s ease; }
+.specimen-plane>a{ display:block;min-height:44px; }
+.specimen-plane[data-handled]{ transform:translateY(-3px) rotateX(var(--plate-x,0deg)) rotateY(var(--plate-y,0deg));box-shadow:0 15px 24px -18px var(--gold); }
+.work-card:has(.specimen-record[open]){ border-color:var(--gold); }
+.work-card:has(.specimen-record[open]) .specimen-plane{ box-shadow:0 0 0 1px var(--line),0 10px 24px -18px var(--gold); }
+@media (prefers-reduced-motion:reduce),(hover:none),(pointer:coarse){.specimen-plane,.specimen-plane[data-handled]{ transform:none;transition:none; }}
 </style>
 <!-- home-style:end -->
   <script>document.documentElement.classList.add("has-js")</script>
   <script src="./assets/site.js" defer></script>
+  <script type="module" src="./assets/specimens.mjs"></script>
   <title>Moth & Gravel — Independent Software &amp; Design Studio</title>
 <!-- discovery:start -->
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://mothandgravel.com/#studio","name":"Moth & Gravel","url":"https://mothandgravel.com/","description":"An independent software and design studio based in Finland. Useful tools and thoughtful interfaces, with an invitation to questions from anywhere.","logo":"https://mothandgravel.com/assets/nav-mark.svg","location":{"@type":"Place","name":"Finland"},"founder":{"@type":"Person","name":"slideep"},"sameAs":["https://github.com/mothandgravel"]},{"@type":"WebSite","@id":"https://mothandgravel.com/#website","url":"https://mothandgravel.com/","name":"Moth & Gravel","inLanguage":"en","publisher":{"@id":"https://mothandgravel.com/#studio"}},{"@type":"WebPage","@id":"https://mothandgravel.com/#page","url":"https://mothandgravel.com/","name":"Moth & Gravel — Independent Software & Design Studio","inLanguage":"en","isPartOf":{"@id":"https://mothandgravel.com/#website"}}]}</script>
@@ -641,35 +667,41 @@ white-space: nowrap;
     </section>
 
     <section id="work" class="work-section shell section-space" aria-labelledby="work-title">
-      <div class="section-kicker mono"><span>02 — THE WORKBENCH</span><span>SMALL BEGINNINGS / PUBLIC RECORD</span></div>
+      <div class="section-kicker mono"><span>02 — WORKING SPECIMENS</span><span>THREE MATERIALS / OPEN QUESTIONS</span></div>
       <div class="section-lead">
         <h2 id="work-title">Less presentation.<br><em>More making.</em></h2>
-        <p>The source of this site and the materials we made. Small beginnings, open to inspection. Our wider product work finds its way here through the questions it raises—and the Field Notes we make of them.</p>
+        <p>A saved trace. A footprint from the game’s code. A scan seen four ways. Pieces of work from across the pipeline, and the questions they leave on the bench.</p>
       </div>
       <div class="work-grid">
-        <article class="work-card">
-          <div class="work-card-top mono"><span>FILE / 001</span><span>PUBLIC SOURCE</span></div>
-          <div class="work-graphic graphic-software" aria-hidden="true"><span class="graphic-window"><span>01</span><span class="graphic-signal"></span><span class="graphic-signal"></span><span class="graphic-signal last"></span></span><span class="graphic-annotation">NO FRAMEWORK<br>NO THEATER</span></div>
-          <div class="work-card-content">
-            <p class="work-card-kicker mono">01 / THIS VERY SITE</p>
-            <h3>Made in the open.</h3>
-            <p>A small, deliberately lightweight website. The source is public, with a record of the design choices behind it.</p>
-            <a class="work-card-link" href="https://github.com/mothandgravel/.github/tree/main/docs" target="_blank" rel="noopener noreferrer">Inspect the source <span aria-hidden="true">↗</span></a>
+        <article class="work-card" id="specimen-ajo">
+          <div class="work-card-top mono"><span>SPECIMEN / 001</span><span>RESEARCH TOOL</span></div>
+          <figure class="work-specimen"><div class="specimen-plane"><div class="trace-pair" aria-label="Two stages from Ajo’s saved lost-query simulator case">
+            <div><span class="mono">01 / REPLY LOST</span><strong>Answer missing.</strong><p>The host cannot confirm the outcome.</p><p class="trace-count"><b>1</b> application at the receiver</p></div>
+            <div><span class="mono">02 / RESULT QUERIED</span><strong>Result found.</strong><p>The original operation has one attempt.</p><p class="trace-count"><b>1</b> application at the receiver</p></div>
+          </div></div><figcaption>Ajo / selected recorded simulator trace. The check recovered the result without repeating the original operation.</figcaption></figure>
+          <div class="work-card-content"><p class="work-card-kicker mono">AJO / CONTINUING WORK</p><h3>An answer is missing.<br>What now?</h3><p>A lost reply can leave an agent unsure what happened. What should the person supervising it see before choosing the next move?</p>
+            <details class="specimen-record"><summary>Open the working record</summary><p>The saved case moves from <strong>outcome unknown</strong> to <strong>succeeded</strong> after querying the original result. Dispatches rise from one to two; original-operation attempts and receiver applications both stay at one.</p><p>This is a controlled simulator record, not a live agent session or a deployed recovery claim. We have not observed how a person reads these states.</p></details>
+            <a class="work-card-link" href="./notes/005-green-light.html">Follow the question of reassuring signals <span aria-hidden="true">↗</span></a>
           </div>
         </article>
-
-        <article class="work-card">
-          <div class="work-card-top mono"><span>FILE / 002</span><span>VISUAL MATERIALS</span></div>
-          <div class="work-graphic graphic-objects" aria-hidden="true"><span class="stone stone-a"></span><span class="stone stone-b"></span><span class="stone stone-c"></span><span class="graphic-annotation">SOFT WINGS<br>HARD EDGES</span></div>
-          <div class="work-card-content">
-            <p class="work-card-kicker mono">03 / MATERIAL STUDY</p>
-            <h3>Marks &amp; materials.</h3>
-            <p>One moth wing, one constructed of stone. A visual identity that works in pixels, print and thread.</p>
-            <a class="work-card-link" href="https://github.com/mothandgravel/.github/tree/main/profile/assets" target="_blank" rel="noopener noreferrer">Explore the brand marks <span aria-hidden="true">↗</span></a>
+        <article class="work-card" id="specimen-skystack">
+          <div class="work-card-top mono"><span>SPECIMEN / 002</span><span>GAME PROTOTYPE</span></div>
+          <figure class="work-specimen"><div class="specimen-plane"><a href="./assets/specimens/sky-stamp-footprints.svg" aria-label="Open SkyStack’s full-size stamp footprint replay"><img src="./assets/specimens/sky-stamp-footprints.svg" width="640" height="420" loading="lazy" decoding="async" alt="The native stamp resolver returns one cell, a two-by-two platform, a centered three-cell line and an east-facing three-cell run. A dot marks each anchor."></a></div><figcaption>SkyStack Builder / fresh replay of the native footprint code. A cell plot, not a game capture.</figcaption></figure>
+          <div class="work-card-content"><p class="work-card-kicker mono">SKYSTACK BUILDER / PLAY</p><h3>The thing<br>you just tried.</h3><p>Several pieces can belong to one intended gesture. The game’s stamp code gathers them into a footprint. How should a player recognise that thing—and find a way back?</p>
+            <details class="specimen-record"><summary>Open the working record</summary><p>The replay calls the original footprint, bounds and duplicate-cell helpers. All four shown footprints fit inside the example world and contain no duplicate cells.</p><p>It does not run the Windows game, spend materials, place blocks or test undo. Those are separate parts of the play-and-reversal study.</p></details>
+            <a class="work-card-link" href="./notes/008-one-undo.html">Follow the play-and-reversal study <span aria-hidden="true">↗</span></a>
           </div>
         </article>
-
+        <article class="work-card" id="specimen-kitronik">
+          <div class="work-card-top mono"><span>SPECIMEN / 003</span><span>MAPPING EXPERIMENT</span></div>
+          <figure class="work-specimen"><div class="specimen-plane"><a href="./assets/notes/006-scan-replay.webp" aria-label="Open the full-size saved scan render"><img src="./assets/notes/006-scan-replay.webp" width="2100" height="1800" loading="lazy" decoding="async" alt="Four actual views from the Python scan renderer: twelve polar readings, a top-down shape, an occupancy grid and a distance profile."></a></div><figcaption>Kitronik buggy / one repository sample rendered offline. Four ways to look at the same readings.</figcaption></figure>
+          <div class="work-card-content"><p class="work-card-kicker mono">KITRONIK BUGGY / ROBOTICS</p><h3>A picture with<br>room for doubt.</h3><p>A clean map can look more certain than the readings beneath it. Which view makes a gap easier to notice, and which makes it disappear into the picture?</p>
+            <details class="specimen-record"><summary>Open the working record</summary><p>The saved sample has twelve readings and an older 32 × 32 grid. The current firmware’s 64 × 64 grid is a separate source state.</p><p>The sample’s physical capture origin is not established. This render does not prove map accuracy, safe navigation or a new hardware run.</p></details>
+            <a class="work-card-link" href="./notes/006-map-leaves-room.html">Follow the mapping study <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
       </div>
+      <details class="work-sources"><summary>In the studio drawer.</summary><p>The source of this site and the visual materials behind it. <a href="https://github.com/mothandgravel/.github/tree/main/docs" target="_blank" rel="noopener noreferrer">Inspect the site source ↗</a> <a href="https://github.com/mothandgravel/.github/tree/main/profile/assets" target="_blank" rel="noopener noreferrer">Explore the brand marks ↗</a></p></details>
       <div class="studio-answers" aria-label="Difficulties worth bringing">
         <details><summary>An idea that needs contact with the ground.</summary><p>A useful possibility, a few constraints, and no obvious first step. Start by putting the question into words. <a href="./questions/">Shape the loose end ↗</a></p></details>
         <details><summary>An interface that makes people hesitate.</summary><p>A confusing beginning, a control that moves, or a reassuring signal that says too much. <a href="./notes/004-controls-stay-put.html">See a control stay put ↗</a> · <a href="./questions/">Bring your own difficulty ↗</a></p></details>

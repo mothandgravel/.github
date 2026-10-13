@@ -7,6 +7,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 import re
 import json
+import hashlib
 import struct
 import sys
 import xml.etree.ElementTree as ET
@@ -140,8 +141,22 @@ def main() -> int:
     # Sprint 02: public work must be real and all outbound actions usable.
     note_file = ROOT / "notes" / "001-curiosity-with-calluses.html"
     check(note_file.is_file(), "Field Note 001 is missing")
-    check(html.count('class="work-card-link"') == 2, "Both Workbench cards need real destinations")
-    check(html.count('class="work-card"') == 2, "Workbench should display two material/source cards")
+    check(html.count('class="work-card-link"') == 3, "All three specimens need a related study")
+    check(html.count('class="work-card"') == 3, "Workbench should display three working specimens")
+
+    for specimen in ('ajo', 'skystack', 'kitronik'):
+        check(f'id="specimen-{specimen}"' in html, f'Missing {specimen} specimen')
+    check(html.count('class="specimen-record"') == 3, 'Each specimen needs a native working record')
+    provenance = json.loads((ROOT / 'design/working-specimens-provenance.json').read_text())
+    check([item['id'] for item in provenance['artifacts']] == ['ajo', 'skystack', 'kitronik'],
+          'Specimen provenance must match the visible selection')
+    for item in provenance['artifacts']:
+        if 'asset' in item:
+            asset = ROOT / 'design' / item['asset']
+            check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['assetSha256'],
+                  f"Specimen asset differs from recorded output: {item['id']}")
+    check((ROOT / 'assets/specimens/sky-stamp-footprints.svg').is_file(), 'Missing native footprint replay')
+    check('src="./assets/specimens.mjs"' in html, 'Optional specimen handling module missing')
 
     check('https://github.com/mothandgravel/.github/tree/main/docs' in html, "Workbench source link is missing")
     check('https://github.com/mothandgravel/.github/tree/main/profile/assets' in html, "Workbench brand assets link is missing")
