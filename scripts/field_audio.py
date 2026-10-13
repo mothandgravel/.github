@@ -410,6 +410,8 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("check", help="Validate all source fingerprints, scripts and request boundaries offline")
+    from field_captions import add_arguments, run as run_captions
+    add_arguments(commands)
     for name in ("plan", "generate"):
         sub = commands.add_parser(name)
         sub.add_argument("episode")
@@ -439,6 +441,8 @@ def main(argv=None) -> int:
             else:
                 summarize(plan)
                 print("Dry run only; no Google requests made.")
+        elif args.command == "captions":
+            run_captions(args)
         else:
             generate(args)
         return 0

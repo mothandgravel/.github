@@ -8,7 +8,7 @@ Visit [mothandgravel.com](https://mothandgravel.com/) to explore the studio and 
 
 This repository contains the [website](docs/), the [GitHub organization profile](profile/README.md), and the [visual identity assets](profile/assets/). The site's source is public; private product work is not included here.
 
-The [Field Notes audio pilot](audio/README.md) contains a narrated edition and a two-voice conversation, with a dependency-free Google Cloud speech runner and Cloud Shell setup. Run `python3 scripts/field_audio.py check` to validate sources and request limits offline. Actual generation is an explicit command in your Google Cloud project; the pilot does not yet publish audio or add players to the live site.
+The [Field Notes audio pilot](audio/README.md) contains narration, a brisker comparison and a two-voice conversation, with a dependency-free Google Cloud runner and Cloud Shell setup. Run `python3 scripts/field_audio.py check` to validate sources and request limits offline. The separate `captions` command transcribes a finished MP3 into SRT, WebVTT, word timings and a local synchronized listening page. Actual generation/transcription is explicit in your Google Cloud project; the pilot does not yet publish audio or add players to the live site.
 
 ## Keeping the site useful
 

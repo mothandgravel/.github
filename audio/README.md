@@ -190,6 +190,128 @@ Both an uncertain retry and a different-endpoint attempt can incur another charg
 Set a small billing alert in the selected project if useful. Google Cloud budget
 alerts notify; they **do not** cap spending.
 
+## Subtitles and a synchronized transcript
+
+Caption the **finished MP3** after choosing the voice and pace. This command uses
+Google Speech-to-Text V2 and never calls the synthesis API. It uploads only that
+MP3 to a private working bucket, submits one batch transcription, then downloads
+SRT, WebVTT and native word timings. The original input script remains untouched.
+
+### One-time Cloud setup
+
+Use the same `FIELD_AUDIO_PROJECT` as the successful narration run:
+
+```bash
+gcloud services enable speech.googleapis.com storage.googleapis.com --project="$FIELD_AUDIO_PROJECT"
+export FIELD_AUDIO_BUCKET="${FIELD_AUDIO_PROJECT}-field-notes-audio"
+gcloud storage buckets create "gs://$FIELD_AUDIO_BUCKET" \
+  --project="$FIELD_AUDIO_PROJECT" --location=US \
+  --uniform-bucket-level-access --public-access-prevention
+```
+
+For an existing working bucket, set its name in `FIELD_AUDIO_BUCKET` instead.
+The runner requires **public access prevention enforced** before uploading;
+setting it on an existing dedicated private bucket is:
+
+```bash
+gcloud storage buckets update "gs://$FIELD_AUDIO_BUCKET" --public-access-prevention
+```
+
+The caller needs **Cloud Speech Client** (`roles/speech.client`) for recognition
+and operation reads, along with `storage.buckets.get`, `storage.objects.get` and
+`storage.objects.create` on the working bucket, and permission to use project
+services. Project Owners may already have these permissions. A project/bucket
+administrator can grant missing permissions. The Speech-to-Text service agent
+also needs access to read the input; its Google-managed Speech service-agent role
+includes Cloud Storage access. A bucket in the same project simplifies that setup.
+An operation that reports input access denied needs its service-agent permissions
+checked before starting a replacement job.
+
+The default caption model is **Chirp 3**, in the **US speech multi-region**.
+This is a separate service/location from the TTS global endpoint. For European
+processing, use `--location eu` and an appropriate EU working bucket. The caption
+pilot accepts MP3s up to 20 minutes, matching Chirp 3's documented word-offset
+limit, and no larger than 100 MB. `--model long --location global` is an optional
+captioning alternative without this pilot's diarization option.
+
+### Caption an existing recording
+
+For the first completed narration, the recorded output path was:
+
+```bash
+python3 scripts/field_audio.py captions \
+  artifacts/audio/note-001/2cb5fa1b4551ae68/episode.mp3 \
+  --project "$FIELD_AUDIO_PROJECT" --bucket "$FIELD_AUDIO_BUCKET" --dry-run
+```
+
+The dry run checks the file, duration and provenance locally. It makes no Google
+requests and creates no caption artifacts. Remove `--dry-run` to transcribe:
+
+```bash
+python3 scripts/field_audio.py captions \
+  artifacts/audio/note-001/2cb5fa1b4551ae68/episode.mp3 \
+  --project "$FIELD_AUDIO_PROJECT" --bucket "$FIELD_AUDIO_BUCKET"
+```
+
+For the brisk edition or conversation, substitute the MP3 path printed by that
+generation run. Add `--diarize` for the two-voice English conversation. Detected
+speaker IDs stay **Speaker 1 / Speaker 2**, rather than automatically becoming
+Explore / Question; those identities need listening review.
+
+Batch recognition is asynchronous. Each invocation polls for up to 45 seconds.
+If the command reports that the job is still running, repeat the same command:
+it resumes the saved operation and **does not submit another transcription**.
+A file lock prevents concurrent commands from submitting the same job twice.
+
+Completed results live in a separate `captions/<run-id>/` directory beside the
+recording:
+
+| File | Meaning |
+| --- | --- |
+| `captions.srt` | Google's timed subtitles for video tools, including Kdenlive. |
+| `captions.vtt` | Google's WebVTT captions for web playback. |
+| `transcript.txt` | Recognized speech, distinct from the original input script. |
+| `words.json` / `cues.json` | Timings and detected speaker IDs, tied to the MP3 hash. |
+| `comparison.json` | Script/transcription differences for listening review. |
+| `captions.json` | Audio/script fingerprints, output hashes and pending review status. |
+| `listen.html` / `audio.mp3` | Local listening page and a copy of the finished recording. |
+| `operation.json` / `state.json` | Saved provider response and resumable job state. |
+
+Open `listen.html` to review the captions with the recording. Playback highlights
+the current cue, selecting a cue seeks to that point, and Follow playback can be
+turned off while reading. The page includes caption/transcript downloads and a
+no-JavaScript transcript link. The preview works from local files; if a browser
+blocks local audio, serve that caption directory with `python3 -m http.server`.
+
+Names, numbers, missing negations and speaker boundaries deserve a listen. The
+comparison normalizes case, punctuation and `&`/`and`, but preserves substantive
+differences; it never silently rewrites captions to match the intended script.
+Similarity is not proof that the audio said the right words. Review remains
+pending even if the normalized texts match. No captions are published to the site.
+
+### Recovery and cleanup
+
+- Repeating a completed command re-exports cached recognition locally, without
+  another upload or paid request. Editing a copy of an SRT/VTT is fine; repeating
+  the command replaces those generated files from the saved response.
+- If submission loses its acknowledgement, the runner stops. Only
+  `--retry-uncertain` permits another submission; it may incur another charge.
+- A rejected submission, such as HTTP 403, can be repeated after repairing its
+  cause. A confirmed failed operation requires `--restart-failed` after repair;
+  its previous provider response is retained as `failed-operation.json`.
+- Caption errors in a completed response leave the raw response available for
+  inspection. They do not trigger another transcription automatically.
+- The content-addressed Cloud Storage input is retained. Keep it while its job
+  runs; after review, delete the exact input URI printed by the runner if desired.
+  No bucket or unrelated objects are automatically deleted.
+- Transcription and working-bucket storage have separate charges. Check current
+  [Speech-to-Text pricing](https://cloud.google.com/speech-to-text/pricing).
+
+The Google caption request and live transcription still need a first run in your
+Cloud project. Offline tests cover documented response shapes, timing bounds,
+script differences, source matching, privacy configuration and recovery. Browser
+checks use synthetic audio/caption fixtures, not a claim about the real voice.
+
 ## Publication after the listening pilot
 
 The first two MP3s stay in ignored `artifacts/`; nothing changes the live site.
@@ -205,8 +327,9 @@ site change can then add real audio rather than empty controls:
 - Record script, source and audio fingerprints in episode metadata; flag revised
   source articles for editorial review before regenerating.
 
-For this tiny pilot, local generation plus manual publishing is sufficient. Cloud
-Storage and a GitHub Actions identity can follow once the listening experience is
+For this tiny pilot, local generation plus manual publishing is sufficient. The
+caption working bucket remains private and is separate from future public media
+hosting. A GitHub Actions identity can follow once the listening experience is
 chosen. Use Workload Identity Federation for CI instead of a long-lived JSON key.
 Do not put Google authentication or generation calls in visitor-facing code.
 
@@ -219,3 +342,8 @@ Do not put Google authentication or generation calls in visitor-facing code.
 - [Speech pricing](https://cloud.google.com/text-to-speech/pricing)
 - [Budget alerts do not cap spending](https://docs.cloud.google.com/billing/docs/how-to/budgets)
 - [Podcast RSS requirements](https://podcasters.apple.com/support/823-podcast-requirements)
+- [Google SRT and WebVTT caption outputs](https://docs.cloud.google.com/speech-to-text/docs/caption-support)
+- [BatchRecognize REST request and inline output](https://docs.cloud.google.com/speech-to-text/docs/reference/rest/v2/projects.locations.recognizers/batchRecognize)
+- [Chirp 3 regions, word offsets and diarization](https://docs.cloud.google.com/speech-to-text/docs/models/chirp-3)
+- [Speech permissions and service-agent Cloud Storage access](https://docs.cloud.google.com/iam/docs/roles-permissions/speech)
+- [Create a private working bucket](https://docs.cloud.google.com/sdk/gcloud/reference/storage/buckets/create)

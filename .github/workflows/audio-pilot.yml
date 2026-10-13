@@ -8,6 +8,8 @@ on:
       - "docs/assets/notes.json"
       - "scripts/field_audio.py"
       - "scripts/test_field_audio.py"
+      - "scripts/field_captions.py"
+      - "scripts/test_field_captions.py"
       - ".github/workflows/audio-pilot.yml"
   pull_request:
     paths:
@@ -16,6 +18,8 @@ on:
       - "docs/assets/notes.json"
       - "scripts/field_audio.py"
       - "scripts/test_field_audio.py"
+      - "scripts/field_captions.py"
+      - "scripts/test_field_captions.py"
       - ".github/workflows/audio-pilot.yml"
 
 permissions:
@@ -29,4 +33,4 @@ jobs:
       - name: Verify sources and bounded request plans without credentials
         run: python3 scripts/field_audio.py check
       - name: Verify script preservation, recovery and audio processing offline
-        run: python3 -m unittest discover -s scripts -p 'test_field_audio.py' -v
+        run: python3 -m unittest discover -s scripts -p 'test_field_*.py' -v
