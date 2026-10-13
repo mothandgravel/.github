@@ -1,6 +1,6 @@
 // A browser draft is a visitor's words, never a generated diagnosis or estimate.
 export const draftKey = 'mg-loose-end-v1';
-export const roomKey = 'mg-workbench-v1';
+export const roomKey = 'mg-mending-workbench-v1';
 export const fields = ['intent', 'making', 'difficulty', 'people', 'outcome', 'constraints', 'timing', 'budget', 'materials'];
 export const followups = ['timing', 'budget', 'materials'];
 export const briefLimit = 24000;

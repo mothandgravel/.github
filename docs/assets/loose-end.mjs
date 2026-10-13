@@ -1,4 +1,4 @@
-import { fields, intents, labels, draftKey, roomKey, normalizeDraft, readDraft, briefText } from './loose-end-model.mjs';
+import { fields, intents, labels, draftKey, roomKey, normalizeDraft, readDraft, briefText } from './loose-end-model.mjs?v=mending';
 
 const intake = document.getElementById('loose-end');
 const status = document.getElementById('draft-status');
@@ -119,19 +119,19 @@ if (room) {
     let edited = null; try { edited = JSON.parse(saved.getItem(draftKey)).brief; } catch {}
     document.getElementById('carried-brief').textContent = typeof edited === 'string' ? edited.slice(0, 14000) : briefText(draft);
   }
-  let state = { surface: 'host', note: '', noteSurface: 'host', choice: '' };
+  let state = { surface: 'item', note: '', noteSurface: 'item', choice: '' };
   try {
     const value = JSON.parse(saved?.getItem(roomKey));
-    if (value?.version === 1) state = { surface: value.surface === 'reason' ? 'reason' : 'host',
+    if (value?.version === 1) state = { surface: value.surface === 'damage' ? 'damage' : 'item',
       note: typeof value.note === 'string' ? value.note.slice(0, 1800) : '',
-      noteSurface: value.noteSurface === 'reason' ? 'reason' : 'host',
-      choice: ['host', 'reason', 'open'].includes(value.choice) ? value.choice : '' };
+      noteSurface: value.noteSurface === 'damage' ? 'damage' : 'item',
+      choice: ['item', 'damage', 'open'].includes(value.choice) ? value.choice : '' };
   } catch {}
   function persist() {
     try { if (!saved) throw new Error('Unavailable'); saved.setItem(roomKey, JSON.stringify({ version: 1, ...state })); return true; }
     catch { return false; }
   }
-  const surfaces = { host: 'Ask for the host first', reason: 'Ask for the reason first', open: 'Keep the question open' };
+  const surfaces = { item: 'Start with the object', damage: 'Start with the damage', open: 'Keep the question open' };
   function paint(updateChoice = false) {
     room.querySelectorAll('input[name="surface"]').forEach(el => { el.checked = el.value === state.surface; });
     room.querySelectorAll('[data-surface]').forEach(el => { el.hidden = el.dataset.surface !== state.surface; });
@@ -167,12 +167,12 @@ if (room) {
   });
   document.getElementById('download-room').addEventListener('click', () => {
     download((draft ? document.getElementById('carried-brief').textContent + '\n\n' : '') +
-      'WORKBENCH EXAMPLE — LOCAL DRAFT\n\nExample question: Where should a visitor check-in begin?\nObservation: ' +
+      'WORKBENCH EXAMPLE — LOCAL DRAFT\n\nExample question: How do you begin a repair note?\nObservation: ' +
       (state.note ? surfaces[state.noteSurface] + ': ' + state.note : 'Still open.') + '\nDraft choice: ' + (surfaces[state.choice] || 'Still open.') + '\n\nNothing has been sent to the studio.\n', 'moth-and-gravel-workbench-draft.txt');
     announce('Workbench draft prepared for download. Nothing was sent.');
   });
   document.getElementById('clear-room').addEventListener('click', () => {
-    clearSaved(); state = { surface: 'host', note: '', noteSurface: 'host', choice: '' }; paint(true);
+    clearSaved(); state = { surface: 'item', note: '', noteSurface: 'item', choice: '' }; paint(true);
     document.getElementById('your-question').hidden = true; document.getElementById('your-question').querySelector('dl').replaceChildren();
     document.getElementById('carried-brief').textContent = ''; document.getElementById('original-question').textContent = ''; document.getElementById('annotation-panel').hidden = true;
     document.getElementById('annotation').value = '';
