@@ -79,6 +79,12 @@ try {
     const fullBrief=await page.locator('#brief-text').inputValue();
     assert(withFollowups ? fullBrief.includes('USD 2,000–4,000')&&fullBrief.includes('private-prototype-marker') : !fullBrief.includes('Working budget\n'), 'Optional follow-ups must be included only when answered');
     await audit(page,`brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
+    await page.locator('#first-work-next summary').focus();
+    await page.keyboard.press('Enter');
+    assert(await page.locator('#first-work-next').getAttribute('open')!==null,'First-work explanation must be keyboard reachable');
+    assert((await page.locator('#brief-text').inputValue())===fullBrief,'Explaining the engagement must preserve the literal brief');
+    assert((await page.locator('#first-work-next').innerText()).includes('Before paid work begins'),'First-work explanation must name the agreement boundary');
+    await audit(page,`first-work-brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
     const downloadPromise = page.waitForEvent('download');
     await page.locator('#download-brief').click();
     const download = await downloadPromise;

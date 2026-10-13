@@ -497,6 +497,36 @@ white-space: nowrap;
 .studio-answers summary{ cursor:pointer;padding:20px 0;min-height:44px;font-size:17px;font-weight:600;color:var(--ink); }
 .studio-answers p{ font-size:15px;line-height:1.7;margin:0 0 24px; }
 .studio-answers a{ color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px; }
+.first-work-section{ border-top:1px solid var(--line); }
+.first-work-sheet{ border:1px solid var(--line);background:var(--surface); }
+.first-work-label{ padding:24px 28px;border-bottom:1px solid var(--line);color:var(--gold-bright);font-size:10px; }
+.first-work-parts{ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0; }
+.first-work-parts li{ min-width:0;padding:30px 28px 34px; }
+.first-work-parts li+li{ border-left:1px solid var(--line); }
+.first-work-parts .mono{ color:var(--gold-bright);font-size:10px; }
+.first-work-parts h3{ font:400 29px/1.2 var(--serif);color:var(--ink);margin:22px 0 16px; }
+.first-work-parts p,.first-work-foot p{ color:var(--secondary);font-size:16px;line-height:1.7; }
+.first-work-example{ border-top:1px solid var(--line); }
+.first-work-example summary{ cursor:pointer;padding:22px 28px;min-height:44px;color:var(--ink);font-size:17px;font-weight:600; }
+.first-work-example>div{ padding:0 28px 26px;max-width:780px; }
+.first-work-example p{ color:var(--secondary);font-size:16px;line-height:1.7;margin:0 0 16px; }
+.first-work-example .mono{ color:var(--gold-bright);font-size:10px; }
+.first-work-example strong{ color:var(--ink); }
+.first-work-example a{ color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px;display:inline-block;min-height:44px; }
+.first-work-foot{ display:grid;grid-template-columns:1.2fr 1fr;gap:42px;align-items:start;padding-top:32px; }
+.first-work-foot h3{ font:400 29px/1.2 var(--serif);margin-bottom:16px;color:var(--ink); }
+.first-work-invitation{ min-width:0; }
+.first-work-invitation .button{ white-space:normal; }
+.first-work-invitation p{ font-size:13px;margin-top:14px;max-width:38ch; }
+.contact-route-note a{ text-decoration:underline;text-underline-offset:4px; }
+@media (max-width:900px){.first-work-parts{ grid-template-columns:1fr; }
+.first-work-parts li+li{ border-left:0;border-top:1px solid var(--line); }
+.first-work-parts li{ padding:26px 24px; }
+.first-work-parts h3{ margin-top:16px; }}
+@media (max-width:660px){.first-work-foot{ grid-template-columns:1fr;gap:26px; }
+.first-work-label,.first-work-example summary{ padding:22px 20px; }
+.first-work-example>div{ padding-inline:20px; }
+.first-work-parts li{ padding:24px 20px; }}
 </style>
 <!-- home-style:end -->
   <script>document.documentElement.classList.add("has-js")</script>
@@ -654,6 +684,30 @@ white-space: nowrap;
       </div>
     </section>
 
+    <section class="first-work-section shell section-space" id="first-work" aria-labelledby="first-work-title">
+      <div class="section-kicker mono"><span>A FIRST PIECE OF WORK</span><span>ONE QUESTION / A WAY FORWARD</span></div>
+      <div class="section-lead">
+        <h2 id="first-work-title">Small enough<br><em>to finish.</em></h2>
+        <p>A stubborn question can be a whole beginning. We agree what needs examining, make or inspect something that can answer it, and leave you with material you can use to choose what happens next.</p>
+      </div>
+      <div class="first-work-sheet">
+        <p class="first-work-label mono">ON THE BENCH / WHAT THE WORK LEAVES WITH YOU</p>
+        <ol class="first-work-parts">
+          <li><span class="mono">01 / THE QUESTION</span><h3>A boundary to work within.</h3><p>One uncertainty worth resolving. We narrow it together and name what would make this piece of work useful.</p></li>
+          <li><span class="mono">02 / THE MATERIAL</span><h3>Something you can inspect.</h3><p>An annotated review, a sketch, a working prototype or a technical experiment. We choose the form that fits the question, and agree what you will receive.</p></li>
+          <li><span class="mono">03 / THE NEXT MOVE</span><h3>A reason to go on. Or stop.</h3><p>The material, what we learned, what remains open and a recommended next step. Build, revise, look more closely—or leave the idea there.</p></li>
+        </ol>
+        <details class="first-work-example">
+          <summary>A worn jacket. One awkward beginning.</summary>
+          <div><p class="mono">ILLUSTRATIVE SCOPE / MENDING NOTEBOOK</p><p><strong>The question:</strong> can someone begin a repair note when they can see the wear but cannot name the damage?</p><p><strong>The material:</strong> two opening sketches, their trade-offs and a revised way to show the worn part.</p><p><strong>The next move:</strong> a proposed observation to help choose which beginning to test. The sketches alone do not establish that either works better.</p><p>This is our fictional workbench study, not a client result. <a href="./workbench/">Inspect the example ↗</a></p></div>
+        </details>
+      </div>
+      <div class="first-work-foot">
+        <div><h3>First, a conversation.</h3><p>Before any paid work, we agree the question, what you’ll receive, the fee, the timing and where this piece ends. Further work is a separate choice.</p></div>
+        <div class="first-work-invitation"><a class="button button-brass" href="./questions/">Put one question on the bench <span class="button-arrow" aria-hidden="true">↗</span></a><p>A few words become an editable brief. Nothing is sent automatically.</p></div>
+      </div>
+    </section>
+
     <section id="ethos" class="ethos-section" aria-labelledby="ethos-title">
       <div class="shell ethos-grid">
         <div class="ethos-left">
@@ -697,6 +751,7 @@ white-space: nowrap;
         </div>
         <div class="contact-right">
           <p>A software idea, an awkward interface, or something with wires. Tell us what you are trying to make, where it gets difficult, and what a useful outcome would look like.</p>
+          <p class="contact-route-note"><a href="#first-work">See how a first piece of work takes shape ↑</a></p>
           <a class="button button-light" href="./questions/">Give it a little shape <span class="button-arrow" aria-hidden="true">↗</span></a>
           <p class="contact-route-note">A few questions. An editable brief to keep. No account, and nothing sent automatically.</p>
           <a class="contact-feed" href="https://github.com/mothandgravel/.github/issues/new?template=signal.yml" target="_blank" rel="noopener noreferrer">Or just write to us <span aria-hidden="true">↗</span></a>
