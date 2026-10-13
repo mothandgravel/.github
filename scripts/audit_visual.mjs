@@ -42,7 +42,8 @@ const snap = async (page, name) => {
     document.activeElement?.blur();
     window.scrollTo({ top: 0, behavior: 'instant' });
   });
-  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  // Animation-frame callbacks do not run in the no-JavaScript review context.
+  await page.waitForTimeout(100);
   await page.screenshot({ path: join(output, `${name}.png`), fullPage: true, animations: "disabled" });
 };
 
