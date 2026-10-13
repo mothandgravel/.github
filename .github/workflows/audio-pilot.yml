@@ -1,0 +1,32 @@
+name: Validate audio pilot (offline)
+
+on:
+  push:
+    paths:
+      - "audio/**"
+      - "docs/notes/**"
+      - "docs/assets/notes.json"
+      - "scripts/field_audio.py"
+      - "scripts/test_field_audio.py"
+      - ".github/workflows/audio-pilot.yml"
+  pull_request:
+    paths:
+      - "audio/**"
+      - "docs/notes/**"
+      - "docs/assets/notes.json"
+      - "scripts/field_audio.py"
+      - "scripts/test_field_audio.py"
+      - ".github/workflows/audio-pilot.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify sources and bounded request plans without credentials
+        run: python3 scripts/field_audio.py check
+      - name: Verify script preservation, recovery and audio processing offline
+        run: python3 -m unittest discover -s scripts -p 'test_field_audio.py' -v

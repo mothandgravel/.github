@@ -1,0 +1,71 @@
+Explore: This is Moth and Gravel Field Notes. Today, a question that connects three studies: what does an interface let you believe? This is an AI-generated conversation adapted from the published notes. The source studies concern software contracts, a little robot's map, and a telemetry dashboard.
+
+Question: All three give a person a quick picture. A green light. A coloured map. A number that sits quietly on a gauge. The picture can feel more certain than the information behind it.
+
+Explore: Let's start with the green light. It is a very efficient piece of design. One glance, one small exhale. The thing is all right.
+
+Question: What thing? And all right in what sense? A service can be running. A test can pass. A result can be delivered. Those answer different questions, even when the interface gives them the same colour.
+
+Explore: Field Note five follows that distinction across three projects. In Geaidnu, which is being developed as a workspace companion, a healthy runtime is an observation about the runtime. Whether a feature meets its acceptance conditions needs its own evidence.
+
+Question: The source contract also keeps a failed runtime probe unknown. If the observation did not succeed, it has not established that the application stopped. That sounds like a small wording distinction until someone acts on the wrong version.
+
+Explore: It becomes even more interesting in Ajo, which checks agent plans and records their execution. The note describes a local integration report in which all thirty-four acceptance cases passed. The delivery records still included incomplete, unknown and unresolved outcomes.
+
+Question: That is possible because some cases are meant to preserve those outcomes. If a case asks the mechanism to refuse an unsafe next step, a correct refusal is a pass. If the acknowledgement was lost, keeping that outcome unknown can also be correct.
+
+Explore: The report records six verified delivery subprobes separately from the passing cases. A concise headline needs a route back to that distinction.
+
+Question: And those fixtures are not a sample for calculating a general delivery success rate. The note is reading bounded results. It does not establish production reliability or release readiness.
+
+Explore: Paja, a build tool for spare machines, gives green a more modest job. Every configured step exited with zero. Its recorded result distinguishes failed steps, infrastructure failures, cancellation and timeouts.
+
+Question: That boundary can be understood. Inspect the recipe, then ask whether the configured steps establish what you care about. The indicator has a clear job. It does not have to quietly promise every possible property of the software.
+
+Explore: So the useful design question is: what can this green light honestly let someone stop worrying about?
+
+Question: And what still deserves a question of its own?
+
+Explore: The same problem turns up in Field Note six, about the Kitronik buggy. A little robot has an ultrasonic sensor, motors and tools for giving its readings a visual form. A few coloured points begin to look like a room.
+
+Question: A drawing is persuasive. A blank region can look like empty floor, even when the machine has not established that the space is free.
+
+Explore: The current firmware begins its occupancy grid at a neutral prior. As observations arrive, parts of the sensor beam receive free-space updates and the endpoint receives occupied-space updates. Confidence affects the contribution, and later observations can strengthen or revise the picture.
+
+Question: There are three answers to preserve: free, occupied and undecided. The stored-value thresholds are not probabilities. Values below eighty are classified as free; values above one hundred and seventy are occupied. Values from eighty through one hundred and seventy remain unclassified. The initial value is one hundred and twenty-eight.
+
+Explore: In the camera overlay, unclassified cells remain unpainted. That leaves the unanswered question visible. The saved-scan viewer also offers several views of the same input: a polar plot, a top-down view, an occupancy grid and a distance profile.
+
+Question: One view can question the attractive one. But the person needs to know which frame the marks belong to, and whether they came from a current observation or a saved example.
+
+Explore: Position is part of the estimate too. The grid belongs to a world frame, while the robot's estimated position changes inside it. The source uses motor-time kinematics with selective heading correction. A calibrated camera marker supplies another position estimate.
+
+Question: Showing two trails together can make a disagreement visible. It does not establish that either trail is accurate. This note reads mapping source and an offline replay of saved sample data. It does not establish calibrated map accuracy, safe navigation or full simultaneous localization and mapping. No live hardware or camera session was run for the note.
+
+Explore: The proposed reader study is still ahead: ask someone which parts the robot has not established. Ask which position they believe, and why. Watch what they infer from a blank area.
+
+Question: That is a concrete way to ask whether uncertainty survived the drawing. It is also a question about attention, which brings us to Field Note seven.
+
+Explore: Fast signals. Slow eyes. The telemetry dashboard keeps the latest received readings in shared state. The interface draws its gauges from that state, then schedules its next update thirty-three milliseconds later.
+
+Question: That is a requested pause after drawing, not a measured frame rate. The drawing takes time. Other work in the window takes time. Calling it thirty frames per second would claim something the source reading has not measured.
+
+Explore: A quiet number creates another question. It can stay on screen after the machine has stopped sending packets. Without a condition beside it, the last answer can look like the present answer.
+
+Question: At a refresh, the dashboard checks the age of the latest packet. Less than half a second gets the label Connected. At half a second or more, the label becomes Stale data. The gauges still show the latest received values.
+
+Explore: So the number remains available, but its relationship to now has changed. And the label changes when the next interface update checks the age, rather than at a separately established instant.
+
+Question: A stale packet does not establish the robot's physical state. The design needs to help someone notice the gap without turning every arrival into a demand for attention.
+
+Explore: The latest-packet gauges do not retain every intermediate value. Packet counters and a recent arrival-rate view provide a different kind of evidence about the stream. A calm display and a detailed record serve different kinds of attention.
+
+Question: That is the shared thread. Each picture needs a clear account of what it knows. A green light needs a scope. A map needs room for undecided space. A current value needs a condition about freshness.
+
+Explore: And each study has a practical next question. Can a person tell running from delivered? Can they find the space the robot has not established? Can they notice when a reading has become old?
+
+Question: Those are proposed questions, not completed comprehension studies. Their answers will matter more than how reassuring the pictures feel to their makers.
+
+Explore: You have been listening to Moth and Gravel Field Notes: What does the interface let you believe? The written sources are notes five, six and seven at moth and gravel dot com. They keep the detailed boundaries, illustrations and study scope available to inspect.
+
+Question: A useful interface gives someone a place to look, and a reason to trust what that place actually establishes.

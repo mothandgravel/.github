@@ -8,6 +8,8 @@ Visit [mothandgravel.com](https://mothandgravel.com/) to explore the studio and 
 
 This repository contains the [website](docs/), the [GitHub organization profile](profile/README.md), and the [visual identity assets](profile/assets/). The site's source is public; private product work is not included here.
 
+The [Field Notes audio pilot](audio/README.md) contains a narrated edition and a two-voice conversation, with a dependency-free Google Cloud speech runner and Cloud Shell setup. Run `python3 scripts/field_audio.py check` to validate sources and request limits offline. Actual generation is an explicit command in your Google Cloud project; the pilot does not yet publish audio or add players to the live site.
+
 ## Keeping the site useful
 
 The site ships readable HTML, local artwork and small progressive enhancements. The homepage includes its relevant styles in the initial response, generated from the authored `docs/assets/site.css`; article-only styles remain in the external stylesheet. Its studio and Field Notes identities are generated from the published catalog; unpublished research stays out of that catalog. Publication stamps are absent from the reading surfaces, while RSS retains publication metadata.

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "note-001",
+    "title": "Curiosity with calluses.",
+    "format": "narration",
+    "script": "scripts/note-001.txt",
+    "language": "en-US",
+    "notes": [
+      "001"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
+    }
+  },
+  {
+    "id": "workbench-001",
+    "title": "What does the interface let you believe?",
+    "format": "conversation",
+    "script": "scripts/workbench-001.txt",
+    "language": "en-US",
+    "notes": [
+      "005",
+      "006",
+      "007"
+    ],
+    "speakers": [
+      {
+        "alias": "Explore",
+        "voice": "Kore"
+      },
+      {
+        "alias": "Question",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Speak the supplied dialogue verbatim as an attentive conversation between two people reviewing design work. Explore is curious, clear and warmly engaged. Question is measured, gently skeptical and interested in what evidence establishes. Natural English at roughly 140 words per minute. Brief pauses between turns. Do not read speaker aliases aloud. No music, sound effects, ad-libbing, fabricated reactions or extra words. Preserve all qualifications about experiments, unknown states and unmeasured results.",
+    "source_sha256": {
+      "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86",
+      "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2",
+      "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
+    }
+  }
+]
