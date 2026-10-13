@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 830" role="img" aria-labelledby="title desc">
+<title id="title">Preview, refusal and reversal follow one footprint</title><desc id="desc">Three separate examples use three adjacent cells. Preview shows all cells. A blocked middle cell means no blocks placed and no material spent. A successful batch can be undone together, returning three materials when the source's expected-block checks pass.</desc>
+<rect width="1000" height="830" fill="#f1eee6"/>
+<g font-family="Arial,sans-serif" fill="#17191b"><text x="56" y="58" font-size="18" letter-spacing="3">THE GESTURE HAS A BOUNDARY</text>
+<text x="56" y="127" font-size="28">01 / Before placement</text><text x="56" y="171" font-size="21">Inspect every cell in the footprint.</text>
+<text x="56" y="373" font-size="28">02 / A blocked alternative</text><text x="56" y="417" font-size="21">One blocked cell: nothing placed, nothing spent.</text>
+<text x="56" y="619" font-size="28">03 / A successful batch, reversed</text><text x="56" y="663" font-size="21">Expected blocks still match: one undo, three materials returned.</text></g>
+<g stroke="#92723f" stroke-width="3" fill="none" stroke-dasharray="9 6"><rect x="100" y="200" width="180" height="110"/><rect x="280" y="200" width="180" height="110"/><rect x="460" y="200" width="180" height="110"/></g>
+<g stroke="#17191b" stroke-width="2" fill="none"><rect x="100" y="446" width="180" height="110"/><rect x="280" y="446" width="180" height="110"/><rect x="460" y="446" width="180" height="110"/></g><g stroke="#9d513c" stroke-width="4"><path d="M343 476L397 528M397 476L343 528"/></g>
+<g stroke="#92723f" stroke-width="2" fill="#d4b584"><rect x="100" y="694" width="180" height="80"/><rect x="280" y="694" width="180" height="80"/><rect x="460" y="694" width="180" height="80"/></g>
+<path d="M693 734H870M847 717L871 734L847 751" stroke="#17191b" stroke-width="3" fill="none"/><text x="697" y="700" font-family="Arial,sans-serif" font-size="20" fill="#17191b">Undo</text><g fill="#92723f"><circle cx="920" cy="706" r="8"/><circle cx="920" cy="734" r="8"/><circle cx="920" cy="762" r="8"/></g>
+<path d="M56 335H944M56 581H944" stroke="#b7b1a3"/>
+</svg>
