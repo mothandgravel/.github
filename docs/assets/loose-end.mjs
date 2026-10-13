@@ -20,6 +20,8 @@ if (intake) {
   const brief = document.getElementById('brief-text');
   let step = 0;
   let generatedBrief = '';
+  let guidedHistory = true;
+  try { history.replaceState({ mgLooseEnd: true, step: 0 }, ''); } catch { guidedHistory = false; }
   const answers = () => normalizeDraft(Object.fromEntries(fields.map(key => [key, key === 'intent' ?
     intake.querySelector('input[name="intent"]:checked')?.value : document.getElementById(key).value])));
   const saved = readDraft(storage());
@@ -39,8 +41,11 @@ if (intake) {
     if (making.value.trim()) { making.removeAttribute('aria-invalid'); document.getElementById('making-error').hidden = true; return true; }
     making.setAttribute('aria-invalid', 'true'); document.getElementById('making-error').hidden = false; making.focus(); return false;
   }
-  function show(value, focus = true) {
+  function show(value, focus = true, record = true) {
     step = value;
+    if (record && guidedHistory) {
+      try { history.pushState({ mgLooseEnd: true, step }, ''); } catch { guidedHistory = false; }
+    }
     panels.forEach((panel, i) => { panel.hidden = i !== step; });
     progress.textContent = `${step + 1} / ${panels.length} — ${panels[step].dataset.title}`;
     back.hidden = step === 0;
@@ -54,9 +59,21 @@ if (intake) {
     }
     if (focus) panels[step].querySelector('legend, h2').focus();
   }
-  back.addEventListener('click', () => show(step - 1));
+  window.addEventListener('popstate', event => {
+    const value = event.state;
+    if (value?.mgLooseEnd === true && Number.isInteger(value.step) && value.step >= 0 && value.step < panels.length) {
+      // Old browser entries must not bypass the required question after Clear.
+      const destination = value.step > 1 && !document.getElementById('making').value.trim() ? 1 : value.step;
+      show(destination, true, false);
+      if (destination !== value.step) {
+        try { history.replaceState({ mgLooseEnd: true, step: destination }, ''); } catch {}
+        announce('The draft is empty. Add a few words to give it a starting point.');
+      }
+    }
+  });
+  back.addEventListener('click', () => { if (guidedHistory) history.back(); else show(step - 1); });
   next.addEventListener('click', () => { if (step === 1 && !validate()) return; show(step + 1); });
-  document.getElementById('edit-answers').addEventListener('click', () => show(1));
+  document.getElementById('edit-answers').addEventListener('click', () => { if (guidedHistory) history.go(1 - step); else show(1); });
   document.getElementById('rebuild-brief').addEventListener('click', () => {
     generatedBrief = briefText(answers()); brief.value = generatedBrief;
     announce('Brief rebuilt from your answers, replacing the edits in the brief.');
@@ -84,7 +101,7 @@ if (intake) {
   });
   controls.hidden = false;
   document.querySelectorAll('[data-enhance]').forEach(el => { el.hidden = false; });
-  show(0, false);
+  show(0, false, false);
 }
 
 const room = document.getElementById('workbench-preview');

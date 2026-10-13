@@ -23,7 +23,9 @@ The public landing adds recognizable situations and routes to real Field Notes. 
 
 ## Critique and choices
 
-The first phone review put too much explanation before the questionnaire. The question sheet now precedes the supporting explanation at narrow widths. The initial carried-question panel pushed the actual artifacts down the page; its original answers and edited brief now use native disclosures around a concise question. These choices make the task easier to reach while keeping the explanations available.
+The first phone review put too much explanation before the questionnaire. The question sheet now precedes the supporting explanation at narrow widths. The initial carried-question panel pushed the actual artifacts down the page; its original answers and edited brief now use native disclosures around a concise question. Guided steps support browser Back/Forward without answers in the URL; cleared drafts cannot be recovered through that history. These choices make the task easier to reach while keeping the explanations available.
+
+The first CI run found an Afterlight contrast failure on the direct-contact link after theme switching, reproducible locally as a retained Night inherited foreground on the light background. The link now uses an explicit theme accent token. The audit samples its rendered foreground/background and also runs axe, preserving failure details. Screenshots alone did not expose the transient style problem.
 
 The style reuses the established site tokens, system fonts, masthead and appearance control. Journey styles and scripts are loaded only on these pages; the landing receives links and small copy changes. New illustrations are exact SVG sketches, labelled examples rather than fabricated screenshots.
 

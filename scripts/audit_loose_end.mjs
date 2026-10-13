@@ -15,7 +15,7 @@ async function audit(page, label, capture = false) {
   assert(geometry.content <= geometry.width + 1, label + ': horizontal overflow');
   const noJS = label.endsWith('no-javascript');
   if (!noJS) await page.addScriptTag({ content: axe.source });
-  const accessibility = noJS ? [] : await page.evaluate(async () => (await window.axe.run(document, { runOnly: { type:'tag', values:['wcag2a','wcag2aa','wcag21aa','wcag22aa'] } })).violations.map(v => ({id:v.id,targets:v.nodes.map(n=>n.target)})));
+  const accessibility = noJS ? [] : await page.evaluate(async () => (await window.axe.run(document, { runOnly: { type:'tag', values:['wcag2a','wcag2aa','wcag21aa','wcag22aa'] } })).violations.map(v => ({id:v.id,targets:v.nodes.map(n=>n.target),details:v.nodes.map(n=>n.failureSummary)})));
   accessibility.forEach(v => assert(false, label + ': axe ' + JSON.stringify(v)));
   results.push({ label, geometry, accessibility, axeRan: !noJS });
   if (capture) {
@@ -46,6 +46,14 @@ try {
     await page.goto(origin+'/questions/');
     if (theme==='afterlight') await page.locator('#light-switch').click();
     await page.locator('#question-progress').waitFor({state:'visible'});
+    const contrast = await page.evaluate(() => {
+      const link = document.querySelector('.journey-aside a');
+      const foreground=getComputedStyle(link).color, background=getComputedStyle(document.body).backgroundColor;
+      const luminance=color=>color.match(/[\d.]+/g).slice(0,3).map(Number).map(c=>{const v=c/255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((s,c,i)=>s+c*[.2126,.7152,.0722][i],0);
+      const fg=luminance(foreground),bg=luminance(background);
+      return {foreground,background,ratio:(Math.max(fg,bg)+.05)/(Math.min(fg,bg)+.05)};
+    });
+    assert(contrast.ratio>=4.5,`intake-${theme}-${viewport.width}: rendered contact contrast `+JSON.stringify(contrast));
     await audit(page,`intake-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
     await next(page);
     await next(page);
@@ -100,6 +108,7 @@ try {
   await makeBrief(page,hostile);
   await page.locator('#brief-text').fill('My edited brief. private-marker-983');
   await page.locator('#edit-answers').click();
+  await page.locator('#making').waitFor({state:'visible'});
   await page.locator('#making').fill(hostile+' edited');
   await next(page);await next(page);await next(page);await next(page);
   assert(await page.locator('#brief-text').inputValue()==='My edited brief. private-marker-983','Returning from answers must preserve manual brief edits');
@@ -123,6 +132,23 @@ try {
   assert(await page.locator('#recorded-choice').innerText()==='No draft choice recorded.','A new question must not inherit an old project choice');
   results.push({label:'edits-cancellation-replacement-no-transmission',passed:true});
   await context.close();
+
+  const historyPage = await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  await historyPage.goto(origin+'/questions/');
+  await next(historyPage); await historyPage.locator('#making').fill('Keep my words when I go back.');
+  await next(historyPage);
+  await historyPage.goBack();
+  await historyPage.locator('#making').waitFor({state:'visible'});
+  assert(await historyPage.locator('#making').inputValue()==='Keep my words when I go back.','Browser Back must restore the preceding question with its answer');
+  await historyPage.goForward();
+  await historyPage.locator('#difficulty').waitFor({state:'visible'});
+  assert(!historyPage.url().includes('Keep'),'Question history must not expose answers in URLs');
+  await historyPage.locator('#clear-draft').click();
+  await historyPage.goBack();
+  await historyPage.locator('#making').waitFor({state:'visible'});
+  assert(await historyPage.locator('#making').inputValue()==='','History must not recover cleared words');
+  results.push({label:'browser-back-forward',passed:true});
+  await historyPage.close();
 
   const blocked = await browser.newContext({viewport:{width:320,height:740},reducedMotion:'reduce'});
   await blocked.addInitScript(() => { for (const key of ['localStorage','sessionStorage']) Object.defineProperty(window,key,{get(){throw new Error('Storage blocked');}}); });
