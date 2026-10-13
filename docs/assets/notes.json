@@ -6,10 +6,15 @@
     "summary": "Two unlikely words. One independent studio. Why strange ideas still need to hold up in the real world.",
     "date": "2026-10-13",
     "type": "Foundations",
-    "topics": ["Identity", "Making"],
+    "topics": [
+      "Identity",
+      "Making"
+    ],
     "project": "Moth & Gravel",
     "thread": "",
-    "related": ["002"],
+    "related": [
+      "002"
+    ],
     "supersedes": [],
     "visual": "foundations",
     "featured": false
@@ -21,12 +26,37 @@
     "summary": "A practical study in bone, charcoal and brass—and what an expressive identity owes to legible interfaces.",
     "date": "2026-10-13",
     "type": "Design study",
-    "topics": ["Interface", "Materials"],
+    "topics": [
+      "Interface",
+      "Materials"
+    ],
     "project": "Moth & Gravel",
     "thread": "reading-first-interfaces",
-    "related": ["001"],
+    "related": [
+      "001",
+      "003"
+    ],
     "supersedes": [],
     "visual": "themes",
+    "featured": false
+  },
+  {
+    "id": "003",
+    "slug": "003-metaphor-earns-its-place.html",
+    "title": "A metaphor has to earn its place.",
+    "summary": "River, Circle and Focus: how an expressive interface helps someone recover context and continue the work. A Decision Docket design study.",
+    "date": "2026-10-13",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "Decision Docket / Navivra",
+    "related": [
+      "002"
+    ],
+    "visual": "forms",
     "featured": true
   }
 ]
