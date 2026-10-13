@@ -47,6 +47,27 @@ const snap = async (page, name) => {
   await page.screenshot({ path: join(output, `${name}.png`), fullPage: true, animations: "disabled" });
 };
 
+async function inspectFirstWork(page, label, theme, width) {
+  const sheet = page.locator('#first-work');
+  assert(await sheet.locator('h2').isVisible(), label + ': first engagement is missing');
+  const geometry = await sheet.evaluate(el => {
+    const targets = [el, ...el.querySelectorAll('h2,h3,.button')];
+    return targets.every(n => n.scrollWidth <= n.clientWidth + 2) && el.getBoundingClientRect().right <= innerWidth + 1;
+  });
+  assert(geometry, label + ': first-engagement heading, material or action is clipped');
+  assert(await sheet.locator('a.button[href="./questions/"]').count() === 1, label + ': first engagement does not reach the brief');
+  assert(/Before any paid work/.test(await sheet.locator('.first-work-foot').innerText()), label + ': paid-work boundary missing');
+  const example = sheet.locator('.first-work-example');
+  await example.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  assert(await example.getAttribute('open') !== null, label + ': example cannot be opened with keyboard');
+  assert(/fictional workbench study, not a client result/.test(await example.innerText()), label + ': example masquerades as delivered work');
+  if ([390,1440].includes(width)) {
+    await page.evaluate(()=>document.activeElement?.blur());
+    await sheet.screenshot({path:join(output,`first-work-${width}-${theme}.png`),animations:'disabled',style:'.site-header,.skip-link{visibility:hidden!important}'});
+  }
+}
+
 async function assertLandingStyleParity(viewport, label) {
   // Probe a fresh page so hover/focus and capture instrumentation cannot interfere.
   const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
@@ -227,6 +248,7 @@ try {
       `${viewport.name}: hero heading overlaps its action`);
     assert(errors.length === 0, `${viewport.name}: browser errors: ${errors.join("; ")}`);
 
+    await inspectFirstWork(page, viewport.name + " night", "night", viewport.width);
     report.nightCardContrast = await sampleCardContrast(page, `${viewport.name} night`);
     if (viewport.name === "wide-desktop" || viewport.name === "phone") {
       await page.addScriptTag({ content: axe.source });
@@ -249,6 +271,7 @@ try {
       `${viewport.name}: afterlight preference did not persist on reload`);
     assert(await theme.getAttribute("aria-pressed") === "true",
       `${viewport.name}: reloaded theme control is not pressed`);
+    await inspectFirstWork(page, viewport.name + " afterlight", "afterlight", viewport.width);
     report.afterlightCardContrast = await sampleCardContrast(page, `${viewport.name} afterlight`);
     if (viewport.name === "wide-desktop" || viewport.name === "phone") {
       await page.addScriptTag({ content: axe.source });
@@ -578,6 +601,13 @@ try {
   await enquiry.locator('.hero-actions a[href="#contact"]').click();
   assert(enquiry.url().endsWith('#contact'), 'Hero enquiry does not reach contact');
   assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Enquiry route is hidden');
+  await enquiry.locator('#contact a[href="#first-work"]').click();
+  assert(enquiry.url().endsWith('#first-work'), 'Contact does not explain the first engagement');
+  await enquiry.locator('.first-work-example summary').click();
+  assert(await enquiry.locator('.first-work-example').getAttribute('open') !== null, 'First engagement example fails without JavaScript');
+  await enquiry.locator('#first-work a.button').click();
+  assert(enquiry.url().endsWith('/questions/'), 'First engagement does not reach the actual question sheet');
+  assert(await enquiry.locator('#making').isVisible(), 'First engagement depends on script-only intake');
   await enquiry.goto(origin + '/#studio', { waitUntil: 'load' });
   await enquiry.locator('.studio-answers summary').first().click();
   assert(await enquiry.locator('.studio-answers details').first().getAttribute('open') !== null, 'Useful answers fail without JavaScript');
