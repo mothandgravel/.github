@@ -1,5 +1,6 @@
 /** Repeatable cold-load lab comparison. No telemetry runs on the public site. */
 import lighthouse from 'lighthouse';
+import desktopConfig from 'lighthouse/core/config/desktop-config.js';
 import * as chromeLauncher from 'chrome-launcher';
 import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -20,11 +21,11 @@ try {
     ]) {
       for (let i = 0; i < repetitions; i++) {
         const options = { port: chrome.port, logLevel: 'error', output: ['json', 'html'],
-          onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
-          ...(profile === 'desktop' ? { preset: 'desktop' } : {}) };
-        const result = await lighthouse(url, options);
+          onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'] };
+        const result = await lighthouse(url, options, profile === 'desktop' ? desktopConfig : undefined);
         if (!result || result.lhr.runtimeError) throw new Error(JSON.stringify(result?.lhr.runtimeError));
         const { lhr } = result;
+        if (lhr.configSettings.formFactor !== profile) throw new Error('Lighthouse profile mismatch');
         const record = { name, profile, iteration: i + 1, url: lhr.finalDisplayedUrl,
           lighthouseVersion: lhr.lighthouseVersion, fetchTime: lhr.fetchTime,
           settings: lhr.configSettings,

@@ -535,11 +535,12 @@ try {
   await newNote.locator('.note-heading h1').waitFor();
   assert(newNote.url().endsWith('/notes/' + neighbor.slug), 'Related reading route failed');
   await newNote.close();
-  const enquiry = await browser.newPage({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
+  const enquiry = await browser.newPage({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false, reducedMotion: 'reduce' });
   await enquiry.goto(origin, { waitUntil: 'load' });
   await enquiry.locator('.hero-actions a[href="#contact"]').click();
   assert(enquiry.url().endsWith('#contact'), 'Hero enquiry does not reach contact');
   assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Enquiry route is hidden');
+  await enquiry.goto(origin + '/#studio', { waitUntil: 'load' });
   await enquiry.locator('.studio-answers summary').first().click();
   assert(await enquiry.locator('.studio-answers details').first().getAttribute('open') !== null, 'Useful answers fail without JavaScript');
   await enquiry.close();
