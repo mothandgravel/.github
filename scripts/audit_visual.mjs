@@ -29,8 +29,11 @@ function assert(condition, message) {
   if (!condition) failures.push(message);
 }
 async function loadPageImages(page) {
+  // Decode before full-page capture: a fetched async image can still paint blank.
+  await page.evaluate(() => { for (const img of document.images) img.loading = 'eager'; });
   for (const img of await page.locator('img').all()) await img.scrollIntoViewIfNeeded();
   await page.waitForFunction(() => [...document.images].every(img => img.complete && img.naturalWidth > 0));
+  await page.evaluate(() => Promise.all([...document.images].map(img => img.decode())));
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
 }
 const snap = async (page, name) => {
@@ -39,6 +42,7 @@ const snap = async (page, name) => {
     document.activeElement?.blur();
     window.scrollTo({ top: 0, behavior: 'instant' });
   });
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   await page.screenshot({ path: join(output, `${name}.png`), fullPage: true, animations: "disabled" });
 };
 
@@ -409,7 +413,10 @@ try {
         await page.addScriptTag({ content: axe.source });
         layout.axeNight = await accessibilityAudit(page, label + " night");
       }
-      if (capture) await snap(page, label + "-night");
+      if (capture) {
+        await snap(page, label + "-night");
+        if (editorial.name === "note-map") await page.locator(".scan-replay").screenshot({ path: join(output, `${label}-scan-night.png`) });
+      }
       if (capture) {
         const toggle = page.locator("#light-switch");
         await toggle.click();
@@ -421,6 +428,7 @@ try {
           layout.axeAfterlight = await accessibilityAudit(page, label + " afterlight");
         }
         await snap(page, label + "-afterlight");
+        if (editorial.name === "note-map") await page.locator(".scan-replay").screenshot({ path: join(output, `${label}-scan-afterlight.png`) });
       }
       results.push({ name: label, ...layout, browserErrors });
       await page.close();
