@@ -769,6 +769,15 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 /* Field Notes: one editorial feature, a small discoverable stack, a dense archive. */
 .main-nav a[aria-current="page"] { color:var(--gold-bright);text-decoration:underline;text-underline-offset:6px; }
 .field-notes-section { border-top:1px solid var(--line); }
+/* Keep the first paint focused on the masthead and studio introduction.
+   Offscreen editions remain searchable and accessible; remember rendered sizes. */
+.hero~.field-notes-section,.hero~.work-section,.hero~.first-work-section,.hero~.ethos-section,.hero~.studio-section,.hero~.contact-section {
+  content-visibility:auto;
+  contain-intrinsic-block-size:auto 900px;
+}
+@media (max-width:760px) {
+  .hero~.field-notes-section,.hero~.work-section { contain-intrinsic-block-size:auto 1600px; }
+}
 .section-kicker a { color:var(--gold-bright);text-underline-offset:4px; }
 .section-kicker a:hover { text-decoration:underline; }
 .editorial-selection { display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:28px;align-items:start; }
@@ -1022,3 +1031,80 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .studio-answers a { color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px; }
 .note-enquiry { color:var(--secondary);font-size:15px;line-height:1.7;margin:24px 0 0; }
 .note-enquiry a { color:var(--gold-bright);display:inline-block;min-height:44px;text-decoration:underline;text-underline-offset:4px; }
+
+/* A first engagement: one inspectable work sheet, with an explicit stopping point. */
+.first-work-section { border-top:1px solid var(--line); }
+.first-work-sheet { border:1px solid var(--line);background:var(--surface); }
+.first-work-label { padding:24px 28px;border-bottom:1px solid var(--line);color:var(--gold-bright);font-size:10px; }
+.first-work-parts { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0; }
+.first-work-parts li { min-width:0;padding:30px 28px 34px; }
+.first-work-parts li+li { border-left:1px solid var(--line); }
+.first-work-parts .mono { color:var(--gold-bright);font-size:10px; }
+.first-work-parts h3 { font:400 29px/1.2 var(--serif);color:var(--ink);margin:22px 0 16px; }
+.first-work-parts p,.first-work-foot p { color:var(--secondary);font-size:16px;line-height:1.7; }
+.first-work-example { border-top:1px solid var(--line); }
+.first-work-example summary { cursor:pointer;padding:22px 28px;min-height:44px;color:var(--ink);font-size:17px;font-weight:600; }
+.first-work-example>div { padding:0 28px 26px;max-width:780px; }
+.first-work-example p { color:var(--secondary);font-size:16px;line-height:1.7;margin:0 0 16px; }
+.first-work-example .mono { color:var(--gold-bright);font-size:10px; }
+.first-work-example strong { color:var(--ink); }
+.first-work-example a { color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px;display:inline-block;min-height:44px; }
+.first-work-foot { display:grid;grid-template-columns:1.2fr 1fr;gap:42px;align-items:start;padding-top:32px; }
+.first-work-foot h3 { font:400 29px/1.2 var(--serif);margin-bottom:16px;color:var(--ink); }
+.first-work-invitation { min-width:0; }
+.first-work-invitation .button { white-space:normal; }
+.first-work-invitation p { font-size:13px;margin-top:14px;max-width:38ch; }
+.contact-route-note a { text-decoration:underline;text-underline-offset:4px; }
+@media (max-width:900px) {
+  .first-work-parts { grid-template-columns:1fr; }
+  .first-work-parts li+li { border-left:0;border-top:1px solid var(--line); }
+  .first-work-parts li { padding:26px 24px; }
+  .first-work-parts h3 { margin-top:16px; }
+}
+@media (max-width:660px) {
+  .first-work-foot { grid-template-columns:1fr;gap:26px; }
+  .first-work-label,.first-work-example summary { padding:22px 20px; }
+  .first-work-example>div { padding-inline:20px; }
+  .first-work-parts li { padding:24px 20px; }
+}
+
+/* Working specimens: actual outputs, readable records and a route into the question. */
+.work-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.work-card { display:flex;flex-direction:column; }
+.work-card-top { flex-wrap:wrap;align-items:baseline; }
+.work-card-top span { font-size:10px; }
+.work-specimen { margin:0;padding:22px 20px;border-bottom:1px solid var(--line);min-width:0; }
+.work-specimen>a { display:block;min-height:44px; }
+.work-specimen img { display:block;width:100%;height:280px;object-fit:contain; }
+.work-specimen figcaption { font-size:12px;line-height:1.6;color:var(--secondary);margin-top:18px;min-height:58px; }
+.work-card-content { display:flex;flex-direction:column;flex:1; }
+.work-card-content h3 { font-size:clamp(24px,2.3vw,32px);overflow-wrap:anywhere; }
+.work-card-content .work-card-link { margin-top:auto; }
+.specimen-record { border-top:1px solid var(--line);margin-top:24px;padding-top:16px; }
+.specimen-record summary { cursor:pointer;min-height:44px;font-weight:600;line-height:1.5;font-size:14px; }
+.work-card-content .specimen-record p { margin-top:14px; }
+.trace-pair { display:grid;grid-template-columns:1fr 1fr;gap:14px;min-height:280px; }
+.trace-pair>div { min-width:0;padding:16px 12px;background:var(--bg);border:1px solid var(--line); }
+.trace-pair .mono { color:var(--gold-bright);font-size:9px;line-height:1.6;display:block; }
+.trace-pair strong { font:400 24px/1.15 var(--serif);display:block;margin:20px 0 14px; }
+.trace-pair p { font-size:12px;line-height:1.6;color:var(--secondary); }
+.trace-pair .trace-count { margin-top:20px; }
+.trace-count b { font:400 32px/1 var(--serif);color:var(--gold-bright);display:block;margin-bottom:6px; }
+.work-sources { border-bottom:1px solid var(--line);padding:24px 0; }
+.work-sources summary { cursor:pointer;min-height:44px;font-size:17px;font-weight:600; }
+.work-sources p { color:var(--secondary);font-size:15px;line-height:1.7;max-width:65ch; }
+.work-sources a { display:inline-block;min-height:44px;color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px;margin-right:20px; }
+@media (max-width:1100px) { .work-grid { grid-template-columns:1fr; }.work-specimen img { height:auto;max-height:380px; }.work-specimen figcaption { min-height:0; }.trace-pair { min-height:0; }.work-card-top span { font-size:11px; } }
+@media (max-width:660px) { .work-specimen { padding:22px 18px; }.trace-pair { gap:10px; }.trace-pair>div { padding:16px 10px; } }
+
+/* Handling light: move the material, keep the reading surface still. */
+.work-card:hover{ transform:none; }
+.work-specimen{ perspective:900px; }
+.specimen-plane{ transform-origin:50% 50%;transition:transform .24s ease,box-shadow .24s ease; }
+.specimen-plane>a{ display:block;min-height:44px; }
+.specimen-plane[data-handled]{ transform:translateY(-3px) rotateX(var(--plate-x,0deg)) rotateY(var(--plate-y,0deg));box-shadow:0 15px 24px -18px var(--gold); }
+.work-card:has(.specimen-record[open]){ border-color:var(--gold); }
+.work-card:has(.specimen-record[open]) .specimen-plane{ box-shadow:0 0 0 1px var(--line),0 10px 24px -18px var(--gold); }
+@media (prefers-reduced-motion:reduce),(hover:none),(pointer:coarse){
+.specimen-plane,.specimen-plane[data-handled]{ transform:none;transition:none; }
+}

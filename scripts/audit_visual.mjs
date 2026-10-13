@@ -47,6 +47,57 @@ const snap = async (page, name) => {
   await page.screenshot({ path: join(output, `${name}.png`), fullPage: true, animations: "disabled" });
 };
 
+async function inspectFirstWork(page, label, theme, width) {
+  const sheet = page.locator('#first-work');
+  // Bring deferred-rendered content into view before checking its rendered copy.
+  await sheet.scrollIntoViewIfNeeded();
+  assert(await sheet.locator('h2').isVisible(), label + ': first engagement is missing');
+  const geometry = await sheet.evaluate(el => {
+    const targets = [el, ...el.querySelectorAll('h2,h3,.button')];
+    return targets.every(n => n.scrollWidth <= n.clientWidth + 2) && el.getBoundingClientRect().right <= innerWidth + 1;
+  });
+  assert(geometry, label + ': first-engagement heading, material or action is clipped');
+  assert(await sheet.locator('a.button[href="./questions/"]').count() === 1, label + ': first engagement does not reach the brief');
+  await sheet.locator('.first-work-foot').scrollIntoViewIfNeeded();
+  assert(/Before any paid work/.test(await sheet.locator('.first-work-foot').innerText()), label + ': paid-work boundary missing');
+  const example = sheet.locator('.first-work-example');
+  await example.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  assert(await example.getAttribute('open') !== null, label + ': example cannot be opened with keyboard');
+  assert(/fictional workbench study, not a client result/.test(await example.innerText()), label + ': example masquerades as delivered work');
+}
+
+async function inspectSpecimens(page, label, theme, width) {
+  const cards = page.locator('.work-card');
+  const ids = ['specimen-ajo', 'specimen-skystack', 'specimen-kitronik'];
+  const routes = ['./notes/005-green-light.html', './notes/008-one-undo.html', './notes/006-map-leaves-room.html'];
+  for (let i = 0; i < ids.length; i++) {
+    const card = cards.nth(i);
+    assert(await card.getAttribute('id') === ids[i], label + ': artifact order/identity changed');
+    assert(await card.locator('.work-specimen figcaption').isVisible(), label + ': artifact scope missing');
+    assert(await card.locator(`.work-card-link[href="${routes[i]}"]`).count() === 1, label + ': related study missing');
+    const record = card.locator('.specimen-record');
+    await record.locator('summary').focus();
+    await page.keyboard.press('Enter');
+    assert(await record.getAttribute('open') !== null && await record.locator('p').last().isVisible(), label + ': record cannot be read with keyboard');
+    assert(await card.evaluate(el => [...el.querySelectorAll('h3,p,summary')].every(n => n.scrollWidth <= n.clientWidth + 2)), label + ': artifact text overflows');
+    await page.keyboard.press('Enter');
+  }
+  const drawer = page.locator('.work-sources');
+  await drawer.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  assert(await drawer.locator('a').first().isVisible(), label + ': source drawer cannot be opened');
+  await page.keyboard.press('Enter');
+}
+
+async function captureLandingSections(page, theme, width) {
+  if ([390,1440].includes(width)) {
+    await page.evaluate(() => document.activeElement?.blur());
+    await page.locator('#first-work').screenshot({path:join(output,`first-work-${width}-${theme}.png`),animations:'disabled',style:'.site-header,.skip-link{visibility:hidden!important}'});
+    await page.locator('.work-grid').screenshot({path:join(output, `specimens-${width}-${theme}.png`),animations:'disabled',style:'.site-header,.skip-link{visibility:hidden!important}'});
+  }
+}
+
 async function assertLandingStyleParity(viewport, label) {
   // Probe a fresh page so hover/focus and capture instrumentation cannot interfere.
   const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
@@ -183,7 +234,7 @@ try {
     assert(report.documentWidth <= viewport.width + 2,
       `${viewport.name}: horizontal overflow (${report.documentWidth}px > ${viewport.width}px)`);
     assert(report.imagesLoaded, `${viewport.name}: a brand image did not load`);
-    assert(await page.locator(".work-card-link").count() === 2, viewport.name + ": expected 2 working Workbench destinations");
+    assert(await page.locator(".work-card-link").count() === 3, viewport.name + ": expected 3 related specimen studies");
     assert(await page.locator(`.note-feature .editorial-link[href="./notes/${featured.slug}"]`).count() === 1,
       viewport.name + ": Selected Field Note is not an editorial feature");
     assert(await page.locator('.bench-ledger a[href="./notes/"]').count() === 1,
@@ -200,13 +251,13 @@ try {
     assert(report.heroHeadingLines === 3,
       `${viewport.name}: headline wraps across ${report.heroHeadingLines} lines; target is 3`);
     if (viewport.width <= 660) assert(report.ledgerColumns === 1, viewport.name + ": workbench status must use a readable single column");
-    const expectedColumns = viewport.width <= 660 ? 1 : 2;
+    const expectedColumns = viewport.width <= 1100 ? 1 : 3;
     assert(report.workColumns === expectedColumns,
       `${viewport.name}: expected ${expectedColumns} work-card columns, found ${report.workColumns}`);
-    assert(report.workCards.length === 2, `${viewport.name}: expected two Workbench cards`);
-    const [first, second] = report.workCards;
-    if (first && second) {
-      assert(expectedColumns === 2 ? Math.abs(first.top - second.top) <= 2 : second.top >= first.bottom - 1,
+    assert(report.workCards.length === 3, `${viewport.name}: expected three working specimens`);
+    for (let i = 1; i < report.workCards.length; i++) {
+      const first = report.workCards[i - 1], second = report.workCards[i];
+      assert(expectedColumns === 3 ? Math.abs(first.top - second.top) <= 2 : second.top >= first.bottom - 1,
         `${viewport.name}: Workbench cards overlap or fail to align`);
     }
     assert(await page.locator('#field-notes .note-feature').count() === 1,
@@ -227,11 +278,14 @@ try {
       `${viewport.name}: hero heading overlaps its action`);
     assert(errors.length === 0, `${viewport.name}: browser errors: ${errors.join("; ")}`);
 
+    await inspectFirstWork(page, viewport.name + " night", "night", viewport.width);
+    await inspectSpecimens(page, viewport.name + " night", "night", viewport.width);
     report.nightCardContrast = await sampleCardContrast(page, `${viewport.name} night`);
     if (viewport.name === "wide-desktop" || viewport.name === "phone") {
       await page.addScriptTag({ content: axe.source });
       report.axeNight = await accessibilityAudit(page, `${viewport.name} night`);
     }
+    await captureLandingSections(page, 'night', viewport.width);
     await snap(page, `${viewport.name}-night`);
     const theme = page.locator("#light-switch");
     assert(await theme.getAttribute("aria-label") === "Afterlight theme", "Theme toggle has an unstable label");
@@ -249,11 +303,14 @@ try {
       `${viewport.name}: afterlight preference did not persist on reload`);
     assert(await theme.getAttribute("aria-pressed") === "true",
       `${viewport.name}: reloaded theme control is not pressed`);
+    await inspectFirstWork(page, viewport.name + " afterlight", "afterlight", viewport.width);
+    await inspectSpecimens(page, viewport.name + " afterlight", "afterlight", viewport.width);
     report.afterlightCardContrast = await sampleCardContrast(page, `${viewport.name} afterlight`);
     if (viewport.name === "wide-desktop" || viewport.name === "phone") {
       await page.addScriptTag({ content: axe.source });
       report.axeAfterlight = await accessibilityAudit(page, `${viewport.name} afterlight`);
     }
+    await captureLandingSections(page, 'afterlight', viewport.width);
     await snap(page, `${viewport.name}-afterlight`);
 
     if (viewport.width <= 900) {
@@ -578,6 +635,13 @@ try {
   await enquiry.locator('.hero-actions a[href="#contact"]').click();
   assert(enquiry.url().endsWith('#contact'), 'Hero enquiry does not reach contact');
   assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Enquiry route is hidden');
+  await enquiry.locator('#contact a[href="#first-work"]').click();
+  assert(enquiry.url().endsWith('#first-work'), 'Contact does not explain the first engagement');
+  await enquiry.locator('.first-work-example summary').click();
+  assert(await enquiry.locator('.first-work-example').getAttribute('open') !== null, 'First engagement example fails without JavaScript');
+  await enquiry.locator('#first-work a.button').click();
+  assert(enquiry.url().endsWith('/questions/'), 'First engagement does not reach the actual question sheet');
+  assert(await enquiry.locator('#making').isVisible(), 'First engagement depends on script-only intake');
   await enquiry.goto(origin + '/#studio', { waitUntil: 'load' });
   await enquiry.locator('.studio-answers summary').first().click();
   assert(await enquiry.locator('.studio-answers details').first().getAttribute('open') !== null, 'Useful answers fail without JavaScript');
@@ -665,6 +729,61 @@ try {
     await editorialVisitor.close();
   }
 
+  // Optional depth responds to inspection; text/controls and native reading stay stable.
+  const handling = await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
+  try {
+    let depthFetched = false;
+    handling.on('response', response => { if (response.url().endsWith('/assets/specimens.mjs')) depthFetched = true; });
+    await handling.goto(origin,{waitUntil:'networkidle'});
+    assert(!depthFetched, 'Handling light: below-fold enhancement was fetched during opening');
+    const card = handling.locator('#specimen-skystack');
+    const plane = card.locator('.specimen-plane');
+    await plane.scrollIntoViewIfNeeded();
+    await handling.waitForFunction(()=>document.querySelector('#specimen-skystack .specimen-plane').hasAttribute('data-depth-ready'));
+    assert(depthFetched, 'Handling light: material enhancement did not load on inspection');
+    // Let the browser deliver visibility observers after the programmatic scroll.
+    await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    const box = await plane.boundingBox();
+    const textBefore = await card.locator('h3').boundingBox();
+    await handling.mouse.move(box.x + box.width * .85, box.y + box.height * .25);
+    await handling.waitForFunction(()=>document.querySelector('#specimen-skystack .specimen-plane').hasAttribute('data-handled'));
+    assert(await plane.evaluate(el=>getComputedStyle(el).transform !== 'none'), 'Handling light: material did not move');
+    assert(JSON.stringify(textBefore) === JSON.stringify(await card.locator('h3').boundingBox()), 'Handling light: reading text moved');
+    await handling.emulateMedia({reducedMotion:'reduce'});
+    await handling.waitForFunction(()=>!document.querySelector('[data-handled]'));
+    assert(await plane.evaluate(el=>getComputedStyle(el).transform === 'none'), 'Handling light: changed motion preference left depth active');
+    await handling.emulateMedia({reducedMotion:'no-preference'});
+    await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    await handling.mouse.move(box.x + box.width * .8, box.y + box.height * .3);
+    await handling.waitForFunction(()=>document.querySelector('[data-handled]'));
+    await card.locator('summary').focus();
+    assert(await plane.getAttribute('data-handled') === null, 'Handling light: keyboard focus did not reset material');
+    await handling.keyboard.press('Enter');
+    assert(await card.locator('details').getAttribute('open') !== null, 'Handling light: working record cannot open');
+    await handling.keyboard.press('Enter');
+    await handling.evaluate(()=>document.activeElement?.blur());
+    await plane.scrollIntoViewIfNeeded();
+    await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    const nextBox = await plane.boundingBox();
+    await handling.mouse.move(nextBox.x + nextBox.width * .8, nextBox.y + nextBox.height * .3);
+    await handling.waitForFunction(()=>document.querySelector('[data-handled]'));
+    await handling.mouse.move(0,0);
+    await handling.waitForFunction(()=>!document.querySelector('[data-handled]'));
+    results.push({name:'specimen-handling',depth:true,readingStable:true,preferenceChange:true,keyboardReset:true,leaveReset:true});
+  } finally { await handling.close(); }
+  const touch = await browser.newPage({viewport:{width:390,height:844},hasTouch:true,isMobile:true,reducedMotion:'no-preference'});
+  try {
+    await touch.goto(origin,{waitUntil:'networkidle'});
+    await touch.locator('#specimen-skystack .specimen-plane').scrollIntoViewIfNeeded();
+    assert(await touch.evaluate(()=>!matchMedia('(pointer: fine)').matches), 'Touch audit is not using a coarse pointer');
+    const box = await touch.locator('#specimen-skystack .specimen-plane').boundingBox();
+    await touch.mouse.move(box.x + box.width * .8, box.y + box.height * .3);
+    assert(await touch.locator('[data-handled]').count() === 0, 'Touch: depth should remain quiet');
+    await touch.locator('#specimen-skystack summary').tap();
+    assert(await touch.locator('#specimen-skystack details').getAttribute('open') !== null, 'Touch: working record cannot open');
+    results.push({name:'specimen-touch',depth:false,nativeRecord:true});
+  } finally { await touch.close(); }
+
   // Without JavaScript, mobile navigation must remain usable.
   const page = await browser.newPage({
     viewport: { width: 390, height: 844 }, javaScriptEnabled: false,
@@ -679,6 +798,8 @@ try {
     element => getComputedStyle(element).display === "none");
   assert(noJSNavVisible && noJSMenuHidden && noJSThemeHidden,
     "No-JS mobile navigation is inaccessible or a dead theme toggle is visible");
+  await inspectSpecimens(page, 'no-JavaScript specimens', 'no-js', 390);
+  assert(await page.locator('[data-handled]').count() === 0, 'No-JS: material needs a static resting presentation');
   await snap(page, "phone-no-javascript");
   await page.close();
 

@@ -25,6 +25,14 @@ and optional transcript following. The archive gets **“Listen through the
 archive”**, a queue, Previous/Next and a switch for continuing to the next note.
 Without JavaScript, audio, transcripts and episode links remain available.
 
+The archive's listening edition opens on request so the writing remains easy to
+browse. Choose an episode, read its corresponding note, or open its timed
+transcript. Closing the player pauses playback. Metadata loads when the player
+opens; the archive transcript loads when requested and retains a readable
+download if its timed version cannot load. Downloads are grouped beside the
+article player. See the [audio design sprint](../docs/design/field-notes-audio-sprint.md)
+for the critique, before/after captures and validation.
+
 **“Subscribe to the podcast”** links to a distinct feed at
 `https://mothandgravel.com/notes/podcast.xml`. The written-notes feed stays at
 `/notes/feed.xml`. The podcast uses stable episode GUIDs, content-addressed MP3

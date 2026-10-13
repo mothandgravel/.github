@@ -88,6 +88,12 @@ def build(check=False):
     elements.feed(path.read_text())
     css = used_rules(css, elements)
     css = '\n'.join(line.strip() for line in css.splitlines() if line.strip())
+    # Trim syntax whitespace while preserving strings, selector descendants and calc spacing.
+    tokens = re.split(r'("(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\')', css)
+    for i in range(0, len(tokens), 2):
+        tokens[i] = re.sub(r'\s*([{},;])\s*', r'\1', tokens[i])
+        tokens[i] = re.sub(r':\s+', ':', tokens[i])
+    css = ''.join(tokens)
     assert '</style' not in css.lower()
     block = '<!-- home-style:start -->\n<style>\n' + css + '\n</style>\n<!-- home-style:end -->'
     old = path.read_text()

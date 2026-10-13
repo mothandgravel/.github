@@ -30,7 +30,7 @@ async function makeBrief(page, text = 'A screen that helps someone find their fo
   await page.locator('#making').fill(text);
   await next(page);
   await page.locator('#difficulty').fill('The first step assumes too much.');
-  await page.locator('#people').fill('A first-time visitor.');
+  await page.locator('#people').fill('Someone making their first repair note.');
   await next(page);
   await page.locator('#outcome').fill('They know what to do next.');
   await next(page);
@@ -79,6 +79,12 @@ try {
     const fullBrief=await page.locator('#brief-text').inputValue();
     assert(withFollowups ? fullBrief.includes('USD 2,000–4,000')&&fullBrief.includes('private-prototype-marker') : !fullBrief.includes('Working budget\n'), 'Optional follow-ups must be included only when answered');
     await audit(page,`brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
+    await page.locator('#first-work-next summary').focus();
+    await page.keyboard.press('Enter');
+    assert(await page.locator('#first-work-next').getAttribute('open')!==null,'First-work explanation must be keyboard reachable');
+    assert((await page.locator('#brief-text').inputValue())===fullBrief,'Explaining the engagement must preserve the literal brief');
+    assert((await page.locator('#first-work-next').innerText()).includes('Before paid work begins'),'First-work explanation must name the agreement boundary');
+    await audit(page,`first-work-brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
     const downloadPromise = page.waitForEvent('download');
     await page.locator('#download-brief').click();
     const download = await downloadPromise;
@@ -92,13 +98,13 @@ try {
     assert(!withFollowups||(await page.locator('#your-question dl').innerText()).includes('USD 2,000–4,000'),'Workbench must carry optional commercial context literally');
     await page.locator('#your-question summary').filter({hasText:'Open your original answers'}).click();
     await audit(page,`workbench-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
-    await page.locator('input[name="surface"][value="reason"]').check();
-    assert(await page.locator('[data-surface="reason"]').isVisible()&&!await page.locator('[data-surface="host"]').isVisible(),'Prototype selection must show the matching sketch');
+    await page.locator('input[name="surface"][value="damage"]').check();
+    assert(await page.locator('[data-surface="damage"]').isVisible()&&!await page.locator('[data-surface="item"]').isVisible(),'Prototype selection must show the matching sketch');
     await page.locator('#mark-wrong').click();
     await page.locator('#annotation').fill('I do not know which choice fits me.');
     await audit(page,`observation-${theme}-${viewport.width}`,viewport.width===320);
     await page.locator('#pin-observation').click();
-    assert((await page.locator('#annotation-record').innerText()).startsWith('Ask for the reason first:'),'Observation must retain the inspected approach');
+    assert((await page.locator('#annotation-record').innerText()).startsWith('Start with the damage:'),'Observation must retain the inspected approach');
     await page.locator('input[name="choice"][value="open"]').check();
     assert((await page.locator('#recorded-choice').innerText())==='No draft choice recorded.','Choosing a radio must not silently commit a decision');
     await page.locator('#record-choice').click();
@@ -186,7 +192,7 @@ try {
   assert(blockedPage.url().endsWith('/questions/'),'Failed handoff must retain the visitor’s brief');
   assert((await blockedPage.locator('#draft-status').innerText()).includes('cannot carry'),'Storage failure must offer a truthful recovery');
   await blockedPage.goto(origin+'/workbench/');
-  await blockedPage.locator('input[name="choice"][value="host"]').check();
+  await blockedPage.locator('input[name="choice"][value="item"]').check();
   await blockedPage.locator('#record-choice').click();
   assert((await blockedPage.locator('#draft-status').innerText()).includes('visit only'),'Unavailable persistence must not claim a saved choice');
   results.push({label:'storage-denied',passed:true});
@@ -211,7 +217,7 @@ try {
 
   for (const fallback of ['no-javascript','module-unavailable']) {
     const context=await browser.newContext({viewport:{width:320,height:740},javaScriptEnabled:fallback!=='no-javascript',reducedMotion:'reduce'});
-    if (fallback==='module-unavailable') await context.route('**/assets/loose-end*.mjs',route=>route.abort());
+    if (fallback==='module-unavailable') await context.route('**/assets/loose-end*.mjs*',route=>route.abort());
     const page=await context.newPage();
     await page.goto(origin+'/questions/');
     assert(await page.locator('#making').isVisible()&&await page.locator('#constraints').isVisible(),fallback+': complete question sheet must remain visible');
@@ -219,9 +225,9 @@ try {
     await page.locator('[data-followup]:has(#materials) summary').click();
     assert(await page.locator('#materials').isVisible(),fallback+': optional material needs a native disclosure');
     await page.goto(origin+'/workbench/');
-    assert(await page.locator('[data-surface="host"]').isVisible()&&await page.locator('[data-surface="reason"]').isVisible(),fallback+': both approaches must remain inspectable');
+    assert(await page.locator('[data-surface="item"]').isVisible()&&await page.locator('[data-surface="damage"]').isVisible(),fallback+': both approaches must remain inspectable');
     await page.locator('summary').filter({hasText:'What we left aside'}).click();
-    assert(await page.locator('h3').filter({hasText:'A single search for everything.'}).isVisible(),fallback+': rejected approach must remain inspectable');
+    assert(await page.locator('h3').filter({hasText:'A catalogue of repair techniques.'}).isVisible(),fallback+': rejected approach must remain inspectable');
     await audit(page,'workbench-'+fallback,true);
     await context.close();
   }

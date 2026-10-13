@@ -10,7 +10,7 @@ The result is an editable plain-text brief assembled from the visitor's words. I
 
 Choosing **Carry it to the workbench** places a bounded draft in browser session storage and opens `/workbench/` in the same tab. No answers are placed in URLs or sent to a server. Clearing removes the saved question and recorded preview actions. Closing the tab normally ends the session; browsers may restore session storage when restoring tabs. The page is not a secure vault. Downloaded copies remain with the visitor. If storage is unavailable, the brief remains available for download and the ordinary example can still be opened.
 
-The workbench is a clearly labelled public example with a fictional visitor check-in problem. The visitor's own question appears separately; sample project artifacts do not pretend to answer it. Two source-native SVG sketches support comparison. Native radio controls, readable explanations and disclosure controls carry the interaction; there is no compulsory dragging, puzzle or spatial navigation.
+The workbench is a clearly labelled public example with a fictional mending notebook problem. The visitor's own question appears separately; sample project artifacts do not pretend to answer it. Two source-native SVG sketches support comparison. Native radio controls, readable explanations and disclosure controls carry the interaction; there is no compulsory dragging, puzzle or spatial navigation.
 
 - **On the bench:** compare two possible beginnings.
 - **This feels wrong:** pin an observation against the inspected approach without needing design terminology. Cancel does not record it.

@@ -35,6 +35,7 @@ jobs:
         run: python3 scripts/check_site.py
       - name: Syntax-check browser JavaScript
         run: |
+          node --check docs/assets/specimens.mjs
           node --check docs/assets/site.js
           node --check docs/assets/notes.mjs
           node --check docs/assets/notes-model.mjs

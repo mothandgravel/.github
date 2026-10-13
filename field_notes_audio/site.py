@@ -165,11 +165,11 @@ def transcript_html(entry: dict, root: Path) -> str:
 
 def note_control(entry: dict, root: Path) -> str:
     return f'''<details class="note-listen" id="listen-note" data-note-player>
-  <summary>Listen to this note · {minutes(entry)} min <span class="audio-badge">AI-narrated</span></summary>
-  <p class="audio-label mono">AI-narrated <span>· Machine-generated transcript</span></p>
+  <summary><span>Listen to this note · {minutes(entry)} min</span><span class="audio-badge">AI-narrated</span><span class="audio-disclosure" aria-hidden="true">↗</span></summary>
+  <p class="audio-label mono">RECORDING / {clock(entry["duration_seconds"])} <span>· Playback starts at 1.15×</span></p>
   <audio controls preload="none" aria-label="{escape(entry["title"], quote=True)}" src="../{entry["audio"]}"><track kind="captions" src="../{entry["vtt"]}" srclang="en" label="English"><a href="../{entry["audio"]}">Download audio</a></audio>
-  <div class="audio-tools">{speed_control()}<label data-audio-follow-control hidden><input type="checkbox" data-audio-follow checked> Follow transcript</label><a href="../{entry["audio"]}" download>Download audio</a><a href="../{entry["vtt"]}" download>Subtitles</a><a href="./podcast.xml">Subscribe to the podcast</a></div>
-  <details class="audio-transcript"><summary>Transcript</summary><p class="audio-caption-note">Transcribed from the recording. Names and speaker boundaries may contain errors.</p><div class="audio-cues" role="region" aria-label="Timed transcript" tabindex="0">{transcript_html(entry, root)}</div><a href="../{entry["transcript"]}" download>Download transcript</a></details>
+  <div class="audio-tools">{speed_control()}<a href="./podcast.xml">Subscribe to the podcast <span aria-hidden="true">↗</span></a><details class="audio-downloads"><summary>Downloads</summary><nav aria-label="Episode downloads"><a href="../{entry["audio"]}" download>Audio MP3</a><a href="../{entry["vtt"]}" download>Subtitles VTT</a><a href="../{entry["srt"]}" download>Subtitles SRT</a></nav></details></div>
+  <details class="audio-transcript"><summary>Transcript</summary><div class="audio-transcript-heading"><p class="audio-caption-note">Machine-generated from the recording; names and speaker boundaries may need checking.</p><label data-audio-follow-control hidden><input type="checkbox" data-audio-follow checked> Follow playback</label></div><div class="audio-cues" role="region" aria-label="Timed transcript" tabindex="0">{transcript_html(entry, root)}</div><a href="../{entry["transcript"]}" download>Download transcript</a></details>
   <p class="audio-status" data-audio-status role="status"></p>
 </details>'''
 
@@ -203,17 +203,26 @@ def archive_control(entries: list[dict], root: Path) -> str:
                 "transcript": "../" + e["transcript"],
                 "cues": "../" + e["cues"],
                 "url": url,
+                "label": label,
+                "duration": clock(e["duration_seconds"]),
+                "kind": e["kind"],
             }
         )
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     return f"""<section class="archive-listen" id="listen-archive" aria-labelledby="listen-title" data-archive-player>
-  <div class="audio-section-heading"><div><p class="eyebrow">FIELD NOTES / AUDIO</p><h2 id="listen-title">Listen through the archive</h2><p>One note after another, with room to pause.</p></div><a class="editorial-link" href="./podcast.xml">Subscribe to the podcast <span aria-hidden="true">↗</span></a></div>
-  <p class="audio-label mono">AI-narrated · {len(entries)} episodes</p>
+  <div class="audio-section-heading"><div><p class="eyebrow"><span class="line-mark" aria-hidden="true"></span> FIELD NOTES / AUDIO</p><h2 id="listen-title" aria-label="Listen through the archive">Listen through <em>the archive.</em></h2><p>One note after another, with room to pause.</p><a class="editorial-link" href="./podcast.xml">Subscribe to the podcast <span aria-hidden="true">↗</span></a></div></div>
+  <details class="archive-session" data-audio-session>
+  <summary><span class="mono">AI-NARRATED / {len(entries)} EPISODES</span><strong>The listening edition.</strong><span class="audio-session-hint">Choose a note, or listen in order. <span aria-hidden="true">↗</span></span></summary>
+  <div class="archive-session-body">
+  <p class="audio-label mono" data-queue-context>{data[0]["label"].upper()} / 1 OF {len(entries)} · {clock(first["duration_seconds"])}</p>
   <h3 data-queue-title>{escape(first["title"])}</h3>
   <audio controls preload="none" aria-label="Archive audio" src="../{first["audio"]}"><track kind="captions" src="../{first["vtt"]}" srclang="en" label="English"><a href="../{first["audio"]}">Download the first episode</a></audio>
-  <div class="audio-tools"><button type="button" data-queue-start hidden>Listen through the archive</button><button type="button" data-queue-previous hidden disabled>Previous</button><button type="button" data-queue-next hidden>Next</button>{speed_control()}<label data-queue-auto-label hidden><input type="checkbox" data-queue-auto checked> Play the next note</label><a data-queue-transcript href="../{first["transcript"]}">Transcript</a></div>
+  <div class="audio-tools audio-transport"><button type="button" data-queue-start hidden>Play</button><button type="button" data-queue-previous hidden disabled aria-label="Previous episode">← Previous</button><button type="button" data-queue-next hidden aria-label="Next episode">Next →</button>{speed_control()}</div>
+  <div class="audio-tools audio-continuation"><label data-queue-auto-label hidden><input type="checkbox" data-queue-auto checked> Continue to the next episode</label><a data-queue-entry-link href="{data[0]["url"]}"><span data-queue-entry-label>{"Read this field note" if first["kind"] == "note" else "Open this episode"}</span> <span aria-hidden="true">↗</span></a></div>
   <p class="audio-status" data-audio-status role="status"></p>
-  <ol class="audio-queue">{"".join(queue)}</ol>
+  <details class="audio-transcript" data-queue-transcript-panel><summary>Transcript</summary><div class="audio-transcript-heading"><p class="audio-caption-note">Machine-generated from the recording; names and speaker boundaries may need checking.</p><label data-audio-follow-control hidden><input type="checkbox" data-audio-follow checked> Follow playback</label></div><div class="audio-cues" data-queue-cues role="region" aria-label="Timed archive transcript" tabindex="0"><p class="audio-caption-note">The readable transcript is available below.</p></div><a data-queue-transcript href="../{first["transcript"]}" download>Download transcript</a></details>
+  <details class="audio-queue-sheet"><summary>Choose an episode <span class="mono">{len(entries)} EDITIONS</span></summary><ol class="audio-queue">{"".join(queue)}</ol></details>
+  </div></details>
   <script type="application/json" data-queue-data>{payload}</script>
 </section>"""
 
