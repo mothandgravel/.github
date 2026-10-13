@@ -1,0 +1,392 @@
+[
+  {
+    "start": 0.28,
+    "end": 5.84,
+    "text": "Moth and Gravel Field Note 5. A\ngreen light should mean",
+    "speakers": []
+  },
+  {
+    "start": 5.84,
+    "end": 10.8,
+    "text": "something. An AI narrated\nedition of the published note.",
+    "speakers": []
+  },
+  {
+    "start": 11.6,
+    "end": 17.2,
+    "text": "What exactly is all right? A\ngreen light is wonderfully",
+    "speakers": []
+  },
+  {
+    "start": 17.2,
+    "end": 23.84,
+    "text": "efficient. One glance, one small\nexhale. The thing is all right.",
+    "speakers": []
+  },
+  {
+    "start": 24.32,
+    "end": 29.6,
+    "text": "You can turn your attention\nelsewhere. But what exactly is",
+    "speakers": []
+  },
+  {
+    "start": 29.72,
+    "end": 35.68,
+    "text": "all right? As we work across our\nsoftware pipeline, that small",
+    "speakers": []
+  },
+  {
+    "start": 35.68,
+    "end": 41.56,
+    "text": "question keeps returning. A\nprocess is running. A job has",
+    "speakers": []
+  },
+  {
+    "start": 41.56,
+    "end": 48.16,
+    "text": "ended. A checked plan has passed\nits expected case. Each deserves",
+    "speakers": []
+  },
+  {
+    "start": 48.16,
+    "end": 53.4,
+    "text": "a clear answer. Each asks\nsomething different. The color",
+    "speakers": []
+  },
+  {
+    "start": 53.4,
+    "end": 58.24,
+    "text": "can travel more easily than the\nmeaning. Start with the",
+    "speakers": []
+  },
+  {
+    "start": 58.24,
+    "end": 63.68,
+    "text": "question. Gaiden is being\ndeveloped as a calm workspace",
+    "speakers": []
+  },
+  {
+    "start": 63.68,
+    "end": 69.76,
+    "text": "companion. It brings the current\nissue, repositories, services,",
+    "speakers": []
+  },
+  {
+    "start": 69.8,
+    "end": 75.0,
+    "text": "and evidence into one place. Its\ncontract makes an important",
+    "speakers": []
+  },
+  {
+    "start": 75.0,
+    "end": 80.4,
+    "text": "distinction. A healthy runtime\nis an observation about the",
+    "speakers": []
+  },
+  {
+    "start": 80.4,
+    "end": 86.6,
+    "text": "runtime. Feature acceptance\nneeds its own evidence. That",
+    "speakers": []
+  },
+  {
+    "start": 86.6,
+    "end": 91.2,
+    "text": "distinction belongs in the\ninterface. A person should be",
+    "speakers": []
+  },
+  {
+    "start": 91.2,
+    "end": 95.68,
+    "text": "able to see a service running\nwithout having to infer that the",
+    "speakers": []
+  },
+  {
+    "start": 95.68,
+    "end": 101.72,
+    "text": "intended work has been verified.\nThe contract also keeps a failed",
+    "speakers": []
+  },
+  {
+    "start": 101.72,
+    "end": 107.36,
+    "text": "runtime probe unknown. An\nobservation that did not succeed",
+    "speakers": []
+  },
+  {
+    "start": 107.4,
+    "end": 112.2,
+    "text": "cannot establish that an\napplication stopped. This is a",
+    "speakers": []
+  },
+  {
+    "start": 112.2,
+    "end": 117.2,
+    "text": "small wording problem with a\nlarge consequence. The interface",
+    "speakers": []
+  },
+  {
+    "start": 117.24,
+    "end": 120.52,
+    "text": "has to leave room for what it\ncould not learn.",
+    "speakers": []
+  },
+  {
+    "start": 122.04,
+    "end": 129.2,
+    "text": "O1, observation. Is it running?\nA runtime observation answers a",
+    "speakers": []
+  },
+  {
+    "start": 129.2,
+    "end": 135.6,
+    "text": "question about the service's\npresent state. O2, expectation.",
+    "speakers": []
+  },
+  {
+    "start": 136.12,
+    "end": 141.84,
+    "text": "Did the case behave as expected?\nA case can pass by correctly",
+    "speakers": []
+  },
+  {
+    "start": 141.84,
+    "end": 146.84,
+    "text": "refusing unsafe step or\npreserving an unknown outcome.",
+    "speakers": []
+  },
+  {
+    "start": 147.56,
+    "end": 153.88,
+    "text": "O3, evidence. Is the result\nestablished? Delivery needs",
+    "speakers": []
+  },
+  {
+    "start": 153.88,
+    "end": 159.04,
+    "text": "evidence of its own. Missing\nobservations remain visible.",
+    "speakers": []
+  },
+  {
+    "start": 159.8,
+    "end": 164.8,
+    "text": "Three questions to keep\ndistinct. Explanatory drawings,",
+    "speakers": []
+  },
+  {
+    "start": 164.96,
+    "end": 170.04,
+    "text": "not screenshots, or proposed\nshared product interface. The",
+    "speakers": []
+  },
+  {
+    "start": 170.04,
+    "end": 174.36,
+    "text": "labels summarize the documented\nboundaries described in this",
+    "speakers": []
+  },
+  {
+    "start": 174.36,
+    "end": 180.28,
+    "text": "note. A passing case can\npreserve a question. A Yedo",
+    "speakers": []
+  },
+  {
+    "start": 180.32,
+    "end": 185.48,
+    "text": "checks agent plans and records\ntheir execution. Its local",
+    "speakers": []
+  },
+  {
+    "start": 185.48,
+    "end": 191.0,
+    "text": "integration report contains a\nuseful wrinkle. Every acceptance",
+    "speakers": []
+  },
+  {
+    "start": 191.0,
+    "end": 195.72,
+    "text": "case in the final run passed\nwhile the delivery records still",
+    "speakers": []
+  },
+  {
+    "start": 195.72,
+    "end": 201.76,
+    "text": "included incomplete, unknown,\nand unresolved outcomes. Those",
+    "speakers": []
+  },
+  {
+    "start": 201.76,
+    "end": 207.24,
+    "text": "outcomes can be correct. A case\ndesigned to refuse an unsafe",
+    "speakers": []
+  },
+  {
+    "start": 207.24,
+    "end": 212.64,
+    "text": "next step passes when the\nrefusal holds. A case designed",
+    "speakers": []
+  },
+  {
+    "start": 212.64,
+    "end": 216.24,
+    "text": "to preserve a lost\nacknowledgment passes when the",
+    "speakers": []
+  },
+  {
+    "start": 216.24,
+    "end": 221.64,
+    "text": "missing answer remains missing.\nThe local integration report",
+    "speakers": []
+  },
+  {
+    "start": 221.68,
+    "end": 226.64,
+    "text": "records six verified delivery\nsub-probes separately from its",
+    "speakers": []
+  },
+  {
+    "start": 226.64,
+    "end": 232.24,
+    "text": "34 passing cases. The\ndistinction is the story. It",
+    "speakers": []
+  },
+  {
+    "start": 232.24,
+    "end": 236.84,
+    "text": "lets a reviewer understand both\nthe mechanism's behavior and the",
+    "speakers": []
+  },
+  {
+    "start": 236.84,
+    "end": 241.92,
+    "text": "work actually established. These\nare different boundary fixtures,",
+    "speakers": []
+  },
+  {
+    "start": 242.12,
+    "end": 245.96,
+    "text": "not a sample from which to\ncalculate a general success",
+    "speakers": []
+  },
+  {
+    "start": 245.96,
+    "end": 251.12,
+    "text": "rate. A tidy summary must give\nthe reader a way back to that",
+    "speakers": []
+  },
+  {
+    "start": 251.12,
+    "end": 256.88,
+    "text": "difference. The boundary can be\nmodest. Parja, a build tool for",
+    "speakers": []
+  },
+  {
+    "start": 256.88,
+    "end": 261.8,
+    "text": "spare machines, gives green a\nnarrow job. Every configured",
+    "speakers": []
+  },
+  {
+    "start": 261.8,
+    "end": 266.6,
+    "text": "step exited with zero. Its\nresult file records step",
+    "speakers": []
+  },
+  {
+    "start": 266.6,
+    "end": 271.24,
+    "text": "outcomes and typed statuses\ndistinguish a failed step, an",
+    "speakers": []
+  },
+  {
+    "start": 271.24,
+    "end": 276.28,
+    "text": "infrastructure failure,\ncancellation, and timeouts. That",
+    "speakers": []
+  },
+  {
+    "start": 276.28,
+    "end": 280.48,
+    "text": "is a useful boundary because it\ncan be explained. The person can",
+    "speakers": []
+  },
+  {
+    "start": 280.48,
+    "end": 284.0,
+    "text": "inspect the recipe and decide\nwhether its steps answer the",
+    "speakers": []
+  },
+  {
+    "start": 284.0,
+    "end": 288.04,
+    "text": "question they care about. The\ncolor does not have to carry an",
+    "speakers": []
+  },
+  {
+    "start": 288.04,
+    "end": 291.6,
+    "text": "unspoken claim about every\npossible property of the",
+    "speakers": []
+  },
+  {
+    "start": 291.6,
+    "end": 297.08,
+    "text": "software. It also matters where\nthe verdict comes from. Parja",
+    "speakers": []
+  },
+  {
+    "start": 297.08,
+    "end": 300.68,
+    "text": "uses the recorded result and\nexit codes rather than",
+    "speakers": []
+  },
+  {
+    "start": 300.68,
+    "end": 304.4,
+    "text": "discovering success in an\nencouraging sentence buried in a",
+    "speakers": []
+  },
+  {
+    "start": 304.4,
+    "end": 311.12,
+    "text": "log. Give uncertainty a place of\nits own. So does a refusal that",
+    "speakers": []
+  },
+  {
+    "start": 311.12,
+    "end": 315.48,
+    "text": "prevented a mistaken action.\nNeither should require a person",
+    "speakers": []
+  },
+  {
+    "start": 315.48,
+    "end": 320.16,
+    "text": "to guess whether the tool has\nlost track of the work. Across",
+    "speakers": []
+  },
+  {
+    "start": 320.16,
+    "end": 324.28,
+    "text": "these projects, the question is\nbecoming more specific. What can",
+    "speakers": []
+  },
+  {
+    "start": 324.28,
+    "end": 328.44,
+    "text": "this indicator honestly let\nsomeone stop worrying about?",
+    "speakers": []
+  },
+  {
+    "start": 328.92,
+    "end": 333.36,
+    "text": "That is the promise a green\nlight should keep. You have been",
+    "speakers": []
+  },
+  {
+    "start": 333.36,
+    "end": 340.08,
+    "text": "listening to Moth and Gravel\nField Notes. The written edition\nis at mothandgravel.com.",
+    "speakers": []
+  }
+]

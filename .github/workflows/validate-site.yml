@@ -5,11 +5,13 @@ on:
     paths:
       - "docs/**"
       - "scripts/**"
+      - "field_notes_audio/**"
       - ".github/workflows/validate-site.yml"
   pull_request:
     paths:
       - "docs/**"
       - "scripts/**"
+      - "field_notes_audio/**"
       - ".github/workflows/validate-site.yml"
 
 permissions:
@@ -21,10 +23,13 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+      - name: Install media inspection tools for published audio
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Verify generated editorial slots and archive behavior
         run: |
           python3 scripts/build_notes.py --check
           node --test scripts/notes_model.test.mjs
+          node --test scripts/field_listen_model.test.mjs
           node --test scripts/loose_end_model.test.mjs
       - name: Verify links, assets, accessibility hooks and sitemap
         run: python3 scripts/check_site.py
@@ -38,9 +43,12 @@ jobs:
           node --check docs/assets/site.js
           node --check docs/assets/notes.mjs
           node --check docs/assets/notes-model.mjs
+          node --check docs/assets/field-listen.mjs
+          node --check docs/assets/field-listen-model.mjs
           node --check scripts/audit_performance.mjs
           node --check docs/assets/loose-end.mjs
           node --check docs/assets/loose-end-model.mjs
           node --check docs/assets/loose-end-v2.mjs
           node --check docs/assets/loose-end-model-v2.mjs
           node --check scripts/audit_loose_end.mjs
+

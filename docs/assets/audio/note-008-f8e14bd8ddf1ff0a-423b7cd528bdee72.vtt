@@ -1,0 +1,322 @@
+WEBVTT
+
+1
+00:00:00.160 --> 00:00:07.560
+Moth and Gravel, Field Note 8. A
+whole staircase, one undo, an AI
+
+2
+00:00:07.560 --> 00:00:11.280
+narrated edition of the
+published note. The thing you
+
+3
+00:00:11.280 --> 00:00:15.480
+just tried, you meant to build a
+little way across the island,
+
+4
+00:00:15.840 --> 00:00:20.160
+three pieces perhaps, a run of
+ramps, something the pony could
+
+5
+00:00:20.160 --> 00:00:25.680
+try. You place it, look again,
+and change your mind. How many
+
+6
+00:00:25.680 --> 00:00:29.760
+times should you have to undo?
+The machine can count the
+
+7
+00:00:29.760 --> 00:00:33.760
+pieces. The player has a
+different unit, the thing they
+
+8
+00:00:33.760 --> 00:00:39.400
+just tried. That is the small
+design question inside Sky Stack
+
+9
+00:00:39.400 --> 00:00:44.360
+Builders stamp tools. This rough
+Windows prototype lets a player
+
+10
+00:00:44.360 --> 00:00:48.600
+work with single blocks, a small
+platform, a line, or a
+
+11
+00:00:48.600 --> 00:00:53.800
+three-cell run labeled stairs.
+The run follows the selected
+
+12
+00:00:53.800 --> 00:00:58.280
+shape and direction. It does not
+solve a whole staircase for you.
+
+13
+00:00:58.640 --> 00:01:03.160
+The exist- -ing ground still
+matters. The interesting part is
+
+14
+00:01:03.160 --> 00:01:08.760
+where the gesture begins and
+ends. Before the click, a stamp
+
+15
+00:01:08.760 --> 00:01:12.760
+needs a footprint you can
+inspect. Every proposed cell
+
+16
+00:01:12.760 --> 00:01:16.840
+belongs to the preview. If one
+part would leave the island,
+
+17
+00:01:16.880 --> 00:01:20.800
+meet an occupied cell, hit the
+height limit, or cost more
+
+18
+00:01:20.800 --> 00:01:24.760
+material than you have, the
+whole proposal must remain a
+
+19
+00:01:24.760 --> 00:01:29.640
+proposal. Without that boundary,
+a click can leave two placed
+
+20
+00:01:29.640 --> 00:01:34.800
+pieces and one unexplained gap.
+The player has to discover what
+
+21
+00:01:34.800 --> 00:01:39.320
+happened, count what was spent,
+and repair a shape they never
+
+22
+00:01:39.320 --> 00:01:44.120
+asked to build. The source
+validates the complete footprint
+
+23
+00:01:44.120 --> 00:01:49.160
+before spending or placement. It
+also includes rollback paths for
+
+24
+00:01:49.160 --> 00:01:53.920
+spending and placement failures.
+That is the machinery behind a
+
+25
+00:01:53.920 --> 00:01:59.040
+simple expectation. Either this
+little thing fits, or it stays
+
+26
+00:01:59.040 --> 00:02:04.360
+in your hand. Open the full-size
+contract sketch, authored
+
+27
+00:02:04.360 --> 00:02:08.920
+explanation, not a game
+screenshot. Source derived
+
+28
+00:02:08.920 --> 00:02:14.000
+contract sketch. The blocked
+example is an alternative to
+
+29
+00:02:14.000 --> 00:02:19.200
+successful placement, not a step
+that leads to it. Three cells
+
+30
+00:02:19.200 --> 00:02:24.400
+illustrate the east-facing ramp
+run. After the click, a
+
+31
+00:02:24.400 --> 00:02:30.080
+successful multi-cell stamp goes
+into history as one batch. One
+
+32
+00:02:30.120 --> 00:02:34.920
+undo attempts to remove that
+batch and refund its materials.
+
+33
+00:02:35.680 --> 00:02:39.760
+The source checks that every
+target still has the expected
+
+34
+00:02:39.760 --> 00:02:45.560
+block at its top before removal.
+If those checks fail, it reports
+
+35
+00:02:45.720 --> 00:02:50.080
+undo failed and keeps the
+history entry. It does not
+
+36
+00:02:50.080 --> 00:02:54.240
+promise that the world can
+always be wound backwards. That
+
+37
+00:02:54.240 --> 00:02:58.960
+limit matters. A reassuring
+label should not turn a changed
+
+38
+00:02:58.960 --> 00:03:01.960
+world into somebody else's
+cleanup job.
+
+39
+00:03:03.080 --> 00:03:07.640
+There are tradeoffs. A bounded
+stamp is quicker to preview and
+
+40
+00:03:07.680 --> 00:03:12.080
+easier to understand than a
+free-form blueprint editor. It
+
+41
+00:03:12.080 --> 00:03:16.320
+also offers fewer shapes.
+Grouping the gesture makes
+
+42
+00:03:16.320 --> 00:03:20.680
+reversal coherent, but undoing
+one piece within the group
+
+43
+00:03:20.720 --> 00:03:25.400
+remains a separate editing task.
+Something worth trying again.
+
+44
+00:03:25.960 --> 00:03:29.920
+The hypothesis is that a player
+will explore more freely when
+
+45
+00:03:29.920 --> 00:03:34.800
+the preview, material cost, and
+reversal all describe the same
+
+46
+00:03:34.800 --> 00:03:39.600
+gesture. We have not measured
+that with players here. A useful
+
+47
+00:03:39.600 --> 00:03:44.320
+next observation is small. Ask
+someone to place a three-cell
+
+48
+00:03:44.320 --> 00:03:49.640
+run, reject a blocked proposal,
+and undo a successful one.
+
+49
+00:03:50.360 --> 00:03:55.840
+Before they press undo, ask what
+they expect to disappear. Watch
+
+50
+00:03:55.840 --> 00:03:59.880
+whether the result matches the
+thing they believed they made.
+
+51
+00:04:01.080 --> 00:04:04.640
+The island can keep its weather,
+critters, and pastel
+
+52
+00:04:04.640 --> 00:04:09.960
+strangeness. Underneath it, the
+editor needs a dependable idea
+
+53
+00:04:10.000 --> 00:04:16.680
+of that thing I just did. A
+little room to try, a way back
+
+54
+00:04:16.720 --> 00:04:23.160
+that fits the gesture. Study
+Scope Slash Source Reading. A
+
+55
+00:04:23.160 --> 00:04:28.920
+gesture to question. This study
+reads Sky Stack Builders stamp
+
+56
+00:04:29.200 --> 00:04:33.400
+placement and undo
+implementation. The source
+
+57
+00:04:33.400 --> 00:04:37.600
+describes complete footprint
+checks, grouped placement, and
+
+58
+00:04:37.600 --> 00:04:41.520
+an attempted reversal with
+material refunds. The
+
+59
+00:04:41.520 --> 00:04:45.680
+illustrations are authored
+explanations, not game captures.
+
+60
+00:04:46.360 --> 00:04:50.240
+No native game session or player
+study was run for this note.
+
+61
+00:04:51.000 --> 00:04:54.920
+Source reading does not
+establish every failure path or
+
+62
+00:04:54.920 --> 00:05:00.120
+what a player expects undo to
+do. The proposed observation
+
+63
+00:05:00.120 --> 00:05:05.440
+remains the next study. You have
+been listening to Moth and
+
+64
+00:05:05.440 --> 00:05:11.000
+Gravel Field Notes. The written
+edition is at mothandgravel.com.
+

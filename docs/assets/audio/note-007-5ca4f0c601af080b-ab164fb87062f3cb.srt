@@ -1,0 +1,271 @@
+1
+00:00:00,000 --> 00:00:07,360
+Moth and Gravel. Field Note 7
+Fast signals, slow eyes.
+
+2
+00:00:08,680 --> 00:00:13,720
+An AI narrated edition of the
+published note. A place to look.
+
+3
+00:00:14,840 --> 00:00:18,400
+A little machine can send
+numbers faster than a person can
+
+4
+00:00:18,400 --> 00:00:22,520
+make sense of them. Put every
+arrival on a screen and the
+
+5
+00:00:22,520 --> 00:00:27,080
+display begins to feel busy.
+Keep the latest value and
+
+6
+00:00:27,080 --> 00:00:30,480
+something else becomes possible.
+A place to look.
+
+7
+00:00:31,720 --> 00:00:35,800
+The Katronic Buggies Python
+telemetry dashboard makes that
+
+8
+00:00:35,800 --> 00:00:40,480
+choice. A receiver replaces the
+current readings when a packet
+
+9
+00:00:40,480 --> 00:00:46,200
+arrives. The Tkinter interface
+reads that shared state, draws
+
+10
+00:00:46,200 --> 00:00:50,720
+the gauges, and schedules its
+next update 33 milliseconds
+
+11
+00:00:50,720 --> 00:00:56,240
+later. That interval describes
+the requested pause after an
+
+12
+00:00:56,240 --> 00:01:00,720
+update. It does not establish a
+measure measured frame rate. The
+
+13
+00:01:00,720 --> 00:01:04,360
+work of drawing and whatever
+else the window is doing takes
+
+14
+00:01:04,360 --> 00:01:05,240
+time, too.
+
+15
+00:01:07,720 --> 00:01:12,680
+A current value needs a
+condition. A value can stay on
+
+16
+00:01:12,680 --> 00:01:16,480
+screen after the machine has
+stopped speaking. Without
+
+17
+00:01:16,480 --> 00:01:21,320
+another cue, the last answer can
+look like the present one. The
+
+18
+00:01:21,320 --> 00:01:25,320
+dashboard has a small correction
+for that impression. At a
+
+19
+00:01:25,320 --> 00:01:29,600
+refresh, it checks how long it
+has been since the last packet.
+
+20
+00:01:30,040 --> 00:01:34,600
+Less than half a second gets
+connected label. At half a
+
+21
+00:01:34,600 --> 00:01:39,800
+second or more, the label
+becomes stale data. The gauges
+
+22
+00:01:39,800 --> 00:01:43,440
+still draw from the latest
+packet. The number can remain
+
+23
+00:01:43,440 --> 00:01:47,400
+useful, but its relationship to
+now has changed.
+
+24
+00:01:49,440 --> 00:01:55,800
+O1 at a refresh. The packet is
+still recent. One fictional
+
+25
+00:01:55,800 --> 00:02:01,120
+refresh 0.2 seconds after
+arrival, the source's label is
+
+26
+00:02:01,320 --> 00:02:07,920
+connected. O2 at a later
+refresh. The same packet has
+
+27
+00:02:07,920 --> 00:02:14,360
+aged. No new packet. A fictional
+refresh at 0.6 seconds, the
+
+28
+00:02:14,360 --> 00:02:17,200
+source's label is stale data.
+
+29
+00:02:18,680 --> 00:02:22,920
+One arrival, two reading
+moments. The first marker is
+
+30
+00:02:22,920 --> 00:02:28,080
+packet arrival. The dashed line
+marks the source's 0.5 second
+
+31
+00:02:28,080 --> 00:02:32,600
+boundary. These are schematic
+examples, not a measured timing
+
+32
+00:02:32,600 --> 00:02:38,000
+trace or dashboard screenshot.
+The label changes when the next
+
+33
+00:02:38,000 --> 00:02:42,480
+GUI update checks the age. That
+distinction is the design
+
+34
+00:02:42,480 --> 00:02:47,120
+question. How long can a reading
+sit still before stillness
+
+35
+00:02:47,120 --> 00:02:51,720
+begins to suggest confidence? A
+rhythm is a choice about
+
+36
+00:02:51,720 --> 00:02:56,720
+attention. Latest packet state
+gives someone a place to glance
+
+37
+00:02:56,720 --> 00:03:00,760
+for the most recent readings.
+Those gauges do not preserve
+
+38
+00:03:00,800 --> 00:03:05,280
+every intermediate value. The
+dashboard also keeps packet
+
+39
+00:03:05,280 --> 00:03:09,680
+counters and a recent arrival
+rate view, a different kind of
+
+40
+00:03:09,680 --> 00:03:15,240
+evidence about the stream. A
+quiet display and a detailed
+
+41
+00:03:15,240 --> 00:03:20,040
+record serve different kinds of
+attention. A motor value, a
+
+42
+00:03:20,040 --> 00:03:24,120
+battery reading, and a brief
+loss of contact need different
+
+43
+00:03:24,120 --> 00:03:28,240
+amounts of concern. More
+frequent repainting cannot
+
+44
+00:03:28,240 --> 00:03:32,520
+decide which difference matters.
+The interface has to give the
+
+45
+00:03:32,520 --> 00:03:36,480
+person a way to notice an
+important change without making
+
+46
+00:03:36,480 --> 00:03:39,160
+every arrival demand a turn of
+the head.
+
+47
+00:03:41,040 --> 00:03:45,720
+Let quiet mean something. The
+next study would compare the
+
+48
+00:03:45,720 --> 00:03:49,920
+same readings under steady
+delivery, a short gap, and an
+
+49
+00:03:49,920 --> 00:03:54,320
+extended silence. Ask what the
+person believes the robot is
+
+50
+00:03:54,320 --> 00:03:59,640
+doing. Ask when they notice the
+reading has become old. Keep the
+
+51
+00:03:59,640 --> 00:04:03,960
+stale condition visible while
+they decide. There is a useful
+
+52
+00:04:03,960 --> 00:04:09,080
+kind of calm here. A display
+that lets someone look away,
+
+53
+00:04:09,400 --> 00:04:15,560
+then return with a clear idea of
+how much it still knows. You
+
+54
+00:04:15,560 --> 00:04:20,200
+have been listening to Moth and
+Gravel Field Notes. The written
+
+55
+00:04:20,200 --> 00:04:23,520
+edition is at mothandgravel.com.

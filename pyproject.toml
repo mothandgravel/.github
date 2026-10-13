@@ -1,0 +1,20 @@
+[project]
+name = "field-notes-audio"
+version = "0.1.0"
+description = "Moth & Gravel's resumable Field Notes audio workflow"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = ["ruff==0.12.12"]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+include = ["field_notes_audio/**/*.py", "tests/audio/**/*.py", "tools/check_audio.py", "scripts/field_audio.py", "scripts/build_audio.py"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B", "PERF"]

@@ -1,0 +1,51 @@
+Moth and Gravel. Field Note 7. Fast signals. Slow eyes.
+
+An AI-narrated edition of the published note.
+
+A place to look
+
+A little machine can send numbers faster than a person can make sense of them. Put every arrival on a screen and the display begins to feel busy. Keep the latest value and something else becomes possible: a place to look.
+
+The Kitronik buggy’s Python telemetry dashboard makes that choice. A receiver replaces the current readings when a packet arrives. The Tkinter interface reads that shared state, draws the gauges and schedules its next update 33 milliseconds later.
+
+That interval describes the requested pause after an update. It does not establish a measured frame rate. The work of drawing, and whatever else the window is doing, takes time too.
+
+A current value needs a condition
+
+A value can stay on screen after the machine has stopped speaking. Without another cue, the last answer can look like the present one.
+
+The dashboard has a small correction for that impression. At a refresh, it checks how long it has been since the last packet. Less than half a second gets a Connected label. At half a second or more, the label becomes Stale data.
+
+The gauges still draw from the latest packet. The number can remain useful, but its relationship to now has changed.
+
+01 / AT A REFRESH
+
+The packet is still recent.
+
+One fictional refresh, 0.2 seconds after arrival: the source’s label is Connected.
+
+02 / AT A LATER REFRESH
+
+The same packet has aged.
+
+No new packet. A fictional refresh at 0.6 seconds: the source’s label is Stale data.
+
+One arrival, two reading moments. The first marker is packet arrival; the dashed line marks the source’s 0.5 second boundary. These are schematic examples, not a measured timing trace or dashboard screenshot. The label changes when the next GUI update checks the age.
+
+That distinction is the design question. How long can a reading sit still before stillness begins to suggest confidence?
+
+A rhythm is a choice about attention
+
+Latest-packet state gives someone a place to glance for the most recent readings. Those gauges do not preserve every intermediate value. The dashboard also keeps packet counters and a recent arrival-rate view: a different kind of evidence about the stream.
+
+A quiet display and a detailed record serve different kinds of attention.
+
+A motor value, a battery reading and a brief loss of contact need different amounts of concern. More frequent repainting cannot decide which difference matters. The interface has to give the person a way to notice an important change without making every arrival demand a turn of the head.
+
+Let quiet mean something
+
+The next study would compare the same readings under steady delivery, a short gap and an extended silence. Ask what the person believes the robot is doing. Ask when they notice the reading has become old. Keep the stale condition visible while they decide.
+
+There is a useful kind of calm here: a display that lets someone look away, then return with a clear idea of how much it still knows.
+
+You have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.

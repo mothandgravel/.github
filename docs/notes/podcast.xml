@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:podcast="https://podcastindex.org/namespace/1.0" version="2.0">
+  <channel>
+    <title>Moth &amp; Gravel — Field Notes audio</title>
+    <link>https://mothandgravel.com/notes/#listen-archive</link>
+    <description>AI-narrated Field Notes and conversations from an independent software and design studio.</description>
+    <language>en</language>
+    <copyright>Moth &amp; Gravel</copyright>
+    <atom:link href="https://mothandgravel.com/notes/podcast.xml" rel="self" type="application/rss+xml" />
+    <itunes:author>Moth &amp; Gravel</itunes:author>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:type>episodic</itunes:type>
+    <itunes:image href="https://mothandgravel.com/assets/podcast-cover.png" />
+    <itunes:category text="Arts">
+      <itunes:category text="Design" />
+    </itunes:category>
+    <image>
+      <url>https://mothandgravel.com/assets/podcast-cover.png</url>
+      <title>Moth &amp; Gravel — Field Notes audio</title>
+      <link>https://mothandgravel.com/notes/</link>
+    </image>
+    <item>
+      <title>Curiosity with calluses. — brisk narration comparison</title>
+      <link>https://mothandgravel.com/notes/#listen-archive</link>
+      <description>A listening edition from the Moth &amp; Gravel workbench. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-001-brisk</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-001-brisk-6d6fabd422aafba0.mp3" length="1950956" type="audio/mpeg" />
+      <itunes:duration>163</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>What does the interface let you believe?</title>
+      <link>https://mothandgravel.com/notes/#listen-archive</link>
+      <description>A listening edition from the Moth &amp; Gravel workbench. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/workbench-001</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/workbench-001-5c5cdda3f0895d22.mp3" length="6102764" type="audio/mpeg" />
+      <itunes:duration>509</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>A model needs a place.</title>
+      <link>https://mothandgravel.com/notes/011-model-needs-a-place.html</link>
+      <description>A small shrine leaves the modelling bench. Its neighbours bring new questions about looking, choosing and belonging. A SkyStack Builder design study. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-011</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-011-05d4f1bd64e8ebea.mp3" length="3275468" type="audio/mpeg" />
+      <itunes:duration>273</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-011-05d4f1bd64e8ebea-200c722209dced46.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-011-05d4f1bd64e8ebea-200c722209dced46.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>Almost the same.</title>
+      <link>https://mothandgravel.com/notes/010-almost-the-same.html</link>
+      <description>Two pictures almost agree. What does the difference tell us, and what does it leave open? A SkyStack Builder study in looking closely. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-010</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-010-c50992f7285240b4.mp3" length="3506732" type="audio/mpeg" />
+      <itunes:duration>293</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-010-c50992f7285240b4-4e779119619cbbac.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-010-c50992f7285240b4-4e779119619cbbac.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>A place to stand.</title>
+      <link>https://mothandgravel.com/notes/009-place-to-stand.html</link>
+      <description>A pony, a turn of the camera and a place that needs to stay dependable. A SkyStack Builder study in looking and belonging. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-009</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-009-19f3908d3bb186f0.mp3" length="3549932" type="audio/mpeg" />
+      <itunes:duration>296</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-009-19f3908d3bb186f0-d341b7f1f95bf22c.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-009-19f3908d3bb186f0-d341b7f1f95bf22c.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>A whole staircase. One undo.</title>
+      <link>https://mothandgravel.com/notes/008-one-undo.html</link>
+      <description>The player made one thing. Preview, placement and undo should agree about what that thing was. A SkyStack Builder design study. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-008</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-008-f8e14bd8ddf1ff0a.mp3" length="3735116" type="audio/mpeg" />
+      <itunes:duration>312</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-008-f8e14bd8ddf1ff0a-423b7cd528bdee72.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-008-f8e14bd8ddf1ff0a-423b7cd528bdee72.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>Fast signals. Slow eyes.</title>
+      <link>https://mothandgravel.com/notes/007-fast-signals.html</link>
+      <description>A little machine sends numbers. A person needs a place to look. A study in telemetry, freshness and attention from the Kitronik buggy workbench. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-007</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-007-5ca4f0c601af080b.mp3" length="3162572" type="audio/mpeg" />
+      <itunes:duration>264</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-007-5ca4f0c601af080b-ab164fb87062f3cb.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-007-5ca4f0c601af080b-ab164fb87062f3cb.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>A map should leave room for doubt.</title>
+      <link>https://mothandgravel.com/notes/006-map-leaves-room.html</link>
+      <description>A little robot, four views and the space it has not established. A study in maps and uncertainty from the Kitronik buggy workbench. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-006</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-006-d0b458d4923095bc.mp3" length="4819436" type="audio/mpeg" />
+      <itunes:duration>402</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-006-d0b458d4923095bc-ffa73d7605e66ee7.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-006-d0b458d4923095bc-ffa73d7605e66ee7.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>A green light should mean something.</title>
+      <link>https://mothandgravel.com/notes/005-green-light.html</link>
+      <description>Running, passing and delivered: three different questions behind one reassuring colour. A study across the wider workbench. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-005</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-005-07e7cd28a96bc3e5.mp3" length="4082156" type="audio/mpeg" />
+      <itunes:duration>341</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-005-07e7cd28a96bc3e5-8d7e1945fda9efea.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-005-07e7cd28a96bc3e5-8d7e1945fda9efea.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>A control should stay where you left it.</title>
+      <link>https://mothandgravel.com/notes/004-controls-stay-put.html</link>
+      <description>A decorative portrait moved the words and Switch control by 72 pixels. A small Decision Docket fix in keeping the work still. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-004</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-004-f913221d86a23608.mp3" length="4059692" type="audio/mpeg" />
+      <itunes:duration>339</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>A metaphor has to earn its place.</title>
+      <link>https://mothandgravel.com/notes/003-metaphor-earns-its-place.html</link>
+      <description>River, Circle and Focus: how an expressive interface helps someone recover context and continue the work. A Decision Docket design study. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-003</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-003-09abd76ea3a952c6.mp3" length="5782508" type="audio/mpeg" />
+      <itunes:duration>482</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>Afterlight / Nightfall.</title>
+      <link>https://mothandgravel.com/notes/002-afterlight-nightfall.html</link>
+      <description>A practical study in bone, charcoal and brass—and what an expressive identity owes to legible interfaces. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-002</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-002-158efeb38052ccf6.mp3" length="5094188" type="audio/mpeg" />
+      <itunes:duration>425</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-002-158efeb38052ccf6-4ef136768363cf01.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-002-158efeb38052ccf6-4ef136768363cf01.txt" type="text/plain" language="en-US" />
+    </item>
+    <item>
+      <title>Curiosity with calluses.</title>
+      <link>https://mothandgravel.com/notes/001-curiosity-with-calluses.html</link>
+      <description>Two unlikely words. One independent studio. Why strange ideas still need to hold up in the real world. AI-narrated; machine-generated transcript available.</description>
+      <guid isPermaLink="false">https://mothandgravel.com/notes/podcast/note-001</guid>
+      <pubDate>Tue, 13 Oct 2026 22:04:17 GMT</pubDate>
+      <enclosure url="https://mothandgravel.com/assets/audio/note-001-f525e3a06dd4f501.mp3" length="2392460" type="audio/mpeg" />
+      <itunes:duration>200</itunes:duration>
+      <itunes:explicit>false</itunes:explicit>
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-001-f525e3a06dd4f501-0d949aede38b6e9b.vtt" type="text/vtt" language="en-US" />
+      <podcast:transcript url="https://mothandgravel.com/assets/audio/note-001-f525e3a06dd4f501-0d949aede38b6e9b.txt" type="text/plain" language="en-US" />
+    </item>
+  </channel>
+</rss>
