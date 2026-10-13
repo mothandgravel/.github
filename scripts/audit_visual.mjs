@@ -161,6 +161,11 @@ try {
       viewport.name + ": Selected Field Note is not an editorial feature");
     assert(await page.locator('.bench-ledger a[href="./notes/"]').count() === 1,
       viewport.name + ": studio status should link to the Field Notes collection");
+    assert(await page.locator('#studio h2').isVisible(), viewport.name + ': studio introduction missing');
+    assert(await page.locator('#contact a[href*="issues/new?template=signal.yml"]').count() === 1,
+      viewport.name + ': public contact route missing');
+    assert(await page.locator('#field-notes a[href="./notes/feed.xml"]').count() === 1,
+      viewport.name + ': RSS invitation missing');
     assert(await page.locator(".bench-ledger").count() === 1, viewport.name + ": studio status is not visible");
     assert(report.bandContentFits, `${viewport.name}: slogan is clipped inside its banner`);
     assert(report.heroHeadingFits, `${viewport.name}: hero headline overflows its container`);
@@ -310,6 +315,7 @@ try {
     { name: "notes-index", path: "/notes/", heading: ".notes-index-hero h1" },
     { name: "note-theme", path: "/notes/002-afterlight-nightfall.html", heading: ".study-heading h1" },
     { name: "note-metaphor", path: "/notes/003-metaphor-earns-its-place.html", heading: ".metaphor-heading h1" },
+    { name: "note-stability", path: "/notes/004-controls-stay-put.html", heading: ".stability-heading h1" },
   ]) {
     for (const viewport of widths) {
       const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
@@ -330,7 +336,7 @@ try {
         const visibleTextFits = element => !element || element.scrollWidth <= element.clientWidth + 2;
         const tracked = [
           heading,
-          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status, .native-capture, .note-cover-figure"),
+          ...document.querySelectorAll(".note-feature h2, .note-feature h3, #archive-results h3, .sample-body h3, .study-sample, .study-metric, .metaphor-panel, .metaphor-panel h3, .native-study-status, .native-capture, .note-cover-figure, .stability-panel, .stability-panel h3"),
         ];
         return {
           width: window.innerWidth,
@@ -370,7 +376,13 @@ try {
         assert(await page.locator('.note-related a[href="./002-afterlight-nightfall.html"]').count() === 1,
           label + ': related theme study missing');
       }
-      const expectedCover = editorial.name === 'note-metaphor'
+      if (editorial.name === 'note-stability') {
+        assert(await page.locator('.stability-panel').count() === 2, label + ': loading comparison missing');
+        assert(await page.locator('#study-status').count() === 1, label + ': component scope missing');
+      }
+      const expectedCover = editorial.name === 'note-stability'
+        ? 'https://mothandgravel.com/assets/notes/004-cover-social.jpg'
+        : editorial.name === 'note-metaphor'
         ? 'https://mothandgravel.com/assets/notes/003-cover-social.jpg'
         : 'https://mothandgravel.com/assets/social-cover.png';
       assert(layout.ogImage === expectedCover, label + ': social preview URL is missing');
@@ -478,12 +490,12 @@ try {
   const newNote = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   await newNote.goto(origin, { waitUntil: 'networkidle' });
   await newNote.locator('.note-feature .editorial-link').click();
+  await newNote.locator('.note-heading h1').waitFor();
+  assert(newNote.url().endsWith('/notes/' + featured.slug), 'Featured note route failed');
+  await newNote.locator('.note-aside a').click();
+  assert(newNote.url().endsWith('#study-status'), 'Component study scope link failed');
+  await newNote.locator('.note-related a[href="./003-metaphor-earns-its-place.html"]').click();
   await newNote.locator('.metaphor-heading h1').waitFor();
-  assert(newNote.url().endsWith('/notes/003-metaphor-earns-its-place.html'), 'Featured note 003 route failed');
-  await newNote.locator('.note-aside a[href="#native-status"]').click();
-  assert(newNote.url().endsWith('#native-status'), 'Native study status link failed');
-  await newNote.locator('.note-related a[href="./002-afterlight-nightfall.html"]').click();
-  await newNote.locator('.study-heading h1').waitFor();
   await newNote.close();
   // Ensure this is a real raster asset, not an SVG-only sharing fallback.
   const coverResponse = await browser.newPage();

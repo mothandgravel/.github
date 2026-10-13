@@ -1,0 +1,14 @@
+name: A signal in the dark
+description: A question, an observation, or a loose end worth following.
+title: "A signal in the dark: "
+body:
+  - type: markdown
+    attributes:
+      value: "This is a public conversation with Moth & Gravel. What caught your eye?"
+  - type: textarea
+    id: signal
+    attributes:
+      label: Your signal
+      description: A curious question, a useful observation, or something you would like us to look at.
+    validations:
+      required: true

@@ -1,0 +1,61 @@
+{
+  "note": "004",
+  "editorial_cover": {
+    "generator": "built-in image_gen",
+    "kind": "conceptual editorial illustration; not a product screenshot",
+    "original_sha256": "928f3f382caf2b458fb8a56e200596c26cc852f5833769b1531e1b78b968e142",
+    "original_dimensions": [
+      1672,
+      941
+    ],
+    "prompt": "Use case: stylized-concept. Asset type: landscape editorial cover illustration for Moth & Gravel Field Note 004, A control should stay where you left it. Primary request: an unexpected tactile still life about reserving a place and keeping an arrangement steady. A small low charcoal ceramic paperweight holds three parallel warm bone paper strips firmly on a warm pale work surface. Above the strips sits a clean square recess, deliberately empty, with a fine brass rule beside it. The blank square feels intentional and calm. An object could arrive later without moving the paper arrangement. Wide 16:9 composition, restrained elevated three-quarter view, generous breathing room. Materials: slightly rough charcoal ceramic, grainy bone paper, quietly worn brass, soft shadows. Muted warm bone, charcoal and brass palette matching an independent design studio. Elegant editorial photograph-like illustration with visible material texture, subtle asymmetry, no decorative spectacle. No writing, no text, no letters, no numbers, no logos, no interface, no loading spinner, no glowing technology, no watermark. This is a conceptual cover, not a diagram or product screenshot."
+  },
+  "measurement_source": {
+    "repository": "navivra/decision-docket",
+    "path": "docs/design/briefs/teammate-portrait-stability.md",
+    "blob_sha": "be15102158895853a9f155720dc0aea21d1ae639",
+    "accepted_source": "6b5bc536c44659d42d16cbd30c1b84e602697c21",
+    "merge_sha": "ad862155301f440d517c2880f86c5615c7b2eb9f",
+    "pull_request": 911,
+    "measured_before_px": 72,
+    "measured_after_px": 0,
+    "widths_px": [
+      390,
+      1440
+    ],
+    "scope": "actual isolated TeammateCard; no whole-page CLS or real-person usability claim"
+  },
+  "diagrams": {
+    "kind": "repo-native explanatory SVG in article; not screenshots",
+    "measurements": "Source geometry values; other positions schematic"
+  },
+  "assets": [
+    {
+      "file": "004-cover-800.webp",
+      "sha256": "45196d96a288ea619cfd0de9dd80b2ec6dcb9e4239f4d525b8e817f2f5c4022a",
+      "bytes": 44642,
+      "dimensions": [
+        800,
+        450
+      ]
+    },
+    {
+      "file": "004-cover-social.jpg",
+      "sha256": "171b6ef1092b26c65033c9b7d86767cb3069a9f20dc53071d82a8bc6648e6732",
+      "bytes": 125499,
+      "dimensions": [
+        1200,
+        675
+      ]
+    },
+    {
+      "file": "004-cover-1600.webp",
+      "sha256": "45688be58d6b1152cd61b3fda995f35218d2ea305b62303d31ecd165c40926fe",
+      "bytes": 129792,
+      "dimensions": [
+        1600,
+        900
+      ]
+    }
+  ]
+}
