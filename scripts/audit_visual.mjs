@@ -177,7 +177,6 @@ try {
 
     assert(report.documentWidth <= viewport.width + 2,
       `${viewport.name}: horizontal overflow (${report.documentWidth}px > ${viewport.width}px)`);
-    await assertLandingStyleParity(page, viewport.name);
     assert(report.imagesLoaded, `${viewport.name}: a brand image did not load`);
     assert(await page.locator(".work-card-link").count() === 2, viewport.name + ": expected 2 working Workbench destinations");
     assert(await page.locator(`.note-feature .editorial-link[href="./notes/${featured.slug}"]`).count() === 1,
@@ -276,6 +275,8 @@ try {
       assert(report.navVisible, `${viewport.name}: desktop navigation hidden`);
     }
 
+    // Keep the temporary comparison stylesheet out of review captures.
+    await assertLandingStyleParity(page, viewport.name);
     results.push({ name: viewport.name, ...report, errors });
     await page.close();
   }
