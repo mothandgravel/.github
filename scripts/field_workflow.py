@@ -227,7 +227,9 @@ def make(args):
         script=None, dry_run=False, wait=args.wait, retry_uncertain=args.retry_uncertain,
         restart_failed=args.restart_failed)
     prepare_captions(caption_args)
-    finish(captions.run(caption_args), args.no_open)
+    directory = captions.run(caption_args)
+    finish(directory, args.no_open)
+    return directory
 
 
 def add_arguments(commands):

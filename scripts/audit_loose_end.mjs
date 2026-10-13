@@ -43,6 +43,7 @@ try {
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror',e=>errors.push(e.message));
+    page.on('request',r=>{if(r.url().includes('private-prototype-marker')) errors.push('Existing material was fetched without an action');});
     await page.goto(origin+'/questions/');
     if (theme==='afterlight') await page.locator('#light-switch').click();
     await page.locator('#question-progress').waitFor({state:'visible'});
@@ -66,17 +67,30 @@ try {
     await next(page);
     if ([1440,320].includes(viewport.width)) await audit(page,`outcome-${theme}-${viewport.width}`);
     await next(page);
-    if ([1440,320].includes(viewport.width)) await audit(page,`constraints-${theme}-${viewport.width}`);
+    const withFollowups=[1440,320].includes(viewport.width);
+    if (withFollowups) {
+      for (const [key,value] of Object.entries({timing:'November, with a flexible date.',budget:'USD 2,000–4,000; still scoping.',materials:'https://example.invalid/private-prototype-marker'})) {
+        await page.locator(`[data-followup]:has(#${key}) summary`).click();
+        await page.locator('#'+key).fill(value);
+      }
+      await audit(page,`constraints-${theme}-${viewport.width}`,true);
+    }
     await next(page);
+    const fullBrief=await page.locator('#brief-text').inputValue();
+    assert(withFollowups ? fullBrief.includes('USD 2,000–4,000')&&fullBrief.includes('private-prototype-marker') : !fullBrief.includes('Working budget\n'), 'Optional follow-ups must be included only when answered');
     await audit(page,`brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
     const downloadPromise = page.waitForEvent('download');
     await page.locator('#download-brief').click();
     const download = await downloadPromise;
     const downloaded = await readFile(await download.path(),'utf8');
     assert(downloaded.includes('find their footing'),'Download must include the visitor’s actual answers');
+    assert(!withFollowups||downloaded.includes('private-prototype-marker'),'Download must retain the material at the end of the brief');
     await page.locator('#carry-question').click();
     await page.locator('#your-question').waitFor({state:'visible'});
     assert((await page.locator('#your-question').innerText()).includes('find their footing'),'Question handoff lost the visitor’s words');
+    await page.locator('#your-question summary').filter({hasText:'Open your original answers'}).click();
+    assert(!withFollowups||(await page.locator('#your-question dl').innerText()).includes('USD 2,000–4,000'),'Workbench must carry optional commercial context literally');
+    await page.locator('#your-question summary').filter({hasText:'Open your original answers'}).click();
     await audit(page,`workbench-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
     await page.locator('input[name="surface"][value="reason"]').check();
     assert(await page.locator('[data-surface="reason"]').isVisible()&&!await page.locator('[data-surface="host"]').isVisible(),'Prototype selection must show the matching sketch');
@@ -91,10 +105,20 @@ try {
     await page.reload();
     assert((await page.locator('#recorded-choice').innerText()).includes('Keep the question open'),'Recorded local choice must survive same-tab reload');
     assert((await page.locator('#annotation-record').innerText()).includes('which choice fits me'),'Pinned observation must survive same-tab reload');
+    if (withFollowups) {
+      await page.goto(origin+'/questions/');
+      for (const [key,value] of Object.entries({timing:'November, with a flexible date.',budget:'USD 2,000–4,000; still scoping.',materials:'https://example.invalid/private-prototype-marker'})) {
+        assert(await page.locator('#'+key).inputValue()===value, 'Return must preserve '+key);
+        assert(await page.locator('#'+key).evaluate(el=>el.closest('details').open), 'Return must reopen answered '+key);
+      }
+      await page.goto(origin+'/workbench/');
+      await page.locator('#your-question').waitFor({state:'visible'});
+    }
     await page.locator('#clear-room').click();
     assert(!await page.locator('#your-question').isVisible(),'Clear draft must remove the carried question');
     await page.goto(origin+'/questions/');
     assert(await page.locator('#making').inputValue()==='','Cleared answers must not return');
+    for (const key of ['timing','budget','materials']) assert(await page.locator('#'+key).inputValue()==='', 'Cleared '+key+' must not return');
     assert(errors.length===0,JSON.stringify({viewport,theme,errors}));
     await context.close();
   }
@@ -135,7 +159,10 @@ try {
 
   const historyPage = await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
   await historyPage.goto(origin+'/questions/');
-  await next(historyPage); await historyPage.locator('#making').fill('Keep my words when I go back.');
+  await historyPage.locator('input[name="intent"]').first().check();
+  await next(historyPage);
+  assert((await historyPage.locator('#making-help').innerText()).includes('possibility'),'Idea entrance must guide the next prompt');
+  await historyPage.locator('#making').fill('Keep my words when I go back.');
   await next(historyPage);
   await historyPage.goBack();
   await historyPage.locator('#making').waitFor({state:'visible'});
@@ -165,6 +192,23 @@ try {
   results.push({label:'storage-denied',passed:true});
   await blocked.close();
 
+  // A cached six-field page must still be able to use its published modules.
+  const legacy = await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  const currentHTML=await readFile(new URL('../docs/questions/index.html',import.meta.url),'utf8');
+  const legacyHTML=currentHTML.replace(/<details data-followup>.*?<\/details>/gs,'').replace('loose-end-v2.mjs','loose-end.mjs');
+  await legacy.route('**/questions/',route=>route.fulfill({contentType:'text/html',body:legacyHTML}));
+  const legacyPage=await legacy.newPage();
+  const legacyErrors=[];legacyPage.on('pageerror',e=>legacyErrors.push(e.message));
+  await legacyPage.goto(origin+'/questions/');
+  await makeBrief(legacyPage,'A question from an older page.');
+  assert((await legacyPage.locator('#brief-text').inputValue()).includes('older page'),'Previously published question modules must remain usable');
+  await legacyPage.locator('#carry-question').click();
+  await legacyPage.locator('#your-question').waitFor({state:'visible'});
+  assert((await legacyPage.locator('#original-question').innerText()).includes('older page'),'Older page must hand its question to the current workbench');
+  assert(legacyErrors.length===0,'Cached older page errors: '+legacyErrors.join(', '));
+  results.push({label:'cached-six-field-page',passed:true});
+  await legacy.close();
+
   for (const fallback of ['no-javascript','module-unavailable']) {
     const context=await browser.newContext({viewport:{width:320,height:740},javaScriptEnabled:fallback!=='no-javascript',reducedMotion:'reduce'});
     if (fallback==='module-unavailable') await context.route('**/assets/loose-end*.mjs',route=>route.abort());
@@ -172,6 +216,8 @@ try {
     await page.goto(origin+'/questions/');
     assert(await page.locator('#making').isVisible()&&await page.locator('#constraints').isVisible(),fallback+': complete question sheet must remain visible');
     assert(!await page.locator('#question-next').isVisible(),fallback+': dead guided controls must stay hidden');
+    await page.locator('[data-followup]:has(#materials) summary').click();
+    assert(await page.locator('#materials').isVisible(),fallback+': optional material needs a native disclosure');
     await page.goto(origin+'/workbench/');
     assert(await page.locator('[data-surface="host"]').isVisible()&&await page.locator('[data-surface="reason"]').isVisible(),fallback+': both approaches must remain inspectable');
     await page.locator('summary').filter({hasText:'What we left aside'}).click();

@@ -1,6 +1,61 @@
-# Field Notes audio pilot
+# Field Notes audio
 
-## The short workflow
+## Generate the collection and add it to the website
+
+With the project already saved from the successful listening run:
+
+```bash
+git pull --ff-only
+python3 scripts/field_audio.py make-all --publish
+```
+
+This covers every published Field Note and every configured episode: seven notes,
+the two-voice conversation and the brisk comparison. It reuses completed recordings
+and transcription jobs, generates and subtitles the rest, then commits and pushes
+only the prepared listening files to the current PR branch. It does not push to
+`main`. Merge the completed publication PR when ready to put the audio online.
+Google generation/transcription runs in your authenticated WSL or Cloud Shell
+session. The website hosts the small first collection through GitHub Pages;
+there is no additional public Cloud bucket to configure.
+
+Each note gets **“Listen to this note · N min”** below its introduction, with the
+actual recording duration, an **AI-narrated** badge, native audio controls and an
+expandable timed transcript. Playback defaults to **1.15×**, with a speed control
+and optional transcript following. The archive gets **“Listen through the
+archive”**, a queue, Previous/Next and a switch for continuing to the next note.
+Without JavaScript, audio, transcripts and episode links remain available.
+
+**“Subscribe to the podcast”** links to a distinct feed at
+`https://mothandgravel.com/notes/podcast.xml`. The written-notes feed stays at
+`/notes/feed.xml`. The podcast uses stable episode GUIDs, content-addressed MP3
+URLs, real byte lengths and duration, square studio artwork and transcript links.
+The feed and players advertise only completed assets. No dummy episode URLs or
+estimated listen labels are added while the collection is empty.
+
+`make-all` without `--publish` prepares the collection locally for review.
+`publish` pushes a completed preparation later. Existing unrelated Git changes
+are excluded: save or commit them before using `--publish`. Partial Cloud failures
+preserve progress and prevent a partial collection from being pushed. Repeat the
+same command to resume; uncertain paid submissions still require an explicit
+`--retry-uncertain`.
+
+As new notes enter the published catalog, `make-all` prepares their complete prose
+scripts automatically. `sync` performs that step offline. Existing source changes
+still require script review; their fingerprints are never silently refreshed.
+Design studies with several prose blocks include the intervening study sections.
+The source prose itself stays intact when players are built.
+
+After merging and waiting for GitHub Pages deployment, validate the actual host:
+
+```bash
+python3 scripts/field_audio.py verify-live
+```
+
+This checks the deployed feed against the prepared collection, each MP3's HEAD,
+byte length, media type and byte-range response, plus transcript/artwork links.
+Podcast app registration is separate from supplying a usable RSS subscription.
+
+## Make or subtitle one episode
 
 In your existing checkout, update the branch with `git pull --ff-only`. Then:
 
@@ -19,7 +74,7 @@ Chirp 3 transcription**. These are separate processing locations.
 bucket, creates subtitles and a synchronized transcript, and waits automatically
 for up to 15 minutes. Two-voice English recordings request speaker detection
 automatically. On a desktop or WSL it attempts to open the listening page. The
-page has 1×, 1.15×, 1.25× and 1.5× playback, clickable captions and downloads.
+page defaults to 1.15× and also offers 1×, 1.25× and 1.5× playback, clickable captions and downloads.
 
 The portable result has a stable path:
 
@@ -80,8 +135,9 @@ substantive differences without silently rewriting the captions. Case,
 punctuation and `&`/`and` are normalized for comparison. Similarity is not proof
 that the audio said the right words; review stays pending even for a match.
 
-Nothing is published by these commands. Source articles and reviewed scripts
-remain in Git; recordings and local settings remain in ignored `artifacts/`.
+Individual `make` and `captions` commands do not publish. `make-all` prepares
+completed site assets; `--publish` or `publish` explicitly pushes them to a PR.
+Original recordings, job state and Cloud settings stay in ignored `artifacts/`.
 
 ## Requirements and saved settings
 
@@ -198,15 +254,31 @@ Offline tests use documented Google response shapes and synthetic audio. They
 cover source preservation, timings, privacy, saved settings, caching and recovery.
 The live subtitle request still needs its first run in your Cloud project.
 
-## Publication after the listening pilot
+## Publication files and validation
 
-After voice, pace, pronunciations and transcript have been reviewed, the next
-site change can add per-note players, a listening queue and a separate podcast
-RSS feed. Real reviewed media, stable episode GUIDs, enclosure URLs and square
-artwork are needed; verify the media host's HEAD and byte-range support.
-The article RSS remains available. The private transcription bucket is separate
-from future public podcast hosting. CI currently validates offline only. Future
-CI generation should use Workload Identity Federation, without stored JSON keys.
+Public files live under `docs/assets/audio/`: MP3, SRT, VTT, recognized transcript,
+cue timings and a manifest containing fingerprints and measured duration. Private
+Cloud input URIs, operation IDs, saved settings and credentials are not copied.
+Caption text remains machine-generated and review stays pending; publication does
+not manufacture a claim that a human verified every word or speaker identity.
+
+`build_notes.py` also builds the article controls, archive queue and separate
+podcast feed. Its `--check` verifies media hashes, actual audio duration, subtitle
+consistency, current source fingerprints and square podcast artwork. The existing
+article RSS is unchanged. New audio versions get new asset URLs, while an episode's
+podcast GUID and publication date remain stable.
+
+Offline Python tests cover generation, caching, all-note publication, new-note
+scripts, completeness, provenance, corruption, RSS metadata and interrupted jobs.
+The browser audit builds an ignored fixture using synthetic clips; it checks
+native playback, default speed, cue seeking, queue advancement, stopping, keyboard
+use, both appearances, narrow layouts and no-JavaScript access. CI never calls
+Google or generates paid speech.
+
+Live audio must be generated in the authenticated local/Cloud Shell session. If
+publication is interrupted after the local commit, repeat `publish` to retry the
+push without regenerating speech. If the push reports diverging branch history,
+resolve that Git divergence before retrying; completed media remains saved.
 
 ## Sources checked for this setup
 

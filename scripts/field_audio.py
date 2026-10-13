@@ -44,11 +44,15 @@ def write_json(path: Path, value: object) -> None:
 
 
 def source_article(root: Path, note: dict) -> str:
+    if not re.fullmatch(r"\d{3,}-[a-z0-9-]+\.html", note["slug"]):
+        raise ValueError("Invalid source note path")
     html = (root / "docs/notes" / note["slug"]).read_text(encoding="utf-8")
-    found = re.search(r'<article class="note-prose">(.*?)</article>', html, re.S)
+    found = list(re.finditer(r'<article class="note-prose">(.*?)</article>', html, re.S))
     if not found:
         raise ValueError(f"Missing article body in note {note['id']}")
-    return found[1]
+    # A design study can have multiple prose blocks and specimens between them.
+    # Keep the original single-block fingerprint so existing recordings still match.
+    return html[found[0].start(1):found[-1].end(1)]
 
 
 class ProseReader(HTMLParser):
@@ -432,6 +436,8 @@ def main(argv=None) -> int:
     add_arguments(commands)
     import field_workflow as workflow
     workflow.add_arguments(commands)
+    import field_release as release
+    release.add_arguments(commands)
     for name in ("plan", "generate"):
         sub = commands.add_parser(name)
         sub.add_argument("episode")
@@ -445,12 +451,14 @@ def main(argv=None) -> int:
             sub.add_argument("--retry-uncertain", action="store_true")
     args = parser.parse_args(argv)
     try:
-        if args.command in {"setup", "make", "generate", "captions"}:
+        if args.command in {"setup", "make", "generate", "captions", "make-all"}:
+            if args.command == "make-all" and args.dry_run and not args.project:
+                args.project = "offline-plan-project"
             workflow.resolve_defaults(args, discover_project=not getattr(args, "dry_run", False))
         if args.command == "check":
             episodes = json.loads((ROOT / "audio/episodes.json").read_text(encoding="utf-8"))
             for episode in episodes:
-                plan = make_plan(episode["id"], "gemini-2.5-pro-tts", "eu")
+                plan = make_plan(episode["id"], "gemini-2.5-pro-tts", "global")
                 for data in plan["requests"]:
                     assert len(data["input"]["text"].encode("utf-8")) <= 3000
                     assert sum(len(v.encode("utf-8")) for v in data["input"].values()) <= 4000
@@ -482,6 +490,18 @@ def main(argv=None) -> int:
             if not 0 <= args.wait <= 3600:
                 raise ValueError("--wait must be between 0 and 3600 seconds")
             workflow.make(args)
+        elif args.command == "make-all":
+            if not 0 <= args.wait <= 3600:
+                raise ValueError("--wait must be between 0 and 3600 seconds")
+            release.make_all(args)
+        elif args.command == "publish":
+            release.publish()
+        elif args.command == "sync":
+            added = release.sync_catalog()
+            if not added:
+                print("Every published note already has an audio script. No Google requests made.")
+        elif args.command == "verify-live":
+            release.verify_live()
         else:
             generate(args)
         return 0

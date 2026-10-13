@@ -1,0 +1,50 @@
+/* Listening uses the same paper, stone, type and focus treatment as the notes. */
+.note-listen { margin:24px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);max-width:860px; }
+.note-listen>summary { cursor:pointer;min-height:44px;padding:16px 0;color:var(--gold-bright);font:600 16px/1.5 var(--body); }
+.note-listen[open] { padding-bottom:22px; }
+.audio-badge { display:inline-block;vertical-align:middle;margin-left:12px;padding:2px 8px;border:1px solid var(--line);border-radius:var(--radius);color:var(--secondary);font:11px/1.7 var(--mono);font-weight:400; }
+.audio-label { color:var(--secondary);font-size:11px;letter-spacing:.08em;line-height:1.8;margin:12px 0; }
+.audio-label span { letter-spacing:0; }
+.note-listen audio,.archive-listen audio { display:block;width:100%;height:54px;margin:12px 0; }
+.audio-tools { display:flex;gap:8px 22px;align-items:center;flex-wrap:wrap;font:14px/1.5 var(--body); }
+.audio-tools a { color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px;padding:10px 0; }
+.audio-tools label { display:flex;align-items:center;gap:8px;min-height:44px; }
+.audio-tools select,.audio-tools button { border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);color:var(--ink);font:inherit;min-height:44px;padding:8px 12px; }
+.audio-tools button { cursor:pointer; }
+.audio-tools button:disabled { opacity:.55;cursor:default; }
+.audio-status { font:14px/1.6 var(--body);color:var(--secondary); }
+.audio-status:empty { display:none; }
+.audio-transcript { margin-top:22px;border-top:1px solid var(--line); }
+.audio-transcript>summary { font:600 15px/1.5 var(--body);padding:14px 0;min-height:44px;cursor:pointer; }
+.audio-caption-note { font:13px/1.7 var(--body);color:var(--secondary); }
+.audio-cues { max-height:360px;overflow:auto;overscroll-behavior:contain;padding-right:12px; }
+.audio-cues p { font:16px/1.7 var(--body);margin:0;padding:10px 12px;border-left:2px solid transparent; }
+.audio-cues p[aria-current=true] { background:var(--surface-2);border-left-color:var(--gold-bright); }
+.audio-cues a { color:var(--gold-bright);font:12px/1.7 var(--mono);display:inline-block;min-width:48px;min-height:44px;vertical-align:middle;text-decoration:underline;text-underline-offset:4px; }
+.audio-transcript>a { display:inline-block;color:var(--gold-bright);font:14px/1.7 var(--body);padding:12px 0; }
+.archive-listen { margin:40px 0 58px;padding:28px;border:1px solid var(--line);background:var(--surface); }
+.audio-section-heading { display:flex;justify-content:space-between;align-items:start;gap:24px; }
+.audio-section-heading h2 { font:400 clamp(26px,4vw,40px)/1.2 var(--serif);letter-spacing:-.025em;margin:0 0 12px; }
+.audio-section-heading p:not(.eyebrow) { color:var(--secondary);font:15px/1.7 var(--body);margin:0; }
+.archive-listen h3 { font:400 24px/1.3 var(--serif);margin:24px 0 12px; }
+.audio-queue { list-style:none;padding:0;margin:24px 0 0;border-top:1px solid var(--line);max-height:340px;overflow:auto;overscroll-behavior:contain; }
+.audio-queue li { border-bottom:1px solid var(--line); }
+.audio-queue button,.audio-queue-read { display:flex;width:100%;text-align:left;align-items:center;justify-content:space-between;gap:18px;padding:16px 12px;background:transparent;border:0;color:var(--ink);font:15px/1.5 var(--body); }
+.audio-queue button { cursor:pointer; }
+.audio-queue button .mono { font-size:11px;color:var(--secondary);min-width:120px; }
+.audio-queue button strong { font-weight:400;flex:1; }
+.audio-queue button>span:last-child { color:var(--secondary);white-space:nowrap;font-size:13px; }
+.audio-queue button[aria-current=true] { background:var(--surface-2);box-shadow:inset 3px 0 var(--gold-bright); }
+.audio-queue-read { text-decoration:underline;text-underline-offset:4px; }
+.audio-queue-read span { font-size:12px;color:var(--secondary); }
+.has-audio-queue .audio-queue-read { display:none; }
+.note-listen :focus-visible,.archive-listen :focus-visible { outline:2px solid var(--gold-bright);outline-offset:3px; }
+@media(max-width:660px) {
+  .archive-listen { padding:20px 16px;margin:30px 0 40px; }
+  .audio-section-heading { display:block; }
+  .audio-section-heading>.editorial-link { margin-top:16px; }
+  .audio-queue button { flex-wrap:wrap;gap:4px 12px; }
+  .audio-queue button .mono { width:100%; }
+  .audio-queue button strong { min-width:0; }
+  .audio-label span { display:block; }
+}

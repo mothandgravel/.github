@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 import xml.etree.ElementTree as ET
 from build_discovery import build as build_discovery
 from build_home_styles import build as build_home_styles
+from build_audio import build as build_audio
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "docs/assets/notes.json"
@@ -145,6 +146,7 @@ def build(check=False):
         if revisions:
             links += '<p class="mono">REVISITED IN</p>' + ''.join(f'<a class="editorial-link" href="./{other["slug"]}">{escape(other["title"])}</a>' for other in revisions)
         replace_slot(ROOT / 'docs/notes' / n['slug'], 'related-notes', '<aside class="note-related" aria-label="Related Field Notes"><p class="mono">RELATED READING</p>' + links + '</aside>' if links else '', check)
+    build_audio(check, ROOT)
 
 
 if __name__ == '__main__':

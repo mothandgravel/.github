@@ -21,6 +21,9 @@
 .question-sheet textarea:focus-visible,.room-card textarea:focus-visible { outline:2px solid var(--gold-bright);outline-offset:4px; }
 .question-sheet textarea::placeholder,.room-card textarea::placeholder { color:var(--muted);opacity:1; }
 .question-help { color:var(--secondary);font-size:15px;line-height:1.7; }
+.question-sheet details { border-top:1px solid var(--line);padding-top:14px;margin-top:24px; }
+.question-sheet summary { cursor:pointer;min-height:44px;font-weight:600;line-height:1.6; }
+.question-sheet details .question-help { margin-top:12px; }
 .question-error { color:var(--ink);border-left:3px solid var(--gold-bright);padding-left:12px; }
 .choice { display:flex;align-items:center;gap:15px;min-height:56px;border:1px solid var(--line);padding:14px 16px;margin:10px 0;cursor:pointer;font-size:16px; }
 .choice:has(input:checked) { border-color:var(--gold-bright);background:var(--surface-2); }

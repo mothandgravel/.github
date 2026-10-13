@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+<title id="title">Several pieces, one gesture</title><desc id="desc">Three isometric paper tiles share one brass boundary and one returning arrow. An editorial metaphor for a group of edits reversed together, not a game screenshot.</desc>
+<rect width="1200" height="650" fill="#17191b"/>
+<g stroke="#747268" stroke-width="1" opacity=".32"><path d="M130 380L610 120L1070 380L590 640Z" fill="none"/><path d="M250 445L730 185M370 510L850 250M490 575L970 315M250 315L710 575M370 250L830 510M490 185L950 445"/></g>
+<g stroke="#17191b" stroke-width="3"><path d="M285 330L410 262L535 330L410 398Z" fill="#eee7d5"/><path d="M285 330V351L410 419V398Z" fill="#8b887f"/><path d="M410 398L535 330V351L410 419Z" fill="#b5ad9d"/>
+<path d="M435 248L560 180L685 248L560 316Z" fill="#e2dccd"/><path d="M435 248V269L560 337V316Z" fill="#8b887f"/><path d="M560 316L685 248V269L560 337Z" fill="#b5ad9d"/>
+<path d="M585 166L710 98L835 166L710 234Z" fill="#d2d8ca"/><path d="M585 166V187L710 255V234Z" fill="#788276"/><path d="M710 234L835 166V187L710 255Z" fill="#a3b09d"/></g>
+<path d="M233 330L710 68L888 166L411 449Z" fill="none" stroke="#d4b584" stroke-width="3" stroke-dasharray="12 8"/>
+<path d="M915 245C1060 340 1005 508 790 528H368" fill="none" stroke="#d4b584" stroke-width="5" stroke-linecap="round"/><path d="M399 508L367 528L399 548" fill="none" stroke="#d4b584" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="100" y="590" fill="#eee7d5" font-family="Georgia,serif" font-style="italic" font-size="34">A way back that fits the gesture.</text>
+</svg>

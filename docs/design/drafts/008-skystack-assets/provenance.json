@@ -1,0 +1,28 @@
+{
+  "sourceRepository": "digablesolutions/sky-stack-builder",
+  "sourceCommit": "33f5c034227b81466a0e9e06bc442206e457d398",
+  "method": "pinned source inspection; native tests inspected, not executed",
+  "assets": [
+    {
+      "file": "gesture-boundary.svg",
+      "sha256": "c5557f309fe259438623fad58c7d67d01a9431579a8e6ad2520dc9baddec6c80",
+      "method": "authored SVG",
+      "classification": "source-derived contract sketch; separate scenarios",
+      "notGameCapture": true
+    },
+    {
+      "file": "one-gesture.svg",
+      "sha256": "ad471ab5667e3f2105ebfe6ae94013b222319334dc3c427434d02ddfc0f4c911",
+      "method": "authored SVG",
+      "classification": "editorial metaphor",
+      "notGameCapture": true
+    }
+  ],
+  "publication": "draft only; no archive/feed/sitemap entry",
+  "openChecks": [
+    "Native Windows gameplay capture",
+    "Placement/refusal/undo behaviour in the native app",
+    "Player expectations before Undo",
+    "Editorial review before publication"
+  ]
+}

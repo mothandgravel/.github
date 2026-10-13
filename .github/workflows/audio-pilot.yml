@@ -1,4 +1,4 @@
-name: Validate audio pilot (offline)
+name: Validate Field Notes audio
 
 on:
   push:
@@ -12,6 +12,14 @@ on:
       - "scripts/test_field_captions.py"
       - "scripts/field_workflow.py"
       - "scripts/test_field_workflow.py"
+      - "scripts/field_release.py"
+      - "scripts/test_field_release.py"
+      - "scripts/build_audio.py"
+      - "docs/assets/audio/**"
+      - "docs/assets/field-*"
+      - "docs/assets/podcast-cover.*"
+      - "scripts/audit_audio.mjs"
+      - "scripts/field_listen_model.test.mjs"
       - ".github/workflows/audio-pilot.yml"
   pull_request:
     paths:
@@ -24,6 +32,14 @@ on:
       - "scripts/test_field_captions.py"
       - "scripts/field_workflow.py"
       - "scripts/test_field_workflow.py"
+      - "scripts/field_release.py"
+      - "scripts/test_field_release.py"
+      - "scripts/build_audio.py"
+      - "docs/assets/audio/**"
+      - "docs/assets/field-*"
+      - "docs/assets/podcast-cover.*"
+      - "scripts/audit_audio.mjs"
+      - "scripts/field_listen_model.test.mjs"
       - ".github/workflows/audio-pilot.yml"
 
 permissions:
@@ -38,3 +54,28 @@ jobs:
         run: python3 scripts/field_audio.py check
       - name: Verify script preservation, recovery and audio processing offline
         run: python3 -m unittest discover -s scripts -p 'test_field_*.py' -v
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install pinned browser audit tools
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
+          npx playwright install --with-deps chromium
+      - name: Build a complete site with synthetic clips, without Cloud credentials
+        run: python3 scripts/test_field_release.py --browser-fixture artifacts/audio-site-qa/docs
+      - name: Verify listening, subtitles, queue and accessibility across both themes
+        run: node scripts/audit_audio.mjs
+      - name: Preserve listening interface checks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: listening-interface-review
+          path: |
+            artifacts/audio-site-qa/browser.json
+            artifacts/audio-site-qa/*.png
+          retention-days: 14

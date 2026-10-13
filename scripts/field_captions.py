@@ -252,7 +252,7 @@ label{{display:inline-block;padding:10px 0;margin-right:16px}}select{{font:inher
 <nav aria-label="Downloads"><a href="captions.srt" download>SRT</a><a href="captions.vtt" download>WebVTT</a>
 <a href="transcript.txt" download>Transcript</a></nav>
 <label><input id="follow" type="checkbox" checked> Follow playback</label>
-<label for="speed">Playback speed <select id="speed"><option value="1">1×</option><option value="1.15">1.15×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select></label>
+<label for="speed">Playback speed <select id="speed"><option value="1">1×</option><option value="1.15" selected>1.15×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select></label>
 <p id="status" role="status">Select a caption to listen from that point.</p>
 <div id="transcript" role="region" aria-label="Timed transcript" lang="{escape(language)}"></div>
 <noscript><p>Open the <a href="transcript.txt">readable transcript</a> and use the audio controls above.</p></noscript></main>
@@ -262,6 +262,7 @@ const cues=JSON.parse(document.getElementById('cue-data').textContent);
 const player=document.getElementById('player'),list=document.getElementById('transcript');
 const follow=document.getElementById('follow'),status=document.getElementById('status');
 document.getElementById('speed').addEventListener('change',event=>{{player.playbackRate=Number(event.target.value);}});
+player.defaultPlaybackRate=1.15;player.playbackRate=1.15;
 const clock=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
 const buttons=cues.map(cue=>{{
   const button=document.createElement('button');button.type='button';button.className='cue';

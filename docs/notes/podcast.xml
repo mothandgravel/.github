@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+  <channel>
+    <title>Moth &amp; Gravel — Field Notes audio</title>
+    <link>https://mothandgravel.com/notes/#listen-archive</link>
+    <description>AI-narrated Field Notes and conversations from an independent software and design studio.</description>
+    <language>en</language>
+    <copyright>Moth &amp; Gravel</copyright>
+    <atom:link href="https://mothandgravel.com/notes/podcast.xml" rel="self" type="application/rss+xml" />
+    <itunes:author>Moth &amp; Gravel</itunes:author>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:type>episodic</itunes:type>
+    <itunes:image href="https://mothandgravel.com/assets/podcast-cover.png" />
+    <itunes:category text="Arts">
+      <itunes:category text="Design" />
+    </itunes:category>
+    <image>
+      <url>https://mothandgravel.com/assets/podcast-cover.png</url>
+      <title>Moth &amp; Gravel — Field Notes audio</title>
+      <link>https://mothandgravel.com/notes/</link>
+    </image>
+  </channel>
+</rss>
