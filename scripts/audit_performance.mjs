@@ -17,6 +17,7 @@ try {
   for (const profile of ['mobile', 'desktop']) {
     for (const [name, url, repetitions] of [
       ['baseline', baseline, 3], ['candidate', candidate, 3],
+      ['mapping-study', new URL('/specimens/whose-map/', candidate).href, 3],
       ...(process.env.LIVE_URL ? [['live-before', process.env.LIVE_URL, 3]] : []),
     ]) {
       for (let i = 0; i < repetitions; i++) {
@@ -57,15 +58,16 @@ for (const profile of ['mobile', 'desktop']) for (const name of [...new Set(runs
     scores: Object.fromEntries(Object.keys(group[0].scores).map(k => [k, median(group.map(r => r.scores[k]))])),
     rangeFcp: [Math.min(...group.map(r => r.fcp)), Math.max(...group.map(r => r.fcp))] };
   summaries.push(summary);
-  if (name === 'candidate') {
-    for (const [key, maximum] of [['fcp', 1000], ['lcp', 2500], ['tbt', 200], ['cls', 0.1]])
-      if (summary[key] > maximum) failures.push(`${profile}: ${key} ${summary[key]} exceeds ${maximum}`);
-    if (summary.scores.performance < 0.9) failures.push(`${profile}: performance below 90`);
-    if (summary.scores.seo < 0.95) failures.push(`${profile}: technical SEO below 95`);
+  if (name === 'candidate' || name === 'mapping-study') {
+    const fcpBudget = name === 'candidate' ? 1000 : 1800;
+    for (const [key, maximum] of [['fcp', fcpBudget], ['lcp', 2500], ['tbt', 200], ['cls', 0.1]])
+      if (summary[key] > maximum) failures.push(`${name}/${profile}: ${key} ${summary[key]} exceeds ${maximum}`);
+    if (summary.scores.performance < 0.9) failures.push(`${name}/${profile}: performance below 90`);
+    if (summary.scores.seo < 0.95) failures.push(`${name}/${profile}: technical SEO below 95`);
   }
 }
 await writeFile(join(output, 'summary.json'), JSON.stringify({
-  methodology: 'Median of three independent cold Lighthouse navigations per URL/profile; Lighthouse defaults simulate mobile slow 4G/CPU and desktop. Baseline and candidate are served on the same CI host without compression. Live-before is a separate deployed-host measurement, not an after result or user field data. FCP is first visible content, LCP is main visible content; neither means every image is loaded. Scores do not establish indexing, AI recommendations or enquiries.',
+  methodology: 'Median of three independent cold Lighthouse navigations per URL/profile; Lighthouse defaults simulate mobile slow 4G/CPU and desktop. Baseline and candidate homepages are served on the same CI host without compression. The new mapping study is measured independently without a nonexistent base-page comparison; its FCP budget is 1800 ms, with the same 2500 ms LCP, 200 ms TBT and 0.1 CLS limits. The homepage retains its 1000 ms FCP budget. Live-before is a separate deployed-host measurement, not an after result or user field data. FCP is first visible content, LCP is main visible content; neither means every image is loaded. Scores do not establish indexing, AI recommendations or enquiries.',
   summaries, failures, runs,
 }, null, 2));
 console.log(JSON.stringify({ summaries, failures }, null, 2));

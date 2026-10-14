@@ -56,6 +56,30 @@
       "supports": "Camera overlay with projected grid, scan rays and separate position estimates; calibration required. Does not establish calibration of the supplied capture."
     }
   ],
-  "displayTreatment": "Original pixels, colours, units and labels retained. SVG viewBox and clip rectangles expose labelled detail views; every original full-resolution capture stays linked. No generative retouching or reconstructed data.",
-  "limits": "Different captures, not a synchronized or controlled before/after comparison. Screenshot states and counts are what the UI displays, not independently verified accuracy, coverage, safety, physical position or completion. Received date is not a capture date."
+  "displayTreatment": "Map captures retain original decoded pixels, colours, units and labels. The camera is displayed through responsive WebP delivery previews; its unchanged full-resolution JPEG stays linked. SVG viewBox and clip rectangles expose labelled map detail views. No generative retouching or reconstructed data.",
+  "limits": "Different captures, not a synchronized or controlled before/after comparison. Screenshot states and counts are what the UI displays, not independently verified accuracy, coverage, safety, physical position or completion. Received date is not a capture date.",
+  "deliveryPreviews": [
+    {
+      "file": "docs/assets/specimens/buggy/camera-preview-960.webp",
+      "source": "docs/assets/specimens/buggy/camera-rays.jpg",
+      "dimensions": [
+        960,
+        516
+      ],
+      "bytes": 75694,
+      "sha256": "27b4bc54193e7fe54e249eafc610f81fa34f20f14e240a94de5150ce0dcac13e",
+      "treatment": "responsive delivery preview; WebP quality 90, method 6; Lanczos resize for 960 px only; original JPEG remains linked unchanged"
+    },
+    {
+      "file": "docs/assets/specimens/buggy/camera-preview-1920.webp",
+      "source": "docs/assets/specimens/buggy/camera-rays.jpg",
+      "dimensions": [
+        1920,
+        1032
+      ],
+      "bytes": 202184,
+      "sha256": "6ac07f9878ab3f9470e76e97b746c0b2c93779ae6b03c5b82bf744ca24f48942",
+      "treatment": "responsive delivery preview; WebP quality 90, method 6; Lanczos resize for 960 px only; original JPEG remains linked unchanged"
+    }
+  ]
 }

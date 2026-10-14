@@ -185,7 +185,7 @@ def main() -> int:
     mapping_page = ROOT / 'specimens/whose-map/index.html'
     check(mapping_page.is_file(), 'Missing camera and mapping capture study')
     captures = json.loads((ROOT / 'design/buggy-captures-provenance.json').read_text())
-    for item in captures['assets']:
+    for item in captures['assets'] + captures.get('deliveryPreviews', []):
         asset = ROOT.parent / item['file']
         check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['sha256'],
               'Mapping capture differs from recorded evidence')
