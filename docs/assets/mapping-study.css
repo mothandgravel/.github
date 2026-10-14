@@ -19,6 +19,7 @@
 .mapping-panel>.mono{color:var(--gold-bright);}.mapping-panel h3{font:400 27px/1.2 var(--serif);margin:10px 0 14px;}
 .mapping-panel .capture-description{min-height:76px;font-size:14px;color:var(--secondary);}
 .capture-viewport{width:100%;aspect-ratio:16/10;height:auto;display:block;background:#0f0f23;border:1px solid #7a7464;}
+.capture-viewport[hidden]{display:none;}
 .mapping-panel fieldset{margin:22px 0 10px;border:0;padding:0;}
 .mapping-panel legend{font:600 12px/1.6 var(--mono);margin-bottom:12px;}
 .capture-views{display:grid;grid-template-columns:1fr 1fr;gap:8px;}

@@ -50,3 +50,16 @@ Ask a reader to locate unobserved space and explain which position they trust. O
 The initial responsive run passed 546 checks across both appearances at 320/390/768/1440 px, plus JavaScript-free and failed-module reading. The first run found a dark-mount link inheriting the Afterlight accent; the mount now has an explicit light brass link. Review includes desktop grids and the phone page. Twenty-one existing model tests and generated/static checks pass. The original Field Note 006 narrated body was compared byte-for-byte with the base and is unchanged. Capture hashes and the maps' decoded RGB identity were checked before integration.
 
 The working-copy inspection also clarified the colour distinction: world-point colours encode confidence; the occupancy grid uses a separate blue/neutral-grey/red scale. The public study explains that difference without repainting the source.
+
+## PR 32 boundary audit
+
+The end-to-end review found and fixed two interaction seams:
+
+- Browser Back restored a native radio selection after the module's initial render, leaving the selected label, crop and caption inconsistent. The study now reconciles them on `pageshow`, including returns from the Field Note and the full-resolution image.
+- A failed map request left inspection controls over an empty plot. Controls now become available after the source decodes. Failure hides the empty viewport and controls, explains the retry route and retains the source link; the other capture remains usable.
+
+The strengthened browser audit passed **592 checks with zero failures** in Chromium: both themes at 320/390/768/1440 px, all eight labelled detail views, keyboard and actual touch activation, stable viewport geometry, history restoration, image failure, module failure and JavaScript-free reading. It also checks the Field Note addendum's two decoded images, reflow and automated accessibility in every theme/width combination. Route entry from the workbench, source links and return anchors are exercised. Detail screenshots were visually reviewed for retained titles, axes and framing; the region rectangles are presentation crops of complete source files.
+
+Original/export hashes, file sizes, dimensions and all three captures' decoded RGB pixels were independently checked against the supplied files. The narrated article was again compared byte-for-byte with base revision `045261d22abc6b11f3692cba9ba5b0b682b3893a`. Generated/static checks and JavaScript syntax checks pass. CI runs the expanded audit alongside the existing site, audio and performance gates.
+
+This closes the reproduced interaction gaps within the tested scope. Firefox, Safari, physical-device operation, screen-reader announcements and human comprehension have not been verified by this Chromium/axe run. Capture timestamps, matched raw sessions, executable revisions and calibration remain unknown; the public record states those limits. Neither the audit nor the screenshots establish robot accuracy or safe navigation.

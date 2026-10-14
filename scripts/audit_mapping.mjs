@@ -11,7 +11,7 @@ const browser = await chromium.launch();
 const failures = [], results = [];
 let checks = 0;
 const check = (value, label) => { checks++; if (!value) failures.push(label); };
-const captureStyle = '.site-header,.skip-link{visibility:hidden!important}';
+const captureStyle = '.site-header,.site-header *,.skip-link{visibility:hidden!important}';
 const accessibility = async (page, label) => {
   await page.addScriptTag({content:axe.source});
   const violations = await page.evaluate(async () => (await axe.run(document, {
@@ -55,7 +55,8 @@ try {
         check(['x','y','width','height'].every(k=>Math.abs(before[k]-after[k])<.1),label+': inspection viewport moves '+key+'/'+name);
       }
       // Touch/native activation also reaches the world map without changing the other capture.
-      await panel.getByLabel('World map',{exact:true}).check();
+      if(width<=390)await panel.getByText('World map',{exact:true}).tap();
+      else await panel.getByLabel('World map',{exact:true}).check();
       check(await viewport.getAttribute('viewBox')===expected.world.box.join(' '),label+': direct/touch choice '+key);
     }
     await accessibility(page,label);
@@ -69,12 +70,47 @@ try {
       await page.evaluate(()=>document.activeElement?.blur());
       await page.locator('#inspect').screenshot({path:join(output,label+'-grids.png'),style:captureStyle});
     }
+    const savedViews = await page.locator('[data-mapping-capture]').evaluateAll(panels=>panels.map(p=>({
+      selected:p.querySelector('input:checked').value,
+      box:p.querySelector('svg').getAttribute('viewBox'),
+      caption:p.querySelector('[data-view-caption]').textContent,
+    })));
+    const checkRestored = async destination => {
+      await page.locator('fieldset').first().waitFor({state:'visible'});
+      const restored = await page.locator('[data-mapping-capture]').evaluateAll(panels=>panels.map(p=>({
+        selected:p.querySelector('input:checked').value,
+        box:p.querySelector('svg').getAttribute('viewBox'),
+        caption:p.querySelector('[data-view-caption]').textContent,
+      })));
+      check(JSON.stringify(restored)===JSON.stringify(savedViews),label+': Back from '+destination+' restores selection, crop and caption together');
+    };
     await page.getByRole('link',{name:'Return to the mapping Field Note'}).click();
     check(new URL(page.url()).hash==='#bench-captures',label+': visual addendum route');
     check(await page.locator('#bench-captures').isVisible(),label+': addendum not reached');
+    await page.locator('#bench-captures img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
+    check(await page.locator('#bench-captures img').count()===2,label+': addendum camera/map pair');
+    check(!(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)),label+': Field Note overflow');
+    await accessibility(page,label+': Field Note');
+    if(width===390)await page.locator('#bench-captures').screenshot({path:join(output,label+'-addendum.png'),style:captureStyle});
     await page.goBack();check(new URL(page.url()).pathname===route,label+': Back loses specimen');
+    await checkRestored('Field Note');
+    await page.locator('[data-mapping-capture]').first().getByRole('link',{name:'Open the full-resolution capture'}).click();
+    await page.waitForURL('**/assets/specimens/buggy/world-local.webp');
+    await page.goBack();await checkRestored('source image');
     results.push({label});await page.close();
   }
+  // A missing source must not leave apparently usable controls over an empty plot.
+  const broken=await browser.newPage({viewport:{width:390,height:844}});
+  await broken.route('**/world-local.webp',r=>r.abort());
+  await broken.goto(origin+route,{waitUntil:'networkidle'});
+  const failed=broken.locator('[data-mapping-capture]').first();
+  check(await failed.locator('fieldset').isHidden(),'failed image: dead controls hidden');
+  check(await failed.locator('svg').isHidden(),'failed image: blank plot hidden');
+  check((await failed.locator('[data-view-caption]').textContent()).includes('could not load'),'failed image: explicit retry explanation');
+  check(await failed.getByRole('link',{name:'Open the full-resolution capture'}).isVisible(),'failed image: source retry link reachable');
+  check(await broken.locator('[data-mapping-capture]').last().locator('fieldset').isVisible(),'failed image: other capture still usable');
+  await accessibility(broken,'failed image');
+  await broken.close();
   for(const mode of ['no-js','failed-module']) {
     const page=await browser.newPage({viewport:{width:390,height:844},javaScriptEnabled:mode!=='no-js'});
     if(mode==='failed-module')await page.route('**/assets/mapping-study.mjs',r=>r.abort());

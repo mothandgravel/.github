@@ -20,6 +20,21 @@ for (const panel of document.querySelectorAll('[data-mapping-capture]')) {
     readout.textContent = view.caption;
   };
   controls.addEventListener('input', event => render(event.target.value));
-  render(controls.querySelector('input:checked').value);
-  controls.hidden = false;
+  const restoreView = () => {
+    if (!viewport.hasAttribute('hidden')) render(controls.querySelector('input:checked').value);
+  };
+  // History restores native form state after the module's initial render.
+  window.addEventListener('pageshow', restoreView);
+  restoreView();
+  // A decoded image is required before inspection controls become usable.
+  const source = new Image();
+  source.src = panel.querySelector('image').href.baseVal;
+  source.decode().then(() => {
+    restoreView();
+    controls.hidden = false;
+  }).catch(() => {
+    viewport.setAttribute('hidden', '');
+    controls.hidden = true;
+    readout.textContent = 'This capture could not load. Open the full-resolution capture to retry.';
+  });
 }
