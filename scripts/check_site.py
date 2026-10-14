@@ -148,7 +148,7 @@ def main() -> int:
         check(f'id="specimen-{specimen}"' in html, f'Missing {specimen} specimen')
     check(html.count('class="specimen-record"') == 3, 'Each specimen needs a native working record')
     provenance = json.loads((ROOT / 'design/working-specimens-provenance.json').read_text())
-    check([item['id'] for item in provenance['artifacts']] == ['ajo', 'skystack', 'kitronik'],
+    check([item['id'] for item in provenance['artifacts']] == ['liveconnect', 'ajo', 'skystack', 'kitronik'],
           'Specimen provenance must match the visible selection')
     for item in provenance['artifacts']:
         if 'asset' in item:
@@ -156,6 +156,26 @@ def main() -> int:
             check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['assetSha256'],
                   f"Specimen asset differs from recorded output: {item['id']}")
     check((ROOT / 'assets/specimens/sky-stamp-footprints.svg').is_file(), 'Missing native footprint replay')
+    connection_page = ROOT / 'specimens/connected-to-what/index.html'
+    check(connection_page.is_file(), 'Missing inspectable LiveConnect specimen')
+    check('id="specimen-liveconnect"' in html and 'href="./specimens/connected-to-what/"' in html,
+          'Inspectable specimen must be discoverable from the bench')
+    if connection_page.is_file():
+        connection_html = connection_page.read_text()
+        connection_parser = SiteParser()
+        connection_parser.feed(connection_html)
+        for anchor in connection_parser.anchors:
+            check(anchor in connection_parser.ids, f'Connection specimen broken anchor #{anchor}')
+        for relative in re.findall(r'(?:href|src)="(\.\.?/[^\"]+)"', connection_html):
+            target = (connection_page.parent / urlsplit(relative).path).resolve()
+            check(target.is_relative_to(ROOT.resolve()) and (target.is_file() or
+                  (target.is_dir() and (target / 'index.html').is_file())),
+                  f'Connection specimen broken destination {relative}')
+        check('https://mothandgravel.com/specimens/connected-to-what/' in (ROOT / 'sitemap.xml').read_text(),
+              'Inspectable specimen missing from sitemap')
+        check('href="../../#specimen-ajo"' in connection_html, 'Specimen needs its next question')
+        check('<noscript>' in connection_html and '<table>' in connection_html,
+              'Specimen must retain all three readings without JavaScript')
     check("['.work-grid','./assets/specimens.mjs']" in html, 'Optional specimen handling module missing')
     check("['#moth-interlude','./assets/moth-interlude.mjs']" in html, 'Optional moth scene loader missing')
     check('id="moth-interlude"' in html and 'id="moth-question"' in html, 'Moth interlude resting composition missing')
@@ -242,7 +262,7 @@ def main() -> int:
         check('href="./"' in theme_html, "Theme study must link back to the Field Notes index")
 
     # Discovery must survive a text-only request and agree with the public record.
-    for file in [ROOT / 'index.html', note_index] + [ROOT / 'notes' / n['slug'] for n in catalog]:
+    for file in [ROOT / 'index.html', note_index, connection_page] + [ROOT / 'notes' / n['slug'] for n in catalog]:
         source = file.read_text()
         blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', source, re.S)
         check(len(blocks) == 1, f'{file.name}: expected one generated identity graph')

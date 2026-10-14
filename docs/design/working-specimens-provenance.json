@@ -2,6 +2,15 @@
   "selection": "The owner authorised selection from the portfolio strategy and Navivra repositories. Planning material informed the shortlist; no customer research, pricing hypotheses or employment material is reproduced.",
   "artifacts": [
     {
+      "id": "liveconnect",
+      "project": "LiveConnect",
+      "classification": "source-helper replay with authored fixtures",
+      "study": "../specimens/connected-to-what/",
+      "existingProvenance": "connection-study-provenance.json",
+      "method": "Selected TypeScript helper emitted with types removed; frozen diagnostic fixtures and an inspection clock run locally in Node and the browser.",
+      "limits": "Presentation sketches, not a stream capture, shipped product change, connection replay or human comprehension result."
+    },
+    {
       "id": "ajo",
       "project": "Ajo",
       "classification": "recorded simulator trace",

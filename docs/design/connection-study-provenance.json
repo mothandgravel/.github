@@ -1,0 +1,76 @@
+{
+  "specimen": "liveconnect-connection",
+  "title": "The connection came back. Did the picture?",
+  "sourceKind": "source-helper replay with authored diagnostic fixtures",
+  "sourceRevision": "8601cd730b17dd4be9aecea0dbf9a03133b545e1",
+  "repository": "kistradegoods/webrtc-multistream",
+  "helper": {
+    "path": "client/src/lib/quality-measurement-status.ts",
+    "blob": "b3079192d324b47ce58706bfbca5015288519864",
+    "sourceSha256": "1e0659135e81b5d5ed2e8387a7526536114e1ac30ede2546efc9bc9306f4f3bf",
+    "localSource": "tools/specimens/source/quality-measurement-status.ts",
+    "output": "docs/assets/specimens/measurement-status.mjs",
+    "transformation": "Node stripTypeScriptTypes in strip mode; type-only import and annotations removed, trailing whitespace trimmed. Function body logic unchanged."
+  },
+  "references": [
+    {
+      "path": "client/src/lib/livekit-connection-state.ts",
+      "blob": "2d7493107b7fade8f4d223d0b06774fed56656fc",
+      "scope": "Room connection state is a separate value. The public study uses a fixed connected fixture; it does not load the LiveKit SDK."
+    },
+    {
+      "path": "client/src/components/livekit-viewer-stage.tsx",
+      "blob": "759f7f1eff40712ac76a4743f57b53d5ad3b9db0",
+      "scope": "Viewer separately checks subscribed remote video and room connection. Presence of a subscribed track is not proof that useful frames are arriving."
+    },
+    {
+      "path": "client/src/lib/adaptive-streaming.ts",
+      "blob": "c6c2be4f21bafb79fb2fe12a6b91712f68ec43e8",
+      "scope": "Diagnostic source and unavailable metrics have explicit representation."
+    }
+  ],
+  "fixtures": [
+    {
+      "kind": "measured",
+      "ageSeconds": 2,
+      "connection": "connected",
+      "frameRate": 24,
+      "expectedMeasurement": "current"
+    },
+    {
+      "kind": "measured",
+      "ageSeconds": 15,
+      "connection": "connected",
+      "frameRate": 24,
+      "expectedMeasurement": "current"
+    },
+    {
+      "kind": "measured",
+      "ageSeconds": 16,
+      "connection": "connected",
+      "frameRate": 24,
+      "expectedMeasurement": "stale"
+    },
+    {
+      "kind": "measured",
+      "ageSeconds": 18,
+      "connection": "connected",
+      "frameRate": 24,
+      "expectedMeasurement": "stale"
+    },
+    {
+      "kind": "missing",
+      "ageSeconds": null,
+      "connection": "connected",
+      "frameRate": null,
+      "expectedMeasurement": "unavailable"
+    }
+  ],
+  "limits": "Invented inputs, frozen inspection clock, two authored presentation sketches. No live stream, captured telemetry, camera/microphone access, network recovery, deployed UI change or human comprehension result. Current describes freshness/completeness of this diagnostic sample, not picture quality. Fifteen seconds is this source's rule, not a universal streaming recommendation.",
+  "nextQuestion": {
+    "project": "Ajo",
+    "href": "../../#specimen-ajo",
+    "question": "An answer is missing. Should we do it again?",
+    "bridge": "Losing a current view is different from losing the reply to an action that may already have happened."
+  }
+}

@@ -10,6 +10,7 @@ on:
       - "scripts/audit_handling.mjs"
       - "scripts/audit_moth_volume.mjs"
       - "scripts/audit_rooms.mjs"
+      - "scripts/audit_connection.mjs"
       - ".github/workflows/design-audit.yml"
   workflow_dispatch:
 
@@ -48,6 +49,7 @@ jobs:
           node scripts/audit_handling.mjs
           node scripts/audit_moth_volume.mjs
           node scripts/audit_rooms.mjs
+          node scripts/audit_connection.mjs
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4

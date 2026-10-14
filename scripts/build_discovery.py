@@ -25,7 +25,8 @@ def build(check=False):
                'publisher': {'@id': organization['@id']}}
     pages = [(ROOT / 'docs/index.html', DOMAIN, 'Moth & Gravel — Independent Software & Design Studio', None),
              (ROOT / 'docs/notes/index.html', DOMAIN + 'notes/', 'Field Notes — Moth & Gravel', None),
-             (ROOT / 'docs/questions/index.html', DOMAIN + 'questions/', 'Leave a loose end — Moth & Gravel', None)]
+             (ROOT / 'docs/questions/index.html', DOMAIN + 'questions/', 'Leave a loose end — Moth & Gravel', None),
+             (ROOT / 'docs/specimens/connected-to-what/index.html', DOMAIN + 'specimens/connected-to-what/', 'The connection came back. Did the picture?', None)]
     pages += [(ROOT / 'docs/notes' / n['slug'], DOMAIN + 'notes/' + n['slug'], n['title'], n) for n in notes]
     for path, url, title, note in pages:
         page = {'@type': 'CollectionPage' if url.endswith('notes/') else 'WebPage',
@@ -54,6 +55,8 @@ def build(check=False):
                 page['mainEntity'] = {'@id': url + '#entries'}
             elif url.endswith('questions/'):
                 crumbs.append(('Leave a loose end', url))
+            elif url.endswith('specimens/connected-to-what/'):
+                crumbs += [('Working specimens', DOMAIN + '#work'), (title, url)]
         if len(crumbs) > 1:
             graph += [{'@type': 'BreadcrumbList', 'itemListElement':
                        [{'@type': 'ListItem', 'position': i + 1, 'name': label, 'item': link}

@@ -6,6 +6,7 @@ on:
       - "docs/**"
       - "scripts/**"
       - "tools/graphics/**"
+      - "tools/specimens/**"
       - "field_notes_audio/**"
       - ".github/workflows/validate-site.yml"
   pull_request:
@@ -13,6 +14,7 @@ on:
       - "docs/**"
       - "scripts/**"
       - "tools/graphics/**"
+      - "tools/specimens/**"
       - "field_notes_audio/**"
       - ".github/workflows/validate-site.yml"
 
@@ -35,11 +37,16 @@ jobs:
           node --test scripts/loose_end_model.test.mjs
           python3 tools/graphics/build_moth_model.py --check
           node --test scripts/moth_mesh.test.mjs
+          node tools/specimens/build_connection_study.mjs --check
+          node --test scripts/connection_study.test.mjs
       - name: Verify links, assets, accessibility hooks and sitemap
         run: python3 scripts/check_site.py
       - name: Syntax-check browser JavaScript
         run: |
           node --check docs/assets/specimens.mjs
+          node --check docs/assets/connection-study.mjs
+          node --check docs/assets/connection-study-model.mjs
+          node --check scripts/audit_connection.mjs
           node --check docs/assets/moth-interlude.mjs
           node --check docs/assets/moth-choreography.mjs
           node --check scripts/audit_moth.mjs
