@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "speed": 1.15,
+  "intro_seconds": 4,
+  "outro_seconds": 5,
+  "music_overlap_seconds": 1.5,
+  "music_gain_db": -12,
+  "target_lufs": -16,
+  "true_peak_db": -1.5,
+  "music_mode": "motif",
+  "music_file": null,
+  "music_credit": "Procedural opening and closing motif: Moth & Gravel.",
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "concurrency": 2
+  }
+}
