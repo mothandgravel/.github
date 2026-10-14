@@ -11,7 +11,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from field_notes_audio import audio, captions, cli
-from field_notes_audio.production import mix, runner
+from field_notes_audio.production import editions, mix, runner
 from field_notes_audio.production.config import load_settings
 from field_notes_audio.production.mix import finish_audio
 from field_notes_audio.production.timeline import caption_pages, retime
@@ -172,7 +172,7 @@ class ProductionTests(unittest.TestCase):
         destination, stage = self.root / "destination", self.root / "stage"
         for path in (destination, stage):
             path.mkdir()
-            for name in runner.AUDIO_FILES:
+            for name in editions.AUDIO_FILES:
                 (path / name).write_text("old" if path == destination else "new")
         (destination / "video").mkdir()
         (destination / "video/finished.mp4").write_text("valuable render")
@@ -184,10 +184,12 @@ class ProductionTests(unittest.TestCase):
             return rename(path, target)
 
         with patch.object(Path, "rename", interrupted), self.assertRaises(KeyboardInterrupt):
-            runner.commit_stage(stage, destination, {"fingerprint": "identity"}, runner.AUDIO_FILES)
+            runner.commit_stage(
+                stage, destination, {"fingerprint": "identity"}, editions.AUDIO_FILES
+            )
         self.assertEqual((destination / "episode.mp3").read_text(), "old")
         self.assertEqual((destination / "video/finished.mp4").read_text(), "valuable render")
-        runner.commit_stage(stage, destination, {"fingerprint": "identity"}, runner.AUDIO_FILES)
+        runner.commit_stage(stage, destination, {"fingerprint": "identity"}, editions.AUDIO_FILES)
         self.assertEqual((destination / "episode.mp3").read_text(), "new")
         self.assertEqual((destination / "video/finished.mp4").read_text(), "valuable render")
 
@@ -310,7 +312,7 @@ class FinishedAudioTests(unittest.TestCase):
         self.settings["video"]["width"] = 1280
         self.settings["video"]["height"] = 720
         with patch.object(
-            runner, "finish_audio", side_effect=AssertionError("Audio should be reused")
+            editions, "finish_audio", side_effect=AssertionError("Audio should be reused")
         ):
             self.assertEqual(
                 runner.produce_audio(self.entry, self.root, self.output, self.settings), destination
@@ -318,23 +320,23 @@ class FinishedAudioTests(unittest.TestCase):
         (destination / "episode.mp3").write_bytes(b"damaged")
         (destination / "video").mkdir()
         (destination / "video/previous.mp4").write_bytes(b"an existing render")
-        with patch.object(runner, "finish_audio", wraps=finish_audio) as finish:
+        with patch.object(editions, "finish_audio", wraps=finish_audio) as finish:
             self.assertEqual(
                 runner.produce_audio(self.entry, self.root, self.output, self.settings), destination
             )
             finish.assert_called_once()
-        self.assertTrue(runner.cache_valid(destination, state["fingerprint"], runner.AUDIO_FILES))
+        self.assertTrue(runner.cache_valid(destination, state["fingerprint"], editions.AUDIO_FILES))
         self.assertEqual((destination / "video/previous.mp4").read_bytes(), b"an existing render")
 
     def test_source_link_change_invalidates_the_description_cache(self):
         runner.produce_audio(self.entry, self.root, self.output, self.settings)
         self.entry["slug"] = "new-written-edition.html"
-        with patch.object(runner, "finish_audio", side_effect=RuntimeError("new identity")):
+        with patch.object(editions, "finish_audio", side_effect=RuntimeError("new identity")):
             with self.assertRaisesRegex(RuntimeError, "new identity"):
                 runner.produce_audio(self.entry, self.root, self.output, self.settings)
 
     def test_caption_failure_saves_exact_measurements_without_committing_bad_media(self):
-        with patch.object(runner, "retime", side_effect=ValueError("Bad timing")):
+        with patch.object(editions, "retime", side_effect=ValueError("Bad timing")):
             with self.assertRaisesRegex(ValueError, "diagnostic saved"):
                 runner.produce_audio(self.entry, self.root, self.output, self.settings)
         files = list((self.output / "failures").glob("*.json"))
@@ -351,7 +353,7 @@ class FinishedAudioTests(unittest.TestCase):
         self.assertAlmostEqual(state["timeline_duration_seconds"], state["voice_duration_seconds"])
 
     def test_audio_failure_does_not_commit_a_partial_edition(self):
-        with patch.object(runner, "finish_audio", side_effect=RuntimeError("Interrupted")):
+        with patch.object(editions, "finish_audio", side_effect=RuntimeError("Interrupted")):
             with self.assertRaises(RuntimeError):
                 runner.produce_audio(self.entry, self.root, self.output, self.settings)
         self.assertEqual(list(self.output.iterdir()), [])

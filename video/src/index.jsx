@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useRef} from 'react';
 import {AbsoluteFill, Audio, Composition, Img, interpolate, registerRoot, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {activeCaption, clock, videoDuration} from './timeline.mjs';
 
@@ -14,10 +14,22 @@ const FieldNote = (props) => {
   const fade = interpolate(time, [0, 0.7], [0, 1], clamp);
   const settle = interpolate(time, [0, 1.6], [28, 0], clamp);
   const ending = time >= props.duration - props.outro;
-  const light = 66 + Math.sin(time / 27) * 3;
+  const light = Math.sin(time / 27) * props.video.width * 0.03;
   const caption = activeCaption(props.pages, time);
   const progress = Math.min(1, time / props.duration);
   const titleSize = props.title.length > 55 ? 82 : props.title.length > 35 ? 96 : 116;
+  const heading = useRef(null);
+  useLayoutEffect(() => {
+    // Fit the actual installed font and line breaks, rather than title length.
+    const block = heading.current;
+    const title = block.querySelector('h1');
+    let size = titleSize;
+    title.style.fontSize = `${size}px`;
+    while (block.offsetHeight > block.parentElement.clientHeight && size > 64) {
+      size -= 2;
+      title.style.fontSize = `${size}px`;
+    }
+  }, [props.title, titleSize]);
   useLayoutEffect(() => {
     for (const element of document.querySelectorAll('[data-fit-check]')) {
       const box = element.getBoundingClientRect();
@@ -30,7 +42,7 @@ const FieldNote = (props) => {
   return (
     <AbsoluteFill style={{background: colors.charcoal, color: colors.paper, fontFamily: condensed}}>
       <Audio src={staticFile('master.wav')} />
-      <AbsoluteFill style={{background: `radial-gradient(ellipse at ${light}% 24%, #dfc19513, transparent 64%)`}} />
+      <AbsoluteFill style={{background: 'radial-gradient(ellipse at 66% 24%, #dfc19513, transparent 64%)', transform: `translateX(${light}px)`}} />
       <AbsoluteFill style={{width: 1920, height: 1080, padding: '64px 88px 52px', opacity: fade, transformOrigin: 'top left', transform: `scale(${props.video.width / 1920}) translateY(${settle}px)`}}>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72, borderBottom: `1px solid ${colors.line}`, paddingBottom: 28}}>
           <div style={{display: 'flex', gap: 20, alignItems: 'center'}}>
@@ -40,7 +52,7 @@ const FieldNote = (props) => {
           <span style={{fontFamily: mono, fontSize: 17, letterSpacing: 2, color: colors.muted}}>{props.label} / LISTENING EDITION</span>
         </div>
         <div style={{display: 'grid', gridTemplateColumns: '1.02fr 1fr', gap: 82, height: 632, alignItems: 'center'}}>
-          <div data-fit-check="Episode heading" style={{minWidth: 0}}>
+          <div ref={heading} data-fit-check="Episode heading" style={{minWidth: 0}}>
             <p style={{fontFamily: mono, letterSpacing: 3, fontSize: 18, color: colors.brass, margin: '0 0 30px'}}>FIELD NOTES / {props.kind === 'note' ? 'FROM THE WORKBENCH' : props.kind.toUpperCase()}</p>
             <h1 style={{fontSize: titleSize, fontWeight: 800, lineHeight: 1.04, letterSpacing: -3.5, margin: '0 0 34px', textTransform: 'uppercase', overflowWrap: 'anywhere'}}>{props.title}</h1>
             <div style={{height: 2, width: 86, background: colors.brass, marginBottom: 26}} />
@@ -62,6 +74,11 @@ const FieldNote = (props) => {
         </div>
       </AbsoluteFill>
       {!props.thumbnail && <div style={{position: 'absolute', bottom: 0, left: 0, width: `${progress * 100}%`, height: 3, background: colors.brass}} />}
+      {props.thumbnail && props.pages.map((page, index) => (
+        <div key={index} style={{position: 'absolute', left: 0, top: 0, width: 1420, height: 126, visibility: 'hidden', pointerEvents: 'none'}}>
+          <div data-fit-check={`Caption page ${index + 1}`} style={{fontFamily: '"Helvetica Neue", Arial, sans-serif', fontSize: 34, lineHeight: 1.45, overflowWrap: 'anywhere'}}>{page.text}</div>
+        </div>
+      ))}
     </AbsoluteFill>
   );
 };

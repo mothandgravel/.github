@@ -3,181 +3,25 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
-import json
 import shutil
 import subprocess
 import tempfile
-import time
-import uuid
+from functools import partial
 from pathlib import Path
 
-from field_notes_audio import audio, captions, site
+from field_notes_audio import audio, site
 from field_notes_audio.locks import run_lock
-from field_notes_audio.production.config import audio_settings, load_settings
-from field_notes_audio.production.mix import finish_audio
-from field_notes_audio.production.timeline import caption_pages, retime
+from field_notes_audio.production.batch import completed_jobs
+from field_notes_audio.production.config import load_settings
+from field_notes_audio.production.editions import (
+    VIDEO_FILES,
+    cache_valid,
+    commit_stage,
+    fingerprint,
+    produce_audio,
+)
+from field_notes_audio.production.toolchain import inspect_audio_toolchain
 from field_notes_audio.storage import digest_file, read_object, write_json
-
-AUDIO_FILES = {
-    "episode.mp3",
-    "master.wav",
-    "captions.srt",
-    "captions.vtt",
-    "transcript.txt",
-    "cues.json",
-    "description.txt",
-}
-VIDEO_FILES = {"episode.mp4", "thumbnail.png", "render.json"}
-
-
-def fingerprint(value: dict) -> str:
-    return hashlib.sha256(
-        json.dumps(value, sort_keys=True, ensure_ascii=False).encode()
-    ).hexdigest()
-
-
-def cache_valid(directory: Path, identity: str, files: set[str]) -> bool:
-    try:
-        if directory.is_symlink():
-            return False
-        state = read_object(directory / "production.json")
-        return (
-            state.get("fingerprint") == identity
-            and state.get("files", {}).keys() == files
-            and all(digest_file(directory / name) == state["files"][name] for name in files)
-        )
-    except (ValueError, OSError, TypeError, AttributeError):
-        return False
-
-
-def commit_stage(stage: Path, destination: Path, state: dict, files: set[str]) -> None:
-    state["files"] = {name: digest_file(stage / name) for name in sorted(files)}
-    write_json(stage / "production.json", state)
-    if destination.is_symlink():
-        raise ValueError("Production cache directories must not be symbolic links")
-    backup = destination.parent / f".previous-{destination.name}-{uuid.uuid4().hex}"
-    replaced = destination.exists()
-    if replaced:
-        destination.rename(backup)
-    moved_video = False
-    try:
-        if replaced and files == AUDIO_FILES and (backup / "video").exists():
-            (backup / "video").rename(stage / "video")
-            moved_video = True
-        stage.rename(destination)
-    except (OSError, KeyboardInterrupt):
-        if replaced:
-            if moved_video:
-                (stage / "video").rename(backup / "video")
-            backup.rename(destination)
-        raise
-    # Audio repairs retain separately validated video caches. Their identities
-    # also include actual master/cue hashes, so changed sound cannot reuse them.
-    if replaced:
-        shutil.rmtree(backup)
-
-
-def produce_audio(entry: dict, root: Path, output: Path, settings: dict) -> Path:
-    source = site.media_path(root, entry["audio"])
-    implementation = {
-        name: digest_file(Path(__file__).parent / name)
-        for name in ("config.py", "mix.py", "sound.py", "timeline.py", "runner.py")
-    }
-    encoder = subprocess.run(
-        ["ffmpeg", "-version"], check=True, capture_output=True, text=True
-    ).stdout.splitlines()[0]
-    recipe = audio_settings(settings)
-    identity = fingerprint(
-        {
-            "source_audio": entry["audio_sha256"],
-            "source_captions": entry["files_sha256"],
-            "source_script": entry["script_sha256"],
-            "source_articles": entry["source_sha256"],
-            "title": entry["title"],
-            "description": entry["description"],
-            "id": entry["id"],
-            "kind": entry.get("kind"),
-            "slug": entry.get("slug"),
-            "review_status": entry["review_status"],
-            "settings": recipe,
-            "implementation": implementation,
-            "encoder": encoder,
-            "music_sha256": digest_file(Path(settings["music_file"]))
-            if settings["music_file"]
-            else None,
-        }
-    )
-    destination = output / identity[:16]
-    if cache_valid(destination, identity, AUDIO_FILES):
-        print(f"{entry['id']}: finished audio reused.", flush=True)
-        return destination
-    print(f"{entry['id']}: finishing narration, motif and loudness locally…", flush=True)
-    started = time.monotonic()
-    with tempfile.TemporaryDirectory(prefix=".audio-", dir=output) as temporary:
-        stage = Path(temporary) / "edition"
-        stage.mkdir()
-        measured = finish_audio(source, stage, settings)
-        cues = json.loads(site.media_path(root, entry["cues"]).read_text(encoding="utf-8"))
-        try:
-            cues = retime(
-                cues,
-                settings["speed"],
-                settings["intro_seconds"],
-                measured["voice_duration_seconds"],
-            )
-            # Validate against the actual encoded output, not just the planned timeline.
-            for vtt, name in ((False, "captions.srt"), (True, "captions.vtt")):
-                text = captions.render_captions(cues, vtt=vtt)
-                captions.parse_captions(text, measured["duration_seconds"], vtt=vtt)
-                (stage / name).write_text(text, encoding="utf-8")
-        except ValueError as exc:
-            diagnostic = output / "failures" / f"{identity[:16]}-captions.json"
-            write_json(
-                diagnostic,
-                {
-                    "episode": entry["id"],
-                    "fingerprint": identity,
-                    "error": str(exc),
-                    "measurements": measured,
-                    "settings": recipe,
-                    "cues": cues,
-                },
-            )
-            raise ValueError(
-                f"{entry['id']}: caption export failed; diagnostic saved to {diagnostic}"
-            ) from exc
-        write_json(stage / "cues.json", {"cues": cues, "pages": caption_pages(cues)})
-        shutil.copyfile(site.media_path(root, entry["transcript"]), stage / "transcript.txt")
-        credit = settings["music_credit"] if settings["music_mode"] != "none" else "No music."
-        link = site.DOMAIN + (
-            "/notes/" + entry["slug"] if entry.get("slug") else "/notes/#listen-archive"
-        )
-        (stage / "description.txt").write_text(
-            f"{entry['title']}\n\n{entry['description']}\n\nWritten edition: {link}\n\n"
-            f"AI-narrated. Machine-generated transcript; listening review: {entry['review_status']}.\n"
-            f"Narration paced at {settings['speed']:g}× in this recording.\n{credit}\n",
-            encoding="utf-8",
-        )
-        commit_stage(
-            stage,
-            destination,
-            {
-                "schema_version": 1,
-                "fingerprint": identity,
-                "episode": entry["id"],
-                "source_audio_sha256": entry["audio_sha256"],
-                "source_files_sha256": entry["files_sha256"],
-                "source_sha256": entry["source_sha256"],
-                "settings": recipe,
-                **measured,
-                "processing_seconds": round(time.monotonic() - started, 3),
-                "review_status": "pending",
-                "source_review_status": entry["review_status"],
-            },
-            AUDIO_FILES,
-        )
-    return destination
 
 
 def produce_video(
@@ -228,7 +72,22 @@ def produce_video(
     with tempfile.TemporaryDirectory(prefix=".video-", dir=parent) as temporary:
         stage = Path(temporary) / "edition"
         stage.mkdir()
-        render_video(root, entry, edition, stage, settings, args, assets)
+        bundles = edition.parent.parent / ".renderer"
+        if bundles.is_symlink():
+            raise ValueError("Renderer cache directories must not be symbolic links")
+        bundles.mkdir(exist_ok=True)
+        renderer_identity = fingerprint(code)[:16]
+        with run_lock(bundles, f"bundle-{renderer_identity}"):
+            render_video(
+                root,
+                entry,
+                edition,
+                stage,
+                settings,
+                args,
+                assets,
+                bundles / renderer_identity,
+            )
         commit_stage(
             stage,
             destination,
@@ -243,6 +102,9 @@ def produce_video(
 
 
 def produce(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
+    workers = getattr(args, "audio_jobs", 2)
+    if type(workers) is not int or not 1 <= workers <= 4:
+        raise ValueError("--audio-jobs must be an integer between 1 and 4")
     if args.preview_seconds is not None and not 1 <= args.preview_seconds <= 60:
         raise ValueError("--preview-seconds must be between 1 and 60")
     if args.audio_only and args.preview_seconds is not None:
@@ -262,16 +124,33 @@ def produce(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
         )
     # Validate all recipes before a batch creates outputs.
     recipes = [(entry, load_settings(config, entry["id"])) for entry in selected]
+    video_workers = getattr(args, "video_workers", None)
+    if video_workers is not None:
+        if type(video_workers) is not int or not 1 <= video_workers <= 8:
+            raise ValueError("--video-workers must be an integer between 1 and 8")
+        for _, settings in recipes:
+            settings["video"]["concurrency"] = video_workers
     preflight(root, args)
-    for entry, settings in recipes:
+    toolchain = inspect_audio_toolchain()
+
+    def finish(entry: dict, settings: dict) -> Path:
         directory = output / entry["id"]
         if directory.is_symlink():
             raise ValueError("Production episode directories must not be symbolic links")
         directory.mkdir(parents=True, exist_ok=True)
         with run_lock(directory, "production"):
-            edition = produce_audio(entry, root, directory, settings)
+            edition = produce_audio(entry, root, directory, settings, toolchain)
             update_latest(directory, edition)
             print(f"Finished audio: {edition / 'episode.mp3'}", flush=True)
+        return edition
+
+    # Finish every audio edition before starting the browser. Audio workers
+    # overlap native FFmpeg work; one bounded renderer owns the video phase.
+    jobs = [partial(finish, entry, settings) for entry, settings in recipes]
+    editions = list(completed_jobs(jobs, min(workers, len(jobs))))
+    for (entry, settings), edition in zip(recipes, editions, strict=True):
+        directory = output / entry["id"]
+        with run_lock(directory, "production"):
             video = None if args.audio_only else produce_video(entry, root, edition, settings, args)
             if video:
                 update_latest(directory, edition, video, args.preview_seconds)
@@ -359,6 +238,19 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
         "--audio-only",
         action="store_true",
         help="Skip Node/Remotion; finish MP3 and retimed subtitles",
+    )
+    command.add_argument(
+        "--audio-jobs",
+        type=int,
+        choices=range(1, 5),
+        default=2,
+        help="Finish 1–4 recordings concurrently (default: 2); video workers use settings",
+    )
+    command.add_argument(
+        "--video-workers",
+        type=int,
+        choices=range(1, 9),
+        help="Override 1–8 video frame workers; default is the configured concurrency",
     )
     command.add_argument(
         "--config", type=Path, help="Shared settings; optional sibling episodes/<id>.json overrides"

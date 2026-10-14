@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import shutil
@@ -43,13 +44,25 @@ def visual_assets(root: Path, entry: dict) -> dict[str, Path]:
 
 
 def render_video(
-    root: Path, entry: dict, edition: Path, stage: Path, settings: dict, args, assets: dict
+    root: Path,
+    entry: dict,
+    edition: Path,
+    stage: Path,
+    settings: dict,
+    args: argparse.Namespace,
+    assets: dict[str, Path],
+    bundle: Path | None = None,
 ) -> None:
     public = stage / "public"
     public.mkdir()
     for name, path in assets.items():
         shutil.copyfile(path, public / name)
-    shutil.copyfile(edition / "master.wav", public / "master.wav")
+    # Both locations belong to this locked edition on the same filesystem.
+    # A read-only hard link avoids copying hundreds of megabytes per render.
+    try:
+        (public / "master.wav").hardlink_to(edition / "master.wav")
+    except OSError:
+        shutil.copyfile(edition / "master.wav", public / "master.wav")
     state = read_object(edition / "production.json")
     props = {
         "title": entry["title"],
@@ -75,8 +88,9 @@ def render_video(
         str(public),
         str(stage),
     ]
-    if args.browser_executable:
-        command.append(str(args.browser_executable.resolve()))
+    command.append(str(args.browser_executable.resolve()) if args.browser_executable else "")
+    if bundle is not None:
+        command.append(str(bundle))
     subprocess.run(command, cwd=root / "video", check=True, timeout=3600)
     result = subprocess.run(
         [

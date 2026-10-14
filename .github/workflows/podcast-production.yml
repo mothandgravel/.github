@@ -6,7 +6,8 @@ on:
       - "field_notes_audio/production/**"
       - "field_notes_audio/cli.py"
       - "audio/production/**"
-      - "tests/audio/test_production.py"
+      - "tests/audio/test_production*.py"
+      - "tools/benchmark_production.py"
       - "video/**"
       - ".github/workflows/podcast-production.yml"
   push:
@@ -14,7 +15,8 @@ on:
       - "field_notes_audio/production/**"
       - "field_notes_audio/cli.py"
       - "audio/production/**"
-      - "tests/audio/test_production.py"
+      - "tests/audio/test_production*.py"
+      - "tools/benchmark_production.py"
       - "video/**"
       - ".github/workflows/podcast-production.yml"
 

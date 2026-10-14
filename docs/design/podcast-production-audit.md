@@ -17,6 +17,9 @@ text, public media and the podcast feed remain separate from review editions.
 | Description cache omitted source URL/type; renderer dependencies were checked late | Stale links/types could survive, and audio work preceded a missing Node/dependency error | Include ID, kind and slug in identity. Check Node 22+, matching pinned dependencies and supplied browser before processing media. |
 | Thumbnail summaries and short previews lacked layout coverage | Summary copy could crowd the footer; short previews selected an unsettled thumbnail frame | Use a smaller thumbnail summary and select its frame from the full timeline. Heading/caption bounds are checked during rendering; CI covers every title, artwork and thumbnail. |
 | CI rendered only the first recording | Collection-specific timing/layout failures were outside the gate | CI finishes all 13 recordings, renders a six-second review of each and asserts cache reuse. |
+| Long titles depended on a character-count heuristic | Actual fonts/line breaks overflowed: local note 003 and hosted note 006 | Fit measured title height within a bounded font range; retain the overflow guard. All caption pages are also checked during thumbnail export. |
+| Serial finishing repeated motif synthesis and toolchain inspection | Idle native processing capacity and duplicated Python work across 13 episodes | Bounded 1–4 audio jobs; immutable per-invocation toolchain identity; bounded memoized motifs with shared stereo calculations. Original PCM and all seven output hashes remain identical in the measured collection. |
+| Every video rebuilt its bundle and copied the master twice | Repeated compilation and large WAV transfers | Verify/reuse the bundle across episodes and runs, switch episode assets under a lock, use links with copy fallback, and rebuild corrupt bundles. Node regressions cover asset switching, corruption and interrupted compilation. |
 
 The shortened-output symptom was reproduced independently of the JSON parser
 failure. WAV headers with provisional frame counts were also observed during
@@ -27,11 +30,11 @@ necessary even when the writer behaves correctly.
 
 ## Validation boundaries
 
-The local quality gate includes 114 Python tests, Ruff, original source/media
+The local quality gate includes 119 Python tests, Ruff, original source/media
 checks and both subtitle formats. Focused checks cover real custom music,
 successful-but-truncated encoding, caption diagnostics, missing dependencies,
 cache repair/rollback and full-versus-preview output discovery. Node tests cover
-caption boundary lookup and video duration rounding. Real collection and hosted
+caption boundary lookup, video duration rounding and bundle reuse/repair. Real collection and hosted
 results are recorded in the PR description for the final reviewed commit.
 
 Music/narration listening approval, pronunciation and recognition fidelity remain
@@ -39,6 +42,39 @@ human review tasks. No paid generation, transcription, feed promotion, YouTube
 upload or PR merge is part of this audit. A finished 1.15× MP3 should play at 1×;
 website promotion must update the manifest, timed transcript and player default
 together.
+
+## Performance evidence
+
+The [Ajo Python development skill](https://github.com/navivra/ajo/blob/main/.agents/skills/ajo-python-development/SKILL.md)
+was read at blob `1f86dad9a2214c51efba84eb81bf1956bd2abb5f`. Its applicable
+guidance informed owning modules, typed boundaries, immutable toolchain identity,
+bounded resources, boundary validation and regression evidence. Ajo-specific
+contracts and Python version requirements were not transplanted into this project.
+
+On the local Linux runner (8 CPU quota, 8 GiB memory), finishing all 13 recordings
+(73.5 minutes of finished sound) initially totalled 428.345 seconds of per-edition
+processing. The optimized two-worker batch completed in 202.885 seconds wall time,
+and a repeat verification completed in 203.765 seconds: approximately 2.1× faster.
+The pre-optimization warm collection run took 2.169 seconds under `cProfile`.
+All seven output hashes per episode matched before/after optimization, including
+MP3, WAV and captions. These are single-host observations, not a cross-platform
+benchmark guarantee. The four-worker and full-video final validation results are
+recorded in the PR description.
+
+All 13 six-second 720p videos/thumbnails passed, and every caption page passed
+actual layout bounds after the title correction. A full 1080p episode is also
+checked separately; previews do not establish full-collection video throughput.
+The local sandbox needs a loopback-only network-interface adapter for Remotion;
+that adapter is not shipped. Hosted CI runs the normal renderer.
+
+`tools/benchmark_production.py --jobs 1 2 4` repeats cold audio finishing into
+separate temporary directories and verifies warm reuse without changing completed
+editions. FFmpeg performs the heavy audio processing natively; these measurements
+do not measure Google TTS latency or imply that replacing Python would speed up
+the remote synthesis service.
+
+References: [Remotion bundle reuse](https://www.remotion.dev/docs/bundle),
+[Remotion performance guidance](https://www.remotion.dev/docs/performance).
 
 ## Run the PR in WSL
 

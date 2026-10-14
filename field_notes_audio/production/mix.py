@@ -8,6 +8,7 @@ import subprocess
 import tempfile
 import threading
 import wave
+from collections.abc import Callable
 from pathlib import Path
 
 from field_notes_audio.captions import probe_audio
@@ -26,7 +27,9 @@ def ffmpeg(arguments: list[str], timeout: int = 600) -> subprocess.CompletedProc
     return result
 
 
-def stream_output(arguments: list[str], write, timeout: int = 600) -> None:
+def stream_output(
+    arguments: list[str], write: Callable[[bytes], object], timeout: int = 600
+) -> None:
     """Drain encoded bytes into the parent writer with bounded memory and a deadline."""
     with (
         tempfile.TemporaryFile() as errors,

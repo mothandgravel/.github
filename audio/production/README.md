@@ -13,6 +13,9 @@ python3 -m field_notes_audio produce note-001
 # Every prepared episode; completed results are checked and reused
 python3 -m field_notes_audio produce all
 
+# More parallel work on a host with spare CPU and memory
+python3 -m field_notes_audio produce all --audio-jobs 4 --video-workers 4
+
 # Audio alone needs Python 3.10+ and FFmpeg; no Node dependency
 python3 -m field_notes_audio produce all --audio-only
 
@@ -31,10 +34,11 @@ must validate before finishing starts.
 | --- | --- |
 | `audio/production/settings.json` | Shared sound, pacing and video settings |
 | `audio/production/episodes/<id>.json` | Optional partial overrides for one episode |
-| `field_notes_audio/production/` | Python coordination, mixing, motif and retiming |
+| `field_notes_audio/production/` | Owning modules for editions, bounded batches, toolchain identity, mixing, motif, retiming and video staging |
 | `video/src/` | Reusable React/Remotion composition and caption lookup |
 | `video/render.mjs` | Bounded renderer and thumbnail export |
 | `tests/audio/test_production.py`, `video/test/` | Production behavior checks |
+| `tools/benchmark_production.py` | Offline cold-run and cache-reuse measurements |
 | `artifacts/production/<id>/latest.json` | Paths to the latest completed local review |
 | `artifacts/production/<id>/<fingerprint>/` | Finished sound and provenance |
 | `.../<fingerprint>/video/<video-fingerprint>/` | Finished or explicitly marked preview video |
@@ -112,13 +116,38 @@ Sound and video have separate caches. Changing the video settings, artwork or
 React template reuses finished audio. Sound changes invalidate audio and its
 video. Media, settings, implementation and pinned video dependencies participate
 in identities. Cached output hashes are checked; incomplete stages are never
-recorded as complete. Two rendering workers are the default. Increase concurrency
-only after measuring your host's memory and render time.
+recorded as complete. Audio finishing uses two bounded jobs by default, before
+the video phase. `--audio-jobs 1` selects serial finishing; 2–4 overlap native
+FFmpeg work. Already running jobs finish their writes if another job fails;
+completed editions remain discoverable and reusable. Identical procedural
+bookends share a bounded in-process PCM cache. Encoder/code identity is inspected
+once per invocation. Changing only CLI scheduling does not invalidate sound.
+
+Two video frame workers are the default; `--video-workers 1` through `8` override
+the configured concurrency. One renderer runs at a time. The compiled bundle is
+hashed and reused under `artifacts/production/.renderer/`, including across CLI
+runs; corrupt bundles are rebuilt. Read-only links avoid copying the master WAV
+through staging and bundling; unsupported filesystems fall back to copying.
+Episode assets are switched under the renderer lock and removed afterward.
+Increase worker counts after measuring your host's memory and render time.
+
+To compare cold audio finishing and verified reuse on your host:
+
+```bash
+python3 tools/benchmark_production.py --jobs 1 2 4
+```
+
+The benchmark uses separate temporary output directories, removes its generated
+media and writes `artifacts/benchmarks/production.json`. It makes no Cloud calls.
 
 Remotion downloads Chrome Headless Shell on first use if needed. An existing
 installation can be selected with `--browser-executable /path/to/headless_shell`.
-Run `npm test --prefix video` for timeline checks. CI renders a short real episode
-with no Google requests and preserves it as a workflow artifact. See
+Run `npm test --prefix video` for timeline and bundle-cache checks. CI finishes
+all 13 prepared recordings, renders each title/artwork/thumbnail, and checks
+every caption page's actual text bounds without rendering every full episode.
+Long titles fit the installed font within a bounded size range; overflow still
+fails the render. No Google requests are made. Review outputs are preserved as a
+workflow artifact. See
 [Remotion licensing](https://www.remotion.dev/docs/license/pricing) for use beyond
 individuals and organizations of up to three people.
 
