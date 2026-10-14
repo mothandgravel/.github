@@ -28,7 +28,8 @@ try {
     page.on('request',r=>requests.push({method:r.method(),url:r.url()}));
     await page.addInitScript(t=>localStorage.setItem('moth-and-gravel-theme',t),theme);
     await page.goto(origin+route,{waitUntil:'networkidle'});
-    check(await page.locator('.mapping-camera img').evaluate(img=>img.complete&&img.naturalWidth===1920),label+': original camera capture missing');
+    check(await page.locator('.mapping-camera img').evaluate(img=>img.complete&&img.naturalWidth>0&&img.currentSrc.includes('/camera-preview-')),label+': camera delivery preview missing');
+    check(await page.locator('.mapping-camera a').getAttribute('href')==='../../assets/specimens/buggy/camera-rays.jpg',label+': original camera capture unreachable');
     for (const key of ['local','onboard']) {
       const panel=page.locator(`[data-capture-name="${key==='local'?'A grid built here.':'A grid received from there.'}"]`);
       const fieldset=panel.locator('fieldset');await fieldset.waitFor({state:'visible'});
@@ -129,7 +130,7 @@ try {
   await page.goto(origin,{waitUntil:'networkidle'});
   await page.locator('#specimen-kitronik').scrollIntoViewIfNeeded();
   const image=page.locator('#specimen-kitronik img');await image.evaluate(img=>img.decode());
-  check(await image.evaluate(img=>img.naturalWidth===1920), 'workbench original camera capture missing');
+  check(await image.evaluate(img=>img.naturalWidth>0&&img.currentSrc.includes('/camera-preview-')), 'workbench camera delivery preview missing');
   await page.getByRole('link',{name:'Inspect the Kitronik buggy camera and mapping captures'}).click();
   check(new URL(page.url()).pathname===route,'workbench study route');await page.close();
 } finally {
