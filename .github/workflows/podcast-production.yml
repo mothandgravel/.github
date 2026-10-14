@@ -41,8 +41,10 @@ jobs:
         run: npm ci --ignore-scripts --prefix video
       - name: Validate caption boundaries
         run: npm test --prefix video
-      - name: Finish real narration and render a short video without Cloud requests
-        run: python3 -m field_notes_audio produce note-001 --preview-seconds 6
+      - name: Finish every real recording and validate its retimed captions
+        run: python3 -m field_notes_audio produce all --audio-only
+      - name: Render every episode title, artwork and thumbnail without Cloud requests
+        run: python3 -m field_notes_audio produce all --preview-seconds 6
       - name: Check reuse of finished audio and video
         run: |
           python3 - <<'PY'

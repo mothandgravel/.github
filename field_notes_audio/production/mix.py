@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 import math
 import subprocess
+import tempfile
+import threading
 import wave
 from pathlib import Path
 
@@ -22,6 +24,58 @@ def ffmpeg(arguments: list[str], timeout: int = 600) -> subprocess.CompletedProc
     if result.returncode:
         raise RuntimeError("FFmpeg production failed: " + result.stderr[-2000:])
     return result
+
+
+def stream_output(arguments: list[str], write, timeout: int = 600) -> None:
+    """Drain encoded bytes into the parent writer with bounded memory and a deadline."""
+    with (
+        tempfile.TemporaryFile() as errors,
+        subprocess.Popen(
+            ["ffmpeg", "-hide_banner", "-nostdin", *arguments, "pipe:1"],
+            stdout=subprocess.PIPE,
+            stderr=errors,
+        ) as process,
+    ):
+        expired = threading.Event()
+
+        def stop():
+            expired.set()
+            process.kill()
+
+        timer = threading.Timer(timeout, stop)
+        timer.start()
+        try:
+            while chunk := process.stdout.read(1024 * 1024):
+                write(chunk)
+            process.wait()
+        except BaseException:
+            process.kill()
+            process.wait()
+            raise
+        finally:
+            timer.cancel()
+        if expired.is_set():
+            raise subprocess.TimeoutExpired("FFmpeg production", timeout)
+        if process.returncode:
+            errors.seek(0)
+            raise RuntimeError(
+                "FFmpeg production failed: " + errors.read().decode(errors="replace")[-2000:]
+            )
+
+
+def pcm_output(arguments: list[str], path: Path) -> None:
+    # Spool PCM first so the header contains its final frame count from the first
+    # write. No output muxer needs to seek back and repair a provisional header.
+    with tempfile.TemporaryFile(dir=path.parent) as pcm:
+        stream_output([*arguments, "-ar", str(RATE), "-ac", "2", "-f", "s16le"], pcm.write)
+        size = pcm.tell()
+        if size % 4:
+            raise ValueError("FFmpeg returned a partial stereo PCM frame")
+        pcm.seek(0)
+        with wave.open(str(path), "wb") as output:
+            output.setparams((2, 2, RATE, size // 4, "NONE", "not compressed"))
+            while chunk := pcm.read(1024 * 1024):
+                output.writeframesraw(chunk)
 
 
 def loudness(path: Path, settings: dict) -> dict:
@@ -46,7 +100,7 @@ def music_clip(path: Path, seconds: float, settings: dict, closing: bool) -> Non
         write_motif(path, seconds, closing)
     else:
         # Loop short user-selected material and give both edges a gentle envelope.
-        ffmpeg(
+        pcm_output(
             [
                 "-stream_loop",
                 "-1",
@@ -62,14 +116,14 @@ def music_clip(path: Path, seconds: float, settings: dict, closing: bool) -> Non
                 "2",
                 "-c:a",
                 "pcm_s16le",
-                str(path),
-            ]
+            ],
+            path,
         )
 
 
 def finish_audio(source: Path, directory: Path, settings: dict) -> dict:
     voice = directory / "voice.wav"
-    ffmpeg(
+    pcm_output(
         [
             "-v",
             "error",
@@ -83,11 +137,14 @@ def finish_audio(source: Path, directory: Path, settings: dict) -> dict:
             "2",
             "-c:a",
             "pcm_s16le",
-            str(voice),
-        ]
+        ],
+        voice,
     )
     with wave.open(str(voice), "rb") as handle:
         voice_duration = handle.getnframes() / handle.getframerate()
+    source_duration = probe_audio(source)
+    if abs(voice_duration - source_duration / settings["speed"]) > 0.25:
+        raise ValueError("Decoded narration duration disagrees with the source and requested pace")
     intro = settings["intro_seconds"]
     outro = settings["outro_seconds"]
     total = intro + voice_duration + outro
@@ -125,7 +182,7 @@ def finish_audio(source: Path, directory: Path, settings: dict) -> dict:
     else:
         filters.append("[voice]anull[out]")
     mix = directory / "mix.wav"
-    ffmpeg(
+    pcm_output(
         [
             *inputs,
             "-filter_complex",
@@ -136,8 +193,8 @@ def finish_audio(source: Path, directory: Path, settings: dict) -> dict:
             str(total),
             "-c:a",
             "pcm_s16le",
-            str(mix),
-        ]
+        ],
+        mix,
     )
     measured = loudness(mix, settings)
     target = f"I={settings['target_lufs']}:TP={settings['true_peak_db']}:LRA=11"
@@ -147,7 +204,7 @@ def finish_audio(source: Path, directory: Path, settings: dict) -> dict:
         f"offset={measured['target_offset']}:linear=true:print_format=json"
     )
     master = directory / "master.wav"
-    ffmpeg(
+    pcm_output(
         [
             "-i",
             str(mix),
@@ -159,25 +216,30 @@ def finish_audio(source: Path, directory: Path, settings: dict) -> dict:
             "2",
             "-c:a",
             "pcm_s16le",
-            str(master),
-        ]
+        ],
+        master,
     )
     output = directory / "episode.mp3"
-    ffmpeg(
-        [
-            "-v",
-            "error",
-            "-i",
-            str(master),
-            "-c:a",
-            "libmp3lame",
-            "-b:a",
-            "128k",
-            "-ar",
-            str(RATE),
-            str(output),
-        ]
-    )
+    with output.open("wb") as handle:
+        stream_output(
+            [
+                "-v",
+                "error",
+                "-i",
+                str(master),
+                "-c:a",
+                "libmp3lame",
+                "-b:a",
+                "128k",
+                "-ar",
+                str(RATE),
+                "-write_xing",
+                "0",
+                "-f",
+                "mp3",
+            ],
+            handle.write,
+        )
     final_measurement = loudness(output, settings)
     if abs(float(final_measurement["input_i"]) - settings["target_lufs"]) > 1:
         raise ValueError("Finished loudness differs by more than 1 LU from the production target")

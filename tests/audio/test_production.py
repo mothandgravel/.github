@@ -11,7 +11,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from field_notes_audio import audio, captions, cli
-from field_notes_audio.production import runner
+from field_notes_audio.production import mix, runner
 from field_notes_audio.production.config import load_settings
 from field_notes_audio.production.mix import finish_audio
 from field_notes_audio.production.timeline import caption_pages, retime
@@ -91,6 +91,105 @@ class ProductionTests(unittest.TestCase):
             )
         with self.assertRaises(ValueError):
             retime([{"start": 10, "end": 11, "text": "Outside"}], 1, 0, 4)
+
+    def test_caption_precision_failure_is_explicit(self):
+        with self.assertRaisesRegex(ValueError, "millisecond precision"):
+            retime([{"start": 1, "end": 1.0001, "text": "Too short"}], 1.5, 0, 3)
+
+    def test_latest_keeps_full_video_when_audio_or_preview_is_requested(self):
+        edition = self.root / "audio-fingerprint"
+        edition.mkdir()
+        write_json(
+            edition / "production.json", {"files": {"master.wav": "master", "cues.json": "cues"}}
+        )
+        full = edition / "video/full"
+        preview = edition / "video/preview"
+        runner.update_latest(self.root, edition, full)
+        runner.update_latest(self.root, edition)
+        runner.update_latest(self.root, edition, preview, 6)
+        latest = read_object(self.root / "latest.json")
+        self.assertEqual(latest["video"], "audio-fingerprint/video/full")
+        self.assertEqual(latest["preview"], "audio-fingerprint/video/preview")
+        self.assertEqual(latest["preview_seconds"], 6)
+        # Rebuilt sound under the same input identity must not retain stale video links.
+        write_json(
+            edition / "production.json", {"files": {"master.wav": "changed", "cues.json": "cues"}}
+        )
+        runner.update_latest(self.root, edition)
+        self.assertIsNone(read_object(self.root / "latest.json")["video"])
+
+    def test_missing_node_is_detected_before_finishing_any_audio(self):
+        args = argparse.Namespace(
+            episode="fixture",
+            config=self.config,
+            output_dir=None,
+            audio_only=False,
+            preview_seconds=None,
+            browser_executable=None,
+        )
+        with (
+            patch.object(runner.site, "load_entries", return_value=[{"id": "fixture"}]),
+            patch.object(
+                runner.shutil,
+                "which",
+                side_effect=lambda name: None if name == "node" else "/bin/tool",
+            ),
+            patch.object(runner, "produce_audio") as finish,
+        ):
+            with self.assertRaisesRegex(ValueError, "Node 22"):
+                runner.produce(args, self.root)
+            finish.assert_not_called()
+        self.assertFalse((self.root / "artifacts").exists())
+
+    def test_video_failure_leaves_finished_audio_discoverable(self):
+        directory = self.root / "artifacts/production/fixture"
+        edition = directory / "fingerprint"
+        edition.mkdir(parents=True)
+        write_json(
+            edition / "production.json", {"files": {"master.wav": "master", "cues.json": "cues"}}
+        )
+        args = argparse.Namespace(
+            episode="fixture",
+            config=self.config,
+            output_dir=None,
+            audio_only=False,
+            preview_seconds=None,
+            browser_executable=None,
+        )
+        with (
+            patch.object(runner.site, "load_entries", return_value=[{"id": "fixture"}]),
+            patch.object(runner, "preflight"),
+            patch.object(runner, "produce_audio", return_value=edition),
+            patch.object(runner, "produce_video", side_effect=RuntimeError("Render interrupted")),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "Render interrupted"):
+                runner.produce(args, self.root)
+        latest = read_object(directory / "latest.json")
+        self.assertEqual(latest["audio"], "fingerprint")
+        self.assertIsNone(latest["video"])
+
+    def test_replacement_rolls_back_on_interrupt_and_keeps_existing_video(self):
+        destination, stage = self.root / "destination", self.root / "stage"
+        for path in (destination, stage):
+            path.mkdir()
+            for name in runner.AUDIO_FILES:
+                (path / name).write_text("old" if path == destination else "new")
+        (destination / "video").mkdir()
+        (destination / "video/finished.mp4").write_text("valuable render")
+        rename = Path.rename
+
+        def interrupted(path, target):
+            if path == stage:
+                raise KeyboardInterrupt
+            return rename(path, target)
+
+        with patch.object(Path, "rename", interrupted), self.assertRaises(KeyboardInterrupt):
+            runner.commit_stage(stage, destination, {"fingerprint": "identity"}, runner.AUDIO_FILES)
+        self.assertEqual((destination / "episode.mp3").read_text(), "old")
+        self.assertEqual((destination / "video/finished.mp4").read_text(), "valuable render")
+        runner.commit_stage(stage, destination, {"fingerprint": "identity"}, runner.AUDIO_FILES)
+        self.assertEqual((destination / "episode.mp3").read_text(), "new")
+        self.assertEqual((destination / "video/finished.mp4").read_text(), "valuable render")
 
     def test_caption_pages_preserve_words_and_cue_bounds(self):
         text = "A small question deserves room to remain readable. " * 12
@@ -217,12 +316,33 @@ class FinishedAudioTests(unittest.TestCase):
                 runner.produce_audio(self.entry, self.root, self.output, self.settings), destination
             )
         (destination / "episode.mp3").write_bytes(b"damaged")
+        (destination / "video").mkdir()
+        (destination / "video/previous.mp4").write_bytes(b"an existing render")
         with patch.object(runner, "finish_audio", wraps=finish_audio) as finish:
             self.assertEqual(
                 runner.produce_audio(self.entry, self.root, self.output, self.settings), destination
             )
             finish.assert_called_once()
         self.assertTrue(runner.cache_valid(destination, state["fingerprint"], runner.AUDIO_FILES))
+        self.assertEqual((destination / "video/previous.mp4").read_bytes(), b"an existing render")
+
+    def test_source_link_change_invalidates_the_description_cache(self):
+        runner.produce_audio(self.entry, self.root, self.output, self.settings)
+        self.entry["slug"] = "new-written-edition.html"
+        with patch.object(runner, "finish_audio", side_effect=RuntimeError("new identity")):
+            with self.assertRaisesRegex(RuntimeError, "new identity"):
+                runner.produce_audio(self.entry, self.root, self.output, self.settings)
+
+    def test_caption_failure_saves_exact_measurements_without_committing_bad_media(self):
+        with patch.object(runner, "retime", side_effect=ValueError("Bad timing")):
+            with self.assertRaisesRegex(ValueError, "diagnostic saved"):
+                runner.produce_audio(self.entry, self.root, self.output, self.settings)
+        files = list((self.output / "failures").glob("*.json"))
+        self.assertEqual(len(files), 1)
+        state = read_object(files[0])
+        self.assertEqual(state["error"], "Bad timing")
+        self.assertGreater(state["measurements"]["master_duration_seconds"], 0)
+        self.assertFalse(list(self.output.glob("*/episode.mp3")))
 
     def test_silent_bookends_and_zero_lengths_are_supported(self):
         self.settings.update(music_mode="none", intro_seconds=0, outro_seconds=0)
@@ -235,6 +355,35 @@ class FinishedAudioTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 runner.produce_audio(self.entry, self.root, self.output, self.settings)
         self.assertEqual(list(self.output.iterdir()), [])
+
+    def test_custom_music_is_mixed_and_credited_from_a_real_file(self):
+        self.settings.update(
+            music_mode="file",
+            music_file=str(self.root / self.entry["audio"].replace("assets/", "docs/assets/", 1)),
+            music_credit="Fixture tone / original test material",
+        )
+        destination = runner.produce_audio(self.entry, self.root, self.output, self.settings)
+        self.assertIn(
+            "Fixture tone / original test material", (destination / "description.txt").read_text()
+        )
+        state = read_object(destination / "production.json")
+        self.assertAlmostEqual(
+            state["master_duration_seconds"], state["timeline_duration_seconds"], delta=0.05
+        )
+
+    def test_successful_encoder_with_truncated_output_is_rejected(self):
+        self.settings.update(music_mode="none", intro_seconds=0, outro_seconds=0)
+        original = mix.stream_output
+
+        def truncate(arguments, write, timeout=600):
+            if "mp3" in arguments:
+                return original(arguments, lambda chunk: write(chunk[: len(chunk) // 2]), timeout)
+            return original(arguments, write, timeout)
+
+        with patch.object(mix, "stream_output", side_effect=truncate):
+            with self.assertRaisesRegex(ValueError, "intended duration"):
+                runner.produce_audio(self.entry, self.root, self.output, self.settings)
+        self.assertFalse(list(self.output.glob("*/production.json")))
 
 
 if __name__ == "__main__":

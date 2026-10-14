@@ -17,7 +17,7 @@ def write_motif(path: Path, duration: float, closing: bool = False) -> None:
         notes = [(0.08, 293.66, 0.18), (0.65, 329.63, 0.14), (1.3, 220.0, 0.25)]
     count = round(duration * RATE)
     with wave.open(str(path), "wb") as output:
-        output.setparams((2, 2, RATE, 0, "NONE", "not compressed"))
+        output.setparams((2, 2, RATE, count, "NONE", "not compressed"))
         for offset in range(0, count, 4096):
             buffer = bytearray()
             for index in range(offset, min(count, offset + 4096)):

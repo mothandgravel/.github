@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useLayoutEffect} from 'react';
 import {AbsoluteFill, Audio, Composition, Img, interpolate, registerRoot, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {activeCaption, clock, videoDuration} from './timeline.mjs';
 
@@ -18,6 +18,15 @@ const FieldNote = (props) => {
   const caption = activeCaption(props.pages, time);
   const progress = Math.min(1, time / props.duration);
   const titleSize = props.title.length > 55 ? 82 : props.title.length > 35 ? 96 : 116;
+  useLayoutEffect(() => {
+    for (const element of document.querySelectorAll('[data-fit-check]')) {
+      const box = element.getBoundingClientRect();
+      const parent = element.parentElement.getBoundingClientRect();
+      if (box.top < parent.top - 2 || box.bottom > parent.bottom + 2 || box.left < parent.left - 2 || box.right > parent.right + 2) {
+        throw new Error(`${element.dataset.fitCheck} does not fit the video layout`);
+      }
+    }
+  }, [caption, props.thumbnail]);
   return (
     <AbsoluteFill style={{background: colors.charcoal, color: colors.paper, fontFamily: condensed}}>
       <Audio src={staticFile('master.wav')} />
@@ -31,7 +40,7 @@ const FieldNote = (props) => {
           <span style={{fontFamily: mono, fontSize: 17, letterSpacing: 2, color: colors.muted}}>{props.label} / LISTENING EDITION</span>
         </div>
         <div style={{display: 'grid', gridTemplateColumns: '1.02fr 1fr', gap: 82, height: 632, alignItems: 'center'}}>
-          <div>
+          <div data-fit-check="Episode heading" style={{minWidth: 0}}>
             <p style={{fontFamily: mono, letterSpacing: 3, fontSize: 18, color: colors.brass, margin: '0 0 30px'}}>FIELD NOTES / {props.kind === 'note' ? 'FROM THE WORKBENCH' : props.kind.toUpperCase()}</p>
             <h1 style={{fontSize: titleSize, fontWeight: 800, lineHeight: 1.04, letterSpacing: -3.5, margin: '0 0 34px', textTransform: 'uppercase', overflowWrap: 'anywhere'}}>{props.title}</h1>
             <div style={{height: 2, width: 86, background: colors.brass, marginBottom: 26}} />
@@ -44,7 +53,7 @@ const FieldNote = (props) => {
         </div>
         <div style={{height: 154, borderTop: `1px solid ${colors.line}`, paddingTop: 27, display: 'flex', alignItems: 'flex-start', gap: 40}}>
           <span style={{fontFamily: mono, color: colors.brass, fontSize: 21, minWidth: 82, paddingTop: 4}}>{props.thumbnail ? 'READ / LISTEN' : clock(time)}</span>
-          <div style={{fontFamily: '"Helvetica Neue", Arial, sans-serif', fontSize: 34, lineHeight: 1.45, color: colors.paper, maxWidth: 1420, overflowWrap: 'anywhere'}}>
+          <div data-fit-check="Caption or thumbnail summary" style={{fontFamily: '"Helvetica Neue", Arial, sans-serif', fontSize: props.thumbnail ? 28 : 34, lineHeight: props.thumbnail ? 1.35 : 1.45, color: colors.paper, maxWidth: 1420, minWidth: 0, flex: 1, overflowWrap: 'anywhere'}}>
             {props.thumbnail ? props.description : caption || (ending ? 'More Field Notes at mothandgravel.com/notes' : time < props.intro ? 'An AI-narrated edition from Moth & Gravel.' : '')}
           </div>
         </div>

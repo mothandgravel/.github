@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import tempfile
 import time
+import uuid
 from pathlib import Path
 
 from field_notes_audio import audio, captions, site
@@ -38,6 +39,8 @@ def fingerprint(value: dict) -> str:
 
 def cache_valid(directory: Path, identity: str, files: set[str]) -> bool:
     try:
+        if directory.is_symlink():
+            return False
         state = read_object(directory / "production.json")
         return (
             state.get("fingerprint") == identity
@@ -51,9 +54,28 @@ def cache_valid(directory: Path, identity: str, files: set[str]) -> bool:
 def commit_stage(stage: Path, destination: Path, state: dict, files: set[str]) -> None:
     state["files"] = {name: digest_file(stage / name) for name in sorted(files)}
     write_json(stage / "production.json", state)
-    if destination.exists():
-        shutil.rmtree(destination)
-    stage.rename(destination)
+    if destination.is_symlink():
+        raise ValueError("Production cache directories must not be symbolic links")
+    backup = destination.parent / f".previous-{destination.name}-{uuid.uuid4().hex}"
+    replaced = destination.exists()
+    if replaced:
+        destination.rename(backup)
+    moved_video = False
+    try:
+        if replaced and files == AUDIO_FILES and (backup / "video").exists():
+            (backup / "video").rename(stage / "video")
+            moved_video = True
+        stage.rename(destination)
+    except (OSError, KeyboardInterrupt):
+        if replaced:
+            if moved_video:
+                (stage / "video").rename(backup / "video")
+            backup.rename(destination)
+        raise
+    # Audio repairs retain separately validated video caches. Their identities
+    # also include actual master/cue hashes, so changed sound cannot reuse them.
+    if replaced:
+        shutil.rmtree(backup)
 
 
 def produce_audio(entry: dict, root: Path, output: Path, settings: dict) -> Path:
@@ -74,6 +96,9 @@ def produce_audio(entry: dict, root: Path, output: Path, settings: dict) -> Path
             "source_articles": entry["source_sha256"],
             "title": entry["title"],
             "description": entry["description"],
+            "id": entry["id"],
+            "kind": entry.get("kind"),
+            "slug": entry.get("slug"),
             "review_status": entry["review_status"],
             "settings": recipe,
             "implementation": implementation,
@@ -94,14 +119,34 @@ def produce_audio(entry: dict, root: Path, output: Path, settings: dict) -> Path
         stage.mkdir()
         measured = finish_audio(source, stage, settings)
         cues = json.loads(site.media_path(root, entry["cues"]).read_text(encoding="utf-8"))
-        cues = retime(
-            cues, settings["speed"], settings["intro_seconds"], measured["voice_duration_seconds"]
-        )
-        # Validate the retimed export against the actual encoded output.
-        for vtt, name in ((False, "captions.srt"), (True, "captions.vtt")):
-            text = captions.render_captions(cues, vtt=vtt)
-            captions.parse_captions(text, measured["duration_seconds"], vtt=vtt)
-            (stage / name).write_text(text, encoding="utf-8")
+        try:
+            cues = retime(
+                cues,
+                settings["speed"],
+                settings["intro_seconds"],
+                measured["voice_duration_seconds"],
+            )
+            # Validate against the actual encoded output, not just the planned timeline.
+            for vtt, name in ((False, "captions.srt"), (True, "captions.vtt")):
+                text = captions.render_captions(cues, vtt=vtt)
+                captions.parse_captions(text, measured["duration_seconds"], vtt=vtt)
+                (stage / name).write_text(text, encoding="utf-8")
+        except ValueError as exc:
+            diagnostic = output / "failures" / f"{identity[:16]}-captions.json"
+            write_json(
+                diagnostic,
+                {
+                    "episode": entry["id"],
+                    "fingerprint": identity,
+                    "error": str(exc),
+                    "measurements": measured,
+                    "settings": recipe,
+                    "cues": cues,
+                },
+            )
+            raise ValueError(
+                f"{entry['id']}: caption export failed; diagnostic saved to {diagnostic}"
+            ) from exc
         write_json(stage / "cues.json", {"cues": cues, "pages": caption_pages(cues)})
         shutil.copyfile(site.media_path(root, entry["transcript"]), stage / "transcript.txt")
         credit = settings["music_credit"] if settings["music_mode"] != "none" else "No music."
@@ -159,6 +204,9 @@ def produce_video(
     identity = fingerprint(
         {
             "audio": read_object(edition / "production.json")["fingerprint"],
+            "master_sha256": digest_file(edition / "master.wav"),
+            "cues_sha256": digest_file(edition / "cues.json"),
+            "timeline": read_object(edition / "production.json")["timeline_duration_seconds"],
             "assets": {name: digest_file(path) for name, path in assets.items()},
             "renderer": code,
             "video": settings["video"],
@@ -166,6 +214,8 @@ def produce_video(
         }
     )
     parent = edition / "video"
+    if parent.is_symlink():
+        raise ValueError("Production video directories must not be symbolic links")
     parent.mkdir(exist_ok=True)
     destination = parent / identity[:16]
     if cache_valid(destination, identity, VIDEO_FILES):
@@ -212,6 +262,7 @@ def produce(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
         )
     # Validate all recipes before a batch creates outputs.
     recipes = [(entry, load_settings(config, entry["id"])) for entry in selected]
+    preflight(root, args)
     for entry, settings in recipes:
         directory = output / entry["id"]
         if directory.is_symlink():
@@ -219,16 +270,11 @@ def produce(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
         directory.mkdir(parents=True, exist_ok=True)
         with run_lock(directory, "production"):
             edition = produce_audio(entry, root, directory, settings)
+            update_latest(directory, edition)
+            print(f"Finished audio: {edition / 'episode.mp3'}", flush=True)
             video = None if args.audio_only else produce_video(entry, root, edition, settings, args)
-            write_json(
-                directory / "latest.json",
-                {
-                    "audio": str(edition.relative_to(directory)),
-                    "video": str(video.relative_to(directory)) if video else None,
-                    "preview_seconds": args.preview_seconds,
-                },
-            )
-        print(f"Finished audio: {edition / 'episode.mp3'}", flush=True)
+            if video:
+                update_latest(directory, edition, video, args.preview_seconds)
         if video:
             print(
                 f"{'Preview' if args.preview_seconds else 'YouTube edition'}: {video / 'episode.mp4'}",
@@ -238,6 +284,70 @@ def produce(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     print(
         "Local review editions only. The website, podcast feed and original recordings were not changed."
     )
+
+
+def preflight(root: Path, args: argparse.Namespace) -> None:
+    """Fail before processing media when the requested toolchain is unavailable."""
+    for tool in ("ffmpeg", "ffprobe"):
+        if not shutil.which(tool):
+            raise ValueError(f"Production requires {tool}; install FFmpeg first")
+    if args.audio_only:
+        return
+    if not shutil.which("node"):
+        raise ValueError("Video production requires Node 22+ and npm ci --prefix video")
+    version = subprocess.run(
+        ["node", "--version"], capture_output=True, text=True, check=True, timeout=30
+    ).stdout.strip()
+    if int(version.lstrip("v").split(".")[0]) < 22:
+        raise ValueError("Video production requires Node 22+ (or use --audio-only)")
+    package = read_object(root / "video/package.json")
+    for name in ("@remotion/renderer", "@remotion/bundler", "remotion", "react", "react-dom"):
+        installed = root / "video/node_modules" / name / "package.json"
+        if (
+            not installed.is_file()
+            or read_object(installed).get("version") != package["dependencies"][name]
+        ):
+            raise ValueError("Video dependencies are missing or stale. Run: npm ci --prefix video")
+    if args.browser_executable and not args.browser_executable.resolve().is_file():
+        raise ValueError("--browser-executable does not identify an installed browser")
+
+
+def update_latest(
+    directory: Path, edition: Path, video: Path | None = None, preview: float | None = None
+) -> None:
+    """Keep full videos distinct from previews; audio-only never erases a full render."""
+    audio_path = str(edition.relative_to(directory))
+    previous = {}
+    if (directory / "latest.json").exists():
+        try:
+            previous = read_object(directory / "latest.json")
+        except ValueError:
+            pass
+    media = read_object(edition / "production.json")["files"]
+    state = {
+        "schema_version": 2,
+        "audio": audio_path,
+        "master_sha256": media["master.wav"],
+        "cues_sha256": media["cues.json"],
+        "video": None,
+        "preview": None,
+        "preview_seconds": None,
+    }
+    if (
+        previous.get("audio") == audio_path
+        and previous.get("master_sha256") == state["master_sha256"]
+        and previous.get("cues_sha256") == state["cues_sha256"]
+    ):
+        if previous.get("schema_version") == 2:
+            state.update(
+                {key: previous.get(key) for key in ("video", "preview", "preview_seconds")}
+            )
+    if video is not None:
+        if preview is None:
+            state["video"] = str(video.relative_to(directory))
+        else:
+            state.update(preview=str(video.relative_to(directory)), preview_seconds=preview)
+    write_json(directory / "latest.json", state)
 
 
 def add_arguments(commands: argparse._SubParsersAction) -> None:

@@ -40,9 +40,11 @@ must validate before finishing starts.
 | `.../<fingerprint>/video/<video-fingerprint>/` | Finished or explicitly marked preview video |
 
 Outputs are ignored by Git. Paths in `latest.json` are relative to its episode
-directory; `preview_seconds` explicitly identifies a preview. A preview is not a
-full episode. Finished audio survives a failed video render; repeat the command
-after correcting the error.
+directory. Its `video` field always identifies a full episode; `preview` and
+`preview_seconds` identify a separate preview. An audio-only run or a preview
+does not erase the full-video link. New audio invalidates links to older sound.
+Finished audio is recorded before video starts and survives a failed render;
+repeat the command after correcting the error.
 
 ## Edit the sound without regenerating speech
 
@@ -86,7 +88,12 @@ overlap accepts 0–3 seconds; music gain accepts −40–0 dB. Video dimensions
 even and 16:9, within 640×360–1920×1080; frame rate accepts 12–30 and concurrency
 1–8. Unknown settings fail rather than being ignored.
 
-Pitch-preserving FFmpeg tempo adjustment precedes 48 kHz stereo mixing. Two-pass
+Pitch-preserving FFmpeg tempo adjustment precedes 48 kHz stereo mixing. PCM is
+streamed through bounded buffers, spooled locally and written with its final WAV
+frame count known up front. MP3 uses streamed constant-bitrate encoding. Decoded
+narration, WAV master and encoded MP3 durations must match the intended timeline;
+shortened output cannot be accepted merely because the encoder exited successfully.
+Two-pass
 normalization targets −16 LUFS and −1.5 dB true peak by default. The encoded MP3 is
 measured again: over 1 LU from target or true peak above −0.5 dB fails production.
 The WAV master is retained for video. Caption times apply the baked speed and

@@ -97,7 +97,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     except KeyboardInterrupt:
         print(
-            "\nStopped. Repeat the same command to resume saved audio and transcription jobs.",
+            "\nStopped. Repeat produce to reuse completed local editions."
+            if args.command == "produce"
+            else "\nStopped. Repeat the same command to resume saved audio and transcription jobs.",
             file=sys.stderr,
         )
         return 130

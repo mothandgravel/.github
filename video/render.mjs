@@ -24,12 +24,12 @@ try {
       if (bucket !== last) { last = bucket; console.log(`Video: ${Math.round(progress * 100)}%`); }
     },
   });
-  const thumbnailProps = {...props, thumbnail: true};
+  const thumbnailProps = {...props, thumbnail: true, previewSeconds: null};
   const thumbnailComposition = await selectComposition({serveUrl, id: 'FieldNote', inputProps: thumbnailProps, puppeteerInstance: browser});
   await renderStill({
     serveUrl, composition: thumbnailComposition, inputProps: thumbnailProps, puppeteerInstance: browser,
     output: join(destination, 'thumbnail.png'), imageFormat: 'png',
-    frame: Math.min(composition.durationInFrames - 1, props.video.fps * 2),
+    frame: Math.min(thumbnailComposition.durationInFrames - 1, props.video.fps * 2),
   });
   await writeFile(join(destination, 'render.json'), JSON.stringify({
     frames: composition.durationInFrames, fps: composition.fps,

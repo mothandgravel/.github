@@ -7,12 +7,15 @@ from field_notes_audio.site import caption_text
 
 def retime(cues: list[dict], speed: float, intro: float, voice_duration: float) -> list[dict]:
     result = []
-    for cue in cues:
+    for index, cue in enumerate(cues):
         start = cue["start"] / speed
         end = min(cue["end"] / speed, voice_duration)
         if start >= end:
             raise ValueError("A source caption falls outside the decoded narration")
-        result.append({**cue, "start": round(intro + start, 3), "end": round(intro + end, 3)})
+        rounded_start, rounded_end = round(intro + start, 3), round(intro + end, 3)
+        if rounded_start >= rounded_end:
+            raise ValueError(f"Caption {index + 1} is shorter than subtitle millisecond precision")
+        result.append({**cue, "start": rounded_start, "end": rounded_end})
     return result
 
 
