@@ -29,7 +29,12 @@ def loudness(path: Path, settings: dict) -> dict:
     result = ffmpeg(
         ["-i", str(path), "-af", f"loudnorm={target}:print_format=json", "-f", "null", "-"]
     )
-    report = json.loads(result.stderr[result.stderr.rfind("{") :])
+    # FFmpeg can print its final progress/size line after the JSON report.
+    # Decode one object, without treating those log lines as JSON data.
+    offset = result.stderr.rfind("{")
+    if offset < 0:
+        raise ValueError("FFmpeg did not return a loudness measurement report")
+    report, _ = json.JSONDecoder().raw_decode(result.stderr[offset:])
     for key in ("input_i", "input_tp", "input_lra", "input_thresh", "target_offset"):
         if not math.isfinite(float(report[key])):
             raise ValueError("Cannot normalize silent or invalid audio")
@@ -178,11 +183,20 @@ def finish_audio(source: Path, directory: Path, settings: dict) -> dict:
         raise ValueError("Finished loudness differs by more than 1 LU from the production target")
     if float(final_measurement["input_tp"]) > -0.5:
         raise ValueError("Encoded audio has insufficient true-peak headroom")
+    with wave.open(str(master), "rb") as handle:
+        master_duration = handle.getnframes() / handle.getframerate()
+    encoded_duration = probe_audio(output)
+    if abs(master_duration - total) > 0.05 or abs(encoded_duration - total) > 0.15:
+        raise ValueError(
+            f"Finished audio lost its intended duration: timeline={total:.3f}s, "
+            f"master={master_duration:.3f}s, MP3={encoded_duration:.3f}s"
+        )
     for name in ("voice.wav", "mix.wav", "intro.wav", "outro.wav"):
         (directory / name).unlink(missing_ok=True)
     return {
         "voice_duration_seconds": voice_duration,
         "timeline_duration_seconds": total,
-        "duration_seconds": probe_audio(output),
+        "master_duration_seconds": master_duration,
+        "duration_seconds": encoded_duration,
         "loudness": final_measurement,
     }
