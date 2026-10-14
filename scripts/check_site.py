@@ -182,6 +182,28 @@ def main() -> int:
         check('href="../../#specimen-ajo"' in connection_html, 'Specimen needs its next question')
         check('<noscript>' in connection_html and '<table>' in connection_html,
               'Specimen must retain all three readings without JavaScript')
+    mapping_page = ROOT / 'specimens/whose-map/index.html'
+    check(mapping_page.is_file(), 'Missing camera and mapping capture study')
+    captures = json.loads((ROOT / 'design/buggy-captures-provenance.json').read_text())
+    for item in captures['assets']:
+        asset = ROOT.parent / item['file']
+        check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['sha256'],
+              'Mapping capture differs from recorded evidence')
+    if mapping_page.is_file():
+        mapping_html = mapping_page.read_text()
+        mapping_parser = SiteParser()
+        mapping_parser.feed(mapping_html)
+        for anchor in mapping_parser.anchors:
+            check(anchor in mapping_parser.ids, f'Mapping capture broken anchor #{anchor}')
+        for relative in re.findall(r'(?:href|src)="(\.\.?/[^\"]+)"', mapping_html):
+            target = (mapping_page.parent / urlsplit(relative).path).resolve()
+            check(target.is_relative_to(ROOT.resolve()) and (target.is_file() or
+                  (target.is_dir() and (target / 'index.html').is_file())),
+                  f'Mapping capture broken destination {relative}')
+        check('https://mothandgravel.com/specimens/whose-map/' in (ROOT / 'sitemap.xml').read_text(),
+              'Mapping capture study missing from sitemap')
+        check('href="../../notes/006-map-leaves-room.html#bench-captures"' in mapping_html,
+              'Mapping specimen must return to its visual addendum')
     check("['.work-grid','./assets/specimens.mjs']" in html, 'Optional specimen handling module missing')
     check("['#moth-interlude','./assets/moth-interlude.mjs']" in html, 'Optional moth scene loader missing')
     check('id="moth-interlude"' in html and 'id="moth-question"' in html, 'Moth interlude resting composition missing')
@@ -268,7 +290,7 @@ def main() -> int:
         check('href="./"' in theme_html, "Theme study must link back to the Field Notes index")
 
     # Discovery must survive a text-only request and agree with the public record.
-    for file in [ROOT / 'index.html', note_index, connection_page] + [ROOT / 'notes' / n['slug'] for n in catalog]:
+    for file in [ROOT / 'index.html', note_index, connection_page, mapping_page] + [ROOT / 'notes' / n['slug'] for n in catalog]:
         source = file.read_text()
         blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', source, re.S)
         check(len(blocks) == 1, f'{file.name}: expected one generated identity graph')
