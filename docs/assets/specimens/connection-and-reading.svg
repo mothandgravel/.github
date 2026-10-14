@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">A joined connection beside a retained sample</title>
+  <desc id="desc">An unbroken brass cable loops through a joined connector. Beside it, a paper reading sits over offset outlines of the same sheet. A conceptual illustration of connection and historical evidence, not a product screenshot or stream capture.</desc>
+  <defs>
+    <linearGradient id="mount" x2="1" y2="1"><stop stop-color="#24282a"/><stop offset="1" stop-color="#131718"/></linearGradient>
+    <linearGradient id="paper" x2=".8" y2="1"><stop stop-color="#f5f0e3"/><stop offset="1" stop-color="#cfc4af"/></linearGradient>
+    <linearGradient id="brass" x2="1" y2=".3"><stop stop-color="#836b47"/><stop offset=".45" stop-color="#e0c59b"/><stop offset="1" stop-color="#a88c60"/></linearGradient>
+    <pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M-3 3 3-3 M0 12 12 0 M9 15 15 9" stroke="#d7c5a4" stroke-opacity=".25"/></pattern>
+  </defs>
+  <rect width="960" height="420" fill="url(#mount)"/>
+  <rect x="18" y="18" width="924" height="384" fill="none" stroke="#bba680" stroke-opacity=".22"/>
+  <g fill="none" stroke="#ad9871" stroke-opacity=".15"><circle cx="264" cy="208" r="153"/><circle cx="264" cy="208" r="128"/><path d="M44 208H462 M264 44V376 M502 52V368"/></g>
+  <path d="M-18 126H106C157 126 157 76 205 76H329C441 76 442 318 318 318H167C84 318 86 208 167 208H210 M312 208H375C415 208 431 253 479 253" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="16" transform="translate(0 5)"/>
+  <path d="M-18 126H106C157 126 157 76 205 76H329C441 76 442 318 318 318H167C84 318 86 208 167 208H210 M312 208H375C415 208 431 253 479 253" fill="none" stroke="url(#brass)" stroke-width="8"/>
+  <g stroke="#d5bd95"><rect x="208" y="188" width="51" height="40" rx="6" fill="#826b49"/><rect x="263" y="188" width="51" height="40" rx="6" fill="#826b49"/><rect x="252" y="181" width="19" height="54" rx="3" fill="url(#brass)"/><path d="M220 194V222 M228 194V222 M294 194V222 M302 194V222" stroke-opacity=".5"/></g>
+  <g transform="translate(635 95) rotate(7 132 124)" fill="none" stroke="#c6b18c" stroke-dasharray="5 7" stroke-opacity=".55"><rect width="264" height="248"/><rect x="18" y="18" width="228" height="178" fill="url(#hatch)"/><path d="M22 220H102"/></g>
+  <g transform="translate(557 66) rotate(-7 132 124)">
+    <rect x="8" y="12" width="264" height="248" fill="#000" opacity=".3"/>
+    <rect width="264" height="248" fill="url(#paper)" stroke="#d6c6a6"/>
+    <rect x="18" y="18" width="228" height="178" fill="#24282a"/>
+    <g fill="none" stroke="#d9c49f"><path d="M34 48H129 M34 62H98 M34 152H68V120H95V138H121V93H148V114H176V77H202V104H230" stroke-width="2"/><path d="M34 170H230" stroke-opacity=".35"/></g>
+    <g stroke="#655941" stroke-width="2"><path d="M22 220H118 M202 220H241"/></g>
+    <circle cx="155" cy="220" r="4" fill="#907449"/>
+  </g>
+  <g fill="none" stroke="#c6b18c" stroke-opacity=".6"><path d="M89 362H419 M559 362H872"/><circle cx="89" cy="362" r="3"/><circle cx="872" cy="362" r="3"/></g>
+</svg>

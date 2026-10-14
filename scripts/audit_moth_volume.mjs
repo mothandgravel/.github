@@ -40,7 +40,16 @@ try {
     await page.waitForTimeout(150);assert(JSON.stringify(first)===JSON.stringify(await pixels(page)),label+': paused pixels changed');
     assert(draws===await page.evaluate(()=>window.volumeDraws),label+': pause keeps rendering');
     if([390,1440].includes(width))await page.locator('#moth-interlude').screenshot({path:join(output,label+'-flight.png'),style:'.site-header{visibility:hidden!important}'});
-    await page.locator('[data-moth-pause]').click();await phase(page,'settle');await page.waitForTimeout(200);
+    await page.locator('[data-moth-pause]').click();await phase(page,'settle');
+    // Settle includes a brief antenna adjustment. Observe its resting pose;
+    // a fixed delay can carry a slow CI client into the subsequent departure.
+    await page.waitForFunction(observation=>{
+      const room=document.querySelector('#moth-interlude');
+      const antennae=room.querySelector('#moth-antennae');
+      const resting=room.dataset.mothPhase==='settle' && antennae?.getAttribute('transform')==='rotate(0 500 389)';
+      observation.frames=resting?observation.frames+1:0;
+      return observation.frames>=2;
+    },{frames:0});
     const settlingDraws=await page.evaluate(()=>window.volumeDraws);
     await page.waitForTimeout(100);
     assert(settlingDraws===await page.evaluate(()=>window.volumeDraws),label+': still perch keeps drawing');
