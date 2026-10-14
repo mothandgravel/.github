@@ -11,6 +11,7 @@ on:
       - "scripts/audit_moth_volume.mjs"
       - "scripts/audit_rooms.mjs"
       - "scripts/audit_connection.mjs"
+      - "scripts/audit_mapping.mjs"
       - ".github/workflows/design-audit.yml"
   workflow_dispatch:
 
@@ -50,6 +51,7 @@ jobs:
           node scripts/audit_moth_volume.mjs
           node scripts/audit_rooms.mjs
           node scripts/audit_connection.mjs
+          node scripts/audit_mapping.mjs
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4
