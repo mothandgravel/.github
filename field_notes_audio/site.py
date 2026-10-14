@@ -8,6 +8,7 @@ import math
 import re
 import struct
 import xml.etree.ElementTree as ET
+from collections.abc import Callable
 from datetime import datetime, timezone
 from email.utils import format_datetime
 from html import escape
@@ -56,10 +57,15 @@ def media_path(root: Path, relative: str) -> Path:
     return path
 
 
-def load_entries(root: Path = ROOT) -> list[dict]:
+def load_entries(root: Path = ROOT, entries: list[dict] | None = None) -> list[dict]:
     path = root / "docs/assets/audio/episodes.json"
-    entries = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
-    if not isinstance(entries, list) or len({e["id"] for e in entries}) != len(entries):
+    if entries is None:
+        entries = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+    if (
+        not isinstance(entries, list)
+        or any(not isinstance(e, dict) for e in entries)
+        or len({e.get("id") for e in entries}) != len(entries)
+    ):
         raise ValueError("Invalid or duplicate published episode IDs")
     notes = {
         n["id"]: n
@@ -74,6 +80,67 @@ def load_entries(root: Path = ROOT) -> list[dict]:
             raise ValueError("Podcast artwork must be square, 1400–3000 pixels")
     primary = set()
     for e in entries:
+        default_rate(e)
+        if "production" in e:
+            production = e["production"]
+            if not isinstance(production, dict) or not isinstance(production.get("source"), dict):
+                raise ValueError("Finished audio needs its original source edition")
+            source = production["source"]
+            review = production.get("review")
+            pace = production.get("pace")
+            if (
+                not isinstance(production.get("fingerprint"), str)
+                or not re.fullmatch(r"[a-f0-9]{64}", production["fingerprint"])
+                or type(pace) not in (int, float)
+                or not math.isfinite(pace)
+                or not 0.75 <= pace <= 1.5
+                or not isinstance(production.get("music_credit"), str)
+                or e.get("review_status") != "approved"
+                or not isinstance(review, dict)
+                or type(review.get("schema_version")) is not int
+                or review["schema_version"] != 1
+                or review.get("status") != "approved"
+                or review.get("audio_fingerprint") != production["fingerprint"]
+                or not isinstance(review.get("audio_files"), dict)
+                or review["audio_files"].get("episode.mp3") != e.get("audio_sha256")
+                or any(
+                    review["audio_files"].get(name) != e.get("files_sha256", {}).get(kind)
+                    for kind, name in (
+                        ("srt", "captions.srt"),
+                        ("vtt", "captions.vtt"),
+                        ("transcript", "transcript.txt"),
+                    )
+                )
+                or not isinstance(review.get("reviewer"), str)
+                or not review["reviewer"].strip()
+            ):
+                raise ValueError("Finished public audio needs matching reviewed media provenance")
+            try:
+                if (
+                    not isinstance(review.get("reviewed_at"), str)
+                    or datetime.fromisoformat(review["reviewed_at"]).tzinfo is None
+                ):
+                    raise ValueError("Review timestamp must include a timezone")
+            except ValueError:
+                raise ValueError("Finished public audio needs a valid review timestamp") from None
+            if (
+                "production" in source
+                or any(
+                    source.get(key) != e.get(key)
+                    for key in (
+                        "id",
+                        "kind",
+                        "note_id",
+                        "slug",
+                        "script_sha256",
+                        "source_sha256",
+                        "published_at",
+                    )
+                )
+                or default_rate(e) != 1
+            ):
+                raise ValueError("Finished audio source identity or 1× playback default disagrees")
+            load_entries(root, [source])
         if (
             not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", e["id"])
             or not e["title"]
@@ -151,8 +218,24 @@ def clock(value: float) -> str:
     return f"{int(value // 60)}:{int(value % 60):02d}"
 
 
-def speed_control() -> str:
-    return '<label hidden>Playback speed <select data-audio-speed aria-label="Playback speed"><option value="1">1×</option><option value="1.15" selected>1.15×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select></label>'
+def source_entry(entry: dict) -> dict:
+    """Always finish the preserved source, never the already paced public edition."""
+    return entry["production"]["source"] if "production" in entry else entry
+
+
+def default_rate(entry: dict) -> float:
+    value = entry.get("default_playback_rate", 1.15)
+    if type(value) not in (int, float) or value not in (1, 1.15, 1.25, 1.5):
+        raise ValueError("Invalid episode playback default")
+    return value
+
+
+def speed_control(entry: dict) -> str:
+    options = "".join(
+        f'<option value="{rate:g}"{" selected" if rate == default_rate(entry) else ""}>{rate:g}×</option>'
+        for rate in (1, 1.15, 1.25, 1.5)
+    )
+    return f'<label hidden>Playback speed <select data-audio-speed aria-label="Playback speed">{options}</select></label>'
 
 
 def transcript_html(entry: dict, root: Path) -> str:
@@ -166,9 +249,9 @@ def transcript_html(entry: dict, root: Path) -> str:
 def note_control(entry: dict, root: Path) -> str:
     return f'''<details class="note-listen" id="listen-note" data-note-player>
   <summary><span>Listen to this note · {minutes(entry)} min</span><span class="audio-badge">AI-narrated</span><span class="audio-disclosure" aria-hidden="true">↗</span></summary>
-  <p class="audio-label mono">RECORDING / {clock(entry["duration_seconds"])} <span data-audio-default-speed hidden>· Playback starts at 1.15×</span></p>
-  <audio controls preload="none" aria-label="{escape(entry["title"], quote=True)}" src="../{entry["audio"]}"><track kind="captions" src="../{entry["vtt"]}" srclang="en" label="English"><a href="../{entry["audio"]}">Download audio</a></audio>
-  <div class="audio-tools">{speed_control()}<a href="./podcast.xml">Subscribe to the podcast <span aria-hidden="true">↗</span></a><details class="audio-downloads"><summary>Downloads</summary><nav aria-label="Episode downloads"><a href="../{entry["audio"]}" download>Audio MP3</a><a href="../{entry["vtt"]}" download>Subtitles VTT</a><a href="../{entry["srt"]}" download>Subtitles SRT</a></nav></details></div>
+  <p class="audio-label mono">RECORDING / {clock(entry["duration_seconds"])} <span data-audio-default-speed hidden>· Playback starts at {default_rate(entry):g}×</span></p>
+  <audio controls preload="none" data-default-rate="{default_rate(entry):g}" aria-label="{escape(entry["title"], quote=True)}" src="../{entry["audio"]}"><track kind="captions" src="../{entry["vtt"]}" srclang="en" label="English"><a href="../{entry["audio"]}">Download audio</a></audio>
+  <div class="audio-tools">{speed_control(entry)}<a href="./podcast.xml">Subscribe to the podcast <span aria-hidden="true">↗</span></a><details class="audio-downloads"><summary>Downloads</summary><nav aria-label="Episode downloads"><a href="../{entry["audio"]}" download>Audio MP3</a><a href="../{entry["vtt"]}" download>Subtitles VTT</a><a href="../{entry["srt"]}" download>Subtitles SRT</a></nav></details></div>
   <details class="audio-transcript"><summary>Transcript</summary><div class="audio-transcript-heading"><p class="audio-caption-note">Machine-generated from the recording; names and speaker boundaries may need checking.</p><label data-audio-follow-control hidden><input type="checkbox" data-audio-follow checked> Follow playback</label></div><div class="audio-cues" role="region" aria-label="Timed transcript" tabindex="0">{transcript_html(entry, root)}</div><a href="../{entry["transcript"]}" download>Download transcript</a></details>
   <p class="audio-status" data-audio-status role="status"></p>
 </details>'''
@@ -206,6 +289,7 @@ def archive_control(entries: list[dict], root: Path) -> str:
                 "label": label,
                 "duration": clock(e["duration_seconds"]),
                 "kind": e["kind"],
+                "defaultRate": default_rate(e),
             }
         )
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
@@ -216,8 +300,8 @@ def archive_control(entries: list[dict], root: Path) -> str:
   <div class="archive-session-body">
   <p class="audio-label mono" data-queue-context>{data[0]["label"].upper()} / 1 OF {len(entries)} · {clock(first["duration_seconds"])}</p>
   <h3 data-queue-title>{escape(first["title"])}</h3>
-  <audio controls preload="none" aria-label="Archive audio" src="../{first["audio"]}"><track kind="captions" src="../{first["vtt"]}" srclang="en" label="English"><a href="../{first["audio"]}">Download the first episode</a></audio>
-  <div class="audio-tools audio-transport"><button type="button" data-queue-start hidden>Play</button><button type="button" data-queue-previous hidden disabled aria-label="Previous episode">← Previous</button><button type="button" data-queue-next hidden aria-label="Next episode">Next →</button>{speed_control()}</div>
+  <audio controls preload="none" data-default-rate="{default_rate(first):g}" aria-label="Archive audio" src="../{first["audio"]}"><track kind="captions" src="../{first["vtt"]}" srclang="en" label="English"><a href="../{first["audio"]}">Download the first episode</a></audio>
+  <div class="audio-tools audio-transport"><button type="button" data-queue-start hidden>Play</button><button type="button" data-queue-previous hidden disabled aria-label="Previous episode">← Previous</button><button type="button" data-queue-next hidden aria-label="Next episode">Next →</button>{speed_control(first)}</div>
   <div class="audio-tools audio-continuation"><label data-queue-auto-label hidden><input type="checkbox" data-queue-auto checked> Continue to the next episode</label><a data-queue-entry-link href="{data[0]["url"]}"><span data-queue-entry-label>{"Read this field note" if first["kind"] == "note" else "Open this episode"}</span> <span aria-hidden="true">↗</span></a></div>
   <p class="audio-status" data-audio-status role="status"></p>
   <details class="audio-transcript" data-queue-transcript-panel><summary>Transcript</summary><div class="audio-transcript-heading"><p class="audio-caption-note">Machine-generated from the recording; names and speaker boundaries may need checking.</p><label data-audio-follow-control hidden><input type="checkbox" data-audio-follow checked> Follow playback</label></div><div class="audio-cues" data-queue-cues role="region" aria-label="Timed archive transcript" tabindex="0"><p class="audio-caption-note">The readable transcript is available below.</p></div><a data-queue-transcript href="../{first["transcript"]}" download>Download transcript</a></details>
@@ -274,7 +358,9 @@ def podcast_feed(entries: list[dict]) -> str:
             ("link", article),
             (
                 "description",
-                e["description"] + " AI-narrated; machine-generated transcript available.",
+                e["description"]
+                + " AI-narrated; machine-generated transcript available."
+                + (" Music: " + e["production"]["music_credit"] if "production" in e else ""),
             ),
         ):
             ET.SubElement(item, tag).text = value
@@ -311,7 +397,14 @@ def podcast_feed(entries: list[dict]) -> str:
     return ET.tostring(rss, encoding="unicode", xml_declaration=True) + "\n"
 
 
-def replace_slot(path: Path, name: str, content: str, anchor: str, check: bool) -> None:
+def replace_slot(
+    path: Path,
+    name: str,
+    content: str,
+    anchor: str,
+    check: bool,
+    writer: Callable[[Path, str], None] | None = None,
+) -> None:
     old = path.read_text(encoding="utf-8")
     generated = f"<!-- {name}:start -->\n{content}\n<!-- {name}:end -->"
     if f"<!-- {name}:start -->" in old:
@@ -329,10 +422,14 @@ def replace_slot(path: Path, name: str, content: str, anchor: str, check: bool) 
         if old != new:
             raise ValueError(f"Stale listening output: run python3 scripts/build_notes.py ({path})")
     else:
-        path.write_text(new)
+        (writer or (lambda destination, value: destination.write_text(value, encoding="utf-8")))(
+            path, new
+        )
 
 
-def build(check: bool = False, root: Path = ROOT) -> list[dict]:
+def build(
+    check: bool = False, root: Path = ROOT, writer: Callable[[Path, str], None] | None = None
+) -> list[dict]:
     entries = load_entries(root)
     notes = json.loads((root / "docs/assets/notes.json").read_text(encoding="utf-8"))
     primary = {e["note_id"]: e for e in entries if e["kind"] == "note"}
@@ -345,6 +442,7 @@ def build(check: bool = False, root: Path = ROOT) -> list[dict]:
             note_control(primary[note["id"]], root) if note["id"] in primary else "",
             r"(?<=</p>)\s*</div>",
             check,
+            writer,
         )
     archive = root / "docs/notes/index.html"
     replace_slot(
@@ -353,6 +451,7 @@ def build(check: bool = False, root: Path = ROOT) -> list[dict]:
         archive_control(entries, root),
         r'<div class="collection-count mono">',
         check,
+        writer,
     )
     head = (
         (
@@ -363,14 +462,16 @@ def build(check: bool = False, root: Path = ROOT) -> list[dict]:
         else ""
     )
     for path in [archive, *(root / "docs/notes" / n["slug"] for n in notes)]:
-        replace_slot(path, "audio-head", head, r"</head>", check)
+        replace_slot(path, "audio-head", head, r"</head>", check, writer)
     feed = podcast_feed(entries)
     path = root / "docs/notes/podcast.xml"
     if check:
         if not path.exists() or path.read_text(encoding="utf-8") != feed:
             raise ValueError("Stale podcast feed: run python3 scripts/build_notes.py")
     else:
-        path.write_text(feed)
+        (writer or (lambda destination, value: destination.write_text(value, encoding="utf-8")))(
+            path, feed
+        )
     return entries
 
 

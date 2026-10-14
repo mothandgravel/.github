@@ -9,14 +9,18 @@ import shutil
 import subprocess
 import time
 import xml.etree.ElementTree as ET
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib import request
 
 from field_notes_audio import audio, captions, workflow
 from field_notes_audio import site as build_audio
+from field_notes_audio.locks import run_lock
 from field_notes_audio.progress import Timings
 from field_notes_audio.storage import read_object
+from field_notes_audio.transactions import FileTransaction
 
 
 def git(arguments: list[str], optional: bool = False) -> str | None:
@@ -177,7 +181,39 @@ def sync_catalog() -> list[str]:
     return added
 
 
+@contextmanager
+def collection_lock(root: Path | None = None) -> Iterator[None]:
+    directory = (root or audio.ROOT) / "artifacts/audio"
+    directory.mkdir(parents=True, exist_ok=True)
+    if directory.is_symlink():
+        raise ValueError("Release journals must not be symbolic links")
+    with run_lock(directory, "website/feed publication"):
+        publication_transaction(root or audio.ROOT).recover()
+        yield
+
+
+def publication_transaction(root: Path) -> FileTransaction:
+    return FileTransaction(
+        root,
+        root / "artifacts/audio/website-transaction",
+        lambda relative: bool(
+            re.fullmatch(r"docs/notes/[a-z0-9-]+\.(html|xml)", relative)
+            or relative == "docs/assets/audio/episodes.json"
+            or re.fullmatch(r"docs/assets/audio/[a-z0-9-]+\.(mp3|srt|vtt|txt|json)", relative)
+            or relative == "artifacts/audio/release.json"
+        ),
+    )
+
+
 def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
+    with collection_lock():
+        with publication_transaction(audio.ROOT) as transaction:
+            return _prepare_publication(completed, transaction)
+
+
+def _prepare_publication(
+    completed: list[tuple[dict, Path]], transaction: FileTransaction
+) -> list[dict]:
     root = audio.ROOT
     notes = audio.catalog(root)
     existing_path = root / "docs/assets/audio/episodes.json"
@@ -193,8 +229,8 @@ def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
         recording = directory.parent.parent
         metadata = json.loads((recording / "episode.json").read_text(encoding="utf-8"))
         capmeta = json.loads((directory / "captions.json").read_text(encoding="utf-8"))
-        content = (recording / "episode.mp3").read_bytes()
-        audio_hash = audio.digest(content)
+        content = recording / "episode.mp3"
+        audio_hash = audio.digest_file(content)
         if (
             metadata.get("id") != episode["id"]
             or metadata.get("audio_sha256") != audio_hash
@@ -252,7 +288,7 @@ def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
             "slug": note["slug"] if note else None,
             "language": episode["language"],
             "audio": audio_relative,
-            "bytes": len(content),
+            "bytes": content.stat().st_size,
             "audio_sha256": audio_hash,
             "script_sha256": metadata["script_sha256"],
             "source_sha256": episode["source_sha256"],
@@ -265,6 +301,22 @@ def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
                 kind: audio.digest(assets[relative]) for kind, relative in files.items()
             },
         }
+        previous = existing.get(episode["id"], {})
+        if previous.get("production") and all(
+            previous["production"]["source"].get(key) == entry.get(key)
+            for key in (
+                "audio_sha256",
+                "script_sha256",
+                "source_sha256",
+                "title",
+                "description",
+                "slug",
+                "files_sha256",
+            )
+        ):
+            # Adding another note must not revert reviewed, finished public editions.
+            build_audio.load_entries(root, [previous])
+            entry = previous
         entries.append(entry)
     expected = {n["id"] for n in notes.values()}
     actual = {e["note_id"] for e in entries if e["kind"] == "note"}
@@ -274,12 +326,15 @@ def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
         )
     for relative, data in assets.items():
         path = root / "docs" / relative
-        path.parent.mkdir(parents=True, exist_ok=True)
-        if path.exists() and path.read_bytes() != data:
+        expected_hash = audio.digest_file(data) if isinstance(data, Path) else audio.digest(data)
+        if path.exists() and audio.digest_file(path) != expected_hash:
             raise ValueError("Content-addressed public asset changed; nothing was overwritten")
-        path.write_bytes(data)
-    audio.write_json(existing_path, entries)
-    build_audio.build(root=root)
+        if isinstance(data, Path):
+            transaction.copy(path, data, expected_hash)
+        else:
+            transaction.write_bytes(path, data)
+    transaction.write_json(existing_path, entries)
+    build_audio.build(root=root, writer=transaction.write_text)
     build_audio.build(check=True, root=root)
     files = [root / "docs" / p for p in assets] + [
         existing_path,
@@ -288,14 +343,22 @@ def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
     ]
     files += [root / "docs/notes" / n["slug"] for n in notes.values()]
     files += [root / "audio/episodes.json", *(root / "audio" / e["script"] for e, _ in completed)]
+    files += [
+        build_audio.media_path(root, entry[kind])
+        for entry in entries
+        for kind in ("audio", "srt", "vtt", "transcript", "cues")
+    ]
     hashes = {str(path.relative_to(root)): audio.digest_file(path) for path in files}
-    audio.write_json(
+    transaction.write_json(
         root / "artifacts/audio/release.json",
         {
             "version": 1,
             "phase": "complete",
             "episodes": [e["id"] for e in entries],
             "files": hashes,
+            "edition": "finished"
+            if any("production" in entry for entry in entries)
+            else "original",
         },
     )
     print(f"Prepared {len(entries)} real episodes, subtitles and transcripts for the website.")
@@ -306,9 +369,14 @@ def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
 
 
 def publish() -> None:
+    with collection_lock():
+        _publish()
+
+
+def _publish() -> None:
     state = release_state()
     if not state.get("files") or state.get("phase") != "complete":
-        raise ValueError("No prepared release. Run make-all first")
+        raise ValueError("No prepared release. Run make-all or reviewed promote first")
     assert_clean_or_prepared()
     build_audio.build(check=True, root=audio.ROOT)
     remote, branch = publication_remote()
@@ -373,7 +441,11 @@ def publish() -> None:
                         "--title",
                         "Publish the Field Notes listening archive",
                         "--body",
-                        "Adds completed AI-narrated recordings, machine-generated subtitles and transcripts, article listening controls, the archive queue and a separate podcast feed. Media hashes and measured durations were validated locally. Transcription remains machine-generated and needs listening review.",
+                        (
+                            "Publishes explicitly reviewed finished audio with retimed captions, transcripts and per-episode playback defaults. Media hashes, durations, original-source provenance and review records were validated locally. Original episode GUIDs and publication dates are retained. Other recordings keep their existing review state."
+                            if state.get("edition") == "finished"
+                            else "Adds completed AI-narrated recordings, machine-generated subtitles and transcripts, article listening controls, the archive queue and a separate podcast feed. Media hashes and measured durations were validated locally. Transcription remains machine-generated and needs listening review."
+                        ),
                     ],
                     cwd=audio.ROOT,
                     capture_output=True,

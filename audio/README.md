@@ -4,6 +4,11 @@ For local intro/outro music, baked pacing and animated YouTube editions, see
 [automated production](production/README.md). `python3 -m field_notes_audio produce note-001`
 finishes existing narration without an editor or new Cloud jobs.
 
+`python3 -m field_notes_audio release all` also prepares clearly named YouTube
+upload folders, including titles, descriptions and tags. See the
+[ongoing release workflow](production/PUBLISHING.md) for new notes, listening
+review and promotion of finished audio to the website/feed.
+
 ## Generate the collection and add it to the website
 
 With the project already saved from the successful listening run:

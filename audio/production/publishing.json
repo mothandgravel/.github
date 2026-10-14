@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "show": {
+    "title": "Moth & Gravel — Field Notes audio",
+    "description": "AI-narrated Field Notes and conversations from an independent software and design studio."
+  },
+  "shared_tags": [
+    "Moth & Gravel",
+    "Moth and Gravel",
+    "mothandgravel",
+    "Field Notes",
+    "design podcast",
+    "software design"
+  ],
+  "shared_hashtags": [
+    "#MothAndGravel"
+  ],
+  "episodes": {
+    "note-001": {
+      "tags": [
+        "independent studio",
+        "creative practice",
+        "design thinking",
+        "software craftsmanship"
+      ],
+      "hashtags": []
+    },
+    "note-002": {
+      "tags": [
+        "visual identity",
+        "interface design",
+        "typography",
+        "color palette",
+        "UI design"
+      ],
+      "hashtags": [
+        "#UXDesign",
+        "#InteractionDesign"
+      ]
+    },
+    "note-003": {
+      "tags": [
+        "Decision Docket",
+        "interface metaphors",
+        "interaction design",
+        "context recovery",
+        "UX design"
+      ],
+      "hashtags": [
+        "#UXDesign",
+        "#InteractionDesign"
+      ]
+    },
+    "note-004": {
+      "tags": [
+        "Decision Docket",
+        "layout stability",
+        "interaction design",
+        "usability",
+        "UI design"
+      ],
+      "hashtags": [
+        "#UXDesign",
+        "#InteractionDesign"
+      ]
+    },
+    "note-005": {
+      "tags": [
+        "software testing",
+        "continuous integration",
+        "status indicators",
+        "interface feedback",
+        "software delivery"
+      ],
+      "hashtags": []
+    },
+    "note-006": {
+      "tags": [
+        "Kitronik",
+        "robotics",
+        "robot mapping",
+        "uncertainty visualization",
+        "data visualization"
+      ],
+      "hashtags": []
+    },
+    "note-007": {
+      "tags": [
+        "Kitronik",
+        "telemetry",
+        "dashboard design",
+        "data freshness",
+        "human computer interaction"
+      ],
+      "hashtags": []
+    },
+    "note-008": {
+      "tags": [
+        "SkyStack Builder",
+        "game design",
+        "building mechanics",
+        "undo redo",
+        "interaction design"
+      ],
+      "hashtags": [
+        "#GameDesign",
+        "#GameDevelopment"
+      ]
+    },
+    "note-009": {
+      "tags": [
+        "SkyStack Builder",
+        "game design",
+        "camera controls",
+        "spatial interaction",
+        "environment design"
+      ],
+      "hashtags": [
+        "#GameDesign",
+        "#GameDevelopment"
+      ]
+    },
+    "note-010": {
+      "tags": [
+        "SkyStack Builder",
+        "visual comparison",
+        "visual verification",
+        "game development",
+        "design iteration"
+      ],
+      "hashtags": [
+        "#GameDesign",
+        "#GameDevelopment"
+      ]
+    },
+    "note-011": {
+      "tags": [
+        "SkyStack Builder",
+        "3D modeling",
+        "environment design",
+        "art direction",
+        "game design"
+      ],
+      "hashtags": [
+        "#GameDesign",
+        "#GameDevelopment"
+      ]
+    },
+    "workbench-001": {
+      "tags": [
+        "interface design",
+        "user trust",
+        "mental models",
+        "design conversation",
+        "UX design"
+      ],
+      "hashtags": [
+        "#UXDesign",
+        "#InteractionDesign"
+      ]
+    },
+    "note-001-brisk": {
+      "tags": [
+        "Curiosity with calluses",
+        "narration comparison",
+        "AI narration",
+        "independent studio"
+      ],
+      "hashtags": []
+    }
+  }
+}

@@ -9,6 +9,7 @@ import sys
 import wave
 
 from field_notes_audio import audio, captions, release, workflow
+from field_notes_audio.production import packages, promotion
 from field_notes_audio.production import runner as production
 
 
@@ -22,6 +23,7 @@ def main(argv: list[str] | None = None) -> int:
     workflow.add_arguments(commands)
     release.add_arguments(commands)
     production.add_arguments(commands)
+    packages.add_arguments(commands)
     for name in ("plan", "generate"):
         sub = commands.add_parser(name)
         sub.add_argument("episode")
@@ -92,13 +94,27 @@ def main(argv: list[str] | None = None) -> int:
             release.verify_live()
         elif args.command == "produce":
             production.produce(args)
+        elif args.command == "release":
+            if args.audio_only or args.preview_seconds is not None:
+                raise ValueError(
+                    "release needs full videos; use produce for audio-only or preview work"
+                )
+            packages.preflight_release(args)
+            production.produce(args)
+            packages.export(args)
+        elif args.command == "export":
+            packages.export(args)
+        elif args.command == "review":
+            packages.review(args)
+        elif args.command == "promote":
+            promotion.promote(args)
         else:
             audio.generate(args)
         return 0
     except KeyboardInterrupt:
         print(
             "\nStopped. Repeat produce to reuse completed local editions."
-            if args.command == "produce"
+            if args.command in {"produce", "release", "export", "review", "promote"}
             else "\nStopped. Repeat the same command to resume saved audio and transcription jobs.",
             file=sys.stderr,
         )
