@@ -39,7 +39,7 @@ async function loadPageImages(page) {
 const snap = async (page, name) => {
   await loadPageImages(page);
   await page.evaluate(() => {
-    document.activeElement?.blur();
+    if(document.querySelector('#menu-toggle')?.getAttribute('aria-expanded')!=='true') document.activeElement?.blur();
     window.scrollTo({ top: 0, behavior: 'instant' });
   });
   // Animation-frame callbacks do not run in the no-JavaScript review context.
@@ -313,7 +313,7 @@ try {
     await captureLandingSections(page, 'afterlight', viewport.width);
     await snap(page, `${viewport.name}-afterlight`);
 
-    if (viewport.width <= 900) {
+    if (viewport.width <= 1100) {
       const menu = page.locator("#menu-toggle");
       await menu.click();
       assert(await menu.getAttribute("aria-expanded") === "true", `${viewport.name}: mobile menu failed to open`);

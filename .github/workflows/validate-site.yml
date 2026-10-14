@@ -45,6 +45,7 @@ jobs:
           node --check scripts/audit_moth.mjs
           node --check scripts/audit_handling.mjs
           node --check scripts/audit_moth_volume.mjs
+          node --check scripts/audit_rooms.mjs
           node --check docs/assets/moth-mesh.mjs
           node --check docs/assets/moth-webgl.mjs
           node --check docs/assets/site.js
