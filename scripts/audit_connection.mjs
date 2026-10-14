@@ -30,6 +30,11 @@ try {
     const controls = page.locator('#inspection-controls'), age = page.locator('#inspection-age');
     await controls.waitFor({ state: 'visible' });
     assert(await page.locator('[data-connection-study]').getAttribute('data-measurement') === 'current', label + ': initial state');
+    assert(await page.locator('.connection-art img').evaluate(img => img.complete && img.naturalWidth > 0), label + ': editorial illustration not decoded');
+    if ([390, 1440].includes(width)) {
+      await page.locator('.connection-art').screenshot({ path: join(output, label + '-art.png') });
+      await page.screenshot({ path: join(output, label + '-full.png'), fullPage: true });
+    }
     await age.focus();
     const titleBefore = await page.locator('#inspection-title').boundingBox();
     const controlsBefore = await controls.boundingBox();
@@ -41,6 +46,17 @@ try {
       assert(await page.locator('#split-number').textContent() === '24', label + ': aged value changed ' + seconds);
       assert(await page.locator('#sample-age').textContent() === `Sampled ${seconds} seconds ago`, label + ': missing age ' + seconds);
     }
+    // Poll the painted position, rather than sampling a preceding frame during rapid input.
+    await page.waitForFunction(() => {
+      const el = document.querySelector('#clock-hand');
+      const guide = el.parentElement.getBoundingClientRect(), marker = el.getBoundingClientRect();
+      return Math.abs(marker.x + marker.width / 2 - guide.right) < 1;
+    }, null, { timeout: 2000 });
+    const markerAtEnd = await page.locator('#clock-hand').evaluate(el => {
+      const guide = el.parentElement.getBoundingClientRect(), marker = el.getBoundingClientRect();
+      return Math.abs(marker.x + marker.width / 2 - guide.right) < 1;
+    });
+    assert(markerAtEnd, label + ': age graphic does not reach thirty seconds');
     const titleAfter = await page.locator('#inspection-title').boundingBox();
     const controlsAfter = await controls.boundingBox();
     assert(['x', 'y', 'width', 'height'].every(k => Math.abs(titleBefore[k] - titleAfter[k]) < .02), label + ': question moves during inspection');
@@ -54,10 +70,18 @@ try {
     assert(await page.locator('#sample-age').textContent() === 'Nothing measured', label + ': missing retains age');
     assert(await page.locator('[data-connection-study]').getAttribute('data-measurement') === 'unavailable', label + ': missing state');
     assert(!(await page.locator('#clock-hand').isVisible()), label + ': missing sample clock still drawn');
+    assert(await page.locator('.split-sketch .symbol-empty').evaluate(el => getComputedStyle(el).display !== 'none'), label + ': missing sample lacks empty outline');
+    assert(await page.locator('.split-sketch .symbol-sample').evaluate(el => getComputedStyle(el).display === 'none'), label + ': missing sample retains measured marks');
     await audit(page, label + ' unavailable');
+    if ([390, 1440].includes(width)) {
+      await page.evaluate(() => document.activeElement?.blur());
+      await page.locator('.connection-sketches').screenshot({ path: join(output, label + '-unavailable.png'), style: '.site-header,.skip-link{visibility:hidden!important}' });
+    }
     await page.getByLabel('A measured sample', { exact: true }).check();
     assert(await age.inputValue() === '18', label + ': fixture choice loses inspection age');
     assert(await page.locator('[data-connection-study]').getAttribute('data-measurement') === 'stale', label + ': return refreshes old sample');
+    assert(await page.locator('.split-sketch .sample-sheet').evaluate(el => getComputedStyle(el).strokeDasharray !== 'none'), label + ': stale sample lacks dashed edge');
+    assert(await page.locator('.collapsed-sketch .sample-sheet').evaluate(el => getComputedStyle(el).strokeDasharray === 'none'), label + ': first sketch silently gains freshness evidence');
     await page.locator('.connection-record summary').click();
     assert(await page.locator('.connection-record tbody tr').count() === 3, label + ': fixed record missing');
     await audit(page, label + ' stale record');
@@ -67,7 +91,8 @@ try {
     // Capture only after accessibility checks: temporary header hiding can race name calculation.
     if ([390, 1440].includes(width)) {
       await page.locator('.connection-record summary').click();
-      await page.locator('#inspection').screenshot({ path: join(output, label + '-stale.png'), style: '.site-header{visibility:hidden!important}' });
+      await page.evaluate(() => document.activeElement?.blur());
+      await page.locator('#inspection').screenshot({ path: join(output, label + '-stale.png'), style: '.site-header,.skip-link{visibility:hidden!important}' });
     }
     await page.getByRole('link', { name: 'Inspect Ajo’s saved recovery trace' }).click();
     assert(new URL(page.url()).hash === '#specimen-ajo', label + ': next question route');
@@ -82,6 +107,7 @@ try {
     if (mode === 'failed-helper') await page.route('**/assets/specimens/measurement-status.mjs', r => r.abort());
     await page.goto(origin + route, { waitUntil: 'networkidle' });
     assert(!(await page.locator('#inspection-controls').isVisible()), mode + ': dead controls exposed');
+    assert(await page.locator('.connection-art img').evaluate(img => img.complete && img.naturalWidth > 0), mode + ': static illustration missing');
     await page.locator('.connection-record summary').click();
     assert(await page.locator('.connection-record tbody tr').count() === 3, mode + ': static readings absent');
     assert(await page.locator('#next-title').isVisible(), mode + ': next question absent');

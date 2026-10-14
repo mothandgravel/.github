@@ -72,5 +72,18 @@
     "href": "../../#specimen-ajo",
     "question": "An answer is missing. Should we do it again?",
     "bridge": "Losing a current view is different from losing the reply to an action that may already have happened."
-  }
+  },
+  "illustrations": [
+    {
+      "path": "docs/assets/specimens/connection-and-reading.svg",
+      "sha256": "018af7fe2764680927830f0bd103d48ddd2a9d7e48a27ec1f5b667a219b312d7",
+      "kind": "original conceptual vector illustration",
+      "scope": "Joined brass cable and retained paper reading. Drawn marks are invented; not captured telemetry, footage or a shipped interface."
+    },
+    {
+      "path": "docs/specimens/connected-to-what/index.html",
+      "kind": "inline SVG sample symbols and CSS freshness guide",
+      "scope": "The sample symbols are decorative authored drawings. The age marker reflects the selected fixture age, disappears when unavailable, and never represents picture quality."
+    }
+  ]
 }

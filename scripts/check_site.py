@@ -156,6 +156,12 @@ def main() -> int:
             check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['assetSha256'],
                   f"Specimen asset differs from recorded output: {item['id']}")
     check((ROOT / 'assets/specimens/sky-stamp-footprints.svg').is_file(), 'Missing native footprint replay')
+    connection_provenance = json.loads((ROOT / 'design/connection-study-provenance.json').read_text())
+    for illustration in connection_provenance['illustrations']:
+        if 'sha256' in illustration:
+            asset = ROOT.parent / illustration['path']
+            check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == illustration['sha256'],
+                  'Connection illustration differs from recorded artwork')
     connection_page = ROOT / 'specimens/connected-to-what/index.html'
     check(connection_page.is_file(), 'Missing inspectable LiveConnect specimen')
     check('id="specimen-liveconnect"' in html and 'href="./specimens/connected-to-what/"' in html,

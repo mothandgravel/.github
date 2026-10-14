@@ -39,9 +39,6 @@
 .measurement-state{font:600 12px/1.5 var(--mono);padding-bottom:10px;border-bottom:1px solid #20222240;margin:0;min-height:29px;}
 [data-measurement="stale"] .measurement-state{border-bottom-style:dashed;}
 [data-measurement="unavailable"] .measurement-state{border-bottom-style:dotted;}
-.sample-clock{height:14px;position:relative;background:#20222212;margin-top:20px;}
-.clock-boundary{position:absolute;top:0;bottom:0;left:50%;border-left:1px dashed #70542b;}
-#clock-hand{position:absolute;top:-2px;bottom:-2px;left:clamp(0%,var(--sample-age),calc(100% - 3px));width:3px;background:#70542b;}
 .sketch-reading{font-size:14px;color:var(--secondary);margin:20px 0 0;max-width:48ch;}
 .inspection-finding{padding-top:30px;margin-top:30px;border-top:1px solid var(--line);min-height:196px;max-width:80ch;}
 .inspection-finding h3{font:400 28px/1.2 var(--serif);margin-bottom:14px;}
@@ -64,4 +61,35 @@
 .connection-exit p{font:italic 24px/1.4 var(--serif);margin:0;}
 .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;}
 @media(max-width:900px){.connection-heading{grid-template-columns:1fr;gap:30px;}.connection-intro{max-width:65ch;}.connection-decision{gap:24px;}.connection-main{padding-top:28px;}.connection-meta{margin-bottom:44px;}}
-@media(max-width:660px){.connection-heading h1{font-size:clamp(38px,10.5vw,66px);}.connection-main{padding-bottom:48px;}.connection-meta{font-size:9px;align-items:start;}.connection-meta>a{max-width:12ch;text-align:right;}.connection-intro{font-size:16px;}.connection-inspection{padding:22px 16px;}.inspection-lead h2{font-size:29px;}.reading-options{gap:6px;display:grid;}.connection-sketches{grid-template-columns:1fr 1fr;gap:10px;}.connection-sketch figcaption{min-height:114px;}.connection-sketch figcaption .mono{font-size:8px;letter-spacing:.04em;}.connection-sketch h3{font-size:19px;margin-bottom:16px;}.connection-paper{padding:12px;min-height:290px;}.paper-label{font-size:10px;gap:6px;min-height:30px;margin-bottom:10px;}.connection-dot{width:7px;height:7px;}.sample-number{display:block;}.sample-number strong{display:block;font-size:62px;}.sample-number span{display:block;font-size:10px;margin-top:10px;}.measurement-state{font-size:11px;min-height:44px;}.paper-footer{font-size:9px;min-height:44px;}.sketch-reading{font-size:13px;}.sample-clock{margin-top:12px;}.inspection-finding{min-height:245px;}.connection-record table{font-size:11px;}.connection-record th,.connection-record td{padding:10px 5px;}.connection-decision{grid-template-columns:1fr;padding-block:48px;}.connection-decision h2{margin-bottom:8px;}.connection-next{padding:24px 20px;}.connection-next h2{font-size:35px;}.connection-exit{flex-direction:column;gap:16px;}.inspection-clock>label{align-items:start;}.inspection-clock strong{white-space:nowrap;}}
+@media(max-width:660px){.connection-heading h1{font-size:clamp(38px,10.5vw,66px);}.connection-main{padding-bottom:48px;}.connection-meta{font-size:9px;align-items:start;}.connection-meta>a{max-width:12ch;text-align:right;}.connection-intro{font-size:16px;}.connection-inspection{padding:22px 16px;}.inspection-lead h2{font-size:29px;}.reading-options{gap:6px;display:grid;}.connection-sketches{grid-template-columns:1fr 1fr;gap:10px;}.connection-sketch figcaption{min-height:114px;}.connection-sketch figcaption .mono{font-size:8px;letter-spacing:.04em;}.connection-sketch h3{font-size:19px;margin-bottom:16px;}.connection-paper{padding:12px;min-height:290px;}.paper-label{font-size:10px;gap:6px;min-height:30px;margin-bottom:10px;}.connection-dot{width:7px;height:7px;}.sample-number{display:block;}.sample-number strong{display:block;font-size:62px;}.sample-number span{display:block;font-size:10px;margin-top:10px;}.measurement-state{font-size:11px;min-height:44px;}.paper-footer{font-size:9px;min-height:44px;}.sketch-reading{font-size:13px;}.inspection-finding{min-height:245px;}.connection-record table{font-size:11px;}.connection-record th,.connection-record td{padding:10px 5px;}.connection-decision{grid-template-columns:1fr;padding-block:48px;}.connection-decision h2{margin-bottom:8px;}.connection-next{padding:24px 20px;}.connection-next h2{font-size:35px;}.connection-exit{flex-direction:column;gap:16px;}.inspection-clock>label{align-items:start;}.inspection-clock strong{white-space:nowrap;}}
+
+/* The illustrations share the bench's charcoal mount, paper and brass. */
+.connection-art{margin:0 0 40px;border:1px solid var(--line);background:var(--surface);}
+.connection-art>img{display:block;width:100%;height:auto;}
+.connection-art-labels{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:22px 28px 8px;}
+.connection-art-labels p{margin:0;}.connection-art-labels .mono{display:block;color:var(--gold-bright);}
+.connection-art-labels strong{display:block;font:400 clamp(22px,3vw,34px)/1.25 var(--serif);margin-top:7px;}
+.connection-art figcaption{padding:12px 28px 24px;max-width:90ch;color:var(--secondary);font-size:13px;}
+.reading-symbol{display:block;flex:none;width:120px;height:66px;margin:0 0 10px;color:#70542b;}
+.reading-symbol path{fill:none;stroke:currentColor;stroke-width:1.5;}
+.reading-symbol .sample-sheet{fill:#f5f0e3;}.sample-back{opacity:.5;}
+.reading-symbol .sample-marks{stroke-width:2;}.symbol-empty{display:none;}
+[data-measurement="stale"] .split-sketch .sample-sheet{stroke-dasharray:4 3;}
+[data-measurement="unavailable"] .symbol-sample{display:none;}
+[data-measurement="unavailable"] .symbol-empty{display:block;}
+[data-measurement="unavailable"] .symbol-empty path:first-child{stroke-dasharray:1 4;}
+.freshness-guide{margin:0 0 36px;max-width:700px;}
+.freshness-drawing{height:28px;position:relative;margin-inline:5px;}
+.freshness-window{position:absolute;top:10px;left:0;width:50%;height:8px;background:var(--gold-bright);}
+.freshness-tail{position:absolute;top:14px;left:50%;right:0;border-top:1px dashed var(--gold-bright);}
+.freshness-boundary{position:absolute;left:50%;top:3px;height:25px;border-left:1px solid var(--gold-bright);}
+#clock-hand{position:absolute;top:6px;left:clamp(0%,var(--sample-age),100%);width:16px;height:16px;transform:translateX(-50%);background:var(--bg);border:2px solid var(--gold-bright);border-radius:50%;}
+.freshness-labels{display:flex;justify-content:space-between;font:11px/1.7 var(--mono);color:var(--secondary);}
+.freshness-labels strong{color:var(--ink);font-weight:500;}
+.freshness-guide figcaption{font-size:13px;line-height:1.6;color:var(--secondary);margin-top:14px;max-width:66ch;}
+.freshness-guide figcaption strong{color:var(--ink);}
+.connection-paper{min-height:390px;}
+@media(max-width:660px){.connection-art-labels{padding:16px 16px 8px;gap:16px;}.connection-art-labels .mono{font-size:8px;}.connection-art-labels strong{font-size:22px;}.connection-art figcaption{padding:10px 16px 18px;font-size:12px;}.reading-symbol{width:96px;height:53px;margin-bottom:12px;}.connection-paper{min-height:365px;}.freshness-guide{margin-bottom:26px;}}
+
+.collapsed-sketch .paper-label{margin-bottom:49px;}
+@media(max-width:660px){.collapsed-sketch .paper-label{margin-bottom:54px;}}

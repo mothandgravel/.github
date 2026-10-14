@@ -1271,3 +1271,5 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .connection-teaser h3{font:900 clamp(32px,3.8vw,52px)/1.08 var(--sans);letter-spacing:-.04em;}
 .connection-teaser h3 em{font-family:var(--serif);font-weight:400;}
 .connection-teaser .work-specimen{padding:0;border:0;}
+
+.connection-teaser .work-specimen img{display:block;width:100%;height:auto;object-fit:contain;}
