@@ -161,6 +161,8 @@ def main() -> int:
     check('id="moth-interlude"' in html and 'id="moth-question"' in html, 'Moth interlude resting composition missing')
     for path in ('moth-interlude.mjs', 'moth-choreography.mjs', 'moth-interlude.css', 'moth-rig.svg'):
         check((ROOT / 'assets' / path).is_file(), f'Moth scene resource missing: {path}')
+    for path in ('moth-webgl.mjs', 'moth-mesh.mjs', 'moth-model.json'):
+        check((ROOT / 'assets' / path).is_file(), f'Volumetric moth resource missing: {path}')
     check('animation:float-moth' not in css, 'Hero still has an endless moth loop')
 
     check('https://github.com/mothandgravel/.github/tree/main/docs' in html, "Workbench source link is missing")

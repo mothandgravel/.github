@@ -131,6 +131,11 @@ export function sampleScene(elapsed, layout) {
   const wingStoneHind = wing(beat - stoneLag - compressionLag, amplitude * .69, resting, 1, .7);
   const settleAdjustment = Math.sin(progress(t, 3250, 3420) * Math.PI) * (t < 3420 ? 1 : 0);
   const opacity = ease(progress(t, 0, 120)) * (1 - ease(progress(t, 4510, 4760)));
+  // 3D attitude crosses phase boundaries continuously. A categorical switch at
+  // inspect -> land would snap the whole volume and its lighting by ~22 degrees.
+  const volumeMoving = Math.max(
+    ease(progress(t,360,600)) * (1-ease(progress(t,2750,3250))),
+    ease(progress(t,4010,4190)));
 
   return {
     x: p.x + drift,
@@ -139,6 +144,8 @@ export function sampleScene(elapsed, layout) {
     scale: size / g.source.size,
     opacity,
     phase,
+    volumeBank: mix(.12,Math.sin(seconds*1.8)*.27,volumeMoving),
+    volumePitch: Math.sin(seconds*2.3)*.045*volumeMoving,
     softFore: wingSoftFore,
     softHind: wingSoftHind,
     stoneFore: wingStoneFore,

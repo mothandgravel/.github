@@ -6,6 +6,10 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const seenKey = 'moth-and-gravel-interlude-seen';
 let seen = false;
 try { seen = sessionStorage.getItem(seenKey) === 'yes'; } catch { /* One visit still works. */ }
+const remember = () => {
+  seen = true;
+  try { sessionStorage.setItem(seenKey,'yes'); } catch { /* One visit still works. */ }
+};
 
 if (stage && 'IntersectionObserver' in window) initialise().catch(() => {
   // The resting mark and real question link remain complete without enhancement.
@@ -13,6 +17,16 @@ if (stage && 'IntersectionObserver' in window) initialise().catch(() => {
 });
 
 async function initialise() {
+  let startupController;
+  const earlyInterrupt = () => { remember();startupController?.abort(); };
+  const earlyKey = event => { if(event.key==='Escape')earlyInterrupt(); };
+  const earlyVisibility = () => { if(document.hidden)earlyInterrupt(); };
+  window.addEventListener('blur',earlyInterrupt);
+  window.addEventListener('pagehide',earlyInterrupt);
+  document.addEventListener('keydown',earlyKey);
+  document.addEventListener('visibilitychange',earlyVisibility);
+  reduced.addEventListener('change',earlyInterrupt);
+  try {
   const css = document.createElement('link');
   css.rel = 'stylesheet';
   css.href = new URL('./moth-interlude.css', import.meta.url).href;
@@ -42,16 +56,14 @@ async function initialise() {
   const body = svg.querySelector('#moth-body');
   const antennae = svg.querySelector('#moth-antennae');
   if (wings.some(wing => !wing.node) || !body || !antennae) throw new Error('Interlude rig incomplete');
+  let renderer;
+  room.dataset.mothRenderer = 'svg';
   const play = room.querySelector('[data-moth-play]');
   const pause = room.querySelector('[data-moth-pause]');
   const finish = room.querySelector('[data-moth-finish]');
   const status = room.querySelector('[data-moth-status]');
   let frame = 0, started = 0, elapsed = 0, layout, visible = false, observed = false, fits = true, pendingPlay = false, state = 'idle';
   const still = () => reduced.matches || document.hidden;
-  const remember = () => {
-    seen = true;
-    try { sessionStorage.setItem(seenKey,'yes'); } catch { /* One visit still works. */ }
-  };
   const setState = value => {
     state = value;
     room.dataset.mothState = value;
@@ -85,7 +97,7 @@ async function initialise() {
     const size = Math.min(68, box.width * .18);
     return {width:box.width,height:box.height,
       source:{x:source.left-box.left + source.width*.495,y:source.top-box.top + source.height*.52,size:source.width*.75},
-      perch:{x:perch.left-box.left + perch.width*.5,y:perch.top-box.top-size*197/750,size},
+      perch:{x:perch.left-box.left + perch.width*.5,y:perch.top-box.top-size*(renderer?.contactOffset??197/750),size},
       question:rectIn(room.querySelector('.moth-question'),box)};
   }
   function safeGeometry(candidate) {
@@ -115,16 +127,21 @@ async function initialise() {
     }
     body.setAttribute('transform',`rotate(${p.bodyPitch} 500 470)`);
     antennae.setAttribute('transform',`rotate(${p.antennaAngle} 500 389)`);
+    if (renderer && !renderer.render(p,time,Math.max(102,layout.source.size))) {
+      renderer.dispose();renderer = undefined;svg.removeAttribute('hidden');room.dataset.mothRenderer = 'svg';
+      interrupt();return false;
+    }
     shadow.style.transform = `translate3d(${p.x+6}px,${p.y+layout.source.size*p.scale*.25+10}px,0) translate(-50%,-50%) scaleX(${p.shadow.scale})`;
     shadow.style.opacity = p.shadow.opacity;
     stage.style.setProperty('--moth-light', p.phase === 'settle' ? '.15' : '.06');
+    return true;
   };
   const tick = now => {
     frame = 0;
     if (state !== 'playing') return;
     if (still() || !visible) return end();
     elapsed = Math.min(DURATION, now-started);
-    paint(elapsed);
+    if (!paint(elapsed)) return;
     if (elapsed >= DURATION) return end('A question worth following.');
     frame = requestAnimationFrame(tick);
   };
@@ -146,7 +163,7 @@ async function initialise() {
     elapsed = 0; started = performance.now();
     setState('playing'); status.textContent = '';
     play.textContent = 'Watch again';
-    paint(0); frame = requestAnimationFrame(tick);
+    if (paint(0)) frame = requestAnimationFrame(tick);
   };
   play.addEventListener('click',()=>begin(true));
   pause.addEventListener('click',() => {
@@ -162,11 +179,13 @@ async function initialise() {
   document.addEventListener('keydown',event => {
     if (['PageUp','PageDown','Home','End','ArrowUp','ArrowDown',' '].includes(event.key)) pendingPlay = false;
     if (event.key === 'Escape') {
+      if (!observed) suppressAutomatic();
       pendingPlay = false;
       if (state !== 'idle') end('', room.contains(document.activeElement));
     }
   });
   const interrupt = () => { pendingPlay = false;if (state !== 'idle') end(); };
+  const suppressAutomatic = () => { remember();startupController?.abort();interrupt(); };
   const cancelPending = () => { pendingPlay = false; };
   window.addEventListener('wheel',cancelPending,{passive:true});
   window.addEventListener('touchmove',cancelPending,{passive:true});
@@ -183,13 +202,35 @@ async function initialise() {
       status.textContent = reduced.matches ? 'Still, by preference.' : fits ? '' : 'Still, in this view.';
     }
   };
-  document.addEventListener('visibilitychange',interrupt);
-  window.addEventListener('pagehide',interrupt);
-  window.addEventListener('blur',interrupt);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)suppressAutomatic();else interrupt();});
+  window.addEventListener('pagehide',suppressAutomatic);
+  window.addEventListener('blur',suppressAutomatic);
   window.addEventListener('resize',remeasure);
   reduced.addEventListener('change',()=>{
-    interrupt();setState('idle');status.textContent = reduced.matches ? 'Still, by preference.' : '';
+    suppressAutomatic();setState('idle');status.textContent = reduced.matches ? 'Still, by preference.' : '';
   });
+  // The source rig remains a complete flight fallback. A failed or lost GPU
+  // never strands the question or replaces native controls with an error flow.
+  if (!reduced.matches) {
+    const controller = new AbortController();startupController = controller;
+    let rejectAbort;
+    const aborted = new Promise((_,reject)=>{rejectAbort=reject;});
+    const onAbort = () => rejectAbort(new DOMException('Interlude setup cancelled','AbortError'));
+    controller.signal.addEventListener('abort',onAbort,{once:true});
+    const deadline = setTimeout(()=>controller.abort(),1800);
+    try {
+      const setup = async () => {
+        const { createMothRenderer } = await import('./moth-webgl.mjs');
+        if(controller.signal.aborted)throw new DOMException('Interlude setup cancelled','AbortError');
+        return createMothRenderer(traveller,()=>{
+          renderer = undefined;svg.removeAttribute('hidden');room.dataset.mothRenderer = 'svg';interrupt();
+        },controller.signal);
+      };
+      renderer = await Promise.race([setup(),aborted]);
+      svg.setAttribute('hidden','');room.dataset.mothRenderer = 'webgl';
+    } catch { /* Keep the source-derived SVG performance. */ }
+    finally {clearTimeout(deadline);controller.signal.removeEventListener('abort',onAbort);startupController = undefined;}
+  }
   const observer = new IntersectionObserver(entries=>{
     const entry = entries[0];
     observed = true;
@@ -202,7 +243,7 @@ async function initialise() {
     if (visible && pendingPlay && !still()) begin();
     else if (visible && !seen) {
       remember();
-      if (!still() && fits) begin();
+      if (!still() && fits && document.hasFocus()) begin();
     }
   },{threshold:[0,.7,1]});
   if ('ResizeObserver' in window) new ResizeObserver(remeasure).observe(stage);
@@ -211,4 +252,11 @@ async function initialise() {
   room.dataset.mothReady = 'true';
   if (reduced.matches) status.textContent = 'Still, by preference.';
   observer.observe(stage);
+  } finally {
+    window.removeEventListener('blur',earlyInterrupt);
+    window.removeEventListener('pagehide',earlyInterrupt);
+    document.removeEventListener('keydown',earlyKey);
+    document.removeEventListener('visibilitychange',earlyVisibility);
+    reduced.removeEventListener('change',earlyInterrupt);
+  }
 }

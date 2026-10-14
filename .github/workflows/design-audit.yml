@@ -8,6 +8,7 @@ on:
       - "scripts/audit_loose_end.mjs"
       - "scripts/audit_moth.mjs"
       - "scripts/audit_handling.mjs"
+      - "scripts/audit_moth_volume.mjs"
       - ".github/workflows/design-audit.yml"
   workflow_dispatch:
 
@@ -44,6 +45,7 @@ jobs:
           node scripts/audit_loose_end.mjs
           node scripts/audit_moth.mjs
           node scripts/audit_handling.mjs
+          node scripts/audit_moth_volume.mjs
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4
