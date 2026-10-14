@@ -8,6 +8,7 @@ import math
 import re
 import struct
 import xml.etree.ElementTree as ET
+from collections.abc import Callable
 from datetime import datetime, timezone
 from email.utils import format_datetime
 from html import escape
@@ -114,6 +115,14 @@ def load_entries(root: Path = ROOT, entries: list[dict] | None = None) -> list[d
                 or not review["reviewer"].strip()
             ):
                 raise ValueError("Finished public audio needs matching reviewed media provenance")
+            try:
+                if (
+                    not isinstance(review.get("reviewed_at"), str)
+                    or datetime.fromisoformat(review["reviewed_at"]).tzinfo is None
+                ):
+                    raise ValueError("Review timestamp must include a timezone")
+            except ValueError:
+                raise ValueError("Finished public audio needs a valid review timestamp") from None
             if (
                 "production" in source
                 or any(
@@ -388,7 +397,14 @@ def podcast_feed(entries: list[dict]) -> str:
     return ET.tostring(rss, encoding="unicode", xml_declaration=True) + "\n"
 
 
-def replace_slot(path: Path, name: str, content: str, anchor: str, check: bool) -> None:
+def replace_slot(
+    path: Path,
+    name: str,
+    content: str,
+    anchor: str,
+    check: bool,
+    writer: Callable[[Path, str], None] | None = None,
+) -> None:
     old = path.read_text(encoding="utf-8")
     generated = f"<!-- {name}:start -->\n{content}\n<!-- {name}:end -->"
     if f"<!-- {name}:start -->" in old:
@@ -406,10 +422,14 @@ def replace_slot(path: Path, name: str, content: str, anchor: str, check: bool) 
         if old != new:
             raise ValueError(f"Stale listening output: run python3 scripts/build_notes.py ({path})")
     else:
-        path.write_text(new)
+        (writer or (lambda destination, value: destination.write_text(value, encoding="utf-8")))(
+            path, new
+        )
 
 
-def build(check: bool = False, root: Path = ROOT) -> list[dict]:
+def build(
+    check: bool = False, root: Path = ROOT, writer: Callable[[Path, str], None] | None = None
+) -> list[dict]:
     entries = load_entries(root)
     notes = json.loads((root / "docs/assets/notes.json").read_text(encoding="utf-8"))
     primary = {e["note_id"]: e for e in entries if e["kind"] == "note"}
@@ -422,6 +442,7 @@ def build(check: bool = False, root: Path = ROOT) -> list[dict]:
             note_control(primary[note["id"]], root) if note["id"] in primary else "",
             r"(?<=</p>)\s*</div>",
             check,
+            writer,
         )
     archive = root / "docs/notes/index.html"
     replace_slot(
@@ -430,6 +451,7 @@ def build(check: bool = False, root: Path = ROOT) -> list[dict]:
         archive_control(entries, root),
         r'<div class="collection-count mono">',
         check,
+        writer,
     )
     head = (
         (
@@ -440,14 +462,16 @@ def build(check: bool = False, root: Path = ROOT) -> list[dict]:
         else ""
     )
     for path in [archive, *(root / "docs/notes" / n["slug"] for n in notes)]:
-        replace_slot(path, "audio-head", head, r"</head>", check)
+        replace_slot(path, "audio-head", head, r"</head>", check, writer)
     feed = podcast_feed(entries)
     path = root / "docs/notes/podcast.xml"
     if check:
         if not path.exists() or path.read_text(encoding="utf-8") != feed:
             raise ValueError("Stale podcast feed: run python3 scripts/build_notes.py")
     else:
-        path.write_text(feed)
+        (writer or (lambda destination, value: destination.write_text(value, encoding="utf-8")))(
+            path, feed
+        )
     return entries
 
 

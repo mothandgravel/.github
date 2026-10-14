@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
-import tempfile
 from pathlib import Path
 
 from field_notes_audio import audio, captions, release, site
@@ -16,7 +14,7 @@ from field_notes_audio.production.packages import (
     review_status,
     selected_entries,
 )
-from field_notes_audio.storage import digest_file, read_object, write_json
+from field_notes_audio.storage import digest_file, read_object
 
 
 def promoted_entry(edition: Edition) -> tuple[dict, dict[str, Path | bytes]]:
@@ -81,7 +79,7 @@ def promote(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
         )
         if not selected:
             raise ValueError("No prepared episode matches this ID")
-        with locked_editions(selected, output) as editions:
+        with locked_editions(selected, output, inspect_video=False) as editions:
             prepare(editions, entries, root)
     print(f"Prepared {len(selected)} reviewed finished editions, retimed captions and 1× defaults.")
     print("The website/feed changes are local. Next: python3 -m field_notes_audio publish")
@@ -105,33 +103,20 @@ def prepare(editions: list[Edition], entries: list[dict], root: Path) -> None:
     ]
     journal = root / "artifacts/audio/release.json"
     generated.append(journal)
-    previous = {path: path.read_bytes() if path.exists() else None for path in generated}
-    created = []
-    try:
+    with release.publication_transaction(root) as transaction:
         for relative, material in assets.items():
             destination = root / "docs" / relative
             expected = (
                 audio.digest(material) if isinstance(material, bytes) else digest_file(material)
             )
-            if destination.exists():
-                if digest_file(destination) != expected:
-                    raise ValueError("Content-addressed finished asset changed")
-                continue
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            # A failed copy must never leave a truncated public asset.
-            with tempfile.NamedTemporaryFile(dir=destination.parent, delete=False) as handle:
-                temporary = Path(handle.name)
-            try:
-                if isinstance(material, bytes):
-                    temporary.write_bytes(material)
-                else:
-                    shutil.copyfile(material, temporary)
-                temporary.replace(destination)
-                created.append(destination)
-            finally:
-                temporary.unlink(missing_ok=True)
-        write_json(manifest, updated)
-        site.build(root=root)
+            if destination.exists() and digest_file(destination) != expected:
+                raise ValueError("Content-addressed finished asset changed")
+            if isinstance(material, bytes):
+                transaction.write_bytes(destination, material)
+            else:
+                transaction.copy(destination, material, expected)
+        transaction.write_json(manifest, updated)
+        site.build(root=root, writer=transaction.write_text)
         site.build(check=True, root=root)
         saved = (
             release.release_state()
@@ -148,7 +133,7 @@ def prepare(editions: list[Edition], entries: list[dict], root: Path) -> None:
         }
         paths = [*generated[:-1], *(root / "docs" / relative for relative in assets)]
         hashes.update({str(path.relative_to(root)): digest_file(path) for path in paths})
-        write_json(
+        transaction.write_json(
             journal,
             {
                 "version": 1,
@@ -158,13 +143,3 @@ def prepare(editions: list[Edition], entries: list[dict], root: Path) -> None:
                 "edition": "finished",
             },
         )
-    except (Exception, KeyboardInterrupt):
-        # Transaction boundary: any failed local preparation restores the prior release.
-        for path, content in previous.items():
-            if content is None:
-                path.unlink(missing_ok=True)
-            else:
-                path.write_bytes(content)
-        for path in created:
-            path.unlink(missing_ok=True)
-        raise

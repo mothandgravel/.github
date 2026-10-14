@@ -53,8 +53,9 @@ explorer.exe "$(wslpath -w "$PWD/artifacts/uploads")"
 
 Folders contain portable copies, so editing or moving them cannot corrupt
 production caches. Warm exports verify and reuse unchanged folders. Metadata
-updates reuse verified media inside the upload area without another encode or
-large copy where hard links are supported; other filesystems fall back to copying.
+updates leave verified media files in place without another encode or large copy.
+Reuse compares file hashes and review metadata against the verified production
+edition and current publishing copy, rather than trusting the upload folder alone.
 
 ## Edit titles, descriptions and tags
 
@@ -75,7 +76,12 @@ adopt render provenance; compatible MP3/MP4 files are reused. `release` does thi
 automatically. Exports require full videos. Previews and audio-only editions
 cannot be substituted for full episodes. Invalid publishing copy and output
 locations fail before `release` starts processing. A failed replacement restores
-the previous upload folder and leaves completed production media available.
+the previous upload files and leaves completed production media available.
+Exports and website preparation use journals that recover on the next command
+after an abrupt process exit. Inventory validation happens before updates;
+unexpected files and symlinks in episode folders are preserved by rejecting the
+export. A changed file after an interrupted operation is reported rather than
+silently overwritten during recovery.
 
 ## Record listening review
 
@@ -92,7 +98,9 @@ python3 -m field_notes_audio export note-001
 Use `review all --approve --reviewer "Perttu"` only after checking every selected
 edition. Review records bind the person and timestamp to exact audio/caption
 hashes and, when present, full-video hashes. Changed media needs fresh review;
-publishing metadata edits alone do not invalidate media review. The reviewer name
+publishing metadata edits alone do not invalidate media review. Use
+`review note-001 --audio-only --approve --reviewer "Perttu"` to check sound/captions
+when the full video is unavailable; it does not approve a video. The reviewer name
 is included in published provenance when finished audio is promoted.
 
 Upload the MP4, thumbnail and subtitles to your existing YouTube podcast playlist.
@@ -120,7 +128,9 @@ manual speed choice takes precedence in a mixed queue. Episode GUIDs and origina
 publication dates are retained. Original recording assets remain available as
 provenance. Future `produce` runs always finish the preserved source, avoiding
 repeated pacing or music. Later `make-all` preparation preserves reviewed finished
-public editions when their original speech source is unchanged.
+public editions when their original speech and caption sources are unchanged.
+A changed source transcript/caption set needs a fresh finished edition and review.
+A later preparation pass also retains finished assets in the publication journal.
 
 All selected editions validate and require explicit audio review before any
 public-file changes. Preparation failures restore the old manifest, HTML, RSS
@@ -128,3 +138,8 @@ and release journal, and remove newly copied assets. `promote` only prepares loc
 changes; `publish` is the separate push operation. Neither uploads to YouTube or
 automatically merges a PR. Audio-only editions can be reviewed/promoted without
 a video; YouTube export still requires a validated full video.
+
+Descriptions are bounded by 5,000 UTF-8 bytes, titles by 100 characters, and
+combined tags by 500 characters including commas and quotes around multiword
+tags. Publishing settings are read once per command. Limits follow the
+[YouTube video resource reference](https://developers.google.com/youtube/v3/docs/videos).

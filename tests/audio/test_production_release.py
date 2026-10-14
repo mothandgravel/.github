@@ -73,6 +73,8 @@ class PublishingTests(unittest.TestCase):
                     "previewSeconds": None,
                     "frames": math.ceil(state["timeline_duration_seconds"] * 12),
                     "fps": 12,
+                    "width": 640,
+                    "height": 360,
                 },
             )
             write_json(
@@ -149,23 +151,21 @@ class PublishingTests(unittest.TestCase):
     def test_metadata_changes_and_warm_export_never_copy_or_reencode_large_media(self):
         packages.export(self.args, self.root)
         before = {p: p.stat().st_mtime_ns for p in self.upload.iterdir()}
-        with patch.object(packages.shutil, "copyfile", wraps=shutil.copyfile) as copies:
+        with patch.object(editions, "finish_audio", side_effect=AssertionError("No re-encode")):
             packages.export(self.args, self.root)
-            self.assertFalse(
-                any(str(call.args[0]).endswith((".mp4", ".mp3")) for call in copies.call_args_list)
-            )
         self.assertEqual(before, {p: p.stat().st_mtime_ns for p in self.upload.iterdir()})
         config = read_object(self.config)
         config["episodes"]["note-001"]["title"] = "A clearer upload title"
         config["episodes"]["note-001"]["tags"].append("studio workbench")
         write_json(self.config, config)
-        with patch.object(packages.shutil, "copyfile", wraps=shutil.copyfile) as copies:
+        with patch.object(editions, "finish_audio", side_effect=AssertionError("No re-encode")):
             packages.export(self.args, self.root)
-            self.assertFalse(
-                any(str(call.args[0]).endswith((".mp4", ".mp3")) for call in copies.call_args_list)
-            )
         self.assertEqual((self.upload / "title.txt").read_text().strip(), "A clearer upload title")
         self.assertIn("studio workbench", (self.upload / "tags.txt").read_text())
+        self.assertEqual(
+            {p: stamp for p, stamp in before.items() if p.suffix in {".mp3", ".mp4"}},
+            {p: p.stat().st_mtime_ns for p in before if p.suffix in {".mp3", ".mp4"}},
+        )
 
     def test_preview_cannot_masquerade_as_full_video(self):
         latest = read_object(self.directory / "latest.json")
@@ -408,14 +408,17 @@ class PublishingTests(unittest.TestCase):
         config = read_object(self.config)
         config["episodes"]["note-001"]["title"] = "New copy"
         write_json(self.config, config)
-        rename = Path.rename
+        replace = Path.replace
+        triggered = False
 
         def interrupted(path, target):
-            if path.name == "edition":
+            nonlocal triggered
+            if target == self.upload / "title.txt" and not triggered:
+                triggered = True
                 raise KeyboardInterrupt
-            return rename(path, target)
+            return replace(path, target)
 
-        with patch.object(Path, "rename", interrupted), self.assertRaises(KeyboardInterrupt):
+        with patch.object(Path, "replace", interrupted), self.assertRaises(KeyboardInterrupt):
             packages.export(self.args, self.root)
         self.assertEqual((self.upload / "title.txt").read_bytes(), previous)
 

@@ -23,7 +23,15 @@ def text(value: object, label: str, limit: int) -> str:
         raise ValueError(f"{label} must be nonempty text of at most {limit} characters")
     if any(ord(character) < 32 and character != "\n" for character in value):
         raise ValueError(f"{label} contains control characters")
+    value.encode("utf-8")
     return value.strip()
+
+
+def title_text(value: object, label: str) -> str:
+    title = text(value, label, 100)
+    if "\n" in title or "<" in title or ">" in title:
+        raise ValueError(f"{label} must be one plain-text line")
+    return title
 
 
 def words(value: object, label: str, hashtags: bool = False) -> tuple[str, ...]:
@@ -42,7 +50,7 @@ def words(value: object, label: str, hashtags: bool = False) -> tuple[str, ...]:
     return items
 
 
-def load_copy(path: Path, entry: dict, credit: str) -> PublishingCopy:
+def load_metadata(path: Path) -> dict:
     config = read_object(path)
     if set(config) != {"schema_version", "show", "shared_tags", "shared_hashtags", "episodes"}:
         raise ValueError("Unknown or missing publishing settings")
@@ -51,8 +59,16 @@ def load_copy(path: Path, entry: dict, credit: str) -> PublishingCopy:
     show = config["show"]
     if not isinstance(show, dict) or set(show) != {"title", "description"}:
         raise ValueError("Publishing show needs a title and description")
-    text(show["title"], "Show title", 100)
-    text(show["description"], "Show description", 5000)
+    show["title"] = title_text(show["title"], "Show title")
+    show["description"] = text(show["description"], "Show description", 5000)
+    if (
+        len((show["description"] + "\n").encode("utf-8")) > 5000
+        or "<" in show["description"]
+        or ">" in show["description"]
+    ):
+        raise ValueError("Show description must be plain text within 5000 UTF-8 bytes")
+    words(config["shared_tags"], "tags")
+    words(config["shared_hashtags"], "hashtags", True)
     overrides = config["episodes"]
     if not isinstance(overrides, dict):
         raise ValueError("Publishing episodes must be an object")
@@ -69,9 +85,20 @@ def load_copy(path: Path, entry: dict, credit: str) -> PublishingCopy:
             raise ValueError(f"Invalid publishing override: {identifier}")
         for field, limit in (("title", 100), ("description", 4000)):
             if field in override:
-                text(override[field], field, limit)
+                title_text(override[field], field) if field == "title" else text(
+                    override[field], field, limit
+                )
         words(override.get("tags", []), "tags")
         words(override.get("hashtags", []), "hashtags", True)
+    return config
+
+
+def load_copy(path: Path, entry: dict, credit: str) -> PublishingCopy:
+    return publishing_copy(load_metadata(path), entry, credit)
+
+
+def publishing_copy(config: dict, entry: dict, credit: str) -> PublishingCopy:
+    overrides = config["episodes"]
     override = overrides.get(entry["id"], {})
     tags = tuple(
         dict.fromkeys(
@@ -79,7 +106,7 @@ def load_copy(path: Path, entry: dict, credit: str) -> PublishingCopy:
         )
     )
     # Conservatively include separators and quotes around multiword tags.
-    if sum(len(tag) + 2 + (2 if " " in tag else 0) for tag in tags) > 500:
+    if sum(len(tag) + (2 if " " in tag else 0) for tag in tags) + max(0, len(tags) - 1) > 500:
         raise ValueError("Combined YouTube tags exceed 500 characters")
     hashtags = tuple(
         dict.fromkeys(
@@ -91,9 +118,7 @@ def load_copy(path: Path, entry: dict, credit: str) -> PublishingCopy:
     )
     if len(hashtags) > 3:
         raise ValueError("Use at most three description hashtags")
-    title = text(override.get("title", entry["title"]), "Episode title", 100)
-    if "\n" in title or "<" in title or ">" in title:
-        raise ValueError("Episode title must be one plain-text line")
+    title = title_text(override.get("title", entry["title"]), "Episode title")
     summary = text(override.get("description", entry["description"]), "Episode description", 4000)
     link = site.DOMAIN + (
         "/notes/" + entry["slug"] if entry.get("slug") else "/notes/#listen-archive"
@@ -105,6 +130,8 @@ def load_copy(path: Path, entry: dict, credit: str) -> PublishingCopy:
         "YouTube description",
         5000,
     )
+    if len((description + "\n").encode("utf-8")) > 5000:
+        raise ValueError("YouTube description exceeds 5000 UTF-8 bytes")
     if "<" in description or ">" in description:
         raise ValueError("YouTube description must be plain text without angle brackets")
     return PublishingCopy(title, description, tags, hashtags)

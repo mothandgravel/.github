@@ -5,12 +5,8 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import os
 import re
-import shutil
 import subprocess
-import tempfile
-import uuid
 from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -21,8 +17,9 @@ from field_notes_audio import audio, captions, site
 from field_notes_audio.locks import run_lock
 from field_notes_audio.production.config import load_settings
 from field_notes_audio.production.editions import AUDIO_FILES, VIDEO_FILES, cache_valid, fingerprint
-from field_notes_audio.production.metadata import load_copy, text
+from field_notes_audio.production.metadata import load_metadata, publishing_copy, text
 from field_notes_audio.storage import digest_file, read_object, write_json
+from field_notes_audio.transactions import FileTransaction
 
 
 @dataclass(frozen=True)
@@ -74,7 +71,16 @@ def relative_edition(directory: Path, relative: object, video: bool = False) -> 
     return path
 
 
-def snapshot(entry: dict, output: Path, full_video: bool = False) -> Edition:
+def snapshot(
+    entry: dict, output: Path, full_video: bool = False, inspect_video: bool = True
+) -> Edition:
+    try:
+        return _snapshot(entry, output, full_video, inspect_video)
+    except (KeyError, TypeError, AttributeError, OverflowError) as exc:
+        raise ValueError("Invalid completed-edition metadata; repeat produce to repair it") from exc
+
+
+def _snapshot(entry: dict, output: Path, full_video: bool, inspect_video: bool) -> Edition:
     directory = output / entry["id"]
     if directory.is_symlink():
         raise ValueError("Episode directory must not be a symbolic link")
@@ -92,10 +98,14 @@ def snapshot(entry: dict, output: Path, full_video: bool = False) -> Edition:
     settings = state.get("settings")
     if (
         not isinstance(settings, dict)
+        or not isinstance(settings.get("music_mode"), str)
         or settings.get("music_mode") not in {"none", "file", "motif"}
         or not isinstance(settings.get("music_credit"), str)
     ):
         raise ValueError("Invalid finished-audio settings")
+    pace = settings.get("speed")
+    if type(pace) not in (int, float) or not math.isfinite(pace) or not 0.75 <= pace <= 1.5:
+        raise ValueError("Invalid finished-audio pace")
     for field in ("timeline_duration_seconds", "duration_seconds"):
         value = state.get(field)
         if type(value) not in (int, float) or not math.isfinite(value) or not 0 < value <= 1200:
@@ -116,6 +126,11 @@ def snapshot(entry: dict, output: Path, full_video: bool = False) -> Edition:
         or not 0 < duration <= 1200
     ):
         raise ValueError("Invalid finished-audio duration")
+    if (
+        abs(captions.probe_audio(finished / "episode.mp3") - duration)
+        > site.MP3_DURATION_TOLERANCE_SECONDS
+    ):
+        raise ValueError("Finished MP3 duration disagrees with its encoded media")
     srt = captions.parse_captions((finished / "captions.srt").read_text(), duration)
     vtt = captions.parse_captions((finished / "captions.vtt").read_text(), duration, vtt=True)
     cues = read_object(finished / "cues.json").get("cues")
@@ -133,7 +148,7 @@ def snapshot(entry: dict, output: Path, full_video: bool = False) -> Edition:
     ):
         raise ValueError("Finished captions and timed transcript disagree")
     video = video_state = None
-    if latest.get("video"):
+    if (full_video or inspect_video) and latest.get("video"):
         video = relative_edition(directory, latest["video"], video=True)
         video_state = read_object(video / "production.json")
         if any(
@@ -161,6 +176,7 @@ def snapshot(entry: dict, output: Path, full_video: bool = False) -> Edition:
         if (
             type(fps) is not int
             or not 12 <= fps <= 30
+            or type(rendered.get("frames")) is not int
             or rendered.get("frames") != math.ceil(state["timeline_duration_seconds"] * fps)
         ):
             raise ValueError("Video timeline does not cover the full finished episode")
@@ -171,7 +187,7 @@ def snapshot(entry: dict, output: Path, full_video: bool = False) -> Edition:
                     "-v",
                     "error",
                     "-show_entries",
-                    "format=duration:stream=codec_type,codec_name",
+                    "format=duration:stream=codec_type,codec_name,width,height,r_frame_rate",
                     "-of",
                     "json",
                     str(video / "episode.mp4"),
@@ -182,12 +198,22 @@ def snapshot(entry: dict, output: Path, full_video: bool = False) -> Edition:
                 timeout=30,
             ).stdout
         )
-        if abs(float(inspected["format"]["duration"]) - rendered["frames"] / fps) > 0.15 or not all(
-            any(
-                stream.get("codec_type") == kind and stream.get("codec_name") == codec
-                for stream in inspected.get("streams", [])
+        encoded_duration = float(inspected["format"]["duration"])
+        visual = next(
+            (stream for stream in inspected["streams"] if stream.get("codec_type") == "video"), {}
+        )
+        if (
+            not math.isfinite(encoded_duration)
+            or abs(encoded_duration - rendered["frames"] / fps) > 0.15
+            or any(visual.get(field) != rendered.get(field) for field in ("width", "height"))
+            or visual.get("r_frame_rate") != f"{fps}/1"
+            or not all(
+                any(
+                    stream.get("codec_type") == kind and stream.get("codec_name") == codec
+                    for stream in inspected.get("streams", [])
+                )
+                for kind, codec in (("video", "h264"), ("audio", "aac"))
             )
-            for kind, codec in (("video", "h264"), ("audio", "aac"))
         ):
             raise ValueError("Upload video is not a complete H.264/AAC episode")
     if full_video and video is None:
@@ -199,7 +225,7 @@ def snapshot(entry: dict, output: Path, full_video: bool = False) -> Edition:
 
 @contextmanager
 def locked_editions(
-    entries: list[dict], output: Path, full_video: bool = False
+    entries: list[dict], output: Path, full_video: bool = False, inspect_video: bool = True
 ) -> Iterator[list[Edition]]:
     from contextlib import ExitStack
 
@@ -209,7 +235,7 @@ def locked_editions(
             if not directory.is_dir() or directory.is_symlink():
                 raise ValueError(f"{entry['id']}: no completed local edition; run produce first")
             stack.enter_context(run_lock(directory, "release/review"))
-        yield [snapshot(entry, output, full_video) for entry in entries]
+        yield [snapshot(entry, output, full_video, inspect_video) for entry in entries]
 
 
 def review_status(edition: Edition, full_video: bool = False) -> str:
@@ -250,7 +276,9 @@ def review(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
             "--approve needs --reviewer with the person who listened and checked captions"
         )
     reviewer = text(args.reviewer, "Reviewer", 120) if args.reviewer else None
-    with locked_editions(entries, output) as editions:
+    with locked_editions(
+        entries, output, inspect_video=not getattr(args, "audio_only", False)
+    ) as editions:
         for edition in editions:
             if args.approve:
                 write_json(
@@ -276,25 +304,26 @@ def review(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
             )
 
 
-def replace_folder(stage: Path, destination: Path) -> None:
-    """Publish a complete folder, restoring the old one on replacement failure."""
-    if destination.is_symlink() or (destination.exists() and not destination.is_dir()):
-        raise ValueError("Upload destination must be a normal directory")
-    backup = destination.parent / f".previous-{destination.name}-{uuid.uuid4().hex}"
-    replaced = destination.exists()
-    if replaced:
-        destination.rename(backup)
-    try:
-        stage.rename(destination)
-    except (OSError, KeyboardInterrupt):
-        if replaced:
-            backup.rename(destination)
-        raise
-    if replaced:
-        shutil.rmtree(backup)
+UPLOAD_FILES = {
+    "episode.mp4",
+    "episode.mp3",
+    "thumbnail.png",
+    "captions.srt",
+    "captions.vtt",
+    "transcript.txt",
+    "title.txt",
+    "description.txt",
+    "tags.txt",
+    "hashtags.txt",
+}
 
 
-def upload_valid(destination: Path, identity: str) -> bool:
+def upload_valid(
+    destination: Path,
+    identity: str,
+    expected: dict[str, str] | None = None,
+    manifest: dict | None = None,
+) -> bool:
     try:
         if destination.is_symlink():
             return False
@@ -303,26 +332,76 @@ def upload_valid(destination: Path, identity: str) -> bool:
             saved.get("fingerprint") == identity
             and isinstance(saved.get("files"), dict)
             and all(
-                digest_file(destination / name) == value
+                not (destination / name).is_symlink() and digest_file(destination / name) == value
                 for name, value in saved["files"].items()
                 if re.fullmatch(r"[a-z]+\.(mp4|mp3|png|srt|vtt|txt)", name)
             )
-            and set(saved["files"])
-            == {
-                "episode.mp4",
-                "episode.mp3",
-                "thumbnail.png",
-                "captions.srt",
-                "captions.vtt",
-                "transcript.txt",
-                "title.txt",
-                "description.txt",
-                "tags.txt",
-                "hashtags.txt",
-            }
+            and set(saved["files"]) == UPLOAD_FILES
+            and (expected is None or saved["files"] == expected)
+            and (manifest is None or saved == manifest)
         )
     except (OSError, ValueError, TypeError):
         return False
+
+
+def upload_transaction(uploads: Path) -> FileTransaction:
+    return FileTransaction(
+        uploads,
+        uploads / ".transaction",
+        lambda relative: relative
+        in {"podcast-title.txt", "podcast-description.txt", "podcast-cover.png", "index.json"}
+        or bool(re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*/[a-z0-9.]+", relative))
+        and relative.split("/")[1] in UPLOAD_FILES | {"upload.json"},
+    )
+
+
+def upload_inventory(uploads: Path) -> list[dict]:
+    if not (uploads / "index.json").exists():
+        return []
+    saved = read_object(uploads / "index.json")
+    items = saved.get("episodes")
+    if (
+        type(saved.get("schema_version")) is not int
+        or saved["schema_version"] != 1
+        or not isinstance(items, list)
+    ):
+        raise ValueError("Invalid upload inventory; preserve/repair index.json before exporting")
+    seen = set()
+    for item in items:
+        if not isinstance(item, dict) or set(item) != {
+            "episode",
+            "title",
+            "folder",
+            "review_status",
+        }:
+            raise ValueError("Invalid upload inventory entry")
+        identifier = item["episode"]
+        if (
+            not isinstance(identifier, str)
+            or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", identifier)
+            or identifier in seen
+            or item["folder"] != identifier
+            or item["review_status"] not in ("pending", "approved")
+        ):
+            raise ValueError("Invalid or duplicate upload inventory episode")
+        text(item["title"], "Inventory title", 100)
+        seen.add(identifier)
+    return items
+
+
+def check_upload_destinations(uploads: Path, entries: list[dict]) -> None:
+    upload_inventory(uploads)
+    for entry in entries:
+        destination = uploads / entry["id"]
+        if destination.is_symlink() or destination.exists() and not destination.is_dir():
+            raise ValueError("Upload destination must be a normal directory")
+        if destination.exists() and any(
+            path.name not in UPLOAD_FILES | {"upload.json"}
+            or not path.is_file()
+            or path.is_symlink()
+            for path in destination.iterdir()
+        ):
+            raise ValueError(f"Preserve unexpected files in {destination} before exporting")
 
 
 def export(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
@@ -331,10 +410,10 @@ def export(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     if uploads.is_relative_to(output) or output.is_relative_to(uploads):
         raise ValueError("Upload folders and production caches must be separate")
     entries = selected_entries(args.episode, root)
-    config = (args.metadata or root / "audio/production/publishing.json").resolve()
+    config = load_metadata((args.metadata or root / "audio/production/publishing.json").resolve())
     with locked_editions(entries, output, full_video=True) as editions:
         copies = [
-            load_copy(
+            publishing_copy(
                 config,
                 edition.source,
                 edition.state["settings"]["music_credit"]
@@ -343,107 +422,96 @@ def export(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
             )
             for edition in editions
         ]
-        show = read_object(config)["show"]
         uploads.mkdir(parents=True, exist_ok=True)
         with run_lock(uploads, "upload export"):
-            index = []
-            for edition, copy in zip(editions, copies, strict=True):
-                sources = {
-                    "episode.mp4": edition.video / "episode.mp4",
-                    "thumbnail.png": edition.video / "thumbnail.png",
-                    **{
-                        name: edition.audio / name
-                        for name in (
-                            "episode.mp3",
-                            "captions.srt",
-                            "captions.vtt",
-                            "transcript.txt",
-                        )
-                    },
-                }
-                content = {
-                    "title.txt": copy.title + "\n",
-                    "description.txt": copy.description + "\n",
-                    "tags.txt": ", ".join(copy.tags) + "\n",
-                    "hashtags.txt": " ".join(copy.hashtags) + "\n",
-                }
-                status = review_status(edition, True)
-                identity = fingerprint(
-                    {
-                        "audio": edition.state["fingerprint"],
-                        "video": edition.video_state["fingerprint"],
-                        "copy": content,
-                        "review": status,
+            upload_transaction(uploads).recover()
+            check_upload_destinations(uploads, entries)
+            merged = {item["episode"]: item for item in upload_inventory(uploads)}
+            with upload_transaction(uploads) as transaction:
+                for edition, copy in zip(editions, copies, strict=True):
+                    sources = {
+                        "episode.mp4": edition.video / "episode.mp4",
+                        "thumbnail.png": edition.video / "thumbnail.png",
+                        **{
+                            name: edition.audio / name
+                            for name in (
+                                "episode.mp3",
+                                "captions.srt",
+                                "captions.vtt",
+                                "transcript.txt",
+                            )
+                        },
                     }
-                )
-                destination = uploads / edition.source["id"]
-                if destination.is_symlink():
-                    raise ValueError("Upload destination must not be a symbolic link")
-                reusable = upload_valid(destination, identity)
-                # Upload folders are portable copies, never writable links into caches.
-                if not reusable:
-                    with tempfile.TemporaryDirectory(prefix=".upload-", dir=uploads) as temporary:
-                        stage = Path(temporary) / "edition"
-                        stage.mkdir()
+                    content = {
+                        "title.txt": copy.title + "\n",
+                        "description.txt": copy.description + "\n",
+                        "tags.txt": ", ".join(copy.tags) + "\n",
+                        "hashtags.txt": " ".join(copy.hashtags) + "\n",
+                    }
+                    status = review_status(edition, True)
+                    identity = fingerprint(
+                        {
+                            "audio": edition.state["fingerprint"],
+                            "video": edition.video_state["fingerprint"],
+                            "copy": content,
+                            "review": status,
+                        }
+                    )
+                    destination = uploads / edition.source["id"]
+                    expected = {
+                        name: (
+                            edition.video_state["files"]
+                            if name in VIDEO_FILES
+                            else edition.state["files"]
+                        )[name]
+                        for name in sources
+                    }
+                    expected.update(
+                        {name: fingerprint_text(value) for name, value in content.items()}
+                    )
+                    manifest = {
+                        "schema_version": 1,
+                        "episode": edition.source["id"],
+                        "fingerprint": identity,
+                        "review_status": status,
+                        "default_playback_rate": 1,
+                        "audio_fingerprint": edition.state["fingerprint"],
+                        "video_fingerprint": edition.video_state["fingerprint"],
+                        "files": expected,
+                    }
+                    if not upload_valid(destination, identity, expected, manifest):
                         for name, source in sources.items():
-                            expected = (
-                                edition.video_state["files"]
-                                if name in VIDEO_FILES
-                                else edition.state["files"]
-                            )[name]
-                            prior = destination / name
-                            if (
-                                prior.is_file()
-                                and not prior.is_symlink()
-                                and digest_file(prior) == expected
-                            ):
-                                # Link within the disposable upload area, never to a production cache.
-                                try:
-                                    os.link(prior, stage / name)
-                                except OSError:
-                                    shutil.copyfile(source, stage / name)
-                            else:
-                                shutil.copyfile(source, stage / name)
+                            transaction.copy(destination / name, source, expected[name])
                         for name, value in content.items():
-                            (stage / name).write_text(value, encoding="utf-8")
-                        write_json(
-                            stage / "upload.json",
-                            {
-                                "schema_version": 1,
-                                "episode": edition.source["id"],
-                                "fingerprint": identity,
-                                "review_status": status,
-                                "default_playback_rate": 1,
-                                "audio_fingerprint": edition.state["fingerprint"],
-                                "video_fingerprint": edition.video_state["fingerprint"],
-                                "files": {p.name: digest_file(p) for p in stage.iterdir()},
-                            },
-                        )
-                        replace_folder(stage, destination)
-                index.append(
-                    {
+                            transaction.write_text(destination / name, value)
+                        transaction.write_json(destination / "upload.json", manifest)
+                    merged[edition.source["id"]] = {
                         "episode": edition.source["id"],
                         "title": copy.title,
                         "folder": destination.name,
                         "review_status": status,
                     }
+                for field in ("title", "description"):
+                    transaction.write_text(
+                        uploads / f"podcast-{field}.txt", config["show"][field] + "\n"
+                    )
+                transaction.copy(
+                    uploads / "podcast-cover.png", root / "docs/assets/podcast-cover.png"
                 )
-                print(f"Upload folder: {destination} ({status})")
-            # Write the show files once; preserve packages exported in earlier individual runs.
-            for field in ("title", "description"):
-                (uploads / f"podcast-{field}.txt").write_text(show[field] + "\n", encoding="utf-8")
-            shutil.copyfile(root / "docs/assets/podcast-cover.png", uploads / "podcast-cover.png")
-            previous = (
-                read_object(uploads / "index.json").get("episodes", [])
-                if (uploads / "index.json").exists()
-                else []
-            )
-            merged = {item["episode"]: item for item in previous}
-            merged.update({item["episode"]: item for item in index})
-            write_json(
-                uploads / "index.json", {"schema_version": 1, "episodes": list(merged.values())}
-            )
+                transaction.write_json(
+                    uploads / "index.json", {"schema_version": 1, "episodes": list(merged.values())}
+                )
+            for edition in editions:
+                print(
+                    f"Upload folder: {uploads / edition.source['id']} ({review_status(edition, True)})"
+                )
     print("Local upload folders prepared. Nothing was uploaded or pushed.")
+
+
+def fingerprint_text(value: str) -> str:
+    from hashlib import sha256
+
+    return sha256(value.encode("utf-8")).hexdigest()
 
 
 def preflight_release(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
@@ -452,13 +520,18 @@ def preflight_release(args: argparse.Namespace, root: Path = audio.ROOT) -> None
     uploads = local_output(root, args.upload_dir, "artifacts/uploads")
     if uploads.is_relative_to(output) or output.is_relative_to(uploads):
         raise ValueError("Upload folders and production caches must be separate")
-    config = args.metadata or root / "audio/production/publishing.json"
-    for entry in selected_entries(args.episode, root):
+    config = load_metadata(args.metadata or root / "audio/production/publishing.json")
+    entries = selected_entries(args.episode, root)
+    if uploads.exists():
+        with run_lock(uploads, "release preflight"):
+            upload_transaction(uploads).recover()
+            check_upload_destinations(uploads, entries)
+    for entry in entries:
         source = site.source_entry(entry)
         settings = load_settings(
             args.config or root / "audio/production/settings.json", source["id"]
         )
-        load_copy(
+        publishing_copy(
             config,
             source,
             settings["music_credit"] if settings["music_mode"] != "none" else "No music.",
@@ -489,6 +562,11 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
                 help="Publishing copy; defaults to audio/production/publishing.json",
             )
         elif name == "review":
+            command.add_argument(
+                "--audio-only",
+                action="store_true",
+                help="Review audio/captions without requiring an available video",
+            )
             command.add_argument(
                 "--approve",
                 action="store_true",
