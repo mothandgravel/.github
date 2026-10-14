@@ -9,6 +9,7 @@ import sys
 import wave
 
 from field_notes_audio import audio, captions, release, workflow
+from field_notes_audio.production import runner as production
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -20,6 +21,7 @@ def main(argv: list[str] | None = None) -> int:
     captions.add_arguments(commands)
     workflow.add_arguments(commands)
     release.add_arguments(commands)
+    production.add_arguments(commands)
     for name in ("plan", "generate"):
         sub = commands.add_parser(name)
         sub.add_argument("episode")
@@ -88,6 +90,8 @@ def main(argv: list[str] | None = None) -> int:
                 print("Every published note already has an audio script. No Google requests made.")
         elif args.command == "verify-live":
             release.verify_live()
+        elif args.command == "produce":
+            production.produce(args)
         else:
             audio.generate(args)
         return 0

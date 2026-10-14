@@ -1,0 +1,14 @@
+{
+  "name": "moth-and-gravel-podcast-video",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=22"},
+  "scripts": {"test": "node --test test/*.test.mjs"},
+  "dependencies": {
+    "@remotion/bundler": "4.0.535",
+    "@remotion/renderer": "4.0.535",
+    "remotion": "4.0.535",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  }
+}

@@ -1,5 +1,9 @@
 # Field Notes audio
 
+For local intro/outro music, baked pacing and animated YouTube editions, see
+[automated production](production/README.md). `python3 -m field_notes_audio produce note-001`
+finishes existing narration without an editor or new Cloud jobs.
+
 ## Generate the collection and add it to the website
 
 With the project already saved from the successful listening run:

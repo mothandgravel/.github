@@ -1,0 +1,69 @@
+import React from 'react';
+import {AbsoluteFill, Audio, Composition, Img, interpolate, registerRoot, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {activeCaption, clock, videoDuration} from './timeline.mjs';
+
+const colors = {charcoal: '#17191b', paper: '#f1eee6', brass: '#dfc195', muted: '#c6c0b6', line: '#f1eee62b'};
+const mono = '"Liberation Mono", Consolas, monospace';
+const condensed = '"Arial Narrow", "Liberation Sans Narrow", "Helvetica Neue", Arial, sans-serif';
+const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'};
+
+const FieldNote = (props) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const time = frame / fps;
+  const fade = interpolate(time, [0, 0.7], [0, 1], clamp);
+  const settle = interpolate(time, [0, 1.6], [28, 0], clamp);
+  const ending = time >= props.duration - props.outro;
+  const light = 66 + Math.sin(time / 27) * 3;
+  const caption = activeCaption(props.pages, time);
+  const progress = Math.min(1, time / props.duration);
+  const titleSize = props.title.length > 55 ? 82 : props.title.length > 35 ? 96 : 116;
+  return (
+    <AbsoluteFill style={{background: colors.charcoal, color: colors.paper, fontFamily: condensed}}>
+      <Audio src={staticFile('master.wav')} />
+      <AbsoluteFill style={{background: `radial-gradient(ellipse at ${light}% 24%, #dfc19513, transparent 64%)`}} />
+      <AbsoluteFill style={{width: 1920, height: 1080, padding: '64px 88px 52px', opacity: fade, transformOrigin: 'top left', transform: `scale(${props.video.width / 1920}) translateY(${settle}px)`}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72, borderBottom: `1px solid ${colors.line}`, paddingBottom: 28}}>
+          <div style={{display: 'flex', gap: 20, alignItems: 'center'}}>
+            <Img src={staticFile('mark.svg')} style={{width: 58, height: 58, objectFit: 'contain'}} />
+            <span style={{fontWeight: 800, letterSpacing: 3, fontSize: 28}}>MOTH <span style={{color: colors.brass}}>&</span> GRAVEL</span>
+          </div>
+          <span style={{fontFamily: mono, fontSize: 17, letterSpacing: 2, color: colors.muted}}>{props.label} / LISTENING EDITION</span>
+        </div>
+        <div style={{display: 'grid', gridTemplateColumns: '1.02fr 1fr', gap: 82, height: 632, alignItems: 'center'}}>
+          <div>
+            <p style={{fontFamily: mono, letterSpacing: 3, fontSize: 18, color: colors.brass, margin: '0 0 30px'}}>FIELD NOTES / {props.kind === 'note' ? 'FROM THE WORKBENCH' : props.kind.toUpperCase()}</p>
+            <h1 style={{fontSize: titleSize, fontWeight: 800, lineHeight: 1.04, letterSpacing: -3.5, margin: '0 0 34px', textTransform: 'uppercase', overflowWrap: 'anywhere'}}>{props.title}</h1>
+            <div style={{height: 2, width: 86, background: colors.brass, marginBottom: 26}} />
+            <p style={{fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 31, lineHeight: 1.45, color: colors.muted, margin: 0}}>{ending ? 'Drawn to light. Built for rough ground.' : 'Curious questions. Working answers.'}</p>
+          </div>
+          <div style={{position: 'relative', height: 498, border: `1px solid ${colors.line}`, padding: 14, boxShadow: '18px 22px 0 -7px #af98701c', transform: `perspective(1800px) rotateY(${-2 + Math.sin(time / 40) * 0.2}deg)`}}>
+            <Img src={staticFile(props.artwork)} style={{width: '100%', height: '100%', objectFit: 'contain', background: '#111415'}} />
+            <div style={{position: 'absolute', bottom: 20, right: 20, padding: '8px 12px', background: '#17191bdd', color: colors.muted, fontFamily: mono, fontSize: 14}}>{props.artworkLabel}</div>
+          </div>
+        </div>
+        <div style={{height: 154, borderTop: `1px solid ${colors.line}`, paddingTop: 27, display: 'flex', alignItems: 'flex-start', gap: 40}}>
+          <span style={{fontFamily: mono, color: colors.brass, fontSize: 21, minWidth: 82, paddingTop: 4}}>{props.thumbnail ? 'READ / LISTEN' : clock(time)}</span>
+          <div style={{fontFamily: '"Helvetica Neue", Arial, sans-serif', fontSize: 34, lineHeight: 1.45, color: colors.paper, maxWidth: 1420, overflowWrap: 'anywhere'}}>
+            {props.thumbnail ? props.description : caption || (ending ? 'More Field Notes at mothandgravel.com/notes' : time < props.intro ? 'An AI-narrated edition from Moth & Gravel.' : '')}
+          </div>
+        </div>
+        <div style={{display: 'flex', justifyContent: 'space-between', fontFamily: mono, color: colors.muted, fontSize: 16, letterSpacing: 1.5}}>
+          <span>MOTHANDGRAVEL.COM / FIELD NOTES</span><span>AI-NARRATED · MACHINE-GENERATED CAPTIONS</span>
+        </div>
+      </AbsoluteFill>
+      {!props.thumbnail && <div style={{position: 'absolute', bottom: 0, left: 0, width: `${progress * 100}%`, height: 3, background: colors.brass}} />}
+    </AbsoluteFill>
+  );
+};
+
+const Root = () => (
+  <Composition id="FieldNote" component={FieldNote} durationInFrames={240} fps={24} width={1920} height={1080}
+    calculateMetadata={({props}) => ({
+      durationInFrames: videoDuration(props.duration, props.previewSeconds, props.video.fps),
+      fps: props.video.fps, width: props.video.width, height: props.video.height,
+    })}
+  />
+);
+
+registerRoot(Root);

@@ -1,0 +1,74 @@
+name: Validate podcast production
+
+on:
+  pull_request:
+    paths:
+      - "field_notes_audio/production/**"
+      - "field_notes_audio/cli.py"
+      - "audio/production/**"
+      - "tests/audio/test_production.py"
+      - "video/**"
+      - ".github/workflows/podcast-production.yml"
+  push:
+    paths:
+      - "field_notes_audio/production/**"
+      - "field_notes_audio/cli.py"
+      - "audio/production/**"
+      - "tests/audio/test_production.py"
+      - "video/**"
+      - ".github/workflows/podcast-production.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: video/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install local media tools
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - name: Install pinned video dependencies
+        run: npm ci --ignore-scripts --prefix video
+      - name: Validate caption boundaries
+        run: npm test --prefix video
+      - name: Finish real narration and render a short video without Cloud requests
+        run: python3 -m field_notes_audio produce note-001 --preview-seconds 6
+      - name: Check reuse of finished audio and video
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          import sys
+          from pathlib import Path
+          root = Path("artifacts/production/note-001")
+          files = [*root.rglob("episode.mp3"), *root.rglob("episode.mp4")]
+          assert len(files) == 2, "Expected one finished audio and one preview video"
+          before = {p: p.stat().st_mtime_ns for p in files}
+          subprocess.run([sys.executable, "-m", "field_notes_audio", "produce", "note-001", "--preview-seconds", "6"], check=True)
+          assert before == {p: p.stat().st_mtime_ns for p in files}, "Cached media was unexpectedly rendered again"
+          PY
+      - name: Preserve the real production review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: podcast-production-review
+          path: |
+            artifacts/production/**/episode.mp3
+            artifacts/production/**/episode.mp4
+            artifacts/production/**/thumbnail.png
+            artifacts/production/**/captions.srt
+            artifacts/production/**/captions.vtt
+            artifacts/production/**/description.txt
+            artifacts/production/**/production.json
+            artifacts/production/**/render.json
+            artifacts/production/**/latest.json
+          retention-days: 14
