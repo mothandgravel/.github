@@ -1266,18 +1266,8 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
   .has-nav-sheet .main-nav.is-open { animation:none; }
   .menu-bars span { transition:none; }
 }
-:where(.connection-teaser){display:grid;grid-template-columns:1.25fr 1fr;gap:48px;padding:34px;margin-bottom:32px;border:1px solid var(--line);background:linear-gradient(135deg,#f1eee60a,transparent 48%),var(--surface);}
-.connection-teaser-copy>.mono{color:var(--gold-bright);}
-.connection-teaser-copy h3{font:900 clamp(32px,3.8vw,52px)/1.08 var(--sans);letter-spacing:-.04em;max-width:20ch;}
-.connection-teaser-copy h3 em{font-family:var(--serif);font-weight:400;}
-.connection-teaser-copy>p:not(.mono){color:var(--secondary);max-width:48ch;}
-.connection-teaser-art{margin:0;min-width:0;}
-.connection-teaser-paper{padding:20px;color:#202222;background:var(--material-grain),linear-gradient(135deg,#faf7ee,#e9e2d5);box-shadow:inset 1px 1px #fff,6px 9px 20px -12px #0007;border:1px solid #907449;}
-.connection-teaser-paper>p{font-size:9px;margin-bottom:16px;}
-.connection-teaser-paper>div{display:grid;grid-template-columns:1fr 40px;gap:4px 12px;padding:12px 0;border-top:1px solid #20222240;align-items:center;}
-.connection-teaser-paper>div span:first-child{font:600 12px/1.4 var(--mono);}
-.connection-teaser-paper>div span:last-child{font:11px/1.4 var(--mono);color:#4a4a46;}
-.connection-teaser-paper strong{grid-column:2;grid-row:span 2;font:900 32px/1 var(--sans);}
-.connection-teaser-art figcaption{font-size:12px;color:var(--secondary);margin-top:18px;padding-left:12px;border-left:1px solid var(--gold);max-width:48ch;}
-@media(max-width:900px){:where(.connection-teaser){grid-template-columns:1fr;gap:28px;}}
-@media(max-width:660px){:where(.connection-teaser){padding:24px 20px;}.connection-teaser-paper>p{font-size:8px;}.connection-teaser-copy h3{font-size:32px;}}
+.connection-teaser{margin-bottom:32px;}
+.connection-teaser .first-work-foot{padding-top:0;}
+.connection-teaser h3{font:900 clamp(32px,3.8vw,52px)/1.08 var(--sans);letter-spacing:-.04em;}
+.connection-teaser h3 em{font-family:var(--serif);font-weight:400;}
+.connection-teaser .work-specimen{padding:0;border:0;}

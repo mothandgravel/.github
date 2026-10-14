@@ -47,7 +47,6 @@ try {
     assert(['x', 'y', 'width', 'height'].every(k => Math.abs(controlsBefore[k] - controlsAfter[k]) < .02), label + ': controls move during inspection');
     assert(await age.evaluate(el => document.activeElement === el), label + ': keyboard focus lost');
     await age.fill('18');
-    if ([390, 1440].includes(width)) await page.locator('#inspection').screenshot({ path: join(output, label + '-stale.png'), style: '.site-header{visibility:hidden!important}' });
     await page.getByLabel('No measurement', { exact: true }).check();
     assert(await age.isDisabled(), label + ': clock remains active without sample');
     assert(await page.locator('#split-number').textContent() === '—', label + ': missing becomes zero');
@@ -62,8 +61,14 @@ try {
     await page.locator('.connection-record summary').click();
     assert(await page.locator('.connection-record tbody tr').count() === 3, label + ': fixed record missing');
     await audit(page, label + ' stale record');
+    assert(await page.getByRole('button', { name: 'Menu', exact: true }).count() === 1, label + ': navigation control name');
     assert(!(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)), label + ': horizontal overflow');
     assert(await page.locator('[data-connection-study]').evaluate(el => el.getAnimations({ subtree: true }).length === 0), label + ': inspection animates');
+    // Capture only after accessibility checks: temporary header hiding can race name calculation.
+    if ([390, 1440].includes(width)) {
+      await page.locator('.connection-record summary').click();
+      await page.locator('#inspection').screenshot({ path: join(output, label + '-stale.png'), style: '.site-header{visibility:hidden!important}' });
+    }
     await page.getByRole('link', { name: 'Inspect Ajo’s saved recovery trace' }).click();
     assert(new URL(page.url()).hash === '#specimen-ajo', label + ': next question route');
     assert(await page.locator('#specimen-ajo').isVisible(), label + ': next specimen not reached');
