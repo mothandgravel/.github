@@ -37,7 +37,7 @@ The two mapping images are different captures. They are not a timeline, a synchr
 
 The Kitronik card uses the new camera capture as its main image and leads to `/specimens/whose-map/`. Its native working record retains the older twelve-reading replay as a historical link. The existing related Field Note route and the surrounding specimen order remain intact.
 
-Field Note 006 gains a clearly labelled visual addendum with camera and map imagery plus a route to the detailed study. The addendum sits outside `article.note-prose`. The original narrated article bytes and published episode fingerprints remain unchanged. The conceptual cover and original offline replay retain their original scope. This is not a silent rewrite of an already published podcast episode.
+Field Note 006 gains a clearly labelled visual addendum with camera and map imagery plus a route to the detailed study. The addendum follows the introduction, giving the new captures a visible entry before the original reading. It sits outside `article.note-prose`. The original narrated article bytes and published episode fingerprints remain unchanged. The conceptual cover and original offline replay retain their original scope. This is not a silent rewrite of an already published podcast episode.
 
 The separate specimen gets its own canonical/social identity, studio/breadcrumb metadata and sitemap entry. The numbered Field Notes catalogue does not acquire a fictional new note. The supplied captures are recorded in `buggy-captures-provenance.json`, including original and exported hashes. The source/asset integrity check verifies the public files.
 
