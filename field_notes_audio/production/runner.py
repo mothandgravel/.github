@@ -21,6 +21,7 @@ from field_notes_audio.production.editions import (
     produce_audio,
 )
 from field_notes_audio.production.toolchain import inspect_audio_toolchain
+from field_notes_audio.progress import stage
 from field_notes_audio.storage import digest_file, read_object, write_json
 
 
@@ -149,9 +150,11 @@ def produce(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
             raise ValueError("Production episode directories must not be symbolic links")
         directory.mkdir(parents=True, exist_ok=True)
         with run_lock(directory, "production"):
+            stage("audio", "Finishing or verifying cached audio and retimed captions")
             edition = produce_audio(entry, root, directory, settings, toolchain)
             update_latest(directory, edition)
             print(f"Finished audio: {edition / 'episode.mp3'}", flush=True)
+            stage("audio-complete", "Audio and retimed captions are saved")
         return edition
 
     # Finish every audio edition before starting the browser. Audio workers
@@ -161,9 +164,12 @@ def produce(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     for (entry, settings), edition in zip(recipes, editions, strict=True):
         directory = output / entry["id"]
         with run_lock(directory, "production"):
+            if not args.audio_only:
+                stage("video", "Rendering or verifying video and thumbnail")
             video = None if args.audio_only else produce_video(entry, root, edition, settings, args)
             if video:
                 update_latest(directory, edition, video, args.preview_seconds)
+                stage("video-complete", "Video and thumbnail are saved")
         if video:
             print(
                 f"{'Preview' if args.preview_seconds else 'YouTube edition'}: {video / 'episode.mp4'}",

@@ -1,0 +1,40 @@
+name: Validate production studio
+
+on:
+  pull_request:
+    paths:
+      - "field_notes_studio/**"
+      - "field_notes_audio/progress.py"
+      - "field_notes_audio/production/**"
+      - "tests/studio/**"
+      - "pyproject.toml"
+      - ".github/workflows/studio.yml"
+  push:
+    paths:
+      - "field_notes_studio/**"
+      - "field_notes_audio/progress.py"
+      - "field_notes_audio/production/**"
+      - "tests/studio/**"
+      - "pyproject.toml"
+      - ".github/workflows/studio.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  desktop:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install local media and desktop test tools
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg python3-tk xvfb
+      - name: Install the pinned Python quality tool
+        run: python -m pip install ruff==0.12.12
+      - name: Verify idioms and formatting
+        run: python -m ruff check && python -m ruff format --check
+      - name: Verify real Tk controls, media finishing, journals and recovery
+        run: xvfb-run -a python -m unittest discover -s tests/studio -t . -v

@@ -12,6 +12,7 @@ def main() -> None:
         [sys.executable, "-m", "ruff", "format", "--check"],
         [sys.executable, "-m", "ruff", "check"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/audio", "-t", "."],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/studio", "-t", "."],
         [sys.executable, "-m", "field_notes_audio", "check"],
         [sys.executable, "-m", "field_notes_audio.site", "--check"],
     ]
