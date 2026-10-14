@@ -27,6 +27,10 @@ uses the existing Node 22+ / Remotion toolchain:
 npm ci --prefix video
 ```
 
+The studio launches the worker itself; no terminal production command is needed.
+The selected episode shows its verified saved-edition status. Output guidance explains
+the next step for audio, preview, full video or export.
+
 Use **Inspect changes**, then **Queue production**. Editing a control invalidates the
 inspected plan. `audio` finishes an MP3 and retimed captions; `preview` also renders
 the first ten seconds of video; `video` produces the full video and thumbnail;
@@ -34,10 +38,25 @@ the first ten seconds of video; `video` produces the full video and thumbnail;
 controls and refuses a changed edition pointer. Export does not upload anything.
 
 **Listen** and **Check subtitles** open the latest local edition in system applications.
-Playback is external in this version; there is no embedded player, seek bar or timeline.
+**Watch video** opens the saved full video. Playback is external in this version;
+there is no embedded player, seek bar or timeline.
 The transcript tab shows the published transcript. Production always uses the preserved
 source narration, including when the feed already contains finished audio. New editions
-retain pending human review state. After listening and checking captions, use:
+retain pending human review state. In the **Review** tab:
+
+1. Choose **Audio and captions**, or **Full video and audio** for a YouTube edition.
+2. Open the saved assets with **Listen**, **Check subtitles** and **Watch video**.
+3. Check the corresponding confirmations, enter your name, then **Record approval**.
+4. For a full edition, choose **export**, inspect changes and queue the upload package.
+
+Review is attached to the exact verified media, independently of your draft pace/outro
+controls. Approval revalidates hashes and source identity under the production lock;
+changed editions and changed media are rejected. Switching episode or scope, refreshing
+or producing another edition clears the confirmations. A preview cannot be approved as
+a full video. The studio refreshes after job state changes without hashing media on
+every queue poll. Use **Refresh edition** after production or review in another terminal.
+
+The equivalent terminal command remains available:
 
 ```bash
 python3 -m field_notes_audio review note-001 --audio-only --approve --reviewer "Your name"

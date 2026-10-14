@@ -8,6 +8,7 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from field_notes_studio.models import ReviewSnapshot
 from field_notes_studio.pipeline import Pipeline
 from field_notes_studio.processes import launch_worker, open_path
 from field_notes_studio.repository import Repository
@@ -71,3 +72,17 @@ class Studio:
 
     def open_output(self, episode: str, kind: str) -> None:
         open_path(self.pipeline.output_path(episode, kind))
+
+    def review_snapshot(self, episode: str, full_video: bool = False) -> ReviewSnapshot:
+        return self.pipeline.review_snapshot(episode, full_video)
+
+    def approve(self, episode: str, snapshot: ReviewSnapshot, reviewer: str) -> None:
+        self.pipeline.approve(episode, snapshot, reviewer)
+
+    def open_review(self, snapshot: ReviewSnapshot, kind: str) -> None:
+        path = {"audio": snapshot.audio, "captions": snapshot.captions, "video": snapshot.video}[
+            kind
+        ]
+        if not snapshot.identity or not path:
+            raise ValueError("Load a completed edition for this review first")
+        open_path(Path(path))

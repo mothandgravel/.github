@@ -46,6 +46,9 @@ class Application:
                 "submit": self.controller.submit,
                 "publication": self.controller.publication,
                 "open": self.controller.open_output,
+                "refresh": self.controller.refresh_review,
+                "open_review": self.controller.open_review,
+                "approve": self.controller.approve,
             },
         )
         body.add(self.shelf, weight=1)
@@ -58,6 +61,7 @@ class Application:
             self.controller.history,
         )
         self.jobs.grid(row=3, column=0, sticky="ew")
+        root.bind("<Configure>", self.resize)
         self.message = ttk.Label(
             main, text="Loading the episode shelf…", style="Muted.TLabel", wraplength=1150
         )
@@ -69,6 +73,10 @@ class Application:
 
     def status(self, message):
         self.message.configure(text=message)
+
+    def resize(self, event):
+        if event.widget is self.root:
+            self.jobs.tree.configure(height=1 if event.height < 850 else 2)
 
     def tick(self):
         if not self.closed:

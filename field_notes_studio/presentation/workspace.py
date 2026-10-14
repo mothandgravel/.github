@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.presentation.review import Review
 from field_notes_studio.presentation.theme import set_text
 
 
@@ -10,14 +11,19 @@ class Workspace(ttk.Frame):
     def __init__(self, parent, callbacks):
         super().__init__(parent, padding=(8, 0))
         self.columnconfigure(0, weight=1)
-        self.rowconfigure(4, weight=1)
+        self.rowconfigure(5, weight=1)
         self.title = ttk.Label(self, text="Choose an episode", style="Title.TLabel", wraplength=720)
         self.title.grid(row=0, column=0, sticky="w", pady=(0, 4))
         self.bind(
             "<Configure>", lambda event: self.title.configure(wraplength=max(250, event.width - 20))
         )
         self.subtitle = ttk.Label(
-            self, text="AI-narrated · local review editions", style="Muted.TLabel"
+            self, text="AI-narrated · local review editions", style="Muted.TLabel", wraplength=650
+        )
+        self.bind(
+            "<Configure>",
+            lambda e: self.subtitle.configure(wraplength=max(250, e.width - 20)),
+            add=True,
         )
         self.subtitle.grid(row=1, column=0, sticky="w", pady=(0, 16))
         controls = ttk.Frame(self)
@@ -55,9 +61,15 @@ class Workspace(ttk.Frame):
             state="disabled",
         )
         self.produce.pack(side="left", padx=8)
+        self.guidance = ttk.Label(self, text="", style="Muted.TLabel", wraplength=650)
+        self.guidance.grid(row=4, column=0, sticky="w", pady=(0, 10))
+        self.action.trace_add("write", lambda *_: self.output_guidance())
+        self.output_guidance()
         tabs = ttk.Notebook(self)
-        tabs.grid(row=4, column=0, sticky="nsew")
+        tabs.grid(row=5, column=0, sticky="nsew")
         self.plan = self._text_tab(tabs, "Rebuild plan")
+        self.review = Review(tabs, callbacks)
+        tabs.add(self.review, text="Review")
         self.transcript = self._text_tab(tabs, "Transcript")
         publishing = ttk.Frame(tabs, padding=15)
         tabs.add(publishing, text="Publication")
@@ -80,10 +92,8 @@ class Workspace(ttk.Frame):
             wraplength=600,
         ).pack(anchor="w", pady=16)
         outputs = ttk.Frame(self)
-        outputs.grid(row=5, column=0, sticky="ew", pady=(14, 0))
+        outputs.grid(row=6, column=0, sticky="ew", pady=(14, 0))
         for label, kind in [
-            ("Listen", "audio"),
-            ("Check subtitles", "captions"),
             ("Edition folder", "folder"),
             ("Upload package", "uploads"),
         ]:
@@ -119,3 +129,12 @@ class Workspace(ttk.Frame):
     def show_plan(self, text, ready=False):
         set_text(self.plan, text)
         self.produce.configure(state="normal" if ready else "disabled")
+
+    def output_guidance(self):
+        messages = {
+            "audio": "Audio → finish an MP3 and subtitles. Then open Review to listen and approve.",
+            "preview": "Preview → render the first 10 seconds to check the video style.",
+            "video": "Video → render the full episode and thumbnail. Then review the full video.",
+            "export": "Export → package the saved full edition with title, description, tags and subtitles.",
+        }
+        self.guidance.configure(text=messages[self.action.get()])

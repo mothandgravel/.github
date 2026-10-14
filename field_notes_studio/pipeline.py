@@ -11,7 +11,7 @@ from field_notes_audio.production import packages, runner
 from field_notes_audio.production.config import load_settings, number
 from field_notes_audio.production.editions import AUDIO_FILES, cache_valid, fingerprint
 from field_notes_audio.storage import read_object, write_json
-from field_notes_studio.models import ACTIONS, Episode
+from field_notes_studio.models import ACTIONS, Episode, ReviewSnapshot
 
 
 class Pipeline:
@@ -49,8 +49,78 @@ class Pipeline:
         if kind == "folder":
             return directory
         latest = read_object(directory / "latest.json")
+        if kind == "video":
+            return (
+                packages.relative_edition(directory, latest.get("video"), video=True)
+                / "episode.mp4"
+            )
         audio = packages.relative_edition(directory, latest.get("audio"))
         return audio / {"audio": "episode.mp3", "captions": "captions.srt"}[kind]
+
+    @staticmethod
+    def review_identity(edition: packages.Edition) -> str:
+        return fingerprint(
+            {
+                "source": edition.source,
+                "audio": edition.state["fingerprint"],
+                "audio_files": edition.state["files"],
+                "video": edition.video_state["fingerprint"] if edition.video_state else None,
+                "video_files": edition.video_state["files"] if edition.video_state else None,
+            }
+        )
+
+    def review_snapshot(self, identifier: str, full_video: bool = False) -> ReviewSnapshot:
+        if not (self.output / identifier / "latest.json").exists():
+            return ReviewSnapshot(
+                "", "No local edition yet. Select audio, inspect changes, then queue production."
+            )
+        try:
+            with packages.locked_editions(
+                [self.source(identifier)], self.output, full_video, inspect_video=full_video
+            ) as editions:
+                edition = editions[0]
+                status = packages.review_status(edition, full_video)
+                scope = "Audio, captions and full video" if full_video else "Audio and captions"
+                settings = edition.state["settings"]
+                detail = (
+                    f"{scope}: {status} · {edition.state['duration_seconds'] / 60:.1f} min\n"
+                    f"Saved edition: {edition.audio.name} · {settings['speed']:g}× pace · "
+                    f"{settings['outro_seconds']:g}s outro\n"
+                )
+                if status == "approved":
+                    detail += (
+                        "Review recorded. Select export, inspect changes, then queue the upload package."
+                        if full_video
+                        else "Review recorded. For a YouTube package, produce and review the full video, then export."
+                    )
+                else:
+                    detail += "Open the saved assets below, check them, then record your review."
+                return ReviewSnapshot(
+                    self.review_identity(edition),
+                    detail,
+                    str(edition.audio / "episode.mp3"),
+                    str(edition.audio / "captions.srt"),
+                    str(edition.video / "episode.mp4") if edition.video else "",
+                    full_video,
+                )
+        except (ValueError, OSError) as exc:
+            return ReviewSnapshot("", f"Review unavailable: {exc}")
+
+    def approve(self, identifier: str, expected: ReviewSnapshot, reviewer: str) -> None:
+        if not expected.identity:
+            raise ValueError("Load a completed edition before reviewing it")
+        with packages.locked_editions(
+            [self.source(identifier)],
+            self.output,
+            expected.full_video,
+            inspect_video=expected.full_video,
+        ) as editions:
+            edition = editions[0]
+            if self.review_identity(edition) != expected.identity:
+                raise ValueError(
+                    "Edition changed while you were reviewing. Refresh and check the new assets."
+                )
+            packages.record_review(edition, reviewer)
 
     def request(self, identifier: str, action: str, speed: float, outro: float) -> dict:
         if action not in ACTIONS:

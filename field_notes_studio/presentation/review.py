@@ -1,0 +1,148 @@
+"""Explicit human review of saved media; all file access stays in the service."""
+
+import tkinter as tk
+from tkinter import ttk
+
+from field_notes_studio.presentation.theme import PAPER
+
+
+class Review(ttk.Frame):
+    def __init__(self, parent, callbacks):
+        super().__init__(parent)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.canvas = tk.Canvas(self, height=180, highlightthickness=0, background=PAPER)
+        scrollbar = ttk.Scrollbar(self, command=self.canvas.yview)
+        self.canvas.configure(yscrollcommand=scrollbar.set)
+        scrollbar.grid(row=0, column=1, sticky="ns")
+        self.canvas.grid(row=0, column=0, sticky="nsew")
+        content = ttk.Frame(self.canvas, padding=16)
+        window = self.canvas.create_window((0, 0), window=content, anchor="nw")
+        content.bind(
+            "<Configure>", lambda _: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        )
+        self.canvas.bind("<Configure>", lambda e: self.canvas.itemconfigure(window, width=e.width))
+        self.snapshot = None
+        self.scope = tk.StringVar(value="Audio and captions")
+        self.reviewer = tk.StringVar()
+        self.audio_checked = tk.BooleanVar()
+        self.captions_checked = tk.BooleanVar()
+        self.video_checked = tk.BooleanVar()
+        self.busy = False
+        header = ttk.Frame(content)
+        header.pack(fill="x")
+        ttk.Label(header, text="Review saved edition", style="Heading.TLabel").pack(side="left")
+        ttk.Button(header, text="Refresh edition", command=callbacks["refresh"]).pack(side="right")
+        self.summary = ttk.Label(content, text="Loading edition…", wraplength=590)
+        self.summary.pack(anchor="w", pady=12)
+        content.bind(
+            "<Configure>",
+            lambda e: self.summary.configure(wraplength=max(250, e.width - 35)),
+            add=True,
+        )
+        combo = ttk.Combobox(
+            content,
+            textvariable=self.scope,
+            values=("Audio and captions", "Full video and audio"),
+            state="readonly",
+            width=24,
+        )
+        combo.pack(anchor="w", pady=(0, 8))
+        combo.bind("<<ComboboxSelected>>", lambda _: callbacks["refresh"]())
+        assets = ttk.Frame(content)
+        assets.pack(fill="x", pady=(0, 8))
+        self.asset_buttons = {}
+        for label, kind in (
+            ("Listen", "audio"),
+            ("Check subtitles", "captions"),
+            ("Watch video", "video"),
+        ):
+            button = ttk.Button(
+                assets, text=label, command=lambda k=kind: callbacks["open_review"](k)
+            )
+            button.pack(side="left", padx=(0, 6))
+            self.asset_buttons[kind] = button
+        for text, variable in (
+            ("I listened to this saved audio", self.audio_checked),
+            ("I checked its subtitles", self.captions_checked),
+        ):
+            ttk.Checkbutton(content, text=text, variable=variable).pack(anchor="w")
+        self.video_check = ttk.Checkbutton(
+            content, text="I watched the full video", variable=self.video_checked
+        )
+        self.video_check.pack(anchor="w")
+        footer = ttk.Frame(self, padding=(16, 10))
+        footer.grid(row=1, column=0, columnspan=2, sticky="ew")
+        ttk.Label(footer, text="Reviewed by").pack(side="left", padx=(0, 8))
+        ttk.Entry(footer, textvariable=self.reviewer, width=20).pack(side="left")
+        self.approve = ttk.Button(
+            footer, text="Record approval", command=callbacks["approve"], style="Accent.TButton"
+        )
+        self.approve.pack(side="left", padx=8)
+        for variable in (
+            self.reviewer,
+            self.audio_checked,
+            self.captions_checked,
+            self.video_checked,
+        ):
+            variable.trace_add("write", lambda *_: self.update_controls())
+        self.update_controls()
+        self.bind_navigation(content)
+
+    def bind_navigation(self, widget):
+        widget.bind(
+            "<MouseWheel>", lambda e: self.canvas.yview_scroll(-1 if e.delta > 0 else 1, "units")
+        )
+        widget.bind("<Button-4>", lambda _: self.canvas.yview_scroll(-1, "units"))
+        widget.bind("<Button-5>", lambda _: self.canvas.yview_scroll(1, "units"))
+        widget.bind("<FocusIn>", lambda _: self.reveal(widget))
+        for child in widget.winfo_children():
+            self.bind_navigation(child)
+
+    def reveal(self, widget):
+        if not str(widget).startswith(str(self.canvas) + "."):
+            return
+        top = widget.winfo_rooty() - self.canvas.winfo_rooty() + self.canvas.canvasy(0)
+        bottom = top + widget.winfo_height()
+        visible = self.canvas.canvasy(0)
+        height = self.canvas.winfo_height()
+        region = self.canvas.bbox("all")
+        if region and region[3] > height:
+            if top < visible:
+                self.canvas.yview_moveto(top / region[3])
+            elif bottom > visible + height:
+                self.canvas.yview_moveto((bottom - height) / region[3])
+
+    def full_video(self):
+        return self.scope.get() == "Full video and audio"
+
+    def clear(self, message="Loading edition…"):
+        self.snapshot = None
+        self.busy = False
+        self.audio_checked.set(False)
+        self.captions_checked.set(False)
+        self.video_checked.set(False)
+        self.summary.configure(text=message)
+        self.canvas.yview_moveto(0)
+        self.update_controls()
+
+    def load(self, snapshot):
+        self.clear(snapshot.summary)
+        self.snapshot = snapshot
+        self.update_controls()
+
+    def update_controls(self):
+        available = self.snapshot is not None and bool(self.snapshot.identity) and not self.busy
+        for kind, button in self.asset_buttons.items():
+            button.configure(
+                state="normal" if available and getattr(self.snapshot, kind) else "disabled"
+            )
+        self.video_check.configure(state="normal" if self.full_video() else "disabled")
+        ready = (
+            available
+            and self.reviewer.get().strip()
+            and self.audio_checked.get()
+            and self.captions_checked.get()
+            and (not self.full_video() or self.video_checked.get())
+        )
+        self.approve.configure(state="normal" if ready else "disabled")

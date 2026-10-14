@@ -268,6 +268,26 @@ def review_status(edition: Edition, full_video: bool = False) -> str:
     return "approved"
 
 
+def record_review(edition: Edition, reviewer: str) -> None:
+    """Record explicit human approval of a verified snapshot under its episode lock."""
+    reviewer = text(reviewer, "Reviewer", 120)
+    write_json(
+        edition.audio / "review.json",
+        {
+            "schema_version": 1,
+            "status": "approved",
+            "reviewer": reviewer,
+            "reviewed_at": datetime.now(timezone.utc).isoformat(),
+            "audio_fingerprint": edition.state["fingerprint"],
+            "audio_files": edition.state["files"],
+            "video_fingerprint": edition.video_state["fingerprint"]
+            if edition.video_state
+            else None,
+            "video_files": edition.video_state["files"] if edition.video_state else None,
+        },
+    )
+
+
 def review(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     output = local_output(root, args.output_dir, "artifacts/production")
     entries = selected_entries(args.episode, root)
@@ -281,23 +301,7 @@ def review(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     ) as editions:
         for edition in editions:
             if args.approve:
-                write_json(
-                    edition.audio / "review.json",
-                    {
-                        "schema_version": 1,
-                        "status": "approved",
-                        "reviewer": reviewer,
-                        "reviewed_at": datetime.now(timezone.utc).isoformat(),
-                        "audio_fingerprint": edition.state["fingerprint"],
-                        "audio_files": edition.state["files"],
-                        "video_fingerprint": edition.video_state["fingerprint"]
-                        if edition.video_state
-                        else None,
-                        "video_files": edition.video_state["files"]
-                        if edition.video_state
-                        else None,
-                    },
-                )
+                record_review(edition, reviewer)
             print(
                 f"{edition.source['id']}: audio {review_status(edition)}; "
                 f"video {review_status(edition, True) if edition.video else 'not produced'}"

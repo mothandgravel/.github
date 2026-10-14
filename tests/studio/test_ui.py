@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from field_notes_audio.storage import read_object, write_json
-from field_notes_studio.models import Episode
+from field_notes_studio.models import Episode, ReviewSnapshot
 
 
 @unittest.skipUnless(os.environ.get("DISPLAY"), "Tk integration requires DISPLAY or xvfb-run")
@@ -95,3 +95,78 @@ class UITests(unittest.TestCase):
         self.assertIs(visible, tree)
         bottom = self.app.message.winfo_rooty() + self.app.message.winfo_height()
         self.assertLessEqual(bottom, self.root.winfo_rooty() + self.root.winfo_height())
+
+    def test_review_requires_explicit_checks_and_resets_on_scope_change(self):
+        snapshot = ReviewSnapshot("identity", "Audio pending", "/tmp/audio", "/tmp/captions")
+        review = self.app.workspace.review
+        review.load(snapshot)
+        review.reviewer.set("Test listener")
+        review.audio_checked.set(True)
+        self.assertEqual(str(review.approve["state"]), "disabled")
+        review.captions_checked.set(True)
+        self.assertEqual(str(review.approve["state"]), "normal")
+        with (
+            patch.object(self.app.controller.studio, "approve") as approve,
+            patch.object(self.app.controller.studio, "review_snapshot", return_value=snapshot),
+        ):
+            review.approve.invoke()
+            self.wait(lambda: approve.called)
+            self.wait(lambda: not review.busy)
+            approve.assert_called_once_with("note-001", snapshot, "Test listener")
+        self.assertFalse(review.audio_checked.get())
+        self.assertEqual(str(review.approve["state"]), "disabled")
+        self.assertEqual(str(review.asset_buttons["video"]["state"]), "disabled")
+        review.scope.set("Full video and audio")
+        self.app.controller.refresh_review()
+        self.assertIsNone(review.snapshot)
+        self.assertFalse(review.captions_checked.get())
+
+    def test_selected_episode_cannot_receive_an_old_review_snapshot(self):
+        pending = []
+        self.app.controller.task = lambda operation, callback, on_error=None: pending.append(
+            (operation, callback)
+        )
+        self.app.controller.refresh_review()
+        _, callback = pending.pop()
+        self.app.controller.selected = "note-002"
+        callback(ReviewSnapshot("old", "Old episode", "/tmp/audio", "/tmp/captions"))
+        self.assertIsNone(self.app.workspace.review.snapshot)
+
+    def test_failed_review_clears_checks_and_reenables_refresh(self):
+        review = self.app.workspace.review
+        review.load(ReviewSnapshot("identity", "Pending", "/tmp/audio", "/tmp/captions"))
+        review.reviewer.set("Test listener")
+        review.audio_checked.set(True)
+        review.captions_checked.set(True)
+        with patch.object(
+            self.app.controller.studio, "approve", side_effect=ValueError("Edition changed")
+        ):
+            review.approve.invoke()
+            self.wait(lambda: not review.busy)
+        self.assertIsNone(review.snapshot)
+        self.assertFalse(review.captions_checked.get())
+        self.assertIn("Edition changed", review.summary["text"])
+
+    def test_review_approval_and_assets_are_visible_at_minimum_window_size(self):
+        from tkinter import ttk
+
+        self.root.geometry("1050x760")
+        review = self.app.workspace.review
+        review.load(
+            ReviewSnapshot(
+                "identity",
+                "Audio and captions: pending · 3.1 min\n"
+                "Saved edition: 0123456789abcdef · 1.15× pace · 8s outro\n"
+                "Open the saved assets below, check them, then record your review.",
+                "/tmp/audio",
+                "/tmp/captions",
+            )
+        )
+        ttk.Notebook.nametowidget(self.app.workspace, review.winfo_parent()).select(review)
+        self.root.update()
+        for widget in (*review.asset_buttons.values(), review.approve):
+            review.reveal(widget)
+            self.root.update()
+            x = widget.winfo_rootx() + widget.winfo_width() // 2
+            y = widget.winfo_rooty() + widget.winfo_height() // 2
+            self.assertIs(self.root.winfo_containing(x, y), widget)

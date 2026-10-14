@@ -15,17 +15,22 @@ class ProductionQueue(ttk.Frame):
         ttk.Button(heading, text="Job history", command=history).pack(side="right", padx=8)
         ttk.Button(heading, text="Request stop", command=stop).pack(side="right")
         ttk.Button(heading, text="Retry selected job", command=retry).pack(side="right", padx=8)
+        region = ttk.Frame(self)
+        region.pack(fill="x")
         self.tree = ttk.Treeview(
-            self,
+            region,
             columns=("episode", "action", "status", "stage"),
             show="headings",
-            height=4,
+            height=2,
             selectmode="browse",
         )
         for name, width in [("episode", 130), ("action", 100), ("status", 130), ("stage", 230)]:
             self.tree.heading(name, text=name.title())
             self.tree.column(name, width=width)
-        self.tree.pack(fill="x")
+        scrollbar = ttk.Scrollbar(region, command=self.tree.yview)
+        self.tree.configure(yscrollcommand=scrollbar.set)
+        self.tree.pack(side="left", fill="x", expand=True)
+        scrollbar.pack(side="right", fill="y")
         self.tree.bind("<<TreeviewSelect>>", lambda _event: select())
         self.detail = ttk.Label(
             self,

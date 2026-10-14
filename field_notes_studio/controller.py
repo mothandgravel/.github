@@ -22,8 +22,10 @@ class Controller:
         self.polling = False
         self.closed = False
         self.loading = False
+        self.review_generation = 0
+        self.review_jobs = None
 
-    def task(self, operation, callback):
+    def task(self, operation, callback, on_error=None):
         future = self.executor.submit(operation)
 
         def done(completed):
@@ -31,7 +33,7 @@ class Controller:
                 value, error = completed.result(), None
             except Exception as exc:
                 value, error = None, str(exc)
-            self.mailbox.put((callback, value, error))
+            self.mailbox.put((callback, value, error, on_error))
 
         future.add_done_callback(done)
 
@@ -42,7 +44,11 @@ class Controller:
     def loaded(self, episodes):
         self.episodes = {episode.identifier: episode for episode in episodes}
         self.view.shelf.load(episodes)
-        self.view.status("Ready. Choose an episode and inspect its changes.")
+        self.view.status(
+            "Choose an episode → inspect changes → queue production → review saved media."
+            if episodes
+            else "No prepared episodes found. This checkout needs the original media and captions."
+        )
         if episodes and self.selected is None:
             self.view.shelf.tree.selection_set(episodes[0].identifier)
             self.select(episodes[0].identifier)
@@ -51,6 +57,9 @@ class Controller:
         if identifier == self.selected:
             return
         self.selected = identifier
+        self.review_generation += 1
+        self.review_jobs = None
+        self.view.workspace.review.clear()
         self.changed()
         self.loading = True
 
@@ -59,6 +68,7 @@ class Controller:
                 self.view.workspace.load(self.episodes[identifier], settings)
                 self.loading = False
                 self.changed()
+                self.refresh_review()
 
         self.task(lambda: self.studio.settings(identifier), loaded)
 
@@ -138,6 +148,67 @@ class Controller:
         if identifier:
             self.task(lambda: self.studio.open_output(identifier, kind), lambda _: None)
 
+    def refresh_review(self):
+        if not self.selected or self.loading:
+            return
+        identifier = self.selected
+        self.review_generation += 1
+        generation = self.review_generation
+        review = self.view.workspace.review
+        full_video = review.full_video()
+        review.clear()
+
+        def loaded(snapshot):
+            if generation != self.review_generation or identifier != self.selected:
+                return
+            review.load(snapshot)
+            self.view.workspace.subtitle.configure(
+                text=f"{identifier} · AI-narrated · " + snapshot.summary.splitlines()[0]
+            )
+
+        def failed(message):
+            if generation == self.review_generation:
+                review.clear(f"Review unavailable: {message}")
+
+        self.task(lambda: self.studio.review_snapshot(identifier, full_video), loaded, failed)
+
+    def open_review(self, kind):
+        snapshot = self.view.workspace.review.snapshot
+        if snapshot and snapshot.identity:
+            self.task(lambda: self.studio.open_review(snapshot, kind), lambda _: None)
+
+    def approve(self):
+        if not self.selected or self.loading:
+            return
+        review = self.view.workspace.review
+        snapshot = review.snapshot
+        if (
+            review.busy
+            or not snapshot
+            or not snapshot.identity
+            or not review.audio_checked.get()
+            or not review.captions_checked.get()
+            or (snapshot.full_video and not review.video_checked.get())
+            or not review.reviewer.get().strip()
+        ):
+            self.view.status("Check the saved media and enter your name before approving.")
+            return
+        identifier, reviewer = self.selected, review.reviewer.get().strip()
+        generation = self.review_generation
+        review.busy = True
+        review.update_controls()
+
+        def saved(_):
+            self.view.status(f"Review recorded for {identifier}.")
+            if generation == self.review_generation:
+                self.refresh_review()
+
+        def failed(message):
+            if generation == self.review_generation:
+                review.clear(message + " Refresh the edition before reviewing again.")
+
+        self.task(lambda: self.studio.approve(identifier, snapshot, reviewer), saved, failed)
+
     def job_detail(self):
         identifier = self.view.jobs.selection()
         if not identifier:
@@ -184,6 +255,14 @@ class Controller:
             self.polling = False
             self.view.jobs.render(jobs)
             self.job_detail()
+            signature = tuple(
+                (job.identifier, job.status) for job in jobs if job.episode == self.selected
+            )
+            if signature != self.review_jobs:
+                previous = self.review_jobs
+                self.review_jobs = signature
+                if previous is not None:
+                    self.refresh_review()
 
         self.task(self.studio.repository.jobs, loaded)
 
@@ -192,13 +271,15 @@ class Controller:
             return
         for _ in range(100):
             try:
-                callback, value, error = self.mailbox.get_nowait()
+                callback, value, error, on_error = self.mailbox.get_nowait()
             except queue.Empty:
                 break
             if error:
                 self.polling = False
                 self.loading = False
                 self.view.status(error)
+                if on_error:
+                    on_error(error)
             else:
                 callback(value)
 

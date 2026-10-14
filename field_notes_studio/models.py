@@ -34,5 +34,17 @@ class Job:
     cancel_requested: bool = False
 
 
+@dataclass(frozen=True)
+class ReviewSnapshot:
+    """Verified identity and guidance for the edition a person is reviewing."""
+
+    identity: str
+    summary: str
+    audio: str = ""
+    captions: str = ""
+    video: str = ""
+    full_video: bool = False
+
+
 class StopRequested(Exception):
     """A cooperative stop reached a safe production boundary."""
