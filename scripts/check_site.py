@@ -107,7 +107,7 @@ def main() -> int:
     check('data-theme="afterlight"' in css, "Light theme styles missing")
     check("prefers-reduced-motion" in css, "Reduced-motion support missing")
     check("@media (max-width:660px)" in css, "Mobile layout support missing")
-    check(".has-js .main-nav" in css, "Progressive enhancement for mobile navigation missing")
+    check(".has-nav-sheet .main-nav" in css, "Progressive enhancement for mobile navigation missing")
     check('aria-label="Afterlight theme"' in html, "Theme toggle needs a stable accessible label")
     check('src="./assets/nav-mark.svg"' in html, "Official brand symbol missing from masthead")
     try:

@@ -373,15 +373,15 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 @media (max-width:900px) {
   /* Without JS, links remain available; with JS, the menu is collapsible. */
   .main-nav {display:flex}
-  .has-js .main-nav {display:none}
-  .has-js .main-nav.is-open {display:flex}
+  .has-nav-sheet .main-nav {display:none}
+  .has-nav-sheet .main-nav.is-open {display:flex}
   .menu-toggle {display:none}
-  .has-js .menu-toggle {display:flex}
+  .has-nav-sheet .menu-toggle {display:flex}
 }
 
 /* UX sprint 01 visual critique: don't clip the typographic band on phones. */
 .light-switch {display:none}
-.has-js .light-switch {display:flex}
+.has-site-controls .light-switch {display:flex}
 @media (max-width:660px) {
   .hero h1 {font-size:clamp(34px,10.5vw,72px)}
   .band-inner {
@@ -1151,4 +1151,118 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 @media(prefers-reduced-motion:reduce){
 .specimen-plane[data-arriving]::after{animation:none;}
 .button-arrow,.under-link span,.editorial-link span,.line-link span,.work-card-link span,.moth-question a span{transform:none!important;transition:none;}
+}
+
+/* Light through the rooms: material has depth; words keep their reading plane. */
+:root {
+  --material-grain: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22180%22%20height%3D%22180%22%3E%3Cfilter%20id%3D%22g%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%22.76%22%20numOctaves%3D%223%22%20stitchTiles%3D%22stitch%22%20seed%3D%224%22%2F%3E%3CfeColorMatrix%20type%3D%22saturate%22%20values%3D%220%22%2F%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D%22linear%22%20slope%3D%22.035%22%2F%3E%3C%2FfeComponentTransfer%3E%3C%2Ffilter%3E%3Cpath%20filter%3D%22url%28%23g%29%22%20d%3D%22M0%200h180v180H0z%22%2F%3E%3C%2Fsvg%3E");
+  --mount-paper: #eeeae0;
+}
+.visual-frame {
+  border-color:#8a7b62;
+  box-shadow:inset 1px 1px #f1eee630,12px 18px 34px -18px #0009,27px 28px 0 -12px #af98701c;
+}
+.visual-window {
+  background:radial-gradient(ellipse at var(--room-light-x) var(--room-light-y),#c4af7b40,transparent 65%),linear-gradient(155deg,#30302a,#101314 76%);
+}
+.visual-window::before {
+  background-image:var(--material-grain),linear-gradient(#d7d1bf08 1px,transparent 1px),linear-gradient(90deg,#d7d1bf08 1px,transparent 1px);
+  background-size:180px 180px,54px 54px,54px 54px;
+}
+.visual-halo { background:radial-gradient(circle,#dfc19532,transparent 68%); }
+.moth-art { filter:drop-shadow(6px 9px 9px #0007); }
+.visual-top,.visual-bottom { background:linear-gradient(135deg,#f1eee608,transparent); }
+.specimen-index { padding:9px 12px;border-left:1px solid #dfc195;background:#101314bf; }
+
+/* The reading room borrows the bone paper, in either surrounding theme. */
+.field-notes-section {
+  --bg:#f1eee6;--surface:#f8f5ed;--surface-2:#e5dfd3;--ink:#202222;
+  --secondary:#4a4a46;--muted:#5d5d55;--line:#1c1f1f4d;--line-soft:#1c1f1f2b;
+  --gold:#907449;--gold-bright:#70542b;
+  color:var(--ink);background:var(--material-grain),radial-gradient(ellipse at var(--room-light-x) 0%,#fff9,transparent 65%),var(--bg);
+  border-bottom:1px solid var(--line);
+}
+.field-notes-section .note-feature { box-shadow:inset 1px 1px #fff,6px 9px 25px -18px #20222245; }
+.field-notes-section .note-feature-copy { border-left:3px solid #907449; }
+.field-notes-section .editorial-art { box-shadow:inset 1px 1px #fff8; }
+.field-notes-section .field-note-routes { padding-top:22px;border-top:1px solid var(--line-soft); }
+
+/* A dark material room, with mounts, specimens and labels at separate depths. */
+.work-section {
+  --bg:#17191b;--surface:#1d2021;--surface-2:#232627;--ink:#f1eee6;
+  --secondary:#c6c0b6;--muted:#b0aa9d;--line:#f1eee63b;--line-soft:#f1eee621;
+  --gold:#af9870;--gold-bright:#dfc195;--paper-edge:#f1eee625;--contact-shadow:#0008;
+  color:var(--ink);background:var(--material-grain),radial-gradient(ellipse at var(--room-light-x) 0%,#b19a7030,transparent 65%),#17191b;
+}
+.work-card { background:linear-gradient(135deg,#f1eee60a,transparent 48%),var(--surface); }
+.work-card-top { background:linear-gradient(135deg,#f1eee609,transparent); }
+.work-card-top span:first-child::before {
+  content:"";display:inline-block;width:7px;height:7px;margin-right:9px;border:1px solid var(--gold-bright);
+  border-radius:50%;transition:background .2s ease,box-shadow .2s ease;
+}
+.work-card:focus-within .work-card-top span:first-child::before { background:var(--gold-bright);box-shadow:0 0 0 3px #dfc19518; }
+.work-section .specimen-plane { background:var(--material-grain),var(--mount-paper);padding:12px; }
+.work-specimen figcaption { border-left:1px solid var(--gold);padding-left:12px; }
+.work-specimen img { transition:transform .24s ease;transform-origin:center; }
+.work-card-content { position:relative;background:linear-gradient(135deg,#f1eee605,transparent 48%); }
+.work-card:focus-within { border-color:var(--gold-bright); }
+@media(hover:hover) and (pointer:fine) {
+  .work-card:hover .work-card-top span:first-child::before { background:var(--gold-bright);box-shadow:0 0 0 3px #dfc19518; }
+  .work-card:hover .specimen-plane img { transform:scale(1.012); }
+}
+@media(prefers-reduced-motion:reduce),(hover:none),(pointer:coarse) {
+  .work-specimen img { transform:none!important;transition:none; }
+}
+
+/* The index opens as an arranged, nonmodal sheet rather than another room. */
+.nav-sheet-heading,.nav-sheet-index,.nav-sheet-hint,.nav-sheet-foot { display:none; }
+.has-nav-sheet .menu-toggle { display:flex;min-height:44px; }
+.has-nav-sheet .header-actions { margin-left:auto;flex-shrink:0; }
+.has-nav-sheet .main-nav.is-open {
+  --ink:#202222;--secondary:#4a4a46;--muted:#5d5d55;--line:#1c1f1f4d;--line-soft:#1c1f1f2b;--gold-bright:#70542b;
+  display:grid;grid-template-columns:1fr 1fr;gap:0 36px;align-items:stretch;
+  position:fixed;top:82px;left:max(54px,calc((100% - 1500px)/2));right:max(54px,calc((100% - 1500px)/2));
+  width:auto;max-height:calc(100svh - 106px);overflow:auto;overscroll-behavior:contain;
+  padding:28px 34px 30px;border:1px solid #907449;color:var(--ink);
+  background:var(--material-grain),linear-gradient(135deg,#faf7ef,#eee8dc);box-shadow:6px 9px 34px -10px #0008;
+  animation:index-arrival .24s cubic-bezier(.16,1,.3,1) both;
+}
+.has-nav-sheet .main-nav.is-open .nav-sheet-heading { display:flex;grid-column:1/-1;align-items:baseline;justify-content:space-between;gap:18px;padding-bottom:24px; }
+.nav-sheet-heading .mono { color:#70542b;font-size:10px; }
+.nav-sheet-heading p { font:italic 30px/1.2 var(--serif);margin:0;color:#202222; }
+.has-nav-sheet .main-nav.is-open>a {
+  display:grid;grid-template-columns:24px 1fr;gap:4px 15px;align-content:center;
+  padding:20px 0;min-height:105px;border-top:1px solid var(--line);border-bottom:0;
+  color:#202222;transition:color .18s ease,background .18s ease;
+}
+.has-nav-sheet .main-nav.is-open .nav-sheet-index { display:block;color:#70542b;padding-top:7px;font-size:10px; }
+.has-nav-sheet .main-nav.is-open .nav-sheet-label { font:900 clamp(28px,3vw,44px)/1.05 var(--sans);letter-spacing:-.045em;text-transform:uppercase; }
+.has-nav-sheet .main-nav.is-open .nav-sheet-hint { display:block;grid-column:2;color:#4a4a46;font:13px/1.5 var(--body);letter-spacing:0; }
+.has-nav-sheet .main-nav.is-open>a:hover,.has-nav-sheet .main-nav.is-open>a:focus-visible { color:#70542b;background:#9074490b; }
+.has-nav-sheet .main-nav.is-open a:focus-visible { outline:2px solid #70542b;outline-offset:4px; }
+.has-nav-sheet .main-nav.is-open .nav-sheet-foot { display:flex;grid-column:1/-1;align-items:center;justify-content:space-between;gap:24px;margin-top:18px;padding-top:22px;border-top:1px solid var(--line); }
+.has-nav-sheet .main-nav.is-open .nav-sheet-invitation { padding:9px 0;min-height:44px;color:#70542b;border-bottom:1px solid #907449;font-size:14px; }
+.nav-sheet-foot p { margin:0;max-width:24ch;color:#5d5d55;font-size:9px; }
+.has-nav-sheet .menu-toggle[aria-expanded="true"] .menu-bars span:first-child { transform:translateY(3px) rotate(45deg); }
+.has-nav-sheet .menu-toggle[aria-expanded="true"] .menu-bars span:last-child { transform:translateY(-3px) rotate(-45deg); }
+.menu-bars span { transition:transform .18s ease; }
+@keyframes index-arrival { from { opacity:0;transform:translateY(-6px); } to { opacity:1;transform:none; } }
+@media(max-width:1100px) {
+  .has-nav-sheet .main-nav:not(.is-open) { display:none; }
+}
+@media(max-width:900px) {
+  .has-nav-sheet .main-nav.is-open { top:72px;max-height:calc(100svh - 96px); }
+}
+@media(max-width:660px) {
+  .has-nav-sheet .main-nav.is-open { left:19px;right:19px;padding:20px;grid-template-columns:1fr;gap:0; }
+  .has-nav-sheet .main-nav.is-open .nav-sheet-heading { display:block;padding-bottom:20px; }
+  .nav-sheet-heading p { margin-top:12px;font-size:28px; }
+  .has-nav-sheet .main-nav.is-open>a { min-height:88px;padding:17px 0; }
+  .has-nav-sheet .main-nav.is-open .nav-sheet-label { font-size:30px; }
+  .has-nav-sheet .main-nav.is-open .nav-sheet-foot { flex-direction:column;align-items:start;gap:14px;margin-top:8px; }
+  .nav-sheet-foot p { max-width:36ch; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .has-nav-sheet .main-nav.is-open { animation:none; }
+  .menu-bars span { transition:none; }
 }
