@@ -4,14 +4,22 @@ function setupPlayer(root) {
   const audio = root.querySelector('audio');
   const speed = root.querySelector('[data-audio-speed]');
   const status = root.querySelector('[data-audio-status]');
+  let defaultRate = playbackRate(audio.dataset.defaultRate ?? DEFAULT_RATE);
+  let userRate = false, lastAppliedRate = defaultRate;
   const applyRate = () => {
     const nativeOption = speed.selectedOptions[0]?.hasAttribute('data-native-rate');
     const rate = nativeOption ? Number(speed.value) : playbackRate(speed.value);
-    const validRate = Number.isFinite(rate) && rate > 0 && rate <= 16 ? rate : DEFAULT_RATE;
+    const validRate = Number.isFinite(rate) && rate > 0 && rate <= 16 ? rate : defaultRate;
+    lastAppliedRate = validRate;
     audio.defaultPlaybackRate = validRate; audio.playbackRate = validRate;
   };
-  speed.value = String(DEFAULT_RATE); applyRate();
+  const setDefaultRate = value => {
+    defaultRate = playbackRate(value ?? DEFAULT_RATE);
+    if (!userRate) { speed.value = String(defaultRate); applyRate(); }
+  };
+  speed.value = String(defaultRate); applyRate();
   audio.addEventListener('ratechange', () => {
+    if (audio.playbackRate !== lastAppliedRate) userRate = true;
     const value = String(audio.playbackRate);
     if (![...speed.options].some(option => option.value === value)) {
       speed.querySelector('[data-native-rate]')?.remove();
@@ -24,7 +32,7 @@ function setupPlayer(root) {
   root.querySelector('[data-audio-default-speed]')?.removeAttribute('hidden');
   const follow = root.querySelector('[data-audio-follow]');
   if (follow) root.querySelector('[data-audio-follow-control]').hidden = false;
-  speed.addEventListener('change', applyRate);
+  speed.addEventListener('change', () => { userRate = true; applyRate(); });
   audio.addEventListener('loadedmetadata', applyRate);
   const session = root.matches('details') ? root : root.querySelector('[data-audio-session]');
   session?.addEventListener('toggle', () => {
@@ -70,7 +78,7 @@ function setupPlayer(root) {
       }
     }
   });
-  return { audio, play, status, applyRate, refreshTranscript };
+  return { audio, play, status, applyRate, setDefaultRate, refreshTranscript };
 }
 
 for (const root of document.querySelectorAll('[data-note-player]')) setupPlayer(root);
@@ -78,7 +86,7 @@ for (const root of document.querySelectorAll('[data-archive-player]')) {
   try {
     const entries = JSON.parse(root.querySelector('[data-queue-data]').textContent);
     if (!Array.isArray(entries) || !entries.length) continue;
-    const { audio, play, status, applyRate, refreshTranscript } = setupPlayer(root);
+    const { audio, play, status, applyRate, setDefaultRate, refreshTranscript } = setupPlayer(root);
     const title = root.querySelector('[data-queue-title]');
     const previous = root.querySelector('[data-queue-previous]');
     const next = root.querySelector('[data-queue-next]');
@@ -137,6 +145,7 @@ for (const root of document.querySelectorAll('[data-archive-player]')) {
     function select(target, start = true) {
       index = target;
       const entry = entries[index];
+      setDefaultRate(entry.defaultRate);
       title.textContent = entry.title; audio.setAttribute('aria-label', entry.title);
       transcript.href = entry.transcript;
       context.textContent = `${entry.label.toUpperCase()} / ${index + 1} OF ${entries.length} · ${entry.duration}`;

@@ -14,8 +14,14 @@ The [Field Notes audio workflow](audio/README.md) covers every published note, a
 
 The [automated production stage](audio/production/README.md) adds reusable intro/outro music,
 finished pacing, retimed subtitles and animated YouTube editions from existing narration.
-`python3 -m field_notes_audio produce note-001` uses local FFmpeg and a pinned Remotion
-template; outputs are cached review artifacts, with no new Cloud jobs or automatic publication.
+`python3 -m field_notes_audio release all` uses local FFmpeg and a pinned Remotion
+template and creates portable upload folders in `artifacts/uploads/<episode>/`, with full
+videos, thumbnails, title/description/tag files and subtitles. Existing media is reused;
+`export all` refreshes publishing copy without rendering. Topic tags are editable in
+`audio/production/publishing.json`. The [ongoing release workflow](audio/production/PUBLISHING.md)
+records listening review and prepares finished website/RSS editions through `promote`.
+Finished editions default to 1× alongside originals at 1.15×. Local production makes
+no Cloud requests; pushing a publication PR and uploading to YouTube remain separate steps.
 
 The site ships readable HTML, local artwork and small progressive enhancements. The homepage includes its relevant styles in the initial response, generated from the authored `docs/assets/site.css`; article-only styles remain in the external stylesheet. Its studio and Field Notes identities are generated from the published catalog; unpublished research stays out of that catalog. Publication stamps are absent from the reading surfaces, while RSS retains publication metadata.
 

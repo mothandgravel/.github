@@ -9,12 +9,15 @@ import shutil
 import subprocess
 import time
 import xml.etree.ElementTree as ET
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib import request
 
 from field_notes_audio import audio, captions, workflow
 from field_notes_audio import site as build_audio
+from field_notes_audio.locks import run_lock
 from field_notes_audio.progress import Timings
 from field_notes_audio.storage import read_object
 
@@ -177,7 +180,22 @@ def sync_catalog() -> list[str]:
     return added
 
 
+@contextmanager
+def collection_lock(root: Path | None = None) -> Iterator[None]:
+    directory = (root or audio.ROOT) / "artifacts/audio"
+    directory.mkdir(parents=True, exist_ok=True)
+    if directory.is_symlink():
+        raise ValueError("Release journals must not be symbolic links")
+    with run_lock(directory, "website/feed publication"):
+        yield
+
+
 def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
+    with collection_lock():
+        return _prepare_publication(completed)
+
+
+def _prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
     root = audio.ROOT
     notes = audio.catalog(root)
     existing_path = root / "docs/assets/audio/episodes.json"
@@ -265,6 +283,21 @@ def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
                 kind: audio.digest(assets[relative]) for kind, relative in files.items()
             },
         }
+        previous = existing.get(episode["id"], {})
+        if previous.get("production") and all(
+            previous["production"]["source"].get(key) == entry.get(key)
+            for key in (
+                "audio_sha256",
+                "script_sha256",
+                "source_sha256",
+                "title",
+                "description",
+                "slug",
+            )
+        ):
+            # Adding another note must not revert reviewed, finished public editions.
+            build_audio.load_entries(root, [previous])
+            entry = previous
         entries.append(entry)
     expected = {n["id"] for n in notes.values()}
     actual = {e["note_id"] for e in entries if e["kind"] == "note"}
@@ -306,9 +339,14 @@ def prepare_publication(completed: list[tuple[dict, Path]]) -> list[dict]:
 
 
 def publish() -> None:
+    with collection_lock():
+        _publish()
+
+
+def _publish() -> None:
     state = release_state()
     if not state.get("files") or state.get("phase") != "complete":
-        raise ValueError("No prepared release. Run make-all first")
+        raise ValueError("No prepared release. Run make-all or reviewed promote first")
     assert_clean_or_prepared()
     build_audio.build(check=True, root=audio.ROOT)
     remote, branch = publication_remote()
@@ -373,7 +411,11 @@ def publish() -> None:
                         "--title",
                         "Publish the Field Notes listening archive",
                         "--body",
-                        "Adds completed AI-narrated recordings, machine-generated subtitles and transcripts, article listening controls, the archive queue and a separate podcast feed. Media hashes and measured durations were validated locally. Transcription remains machine-generated and needs listening review.",
+                        (
+                            "Publishes explicitly reviewed finished audio with retimed captions, transcripts and per-episode playback defaults. Media hashes, durations, original-source provenance and review records were validated locally. Original episode GUIDs and publication dates are retained. Other recordings keep their existing review state."
+                            if state.get("edition") == "finished"
+                            else "Adds completed AI-narrated recordings, machine-generated subtitles and transcripts, article listening controls, the archive queue and a separate podcast feed. Media hashes and measured durations were validated locally. Transcription remains machine-generated and needs listening review."
+                        ),
                     ],
                     cwd=audio.ROOT,
                     capture_output=True,

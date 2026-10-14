@@ -9,7 +9,10 @@ const root = resolve(process.env.AUDIO_AUDIT_ROOT || 'artifacts/audio-site-qa/do
 const output = resolve(process.env.AUDIO_AUDIT_OUTPUT || 'artifacts/audio-site-qa');
 await mkdir(output, {recursive:true});
 const syntheticMedia = root !== resolve('docs');
-const expectedCount = JSON.parse(await readFile(root + '/assets/audio/episodes.json','utf8')).length;
+const manifest = JSON.parse(await readFile(root + '/assets/audio/episodes.json','utf8'));
+const expectedCount = manifest.length;
+const firstRate = manifest.find(entry => entry.id === 'note-001')?.default_playback_rate ?? 1.15;
+const secondRate = manifest.find(entry => entry.id === 'note-002')?.default_playback_rate ?? 1.15;
 const types = {'.html':'text/html', '.css':'text/css', '.js':'text/javascript', '.mjs':'text/javascript', '.svg':'image/svg+xml', '.webp':'image/webp', '.png':'image/png', '.jpg':'image/jpeg', '.mp3':'audio/mpeg', '.vtt':'text/vtt', '.json':'application/json', '.xml':'application/xml', '.txt':'text/plain'};
 const server = createServer(async (req, res) => {
   try {
@@ -48,7 +51,7 @@ try {
     await page.locator('.audio-transcript>summary').click();
     const cue = page.locator('[data-audio-seek]').nth(1); await cue.focus(); await page.keyboard.press('Enter');
     await page.waitForFunction(() => document.querySelector('audio').currentTime >= 1.1 && !document.querySelector('audio').paused);
-    check(await page.locator('audio').evaluate(a => a.playbackRate === 1.15), 'Article default speed is not 1.15');
+    check(await page.locator('audio').evaluate((a, rate) => a.playbackRate === rate, firstRate), 'Article default speed disagrees with its edition');
     await page.waitForFunction(() => document.querySelectorAll('[data-cue-start][aria-current=true]').length === 1);
     await page.locator('audio').evaluate(a => a.pause());
     await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
@@ -64,7 +67,7 @@ try {
     const count = await page.locator('[data-queue-index]').count(); check(count === expectedCount,'Queue lost an episode');
     await page.locator('[data-queue-start]').click();
     await page.waitForFunction(() => !document.querySelector('audio').paused && document.querySelector('audio').readyState >= 2);
-    check(await page.locator('audio').evaluate(a => a.playbackRate === 1.15),'Queue default speed is not 1.15');
+    check(await page.locator('audio').evaluate((a, rate) => a.playbackRate === rate, firstRate),'Queue default speed disagrees with its edition');
     await page.waitForFunction(() => document.querySelector('[data-queue-start]').textContent === 'Pause');
     await page.locator('[data-queue-start]').click();
     check(await page.locator('audio').evaluate(a => a.paused),'Pause action does not pause');
@@ -76,7 +79,16 @@ try {
       throw error;
     });
     await page.waitForFunction(() => !document.querySelector('audio').paused && document.querySelector('audio').readyState >= 2);
-    check(await page.locator('audio').evaluate(a => a.playbackRate === 1.15),'Advancing changed playback speed');
+    check(await page.locator('audio').evaluate((a, rate) => a.playbackRate === rate, secondRate),'Advancing did not apply the next edition default');
+    if (width === 390 && theme === 'night') {
+      await page.locator('[data-queue-previous]').click();
+      await page.waitForFunction(rate => document.querySelector('audio').playbackRate === rate && document.querySelector('audio').readyState >= 2, firstRate);
+      await page.locator('[data-audio-speed]').selectOption('1.25');
+      await page.locator('[data-queue-next]').click();
+      await page.waitForFunction(() => document.querySelector('audio').readyState >= 2);
+      check(await page.locator('audio').evaluate(a => a.playbackRate === 1.25),'Episode default replaced the listener speed choice');
+      await page.locator('[data-audio-speed]').selectOption(String(secondRate));
+    }
     await page.locator('[data-queue-auto]').uncheck();
     await page.locator('[data-queue-transcript-panel]>summary').click();
     await page.waitForSelector('[data-queue-cues] [data-audio-seek]');
@@ -132,7 +144,7 @@ try {
     await page.screenshot({path:output + `/archive-${width}-${theme}.png`,fullPage:true});
     await page.locator('.archive-session>summary').click();
     await page.waitForFunction(() => document.querySelector('audio').paused);
-    reports.push({width,theme,articleDefaultRate:1.15,queueDefaultRate:1.15,actualPlayback:true,keyboardSeek:true,autoAdvance:true,stopAtEnd:true,violations,archiveViolations,overflow,archiveOverflow,errors});
+    reports.push({width,theme,articleDefaultRate:firstRate,queueDefaultRate:firstRate,nextDefaultRate:secondRate,actualPlayback:true,keyboardSeek:true,autoAdvance:true,stopAtEnd:true,violations,archiveViolations,overflow,archiveOverflow,errors});
     await page.close();
   }
   const nojs = await browser.newPage({javaScriptEnabled:false,viewport:{width:390,height:900}});
@@ -150,5 +162,5 @@ try {
   const feed = await (await nojs.request.get(base + '/notes/podcast.xml')).text();
   check((feed.match(/<enclosure /g)||[]).length === expectedCount,'Podcast feed lost completed episodes');
   await writeFile(output + '/browser.json',JSON.stringify({syntheticMedia,reports,noJavaScript:true,podcastEnclosures:expectedCount},null,2)+'\n');
-  console.log(`PASS: article players and archive queue, 320/390/1440px, both themes, keyboard, native playback, timed transcripts, 1.15×, no JavaScript and zero axe violations. ${syntheticMedia ? 'Synthetic clips.' : 'Real published recordings.'}`);
+  console.log(`PASS: article players and archive queue, 320/390/1440px, both themes, keyboard, native playback, timed transcripts, edition defaults ${firstRate}×/${secondRate}×, no JavaScript and zero axe violations. ${syntheticMedia ? 'Synthetic clips.' : 'Real published recordings.'}`);
 } finally { await browser.close(); await new Promise(resolve => server.close(resolve)); }

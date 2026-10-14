@@ -7,6 +7,9 @@ transcription job, paid video generation or upload is involved.
 # Once, for video rendering (Node 22+)
 npm ci --prefix video
 
+# Complete full episodes and clearly named YouTube upload folders
+python3 -m field_notes_audio release all
+
 # Finished MP3, WAV master, SRT/VTT, transcript, MP4, thumbnail and description
 python3 -m field_notes_audio produce note-001
 
@@ -153,14 +156,26 @@ individuals and organizations of up to three people.
 
 ## Review and publication
 
+See the [release workflow](PUBLISHING.md) for title/description/tag files,
+portable upload folders, human review and promotion of finished audio to the
+website and podcast RSS. Topic tags live in `audio/production/publishing.json`.
+
+```bash
+python3 -m field_notes_audio release all  # Finish and package full episodes
+python3 -m field_notes_audio export all   # Refresh upload copy without rendering
+python3 -m field_notes_audio review note-001 --approve --reviewer "Perttu"
+python3 -m field_notes_audio promote note-001  # Prepare reviewed website/RSS changes
+python3 -m field_notes_audio publish           # Push a publication PR branch
+```
+
 Listen to the opening, transition, pronunciation, captions and ending before
 approval. Every new edition starts with review status `pending`.
 
-`produce` does **not** replace public recordings, rebuild the podcast feed, push
+`produce`, `release` and `export` do **not** replace public recordings, rebuild the podcast feed, push
 Git changes or upload to YouTube. Public listening still uses the original
 recordings and a web default of 1.15×. Finished MP3s have that pace baked in and
-should start at 1×. Website publication must update the playback default, media
-manifest and timed transcript together.
+should start at 1×. Reviewed `promote` updates the playback default, media manifest
+and timed transcript together; `publish` pushes those prepared changes.
 
 For custom YouTube visuals, upload the full `episode.mp4` to the podcast playlist,
 upload `thumbnail.png` and `captions.srt`, and copy `description.txt` with credits.

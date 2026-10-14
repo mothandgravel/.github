@@ -76,6 +76,13 @@ jobs:
         run: python3 -m tests.audio.test_release --browser-fixture artifacts/audio-site-qa/docs
       - name: Verify listening, subtitles, queue and accessibility across both themes
         run: node scripts/audit_audio.mjs
+      - name: Build a synthetic reviewed finished edition beside original recordings
+        run: python3 -m tests.audio.test_production_release --browser-fixture artifacts/audio-finished-qa/docs
+      - name: Verify mixed 1×/1.15× defaults and persistent listener speed choices
+        env:
+          AUDIO_AUDIT_ROOT: artifacts/audio-finished-qa/docs
+          AUDIO_AUDIT_OUTPUT: artifacts/audio-finished-qa
+        run: node scripts/audit_audio.mjs
       - name: Preserve listening interface checks
         if: always()
         uses: actions/upload-artifact@v4
@@ -84,5 +91,7 @@ jobs:
           path: |
             artifacts/audio-site-qa/browser.json
             artifacts/audio-site-qa/*.png
+            artifacts/audio-finished-qa/browser.json
+            artifacts/audio-finished-qa/*.png
           retention-days: 14
 

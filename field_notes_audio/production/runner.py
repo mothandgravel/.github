@@ -62,7 +62,16 @@ def produce_video(
         raise ValueError("Production video directories must not be symbolic links")
     parent.mkdir(exist_ok=True)
     destination = parent / identity[:16]
+    provenance = {
+        "audio_fingerprint": read_object(edition / "production.json")["fingerprint"],
+        "master_sha256": digest_file(edition / "master.wav"),
+        "cues_sha256": digest_file(edition / "cues.json"),
+    }
     if cache_valid(destination, identity, VIDEO_FILES):
+        # Adopt existing validated renders without changing their identity or media bytes.
+        saved = read_object(destination / "production.json")
+        if any(saved.get(key) != value for key, value in provenance.items()):
+            write_json(destination / "production.json", {**saved, **provenance})
         print(f"{entry['id']}: video and thumbnail reused.", flush=True)
         return destination
     print(
@@ -95,6 +104,7 @@ def produce_video(
                 "fingerprint": identity,
                 "review_status": "pending",
                 "preview_seconds": args.preview_seconds,
+                **provenance,
             },
             VIDEO_FILES,
         )
@@ -116,7 +126,7 @@ def produce(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
         for name in ("docs", "audio", "field_notes_audio", "video", ".git")
     ):
         raise ValueError("Production output must be separate from source and published assets")
-    entries = site.load_entries(root)
+    entries = [site.source_entry(entry) for entry in site.load_entries(root)]
     selected = entries if args.episode == "all" else [e for e in entries if e["id"] == args.episode]
     if not selected:
         raise ValueError(
@@ -230,9 +240,22 @@ def update_latest(
 
 
 def add_arguments(commands: argparse._SubParsersAction) -> None:
-    command = commands.add_parser(
-        "produce", help="Finish existing narration and render a reusable video edition locally"
-    )
+    for name in ("produce", "release"):
+        command = commands.add_parser(
+            name,
+            help="Finish local editions"
+            if name == "produce"
+            else "Finish full editions and prepare portable YouTube upload folders",
+        )
+        production_arguments(command)
+        if name == "release":
+            command.add_argument("--metadata", type=Path, help="Editable publishing copy")
+            command.add_argument(
+                "--upload-dir", type=Path, help="Portable folders; defaults to artifacts/uploads"
+            )
+
+
+def production_arguments(command: argparse.ArgumentParser) -> None:
     command.add_argument("episode", help="Published episode ID, or all")
     command.add_argument(
         "--audio-only",
