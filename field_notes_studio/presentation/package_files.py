@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from field_notes_studio.presentation.controls import ActionButton
+from field_notes_studio.presentation.theme import MUTED, PAPER, SUCCESS, WARNING, set_text
 
 
 def size_text(value):
@@ -19,13 +20,26 @@ class PackageFiles(ttk.Frame):
         self.snapshot = None
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
-        self.summary = ttk.Label(
-            self,
-            text="Check the saved upload package to see its files.",
-            wraplength=540,
-            style="Muted.TLabel",
+        status = ttk.Frame(self)
+        status.columnconfigure(0, weight=1)
+        status.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 6))
+        self.summary = tk.Text(
+            status,
+            height=2,
+            width=1,
+            wrap="word",
+            padx=0,
+            pady=1,
+            borderwidth=0,
+            highlightthickness=0,
+            background=PAPER,
+            foreground=MUTED,
+            state="disabled",
         )
-        self.summary.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 6))
+        self.summary.grid(row=0, column=0, sticky="ew")
+        status_scroll = ttk.Scrollbar(status, command=self.summary.yview)
+        status_scroll.grid(row=0, column=1, sticky="ns")
+        self.summary.configure(yscrollcommand=status_scroll.set)
         self.tree = ttk.Treeview(
             self,
             columns=("purpose", "name", "size"),
@@ -84,12 +98,19 @@ class PackageFiles(ttk.Frame):
         )
         self.refresh.pack(side="right")
         self.path = tk.StringVar()
-        ttk.Entry(self, textvariable=self.path, state="readonly").grid(
-            row=3, column=0, columnspan=2, sticky="ew"
-        )
-        self.bind(
-            "<Configure>", lambda e: self.summary.configure(wraplength=max(200, e.width - 24))
-        )
+        self.path_entry = ttk.Entry(self, textvariable=self.path, state="readonly")
+        self.path_entry.grid(row=3, column=0, columnspan=2, sticky="ew")
+        self.bind("<Configure>", self.resize)
+
+    def resize(self, event):
+        if event.height < 240:
+            self.path_entry.grid_remove()
+        else:
+            self.path_entry.grid()
+
+    def error(self, message):
+        set_text(self.summary, message)
+        self.summary.configure(foreground=WARNING)
 
     def selection(self):
         selected = self.tree.selection()
@@ -103,6 +124,7 @@ class PackageFiles(ttk.Frame):
             else None
         )
         self.path.set(asset.path if asset else "")
+        self.open.reset_feedback()
         self.copy.reset_feedback()
         self.folder.configure(
             state="normal" if self.snapshot and self.snapshot.identity else "disabled"
@@ -110,10 +132,19 @@ class PackageFiles(ttk.Frame):
         for button in (self.open, self.copy):
             button.configure(state="normal" if asset else "disabled")
 
+    def working(self, action):
+        self.selected()
+        for button in (self.open, self.copy):
+            button.configure(state="disabled")
+        (self.open if action == "open" else self.copy).configure(
+            text="Opening…" if action == "open" else "Copying…"
+        )
+
     def clear(self, message="Check the saved upload package to see its files.", *, loading=False):
         self.snapshot = None
         self.tree.delete(*self.tree.get_children())
-        self.summary.configure(text=message, style="Muted.TLabel")
+        set_text(self.summary, message)
+        self.summary.configure(foreground=MUTED)
         self.selected()
         self.refresh.configure(
             text="Checking…" if loading else "Check files",
@@ -129,11 +160,11 @@ class PackageFiles(ttk.Frame):
         self.clear(snapshot.summary)
         self.snapshot = snapshot
         self.summary.configure(
-            style="Success.TLabel"
+            foreground=SUCCESS
             if snapshot.status == "ready"
-            else "Muted.TLabel"
+            else MUTED
             if snapshot.status == "missing"
-            else "Draft.TLabel"
+            else WARNING
         )
         for asset in snapshot.files:
             self.tree.insert(
@@ -148,6 +179,7 @@ class PackageFiles(ttk.Frame):
         self.selected()
 
     def copied(self, path):
+        self.selected()
         self.clipboard_clear()
         self.clipboard_append(path)
         self.path.set(path)

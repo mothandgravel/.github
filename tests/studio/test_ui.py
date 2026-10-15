@@ -541,7 +541,7 @@ class UITests(unittest.TestCase):
         self.assertEqual(files.snapshot.status, "missing")
         self.assertTrue(files.open.instate(["disabled"]))
         self.assertTrue(files.copy.instate(["disabled"]))
-        self.assertIn("Inspect package", files.summary["text"])
+        self.assertIn("Inspect package", files.summary.get("1.0", "end"))
 
     def test_package_file_actions_copy_picker_path_and_reset_for_another_asset(self):
         files = self.show_package_files()
@@ -571,6 +571,8 @@ class UITests(unittest.TestCase):
             callback
         )
         files.copy.invoke()
+        self.assertTrue(files.copy.instate(["disabled"]))
+        self.assertTrue(files.open.instate(["disabled"]))
         files.tree.selection_set("thumbnail.png")
         files.selected()
         pending.pop(0)("Old video path")
@@ -589,8 +591,9 @@ class UITests(unittest.TestCase):
             side_effect=ValueError("Package changed. Check files again."),
         ):
             files.copy.invoke()
-            self.wait(lambda: "Package changed" in files.summary["text"])
+            self.wait(lambda: "Package changed" in files.summary.get("1.0", "end"))
         self.assertNotEqual(files.copy["text"], "Path copied")
+        self.assertFalse(files.copy.instate(["disabled"]))
         self.assertFalse(files.refresh.instate(["disabled"]))
 
     def test_package_files_actions_fit_minimum_window_with_an_active_queue(self):
@@ -602,4 +605,7 @@ class UITests(unittest.TestCase):
         for widget in (files.open, files.copy, files.folder, files.refresh):
             self.assert_visible(widget)
         self.assertTrue(files.tree.bbox("episode.mp4"))
+        _, y, _, height = files.tree.bbox("episode.mp4")
+        self.assertLessEqual(y + height, files.tree.winfo_height())
+        self.assertFalse(files.path_entry.winfo_ismapped())
         self.capture("release-package-files")

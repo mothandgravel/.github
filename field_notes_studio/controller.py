@@ -227,17 +227,31 @@ class Controller:
         snapshot, name = files.snapshot, files.selection()
         if snapshot and name:
             generation = self.package_generation
+            files.working("open")
+
+            def opened(_):
+                if (
+                    generation == self.package_generation
+                    and files.snapshot == snapshot
+                    and files.selection() == name
+                ):
+                    files.selected()
+
             self.task(
                 lambda: self.studio.open_package_file(snapshot, name),
-                lambda _: None,
-                lambda message: self.package_action_failed(generation, snapshot, message),
+                opened,
+                lambda message: self.package_action_failed(generation, snapshot, name, message),
             )
 
-    def package_action_failed(self, generation, snapshot, message):
+    def package_action_failed(self, generation, snapshot, name, message):
         files = self.view.workspace.publication.files
-        if generation == self.package_generation and files.snapshot == snapshot:
-            files.summary.configure(text=message, style="Draft.TLabel")
-            files.copy.reset_feedback()
+        if (
+            generation == self.package_generation
+            and files.snapshot == snapshot
+            and files.selection() == name
+        ):
+            files.selected()
+            files.error(message)
 
     def copy_package_path(self):
         files = self.view.workspace.publication.files
@@ -245,6 +259,7 @@ class Controller:
         generation = self.package_generation
         if not snapshot or not name:
             return
+        files.working("copy")
 
         def copied(path):
             if (
@@ -258,7 +273,7 @@ class Controller:
         self.task(
             lambda: self.studio.package_upload_path(snapshot, name),
             copied,
-            lambda message: self.package_action_failed(generation, snapshot, message),
+            lambda message: self.package_action_failed(generation, snapshot, name, message),
         )
 
     def release_review(self):
