@@ -28,18 +28,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Capture exact tracked sources for offline reproduction
-        run: |
-          mkdir -p artifacts/studio-source
-          git archive --format=tar.gz -o artifacts/studio-source/source.tar.gz HEAD
-          git rev-parse HEAD > artifacts/studio-source/commit.txt
-          python -m pip download --no-deps --dest artifacts/studio-source ruff==0.12.12
-      - name: Preserve reproducible source snapshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: studio-source
-          path: artifacts/studio-source/*
-          retention-days: 7
       - name: Install local media and desktop test tools
         run: sudo apt-get update && sudo apt-get install -y ffmpeg python3-tk xvfb
       - name: Install the pinned Python quality tool
