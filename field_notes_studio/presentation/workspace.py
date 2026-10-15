@@ -88,7 +88,7 @@ class Workspace(ttk.Frame):
         self.guidance.grid(row=4, column=0, sticky="w", pady=(0, 10))
         self.action.trace_add("write", lambda *_: self.output_guidance())
         self.output_guidance()
-        tabs = self.tabs = ttk.Notebook(self)
+        tabs = self.tabs = ttk.Notebook(self, style="Workspace.TNotebook")
         tabs.grid(row=5, column=0, sticky="nsew")
         self.plan = self._text_tab(tabs, "Produce")
         self.review = Review(tabs, callbacks)
@@ -102,7 +102,7 @@ class Workspace(ttk.Frame):
             callbacks["changed"],
             "Pace and outro are in Produce. Inspect changes before queueing. Custom music needs a file and license credit.",
         )
-        tabs.add(self.sound, text="Sound")
+        tabs.add(self.sound, text="Audio")
         self.batch = Batch(
             tabs, callbacks["batch_inspect"], callbacks["batch_submit"], callbacks["batch_changed"]
         )
@@ -119,6 +119,9 @@ class Workspace(ttk.Frame):
             (self.review, "review"),
             (self.publication, "package"),
             (self.transcript.master, "transcript"),
+            (self.sound, "audio"),
+            (self.batch, "batch"),
+            (self.health.master, "health"),
         ):
             tabs.tab(
                 tab,
@@ -267,8 +270,12 @@ class Workspace(ttk.Frame):
             "export": "Export → package the saved full edition with title, description, tags and subtitles.",
         }
         self.guidance.configure(
-            text="Produce episode: audio + captions + full video + thumbnail. Review before export.\n"
-            "Optional inspected output: " + messages[self.action.get()]
+            text=(
+                "Full episode: audio, subtitles, full video and thumbnail. Review once before export."
+                if self.action.get() == "video"
+                else "Produce episode includes audio + video. Optional output: "
+                + messages[self.action.get()]
+            )
         )
         state = "disabled" if self.action.get() == "export" else "normal"
         self.speed_control.configure(state=state)
@@ -289,7 +296,8 @@ class Workspace(ttk.Frame):
             self.publication
         ) and self.publication.tabs.select() == str(self.publication.editor)
         if (
-            health
+            producing
+            or health
             or release_editor
             or self.tabs.select() == str(self.review)
             or self.tabs.select() in {str(self.sound), str(self.batch)}

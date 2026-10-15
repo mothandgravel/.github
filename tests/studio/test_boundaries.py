@@ -16,6 +16,7 @@ class BoundaryTests(unittest.TestCase):
                     "controller.py",
                     "production_flow.py",
                     "job_history.py",
+                    "job_progress.py",
                     "service.py",
                     "models.py",
                     "repository.py",

@@ -5,17 +5,18 @@ from tkinter import ttk
 
 from field_notes_studio.job_history import resolved_failures
 from field_notes_studio.presentation.controls import ActionButton
+from field_notes_studio.presentation.progress import ProgressStrip
 from field_notes_studio.presentation.theme import SUCCESS, WARNING, set_text
 
 
 class ProductionQueue(ttk.Frame):
     def __init__(self, parent, stop, retry, select, history, open_result, review):
-        super().__init__(parent, padding=(0, 16, 0, 0))
+        super().__init__(parent, padding=(0, 8, 0, 0))
         self.jobs = {}
         self.resolved = set()
         self.production_busy = False
         heading = ttk.Frame(self)
-        heading.pack(fill="x", pady=(0, 8))
+        heading.pack(fill="x", pady=(0, 4))
         heading.columnconfigure(0, weight=1)
         self.summary = ttk.Label(
             heading, text="Queue · no jobs yet", style="Muted.TLabel", wraplength=240
@@ -65,6 +66,7 @@ class ProductionQueue(ttk.Frame):
         self.tree.tag_configure("complete", foreground=SUCCESS)
 
         def selected(_event):
+            self.progress.clear()
             self.update_controls()
             select()
 
@@ -75,7 +77,8 @@ class ProductionQueue(ttk.Frame):
             style="Muted.TLabel",
             wraplength=1050,
         )
-        self.detail.pack(anchor="w", pady=8)
+        self.detail.pack(anchor="w", pady=(4, 2))
+        self.progress = ProgressStrip(self)
 
     def production_working(self, value):
         self.production_busy = value
@@ -156,8 +159,11 @@ class ProductionQueue(ttk.Frame):
                 )
             if not self.region.winfo_manager():
                 self.region.pack(fill="x", before=self.detail)
+                self.progress.pack(fill="x", before=self.detail, pady=(5, 0))
         else:
             self.region.pack_forget()
+            self.progress.pack_forget()
+            self.progress.clear()
             self.detail.configure(
                 text="Inspect an episode's changes to start production. Jobs will appear here."
             )
@@ -208,7 +214,13 @@ class ProductionQueue(ttk.Frame):
                 status, stage = "Earlier attempt", "Later attempt completed"
             values = (
                 job.episode,
-                "Prepare recording" if job.action == "prepare" else job.action,
+                {
+                    "prepare": "Prepare recording",
+                    "video": "Full episode",
+                    "audio": "Audio only",
+                    "preview": "Video preview",
+                    "export": "Export package",
+                }.get(job.action, job.action),
                 status,
                 stage,
             )

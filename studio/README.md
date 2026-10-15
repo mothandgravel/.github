@@ -276,7 +276,7 @@ paths in your browser. External players and the browser handoff depend on the de
 
 ## Sound and publishing editors
 
-**Sound** exposes intro, music overlap, music level, loudness, peak ceiling, music
+**Audio** exposes intro, music overlap, music level, loudness, peak ceiling, music
 mode, custom file selection and music credit/license. Pace and outro stay in Produce.
 Inspection uses the production engine's shared validation, including numeric ranges
 and custom-music requirements. Jobs capture the complete recipe; later edits cannot
@@ -368,3 +368,12 @@ and queues one full audio/video edition. It never approves or publishes media.
 The preparation window's **Open in production** is navigation only. See [preparation and recovery](preparation.md)
 and the [operator-observation record](usability-rehearsal.md), including the explicit
 consent required to resend a receipt-bound uncertain narration request.
+
+
+## Job progress and tab navigation
+
+[Progress design and podcast-tool comparison](progress-ux-research.md) documents the
+new Saved / Working / Waiting / Next milestones, evidence boundaries and next ideas.
+Select a queue job to see its audio/video or narration/caption stages. A saved job
+is not a fresh artifact check or a publication confirmation. Audio (previously Sound),
+Batch and Health now have labelled, desktop-scaled pictograms like the other tabs.

@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 
+from field_notes_studio.job_progress import progress_for
 from field_notes_studio.models import DraftConflict
 from field_notes_studio.processes import launch_worker
 from field_notes_studio.production_flow import ProductionFlow
@@ -138,7 +139,7 @@ class Controller:
         self.view.shelf.load(episodes)
         self.view.workspace.batch.load(episodes)
         self.view.status(
-            "Choose an episode → inspect changes → queue production → review saved media."
+            "Produce episode → Review once → Export package → Upload manually."
             if episodes
             else "No prepared recordings yet. Use Find / prepare a written note to start narration and captions."
         )
@@ -746,10 +747,9 @@ class Controller:
                 if job.stage in {"failed", "interrupted", "cancelled"} and meaningful
                 else job.stage
             )
-            if (
-                job.action == "prepare"
-                and job.status == "running"
-                and re.fullmatch(r"narration-\d+-of-\d+", at)
+            if job.status == "running" and (
+                re.fullmatch(r"narration-\d+-of-\d+", at)
+                or at in {"audio", "video", "captions", "export"}
             ):
                 started = next((e["time"] for e in reversed(events) if e["stage"] == at), None)
                 try:
@@ -768,12 +768,28 @@ class Controller:
                     if elapsed is not None
                     else ""
                 )
-                guidance = (
-                    "Waiting for narration response" + waiting + "; provider progress unavailable."
-                )
+                if job.action == "prepare":
+                    activity = (
+                        "Waiting for caption response"
+                        if at == "captions"
+                        else "Waiting for narration response"
+                    )
+                    guidance = activity + waiting + "; provider progress unavailable."
+                else:
+                    activity = {
+                        "audio": "Finishing audio and captions",
+                        "video": "Rendering video",
+                        "export": "Checking and exporting files",
+                    }.get(at, "Working")
+                    guidance = activity + waiting + "; completion estimate unavailable."
             if job.cancel_requested and job.status in {"queued", "running"}:
                 guidance = "Stop requested; the current stage finishes its writes before stopping."
-            context = f"{job.episode} · {at}"
+            milestones = progress_for(
+                job, events, historical=job.identifier in getattr(self.view.jobs, "resolved", set())
+            )
+            if hasattr(self.view.jobs, "progress"):
+                self.view.jobs.progress.show(milestones)
+            context = f"{job.episode} · {milestones.title}"
             if job.action != "prepare":
                 settings = json.loads(job.request).get("settings", {})
                 recipe = (
@@ -782,7 +798,25 @@ class Controller:
                     else f"{settings.get('speed', '—')}× pace · {settings.get('outro_seconds', '—')}s outro"
                 )
                 context += " · " + recipe
+            if job.status == "succeeded":
+                guidance = milestones.next_step
+                review = self.view.workspace.review.snapshot
+                if (
+                    job.action == "video"
+                    and job.episode == self.selected
+                    and review
+                    and review.identity
+                    and review.approved
+                    and review.full_video
+                    and review.video
+                    and job.result
+                    and Path(review.video).parent == Path(job.result)
+                ):
+                    guidance = "This full episode already has saved approval. Next: inspect/export its package. Nothing was published by this job."
             reason = job.error or result or last
+            if job.status in {"failed", "interrupted", "cancelled"}:
+                # Keep the exact diagnostic stage accessible beside the readable milestones.
+                reason = f"{at}: {reason}"
             if len(reason) > 260:
                 reason = reason[:257].rsplit(" ", 1)[0] + "… Full details in History."
             self.view.jobs.detail.configure(text=f"{context} · {guidance}\n{reason}")

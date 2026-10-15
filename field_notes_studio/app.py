@@ -29,7 +29,7 @@ class Application:
         root.title("Moth & Gravel · Production studio")
         root.geometry("1280x920")
         root.minsize(1050, 760)
-        main = ttk.Frame(root, padding=(24, 18))
+        main = ttk.Frame(root, padding=(24, 12))
         main.pack(fill="both", expand=True)
         main.columnconfigure(0, weight=1)
         main.rowconfigure(2, weight=1)
@@ -37,12 +37,12 @@ class Application:
             row=0, column=0, sticky="w"
         )
         ttk.Label(main, text="Production studio", style="Studio.TLabel").grid(
-            row=1, column=0, sticky="w", pady=(4, 16)
+            row=1, column=0, sticky="w", pady=(4, 8)
         )
         self.prepare_button = ttk.Button(
             main, text="Prepare new notes…", command=self.open_preparation
         )
-        self.prepare_button.grid(row=1, column=0, sticky="e", pady=(4, 16))
+        self.prepare_button.grid(row=1, column=0, sticky="e", pady=(4, 8))
         self.controller = Controller(Studio(directory), self)
         body = ttk.Panedwindow(main, orient="horizontal")
         body.grid(row=2, column=0, sticky="nsew")

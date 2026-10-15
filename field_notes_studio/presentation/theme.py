@@ -109,6 +109,8 @@ def apply(root) -> None:
         lightcolor=[("selected", DARK)],
         darkcolor=[("selected", DARK)],
     )
+    # Seven labelled tabs must fit beside the shelf at the minimum window size.
+    style.configure("Workspace.TNotebook.Tab", padding=(8, 7))
     style.configure("TSeparator", background=LINE)
     style.configure(
         "TScrollbar",
