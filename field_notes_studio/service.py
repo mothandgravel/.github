@@ -79,6 +79,10 @@ class Studio:
             raise ValueError("Only failed, interrupted or stopped jobs can be retried")
         request = json.loads(job.request)
         if job.action == "prepare":
+            if request.get("uncertain_chunks"):
+                raise ValueError(
+                    "Inspect preparation recovery again. A previous resend authorization cannot authorize another attempt."
+                )
             PreparationJobs(self.root).validate(request)
             if job.status == "waiting":
                 launch_worker(self.root)

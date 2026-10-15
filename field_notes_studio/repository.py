@@ -140,7 +140,7 @@ class Repository:
         """Call only while holding the exclusive worker lock; never infer success."""
         with self.connection() as db:
             db.execute(
-                "UPDATE jobs SET status='interrupted', stage='interrupted', "
+                "UPDATE jobs SET status='interrupted', "
                 "error='Worker stopped before recording a result. Inspect outputs or retry.' "
                 "WHERE status='running'"
             )
@@ -181,8 +181,8 @@ class Repository:
             raise ValueError("A job must finish in a terminal state")
         with self.connection() as db:
             db.execute(
-                "UPDATE jobs SET status=?,stage=?,error=?,result=? WHERE identifier=?",
-                (status, status, error, result, identifier),
+                "UPDATE jobs SET status=?,stage=CASE WHEN ?='succeeded' THEN ? ELSE stage END,error=?,result=? WHERE identifier=?",
+                (status, status, status, error, result, identifier),
             )
             db.execute(
                 "INSERT INTO events(job,time,stage,message) VALUES(?,?,?,?)",
@@ -277,6 +277,18 @@ class Repository:
                 raise ValueError("Only running preparation work can await captions")
             request = json.loads(row[0])
             if receipt is not None:
+                used = request.pop("uncertain_chunks", None)
+                if used:
+                    db.execute(
+                        "INSERT INTO events(job,time,stage,message) VALUES(?,?,?,?)",
+                        (
+                            identifier,
+                            timestamp(),
+                            "recovery-consumed",
+                            "Narration recovery authorizations consumed: "
+                            + json.dumps(used, sort_keys=True),
+                        ),
+                    )
                 request["resume"] = receipt
             db.execute(
                 "UPDATE jobs SET status='waiting',stage='captions-waiting',error=?,request=? WHERE identifier=?",

@@ -1,6 +1,6 @@
 # Prepare a written note
 
-Open **Prepare new notes…** in the Studio header. Written notes appear before
+Open **Find / prepare a written note…** beside the main **Prepared recordings** search, or **Prepare new notes…** in the Studio header. The written-note window has its own title/number search and shows the newest notes first. Written notes appear before
 recordings exist. Select a note, inspect its saved script and requests, explicitly
 authorize the Cloud work, and queue preparation. Follow the job in Studio's main
 queue. Closing either window does not cancel a persisted job or stop the worker.
@@ -26,8 +26,14 @@ notes, refreshing, another inspection or an error. **Queue preparation** require
 both a current executable inspection and explicit authorization. Concurrent
 windows cannot queue duplicate work for an active or waiting episode.
 
-Setup must already have been completed explicitly on this machine using the
-existing CLI. When necessary, in the same checkout:
+Setup is local to the checkout, not its Git branch. A missing setup message shows
+the exact expected path. To reuse a previous production checkout, choose **Import
+existing setup…**, select its `artifacts/audio/settings.json`, review the project,
+bucket and regions, then confirm. This is local-only: no authentication, Cloud
+setup or service request. It never overwrites existing settings, copies unrelated
+keys/tokens or moves media caches/receipts. Cancel leaves the checkout unchanged.
+
+Without a valid existing setup, use the explicit CLI setup. When necessary, in the same checkout:
 
 ```bash
 python3 -m field_notes_audio setup --project YOUR_PROJECT_ID
@@ -74,7 +80,7 @@ state merely to make a retry proceed.
 | --- | --- |
 | Queued / Working | The captured job is durable. **Stop** requests a safe-boundary stop; it does not interrupt an in-flight transactional media write. |
 | Awaiting captions | The bounded wait ended while the saved Cloud operation was still running. Choose **Resume** to poll that operation. Studio does not poll it indefinitely or call synthesis again. |
-| Failed / Interrupted / Stopped | Read the history before **Retry**. A retry preserves captured inputs and reuses verifiable completed work. Uncertain requests still block. |
+| Failed / Interrupted / Stopped | Read the visible error and choose **Inspect recovery** to open the same written note. Inspect its saved requests; normal authorization cannot silently resend an uncertain request. |
 | Complete | A checked private recording is available to production. It is not human-reviewed, uploaded to a publishing destination or publicly released. |
 
 **Resume** preserves the same job ID and journals the action. Its saved receipt
@@ -88,6 +94,27 @@ interrupted, never inferred success; a waiting job stays waiting.
 A successful atomic adoption wins over a late stop request. Stop requests that
 arrive earlier preserve finished narration/caption caches. Closing a window does
 not restore authorization checkboxes or manufacture a media approval.
+
+## Uncertain narration recovery
+
+An uncertain chunk has no confirmed local result. This does not establish whether
+the service processed or billed it. **Do not delete receipts, reset the run or
+change its model merely to remove the block.**
+
+Choose **Inspect recovery** on the failed job, then **Inspect script · no service
+request**. The recovery reason and available structured diagnostic appear first.
+The project and bucket remain visible. When recovery is offered, read its scope,
+check the general Cloud authorization and separately confirm **Also resend the
+uncertain chunk(s); I accept possible duplicate charges**. Only then does **Queue
+recovery** enable. Declining either confirmation sends nothing.
+
+This resends only uncertain receipts that still match the inspection, reuses
+verified completed chunks and proceeds with other missing work. A changed or
+deleted receipt blocks the action. A second uncertain attempt requires fresh
+inspection and consent; the previous consent cannot authorize another send. The
+old diagnostic is retained under `recovery-<chunk>-<receipt-hash>.json`. Caption
+uncertainty is not included in narration resend consent; its existing operation
+checks and separate recovery requirements remain unchanged.
 
 ## Private handoff, not publication
 
@@ -108,7 +135,7 @@ rather than being silently replaced by local preparation.
 A completed job refreshes the main shelf without reloading another selected
 episode's unfinished controls, publication draft, filter or batch choices. **Open
 prepared files** opens the selected job's saved folder. The new episode can then
-use ordinary **Produce → Review → Release**. Its public-link/date defaults are
+use **Open in production** in written-note discovery or **Produce episode** on its completed queue row, followed by ordinary **Produce → Review → Release**. These navigation actions do not queue production or approve media. Its public-link/date defaults are
 empty. Human approval remains attached to the exact saved finished media, not the
 preparation job. YouTube handoff and recording the actual destination remain
 explicit actions. The existing public `promote` command remains scoped to entries
@@ -130,9 +157,14 @@ For **The work outlives the window**, record the current note/episode identity;
 inspect and authorize its real narration; check the actual captions; produce and
 listen/watch the finished edition; explicitly approve the exact media; export;
 inspect the package; complete the browser handoff; and record the real destination.
-**That human/live-service rehearsal is still pending.**
+**The first operator attempt reached narration, then stopped with one of three
+cache records complete and chunk 2 uncertain. The full rehearsal is not complete.**
+See the observation record below; the original failure cause is not established
+by that offline inspection.
 
-Creating/editing a missing narration script, a guided uncertain-request recovery
+Creating/editing a missing narration script, a guided uncertain-caption recovery
 editor, collection-wide readiness, destination-specific release histories and
 backup/restore remain separate follow-ups. An absent script is shown with guidance,
 not silently generated or approved.
+
+See [the first-run usability observations and regression cases](usability-rehearsal.md).

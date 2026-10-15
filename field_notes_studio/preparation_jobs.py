@@ -4,18 +4,18 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import shutil
 from dataclasses import replace
 from pathlib import Path
 
-from field_notes_audio import audio, captions, workflow
+from field_notes_audio import audio, captions
 from field_notes_audio.locks import run_lock
 from field_notes_audio.production import sources
 from field_notes_audio.storage import digest_file, read_object
 from field_notes_studio.models import StopRequested
 from field_notes_studio.preparation import Preparation
 from field_notes_studio.preparation_models import CaptionsPending
+from field_notes_studio.preparation_setup import load_configuration
 
 
 class PreparationJobs:
@@ -24,39 +24,10 @@ class PreparationJobs:
         self.preparation = Preparation(self.root)
 
     def configuration(self) -> dict:
-        path = sources.private_path(self.root, "artifacts/audio/settings.json")
-        if not path.is_file():
-            raise ValueError(
-                "Cloud setup is missing. Run the existing field_notes_audio setup command first."
-            )
-        saved = read_object(path)
-        config = {
-            key: saved.get(key, fallback)
-            for key, fallback in (
-                ("project", ""),
-                ("bucket", ""),
-                ("model", "gemini-2.5-pro-tts"),
-                ("endpoint", "global"),
-                ("location", "us"),
-                ("auth", "gcloud"),
-                ("caption_model", "chirp_3"),
-            )
-        }
-        if (
-            any(not isinstance(value, str) for value in config.values())
-            or not re.fullmatch(r"[a-z][a-z0-9-]{4,28}[a-z0-9]", config["project"])
-            or not re.fullmatch(r"[a-z0-9][a-z0-9_-]{1,61}[a-z0-9]", config["bucket"])
-            or config["model"] not in audio.MODELS
-            or config["endpoint"] not in audio.ENDPOINTS
-            or config["location"] not in {"us", "eu"}
-            or config["auth"] not in {"gcloud", "adc"}
-            or config["caption_model"] not in {"chirp_3", "long"}
-            or saved.get("prepared") != workflow.resource_key(argparse.Namespace(**config))
-        ):
-            raise ValueError(
-                "Saved Cloud setup is incomplete or changed. Complete setup explicitly before queueing."
-            )
-        return config
+        return load_configuration(self.root)
+
+    def ready_episodes(self) -> set[str]:
+        return {entry["id"] for entry in sources.load_entries(self.root)}
 
     def _recording(self, plan: dict) -> Path:
         return sources.private_path(
@@ -117,7 +88,9 @@ class PreparationJobs:
         try:
             config = self.configuration()
         except ValueError as exc:
-            return replace(snapshot, summary=intro + str(exc) + "\nNo service request was made.")
+            return replace(
+                snapshot, summary=str(exc) + "\nNo service request was made.\n\n" + intro
+            )
         plan = audio.make_plan(snapshot.episode, config["model"], config["endpoint"], self.root)
         if self.preparation.inspect(note).identity != snapshot.identity:
             raise ValueError(
@@ -134,7 +107,8 @@ class PreparationJobs:
         directory = self._recording(plan)
         self._check_cache_paths(directory)
         saved_recording = self._saved_recording(plan, directory)
-        complete, blockers = 0, []
+        complete, blockers, uncertain = 0, [], {}
+        diagnostics = []
         for index in range(1, len(plan["requests"]) + 1):
             path = sources.private_path(
                 self.root, str((directory / f"chunk-{index:03d}.json").relative_to(self.root))
@@ -142,7 +116,16 @@ class PreparationJobs:
             state = read_object(path) if path.exists() else {}
             complete += state.get("status") == "complete"
             if not saved_recording and state.get("status") in {"requesting", "uncertain"}:
-                blockers.append(f"Narration chunk {index} has an uncertain prior request.")
+                expected = audio.digest(
+                    json.dumps(plan["requests"][index - 1], sort_keys=True).encode()
+                )
+                if state.get("request_sha256") != expected:
+                    blockers.append(
+                        f"Narration chunk {index} receipt does not match this script. Inspect its saved evidence; do not delete it."
+                    )
+                else:
+                    uncertain[str(index)] = digest_file(path)
+                    diagnostics.append(f"Chunk {index}: " + narration_diagnostic(state))
         caption_state = "No matching local caption state inspected yet."
         if (directory / "episode.mp3").exists():
             args = self._caption_args(plan, config, directory / "episode.mp3")
@@ -160,8 +143,24 @@ class PreparationJobs:
             blockers.append(
                 "This episode is already on the public catalog. This new-note path does not replace it."
             )
+        recovery = ""
+        recovery_summary = ""
+        if uncertain:
+            recovery_summary = (
+                "Narration outcome unknown for chunk(s) " + ", ".join(uncertain) + ". "
+                "Google may already have processed those requests. Resending can charge twice. "
+                "Completed audio is retained and verified; other missing chunks remain part of the preparation. "
+                "No retry happens without both authorizations below."
+            )
+            if not blockers:
+                recovery = json.dumps({**request, "uncertain_chunks": uncertain}, sort_keys=True)
         summary = (
-            f"Cloud project: {config['project']}\n"
+            (
+                "RECOVERY NEEDED — " + recovery_summary + "\n" + "\n".join(diagnostics) + "\n\n"
+                if uncertain
+                else ""
+            )
+            + f"Cloud project: {config['project']}\n"
             f"Private working bucket: {config['bucket']}\n"
             "Charges may apply to missing narration and caption requests.\n"
             f"Captions: {config['caption_model']} · {config['location']}. Authentication: {config['auth']}.\n"
@@ -180,13 +179,19 @@ class PreparationJobs:
         return replace(
             snapshot,
             summary=summary,
-            request_json="" if blockers else json.dumps(request, sort_keys=True),
+            request_json="" if blockers or uncertain else json.dumps(request, sort_keys=True),
+            recovery_json=recovery,
+            recovery_summary=recovery_summary if recovery else "",
+            scope_summary=(
+                f"Project: {config['project']} · Captions: {config['location']} · Narration: {config['endpoint']}\n"
+                f"Private bucket: {config['bucket']}"
+            ),
         )
 
     def validate(self, request: dict) -> dict:
         if (
             not isinstance(request, dict)
-            or (set(request) - {"resume"})
+            or (set(request) - {"resume", "uncertain_chunks"})
             != {"version", "note", "episode", "source_identity", "configuration", "plan"}
             or type(request["version"]) is not int
             or request["version"] != 1
@@ -206,7 +211,41 @@ class PreparationJobs:
             request["plan"]
         ):
             raise ValueError("The captured narration plan or configuration changed")
+        receipts = request.get("uncertain_chunks", {})
+        if (
+            not isinstance(receipts, dict)
+            or ("uncertain_chunks" in request and not receipts)
+            or (receipts and "resume" in request)
+            or any(
+                key not in {str(i) for i in range(1, len(plan["requests"]) + 1)}
+                or not isinstance(value, str)
+                or len(value) != 64
+                or any(c not in "0123456789abcdef" for c in value)
+                for key, value in receipts.items()
+            )
+        ):
+            raise ValueError("Invalid uncertain-chunk authorization")
         return plan
+
+    def validate_recovery(self, request):
+        plan = self.validate(request)
+        directory = self._recording(plan)
+        self._check_cache_paths(directory)
+        for index, receipt in request.get("uncertain_chunks", {}).items():
+            path = directory / f"chunk-{int(index):03d}.json"
+            if not path.is_file() or digest_file(path) != receipt:
+                raise ValueError("Recovery receipt changed or disappeared. Inspect recovery again.")
+            state = read_object(path)
+            expected = audio.digest(
+                json.dumps(plan["requests"][int(index) - 1], sort_keys=True).encode()
+            )
+            if (
+                state.get("status") not in {"requesting", "uncertain"}
+                or state.get("request_sha256") != expected
+            ):
+                raise ValueError(
+                    "Recovery receipt no longer describes the inspected uncertain request"
+                )
 
     def run(self, request: dict, emit, stopped) -> str:
         plan = self.validate(request)
@@ -231,7 +270,11 @@ class PreparationJobs:
         self._check_cache_paths(directory)
         directory.mkdir(parents=True, exist_ok=True)
         args = argparse.Namespace(
-            episode=request["episode"], **config, retry_uncertain=False, _cancel_event=Guard()
+            episode=request["episode"],
+            **config,
+            retry_uncertain=False,
+            retry_receipts=request.get("uncertain_chunks", {}),
+            _cancel_event=Guard(),
         )
         emit(
             "narration",
@@ -301,3 +344,24 @@ class PreparationJobs:
     def _check_cache_paths(self, directory: Path) -> None:
         for path in directory.rglob("*"):
             sources.private_path(self.root, str(path.relative_to(self.root)))
+
+
+def narration_diagnostic(state: dict) -> str:
+    """Only render bounded structured diagnostics, never headers or credential strings."""
+    import re
+
+    parts = []
+    if type(state.get("http_status")) is int:
+        parts.append(f"HTTP {state['http_status']}")
+    for key in ("provider_status", "failure_kind"):
+        value = state.get(key)
+        if isinstance(value, str) and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,63}", value):
+            parts.append(value)
+    elapsed = state.get("attempt_seconds")
+    if isinstance(elapsed, int | float) and not isinstance(elapsed, bool) and 0 <= elapsed <= 86400:
+        parts.append(f"after {elapsed:g}s")
+    return (
+        "; ".join(parts)
+        if parts
+        else "No provider result was confirmed. Read the job history for the original error."
+    )

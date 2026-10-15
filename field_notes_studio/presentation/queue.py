@@ -13,10 +13,18 @@ class ProductionQueue(ttk.Frame):
         self.jobs = {}
         heading = ttk.Frame(self)
         heading.pack(fill="x", pady=(0, 8))
-        self.summary = ttk.Label(heading, text="Queue · no jobs yet", style="Muted.TLabel")
-        self.summary.pack(side="left")
+        heading.columnconfigure(0, weight=1)
+        self.summary = ttk.Label(
+            heading, text="Queue · no jobs yet", style="Muted.TLabel", wraplength=240
+        )
+        self.summary.grid(row=0, column=0, sticky="w")
         actions = ttk.Frame(heading)
-        actions.pack(side="right")
+        actions.grid(row=0, column=1, sticky="e")
+
+        def fit_summary(event):
+            self.summary.configure(wraplength=max(120, event.width - actions.winfo_reqwidth() - 12))
+
+        heading.bind("<Configure>", fit_summary)
         self.buttons = {}
         for name, label, command, pictogram in (
             ("open", "Open output", open_result, "folder"),
@@ -73,7 +81,9 @@ class ProductionQueue(ttk.Frame):
     def update_controls(self):
         job = self.jobs.get(self.selection())
         conflicting = job and any(
-            other.episode == job.episode and other.status in {"queued", "running"}
+            other.episode == job.episode
+            and other.identifier != job.identifier
+            and other.status in {"queued", "running", "waiting"}
             for other in self.jobs.values()
         )
         enabled = {
@@ -85,7 +95,9 @@ class ProductionQueue(ttk.Frame):
                 and not conflicting
             ),
             "open": bool(job and job.status == "succeeded" and job.result),
-            "review": bool(job and job.status == "succeeded" and job.action in {"audio", "video"}),
+            "review": bool(
+                job and job.status == "succeeded" and job.action in {"audio", "video", "prepare"}
+            ),
         }
         for name, button in self.buttons.items():
             button.configure(state="normal" if enabled[name] else "disabled")
@@ -97,9 +109,16 @@ class ProductionQueue(ttk.Frame):
             "prepare": "Open prepared files",
         }
         self.buttons["retry"].configure(
-            text="Resume" if job and job.status == "waiting" else "Retry"
+            text="Resume"
+            if job and job.status == "waiting"
+            else "Inspect recovery"
+            if job and job.action == "prepare"
+            else "Retry"
         )
         self.buttons["open"].configure(text=labels[job.action] if job else "Open output")
+        self.buttons["review"].configure(
+            text="Produce episode" if job and job.action == "prepare" else "Review latest"
+        )
         self.buttons["open"].set_icon(
             {"audio": "audio", "preview": "video", "video": "video", "export": "package"}.get(
                 job.action if job else "", "folder"
@@ -159,7 +178,21 @@ class ProductionQueue(ttk.Frame):
                     "waiting": "Awaiting captions",
                 }.get(job.status, job.status)
             )
-            values = (job.episode, job.action, status, job.stage)
+            stage = (
+                job.stage.replace("narration-", "Narration ")
+                .replace("-of-", "/")
+                .replace("-complete", " saved")
+            )
+            if job.action == "prepare" and job.stage in {"failed", "interrupted", "cancelled"}:
+                stage = "Inspect recovery"
+            if job.action == "prepare" and job.status == "succeeded":
+                status, stage = "Recording ready", "Next: Produce episode"
+            values = (
+                job.episode,
+                "Prepare recording" if job.action == "prepare" else job.action,
+                status,
+                stage,
+            )
             tags = (
                 ("attention",)
                 if job.status in {"failed", "interrupted", "waiting"}

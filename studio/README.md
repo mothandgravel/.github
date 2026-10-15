@@ -314,7 +314,8 @@ The next useful passes, in order:
 1. **A new note into the shelf:** [durable preparation](preparation.md) now connects
    saved-script inspection, explicit authorization, narration/caption cache recovery
    and private recording adoption. Missing-script authoring and guided resolution
-   of uncertain Cloud outcomes remain future work; neither is automated silently.
+   of uncertain caption operations remain future work. Receipt-bound uncertain
+   narration recovery now requires separate duplicate-charge consent.
 2. **A human release rehearsal:** resolve *The work outlives the window* from the
    current catalog, then take it through narration, caption checks,
    production, media review and the actual browser handoff. Record decisions and
@@ -328,3 +329,14 @@ The next useful passes, in order:
    SQLite durability still depends on preserving the checkout's artifacts directory.
 
 Embedded playback and direct authenticated uploads remain later integration choices.
+
+## First-run navigation and recovery
+
+The main shelf is **Prepared recordings**; new written notes are reached through
+**Find / prepare a written note…** beside its search, or the header action. The
+written-note window supports title/number search and a deliberate **Import existing
+setup…** from an earlier checkout. Failed preparation offers **Inspect recovery**,
+not a blind resend. Completed preparation offers **Produce episode** without
+automatically queuing or approving media. See [preparation and recovery](preparation.md)
+and the [operator-observation record](usability-rehearsal.md), including the explicit
+consent required to resend a receipt-bound uncertain narration request.

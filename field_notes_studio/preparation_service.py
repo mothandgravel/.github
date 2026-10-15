@@ -4,6 +4,7 @@ import json
 from dataclasses import replace
 
 from field_notes_studio.preparation_jobs import PreparationJobs
+from field_notes_studio.preparation_setup import import_setup, preview_setup
 from field_notes_studio.processes import launch_worker
 from field_notes_studio.repository import Repository
 
@@ -19,17 +20,65 @@ class PreparationService:
         active = {
             job.episode: job for job in jobs if job.status in {"queued", "running", "waiting"}
         }
+        latest = {}
+        for job in jobs:
+            if job.action == "prepare":
+                latest.setdefault(job.episode, job)
+        ready = self.adapter.ready_episodes()
         values = []
         for item in self.adapter.preparation.catalog():
             job = active.get(item.episode)
             if job is not None:
+                state = {
+                    "queued": "Queued",
+                    "running": "Preparing",
+                    "waiting": "Awaiting captions",
+                }[job.status]
                 item = replace(
                     item,
-                    state="Preparation " + job.status,
-                    detail=f"{item.episode} has saved {job.status} work. Use the main queue for its status, history and Resume.",
+                    state=state,
+                    job_id=job.identifier,
+                    detail=(
+                        f"{item.episode}: {state}. "
+                        + (
+                            "Use Resume in the main queue to check the saved caption operation. No new narration."
+                            if job.status == "waiting"
+                            else "Use Show job to follow progress. Do not queue another copy."
+                        )
+                    ),
+                )
+            elif item.episode in ready:
+                item = replace(
+                    item,
+                    state="Ready for production",
+                    detail="Narration and captions are available. Open in production, choose full video, then inspect and queue. This is not media approval or publication.",
+                )
+            elif (job := latest.get(item.episode)) and job.status in {
+                "failed",
+                "interrupted",
+                "cancelled",
+            }:
+                item = replace(
+                    item,
+                    state="Needs recovery",
+                    job_id=job.identifier,
+                    detail=(
+                        f"{item.episode}: {job.status} at {job.stage}. {job.error}\n"
+                        "Inspect script / recovery to see the saved chunks and permitted next action. Do not delete receipts or restart the whole episode."
+                    ),
                 )
             values.append(item)
-        return values
+        return sorted(values, key=lambda item: int(item.note), reverse=True)
+
+    def preview_setup(self, path):
+        return preview_setup(path)
+
+    def import_setup(self, preview):
+        if any(job.status in {"queued", "running", "waiting"} for job in self.repository.jobs()):
+            raise ValueError(
+                "Finish or resolve the saved work before importing setup. Existing jobs are unchanged."
+            )
+        import_setup(self.root, preview)
 
     def inspect(self, note):
         snapshot = self.adapter.inspect(note)
@@ -40,19 +89,24 @@ class PreparationService:
             return replace(
                 snapshot,
                 request_json="",
+                recovery_json="",
+                recovery_summary="",
                 summary=snapshot.summary
                 + "\n\nThis episode already has active or waiting preparation. Use its main-queue controls; no second job will be queued.",
             )
         return snapshot
 
-    def submit(self, snapshot, authorized: bool):
-        if authorized is not True or not snapshot.request_json:
+    def submit(self, snapshot, authorized: bool, *, recover_uncertain: bool = False):
+        captured = snapshot.recovery_json if recover_uncertain is True else snapshot.request_json
+        if type(recover_uncertain) is not bool or authorized is not True or not captured:
             raise ValueError(
                 "Inspect preparation and explicitly authorize the captured service requests first"
             )
-        request = json.loads(snapshot.request_json)
+        request = json.loads(captured)
+        if bool(request.get("uncertain_chunks")) != recover_uncertain:
+            raise ValueError("Uncertain recovery needs separate explicit consent")
         if snapshot.note != request["note"] or snapshot.episode != request["episode"]:
             raise ValueError("Preparation selection changed")
-        self.adapter.validate(request)
+        self.adapter.validate_recovery(request)
         launch_worker(self.root)
         return self.repository.submit(snapshot.episode, "prepare", request)

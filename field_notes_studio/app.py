@@ -46,7 +46,11 @@ class Application:
         self.controller = Controller(Studio(directory), self)
         body = ttk.Panedwindow(main, orient="horizontal")
         body.grid(row=2, column=0, sticky="nsew")
-        self.shelf = Shelf(body, self.controller.select)
+        self.shelf = Shelf(
+            body,
+            self.controller.select,
+            lambda: self.open_preparation(query=self.shelf.query.get()),
+        )
         self.workspace = Workspace(
             body,
             {
@@ -108,13 +112,40 @@ class Application:
         self.tick()
         self.poll()
 
-    def open_preparation(self):
+    def open_preparation(self, *, note="", query=""):
         if self.preparation is not None and not self.preparation.closed:
             self.preparation.view.window.lift()
+            if note:
+                self.preparation.view.reveal(note)
+            elif query:
+                self.preparation.view.query.set(query)
             return
-        self.preparation = PreparationController(
-            PreparationService(self.directory), PreparationWindow(self.root)
+        view = PreparationWindow(self.root)
+        view.setup_directory = str(
+            self.directory.parent.parent
+            if self.directory.name == ".github"
+            else self.directory.parent
         )
+        view.context.configure(text=f"Working checkout: {self.directory}")
+        view.connect_navigation(self.open_prepared, self.show_preparation_job)
+        self.preparation = PreparationController(
+            PreparationService(self.directory), view, note=note, query=query
+        )
+
+    def open_prepared(self, episode):
+        self.controller.open_prepared(episode)
+
+    def show_preparation_job(self, identifier):
+        self.preparation.close()
+
+        def loaded(jobs):
+            self.jobs.render(jobs)
+            if self.jobs.tree.exists(identifier):
+                self.jobs.tree.selection_set(identifier)
+                self.jobs.tree.see(identifier)
+                self.controller.job_detail()
+
+        self.controller.task(self.controller.studio.repository.jobs, loaded)
 
     def status(self, message):
         self.message.configure(text=message)

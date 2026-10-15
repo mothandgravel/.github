@@ -43,6 +43,7 @@ class BoundaryTests(unittest.TestCase):
                                 "field_notes_studio.preparation",
                                 "field_notes_studio.preparation_jobs",
                                 "field_notes_studio.preparation_service",
+                                "field_notes_studio.preparation_setup",
                             }
                             for name in modules
                         )

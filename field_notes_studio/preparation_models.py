@@ -11,6 +11,7 @@ class PreparationItem:
     episode: str
     state: str
     detail: str
+    job_id: str = ""
 
 
 @dataclass(frozen=True)
@@ -22,6 +23,9 @@ class PreparationSnapshot:
     summary: str
     identity: str
     request_json: str = ""
+    recovery_json: str = ""
+    recovery_summary: str = ""
+    scope_summary: str = ""
 
 
 class CaptionsPending(Exception):

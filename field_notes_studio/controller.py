@@ -136,7 +136,7 @@ class Controller:
         self.view.status(
             "Choose an episode → inspect changes → queue production → review saved media."
             if episodes
-            else "No prepared episodes found. This checkout needs the original media and captions."
+            else "No prepared recordings yet. Use Find / prepare a written note to start narration and captions."
         )
         if episodes and self.selected is None:
             session = self.studio.repository.state("session")
@@ -399,6 +399,10 @@ class Controller:
     def retry(self):
         identifier = self.view.jobs.selection()
         if identifier:
+            job = self.view.jobs.jobs.get(identifier)
+            if job and job.action == "prepare" and job.status != "waiting":
+                self.view.open_preparation(note=json.loads(job.request)["note"])
+                return
             self.task(
                 lambda: self.studio.retry(identifier),
                 lambda _: self.view.status(
@@ -559,6 +563,30 @@ class Controller:
         self.view.workspace.show_review()
         self.refresh_review()
 
+    def open_prepared(self, episode):
+        generation = self.generation
+
+        def loaded(episodes):
+            if generation != self.generation:
+                return
+            self.refresh_prepared_shelf(episodes)
+            if episode not in self.episodes:
+                self.view.status(
+                    "The recording is not ready yet. Follow its preparation job first."
+                )
+                return
+            self.select(episode)
+            if self.selected == episode:
+                self.view.shelf.reveal(episode)
+                self.view.workspace.tabs.select(0)
+                self.view.status(
+                    "Recording ready. Choose video for the full episode, inspect changes, then queue production. Review follows production; nothing is published."
+                )
+                if getattr(self.view, "preparation", None):
+                    self.view.preparation.close()
+
+        self.task(self.studio.catalog, loaded)
+
     def review_job(self):
         identifier = self.view.jobs.selection()
         if not identifier:
@@ -567,6 +595,9 @@ class Controller:
 
         def loaded(job):
             if self.view.jobs.selection() != identifier or generation != self.generation:
+                return
+            if job.status == "succeeded" and job.action == "prepare":
+                self.open_prepared(job.episode)
                 return
             if job.status != "succeeded" or job.action not in {"audio", "video"}:
                 self.view.status(
@@ -659,14 +690,6 @@ class Controller:
                     result = "Saved: " + str(Path(result).relative_to(self.studio.root))
                 except ValueError:
                     pass
-            settings = json.loads(job.request).get("settings", {})
-            recipe = (
-                "Saved edition · recipe controls do not affect export"
-                if job.action == "export"
-                else f"{settings.get('speed', '—')}× pace · {settings.get('outro_seconds', '—')}s outro"
-            )
-            if job.action == "prepare":
-                recipe = "Captured narration and captions · ordinary retry never repeats uncertain requests"
             guidance = {
                 "queued": "Waiting for the worker; jobs run one at a time.",
                 "running": "Stage in progress; closing the window keeps production running.",
@@ -676,11 +699,38 @@ class Controller:
                 "succeeded": "Open the saved output. Audio and full video can be reviewed before export.",
                 "waiting": "Captions are still running. Resume polls the saved remote operation.",
             }.get(job.status, "")
+            if job.action == "prepare":
+                guidance = {
+                    "failed": "Preparation stopped. Use Inspect recovery; do not delete caches or blindly resend.",
+                    "interrupted": "Outcome unknown. Inspect recovery before another request.",
+                    "succeeded": "Recording ready, not published. Use Produce episode, then inspect and queue the full video.",
+                    "waiting": "Use Resume to check the same caption operation. No new narration is generated.",
+                }.get(job.status, guidance)
+            meaningful = [
+                event["stage"]
+                for event in events
+                if event["stage"] not in {"failed", "interrupted", "cancelled", "succeeded"}
+            ]
+            at = (
+                meaningful[-1]
+                if job.stage in {"failed", "interrupted", "cancelled"} and meaningful
+                else job.stage
+            )
             if job.cancel_requested and job.status in {"queued", "running"}:
                 guidance = "Stop requested; the current stage finishes its writes before stopping."
-            self.view.jobs.detail.configure(
-                text=f"{recipe} · {guidance}\n{job.error or result or last}"
-            )
+            context = f"{job.episode} · {at}"
+            if job.action != "prepare":
+                settings = json.loads(job.request).get("settings", {})
+                recipe = (
+                    "Saved export edition"
+                    if job.action == "export"
+                    else f"{settings.get('speed', '—')}× pace · {settings.get('outro_seconds', '—')}s outro"
+                )
+                context += " · " + recipe
+            reason = job.error or result or last
+            if len(reason) > 260:
+                reason = reason[:257].rsplit(" ", 1)[0] + "… Full details in History."
+            self.view.jobs.detail.configure(text=f"{context} · {guidance}\n{reason}")
 
         self.task(
             lambda: (

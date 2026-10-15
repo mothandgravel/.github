@@ -16,6 +16,7 @@ import re
 import shutil
 import subprocess
 import time
+import uuid
 import wave
 from datetime import datetime, timezone
 from html.parser import HTMLParser
@@ -24,7 +25,7 @@ from urllib import error, request
 
 from field_notes_audio import auth as google_auth
 from field_notes_audio.locks import run_lock
-from field_notes_audio.progress import raise_if_stopped, report, timed
+from field_notes_audio.progress import raise_if_stopped, report, stage, timed
 from field_notes_audio.storage import digest_file, read_object, write_json
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -423,7 +424,20 @@ def generate_locked(
         wav_path = directory / f"chunk-{index:03d}.wav"
         state_path = directory / f"chunk-{index:03d}.json"
         expected = digest(json.dumps(data, sort_keys=True).encode("utf-8"))
-        state = read_object(state_path) if state_path.exists() else {}
+        raw = state_path.read_bytes() if state_path.exists() else b""
+        state = json.loads(raw) if raw else {}
+        receipt = getattr(args, "retry_receipts", {}).get(str(index))
+        if receipt and not (
+            state.get("request_sha256") == expected and state.get("status") == "complete"
+        ):
+            if (
+                digest(raw) != receipt
+                or state.get("request_sha256") != expected
+                or state.get("status") not in {"requesting", "uncertain"}
+            ):
+                raise ValueError(
+                    f"Chunk {index} recovery receipt changed or disappeared. Inspect recovery again; no replacement was sent."
+                )
         if state.get("request_sha256") == expected and state.get("status") == "complete":
             if not wav_path.exists() or digest_file(wav_path) != state["audio_sha256"]:
                 raise ValueError(
@@ -432,13 +446,32 @@ def generate_locked(
             validate_wav(wav_path.read_bytes())
             report(f"Chunk {index}/{len(plan['requests'])}: reuse saved audio")
         else:
-            if state.get("status") in {"requesting", "uncertain"} and not args.retry_uncertain:
+            if (
+                state.get("status") in {"requesting", "uncertain"}
+                and not args.retry_uncertain
+                and not receipt
+            ):
                 raise ValueError(
                     f"Chunk {index} has an uncertain prior attempt. --retry-uncertain can incur another charge."
                 )
+            stage(
+                f"narration-{index}-of-{len(plan['requests'])}",
+                f"Narration chunk {index}/{len(plan['requests'])}: contacting the service; earlier completed chunks are retained.",
+            )
             token = access_token(args.auth)
             raise_if_stopped(args)
-            write_json(state_path, {"status": "requesting", "request_sha256": expected})
+            if receipt:
+                # Preserve the diagnostic that was authorized before replacing its state.
+                archive = directory / f"recovery-{index:03d}-{receipt}.json"
+                if not archive.exists():
+                    write_json(archive, state)
+                elif read_object(archive) != state:
+                    raise ValueError("Saved recovery evidence changed; inspect before retrying")
+            attempt_id = uuid.uuid4().hex
+            write_json(
+                state_path,
+                {"status": "requesting", "request_sha256": expected, "attempt_id": attempt_id},
+            )
             report(f"Chunk {index}/{len(plan['requests'])}: generate", flush=True)
             attempt_start = time.perf_counter()
             try:
@@ -463,11 +496,19 @@ def generate_locked(
                     diagnostic = http_diagnostic(exc, token)
                 except (OSError, ValueError, TypeError):
                     diagnostic = {"http_status": exc.code}
-                write_json(state_path, {"status": status, "request_sha256": expected, **diagnostic})
+                write_json(
+                    state_path,
+                    {
+                        "status": status,
+                        "request_sha256": expected,
+                        "attempt_id": attempt_id,
+                        **diagnostic,
+                    },
+                )
                 detail = diagnostic.get("provider_status") or diagnostic.get("provider_message")
                 label = f" ({detail})" if detail else ""
                 raise RuntimeError(
-                    f"Google returned HTTP {exc.code}{label}. {http_guidance(exc.code, args.episode)} "
+                    f"Narration chunk {index}/{len(plan['requests'])}: Google returned HTTP {exc.code}{label}. {http_guidance(exc.code, args.episode)} "
                     f"Diagnostic: {state_path.relative_to(root)}"
                 ) from None
             except Exception as exc:
@@ -476,14 +517,22 @@ def generate_locked(
                     {
                         "status": "uncertain",
                         "request_sha256": expected,
+                        "attempt_id": attempt_id,
                         "failure_kind": type(exc).__name__,
                         "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
                     },
                 )
                 raise RuntimeError(
-                    "No completed audio was saved. Re-run to inspect state; an uncertain retry can incur another charge."
+                    f"Narration chunk {index}/{len(plan['requests'])}: {type(exc).__name__} after {time.perf_counter() - attempt_start:.1f}s. "
+                    "No completed audio was confirmed locally. Inspect recovery; resending this chunk can incur another charge. "
+                    f"Diagnostic: {state_path.relative_to(root)}"
                 ) from None
         paths.append(wav_path)
+        # Outside the request exception handler: a late stop must not turn saved audio uncertain.
+        stage(
+            f"narration-{index}-of-{len(plan['requests'])}-complete",
+            f"Narration chunk {index}/{len(plan['requests'])}: verified audio saved.",
+        )
     metadata_path = directory / "episode.json"
     mp3_path = directory / "episode.mp3"
     if metadata_path.exists() and mp3_path.exists():
