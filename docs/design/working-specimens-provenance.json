@@ -2,6 +2,15 @@
   "selection": "The owner authorised selection from the portfolio strategy and Navivra repositories. Planning material informed the shortlist; no customer research, pricing hypotheses or employment material is reproduced.",
   "artifacts": [
     {
+      "id": "coastal-watch",
+      "project": "Coastal watch",
+      "classification": "working application captures with synthetic observations",
+      "study": "../specimens/coastal-watch/",
+      "existingProvenance": "coastal-watch-provenance.json",
+      "method": "Four unchanged browser stills and an edited silent recording of a local Raivari build, including a real interruption of its demo server.",
+      "limits": "Real coastline, synthetic tracks and independent fixture alerts. No live feed, fusion-pipeline result or operator comprehension study."
+    },
+    {
       "id": "liveconnect",
       "project": "LiveConnect",
       "classification": "source-helper replay with authored fixtures",
@@ -169,25 +178,35 @@
     {
       "id": "kitronik",
       "project": "Kitronik buggy",
-      "classification": "saved sample rendered offline",
-      "asset": "../assets/notes/006-scan-replay.webp",
-      "assetSha256": "ebae89ce7cb6d920eaaddc37255362ed4e0a94a6ea271a29d983381733c7f1ed",
-      "existingProvenance": "../assets/notes/006-images.json",
-      "source": [
-        {
-          "repository": "digablesolutions/kitronik-buggy",
-          "path": "tools/scan_visualizer.py",
-          "blob_sha": "e23f758fc680825d14bc104e9b79c0df63235da1"
-        },
-        {
-          "repository": "digablesolutions/kitronik-buggy",
-          "path": "tools/sample_data/scan_box_test.json",
-          "blob_sha": "c59b61e48bc2a277c8bac7d1b9492294b6746b3f"
-        }
-      ],
-      "sourceTree": "907ca61254bc88ec4cd2794e47425c71fb69b8f5",
-      "method": "Existing plot_results(scan_data, grid_parts, save_path=...) called with repository sample using MPLBACKEND=Agg. Functional renderer code unchanged; the local text copy has its own hash. No live listener, hardware, camera or microphone session.",
-      "limits": "12 readings, older 32x32 grid, physical capture origin not established; distinct from current 64x64 firmware; no fresh physical run or accuracy claim."
+      "classification": "owner-supplied camera-overlay and mapping captures",
+      "asset": "../assets/specimens/buggy/camera-rays.jpg",
+      "assetSha256": "e541b8864bc2ba0d58d77d189b0c9aebd4773d2ce363be8c19784d86e85da146",
+      "existingProvenance": "buggy-captures-provenance.json",
+      "historicalReplay": {
+        "id": "kitronik",
+        "project": "Kitronik buggy",
+        "classification": "saved sample rendered offline",
+        "asset": "../assets/notes/006-scan-replay.webp",
+        "assetSha256": "ebae89ce7cb6d920eaaddc37255362ed4e0a94a6ea271a29d983381733c7f1ed",
+        "existingProvenance": "../assets/notes/006-images.json",
+        "source": [
+          {
+            "repository": "digablesolutions/kitronik-buggy",
+            "path": "tools/scan_visualizer.py",
+            "blob_sha": "e23f758fc680825d14bc104e9b79c0df63235da1"
+          },
+          {
+            "repository": "digablesolutions/kitronik-buggy",
+            "path": "tools/sample_data/scan_box_test.json",
+            "blob_sha": "c59b61e48bc2a277c8bac7d1b9492294b6746b3f"
+          }
+        ],
+        "sourceTree": "907ca61254bc88ec4cd2794e47425c71fb69b8f5",
+        "method": "Existing plot_results(scan_data, grid_parts, save_path=...) called with repository sample using MPLBACKEND=Agg. Functional renderer code unchanged; the local text copy has its own hash. No live listener, hardware, camera or microphone session.",
+        "limits": "12 readings, older 32x32 grid, physical capture origin not established; distinct from current 64x64 firmware; no fresh physical run or accuracy claim."
+      },
+      "method": "Unmodified JPEG on the workbench; lossless full-resolution maps in a separate detail study. SVG framing changes inspection crop only.",
+      "limits": "Capture dates/revisions/calibration not established; distinct captures, not a matched comparison; no accuracy, safe navigation or completion result."
     }
   ]
 }

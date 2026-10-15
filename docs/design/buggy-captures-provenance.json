@@ -1,0 +1,85 @@
+{
+  "received": "2026-10-14",
+  "classification": "owner-supplied application captures; capture timestamps, raw sessions and executable revisions not supplied",
+  "assets": [
+    {
+      "file": "docs/assets/specimens/buggy/camera-rays.jpg",
+      "originalName": "python_vUVpIXIsH5(1).jpg",
+      "originalSha256": "e541b8864bc2ba0d58d77d189b0c9aebd4773d2ce363be8c19784d86e85da146",
+      "sha256": "e541b8864bc2ba0d58d77d189b0c9aebd4773d2ce363be8c19784d86e85da146",
+      "dimensions": [
+        1920,
+        1032
+      ],
+      "bytes": 314482,
+      "label": "camera overlay, SCANNING label",
+      "treatment": "byte-for-byte original JPEG"
+    },
+    {
+      "file": "docs/assets/specimens/buggy/world-local.webp",
+      "originalName": "python_W3S0or6b6p(1).png",
+      "originalSha256": "a5167b4e9859485f22eaa3d8e31f612e2c8baac31af68a07b62f0adaeab7df2c",
+      "sha256": "0642b79235df08d898fc29eedfed369820b3539fc3c4aba601c9b9533ba882f8",
+      "dimensions": [
+        1920,
+        967
+      ],
+      "bytes": 149456,
+      "label": "COVER_DRIVE capture, local occupancy grid",
+      "treatment": "lossless WebP, original dimensions and decoded RGB pixels retained"
+    },
+    {
+      "file": "docs/assets/specimens/buggy/world-onboard.webp",
+      "originalName": "python_IZD2MetWJA(1).png",
+      "originalSha256": "efb7ac9cf10e5e5d82d26fe3021f183002fdacd5c3daaf186e7864bcf04bd0d8",
+      "sha256": "19a9b957e8fb8c23d63eda3591ad493bfee3001652fba1098d80f34979b2e39e",
+      "dimensions": [
+        1920,
+        967
+      ],
+      "bytes": 128568,
+      "label": "DRIVING capture, onboard occupancy grid",
+      "treatment": "lossless WebP, original dimensions and decoded RGB pixels retained"
+    }
+  ],
+  "sourceReadback": [
+    {
+      "repository": "digablesolutions/kitronik-buggy",
+      "path": "tools/explore_visualizer.py",
+      "blob": "3c9c1778728be46eb95b4c64f8f5afd988347f84",
+      "supports": "World points and reported pose/path; onboard grid decoding with local grid fallback. Does not bind uploaded captures to a revision."
+    },
+    {
+      "repository": "digablesolutions/kitronik-buggy",
+      "path": "tools/ar_overlay.py",
+      "blob": "cea6183ca1bf4a53c776c4d5b1109df7738f3d37",
+      "supports": "Camera overlay with projected grid, scan rays and separate position estimates; calibration required. Does not establish calibration of the supplied capture."
+    }
+  ],
+  "displayTreatment": "Map captures retain original decoded pixels, colours, units and labels. The camera is displayed through responsive WebP delivery previews; its unchanged full-resolution JPEG stays linked. SVG viewBox and clip rectangles expose labelled map detail views. No generative retouching or reconstructed data.",
+  "limits": "Different captures, not a synchronized or controlled before/after comparison. Screenshot states and counts are what the UI displays, not independently verified accuracy, coverage, safety, physical position or completion. Received date is not a capture date.",
+  "deliveryPreviews": [
+    {
+      "file": "docs/assets/specimens/buggy/camera-preview-960.webp",
+      "source": "docs/assets/specimens/buggy/camera-rays.jpg",
+      "dimensions": [
+        960,
+        516
+      ],
+      "bytes": 75694,
+      "sha256": "27b4bc54193e7fe54e249eafc610f81fa34f20f14e240a94de5150ce0dcac13e",
+      "treatment": "responsive delivery preview; WebP quality 90, method 6; Lanczos resize for 960 px only; original JPEG remains linked unchanged"
+    },
+    {
+      "file": "docs/assets/specimens/buggy/camera-preview-1920.webp",
+      "source": "docs/assets/specimens/buggy/camera-rays.jpg",
+      "dimensions": [
+        1920,
+        1032
+      ],
+      "bytes": 202184,
+      "sha256": "6ac07f9878ab3f9470e76e97b746c0b2c93779ae6b03c5b82bf744ca24f48942",
+      "treatment": "responsive delivery preview; WebP quality 90, method 6; Lanczos resize for 960 px only; original JPEG remains linked unchanged"
+    }
+  ]
+}

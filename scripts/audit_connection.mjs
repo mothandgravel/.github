@@ -117,7 +117,9 @@ try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await page.goto(origin, { waitUntil: 'networkidle' });
   await page.locator('#specimen-liveconnect').scrollIntoViewIfNeeded();
-  await page.getByRole('link', { name: 'Inspect the decision', exact: true }).click();
+  await page.locator('#specimen-liveconnect').getByRole('link', {
+    name: 'The connection came back. Did the picture? ↗', exact: true,
+  }).click();
   assert(new URL(page.url()).pathname === route, 'homepage discovery route');
   await page.locator('#inspection-controls').waitFor({ state: 'visible' });
   await page.goBack();
