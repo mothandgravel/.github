@@ -268,6 +268,26 @@ def review_status(edition: Edition, full_video: bool = False) -> str:
     return "approved"
 
 
+def record_review(edition: Edition, reviewer: str) -> None:
+    """Record explicit human approval of a verified snapshot under its episode lock."""
+    reviewer = text(reviewer, "Reviewer", 120)
+    write_json(
+        edition.audio / "review.json",
+        {
+            "schema_version": 1,
+            "status": "approved",
+            "reviewer": reviewer,
+            "reviewed_at": datetime.now(timezone.utc).isoformat(),
+            "audio_fingerprint": edition.state["fingerprint"],
+            "audio_files": edition.state["files"],
+            "video_fingerprint": edition.video_state["fingerprint"]
+            if edition.video_state
+            else None,
+            "video_files": edition.video_state["files"] if edition.video_state else None,
+        },
+    )
+
+
 def review(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     output = local_output(root, args.output_dir, "artifacts/production")
     entries = selected_entries(args.episode, root)
@@ -281,23 +301,7 @@ def review(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     ) as editions:
         for edition in editions:
             if args.approve:
-                write_json(
-                    edition.audio / "review.json",
-                    {
-                        "schema_version": 1,
-                        "status": "approved",
-                        "reviewer": reviewer,
-                        "reviewed_at": datetime.now(timezone.utc).isoformat(),
-                        "audio_fingerprint": edition.state["fingerprint"],
-                        "audio_files": edition.state["files"],
-                        "video_fingerprint": edition.video_state["fingerprint"]
-                        if edition.video_state
-                        else None,
-                        "video_files": edition.video_state["files"]
-                        if edition.video_state
-                        else None,
-                    },
-                )
+                record_review(edition, reviewer)
             print(
                 f"{edition.source['id']}: audio {review_status(edition)}; "
                 f"video {review_status(edition, True) if edition.video else 'not produced'}"
@@ -404,7 +408,9 @@ def check_upload_destinations(uploads: Path, entries: list[dict]) -> None:
             raise ValueError(f"Preserve unexpected files in {destination} before exporting")
 
 
-def export(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
+def export(
+    args: argparse.Namespace, root: Path = audio.ROOT, *, expected_edition: dict | None = None
+) -> None:
     output = local_output(root, args.output_dir, "artifacts/production")
     uploads = local_output(root, args.upload_dir, "artifacts/uploads")
     if uploads.is_relative_to(output) or output.is_relative_to(uploads):
@@ -412,6 +418,13 @@ def export(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     entries = selected_entries(args.episode, root)
     config = load_metadata((args.metadata or root / "audio/production/publishing.json").resolve())
     with locked_editions(entries, output, full_video=True) as editions:
+        if expected_edition is not None and (
+            len(editions) != 1
+            or read_object(editions[0].directory / "latest.json") != expected_edition
+        ):
+            raise ValueError(
+                "Completed edition changed after planning export. Inspect a fresh plan."
+            )
         copies = [
             publishing_copy(
                 config,

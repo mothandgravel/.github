@@ -1,0 +1,20 @@
+{
+  "note": "013",
+  "source_commit": "571cc165835da5edd1c9959950c2e89198a39807",
+  "capture": "013-studio-workspace.png",
+  "capture_sha256": "c87eec897e811d164210a6f7d1e24c2abfa242eb73a84ea3bc7af24d81064762",
+  "capture_dimensions": [
+    1280,
+    920
+  ],
+  "capture_run": "https://github.com/mothandgravel/.github/actions/runs/38725006189",
+  "capture_scope": "Actual native Tk desktop; controlled episode/media fixture. No image generation or reconstructed UI.",
+  "cover_variants": "Same capture scaled proportionally onto paper margins; no cropping or altered UI content.",
+  "diagram": "013-work-ownership.svg is an authored ownership schematic, not a runtime trace.",
+  "evidence_counts": {
+    "studio_tests": 86,
+    "real_tk_tests": 31,
+    "real_recordings": 13
+  },
+  "production_scope": "Finished audio, retimed captions, short video previews and thumbnails; not full collection video publication."
+}

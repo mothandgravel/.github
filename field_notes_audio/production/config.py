@@ -26,6 +26,11 @@ def load_settings(path: Path, episode: str) -> dict:
         if "video" in changes and not isinstance(changes["video"], dict):
             raise ValueError("Per-episode video must be a settings object")
         config = {**config, **changes, "video": {**config["video"], **changes.get("video", {})}}
+    return validate_settings(config, path.parent)
+
+
+def validate_settings(config: dict, directory: Path) -> dict:
+    """Validate a captured recipe using the same contract as file-backed settings."""
     required = {
         "schema_version",
         "speed",
@@ -71,7 +76,7 @@ def load_settings(path: Path, episode: str) -> dict:
             raise ValueError(
                 "Custom music needs music_file and music_credit (including its license)"
             )
-        music = (path.parent / config["music_file"]).resolve()
+        music = (directory / config["music_file"]).resolve()
         if not music.is_file():
             raise ValueError(f"Custom music file does not exist: {music}")
         config["music_file"] = str(music)

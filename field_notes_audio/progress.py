@@ -5,12 +5,29 @@ from __future__ import annotations
 import argparse
 import threading
 import time
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from contextvars import ContextVar
 
 _episode: ContextVar[str | None] = ContextVar("episode", default=None)
 _recorder: ContextVar[Timings | None] = ContextVar("recorder", default=None)
+_observer: ContextVar[Callable[[str, str], None] | None] = ContextVar("observer", default=None)
+
+
+@contextmanager
+def observe(callback: Callable[[str, str], None]) -> Iterator[None]:
+    """Deliver structured stage boundaries without parsing terminal output."""
+    token = _observer.set(callback)
+    try:
+        yield
+    finally:
+        _observer.reset(token)
+
+
+def stage(name: str, message: str) -> None:
+    callback = _observer.get()
+    if callback is not None:
+        callback(name, message)
 
 
 class Timings:

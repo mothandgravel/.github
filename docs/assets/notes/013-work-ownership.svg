@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+<title id="title">A window onto work that persists</title><desc id="desc">The desktop reads and writes a local journal of drafts and captured job recipes. A separate worker claims those jobs and writes saved media. Reopening the desktop reads the journal and checks the saved media for human review.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#82632e"/></marker></defs>
+<rect width="1200" height="650" fill="#f1eee7"/>
+<g fill="#242b27" font-family="Arial, sans-serif"><text x="56" y="58" font-size="17" letter-spacing="2">FIELD NOTE 013 / WHO OWNS THE WORK?</text>
+<rect x="360" y="95" width="480" height="112" rx="3" fill="#fffdf8" stroke="#82632e" stroke-width="2" stroke-dasharray="8 6"/>
+<text x="388" y="132" font-size="24">Desktop window</text><text x="388" y="164" font-size="18">Inspect · edit · return to the work</text><text x="388" y="188" font-size="16" fill="#59645c">This part can close.</text>
+<rect x="56" y="290" width="470" height="118" rx="3" fill="#fffdf8" stroke="#c9c4b6"/>
+<text x="82" y="327" font-size="24">Local journal</text><text x="82" y="360" font-size="18">Raw drafts · captured recipes · job results</text><text x="82" y="386" font-size="16" fill="#59645c">Saved independently of the window</text>
+<rect x="708" y="290" width="436" height="118" rx="3" fill="#242b27"/>
+<text x="735" y="328" font-size="24" fill="#fffdf8">Detached worker</text><text x="735" y="361" font-size="18" fill="#fffdf8">One queue owner · safe stage boundaries</text><text x="735" y="387" font-size="16" fill="#ddd8cc">Continues after the window closes</text>
+<rect x="360" y="500" width="640" height="112" rx="3" fill="#fffdf8" stroke="#c9c4b6"/>
+<text x="388" y="538" font-size="24">Saved media + explicit human review</text><text x="388" y="571" font-size="18">Approval follows the checked edition.</text><text x="388" y="596" font-size="16" fill="#59645c">A package is still a local handoff to the publisher.</text>
+</g><g fill="none" stroke="#82632e" stroke-width="2" marker-end="url(#arrow)"><path d="M430 207 V248 H290 V288" marker-start="url(#arrow)"/><path d="M528 349 H706"/><path d="M925 410 V498"/><path d="M358 555 H240 V234 H600 V209"/></g>
+<g font-family="Arial, sans-serif" font-size="16" fill="#59645c"><text x="310" y="271">checkpoint / restore</text><text x="550" y="330">claim jobs</text><text x="951" y="456">write media</text><text x="62" y="465">reopen + verify</text></g></svg>

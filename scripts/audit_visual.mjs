@@ -624,8 +624,16 @@ try {
   await newNote.locator('.note-feature .editorial-link').click();
   await newNote.locator('.note-heading h1').waitFor();
   assert(newNote.url().endsWith('/notes/' + featured.slug), 'Featured note route failed');
-  await newNote.locator('.note-aside a').click();
-  assert(newNote.url().endsWith('#study-status'), 'Component study scope link failed');
+  const scopeLink = newNote.locator('.note-aside a');
+  const scopeTarget = await scopeLink.getAttribute('href');
+  assert(/^#[a-z0-9-]+$/.test(scopeTarget) && await newNote.locator(scopeTarget).count() === 1,
+    'Featured note scope link has no unique local destination');
+  await scopeLink.click();
+  assert(newNote.url().endsWith(scopeTarget), 'Featured note scope link failed');
+  assert(await newNote.locator(scopeTarget).evaluate(element => {
+    const box = element.getBoundingClientRect();
+    return box.top < innerHeight && box.bottom > 0;
+  }), 'Featured note scope link did not reveal its destination');
   const neighbor = catalog.find(n => n.id === featured.related[0]);
   await newNote.locator(`.note-related a[href="./${neighbor.slug}"]`).click();
   await newNote.locator('.note-heading h1').waitFor();
