@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   apply:
-    if: github.ref == 'refs/heads/studio/durable-note-preparation' && github.event.head_commit.message == 'Stage tested narration timeout fix'
+    if: github.ref == 'refs/heads/studio/durable-note-preparation' && github.event.head_commit.message == 'Stage tested narration timeout fix on branch baseline'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -27,13 +27,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = '761c19ad1e4aef1f8b9db67e9644c42ca7976ee0'
+          test "$(git rev-parse HEAD^)" = '84858cbbe6821ab4737f88fcb1f1b9cc14d4c892'
           test "$(git ls-remote origin refs/heads/studio/durable-note-preparation | cut -f1)" = "$GITHUB_SHA"
           echo '544f818e3840e32181b1524233f0a180fce1195c3170db952926ad599e2e1130  .github/narration-timeout.patch' | sha256sum --check
           git apply --check --index .github/narration-timeout.patch
           git apply --index .github/narration-timeout.patch
           git rm .github/narration-timeout.patch .github/workflows/apply-narration-timeout.yml
-          test "$(git write-tree)" = '1886135f726bbc4d3a1e04ddb9ef5881b9ad9768'
+          # The source artifact was a PR merge preview with main 1c03eb0.
+          # Preserve this branch's untouched docs/scripts/workflows instead of
+          # copying concurrent main changes into this focused code patch.
+          # Code, tests and guides are the exact locally tested blob identities.
+          test "$(git write-tree)" = '34fb2b346f9a5a3678fa6bc3379569851f2e0030'
       - name: Keep pinned quality gates
         run: |
           python -m pip install ruff==0.12.12
