@@ -32,6 +32,7 @@ class Controller:
         self.restore_session = None
         self.batch_ready = None
         self.batch_generation = 0
+        self.health_busy = False
 
     def draft_changed(self):
         if self.loading or self.closed or not getattr(self.view, "root", None):
@@ -173,12 +174,16 @@ class Controller:
         self.view.workspace.batch.show("Inspect the selected episodes before queueing.")
 
     def health(self):
-        from field_notes_studio.presentation.theme import set_text
+        if self.health_busy:
+            return
+        self.health_busy = True
+        self.view.workspace.show_health("Checking worker, media tools and production settings…")
 
-        set_text(
-            self.view.workspace.health, "Checking worker, media tools and production settings…"
-        )
-        self.task(self.studio.health, lambda message: set_text(self.view.workspace.health, message))
+        def loaded(message):
+            self.health_busy = False
+            self.view.workspace.show_health(message)
+
+        self.task(self.studio.health, loaded, loaded)
 
     def restart_worker(self):
         def restarted(message):
@@ -276,7 +281,7 @@ class Controller:
                 publication.metadata_draft = {}
                 self.draft_changed()
 
-        self.task(lambda: self.studio.pipeline.metadata_editor(identifier), loaded)
+        self.task(lambda: self.studio.metadata_editor(identifier), loaded)
 
     def save_metadata(self):
         if not self.selected or self.loading:
@@ -304,7 +309,7 @@ class Controller:
             if identifier == self.selected and selection == self.selection_generation:
                 editor.save.configure(state="normal")
 
-        self.task(lambda: self.studio.pipeline.save_metadata(identifier, snapshot), saved, failed)
+        self.task(lambda: self.studio.save_metadata(identifier, snapshot), saved, failed)
 
     def submit(self):
         if self.ready is None:

@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 from field_notes_audio.locks import run_lock
 from field_notes_studio.health import lock_owner, process_id, restart, worker_status
+from field_notes_studio.processes import launch_worker
 from field_notes_studio.repository import Repository
 from field_notes_studio.worker import work
 
@@ -98,3 +99,32 @@ class HealthTests(unittest.TestCase):
         self.assertEqual(jobs["note-001"].status, "succeeded")
         self.assertEqual(jobs["note-002"].status, "queued")
         self.assertEqual(launched, [self.root])
+
+    def test_idle_legacy_identity_can_be_restarted_with_a_kernel_handle(self):
+        settings = self.root / "audio/production/settings.json"
+        settings.parent.mkdir(parents=True)
+        settings.write_text("{}")
+        child = launch_worker(self.root)
+
+        def cleanup():
+            if child.poll() is None:
+                child.terminate()
+            child.wait(timeout=5)
+
+        self.addCleanup(cleanup)
+        deadline = time.monotonic() + 8
+        while time.monotonic() < deadline:
+            if worker_status(self.repository)["state"] == "current":
+                break
+            time.sleep(0.05)
+        else:
+            self.fail("Worker did not register its heartbeat")
+        # Simulate a pre-heartbeat worker with the exact real process/root/lock.
+        self.repository.checkpoint({"worker": {}})
+        with patch("field_notes_studio.health.launch_worker") as launched:
+            message = restart(self.repository, self.root)
+        child.wait(timeout=5)
+        self.assertEqual(child.returncode, -15)
+        self.assertIn("legacy", message)
+        self.assertIsNone(lock_owner(self.repository.path.parent))
+        launched.assert_called_once_with(self.root)

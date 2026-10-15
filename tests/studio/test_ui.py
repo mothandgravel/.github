@@ -220,11 +220,13 @@ class UITests(unittest.TestCase):
         workspace.tabs.select(workspace.batch)
         self.root.update()
         self.assert_visible(workspace.batch.queue)
+        self.assert_visible(workspace.batch.form.content.winfo_children()[0])
         self.capture("batch-inspection")
         workspace.tabs.select(workspace.publication)
         workspace.publication.tabs.select(workspace.publication.editor)
         self.root.update()
         self.assert_visible(workspace.publication.editor.save)
+        self.assert_visible(workspace.publication.editor.widgets["title"])
         self.capture("publishing-editor")
         workspace.tabs.select(workspace.health.master)
         with patch.object(

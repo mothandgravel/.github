@@ -24,7 +24,7 @@ class Batch(ttk.Frame):
         self.form = ScrollArea(self, padding=4)
         self.form.grid(row=1, column=0, sticky="nsew")
         self.summary = tk.Text(
-            self, height=5, wrap="word", state="disabled", relief="flat", padx=8, pady=8
+            self, height=3, wrap="word", state="disabled", relief="flat", padx=8, pady=8
         )
         self.summary.grid(row=2, column=0, sticky="ew", pady=8)
         footer = ttk.Frame(self)

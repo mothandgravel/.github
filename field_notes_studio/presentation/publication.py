@@ -145,7 +145,7 @@ class Publication(ttk.Frame):
             self.tabs,
             PUBLISHING,
             callbacks["draft"],
-            "Edit episode copy and reusable show defaults. Tags and hashtags combine with shared values. Saving affects future exports; the Upload details tab continues to show the actual saved package until you export again.",
+            "Episode overrides combine with show defaults. Save settings, then export again to update the upload package.",
             save=callbacks["metadata_save"],
             reload=callbacks["metadata_reload"],
         )

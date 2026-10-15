@@ -220,6 +220,10 @@ class Pipeline:
                         if settings["music_mode"] != "none"
                         else "No music.",
                     )
+            if digest_file(path) != snapshot["baseline"]:
+                raise ValueError(
+                    "Publishing settings changed during validation. Reload saved settings before saving again."
+                )
             write_json(path, validated)
         return self.metadata_editor(identifier)
 

@@ -160,6 +160,12 @@ class Studio:
     def release_details(self, episode: str):
         return self.pipeline.release_details(episode)
 
+    def metadata_editor(self, episode: str):
+        return self.pipeline.metadata_editor(episode)
+
+    def save_metadata(self, episode: str, snapshot: dict):
+        return self.pipeline.save_metadata(episode, snapshot)
+
     def package_snapshot(self, episode: str):
         return self.pipeline.package_snapshot(episode)
 

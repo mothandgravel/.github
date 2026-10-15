@@ -87,7 +87,7 @@ class Workspace(ttk.Frame):
             tabs,
             SOUND,
             callbacks["changed"],
-            "Sound recipe · Pace and outro are in Produce. Custom music requires a file and a credit including its license. Inspect changes before queueing; existing jobs keep their captured recipe.",
+            "Pace and outro are in Produce. Inspect changes before queueing. Custom music needs a file and license credit.",
         )
         tabs.add(self.sound, text="Sound")
         self.batch = Batch(
@@ -95,6 +95,11 @@ class Workspace(ttk.Frame):
         )
         tabs.add(self.batch, text="Batch")
         self.health = self._text_tab(tabs, "Health")
+        tabs.bind(
+            "<<NotebookTabChanged>>",
+            lambda _: callbacks["health"]() if tabs.select() == str(self.health.master) else None,
+            add=True,
+        )
         for tab, glyph in (
             (self.plan.master, "produce"),
             (self.review, "review"),
@@ -107,7 +112,7 @@ class Workspace(ttk.Frame):
                 image=(icon(self, glyph), "selected", icon(self, glyph, SURFACE)),
             )
         self.url, self.date = self.publication.url, self.publication.date
-        tabs.bind("<<NotebookTabChanged>>", lambda _: self.layout_stage())
+        tabs.bind("<<NotebookTabChanged>>", lambda _: self.layout_stage(), add=True)
         self.publication.tabs.bind(
             "<<NotebookTabChanged>>", lambda _: self.layout_stage(), add=True
         )
@@ -167,6 +172,9 @@ class Workspace(ttk.Frame):
         set_text(self.plan, text)
         self.produce.configure(state="normal" if ready else "disabled")
 
+    def show_health(self, message):
+        set_text(self.health, message)
+
     def draft(self):
         publication = self.publication
         return {
@@ -216,8 +224,14 @@ class Workspace(ttk.Frame):
             else:
                 widget.grid_remove()
         health = self.tabs.select() == str(self.health.master)
-        if health or (
-            self.tabs.select() == str(self.publication) and self.publication.files_visible()
+        release_editor = self.tabs.select() == str(
+            self.publication
+        ) and self.publication.tabs.select() == str(self.publication.editor)
+        if (
+            health
+            or release_editor
+            or self.tabs.select() in {str(self.sound), str(self.batch)}
+            or (self.tabs.select() == str(self.publication) and self.publication.files_visible())
         ):
             self.outputs.grid_remove()
         else:
