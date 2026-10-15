@@ -122,13 +122,16 @@ class Pipeline:
                 )
             packages.record_review(edition, reviewer)
 
-    def request(self, identifier: str, action: str, speed: float, outro: float) -> dict:
+    def request(
+        self, identifier: str, action: str, speed: float | None, outro: float | None
+    ) -> dict:
         if action not in ACTIONS:
             raise ValueError("Unknown studio action")
         settings = self.settings(identifier)
-        settings.update(
-            speed=number(speed, 0.75, 1.5, "Speed"), outro_seconds=number(outro, 0, 15, "Outro")
-        )
+        if action != "export":
+            settings.update(
+                speed=number(speed, 0.75, 1.5, "Speed"), outro_seconds=number(outro, 0, 15, "Outro")
+            )
         request = {"settings": settings, "source": fingerprint(self.source(identifier))}
         if action == "export":
             request["edition"] = read_object(self.output / identifier / "latest.json")

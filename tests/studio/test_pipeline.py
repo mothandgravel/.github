@@ -121,6 +121,14 @@ class PipelineTests(unittest.TestCase):
                 "fixture", "export", request, self.root / "export-job", lambda *_: None
             )
 
+    def test_export_request_uses_saved_edition_and_ignores_draft_recipe(self):
+        latest = {"audio": "saved-audio", "video": "saved-video"}
+        write_json(self.pipeline.output / "fixture/latest.json", latest)
+        request = self.pipeline.request("fixture", "export", None, None)
+        self.assertEqual(request["edition"], latest)
+        self.assertEqual(request["settings"], self.pipeline.settings("fixture"))
+        self.assertEqual(self.pipeline.request("fixture", "export", -100, -100), request)
+
     def test_plan_identifies_sound_changes_without_claiming_unverified_reuse(self):
         self.run_audio(0.5)
         request = self.pipeline.request("fixture", "audio", 1.15, 1)

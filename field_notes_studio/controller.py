@@ -87,15 +87,17 @@ class Controller:
         if not self.selected or self.loading:
             self.view.status("Choose an episode and wait for its settings to load.")
             return
-        try:
-            speed = float(self.view.workspace.speed.get())
-            outro = float(self.view.workspace.outro.get())
-        except ValueError:
-            self.view.status("Pace and outro must be numbers.")
-            return
+        action = self.view.workspace.action.get()
+        speed = outro = None
+        if action != "export":
+            try:
+                speed = float(self.view.workspace.speed.get())
+                outro = float(self.view.workspace.outro.get())
+            except ValueError:
+                self.view.status("Pace and outro must be numbers.")
+                return
         generation = self.generation
         identifier = self.selected
-        action = self.view.workspace.action.get()
         self.view.workspace.show_plan("Checking source and local editions…")
 
         def planned(value):

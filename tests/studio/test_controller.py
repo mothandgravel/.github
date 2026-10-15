@@ -16,6 +16,28 @@ class Value:
 
 
 class ControllerTests(unittest.TestCase):
+    def test_export_planning_ignores_unfinished_recipe_fields(self):
+        planned = []
+        workspace = SimpleNamespace(
+            speed=Value("unfinished draft"),
+            outro=Value(""),
+            action=Value("export"),
+            show_plan=lambda *args, **kwargs: None,
+        )
+        view = SimpleNamespace(workspace=workspace, status=lambda _: None)
+
+        def plan(*args):
+            planned.append(args)
+            return {"edition": "saved"}, "Package the saved edition"
+
+        controller = Controller(SimpleNamespace(plan=plan), view)
+        self.addCleanup(controller.close)
+        controller.selected = "note-001"
+        controller.task = lambda operation, callback: callback(operation())
+        controller.inspect()
+        self.assertEqual(planned, [("note-001", "export", None, None)])
+        self.assertEqual(controller.ready, ("note-001", "export", {"edition": "saved"}))
+
     def test_review_result_for_an_old_queue_selection_cannot_redirect_the_workspace(self):
         selection = Value("old-job")
         navigated = []

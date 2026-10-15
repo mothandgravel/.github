@@ -31,7 +31,9 @@ class Studio:
             for episode in self.pipeline.catalog()
         ]
 
-    def plan(self, episode: str, action: str, speed: float, outro: float) -> tuple[dict, str]:
+    def plan(
+        self, episode: str, action: str, speed: float | None, outro: float | None
+    ) -> tuple[dict, str]:
         request = self.pipeline.request(episode, action, speed, outro)
         return request, self.pipeline.plan(episode, action, request)
 
