@@ -375,7 +375,7 @@ def main() -> int:
             check(False, f'{file.name}: invalid discovery graph ({error})')
     check('studio-answers' in html and 'based in Finland' in html,
           'Machine identity must be backed by visible useful answers and location')
-    for route in ('questions', 'workbench'):
+    for route in ('questions', 'workbench', 'workbench/return'):
         path = ROOT / route / 'index.html'
         check(path.is_file(), f'Missing {route} journey')
         if not path.is_file():

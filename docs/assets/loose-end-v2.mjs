@@ -2,7 +2,11 @@ import { fields, followups, briefLimit, intents, labels, draftKey, roomKey, norm
 
 const intake = document.getElementById('loose-end');
 const status = document.getElementById('draft-status');
-function announce(message) { status.textContent = message; }
+function announce(message) {
+  status.textContent = message;
+  const feedback = document.activeElement?.closest('[data-feedback-scope]')?.querySelector('[data-room-feedback]');
+  if (feedback) feedback.textContent = message;
+}
 function storage() { try { return sessionStorage; } catch { return null; } }
 function clearSaved() { const saved = storage(); try { saved?.removeItem(draftKey); saved?.removeItem(roomKey); } catch {} }
 function download(text, name) {
@@ -149,7 +153,7 @@ if (room) {
   function paint(updateChoice = false) {
     room.querySelectorAll('input[name="surface"]').forEach(el => { el.checked = el.value === state.surface; });
     room.querySelectorAll('[data-surface]').forEach(el => { el.hidden = el.dataset.surface !== state.surface; });
-    document.getElementById('artifact-caption').textContent = 'Example screen · ' + surfaces[state.surface];
+    document.getElementById('artifact-caption').textContent = 'Illustrative sketch · ' + surfaces[state.surface] + '. The drawn controls are not interactive.';
     if (updateChoice) room.querySelectorAll('input[name="choice"]').forEach(el => { el.checked = el.value === state.choice; });
     document.getElementById('recorded-choice').textContent = state.choice ? 'Your draft choice: ' + surfaces[state.choice] + '. The studio has not received this.' : 'No draft choice recorded.';
     document.getElementById('annotation-record').textContent = state.note ? surfaces[state.noteSurface] + ': ' + state.note : 'No observation pinned yet.';
@@ -160,7 +164,8 @@ if (room) {
     const panel = document.getElementById('annotation-panel'); panel.hidden = false;
     annotationSurface = state.surface;
     document.getElementById('annotation').value = state.note;
-    document.getElementById('annotation-context').textContent = 'Looking at: ' + surfaces[state.surface];
+    document.getElementById('annotation-context').textContent = 'Attached to: ' + surfaces[annotationSurface] + '. Changing the inspected sketch will not move this note.';
+    document.getElementById('mark-wrong').hidden = true;
     document.getElementById('annotation').focus();
   });
   document.getElementById('pin-observation').addEventListener('click', () => {
@@ -169,10 +174,11 @@ if (room) {
     state.note = text; state.noteSurface = annotationSurface;
     const kept = persist(); paint();
     document.getElementById('annotation-panel').hidden = true;
+    document.getElementById('mark-wrong').hidden = false;
     document.getElementById('mark-wrong').focus();
     announce(kept ? 'Observation pinned in this tab. Nothing was sent.' : 'Observation pinned for this visit only. Storage is unavailable; download it to keep it.');
   });
-  document.getElementById('cancel-observation').addEventListener('click', () => { document.getElementById('annotation-panel').hidden = true; document.getElementById('mark-wrong').focus(); });
+  document.getElementById('cancel-observation').addEventListener('click', () => { document.getElementById('annotation-panel').hidden = true; document.getElementById('mark-wrong').hidden = false; document.getElementById('mark-wrong').focus(); });
   document.getElementById('record-choice').addEventListener('click', () => {
     const choice = room.querySelector('input[name="choice"]:checked');
     if (!choice) { announce('Choose an approach, or keep the question open.'); room.querySelector('input[name="choice"]').focus(); return; }
@@ -189,7 +195,7 @@ if (room) {
     clearSaved(); state = { surface: 'item', note: '', noteSurface: 'item', choice: '' }; paint(true);
     document.getElementById('your-question').hidden = true; document.getElementById('your-question').querySelector('dl').replaceChildren();
     document.getElementById('carried-brief').textContent = ''; document.getElementById('original-question').textContent = ''; document.getElementById('annotation-panel').hidden = true;
-    document.getElementById('annotation').value = '';
+    document.getElementById('annotation').value = ''; document.getElementById('mark-wrong').hidden = false;
     announce('Your question, observation and draft choice were cleared from this tab.');
   });
   document.querySelectorAll('[data-enhance]').forEach(el => { el.hidden = false; });
