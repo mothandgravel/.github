@@ -129,7 +129,15 @@ try {
   const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
   await page.goto(origin,{waitUntil:'networkidle'});
   await page.locator('#specimen-kitronik').scrollIntoViewIfNeeded();
-  const image=page.locator('#specimen-kitronik img');await image.evaluate(img=>img.decode());
+  const image=page.locator('#specimen-kitronik img');
+  // A card can exceed the viewport, and content-visibility resolves its height on
+  // arrival. Bring the lazy image itself into view before awaiting its pixels.
+  await image.scrollIntoViewIfNeeded();
+  await page.waitForFunction(()=>{
+    const img=document.querySelector('#specimen-kitronik img');
+    return img.complete&&img.naturalWidth>0;
+  },null,{timeout:10000});
+  await image.evaluate(img=>img.decode());
   check(await image.evaluate(img=>img.naturalWidth>0&&img.currentSrc.includes('/camera-preview-')), 'workbench camera delivery preview missing');
   await page.getByRole('link',{name:'Inspect the Kitronik buggy camera and mapping captures'}).click();
   check(new URL(page.url()).pathname===route,'workbench study route');await page.close();
