@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from field_notes_audio.storage import read_object, write_json
+from field_notes_audio.storage import digest_file, read_object, write_json
 from field_notes_studio.pipeline import Pipeline
 from field_notes_studio.repository import Repository
 from field_notes_studio.service import Studio
@@ -100,7 +100,15 @@ class WorkspaceStateTests(unittest.TestCase):
         snapshot["values"].update(
             title="A better title", description="First paragraph.\n\nSecond paragraph."
         )
-        saved = pipeline.save_metadata("note-001", snapshot)
+        with patch.object(
+            pipeline,
+            "metadata_editor",
+            side_effect=AssertionError("Do not reread after releasing the save lock"),
+        ):
+            saved = pipeline.save_metadata("note-001", snapshot)
+        self.assertEqual(
+            saved["baseline"], digest_file(self.root / "audio/production/publishing.json")
+        )
         self.assertNotEqual(saved["baseline"], old["baseline"])
         self.assertEqual(pipeline.release_details("note-001").title, "A better title")
         with self.assertRaisesRegex(ValueError, "changed elsewhere"):

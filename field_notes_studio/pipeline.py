@@ -226,7 +226,9 @@ class Pipeline:
                     "Publishing settings changed during validation. Reload saved settings before saving again."
                 )
             write_json(path, validated)
-        return self.metadata_editor(identifier)
+            # Return the identity of this write while still owning the lock. Reading
+            # again after release could attach another window's identity to our text.
+            return {"baseline": digest_file(path), "values": dict(values)}
 
     def _upload_manifest(self, identifier):
         if not isinstance(identifier, str) or not re.fullmatch(
