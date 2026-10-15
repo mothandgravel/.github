@@ -1,6 +1,7 @@
 """Exercise real Tk event delivery, planning and reopen behavior under Xvfb."""
 
 import os
+import subprocess
 import tempfile
 import time
 import unittest
@@ -59,6 +60,39 @@ class UITests(unittest.TestCase):
                 return
             time.sleep(0.01)
         self.fail("UI did not reach the requested state")
+
+    def capture(self, name):
+        """Optional CI evidence from the real Tk window, using existing FFmpeg tooling."""
+        destination = os.environ.get("STUDIO_SCREENSHOT_DIR")
+        if not destination:
+            return
+        directory = Path(destination)
+        directory.mkdir(parents=True, exist_ok=True)
+        self.root.update()
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-v",
+                "error",
+                "-f",
+                "x11grab",
+                "-video_size",
+                f"{self.root.winfo_width()}x{self.root.winfo_height()}",
+                "-i",
+                f"{os.environ['DISPLAY']}+{self.root.winfo_rootx()},{self.root.winfo_rooty()}",
+                "-frames:v",
+                "1",
+                "-threads",
+                "1",
+                "-update",
+                "1",
+                "-y",
+                str(directory / f"{name}.png"),
+            ],
+            check=True,
+            timeout=15,
+            stdout=subprocess.DEVNULL,
+        )
 
     def test_edit_plan_queue_close_and_reopen(self):
         import tkinter as tk
@@ -149,11 +183,15 @@ class UITests(unittest.TestCase):
         publication = self.app.workspace.publication
         self.app.workspace.tabs.select(publication)
         self.root.update()
+        self.assertFalse(self.app.workspace.controls.winfo_ismapped())
+        self.capture("release-upload-details")
         for widget in (*publication.actions.values(), publication.copy_button):
             x = widget.winfo_rootx() + widget.winfo_width() // 2
             y = widget.winfo_rooty() + widget.winfo_height() // 2
             self.assertIs(self.root.winfo_containing(x, y), widget)
         self.assertGreaterEqual(publication.text.winfo_height(), 20)
+        publication.field.set("Description")
+        self.capture("release-upload-description")
         publication.tabs.select(1)
         self.root.update()
         publication.form.reveal(publication.url_entry)
@@ -162,6 +200,7 @@ class UITests(unittest.TestCase):
             x = widget.winfo_rootx() + widget.winfo_width() // 2
             y = widget.winfo_rooty() + widget.winfo_height() // 2
             self.assertIs(self.root.winfo_containing(x, y), widget)
+        self.capture("release-publication-record")
 
     def test_shelf_rows_and_status_remain_visible_at_minimum_window_size(self):
         self.root.geometry("1050x760")

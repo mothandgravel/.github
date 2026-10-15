@@ -37,4 +37,13 @@ jobs:
       - name: Verify idioms and formatting
         run: python -m ruff check && python -m ruff format --check
       - name: Verify real Tk controls, media finishing, journals and recovery
+        env:
+          STUDIO_SCREENSHOT_DIR: artifacts/studio-ui
         run: xvfb-run -a python -m unittest discover -s tests/studio -t . -v
+      - name: Preserve the tested release surfaces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-desktop-review
+          path: artifacts/studio-ui/*.png
+          retention-days: 14

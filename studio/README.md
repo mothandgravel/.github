@@ -11,6 +11,9 @@ dates for episodes you have already published separately from their production j
 
 Open **Release** for the guided handoff:
 
+**Produce → Review → Release** keeps each stage focused. Pace, outro and production
+buttons appear in Produce; Review and Release use the space for their own controls.
+
 1. **Review full video** opens the saved-edition review with the correct scope.
 2. **Inspect package** selects export and shows the plan. Use **Queue production**
    to create the package after checking it.

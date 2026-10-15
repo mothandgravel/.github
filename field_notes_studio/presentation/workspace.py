@@ -27,7 +27,7 @@ class Workspace(ttk.Frame):
             add=True,
         )
         self.subtitle.grid(row=1, column=0, sticky="w", pady=(0, 16))
-        controls = ttk.Frame(self)
+        controls = self.controls = ttk.Frame(self)
         controls.grid(row=2, column=0, sticky="ew")
         self.speed = tk.StringVar(value="1.15")
         self.outro = tk.StringVar(value="5")
@@ -53,7 +53,7 @@ class Workspace(ttk.Frame):
             if label != "Output":
                 setattr(self, "speed_control" if label == "Pace ×" else "outro_control", combo)
             variable.trace_add("write", lambda *_: callbacks["changed"]())
-        buttons = ttk.Frame(self)
+        buttons = self.production_buttons = ttk.Frame(self)
         buttons.grid(row=3, column=0, sticky="ew", pady=(10, 16))
         ttk.Button(buttons, text="Inspect changes", command=callbacks["plan"]).pack(side="left")
         self.produce = ttk.Button(
@@ -70,13 +70,15 @@ class Workspace(ttk.Frame):
         self.output_guidance()
         tabs = self.tabs = ttk.Notebook(self)
         tabs.grid(row=5, column=0, sticky="nsew")
-        self.plan = self._text_tab(tabs, "Rebuild plan")
+        self.plan = self._text_tab(tabs, "Produce")
         self.review = Review(tabs, callbacks)
         tabs.add(self.review, text="Review")
-        self.transcript = self._text_tab(tabs, "Transcript")
         self.publication = Publication(tabs, callbacks)
         tabs.add(self.publication, text="Release")
+        self.transcript = self._text_tab(tabs, "Transcript")
         self.url, self.date = self.publication.url, self.publication.date
+        tabs.bind("<<NotebookTabChanged>>", lambda _: self.layout_stage())
+        self.layout_stage()
         outputs = ttk.Frame(self)
         outputs.grid(row=6, column=0, sticky="ew", pady=(14, 0))
         for label, kind in [
@@ -129,6 +131,14 @@ class Workspace(ttk.Frame):
 
     def show_review(self):
         self.tabs.select(self.review)
+
+    def layout_stage(self):
+        producing = self.tabs.select() == str(self.plan.master)
+        for widget in (self.controls, self.production_buttons, self.guidance):
+            if producing:
+                widget.grid()
+            else:
+                widget.grid_remove()
 
     def show_plan_tab(self):
         self.tabs.select(self.plan.master)
