@@ -131,6 +131,8 @@ try {
     await page.goto(origin+'/questions/');
     assert(await page.locator('#making').inputValue()==='','Cleared answers must not return');
     for (const key of ['timing','budget','materials']) assert(await page.locator('#'+key).inputValue()==='', 'Cleared '+key+' must not return');
+    await page.locator('#clear-draft').click();
+    assert(await page.locator('#clear-draft').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().top>=document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().bottom<=innerHeight),`Clear keeps visible focus in ${theme}/${viewport.width}`);
     assert(errors.length===0,JSON.stringify({viewport,theme,errors}));
     await context.close();
   }
@@ -206,7 +208,7 @@ try {
   await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
   await blockedPage.locator('.brief-keep [data-room-feedback]').filter({hasText:'Select and copy'}).waitFor({state:'visible'});
   assert(await blockedPage.locator('.brief-keep [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Clipboard recovery stays in view');
-  assert(await blockedPage.locator('#brief-text').evaluate(el=>el===document.activeElement), 'Denied clipboard selects the editable brief');
+  assert(await blockedPage.locator('#brief-text').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().bottom>document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().top<innerHeight), 'Denied clipboard selects a visible editable brief');
   await blockedPage.locator('#rebuild-brief').evaluate(el=>el.click());
   assert((await blockedPage.locator('.brief-keep [data-room-feedback]').innerText()).includes('rebuilt'), 'Rebuild feedback is independent of click focus');
   await blockedPage.locator('#carry-question').evaluate(el=>el.click());
@@ -219,6 +221,75 @@ try {
   assert((await blockedPage.locator('#draft-status').innerText()).includes('visit only'),'Unavailable persistence must not claim a saved choice');
   results.push({label:'storage-denied',passed:true});
   await blocked.close();
+
+  // A permission prompt may settle after the visitor has moved on.
+  for (const outcome of ['resolve','reject']) for (const action of ['clear','back','edit','rebuild','download','failed-handoff']) {
+    const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+    await page.goto(origin+'/questions/');
+    await makeBrief(page);
+    await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:()=>new Promise((resolve,reject)=>{window.__copyResolve=resolve;window.__copyReject=reject;})},configurable:true}));
+    await page.locator('#copy-brief').evaluate(el=>el.click());
+    if(action==='clear') await page.locator('#clear-draft').click();
+    if(action==='back') { await page.locator('#question-back').click();await page.locator('#constraints').waitFor({state:'visible'}); }
+    if(action==='edit') await page.locator('#brief-text').fill('My newer wording.');
+    if(action==='rebuild') await page.locator('#rebuild-brief').click();
+    if(action==='download') { const downloaded=page.waitForEvent('download');await page.locator('#download-brief').click();await downloaded; }
+    if(action==='failed-handoff') {
+      await page.evaluate(()=>{Storage.prototype.setItem=()=>{throw new Error('Storage denied');};});
+      await page.locator('#carry-question').click();
+    }
+    if(action==='clear') assert(await page.locator('#clear-draft').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().top>=document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().bottom<=innerHeight),'Clear retains visible focus beside its confirmation');
+    const before=await page.evaluate(()=>({status:document.getElementById('draft-status').textContent,brief:document.getElementById('brief-text').value}));
+    // Keep the focus reference inside the page rather than serializing a node.
+    await page.evaluate(()=>{window.__focusBeforeCopyResult=document.activeElement;});
+    await page.evaluate(outcome=>{if(outcome==='resolve')window.__copyResolve();else window.__copyReject(new Error('Clipboard denied'));},outcome);
+    assert(await page.locator('#draft-status').innerText()===before.status,`Late copy ${outcome}/${action} must preserve current feedback`);
+    assert(await page.evaluate(()=>document.activeElement===window.__focusBeforeCopyResult),`Late copy ${outcome}/${action} must preserve focus`);
+    assert(await page.locator('#brief-text').inputValue()===before.brief,`Late copy ${outcome}/${action} must preserve the current brief`);
+    results.push({label:`pending-copy-${outcome}-${action}`,passed:true});
+    await page.close();
+  }
+  const latestCopy=await browser.newPage({viewport:{width:390,height:844}});
+  await latestCopy.goto(origin+'/questions/');await makeBrief(latestCopy);
+  await latestCopy.evaluate(()=>{window.__copyRequests=[];Object.defineProperty(navigator,'clipboard',{value:{writeText:()=>new Promise((resolve,reject)=>window.__copyRequests.push({resolve,reject}))},configurable:true});});
+  await latestCopy.locator('#copy-brief').evaluate(el=>{el.click();el.click();});
+  await latestCopy.evaluate(()=>window.__copyRequests[0].reject(new Error('Superseded')));
+  assert(await latestCopy.locator('#draft-status').innerText()==='','An older copy must not interrupt the newest copy');
+  await latestCopy.evaluate(()=>window.__copyRequests[1].resolve());
+  assert((await latestCopy.locator('.brief-keep [data-room-feedback]').innerText()).includes('Brief copied'),'The newest copy still reports success');
+  results.push({label:'latest-copy-owns-feedback',passed:true});await latestCopy.close();
+
+  // Poison the formerly published module URL, as a browser cache could retain it.
+  const cached=await browser.newContext({viewport:{width:390,height:844}});
+  const staleModule=await readFile(new URL('../docs/assets/loose-end.mjs',import.meta.url),'utf8');
+  let staleRequested=false;
+  await cached.route('**/assets/loose-end-v2.mjs?v=mending',route=>{staleRequested=true;return route.fulfill({contentType:'text/javascript',body:staleModule});});
+  const cachedPage=await cached.newPage();await cachedPage.goto(origin+'/questions/');await makeBrief(cachedPage);
+  await cachedPage.locator('#rebuild-brief').evaluate(el=>el.click());
+  assert(!staleRequested,'The new question sheet must request a fresh feedback module URL');
+  assert((await cachedPage.locator('.brief-keep [data-room-feedback]').innerText()).includes('rebuilt'),'A prior module cache must not hide local feedback');
+  results.push({label:'stale-module-cache',passed:true});await cached.close();
+
+  for(const theme of ['night','afterlight']) {
+    const page=await browser.newPage({viewport:{width:1024,height:768},reducedMotion:'reduce'});
+    await page.goto(origin+'/questions/');if(theme==='afterlight')await page.locator('#light-switch').click();
+    await next(page);await page.locator('#making').fill('An answer worth keeping on paper.');
+    await page.emulateMedia({media:'print'});
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    assert(await page.locator('[data-step]:visible').count()===6,'Printing includes every question stage');
+    assert(await page.locator('#making').inputValue()==='An answer worth keeping on paper.','Printing preserves the actual answer');
+    const printContrast=await page.evaluate(()=>{
+      const luminance=color=>color.match(/[\d.]+/g).slice(0,3).map(Number).map(c=>{const v=c/255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((sum,c,i)=>sum+c*[.2126,.7152,.0722][i],0);
+      return ['.choice','.question-help','#making','summary'].map(selector=>{
+        const element=document.querySelector(selector),style=getComputedStyle(element);
+        const background=style.backgroundColor==='rgba(0, 0, 0, 0)'?getComputedStyle(document.getElementById('loose-end')).backgroundColor:style.backgroundColor;
+        const foreground=style.color,fg=luminance(foreground),bg=luminance(background);
+        return {selector,foreground,background,ratio:(Math.max(fg,bg)+.05)/(Math.min(fg,bg)+.05)};
+      });
+    });
+    assert(printContrast.every(item=>item.ratio>=4.5),'Printed choices, help, answers and disclosures meet contrast in '+theme+': '+JSON.stringify(printContrast));
+    await audit(page,'questions-print-'+theme,true);await page.close();
+  }
 
   // The native header must not flash open while deferred enhancement loads.
   for (const mode of ['delayed-site-script','blocked-site-script']) {
@@ -245,7 +316,18 @@ try {
   // A cached six-field page must still be able to use its published modules.
   const legacy = await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
   const currentHTML=await readFile(new URL('../docs/questions/index.html',import.meta.url),'utf8');
-  const legacyHTML=currentHTML.replace(/<details data-followup>.*?<\/details>/gs,'').replace('loose-end-v2.mjs','loose-end.mjs');
+  const previousHTML=currentHTML
+    .replace(/  <link rel="stylesheet" href="[^"]*question-room\.css[^"]*">\n/,'')
+    .replace('<body class="question-room">','<body>')
+    .replace(/<div class="question-position".*?<\/div>/s,'<p class="mono question-progress" id="question-progress" data-enhance hidden></p>')
+    .replace(/ data-feedback-scope/g,'').replace(/<p[^>]*data-room-feedback[^>]*><\/p>/g,'');
+  const previous=await browser.newContext({viewport:{width:390,height:844}});
+  await previous.route('**/questions/',route=>route.fulfill({contentType:'text/html',body:previousHTML}));
+  const previousPage=await previous.newPage();await previousPage.goto(origin+'/questions/');await makeBrief(previousPage);
+  await previousPage.locator('#rebuild-brief').evaluate(el=>el.click());
+  assert((await previousPage.locator('#draft-status').innerText()).includes('rebuilt')&&(await previousPage.locator('#draft-status').boundingBox()).width>100,'Current module keeps visible global feedback on the previous page contract');
+  results.push({label:'previous-page-current-module',passed:true});await previous.close();
+  const legacyHTML=previousHTML.replace(/<details data-followup>.*?<\/details>/gs,'').replace('loose-end-v2.mjs','loose-end.mjs');
   await legacy.route('**/questions/',route=>route.fulfill({contentType:'text/html',body:legacyHTML}));
   const legacyPage=await legacy.newPage();
   const legacyErrors=[];legacyPage.on('pageerror',e=>legacyErrors.push(e.message));

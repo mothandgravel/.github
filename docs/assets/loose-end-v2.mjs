@@ -27,6 +27,8 @@ if (intake) {
   const brief = document.getElementById('brief-text');
   let step = 0;
   let generatedBrief = '';
+  let copyGeneration = 0;
+  brief.addEventListener('input', () => { copyGeneration++; });
   let guidedHistory = true;
   try { history.replaceState({ mgLooseEnd: true, step: 0 }, ''); } catch { guidedHistory = false; }
   const answers = () => normalizeDraft(Object.fromEntries(fields.map(key => [key, key === 'intent' ?
@@ -60,6 +62,7 @@ if (intake) {
     making.setAttribute('aria-invalid', 'true'); document.getElementById('making-error').hidden = false; making.focus(); return false;
   }
   function show(value, focus = true, record = true) {
+    copyGeneration++;
     step = value;
     updateGuides();
     if (record && guidedHistory) {
@@ -98,16 +101,27 @@ if (intake) {
   next.addEventListener('click', () => { if (step === 1 && !validate()) return; show(step + 1); });
   document.getElementById('edit-answers').addEventListener('click', () => { if (guidedHistory) history.go(1 - step); else show(1); });
   document.getElementById('rebuild-brief').addEventListener('click', event => {
+    copyGeneration++;
     generatedBrief = briefText(answers()); brief.value = generatedBrief;
     announce('Brief rebuilt from your answers, replacing the edits in the brief.', event.currentTarget);
   });
-  document.getElementById('download-brief').addEventListener('click', event => { download(brief.value, 'moth-and-gravel-loose-end.txt'); announce('Your edited brief was prepared for download. Nothing was sent to the studio.', event.currentTarget); });
+  document.getElementById('download-brief').addEventListener('click', event => { copyGeneration++; download(brief.value, 'moth-and-gravel-loose-end.txt'); announce('Your edited brief was prepared for download. Nothing was sent to the studio.', event.currentTarget); });
   document.getElementById('copy-brief').addEventListener('click', async event => {
     const source = event.currentTarget;
-    try { await navigator.clipboard.writeText(brief.value); announce('Brief copied. Nothing was sent to the studio.', source); }
-    catch { brief.focus({ preventScroll: true }); brief.select(); announce('Select and copy the brief here, or use Download.', source); }
+    const text = brief.value;
+    const generation = ++copyGeneration;
+    const isCurrent = () => generation === copyGeneration && step === panels.length - 1 && brief.value === text;
+    try {
+      await navigator.clipboard.writeText(text);
+      if (isCurrent()) announce('Brief copied. Nothing was sent to the studio.', source);
+    } catch {
+      if (!isCurrent()) return;
+      brief.focus({ preventScroll: true }); brief.select();
+      announce('Select and copy the brief here, or use Download.', source);
+    }
   });
   document.getElementById('carry-question').addEventListener('click', event => {
+    copyGeneration++;
     try {
       const saved = storage(); if (!saved) throw new Error('Storage unavailable');
       saved.setItem(draftKey, JSON.stringify({ version: 1, answers: answers(), brief: brief.value.slice(0, briefLimit) }));
@@ -122,7 +136,9 @@ if (intake) {
     intake.querySelectorAll('[data-followup]').forEach(el => { el.open = false; });
     intake.querySelectorAll('input[name="intent"]').forEach(el => { el.checked = el.value === intents[3]; });
     document.getElementById('making').removeAttribute('aria-invalid'); document.getElementById('making-error').hidden = true;
-    brief.value = ''; generatedBrief = ''; show(0); announce('Your answers and workbench draft were cleared from this tab. Downloaded copies remain yours.', event.currentTarget);
+    brief.value = ''; generatedBrief = ''; show(0, false);
+    event.currentTarget.focus({ preventScroll: true });
+    announce('Your answers and workbench draft were cleared from this tab. Downloaded copies remain yours.', event.currentTarget);
   });
   controls.hidden = false;
   document.querySelectorAll('[data-enhance]').forEach(el => { el.hidden = false; });

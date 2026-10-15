@@ -45,3 +45,29 @@ The question page joins the existing cold-load CI: three runs per mobile and
 desktop profile, median FCP ≤1800 ms, LCP ≤2500 ms, TBT ≤200 ms, CLS ≤0.1,
 performance ≥90 and technical SEO ≥95. The homepage's 1000 ms FCP budget stays.
 These are lab checks, not evidence of enquiries or human comprehension.
+
+## Audit follow-up
+
+The second review reproduced gaps that the initial green suite did not cover:
+
+- A clipboard promise settling after Clear, Back, an edit, rebuild, download or
+  a failed handoff could replace current feedback or move focus. Copy results
+  now belong to their initiating revision and view; obsolete results leave the
+  current words, focus and feedback alone. A newer copy owns its own result.
+- The previous cached module could run against the new hidden live region but
+  miss visible confirmations on unfocused clicks. The question page requests a
+  fresh module URL. Browser checks poison the previous URL and also exercise
+  the previous page contract with the current module and the original six-field
+  page with its retained module.
+- Night-theme printing made black choices sit on dark backgrounds and left
+  help too pale. Print now uses a paper palette and light native controls,
+  including focused answers, with all six question stages available.
+- Clear moved focus to the first question, then scrolled it out of view to show
+  the confirmation. Focus now stays on Clear beside its visible confirmation.
+
+Regression coverage includes delayed clipboard success and failure, cache
+boundaries, visible focus after clearing, and printing in both screen themes.
+The existing keyboard, hostile text, local storage, reading entrances and
+workbench contracts remain in the required browser suite. This is evidence for
+the exercised paths, not a claim that every browser or assistive-technology
+combination has been tested.

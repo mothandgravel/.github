@@ -36,3 +36,12 @@ html:is(:not(.has-js),.site-script-unavailable) .question-room .header-actions {
   html:is(:not(.has-js),.site-script-unavailable) .question-room .header-inner { height:auto;flex-wrap:wrap;padding-top:18px;gap:18px; }
   html:is(:not(.has-js),.site-script-unavailable) .question-room .main-nav { display:flex;position:static;flex-basis:100%;padding:0 0 12px;border:0; }
 }
+
+/* Printed answers use the same legible paper palette in either screen theme. */
+@media print {
+  :root { color-scheme:light; }
+  .question-room { --bg:#fff;--surface:#fff;--surface-2:#eee8dc;--ink:#202222;--secondary:#4a4a46;--muted:#5d5d55;--gold:#70542b;--gold-bright:#70542b;--line:#8d7858;background:#fff;color:var(--ink);color-scheme:light; }
+  .question-room .question-sheet { break-inside:auto; }
+  .question-room textarea { color:#202222;background:#fff; }
+  .question-room summary { color:#202222; }
+}
