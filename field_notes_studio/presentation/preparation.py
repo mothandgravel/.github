@@ -19,7 +19,9 @@ class PreparationWindow:
         main.columnconfigure(0, weight=1)
         main.rowconfigure(2, weight=1)
         main.rowconfigure(4, weight=2)
-        ttk.Label(main, text="Prepare new notes", style="Studio.TLabel").grid(row=0, column=0, sticky="w")
+        ttk.Label(main, text="Prepare new notes", style="Studio.TLabel").grid(
+            row=0, column=0, sticky="w"
+        )
         ttk.Label(
             main,
             text="Written note → reviewed script → narration → captions → production",

@@ -100,7 +100,9 @@ class Preparation:
             try:
                 path = self._script(entry)
                 if not path.is_file() or not path.stat().st_size:
-                    detail = "The registered script is missing or empty. Restore it before inspection."
+                    detail = (
+                        "The registered script is missing or empty. Restore it before inspection."
+                    )
                 else:
                     state = "Inspect script"
                     detail = "Script saved; inspect its source fingerprints and narration request before generation."
@@ -192,4 +194,6 @@ class Preparation:
             "Cloud execution from this preparation panel is not enabled yet. "
             "No service request was made."
         )
-        return PreparationSnapshot(note_id, item.episode, item.title, plan["script"], summary, before)
+        return PreparationSnapshot(
+            note_id, item.episode, item.title, plan["script"], summary, before
+        )

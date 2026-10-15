@@ -22,7 +22,12 @@ class PreparationWindowTests(unittest.TestCase):
         self.view.connect(lambda: None, self.view.clear, lambda: None, self.view.close)
         self.items = [
             PreparationItem(
-                "104", "Window", "104-window.html", "studio-essay", "Inspect script", "Inspect first."
+                "104",
+                "Window",
+                "104-window.html",
+                "studio-essay",
+                "Inspect script",
+                "Inspect first.",
             ),
             PreparationItem("105", "Newer", "105-newer.html", "", "Needs script", "No script yet."),
         ]

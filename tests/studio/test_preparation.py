@@ -158,7 +158,9 @@ class PreparationTests(unittest.TestCase):
 
     def test_existing_engine_rejection_is_not_bypassed(self):
         def stale(*_):
-            raise ValueError("Note 104 changed. Review the script before refreshing its fingerprint.")
+            raise ValueError(
+                "Note 104 changed. Review the script before refreshing its fingerprint."
+            )
 
         with self.assertRaisesRegex(ValueError, "Review the script"):
             Preparation(self.root, stale).inspect("104")
@@ -169,8 +171,9 @@ class PreparationTests(unittest.TestCase):
             for p in self.root.rglob("*")
             if p.is_file()
         }
-        with patch("socket.socket", side_effect=AssertionError("network")), patch(
-            "subprocess.Popen", side_effect=AssertionError("process")
+        with (
+            patch("socket.socket", side_effect=AssertionError("network")),
+            patch("subprocess.Popen", side_effect=AssertionError("process")),
         ):
             snapshot = self.service.inspect("104")
         after = {
@@ -206,8 +209,9 @@ class PreparationTests(unittest.TestCase):
             }
         )
         self.write("audio/episodes.json", self.episodes)
-        with patch.object(audio, "access_token", side_effect=AssertionError("auth")), patch.object(
-            audio, "synthesize", side_effect=AssertionError("synthesis")
+        with (
+            patch.object(audio, "access_token", side_effect=AssertionError("auth")),
+            patch.object(audio, "synthesize", side_effect=AssertionError("synthesis")),
         ):
             with self.assertRaisesRegex(ValueError, "Review the script"):
                 Preparation(self.root).inspect("104")
