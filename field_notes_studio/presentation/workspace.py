@@ -1,5 +1,6 @@
 """Episode controls and review surfaces; callbacks express user intent."""
 
+import copy
 import tkinter as tk
 from tkinter import ttk
 
@@ -36,6 +37,8 @@ class Workspace(ttk.Frame):
         self.speed = tk.StringVar(value="1.15")
         self.outro = tk.StringVar(value="5")
         self.action = tk.StringVar(value="video")
+        self.production_base = {}
+        self.show_recipe = {}
         self.production_busy = False
         self.has_episode = False
         for column, (label, variable, values) in enumerate(
@@ -71,7 +74,7 @@ class Workspace(ttk.Frame):
             pictogram="produce",
             text="Produce episode",
             command=callbacks["produce_episode"],
-            style="Accent.TButton",
+            style="Compact.TButton",
             state="disabled",
         )
         self.full_episode.pack(side="left", before=buttons.winfo_children()[0], padx=(0, 8))
@@ -101,6 +104,23 @@ class Workspace(ttk.Frame):
             SOUND,
             callbacks["changed"],
             "Pace and outro are in Produce. Inspect changes before queueing. Custom music needs a file and license credit.",
+        )
+        self.recipe_info = ttk.Label(
+            self.sound.form.content,
+            text="Configured defaults",
+            style="Muted.TLabel",
+            wraplength=520,
+        )
+        first = self.sound.form.content.winfo_children()[0]
+        self.recipe_info.pack(anchor="w", fill="x", before=first, pady=(0, 4))
+        self.recipe_button = ttk.Button(
+            self.sound.form.content, text="Show recipes / overrides…", command=callbacks["recipes"]
+        )
+        self.recipe_button.pack(anchor="w", before=first, pady=(0, 8))
+        self.sound.bind(
+            "<Configure>",
+            lambda e: self.recipe_info.configure(wraplength=max(200, e.width - 35)),
+            add=True,
         )
         tabs.add(self.sound, text="Audio")
         self.batch = Batch(
@@ -183,6 +203,19 @@ class Workspace(ttk.Frame):
                 command=callbacks[callback],
             ).pack(side="left", padx=(0, 6))
 
+    def preflight_status(self, message, action="video"):
+        short = message if len(message) <= 78 else message[:75] + "…"
+        if action != "export":
+            self.guidance.configure(text="Preflight · " + short)
+        if action in {"export", "both"}:
+            self.publication.preflight.configure(text="Export · " + short)
+
+    def effective_recipe(self):
+        values = copy.deepcopy(self.production_base)
+        values.update(self.sound.sound())
+        values.update(speed=float(self.speed.get()), outro_seconds=float(self.outro.get()))
+        return values
+
     def draft_conflict(self, visible):
         if visible:
             self.conflict.grid(row=7, column=0, sticky="ew")
@@ -203,6 +236,8 @@ class Workspace(ttk.Frame):
         return text
 
     def load(self, episode, settings):
+        self.production_base = copy.deepcopy(settings)
+        self.show_recipe = {}
         self.title.configure(text=episode.title)
         self.subtitle.configure(
             text=f"{episode.identifier} · {episode.duration / 60:.1f} min · AI-narrated"
@@ -237,6 +272,8 @@ class Workspace(ttk.Frame):
     def draft(self):
         publication = self.publication
         return {
+            "production_base": copy.deepcopy(self.production_base),
+            "show_recipe": copy.deepcopy(self.show_recipe),
             "recipe": {
                 "speed": self.speed.get(),
                 "outro": self.outro.get(),
@@ -248,6 +285,9 @@ class Workspace(ttk.Frame):
         }
 
     def restore(self, draft):
+        if isinstance(draft.get("production_base"), dict) and draft["production_base"]:
+            self.production_base = copy.deepcopy(draft["production_base"])
+        self.show_recipe = copy.deepcopy(draft.get("show_recipe", {}))
         if draft.get("sound"):
             self.sound.fill(draft["sound"])
         self.publication.metadata_draft = draft.get("metadata", {})

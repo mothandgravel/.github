@@ -74,7 +74,14 @@ through Release and the job toolbar) and removes repeated output guidance. It do
 not increase the minimum window size or shrink text. Compact tests require useful
 inspector height as well as visible tab/queue controls.
 
-## Next design candidates — not implemented
+## Follow-up implementation
+
+The first three candidates below are implemented by the [episode readiness, inline
+preflight and named-recipe follow-up](episode-readiness-recipes.md). The historical
+progress pass described above did not include them. Combined review playback,
+timecoded corrections, notifications and grouped batch outcomes remain deferred.
+
+## Design candidates recorded by the progress pass
 
 1. **One episode readiness overview.** Surface narrative/caption readiness, current
    full edition, approval and package identity on one episode card, with a single

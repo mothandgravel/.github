@@ -17,6 +17,7 @@ class ProductionFlow:
     def _failed(self, message):
         self._busy(False)
         self.controller.view.status(f"Episode was not queued: {message}")
+        self.controller.view.workspace.preflight_status("Blocked: " + message)
 
     def start(self, episode=None):
         c = self.controller
@@ -103,6 +104,9 @@ class ProductionFlow:
                 )
                 return
             request, summary = value
+            c.view.workspace.preflight_status(
+                "Full episode checks passed. Queueing audio + video together."
+            )
             c.ready = None
             c.view.workspace.show_plan(summary + "\n\nQueueing the full episode…")
 
@@ -124,4 +128,10 @@ class ProductionFlow:
 
             c.task(lambda: c.studio.submit(episode, "video", request), queued, self._failed)
 
-        c.task(lambda: c.studio.plan(episode, "video", speed, outro, sound), planned, self._failed)
+        recipe = c.view.workspace.effective_recipe()
+        c.view.workspace.preflight_status("Checking source, recipe and installed video tools…")
+        c.task(
+            lambda: c.studio.checked_plan(episode, "video", speed, outro, sound, recipe),
+            planned,
+            self._failed,
+        )

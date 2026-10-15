@@ -34,23 +34,38 @@ class Publication(ttk.Frame):
         self.metadata_draft = {}
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
-        actions = ttk.Frame(self, padding=(10, 8))
+        actions = ttk.Frame(self, padding=(10, 0))
         actions.grid(row=0, column=0, sticky="ew")
+        button_row = ttk.Frame(actions)
+        button_row.pack(anchor="w")
         self.actions = {}
         for key, label, callback in (
-            ("review", "1. Review video", callbacks["release_review"]),
-            ("package", "2. Inspect package", callbacks["release_package"]),
-            ("upload", "3. YouTube Studio", callbacks["youtube"]),
+            ("review", "Review edition", callbacks["release_review"]),
+            ("package", "Inspect package", callbacks["release_package"]),
+            ("upload", "YouTube Studio", callbacks["youtube"]),
         ):
             button = ActionButton(
-                actions,
+                button_row,
                 text=label,
                 command=callback,
                 pictogram={"review": "review", "package": "package", "upload": "external"}[key],
-                style="Accent.TButton" if key == "upload" else "Compact.TButton",
+                style="Compact.TButton",
             )
             button.pack(side="left", padx=(0, 6))
             self.actions[key] = button
+        self.preflight = ttk.Label(
+            actions,
+            text="Export checks run here before queueing.",
+            style="Muted.TLabel",
+            wraplength=540,
+        )
+        # A second toolbar row exposes blockers without consuming the editor's form.
+        self.preflight.pack(anchor="w", fill="x", pady=(3, 0))
+        self.bind(
+            "<Configure>",
+            lambda e: self.preflight.configure(wraplength=max(220, e.width - 30)),
+            add=True,
+        )
         self.tabs = ttk.Notebook(self)
         self.tabs.grid(row=1, column=0, sticky="nsew")
         copy = ttk.Frame(self.tabs, padding=10)

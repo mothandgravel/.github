@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import queue
 import re
@@ -10,6 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 
+from field_notes_studio.episode_controls import EpisodeControls
 from field_notes_studio.job_progress import progress_for
 from field_notes_studio.models import DraftConflict
 from field_notes_studio.processes import launch_worker
@@ -44,6 +46,7 @@ class Controller:
         self.draft_identity = ""
         self.draft_value = None
         self.production = ProductionFlow(self)
+        self.episode_controls = EpisodeControls(self)
 
     def draft_changed(self):
         if self.loading or self.closed or not getattr(self.view, "root", None):
@@ -226,6 +229,7 @@ class Controller:
                 self.refresh_release()
                 if getattr(self.view, "root", None):
                     self.load_metadata()
+                self.episode_controls.invalidate(refresh=True)
                 if after_load is not None:
                     after_load()
             elif on_error is not None:
@@ -249,6 +253,7 @@ class Controller:
         self.task(lambda: self.studio.settings(identifier), loaded, failed)
 
     def changed(self):
+        self.episode_controls.invalidate()
         self.generation += 1
         self.ready = None
         self.view.workspace.show_plan("Inspect your changes before queueing an edition.")
@@ -342,15 +347,30 @@ class Controller:
             if generation != self.generation:
                 return
             request, summary = value
+            self.view.workspace.preflight_status(
+                "Ready for " + action + ". Local checks passed; publication remains explicit.",
+                action,
+            )
             self.ready = (identifier, action, request)
             self.view.workspace.show_plan(summary, ready=True)
             self.view.status("Plan inspected. Queue this edition when ready.")
 
+        recipe = (
+            copy.deepcopy(self.view.workspace.production_base)
+            if hasattr(self.view.workspace, "production_base")
+            else None
+        )
+
+        def failed(message):
+            if generation == self.generation and identifier == self.selected:
+                self.episode_controls.failed(message)
+                self.view.workspace.preflight_status("Blocked: " + message, action)
+                self.view.workspace.show_plan("Preflight blocked:\n\n" + message)
+
         self.task(
-            lambda: self.studio.plan(identifier, action, speed, outro, sound)
-            if sound is not None
-            else self.studio.plan(identifier, action, speed, outro),
+            lambda: self.studio.checked_plan(identifier, action, speed, outro, sound, recipe),
             planned,
+            failed,
         )
 
     def load_metadata(self, discard=False):
@@ -459,6 +479,7 @@ class Controller:
         self.task(lambda: self.studio.publication(identifier, url, published), saved)
 
     def refresh_release(self):
+        self.episode_controls.invalidate(refresh=True)
         if not self.selected or self.loading:
             return
         identifier = self.selected
@@ -694,6 +715,8 @@ class Controller:
 
         def saved(_):
             self.view.status(f"Review recorded for {identifier}.")
+            if identifier == self.selected:
+                self.episode_controls.invalidate(refresh=True)
             if generation == self.review_generation:
                 self.refresh_review()
 
@@ -868,6 +891,7 @@ class Controller:
                 if any(status == "succeeded" for _, status in prepared):
                     self.task(self.studio.catalog, self.refresh_prepared_shelf)
             self.job_detail()
+            self.episode_controls.jobs_changed(jobs)
             signature = tuple(
                 (job.identifier, job.status) for job in jobs if job.episode == self.selected
             )

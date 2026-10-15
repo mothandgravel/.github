@@ -48,6 +48,7 @@ class UITests(unittest.TestCase):
         for mock in [
             patch("field_notes_studio.controller.launch_worker"),
             patch("field_notes_studio.service.launch_worker"),
+            patch("field_notes_studio.pipeline.Pipeline.preflight"),
             patch("field_notes_studio.pipeline.Pipeline.catalog", return_value=[episode]),
             patch(
                 "field_notes_studio.pipeline.Pipeline.source",

@@ -63,9 +63,67 @@ class Studio:
         speed: float | None,
         outro: float | None,
         sound: dict | None = None,
+        recipe: dict | None = None,
     ) -> tuple[dict, str]:
-        request = self.pipeline.request(episode, action, speed, outro, sound)
+        request = self.pipeline.request(episode, action, speed, outro, sound, recipe)
         return request, self.pipeline.plan(episode, action, request)
+
+    def checked_plan(self, episode, action, speed, outro, sound=None, recipe=None):
+        request, summary = self.plan(episode, action, speed, outro, sound, recipe)
+        self.pipeline.preflight(episode, action, request)
+        return request, "Preflight passed for this action.\n\n" + summary
+
+    def readiness(self, episode, settings):
+        from field_notes_studio.readiness_models import Readiness, ReadinessBusy
+
+        def active():
+            return next(
+                (
+                    j
+                    for j in self.repository.jobs()
+                    if j.episode == episode and j.status in {"queued", "running", "waiting"}
+                ),
+                None,
+            )
+
+        job = active()
+        if job is None:
+            value = self.pipeline.readiness(episode, settings)
+            job = active()
+            if job is None:
+                if value.action in {"produce", "export"}:
+                    action = "video" if value.action == "produce" else "export"
+                    try:
+                        request = self.pipeline.request(
+                            episode,
+                            action,
+                            settings.get("speed"),
+                            settings.get("outro_seconds"),
+                            recipe=settings,
+                        )
+                        self.pipeline.preflight(episode, action, request)
+                    except ReadinessBusy as exc:
+                        value = replace(
+                            value, action="check", title="Files are in use", detail=str(exc)
+                        )
+                    except (OSError, ValueError, KeyError) as exc:
+                        value = replace(
+                            value,
+                            action="health",
+                            title="Preflight needs attention",
+                            detail=str(exc),
+                        )
+                # A different window may have queued this episode during preflight.
+                job = active()
+                if job is None:
+                    return value
+        return Readiness(
+            episode,
+            "job",
+            "Episode work is " + job.status,
+            "Follow the existing job; do not queue another copy. Saved media and review are checked when the job finishes.",
+            job=job.identifier,
+        )
 
     def settings(self, episode: str) -> dict:
         settings = self.pipeline.settings(episode)
@@ -145,7 +203,9 @@ class Studio:
                     sound[key] = float(sound[key])
                 if sound["music_mode"] != "file":
                     sound["music_file"] = None
-            request, summary = self.plan(identifier, action, speed, outro, sound)
+            request, summary = self.checked_plan(
+                identifier, action, speed, outro, sound, draft.get("production_base")
+            )
             plans.append((identifier, action, request))
             summaries.append(f"{identifier} · {action}\n{summary}")
         return plans, "\n\n".join(summaries)

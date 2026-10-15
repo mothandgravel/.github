@@ -36,6 +36,20 @@ publishing. Known feed data still prefills; new private recordings do not invent
 YouTube URL or publication date. **Use today** fills the date only when selected;
 existing drafts and explicitly blank saved records are preserved.
 
+## Episode readiness and show recipes
+
+The sidebar's **Episode readiness** card verifies the current recording, full edition,
+review and package, then offers one next action. A changed upload title requires
+export, not another review; a changed production recipe is shown as a draft difference.
+Preflight blockers appear beside Produce/Export. Use **Audio → Show recipes / overrides…**
+to save and explicitly apply a named local recipe to one episode, with visible differences
+and one-level undo. Existing saved media, approvals and other episode drafts remain intact.
+
+See [readiness, inline preflight and show recipes](episode-readiness-recipes.md) for scope,
+stale-check behavior and recovery. These checks run locally; no Cloud call, automatic
+installation or publication occurs. The combined player/timecoded corrections,
+notifications and grouped batch outcomes remain later work.
+
 ## Get an episode out
 
 Open **Release** for the guided handoff:

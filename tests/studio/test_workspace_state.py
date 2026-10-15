@@ -31,6 +31,8 @@ class WorkspaceStateTests(unittest.TestCase):
             "published_at": "2026-10-13T00:00:00+00:00",
         }
         for mock in (
+            # This fixture isolates draft/transaction behavior; real preflight has its own media tests.
+            patch.object(Pipeline, "preflight"),
             patch.object(Pipeline, "source", return_value=self.entry),
             patch.object(Pipeline, "entries", return_value=[self.entry]),
         ):

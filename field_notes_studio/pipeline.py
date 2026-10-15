@@ -14,7 +14,7 @@ from datetime import datetime
 from pathlib import Path
 
 from field_notes_audio import site
-from field_notes_audio.locks import run_lock
+from field_notes_audio.locks import RecordingBusy, run_lock
 from field_notes_audio.production import packages, runner, sources
 from field_notes_audio.production.config import load_settings, number, validate_settings
 from field_notes_audio.production.editions import AUDIO_FILES, cache_valid, fingerprint
@@ -282,6 +282,8 @@ class Pipeline:
                 edition = stack.enter_context(
                     packages.locked_editions([entry], self.output, full_video=True)
                 )[0]
+            except RecordingBusy:
+                raise  # Temporary ownership is not an unverifiable portable edition.
             except (ValueError, OSError) as exc:
                 problem = str(exc)
             # Same lock order as export: production first, then upload files.
@@ -374,6 +376,20 @@ class Pipeline:
             raise ValueError(
                 "Package files are unavailable. Check the files again before opening or copying a path."
             ) from exc
+
+    def preflight(self, identifier, action, request):
+        from field_notes_studio.readiness import preflight
+        from field_notes_studio.readiness_models import ReadinessBusy
+
+        try:
+            preflight(self, identifier, action, request)
+        except RecordingBusy as exc:
+            raise ReadinessBusy(str(exc)) from exc
+
+    def readiness(self, identifier, settings):
+        from field_notes_studio.readiness import inspect
+
+        return inspect(self, identifier, settings)
 
     def settings(self, identifier: str) -> dict:
         return load_settings(self.root / "audio/production/settings.json", identifier)
@@ -475,10 +491,15 @@ class Pipeline:
         speed: float | None,
         outro: float | None,
         sound: dict | None = None,
+        recipe: dict | None = None,
     ) -> dict:
         if action not in ACTIONS:
             raise ValueError("Unknown studio action")
-        settings = self.settings(identifier)
+        settings = (
+            copy.deepcopy(recipe)
+            if recipe is not None and action != "export"
+            else self.settings(identifier)
+        )
         if action != "export":
             if sound is not None:
                 allowed = {

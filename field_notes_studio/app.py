@@ -12,6 +12,7 @@ from field_notes_studio.preparation_service import PreparationService
 from field_notes_studio.presentation import theme
 from field_notes_studio.presentation.preparation import PreparationWindow
 from field_notes_studio.presentation.queue import ProductionQueue
+from field_notes_studio.presentation.readiness import ReadinessCard
 from field_notes_studio.presentation.shelf import Shelf
 from field_notes_studio.presentation.workspace import Workspace
 from field_notes_studio.service import Studio
@@ -51,9 +52,16 @@ class Application:
             self.controller.select,
             lambda: self.open_preparation(query=self.shelf.query.get()),
         )
+        self.readiness = ReadinessCard(
+            self.shelf,
+            self.controller.episode_controls.act,
+            self.controller.episode_controls.refresh,
+        )
+        self.readiness.grid(row=6, column=0, sticky="ew")
         self.workspace = Workspace(
             body,
             {
+                "recipes": self.controller.episode_controls.open_recipes,
                 "changed": self.controller.changed,
                 "draft": self.controller.draft_changed,
                 "metadata_save": self.controller.save_metadata,

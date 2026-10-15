@@ -66,6 +66,7 @@ class ControllerTests(unittest.TestCase):
             outro=Value(""),
             action=Value("export"),
             show_plan=lambda *args, **kwargs: None,
+            preflight_status=lambda *args: None,
         )
         view = SimpleNamespace(workspace=workspace, status=lambda _: None)
 
@@ -73,12 +74,12 @@ class ControllerTests(unittest.TestCase):
             planned.append(args)
             return {"edition": "saved"}, "Package the saved edition"
 
-        controller = Controller(SimpleNamespace(plan=plan), view)
+        controller = Controller(SimpleNamespace(checked_plan=plan), view)
         self.addCleanup(controller.close)
         controller.selected = "note-001"
-        controller.task = lambda operation, callback: callback(operation())
+        controller.task = lambda operation, callback, on_error=None: callback(operation())
         controller.inspect()
-        self.assertEqual(planned, [("note-001", "export", None, None)])
+        self.assertEqual(planned, [("note-001", "export", None, None, None, None)])
         self.assertEqual(controller.ready, ("note-001", "export", {"edition": "saved"}))
 
     def test_review_result_for_an_old_queue_selection_cannot_redirect_the_workspace(self):
@@ -95,7 +96,9 @@ class ControllerTests(unittest.TestCase):
         self.addCleanup(controller.close)
         controller.episodes = {"note-001": object()}
         pending = []
-        controller.task = lambda operation, callback: pending.append((operation, callback))
+        controller.task = lambda operation, callback, on_error=None: pending.append(
+            (operation, callback)
+        )
         controller.review_job()
         selection.value = "another-job"
         operation, callback = pending.pop()
@@ -112,7 +115,7 @@ class ControllerTests(unittest.TestCase):
         studio = SimpleNamespace(repository=SimpleNamespace(get=lambda _: job))
         controller = Controller(studio, view)
         self.addCleanup(controller.close)
-        controller.task = lambda operation, callback: callback(operation())
+        controller.task = lambda operation, callback, on_error=None: callback(operation())
         controller.review_job()
         self.assertIn("completed audio or full-video", messages[-1])
         job.action = "video"
@@ -133,7 +136,9 @@ class ControllerTests(unittest.TestCase):
         self.addCleanup(controller.close)
         controller.episodes = {"note-001": object()}
         pending = []
-        controller.task = lambda operation, callback: pending.append((operation, callback))
+        controller.task = lambda operation, callback, on_error=None: pending.append(
+            (operation, callback)
+        )
         controller.review_job()
         # A newer shelf selection invalidates the generation while the read is pending.
         controller.selected = "note-002"
@@ -152,12 +157,14 @@ class ControllerTests(unittest.TestCase):
             show_plan=lambda *args, **kwargs: calls.append(args),
         )
         view = SimpleNamespace(workspace=workspace, status=lambda text: calls.append(text))
-        studio = SimpleNamespace(plan=lambda *_: ({"settings": {}}, "Old plan"))
+        studio = SimpleNamespace(checked_plan=lambda *_: ({"settings": {}}, "Old plan"))
         controller = Controller(studio, view)
         self.addCleanup(controller.close)
         controller.selected = "note-001"
         pending = []
-        controller.task = lambda operation, callback: pending.append((operation, callback))
+        controller.task = lambda operation, callback, on_error=None: pending.append(
+            (operation, callback)
+        )
         controller.inspect()
         controller.changed()
         operation, callback = pending.pop()

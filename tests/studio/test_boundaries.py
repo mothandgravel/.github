@@ -14,6 +14,9 @@ class BoundaryTests(unittest.TestCase):
                 package / name
                 for name in (
                     "controller.py",
+                    "episode_controls.py",
+                    "readiness_models.py",
+                    "recipes.py",
                     "production_flow.py",
                     "job_history.py",
                     "job_progress.py",
