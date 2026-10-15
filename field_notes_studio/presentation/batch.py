@@ -15,12 +15,13 @@ class Batch(ttk.Frame):
         self.choices = {}
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
-        ttk.Label(
+        self.explanation = ttk.Label(
             self,
             text="Choose episodes, then inspect each saved draft recipe. Output follows Produce. Nothing queues until the complete batch passes inspection.",
             wraplength=540,
             style="Muted.TLabel",
-        ).grid(row=0, column=0, sticky="ew", pady=(0, 8))
+        )
+        self.explanation.grid(row=0, column=0, sticky="ew", pady=(0, 8))
         self.form = ScrollArea(self, padding=4)
         self.form.grid(row=1, column=0, sticky="nsew")
         self.summary = tk.Text(
@@ -61,6 +62,11 @@ class Batch(ttk.Frame):
 
     def selection(self):
         return [identifier for identifier, value in self.choices.items() if value.get()]
+
+    def output(self, action):
+        self.explanation.configure(
+            text=f"Output: {action}. Choose episodes, then inspect each saved draft recipe. Queueing requires the complete batch to pass inspection."
+        )
 
     def show(self, message, ready=False):
         set_text(self.summary, message)

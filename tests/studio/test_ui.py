@@ -170,6 +170,7 @@ class UITests(unittest.TestCase):
         workspace.publication.editor.values["description"].set(
             "Paragraph one.\n\nUnfinished paragraph two"
         )
+        workspace.batch.choices["note-001"].set(True)
         workspace.tabs.select(workspace.publication)
         workspace.publication.tabs.select(workspace.publication.editor)
         self.root.update()
@@ -185,6 +186,7 @@ class UITests(unittest.TestCase):
         self.assertEqual(workspace.sound.raw()["music_credit"], "A credit\nLicense details")
         self.assertEqual(workspace.url.get(), "unfinished link")
         self.assertEqual(workspace.date.get(), "2026-")
+        self.assertEqual(workspace.batch.selection(), ["note-001"])
         self.assertEqual(
             workspace.publication.editor.raw()["description"],
             "Paragraph one.\n\nUnfinished paragraph two",
@@ -195,6 +197,19 @@ class UITests(unittest.TestCase):
         self.assertFalse(workspace.review.audio_checked.get())
         self.assertEqual(self.app.controller.studio.repository.jobs(), [])
         self.assertEqual(self.app.controller.studio.repository.publications(), {})
+
+    def test_drafts_checkpoint_without_closing_and_loading_does_not_replace_them(self):
+        repository = self.app.controller.studio.repository
+        self.app.workspace.speed.set("unfinished")
+        self.wait(
+            lambda: repository.state("draft:note-001").get("recipe", {}).get("speed")
+            == "unfinished"
+        )
+        self.app.controller.loading = True
+        self.app.workspace.speed.set("temporary loading value")
+        self.app.controller.checkpoint()
+        self.assertEqual(repository.state("draft:note-001")["recipe"]["speed"], "unfinished")
+        self.app.controller.loading = False
 
     def test_checkpoint_failure_keeps_the_window_and_edits_open(self):
         self.app.workspace.outro.set("unfinished")

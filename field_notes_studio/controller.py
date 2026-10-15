@@ -42,23 +42,24 @@ class Controller:
         self.draft_timer = self.view.root.after(400, self.autosave)
 
     def checkpoint(self):
-        if not getattr(self.view, "root", None) or not self.selected or self.loading:
+        if not getattr(self.view, "root", None) or not self.selected:
             return
         workspace = self.view.workspace
-        self.studio.repository.checkpoint(
-            {
-                "draft:" + self.selected: workspace.draft(),
-                "session": {
-                    "episode": self.selected,
-                    "tab": workspace.tabs.index(workspace.tabs.select()),
-                    "release_tab": workspace.publication.tabs.index(
-                        workspace.publication.tabs.select()
-                    ),
-                    "search": self.view.shelf.query.get(),
-                    "geometry": self.view.root.geometry(),
-                },
-            }
-        )
+        values = {
+            "session": {
+                "episode": self.selected,
+                "tab": workspace.tabs.index(workspace.tabs.select()),
+                "release_tab": workspace.publication.tabs.index(
+                    workspace.publication.tabs.select()
+                ),
+                "search": self.view.shelf.query.get(),
+                "geometry": self.view.root.geometry(),
+                "batch": workspace.batch.selection(),
+            },
+        }
+        if not self.loading:
+            values["draft:" + self.selected] = workspace.draft()
+        self.studio.repository.checkpoint(values)
 
     def autosave(self):
         self.draft_timer = None
@@ -141,6 +142,8 @@ class Controller:
                             )
                         )
                         self.view.shelf.query.set(session.get("search", ""))
+                        for episode, choice in self.view.workspace.batch.choices.items():
+                            choice.set(episode in session.get("batch", []))
                         geometry = session.get("geometry", "")
                         if geometry:
                             self.view.root.geometry(geometry)
@@ -172,6 +175,7 @@ class Controller:
         self.batch_generation += 1
         self.batch_ready = None
         self.view.workspace.batch.show("Inspect the selected episodes before queueing.")
+        self.draft_changed()
 
     def health(self):
         if self.health_busy:

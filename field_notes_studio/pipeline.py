@@ -6,6 +6,7 @@ import argparse
 import copy
 import hashlib
 import re
+import subprocess
 import tempfile
 from collections.abc import Callable
 from contextlib import ExitStack
@@ -164,7 +165,7 @@ class Pipeline:
                     self.root, argparse.Namespace(audio_only=audio_only, browser_executable=None)
                 )
                 lines.append(f"{name} preflight: ready")
-            except (OSError, ValueError) as exc:
+            except (OSError, ValueError, subprocess.SubprocessError) as exc:
                 lines.append(f"{name} preflight: {exc}")
 
         preflight(True, "Audio")

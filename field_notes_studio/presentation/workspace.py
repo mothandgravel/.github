@@ -94,6 +94,7 @@ class Workspace(ttk.Frame):
             tabs, callbacks["batch_inspect"], callbacks["batch_submit"], callbacks["batch_changed"]
         )
         tabs.add(self.batch, text="Batch")
+        self.batch.output(self.action.get())
         self.health = self._text_tab(tabs, "Health")
         tabs.bind(
             "<<NotebookTabChanged>>",
@@ -202,6 +203,8 @@ class Workspace(ttk.Frame):
             self.publication.load_episode(self.publication.current_episode)
 
     def output_guidance(self):
+        if hasattr(self, "batch"):
+            self.batch.output(self.action.get())
         messages = {
             "audio": "Audio → finish an MP3 and subtitles. Then open Review to listen and approve.",
             "preview": "Preview → render the first 10 seconds to check the video style.",
