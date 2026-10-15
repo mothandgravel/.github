@@ -53,7 +53,8 @@ The second review reproduced gaps that the initial green suite did not cover:
 - A clipboard promise settling after Clear, Back, an edit, rebuild, download or
   a failed handoff could replace current feedback or move focus. Copy results
   now belong to their initiating revision and view; obsolete results leave the
-  current words, focus and feedback alone. A newer copy owns its own result.
+  current words, focus and feedback alone, including when focus has moved to
+  navigation. A newer copy owns its own result.
 - The previous cached module could run against the new hidden live region but
   miss visible confirmations on unfocused clicks. The question page requests a
   fresh module URL. Browser checks poison the previous URL and also exercise

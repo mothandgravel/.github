@@ -109,8 +109,9 @@ if (intake) {
   document.getElementById('copy-brief').addEventListener('click', async event => {
     const source = event.currentTarget;
     const text = brief.value;
+    const focus = document.activeElement;
     const generation = ++copyGeneration;
-    const isCurrent = () => generation === copyGeneration && step === panels.length - 1 && brief.value === text;
+    const isCurrent = () => generation === copyGeneration && step === panels.length - 1 && brief.value === text && document.activeElement === focus;
     try {
       await navigator.clipboard.writeText(text);
       if (isCurrent()) announce('Brief copied. Nothing was sent to the studio.', source);

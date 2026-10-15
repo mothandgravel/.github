@@ -223,7 +223,7 @@ try {
   await blocked.close();
 
   // A permission prompt may settle after the visitor has moved on.
-  for (const outcome of ['resolve','reject']) for (const action of ['clear','back','edit','rebuild','download','failed-handoff']) {
+  for (const outcome of ['resolve','reject']) for (const action of ['clear','back','edit','rebuild','download','failed-handoff','focus-elsewhere']) {
     const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
     await page.goto(origin+'/questions/');
     await makeBrief(page);
@@ -231,6 +231,7 @@ try {
     await page.locator('#copy-brief').evaluate(el=>el.click());
     if(action==='clear') await page.locator('#clear-draft').click();
     if(action==='back') { await page.locator('#question-back').click();await page.locator('#constraints').waitFor({state:'visible'}); }
+    if(action==='focus-elsewhere') await page.locator('#menu-toggle').focus();
     if(action==='edit') await page.locator('#brief-text').fill('My newer wording.');
     if(action==='rebuild') await page.locator('#rebuild-brief').click();
     if(action==='download') { const downloaded=page.waitForEvent('download');await page.locator('#download-brief').click();await downloaded; }
