@@ -21,6 +21,8 @@ try {
       ['editorial-thread', new URL('/threads/something-happened/', candidate).href, 3],
       ['workbench-first', new URL('/workbench/', candidate).href, 3],
       ['workbench-return', new URL('/workbench/return/', candidate).href, 3],
+      ['notes-archive', new URL('/notes/', candidate).href, 3],
+      ['notes-reading', new URL('/notes/013-work-outlives-the-window.html', candidate).href, 3],
       ...(process.env.LIVE_URL ? [['live-before', process.env.LIVE_URL, 3]] : []),
     ]) {
       for (let i = 0; i < repetitions; i++) {
@@ -61,7 +63,7 @@ for (const profile of ['mobile', 'desktop']) for (const name of [...new Set(runs
     scores: Object.fromEntries(Object.keys(group[0].scores).map(k => [k, median(group.map(r => r.scores[k]))])),
     rangeFcp: [Math.min(...group.map(r => r.fcp)), Math.max(...group.map(r => r.fcp))] };
   summaries.push(summary);
-  if (['candidate','mapping-study','editorial-thread','workbench-first','workbench-return'].includes(name)) {
+  if (['candidate','mapping-study','editorial-thread','workbench-first','workbench-return','notes-archive','notes-reading'].includes(name)) {
     const fcpBudget = name === 'candidate' ? 1000 : 1800;
     for (const [key, maximum] of [['fcp', fcpBudget], ['lcp', 2500], ['tbt', 200], ['cls', 0.1]])
       if (summary[key] > maximum) failures.push(`${name}/${profile}: ${key} ${summary[key]} exceeds ${maximum}`);
@@ -70,7 +72,7 @@ for (const profile of ['mobile', 'desktop']) for (const name of [...new Set(runs
   }
 }
 await writeFile(join(output, 'summary.json'), JSON.stringify({
-  methodology: 'Median of three independent cold Lighthouse navigations per URL/profile; Lighthouse defaults simulate mobile slow 4G/CPU and desktop. Baseline and candidate homepages are served on the same CI host without compression. The new mapping study is measured independently without a nonexistent base-page comparison; its FCP budget is 1800 ms, with the same 2500 ms LCP, 200 ms TBT and 0.1 CLS limits. The editorial thread is also measured independently with an 1800 ms FCP budget and the same LCP, TBT and CLS limits. Both noindex workbench previews are measured against the same 1800 ms FCP, 2500 ms LCP, 200 ms TBT and 0.1 CLS budgets; their intentional noindex directive is exempt from the SEO score requirement. The homepage retains its 1000 ms FCP budget. Live-before is a separate deployed-host measurement, not an after result or user field data. FCP is first visible content, LCP is main visible content; neither means every image is loaded. Scores do not establish indexing, AI recommendations or enquiries.',
+  methodology: 'Median of three independent cold Lighthouse navigations per URL/profile; Lighthouse defaults simulate mobile slow 4G/CPU and desktop. Baseline and candidate homepages are served on the same CI host without compression. The new mapping study is measured independently without a nonexistent base-page comparison; its FCP budget is 1800 ms, with the same 2500 ms LCP, 200 ms TBT and 0.1 CLS limits. The editorial thread is also measured independently with an 1800 ms FCP budget and the same LCP, TBT and CLS limits. Both noindex workbench previews are measured against the same 1800 ms FCP, 2500 ms LCP, 200 ms TBT and 0.1 CLS budgets; their intentional noindex directive is exempt from the SEO score requirement. The Field Notes archive and the Studio article are measured independently with the same 1800 ms FCP, 2500 ms LCP, 200 ms TBT and 0.1 CLS budgets, plus technical SEO of at least 95. The homepage retains its 1000 ms FCP budget. Live-before is a separate deployed-host measurement, not an after result or user field data. FCP is first visible content, LCP is main visible content; neither means every image is loaded. Scores do not establish indexing, AI recommendations or enquiries.',
   summaries, failures, runs,
 }, null, 2));
 console.log(JSON.stringify({ summaries, failures }, null, 2));

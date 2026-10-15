@@ -47,6 +47,7 @@ jobs:
           node --check docs/assets/mapping-study.mjs
           node --check scripts/audit_mapping.mjs
           node --check scripts/audit_thread.mjs
+          node --check scripts/audit_reading.mjs
           node --check scripts/audit_workbench_finish.mjs
           node --check docs/assets/connection-study.mjs
           node --check docs/assets/connection-study-model.mjs

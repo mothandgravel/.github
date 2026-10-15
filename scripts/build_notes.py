@@ -42,6 +42,9 @@ def load_notes():
         assert n["title"] and n["summary"]
         assert n["visual"] in ("foundations", "themes", "forms")
         assert all(i in ids and i != n["id"] for i in n["related"] + n["supersedes"])
+        if n.get('nextReading'):
+            assert n['nextReading']['id'] in n['related'], 'Next reading must be a related published note'
+            assert n['nextReading']['bridge'].strip(), 'Next reading needs an editorial connection'
     return sorted(notes, key=lambda n: int(n["id"]), reverse=True)
 
 
@@ -97,6 +100,49 @@ def replace_slot(path, name, content, check):
         path.write_text(new)
 
 
+def reading_exit(n, notes):
+    """One editorial continuation, followed by distinct alternatives. No reading script."""
+    by_id = {other['id']: other for other in notes}
+    next_reading = n.get('nextReading')
+    next_id = next_reading['id'] if next_reading else next(iter(n['related']), None)
+    seen = {n['id'], next_id}
+    groups = []
+    candidates = (
+        ('Other connections', [by_id[i] for i in n['related']]),
+        ('Continue the thread', [other for other in notes if n['thread'] and other['thread'] == n['thread']]),
+        ('Revisited in', [other for other in notes if n['id'] in other['supersedes']]),
+    )
+    for label, entries in candidates:
+        links = []
+        for other in entries:
+            if other['id'] in seen:
+                continue
+            seen.add(other['id'])
+            links.append(f'<a href="./{other["slug"]}">{escape(other["title"])} <span aria-hidden="true">↗</span></a>')
+        if links:
+            groups.append(f'<div class="reading-connections"><h3 class="mono">{label}</h3>{"".join(links)}</div>')
+    continuation = ''
+    if next_id:
+        other = by_id[next_id]
+        bridge = next_reading['bridge'] if next_reading else other['summary']
+        continuation = f'''<a class="reading-next" href="./{other['slug']}" aria-labelledby="next-reading-title" aria-describedby="next-reading-bridge">
+          <span class="mono">FOLLOW THE QUESTION / {other['id']}</span>
+          <h2 id="next-reading-title">{escape(other['title'])}</h2>
+          <p id="next-reading-bridge">{escape(bridge)}</p>
+          <span class="reading-next-action">Read Field Note {other['id']} <span aria-hidden="true">↗</span></span>
+        </a>'''
+    specimen = ''
+    if n.get('specimen'):
+        specimen = f'<a href="{escape(n["specimen"]["href"], quote=True)}">{escape(n["specimen"]["label"])} <span aria-hidden="true">↗</span></a>'
+    return f'''<section class="note-end note-related reading-exit" aria-label="After Field Note {n['id']}">
+      <p class="reading-end-mark mono">END OF FIELD NOTE / {n['id']}</p>
+      <div class="reading-exit-grid">{continuation}<nav class="reading-alternatives" aria-label="More from the workbench">{''.join(groups)}
+        <div class="reading-routes"><a href="./">All Field Notes <span aria-hidden="true">↗</span></a>{specimen}<a href="../#work">Working specimens <span aria-hidden="true">↗</span></a></div>
+      </nav></div>
+      <div class="reading-invitation"><div><h2>Something here feels familiar?</h2><p>A rough edge, an unfinished idea, a question that keeps returning.</p></div><a class="editorial-link" href="../questions/">Bring your version <span aria-hidden="true">↗</span></a></div>
+    </section>'''
+
+
 def build(check=False):
     notes = load_notes()
     # The published catalog is also the feed: unpublished research never enters it.
@@ -141,14 +187,7 @@ def build(check=False):
     replace_slot(index, 'archive', ''.join(row(n, './') for n in notes), check)
     replace_slot(index, 'note-count', f'<span>{len(notes)} published {"note" if len(notes) == 1 else "notes"}</span>', check)
     for n in notes:
-        links = ''.join(f'<a class="editorial-link" href="./{other["slug"]}">{escape(other["title"])} <span aria-hidden="true">↗</span></a>' for other in notes if other['id'] in n['related'])
-        thread = [other for other in notes if n['thread'] and other['thread'] == n['thread'] and other['id'] != n['id']]
-        if thread:
-            links += '<p class="mono">CONTINUE THE THREAD</p>' + ''.join(f'<a class="editorial-link" href="./{other["slug"]}">{escape(other["title"])} <span aria-hidden="true">↗</span></a>' for other in thread)
-        revisions = [other for other in notes if n['id'] in other['supersedes']]
-        if revisions:
-            links += '<p class="mono">REVISITED IN</p>' + ''.join(f'<a class="editorial-link" href="./{other["slug"]}">{escape(other["title"])}</a>' for other in revisions)
-        replace_slot(ROOT / 'docs/notes' / n['slug'], 'related-notes', '<aside class="note-related" aria-label="Related Field Notes"><p class="mono">RELATED READING</p>' + links + '</aside>' if links else '', check)
+        replace_slot(ROOT / 'docs/notes' / n['slug'], 'related-notes', reading_exit(n, notes), check)
     build_audio(check, ROOT)
 
 

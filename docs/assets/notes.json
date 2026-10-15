@@ -17,7 +17,11 @@
     ],
     "supersedes": [],
     "visual": "foundations",
-    "featured": false
+    "featured": false,
+    "nextReading": {
+      "id": "002",
+      "bridge": "An identity has to hold up in use. Start with the paper, the charcoal and the words between them."
+    }
   },
   {
     "id": "002",
@@ -38,7 +42,11 @@
     ],
     "supersedes": [],
     "visual": "themes",
-    "featured": false
+    "featured": false,
+    "nextReading": {
+      "id": "003",
+      "bridge": "The materials give an interface its character. What happens when its whole shape becomes a metaphor?"
+    }
   },
   {
     "id": "003",
@@ -66,6 +74,10 @@
       "large": "003-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "004",
+      "bridge": "An expressive interface still owes someone a dependable place to click. A portrait puts that promise to the test."
     }
   },
   {
@@ -92,6 +104,10 @@
       "large": "004-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "005",
+      "bridge": "A control can stay exactly where you left it and still tell you the wrong thing. What does its reassuring colour establish?"
     }
   },
   {
@@ -120,6 +136,10 @@
       "large": "005-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "007",
+      "bridge": "A green light compresses a complicated answer. A stream of numbers asks the same question of attention: what can someone actually read?"
     }
   },
   {
@@ -147,6 +167,10 @@
       "large": "006-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "007",
+      "bridge": "A map leaves room for what the robot has not established. Its live readings need room for age and uncertainty too."
     }
   },
   {
@@ -173,6 +197,10 @@
       "large": "007-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "006",
+      "bridge": "Once a reading has a time, it needs a place. Follow the same little robot into the gaps in its map."
     }
   },
   {
@@ -199,6 +227,10 @@
       "large": "008-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "004",
+      "bridge": "One gesture should remain one dependable action. So should the place where the next gesture lands."
     }
   },
   {
@@ -226,6 +258,10 @@
       "large": "009-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "011",
+      "bridge": "A dependable place to stand changes how you look. Now bring a new model into that place and see what its neighbours reveal."
     }
   },
   {
@@ -252,6 +288,10 @@
       "large": "010-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "005",
+      "bridge": "Two pictures can almost agree without establishing the whole answer. A reassuring light can borrow the same confidence."
     }
   },
   {
@@ -278,6 +318,10 @@
       "large": "011-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "009",
+      "bridge": "The model asks whether it belongs. Step back to the camera, the player and the ground that make that judgement possible."
     }
   },
   {
@@ -300,7 +344,15 @@
       "007"
     ],
     "visual": "forms",
-    "featured": false
+    "featured": false,
+    "nextReading": {
+      "id": "006",
+      "bridge": "A retained position can look more certain than it is. A little robot’s map makes the unknown space visible."
+    },
+    "specimen": {
+      "href": "../specimens/coastal-watch/",
+      "label": "Return to Coastal watch"
+    }
   },
   {
     "id": "013",
@@ -329,6 +381,10 @@
       "large": "013-cover-1600.webp",
       "width": 1600,
       "height": 900
+    },
+    "nextReading": {
+      "id": "005",
+      "bridge": "The job can outlive its window. Its labels still have to distinguish a saved result, a checked result and a delivered one."
     }
   }
 ]
