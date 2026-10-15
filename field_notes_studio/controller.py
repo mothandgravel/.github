@@ -169,9 +169,10 @@ class Controller:
         identifier = self.view.jobs.selection()
         if not identifier:
             return
+        generation = self.generation
 
         def loaded(job):
-            if self.view.jobs.selection() != identifier:
+            if self.view.jobs.selection() != identifier or generation != self.generation:
                 return
             if job.status != "succeeded" or job.action not in {"audio", "video"}:
                 self.view.status(

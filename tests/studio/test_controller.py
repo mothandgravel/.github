@@ -55,6 +55,29 @@ class ControllerTests(unittest.TestCase):
         self.assertIn("no longer", messages[-1])
         self.assertIsNone(controller.selected)
 
+    def test_manual_episode_change_supersedes_pending_queue_review_navigation(self):
+        navigated = []
+        view = SimpleNamespace(
+            jobs=SimpleNamespace(selection=lambda: "job"),
+            shelf=SimpleNamespace(reveal=navigated.append),
+            status=lambda _: None,
+        )
+        job = SimpleNamespace(episode="note-001", action="audio", status="succeeded")
+        studio = SimpleNamespace(repository=SimpleNamespace(get=lambda _: job))
+        controller = Controller(studio, view)
+        self.addCleanup(controller.close)
+        controller.episodes = {"note-001": object()}
+        pending = []
+        controller.task = lambda operation, callback: pending.append((operation, callback))
+        controller.review_job()
+        # A newer shelf selection invalidates the generation while the read is pending.
+        controller.selected = "note-002"
+        controller.generation += 1
+        operation, callback = pending.pop()
+        callback(operation())
+        self.assertEqual(navigated, [])
+        self.assertEqual(controller.selected, "note-002")
+
     def test_changed_controls_cannot_queue_an_old_plan(self):
         calls = []
         workspace = SimpleNamespace(
