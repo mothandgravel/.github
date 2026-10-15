@@ -41,7 +41,9 @@ html:is(:not(.has-js),.site-script-unavailable) .question-room .header-actions {
 @media print {
   :root { color-scheme:light; }
   .question-room { --bg:#fff;--surface:#fff;--surface-2:#eee8dc;--ink:#202222;--secondary:#4a4a46;--muted:#5d5d55;--gold:#70542b;--gold-bright:#70542b;--line:#8d7858;background:#fff;color:var(--ink);color-scheme:light; }
+  .question-room * { transition:none!important;animation:none!important; }
   .question-room .question-sheet { break-inside:auto; }
+  .question-room fieldset,.question-room legend,.question-room label { color:#202222; }
   .question-room textarea { color:#202222;background:#fff; }
   .question-room summary { color:#202222; }
 }
