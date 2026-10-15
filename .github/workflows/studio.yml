@@ -25,6 +25,14 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Capture tracked source only for offline diagnosis
+        run: git archive --format=tar.gz HEAD > "$RUNNER_TEMP/studio-source.tar.gz"
+      - name: Preserve diagnostic source
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-timeout-source
+          path: ${{ runner.temp }}/studio-source.tar.gz
+          retention-days: 2
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
