@@ -18,7 +18,7 @@ class PreparationWindow:
         main.pack(fill="both", expand=True)
         main.columnconfigure(0, weight=1)
         main.rowconfigure(2, weight=1)
-        main.rowconfigure(4, weight=2)
+        main.rowconfigure(4, weight=3)
         ttk.Label(main, text="Prepare new notes", style="Studio.TLabel").grid(
             row=0, column=0, sticky="w"
         )
@@ -37,7 +37,7 @@ class PreparationWindow:
             columns=("note", "title", "state"),
             show="headings",
             selectmode="browse",
-            height=7,
+            height=3,
         )
         for name, heading, width in (
             ("note", "Note", 70),
@@ -62,8 +62,22 @@ class PreparationWindow:
         tabs.grid(row=4, column=0, sticky="nsew")
         self.plan = self._text(tabs, "Preparation / next steps")
         self.script = self._text(tabs, "Saved narration script")
+        consent = ttk.Frame(main)
+        consent.grid(row=5, column=0, sticky="ew", pady=(8, 0))
+        self.authorized = tk.BooleanVar(value=False)
+        self.authorization = ttk.Checkbutton(
+            consent,
+            text="Authorize these Cloud requests (charges may apply).",
+            variable=self.authorized,
+            command=lambda: self.busy(self.loading),
+        )
+        self.authorization.pack(side="left")
+        self.queue_button = ttk.Button(
+            consent, text="Queue preparation", style="Accent.TButton", state="disabled"
+        )
+        self.queue_button.pack(side="right")
         self.message = ttk.Label(main, style="Muted.TLabel", wraplength=700)
-        self.message.grid(row=5, column=0, sticky="ew", pady=(10, 0))
+        self.message.grid(row=6, column=0, sticky="ew", pady=(10, 0))
         self.window.bind("<Configure>", self._resize, add=True)
         self.clear("Loading written notes…")
 
@@ -72,7 +86,7 @@ class PreparationWindow:
         frame = ttk.Frame(tabs)
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
-        text = tk.Text(frame, wrap="word", height=9, padx=12, pady=10, state="disabled")
+        text = tk.Text(frame, wrap="word", height=6, padx=12, pady=10, state="disabled")
         scroll = ttk.Scrollbar(frame, orient="vertical", command=text.yview)
         text.configure(yscrollcommand=scroll.set)
         text.grid(row=0, column=0, sticky="nsew")
@@ -98,12 +112,21 @@ class PreparationWindow:
         self.window.protocol("WM_DELETE_WINDOW", close)
         self.window.bind("<Escape>", lambda _: close())
 
+    def connect_execution(self, submit):
+        self.queue_button.configure(command=submit)
+
+    def queued(self, episode, identifier):
+        self.message.configure(
+            text=f"{episode} queued · {identifier[:8]}. Follow the main queue; closing this window does not stop the worker."
+        )
+
     def selected(self):
         selected = self.tree.selection()
         return selected[0] if selected else ""
 
     def clear(self, message=""):
         self.snapshot = None
+        self.authorized.set(False)
         item = self.items.get(self.selected())
         detail = (
             item.detail
@@ -121,6 +144,11 @@ class PreparationWindow:
         item = self.items.get(self.selected())
         eligible = item is not None and item.state not in {"Needs script", "Needs repair"}
         self.inspect_button.configure(state="normal" if eligible and not value else "disabled")
+        ready = bool(self.snapshot and self.snapshot.request_json and not value)
+        self.authorization.configure(state="normal" if ready else "disabled")
+        self.queue_button.configure(
+            state="normal" if ready and self.authorized.get() else "disabled"
+        )
 
     def show_catalog(self, items):
         selected = self.selected()
@@ -141,8 +169,12 @@ class PreparationWindow:
         self.snapshot = snapshot
         self._put(self.plan, snapshot.summary)
         self._put(self.script, snapshot.script)
+        self.authorized.set(False)
+        self.busy(False)
         self.message.configure(
-            text="Offline inspection complete. No narration or caption request was made; generation is not enabled here yet."
+            text="Inspection complete. Review the requests, then authorize and queue preparation."
+            if snapshot.request_json
+            else "Script inspected; preparation is blocked. See the next steps above."
         )
 
     def schedule(self, delay, callback):

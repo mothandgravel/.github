@@ -3,7 +3,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-from field_notes_studio.models import TERMINAL
 from field_notes_studio.presentation.controls import ActionButton
 from field_notes_studio.presentation.theme import SUCCESS, WARNING, set_text
 
@@ -74,14 +73,16 @@ class ProductionQueue(ttk.Frame):
     def update_controls(self):
         job = self.jobs.get(self.selection())
         conflicting = job and any(
-            other.episode == job.episode and other.status not in TERMINAL
+            other.episode == job.episode and other.status in {"queued", "running"}
             for other in self.jobs.values()
         )
         enabled = {
             "history": job is not None,
-            "stop": bool(job and job.status not in TERMINAL and not job.cancel_requested),
+            "stop": bool(job and job.status in {"queued", "running"} and not job.cancel_requested),
             "retry": bool(
-                job and job.status in {"failed", "interrupted", "cancelled"} and not conflicting
+                job
+                and job.status in {"failed", "interrupted", "cancelled", "waiting"}
+                and not conflicting
             ),
             "open": bool(job and job.status == "succeeded" and job.result),
             "review": bool(job and job.status == "succeeded" and job.action in {"audio", "video"}),
@@ -93,7 +94,11 @@ class ProductionQueue(ttk.Frame):
             "preview": "Watch preview",
             "video": "Watch video",
             "export": "Open package",
+            "prepare": "Open prepared files",
         }
+        self.buttons["retry"].configure(
+            text="Resume" if job and job.status == "waiting" else "Retry"
+        )
         self.buttons["open"].configure(text=labels[job.action] if job else "Open output")
         self.buttons["open"].set_icon(
             {"audio": "audio", "preview": "video", "video": "video", "export": "package"}.get(
@@ -130,7 +135,7 @@ class ProductionQueue(ttk.Frame):
         self.jobs = {job.identifier: job for job in jobs}
         running = sum(job.status == "running" for job in jobs)
         queued = sum(job.status == "queued" for job in jobs)
-        attention = sum(job.status in {"failed", "interrupted"} for job in jobs)
+        attention = sum(job.status in {"failed", "interrupted", "waiting"} for job in jobs)
         self.summary.configure(
             text=f"Queue · {running} running · {queued} queued · {attention} need attention"
             if jobs
@@ -151,12 +156,13 @@ class ProductionQueue(ttk.Frame):
                     "cancelled": "Stopped",
                     "queued": "Queued",
                     "running": "Working",
+                    "waiting": "Awaiting captions",
                 }.get(job.status, job.status)
             )
             values = (job.episode, job.action, status, job.stage)
             tags = (
                 ("attention",)
-                if job.status in {"failed", "interrupted"}
+                if job.status in {"failed", "interrupted", "waiting"}
                 else ("complete",)
                 if job.status == "succeeded"
                 else ()

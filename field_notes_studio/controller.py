@@ -27,6 +27,7 @@ class Controller:
         self.loading = False
         self.review_generation = 0
         self.review_jobs = None
+        self.preparation_jobs = None
         self.release_generation = 0
         self.selection_generation = 0
         self.package_generation = 0
@@ -664,6 +665,8 @@ class Controller:
                 if job.action == "export"
                 else f"{settings.get('speed', '—')}× pace · {settings.get('outro_seconds', '—')}s outro"
             )
+            if job.action == "prepare":
+                recipe = "Captured narration and captions · ordinary retry never repeats uncertain requests"
             guidance = {
                 "queued": "Waiting for the worker; jobs run one at a time.",
                 "running": "Stage in progress; closing the window keeps production running.",
@@ -671,6 +674,7 @@ class Controller:
                 "interrupted": "Outcome unknown. Inspect saved output or retry with validated caches.",
                 "cancelled": "Stopped at a safe boundary. Retry reuses validated completed stages.",
                 "succeeded": "Open the saved output. Audio and full video can be reviewed before export.",
+                "waiting": "Captions are still running. Resume polls the saved remote operation.",
             }.get(job.status, "")
             if job.cancel_requested and job.status in {"queued", "running"}:
                 guidance = "Stop requested; the current stage finishes its writes before stopping."
@@ -697,6 +701,18 @@ class Controller:
                 lambda value: self.view.jobs.show_history(*value),
             )
 
+    def refresh_prepared_shelf(self, episodes):
+        # Updating the catalog must not reload the selected episode's unfinished controls.
+        selected = self.selected
+        choices = self.view.workspace.batch.selection()
+        self.loaded(episodes)
+        for identifier, choice in self.view.workspace.batch.choices.items():
+            choice.set(identifier in choices)
+        if selected in self.episodes:
+            self.view.status(
+                "Prepared shelf refreshed. Existing edits remain open; new recordings still need production and review."
+            )
+
     def poll(self):
         if self.closed or self.polling:
             return
@@ -705,6 +721,13 @@ class Controller:
         def loaded(jobs):
             self.polling = False
             self.view.jobs.render(jobs)
+            prepared = tuple(
+                (job.identifier, job.status) for job in jobs if job.action == "prepare"
+            )
+            if prepared != self.preparation_jobs:
+                self.preparation_jobs = prepared
+                if any(status == "succeeded" for _, status in prepared):
+                    self.task(self.studio.catalog, self.refresh_prepared_shelf)
             self.job_detail()
             signature = tuple(
                 (job.identifier, job.status) for job in jobs if job.episode == self.selected

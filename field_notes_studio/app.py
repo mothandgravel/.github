@@ -7,8 +7,8 @@ from pathlib import Path
 from tkinter import ttk
 
 from field_notes_studio.controller import Controller
-from field_notes_studio.preparation import Preparation
 from field_notes_studio.preparation_controller import PreparationController
+from field_notes_studio.preparation_service import PreparationService
 from field_notes_studio.presentation import theme
 from field_notes_studio.presentation.preparation import PreparationWindow
 from field_notes_studio.presentation.queue import ProductionQueue
@@ -113,7 +113,7 @@ class Application:
             self.preparation.view.window.lift()
             return
         self.preparation = PreparationController(
-            Preparation(self.directory), PreparationWindow(self.root)
+            PreparationService(self.directory), PreparationWindow(self.root)
         )
 
     def status(self, message):

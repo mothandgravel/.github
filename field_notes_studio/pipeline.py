@@ -15,7 +15,7 @@ from pathlib import Path
 
 from field_notes_audio import site
 from field_notes_audio.locks import run_lock
-from field_notes_audio.production import packages, runner
+from field_notes_audio.production import packages, runner, sources
 from field_notes_audio.production.config import load_settings, number, validate_settings
 from field_notes_audio.production.editions import AUDIO_FILES, cache_valid, fingerprint
 from field_notes_audio.production.metadata import load_metadata, publishing_copy
@@ -45,7 +45,7 @@ class Pipeline:
         self.output = root / "artifacts/production"
 
     def entries(self) -> list[dict]:
-        return site.load_entries(self.root)
+        return sources.load_entries(self.root)
 
     def catalog(self) -> list[Episode]:
         episodes = []
@@ -56,10 +56,14 @@ class Pipeline:
                     entry["id"],
                     entry["title"],
                     entry["duration_seconds"],
-                    site.media_path(self.root, entry["transcript"]).read_text(encoding="utf-8"),
+                    sources.media_path(self.root, entry["transcript"]).read_text(encoding="utf-8"),
                     link,
                     published,
-                    "Podcast catalog in this checkout; external platforms have not been checked.",
+                    (
+                        "Private prepared recording; not published or human-reviewed."
+                        if entry.get("local_prepared")
+                        else "Podcast catalog in this checkout; external platforms have not been checked."
+                    ),
                     podcast_url=link,
                     podcast_date=published,
                 )
@@ -68,6 +72,8 @@ class Pipeline:
 
     @staticmethod
     def publication_defaults(entry: dict) -> tuple[str, str]:
+        if entry.get("local_prepared"):
+            return "", ""
         # Match the existing podcast feed's article/archive destinations.
         link = site.DOMAIN + (
             "/notes/" + entry["slug"] if entry.get("slug") else "/notes/#listen-archive"

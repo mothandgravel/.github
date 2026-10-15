@@ -16,17 +16,19 @@ class PreparationController:
         self.pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="studio-preparation")
         self.handle = None
         view.connect(self.refresh, self.select, self.inspect, self.close)
+        if hasattr(view, "connect_execution"):
+            view.connect_execution(self.submit)
         self.refresh()
         self.pump()
 
-    def _read(self, operation, callback):
+    def _read(self, operation, callback, *, effect=False):
         if self.closed or self.busy:
             return
         self.busy = True
         self.view.busy(True)
         epoch = self.epoch
         future = self.pool.submit(operation)
-        future.add_done_callback(lambda done: self.mailbox.put((epoch, callback, done)))
+        future.add_done_callback(lambda done: self.mailbox.put((epoch, callback, done, effect)))
 
     def refresh(self):
         if self.closed or self.busy:
@@ -49,17 +51,32 @@ class PreparationController:
             self.view.clear("Inspecting the script offline…")
             self._read(lambda: self.service.inspect(note), self.view.show_snapshot)
 
+    def submit(self):
+        if self.closed or self.busy:
+            return
+        snapshot = self.view.snapshot
+        authorized = self.view.authorized.get()
+        if not snapshot or snapshot.note != self.view.selected() or not authorized:
+            return
+        self.epoch += 1
+        self.view.clear("Queueing the captured preparation request…")
+        self._read(
+            lambda: self.service.submit(snapshot, authorized),
+            lambda identifier: self.view.queued(snapshot.episode, identifier),
+            effect=True,
+        )
+
     def pump(self):
         if self.closed:
             return
         while True:
             try:
-                epoch, callback, future = self.mailbox.get_nowait()
+                epoch, callback, future, effect = self.mailbox.get_nowait()
             except queue.Empty:
                 break
             self.busy = False
             self.view.busy(False)
-            if epoch != self.epoch:
+            if epoch != self.epoch and not effect:
                 continue
             try:
                 callback(future.result())

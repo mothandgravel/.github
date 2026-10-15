@@ -13,6 +13,7 @@ from pathlib import Path
 from field_notes_audio import captions, site
 from field_notes_audio.production.config import audio_settings
 from field_notes_audio.production.mix import finish_audio
+from field_notes_audio.production.sources import media_path
 from field_notes_audio.production.timeline import caption_pages, retime
 from field_notes_audio.production.toolchain import AudioToolchain, inspect_audio_toolchain
 from field_notes_audio.storage import digest_file, read_object, write_json
@@ -83,7 +84,7 @@ def produce_audio(
     settings: dict,
     toolchain: AudioToolchain | None = None,
 ) -> Path:
-    source = site.media_path(root, entry["audio"])
+    source = media_path(root, entry["audio"])
     toolchain = toolchain or inspect_audio_toolchain()
     recipe = audio_settings(settings)
     identity = fingerprint(
@@ -116,7 +117,7 @@ def produce_audio(
         stage = Path(temporary) / "edition"
         stage.mkdir()
         measured = finish_audio(source, stage, settings)
-        cues = json.loads(site.media_path(root, entry["cues"]).read_text(encoding="utf-8"))
+        cues = json.loads(media_path(root, entry["cues"]).read_text(encoding="utf-8"))
         try:
             cues = retime(
                 cues,
@@ -146,7 +147,7 @@ def produce_audio(
                 f"{entry['id']}: caption export failed; diagnostic saved to {diagnostic}"
             ) from exc
         write_json(stage / "cues.json", {"cues": cues, "pages": caption_pages(cues)})
-        shutil.copyfile(site.media_path(root, entry["transcript"]), stage / "transcript.txt")
+        shutil.copyfile(media_path(root, entry["transcript"]), stage / "transcript.txt")
         credit = settings["music_credit"] if settings["music_mode"] != "none" else "No music."
         link = site.DOMAIN + (
             "/notes/" + entry["slug"] if entry.get("slug") else "/notes/#listen-archive"

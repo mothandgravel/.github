@@ -39,7 +39,7 @@ class Editor(ttk.Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         self.message = ttk.Label(
-            self, text=explanation, wraplength=540, style="Muted.TLabel", padding=10
+            self, text=explanation, wraplength=540, style="Muted.TLabel", padding=(10, 6)
         )
         self.message.grid(row=0, column=0, sticky="ew")
         self.bind(
@@ -79,7 +79,7 @@ class Editor(ttk.Frame):
                     self.form.content, text="Choose music file…", command=self.choose_music
                 ).pack(anchor="w", pady=4)
         if save:
-            footer = ttk.Frame(self, padding=10)
+            footer = ttk.Frame(self, padding=(10, 6))
             footer.grid(row=2, column=0, sticky="ew")
             self.save = ActionButton(
                 footer,

@@ -11,6 +11,7 @@ from urllib.parse import urlsplit
 from field_notes_studio.health import restart, tool_status, worker_status
 from field_notes_studio.models import ReviewSnapshot
 from field_notes_studio.pipeline import Pipeline
+from field_notes_studio.preparation_jobs import PreparationJobs
 from field_notes_studio.processes import launch_worker, open_path, open_publisher, upload_path
 from field_notes_studio.repository import Repository
 
@@ -74,9 +75,15 @@ class Studio:
 
     def retry(self, identifier: str) -> str:
         job = self.repository.get(identifier)
-        if job.status not in {"failed", "interrupted", "cancelled"}:
+        if job.status not in {"failed", "interrupted", "cancelled", "waiting"}:
             raise ValueError("Only failed, interrupted or stopped jobs can be retried")
-        return self.submit(job.episode, job.action, json.loads(job.request))
+        request = json.loads(job.request)
+        if job.action == "prepare":
+            PreparationJobs(self.root).validate(request)
+            if job.status == "waiting":
+                launch_worker(self.root)
+                return self.repository.resume_preparation(identifier)
+        return self.submit(job.episode, job.action, request)
 
     def submit(self, episode: str, action: str, request: dict) -> str:
         # Spawn before persisting; if process creation fails no orphan request is queued.
@@ -189,7 +196,17 @@ class Studio:
         if job.status != "succeeded" or not job.result:
             raise ValueError("Choose a completed job with saved output")
         directory = Path(job.result).resolve()
-        expected = self.root / "artifacts" / ("uploads" if job.action == "export" else "production")
+        expected = (
+            self.root
+            / "artifacts"
+            / (
+                "studio/prepared"
+                if job.action == "prepare"
+                else "uploads"
+                if job.action == "export"
+                else "production"
+            )
+        )
         if not directory.is_relative_to(expected.resolve()):
             raise ValueError("Saved job output is outside the production directory")
         filename = {
@@ -197,6 +214,7 @@ class Studio:
             "preview": "episode.mp4",
             "video": "episode.mp4",
             "export": "",
+            "prepare": "",
         }[job.action]
         open_path(directory / filename if filename else directory)
 

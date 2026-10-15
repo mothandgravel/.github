@@ -12,7 +12,6 @@ from field_notes_audio.production.packages import (
     local_output,
     locked_editions,
     review_status,
-    selected_entries,
 )
 from field_notes_audio.storage import digest_file, read_object
 
@@ -71,7 +70,7 @@ def promote(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     output = local_output(root, args.output_dir, "artifacts/production")
     output.mkdir(parents=True, exist_ok=True)
     with release.collection_lock(root):
-        entries = selected_entries("all", root)
+        entries = site.load_entries(root)
         selected = (
             entries
             if args.episode == "all"

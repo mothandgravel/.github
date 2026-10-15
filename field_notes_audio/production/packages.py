@@ -18,6 +18,7 @@ from field_notes_audio.locks import run_lock
 from field_notes_audio.production.config import load_settings
 from field_notes_audio.production.editions import AUDIO_FILES, VIDEO_FILES, cache_valid, fingerprint
 from field_notes_audio.production.metadata import load_metadata, publishing_copy, text
+from field_notes_audio.production.sources import load_entries
 from field_notes_audio.storage import digest_file, read_object, write_json
 from field_notes_audio.transactions import FileTransaction
 
@@ -54,7 +55,7 @@ def local_output(root: Path, supplied: Path | None, default: str) -> Path:
 
 
 def selected_entries(identifier: str, root: Path) -> list[dict]:
-    entries = site.load_entries(root)
+    entries = load_entries(root)
     selected = entries if identifier == "all" else [e for e in entries if e["id"] == identifier]
     if not selected:
         raise ValueError("No prepared episode matches this ID")

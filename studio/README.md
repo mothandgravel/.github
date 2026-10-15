@@ -5,8 +5,10 @@
 Real desktop screenshot from the automated UI fixture; media and publication states
 in these checks are controlled examples.
 
-A Tkinter/ttk workspace for the existing local production engine. Choose a prepared
-episode, inspect the consequences of pace/outro changes, queue an edition, listen
+A Tkinter/ttk workspace for the existing local production engine. Use
+[**Prepare new notes…**](preparation.md) to inspect and explicitly authorize durable
+narration/caption preparation. Its verified recording joins the shelf privately,
+without publishing or human approval. Choose a prepared episode, inspect the consequences of pace/outro changes, queue an edition, listen
 and check subtitles, then prepare the upload package. Record URLs and publication
 dates for episodes you have already published separately from their production jobs.
 
@@ -100,7 +102,9 @@ sudo apt-get install -y python3-tk ffmpeg xdg-utils
 python3 -m field_notes_studio
 ```
 
-The checkout must already contain prepared episodes and their original media.
+Existing episodes need their original media. Newly written notes can enter through
+**Prepare new notes…** with a saved narration script and explicit Cloud setup; see
+the [preparation and recovery guide](preparation.md).
 There are no additional pip dependencies for the studio. Video/thumbnail rendering
 uses the existing Node 22+ / Remotion toolchain:
 
@@ -115,7 +119,9 @@ the next step for audio, preview, full video or export.
 Use **Inspect changes**, then **Queue production**. Editing a control invalidates the
 inspected plan. `audio` finishes an MP3 and retimed captions; `preview` also renders
 the first ten seconds of video; `video` produces the full video and thumbnail;
-`export` packages the selected completed full edition. Export ignores pace/outro
+`export` packages the selected completed full edition. Narration/caption `prepare`
+jobs are queued only through the separate authorized preparation window, not this
+output selector. Export ignores pace/outro
 controls and refuses a changed edition pointer. Export does not upload anything.
 The worker repeats the pointer check under the production lock before packaging.
 Pace and outro controls are disabled while export is selected.
@@ -212,6 +218,8 @@ Its diagnostic log is `artifacts/studio/worker.log`.
 | `processes.py` | Detached worker launch and system file opening |
 | `pipeline.py` | Existing engine adaptation and rebuild explanations |
 | `worker.py` | Exclusive queue ownership, execution and reconciliation |
+| `preparation_service.py` / `preparation_jobs.py` | Explicit authorization and captured narration/caption engine adaptation |
+| `field_notes_audio/production/sources.py` | Verified private recording adoption and production-source resolution |
 | `app.py` | Composition and Tk event-loop lifecycle |
 
 The engine gains an optional structured stage observer. Existing CLI behavior is preserved; production implementation changes correctly
@@ -303,10 +311,12 @@ no narration request or new podcast publication was made for the written release
 
 The next useful passes, in order:
 
-1. **A new note into the shelf:** surface notes whose narration/captions are still
-   missing, show the script and prerequisites, and inspect generation before any
-   service request. Studio currently lists prepared recordings.
-2. **A human release rehearsal:** take note-013 through narration, caption checks,
+1. **A new note into the shelf:** [durable preparation](preparation.md) now connects
+   saved-script inspection, explicit authorization, narration/caption cache recovery
+   and private recording adoption. Missing-script authoring and guided resolution
+   of uncertain Cloud outcomes remain future work; neither is automated silently.
+2. **A human release rehearsal:** resolve *The work outlives the window* from the
+   current catalog, then take it through narration, caption checks,
    production, media review and the actual browser handoff. Record decisions and
    interruptions; automated layout checks do not establish everyday usability.
 3. **Collection readiness:** show which episodes need audio, full video, review or

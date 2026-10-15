@@ -147,67 +147,75 @@ def load_entries(root: Path = ROOT, entries: list[dict] | None = None) -> list[d
             or e["kind"] not in {"note", "conversation", "comparison"}
         ):
             raise ValueError("Invalid published episode")
-        duration = e["duration_seconds"]
-        if (
-            type(duration) not in (int, float)
-            or not math.isfinite(duration)
-            or not 0 < duration <= 1200
-        ):
-            raise ValueError("Invalid measured episode duration")
         if e["kind"] == "note":
             if e["note_id"] not in notes or e["note_id"] in primary:
                 raise ValueError("Each note can have one primary audio edition")
             primary.add(e["note_id"])
-        if not e.get("source_sha256"):
-            raise ValueError("Published audio needs source fingerprints")
-        for identifier, fingerprint in e["source_sha256"].items():
-            if (
-                identifier not in notes
-                or digest(source_article(root, notes[identifier]).encode()) != fingerprint
-            ):
-                raise ValueError(
-                    f"Published episode {e['id']} has a changed source note; review it before rebuilding"
-                )
-        audio = media_path(root, e["audio"])
-        if audio.stat().st_size != e["bytes"] or digest_file(audio) != e["audio_sha256"]:
-            raise ValueError(f"Published MP3 changed: {e['id']}")
-        measured_duration = probe_audio(audio)
-        if abs(measured_duration - duration) > MP3_DURATION_TOLERANCE_SECONDS:
-            raise ValueError(
-                f"Published duration differs from the actual recording: {e['id']} "
-                f"({duration:.3f}s saved, {measured_duration:.3f}s measured)"
-            )
-        for kind in ("srt", "vtt", "transcript", "cues"):
-            file = media_path(root, e[kind])
-            if digest_file(file) != e["files_sha256"][kind]:
-                raise ValueError(f"Published {kind} changed: {e['id']}")
-        srt = parse_captions(media_path(root, e["srt"]).read_text(encoding="utf-8"), duration)
-        vtt = parse_captions(
-            media_path(root, e["vtt"]).read_text(encoding="utf-8"), duration, vtt=True
-        )
-        if len(srt) != len(vtt) or any(
-            abs(a[key] - b[key]) > 0.01 or caption_text(a["text"]) != caption_text(b["text"])
-            for a, b in zip(srt, vtt, strict=False)
-            for key in ("start", "end")
-        ):
-            raise ValueError("Published SRT/VTT captions disagree")
-        cues = json.loads(media_path(root, e["cues"]).read_text(encoding="utf-8"))
-        if (
-            not isinstance(cues, list)
-            or len(cues) != len(srt)
-            or any(
-                a["text"] != b["text"]
-                or abs(a["start"] - b["start"]) > 0.01
-                or abs(a["end"] - b["end"]) > 0.01
-                for a, b in zip(cues, vtt, strict=False)
-            )
-        ):
-            raise ValueError("Published transcript cues disagree with subtitles")
+        validate_recording_media(root, e)
         date = datetime.fromisoformat(e["published_at"])
         if date.tzinfo is None:
             raise ValueError("Episode publication timestamp needs a timezone")
     order = {"note": 0, "conversation": 1, "comparison": 2}
     return sorted(entries, key=lambda e: (order[e["kind"]], e.get("note_id", ""), e["id"]))
+
+
+def validate_recording_media(root: Path, e: dict, resolver=None) -> None:
+    """Shared provenance/media checks; callers enforce public or private catalog identity."""
+    resolver = media_path if resolver is None else resolver
+    notes = {
+        n["id"]: n
+        for n in json.loads((root / "docs/assets/notes.json").read_text(encoding="utf-8"))
+    }
+    duration = e["duration_seconds"]
+    if (
+        type(duration) not in (int, float)
+        or not math.isfinite(duration)
+        or not 0 < duration <= 1200
+    ):
+        raise ValueError("Invalid measured episode duration")
+    if not e.get("source_sha256"):
+        raise ValueError("Published audio needs source fingerprints")
+    for identifier, fingerprint in e["source_sha256"].items():
+        if (
+            identifier not in notes
+            or digest(source_article(root, notes[identifier]).encode()) != fingerprint
+        ):
+            raise ValueError(
+                f"Published episode {e['id']} has a changed source note; review it before rebuilding"
+            )
+    audio = resolver(root, e["audio"])
+    if audio.stat().st_size != e["bytes"] or digest_file(audio) != e["audio_sha256"]:
+        raise ValueError(f"Published MP3 changed: {e['id']}")
+    measured_duration = probe_audio(audio)
+    if abs(measured_duration - duration) > MP3_DURATION_TOLERANCE_SECONDS:
+        raise ValueError(
+            f"Published duration differs from the actual recording: {e['id']} "
+            f"({duration:.3f}s saved, {measured_duration:.3f}s measured)"
+        )
+    for kind in ("srt", "vtt", "transcript", "cues"):
+        file = resolver(root, e[kind])
+        if digest_file(file) != e["files_sha256"][kind]:
+            raise ValueError(f"Published {kind} changed: {e['id']}")
+    srt = parse_captions(resolver(root, e["srt"]).read_text(encoding="utf-8"), duration)
+    vtt = parse_captions(resolver(root, e["vtt"]).read_text(encoding="utf-8"), duration, vtt=True)
+    if len(srt) != len(vtt) or any(
+        abs(a[key] - b[key]) > 0.01 or caption_text(a["text"]) != caption_text(b["text"])
+        for a, b in zip(srt, vtt, strict=False)
+        for key in ("start", "end")
+    ):
+        raise ValueError("Published SRT/VTT captions disagree")
+    cues = json.loads(resolver(root, e["cues"]).read_text(encoding="utf-8"))
+    if (
+        not isinstance(cues, list)
+        or len(cues) != len(srt)
+        or any(
+            a["text"] != b["text"]
+            or abs(a["start"] - b["start"]) > 0.01
+            or abs(a["end"] - b["end"]) > 0.01
+            for a, b in zip(cues, vtt, strict=False)
+        )
+    ):
+        raise ValueError("Published transcript cues disagree with subtitles")
 
 
 def minutes(entry: dict) -> int:

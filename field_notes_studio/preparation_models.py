@@ -21,3 +21,12 @@ class PreparationSnapshot:
     script: str
     summary: str
     identity: str
+    request_json: str = ""
+
+
+class CaptionsPending(Exception):
+    """Remote captions have a saved operation; explicit resume is safe polling."""
+
+    def __init__(self, message: str, receipt: dict):
+        super().__init__(message)
+        self.receipt = receipt

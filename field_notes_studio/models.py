@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
-Action = Literal["audio", "video", "preview", "export"]
+Action = Literal["audio", "video", "preview", "export", "prepare"]
 ACTIONS = ("audio", "video", "preview", "export")
 TERMINAL = frozenset({"succeeded", "failed", "cancelled", "interrupted"})
 

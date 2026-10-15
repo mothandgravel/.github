@@ -412,7 +412,10 @@ def generate(args: argparse.Namespace) -> Path:
         return generate_locked(args, plan, directory)
 
 
-def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Path:
+def generate_locked(
+    args: argparse.Namespace, plan: dict, directory: Path, *, root: Path | None = None
+) -> Path:
+    root = ROOT if root is None else root
     write_json(directory / "plan.json", plan)
     paths = []
     for index, data in enumerate(plan["requests"], start=1):
@@ -465,7 +468,7 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
                 label = f" ({detail})" if detail else ""
                 raise RuntimeError(
                     f"Google returned HTTP {exc.code}{label}. {http_guidance(exc.code, args.episode)} "
-                    f"Diagnostic: {state_path.relative_to(ROOT)}"
+                    f"Diagnostic: {state_path.relative_to(root)}"
                 ) from None
             except Exception as exc:
                 write_json(
@@ -497,7 +500,7 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
             raise ValueError(
                 "Cached input script is missing or changed; move this run aside to regenerate"
             )
-        report(f"Reuse completed recording: {mp3_path.relative_to(ROOT)}")
+        report(f"Reuse completed recording: {mp3_path.relative_to(root)}")
         return mp3_path
     with timed("audio_assembly"):
         duration = combine_wavs(paths, directory / "master.wav")
@@ -579,7 +582,7 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
             "listening_review": "pending",
         },
     )
-    report(f"Ready to listen: {directory.relative_to(ROOT)}/episode.mp3")
+    report(f"Ready to listen: {directory.relative_to(root)}/episode.mp3")
     report(
         f"Generated duration: {int(mp3_duration // 60)}:{int(mp3_duration % 60):02d}; "
         f"average {plan['word_count'] * 60 / mp3_duration:.0f} script words per minute, including pauses"
