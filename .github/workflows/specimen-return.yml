@@ -1,7 +1,7 @@
 name: Specimen return prototype
 on:
   pull_request:
-    paths: ["docs/workbench/**", "docs/assets/specimen-*.mjs", "docs/assets/specimen-return.css", "scripts/audit_specimen.mjs", ".github/workflows/specimen-return.yml"]
+    paths: ["docs/workbench/**", "docs/assets/specimen-*.mjs", "docs/assets/specimen-return.css", "docs/assets/workbench-room.css", "docs/assets/specimens/mending-study.svg", "docs/assets/loose-end-v2.mjs", "scripts/audit_specimen.mjs", "scripts/audit_workbench_finish.mjs", ".github/workflows/specimen-return.yml"]
 permissions:
   contents: read
 jobs:
@@ -25,6 +25,7 @@ jobs:
             sleep 1
           done
           node scripts/audit_specimen.mjs
+          node scripts/audit_workbench_finish.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
