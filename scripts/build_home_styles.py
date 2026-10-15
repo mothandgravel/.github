@@ -95,6 +95,7 @@ def build(check=False):
     for i in range(0, len(tokens), 2):
         tokens[i] = re.sub(r'\s*([{},;])\s*', r'\1', tokens[i])
         tokens[i] = re.sub(r':\s+', ':', tokens[i])
+        tokens[i] = tokens[i].replace(';}', '}')
     css = ''.join(tokens)
     assert '</style' not in css.lower()
     block = '<!-- home-style:start -->\n<style>\n' + css + '\n</style>\n<!-- home-style:end -->'

@@ -28,7 +28,8 @@ def build(check=False):
              (ROOT / 'docs/notes/index.html', DOMAIN + 'notes/', 'Field Notes — Moth & Gravel', None),
              (ROOT / 'docs/questions/index.html', DOMAIN + 'questions/', 'Leave a loose end — Moth & Gravel', None),
              (ROOT / 'docs/specimens/connected-to-what/index.html', DOMAIN + 'specimens/connected-to-what/', 'The connection came back. Did the picture?', None),
-             (ROOT / 'docs/specimens/whose-map/index.html', DOMAIN + 'specimens/whose-map/', 'Where are we, according to whom?', None)]
+             (ROOT / 'docs/specimens/whose-map/index.html', DOMAIN + 'specimens/whose-map/', 'Where are we, according to whom?', None),
+             (ROOT / 'docs/specimens/coastal-watch/index.html', DOMAIN + 'specimens/coastal-watch/', 'The water between updates.', None)]
     pages += [(ROOT / 'docs/notes' / n['slug'], DOMAIN + 'notes/' + n['slug'], n['title'], n) for n in notes]
     for path, url, title, note in pages:
         page = {'@type': 'CollectionPage' if url.endswith('notes/') else 'WebPage',
