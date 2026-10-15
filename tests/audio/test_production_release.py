@@ -14,6 +14,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from field_notes_audio import audio, cli, release, site
+from field_notes_audio.locks import run_lock
 from field_notes_audio.production import editions, metadata, packages, promotion, runner
 from field_notes_audio.production.config import load_settings
 from field_notes_audio.storage import digest_file, read_object, write_json
@@ -120,6 +121,28 @@ class PublishingTests(unittest.TestCase):
     def approve(self):
         self.args.approve, self.args.reviewer = True, "Test listener"
         packages.review(self.args, self.root)
+
+    def test_planned_export_checks_the_edition_while_holding_the_production_lock(self):
+        expected = read_object(self.directory / "latest.json")
+        snapshot = packages.snapshot
+
+        def changed_before_snapshot(*args, **kwargs):
+            with self.assertRaisesRegex(ValueError, "Another"):
+                with run_lock(self.directory):
+                    self.fail("Export must own the production lock before its final edition check")
+            changed = dict(expected, changed_after_plan=True)
+            write_json(self.directory / "latest.json", changed)
+            return snapshot(*args, **kwargs)
+
+        with patch.object(packages, "snapshot", side_effect=changed_before_snapshot):
+            with self.assertRaisesRegex(ValueError, "edition changed"):
+                packages.export(self.args, self.root, expected_edition=expected)
+        self.assertFalse(self.upload.exists())
+
+    def test_planned_export_accepts_the_same_verified_edition(self):
+        expected = read_object(self.directory / "latest.json")
+        packages.export(self.args, self.root, expected_edition=expected)
+        self.assertEqual(read_object(self.upload / "upload.json")["episode"], "note-001")
 
     def test_export_contains_every_studio_field_and_portable_media_without_mutating_cache(self):
         before = {p: digest_file(p) for p in self.directory.rglob("*") if p.is_file()}

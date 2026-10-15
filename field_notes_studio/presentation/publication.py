@@ -18,6 +18,9 @@ class Publication(ttk.Frame):
         self.filling = False
         self.date_edited = False
         self.loaded_url = ""
+        self.episode = None
+        self.defaults = ("", "")
+        self.drafts = {}
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         actions = ttk.Frame(self, padding=(10, 8))
@@ -119,18 +122,42 @@ class Publication(ttk.Frame):
         )
 
     def load_episode(self, episode):
+        self.episode = episode.identifier
+        self.defaults = (episode.podcast_url, episode.podcast_date)
         self.filling = True
-        self.url.set(episode.publication_url)
-        self.date.set(episode.publication_date)
-        self.loaded_url = episode.publication_url
-        self.date_edited = False
+        draft = self.drafts.get(self.episode)
+        if draft is None:
+            self.url.set(episode.publication_url)
+            self.date.set(episode.publication_date)
+            self.loaded_url = episode.publication_url
+            self.date_edited = False
+        else:
+            url, published, self.loaded_url, self.date_edited = draft
+            self.url.set(url)
+            self.date.set(published)
         self.filling = False
         self.source.configure(
-            text=episode.publication_source or "No publication details recorded yet."
+            text=(
+                "Unsaved details kept for this episode. Save before closing Studio."
+                if draft
+                else episode.publication_source or "No publication details recorded yet."
+            )
         )
         self.save.configure(state="normal")
+        self.defaults_button.configure(state="normal" if any(self.defaults) else "disabled")
+
+    def record_saved(self, episode, url, published):
+        draft = self.drafts.get(episode.identifier)
+        if draft is not None and draft[:2] == (url, published):
+            del self.drafts[episode.identifier]
+        if self.episode == episode.identifier and (self.url.get(), self.date.get()) == (
+            url,
+            published,
+        ):
+            self.load_episode(episode)
 
     def loading_episode(self):
+        self.episode = None
         self.clear()
         self.filling = True
         self.url.set("")
@@ -138,18 +165,17 @@ class Publication(ttk.Frame):
         self.filling = False
         self.source.configure(text="Loading publication details…")
         self.save.configure(state="disabled")
+        self.defaults_button.configure(state="disabled")
 
     def clear(self, message="Loading upload copy…"):
         self.details = None
         self.basis.configure(text=message)
         self.copy_button.configure(state="disabled")
-        self.defaults_button.configure(state="disabled")
         set_text(self.text, "")
 
     def load_details(self, details):
         self.details = details
         self.basis.configure(text=details.basis)
-        self.defaults_button.configure(state="normal")
         self.render_copy()
 
     def render_copy(self):
@@ -165,15 +191,25 @@ class Publication(ttk.Frame):
             self.callbacks["status"](self.field.get() + " copied. Paste it into the upload form.")
 
     def use_defaults(self):
-        if self.details:
+        if self.episode is not None and any(self.defaults):
             self.filling = True
-            self.url.set(self.details.podcast_url)
-            self.date.set(self.details.podcast_date)
-            self.loaded_url = self.details.podcast_url
+            self.url.set(self.defaults[0])
+            self.date.set(self.defaults[1])
+            self.loaded_url = self.defaults[0]
             self.date_edited = False
             self.filling = False
             self.source.configure(
                 text="Podcast catalog in this checkout; review and save this record."
+            )
+            self.remember()
+
+    def remember(self):
+        if self.episode is not None:
+            self.drafts[self.episode] = (
+                self.url.get(),
+                self.date.get(),
+                self.loaded_url,
+                self.date_edited,
             )
 
     def link_changed(self):
@@ -185,8 +221,10 @@ class Publication(ttk.Frame):
             self.date.set("")
             self.filling = False
         self.source.configure(text="Unsaved link. Enter this release's actual date, then save.")
+        self.remember()
 
     def date_changed(self):
         if not self.filling:
             self.date_edited = True
             self.source.configure(text="Unsaved release details. Save to keep this record.")
+            self.remember()

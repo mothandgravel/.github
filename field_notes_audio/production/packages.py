@@ -408,7 +408,9 @@ def check_upload_destinations(uploads: Path, entries: list[dict]) -> None:
             raise ValueError(f"Preserve unexpected files in {destination} before exporting")
 
 
-def export(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
+def export(
+    args: argparse.Namespace, root: Path = audio.ROOT, *, expected_edition: dict | None = None
+) -> None:
     output = local_output(root, args.output_dir, "artifacts/production")
     uploads = local_output(root, args.upload_dir, "artifacts/uploads")
     if uploads.is_relative_to(output) or output.is_relative_to(uploads):
@@ -416,6 +418,13 @@ def export(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     entries = selected_entries(args.episode, root)
     config = load_metadata((args.metadata or root / "audio/production/publishing.json").resolve())
     with locked_editions(entries, output, full_video=True) as editions:
+        if expected_edition is not None and (
+            len(editions) != 1
+            or read_object(editions[0].directory / "latest.json") != expected_edition
+        ):
+            raise ValueError(
+                "Completed edition changed after planning export. Inspect a fresh plan."
+            )
         copies = [
             publishing_copy(
                 config,

@@ -49,11 +49,9 @@ class Studio:
 
     def settings(self, episode: str) -> dict:
         settings = self.pipeline.settings(episode)
-        for job in self.repository.jobs():
-            if job.episode == episode and job.action != "export":
-                saved = json.loads(job.request)["settings"]
-                settings.update(speed=saved["speed"], outro_seconds=saved["outro_seconds"])
-                break
+        saved = self.repository.latest_recipe(episode)
+        if saved is not None:
+            settings.update(speed=saved["speed"], outro_seconds=saved["outro_seconds"])
         return settings
 
     def retry(self, identifier: str) -> str:
@@ -79,7 +77,13 @@ class Studio:
             ):
                 raise ValueError("Publication URL must be an http(s) link without credentials")
         if published:
-            date.fromisoformat(published)
+            try:
+                if date.fromisoformat(published).isoformat() != published:
+                    raise ValueError
+            except ValueError:
+                raise ValueError(
+                    "Publication date must be a real date in YYYY-MM-DD format"
+                ) from None
         self.repository.publication(episode, url.strip(), published.strip())
 
     def open_output(self, episode: str, kind: str) -> None:

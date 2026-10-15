@@ -16,6 +16,17 @@ class RepositoryTests(unittest.TestCase):
         self.path = Path(temporary.name) / "studio.sqlite3"
         self.repository = Repository(self.path)
 
+    def test_active_job_stays_visible_after_newer_history_fills_the_display(self):
+        active = self.repository.submit("running", "audio", {})
+        self.repository.claim()
+        for index in range(101):
+            job = self.repository.submit(f"other-{index}", "audio", {})
+            self.repository.finish(job, "succeeded")
+        jobs = self.repository.jobs()
+        self.assertEqual(len(jobs), 101)
+        self.assertEqual(jobs[-1].identifier, active)
+        self.assertEqual(jobs[-1].status, "running")
+
     def test_closing_and_reopening_clients_preserves_claimed_job_recipe_events_and_publication(
         self,
     ):

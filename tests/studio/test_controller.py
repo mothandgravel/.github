@@ -16,6 +16,36 @@ class Value:
 
 
 class ControllerTests(unittest.TestCase):
+    def test_a_b_a_navigation_rejects_old_settings_success_and_failure(self):
+        loads = []
+        publication = SimpleNamespace(loading_episode=lambda: None)
+        workspace = SimpleNamespace(
+            publication=publication,
+            review=SimpleNamespace(clear=lambda: None),
+            show_plan=lambda *_: None,
+            load=lambda *args: loads.append(args),
+        )
+        controller = Controller(
+            SimpleNamespace(settings=lambda _: None), SimpleNamespace(workspace=workspace)
+        )
+        self.addCleanup(controller.close)
+        controller.episodes = {"a": "Episode A", "b": "Episode B"}
+        pending = []
+        controller.task = lambda operation, callback, on_error=None: pending.append(
+            (callback, on_error)
+        )
+        controller.refresh_review = controller.refresh_release = lambda: None
+        for identifier in ("a", "b", "a"):
+            controller.select(identifier)
+        pending[0][0]({"old": True})
+        pending[0][1]("Old A read failed")
+        pending[1][0]({"other": True})
+        self.assertTrue(controller.loading)
+        self.assertEqual(loads, [])
+        pending[2][0]({"current": True})
+        self.assertFalse(controller.loading)
+        self.assertEqual(loads, [("Episode A", {"current": True})])
+
     def test_background_copy_error_does_not_unlock_unrelated_episode_loading_or_polling(self):
         controller = Controller(None, SimpleNamespace(status=lambda _: None))
         self.addCleanup(controller.close)

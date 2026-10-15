@@ -36,6 +36,8 @@ class UITests(unittest.TestCase):
             "https://mothandgravel.com/notes/001-curiosity-with-calluses.html",
             "2026-10-13",
             "Podcast catalog in this checkout; external platforms have not been checked.",
+            podcast_url="https://mothandgravel.com/notes/001-curiosity-with-calluses.html",
+            podcast_date="2026-10-13",
         )
         for mock in [
             patch("field_notes_studio.controller.launch_worker"),
@@ -140,6 +142,9 @@ class UITests(unittest.TestCase):
         self.app.workspace.date.set("2026-10-14")
         self.app.controller.publication()
         self.wait(lambda: bool(self.app.controller.studio.repository.publications()))
+        self.wait(lambda: self.app.controller.episodes["note-001"].publication_saved)
+        self.assertNotIn("note-001", self.app.workspace.publication.drafts)
+        self.assertEqual(self.app.workspace.date.get(), "2026-10-14")
         self.assertEqual(self.app.controller.studio.repository.jobs(), [])
 
     def test_release_copy_is_ready_and_refresh_keeps_unsaved_publication_fields(self):
@@ -177,6 +182,52 @@ class UITests(unittest.TestCase):
         self.assertEqual(self.app.workspace.action.get(), "export")
         self.assertEqual(self.app.workspace.tabs.select(), str(self.app.workspace.plan.master))
         self.assertEqual(self.app.controller.studio.repository.jobs(), [])
+
+    def test_publication_drafts_survive_episode_switch_and_save_ack_keeps_newer_edits(self):
+        controller = self.app.controller
+        publication = self.app.workspace.publication
+        other = Episode("note-002", "Other episode", 10, "Other transcript")
+        controller.episodes[other.identifier] = other
+        publication.url.set("https://youtu.be/unfinished")
+        publication.date.set("2026-10-14")
+        controller.select(other.identifier)
+        self.wait(lambda: not controller.loading)
+        self.assertEqual(publication.url.get(), "")
+        controller.select("note-001")
+        self.wait(lambda: not controller.loading)
+        self.assertEqual(publication.url.get(), "https://youtu.be/unfinished")
+        self.assertEqual(publication.date.get(), "2026-10-14")
+        # A save in flight must not consume edits made after clicking Save.
+        pending = []
+        controller.task = lambda operation, callback, on_error=None: pending.append(
+            (operation, callback)
+        )
+        controller.publication()
+        operation, callback = pending.pop(0)
+        callback(operation())
+        publication.url.set("https://youtu.be/newer-draft")
+        operation, callback = pending.pop(0)
+        callback(operation())
+        self.assertEqual(publication.url.get(), "https://youtu.be/newer-draft")
+        publication.load_episode(controller.episodes["note-001"])
+        self.assertEqual(publication.url.get(), "https://youtu.be/newer-draft")
+        self.assertEqual(
+            controller.studio.repository.publications()["note-001"][0],
+            "https://youtu.be/unfinished",
+        )
+
+    def test_podcast_defaults_remain_available_when_upload_copy_fails(self):
+        publication = self.app.workspace.publication
+        publication.url.set("https://youtu.be/unfinished")
+        publication.clear("Upload copy unavailable: damaged package")
+        publication.defaults_button.invoke()
+        self.assertEqual(
+            publication.url.get(),
+            "https://mothandgravel.com/notes/001-curiosity-with-calluses.html",
+        )
+        self.assertEqual(publication.date.get(), "2026-10-13")
+        self.assertIsNone(publication.details)
+        self.assertEqual(self.app.controller.studio.repository.publications(), {})
 
     def test_an_old_release_copy_cannot_replace_a_new_episode(self):
         pending = []

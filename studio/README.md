@@ -30,6 +30,9 @@ including intentionally blank dates/links; automatic defaults do not write recor
 an untouched suggested date, so a podcast date is not silently assigned to YouTube.
 An explicitly edited date is preserved. **Today** fills the local system date only
 when clicked. Save remains an explicit action.
+Unfinished publication fields stay with their episode when you switch away and back
+within the open window. Save the record before closing Studio. Restoring podcast
+details remains available even if upload-copy generation fails.
 
 Upload copy reuses the same publishing settings and copy generator as export,
 including shared/per-episode tags, hashtags, disclosures, the written-edition link
@@ -74,6 +77,7 @@ inspected plan. `audio` finishes an MP3 and retimed captions; `preview` also ren
 the first ten seconds of video; `video` produces the full video and thumbnail;
 `export` packages the selected completed full edition. Export ignores pace/outro
 controls and refuses a changed edition pointer. Export does not upload anything.
+The worker repeats the pointer check under the production lock before packaging.
 Pace and outro controls are disabled while export is selected.
 
 The queue shows running, waiting and failed/interrupted job counts. Select a row to
@@ -138,6 +142,8 @@ One worker serializes media jobs. Distinct episodes queue behind each other; dup
 active jobs for an episode are rejected across windows. The queue allows 32 pending
 jobs. The UI polls durable snapshots once per second; stage events are structured,
 not parsed from terminal text. Fine-grained encoder progress is not available yet.
+Active jobs remain visible even when the recent-history limit is reached; recipe
+recall searches the full journal.
 
 Inspect the journal without a display, or drain pending work explicitly:
 

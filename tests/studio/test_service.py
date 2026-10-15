@@ -16,6 +16,32 @@ class JobOutputTests(unittest.TestCase):
         self.root = Path(temporary.name)
         self.studio = Studio(self.root)
 
+    def test_recipe_recall_survives_more_than_a_screenful_of_history(self):
+        original = self.studio.repository.submit(
+            "fixture", "audio", {"settings": {"speed": 1.25, "outro_seconds": 8}}
+        )
+        self.studio.repository.finish(original, "succeeded")
+        for index in range(101):
+            job = self.studio.repository.submit(f"other-{index}", "audio", {})
+            self.studio.repository.finish(job, "succeeded")
+        export = self.studio.repository.submit(
+            "fixture", "export", {"settings": {"speed": 2, "outro_seconds": 0}}
+        )
+        self.studio.repository.finish(export, "succeeded")
+        self.assertNotIn(original, [job.identifier for job in self.studio.repository.jobs()])
+        with patch.object(
+            self.studio.pipeline, "settings", return_value={"speed": 1, "outro_seconds": 5}
+        ):
+            self.assertEqual(self.studio.settings("fixture"), {"speed": 1.25, "outro_seconds": 8})
+
+    def test_publication_requires_the_date_format_shown_in_the_form(self):
+        for invalid in ("20261015", "2026-W42-4", "2026-02-30", "2026-1-1"):
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, "YYYY-MM-DD"):
+                self.studio.publication("fixture", "", invalid)
+        self.assertEqual(self.studio.repository.publications(), {})
+        self.studio.publication("fixture", "", " 2026-10-15 ")
+        self.assertEqual(self.studio.repository.publications()["fixture"], ("", "2026-10-15"))
+
     def test_catalog_defaults_do_not_write_or_override_saved_release_records(self):
         episode = Episode(
             "fixture",

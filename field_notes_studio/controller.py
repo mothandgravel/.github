@@ -26,6 +26,7 @@ class Controller:
         self.review_generation = 0
         self.review_jobs = None
         self.release_generation = 0
+        self.selection_generation = 0
 
     def task(self, operation, callback, on_error=None):
         future = self.executor.submit(operation)
@@ -61,6 +62,8 @@ class Controller:
                 self.show_review(review_scope)
             return
         self.selected = identifier
+        self.selection_generation += 1
+        selection = self.selection_generation
         self.release_generation += 1
         self.review_generation += 1
         self.review_jobs = None
@@ -70,7 +73,7 @@ class Controller:
         self.view.workspace.publication.loading_episode()
 
         def loaded(settings):
-            if self.selected == identifier:
+            if selection == self.selection_generation:
                 self.view.workspace.load(self.episodes[identifier], settings)
                 self.loading = False
                 self.changed()
@@ -81,7 +84,7 @@ class Controller:
                 self.refresh_release()
 
         def failed(_message):
-            if self.selected == identifier:
+            if selection == self.selection_generation:
                 self.loading = False
 
         self.task(lambda: self.studio.settings(identifier), loaded, failed)
@@ -156,12 +159,9 @@ class Controller:
         def refreshed(episodes):
             self.episodes = {episode.identifier: episode for episode in episodes}
             self.view.shelf.load(episodes)
-            if (
-                self.selected == identifier
-                and self.view.workspace.url.get() == url
-                and self.view.workspace.date.get() == published
-            ):
-                self.view.workspace.publication.load_episode(self.episodes[identifier])
+            episode = self.episodes.get(identifier)
+            if episode is not None:
+                self.view.workspace.publication.record_saved(episode, url, published)
             self.view.status(f"Publication record saved for {identifier}.")
 
         def saved(_):

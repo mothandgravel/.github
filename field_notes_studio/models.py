@@ -20,6 +20,8 @@ class Episode:
     publication_date: str = ""
     publication_source: str = ""
     publication_saved: bool = False
+    podcast_url: str = ""
+    podcast_date: str = ""
 
 
 @dataclass(frozen=True)

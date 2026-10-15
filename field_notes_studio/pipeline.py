@@ -27,17 +27,23 @@ class Pipeline:
         return site.load_entries(self.root)
 
     def catalog(self) -> list[Episode]:
-        return [
-            Episode(
-                entry["id"],
-                entry["title"],
-                entry["duration_seconds"],
-                site.media_path(self.root, entry["transcript"]).read_text(encoding="utf-8"),
-                *self.publication_defaults(entry),
-                "Podcast catalog in this checkout; external platforms have not been checked.",
+        episodes = []
+        for entry in self.entries():
+            link, published = self.publication_defaults(entry)
+            episodes.append(
+                Episode(
+                    entry["id"],
+                    entry["title"],
+                    entry["duration_seconds"],
+                    site.media_path(self.root, entry["transcript"]).read_text(encoding="utf-8"),
+                    link,
+                    published,
+                    "Podcast catalog in this checkout; external platforms have not been checked.",
+                    podcast_url=link,
+                    podcast_date=published,
+                )
             )
-            for entry in self.entries()
-        ]
+        return episodes
 
     @staticmethod
     def publication_defaults(entry: dict) -> tuple[str, str]:
@@ -291,7 +297,7 @@ class Pipeline:
                     "Completed edition changed after planning export. Inspect a fresh plan."
                 )
             emit("export", "Verifying and packaging the selected full edition")
-            packages.export(args, self.root)
+            packages.export(args, self.root, expected_edition=request["edition"])
             return str(self.root / "artifacts/uploads" / identifier)
         runner.produce(args, self.root)
         latest = read_object(self.output / identifier / "latest.json")

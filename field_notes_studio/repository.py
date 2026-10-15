@@ -77,7 +77,8 @@ class Repository:
         with self.connection() as db:
             rows = db.execute(
                 "SELECT identifier,episode,action,status,stage,created,error,result,request,cancel_requested "
-                "FROM jobs ORDER BY rowid DESC LIMIT 100"
+                "FROM jobs WHERE status IN ('queued','running') OR rowid IN "
+                "(SELECT rowid FROM jobs ORDER BY rowid DESC LIMIT 100) ORDER BY rowid DESC"
             ).fetchall()
         return [Job(**dict(row)) for row in rows]
 
@@ -91,6 +92,16 @@ class Repository:
         if row is None:
             raise ValueError("Unknown job")
         return Job(**dict(row))
+
+    def latest_recipe(self, episode: str) -> dict | None:
+        """Recipe recall is independent of the bounded queue display."""
+        with self.connection() as db:
+            row = db.execute(
+                "SELECT request FROM jobs WHERE episode=? AND action!='export' "
+                "ORDER BY rowid DESC LIMIT 1",
+                (episode,),
+            ).fetchone()
+        return json.loads(row[0])["settings"] if row else None
 
     def claim(self) -> Job | None:
         with self.connection() as db:
