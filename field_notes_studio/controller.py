@@ -27,6 +27,7 @@ class Controller:
         self.review_jobs = None
         self.release_generation = 0
         self.selection_generation = 0
+        self.package_generation = 0
 
     def task(self, operation, callback, on_error=None):
         future = self.executor.submit(operation)
@@ -62,6 +63,7 @@ class Controller:
                 self.show_review(review_scope)
             return
         self.selected = identifier
+        self.package_generation += 1
         self.selection_generation += 1
         selection = self.selection_generation
         self.release_generation += 1
@@ -177,6 +179,10 @@ class Controller:
         generation = self.release_generation
         publication = self.view.workspace.publication
         publication.clear()
+        self.package_generation += 1
+        publication.files.clear()
+        if publication.files_visible():
+            self.refresh_package()
 
         def loaded(details):
             if generation == self.release_generation and identifier == self.selected:
@@ -194,6 +200,66 @@ class Controller:
         self.view.workspace.action.set("export")
         self.view.workspace.show_plan_tab()
         self.inspect()
+
+    def refresh_package(self):
+        if not self.selected or self.loading:
+            return
+        identifier = self.selected
+        self.package_generation += 1
+        generation = self.package_generation
+        files = self.view.workspace.publication.files
+        files.clear("Checking the saved package and latest full edition…", loading=True)
+
+        def loaded(snapshot):
+            if generation == self.package_generation and identifier == self.selected:
+                files.load(snapshot)
+                if snapshot.details is not None:
+                    self.view.workspace.publication.load_details(snapshot.details)
+
+        def failed(message):
+            if generation == self.package_generation and identifier == self.selected:
+                files.clear("Package unavailable: " + message)
+
+        self.task(lambda: self.studio.package_snapshot(identifier), loaded, failed)
+
+    def open_package_file(self):
+        files = self.view.workspace.publication.files
+        snapshot, name = files.snapshot, files.selection()
+        if snapshot and name:
+            generation = self.package_generation
+            self.task(
+                lambda: self.studio.open_package_file(snapshot, name),
+                lambda _: None,
+                lambda message: self.package_action_failed(generation, snapshot, message),
+            )
+
+    def package_action_failed(self, generation, snapshot, message):
+        files = self.view.workspace.publication.files
+        if generation == self.package_generation and files.snapshot == snapshot:
+            files.summary.configure(text=message, style="Draft.TLabel")
+            files.copy.reset_feedback()
+
+    def copy_package_path(self):
+        files = self.view.workspace.publication.files
+        snapshot, name = files.snapshot, files.selection()
+        generation = self.package_generation
+        if not snapshot or not name:
+            return
+
+        def copied(path):
+            if (
+                generation == self.package_generation
+                and files.snapshot == snapshot
+                and files.selection() == name
+            ):
+                files.copied(path)
+                self.view.status("Upload path copied. Paste it into the browser's file picker.")
+
+        self.task(
+            lambda: self.studio.package_upload_path(snapshot, name),
+            copied,
+            lambda message: self.package_action_failed(generation, snapshot, message),
+        )
 
     def release_review(self):
         if self.selected and not self.loading:

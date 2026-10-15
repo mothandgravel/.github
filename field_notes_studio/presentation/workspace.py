@@ -94,8 +94,10 @@ class Workspace(ttk.Frame):
             )
         self.url, self.date = self.publication.url, self.publication.date
         tabs.bind("<<NotebookTabChanged>>", lambda _: self.layout_stage())
-        self.layout_stage()
-        outputs = ttk.Frame(self)
+        self.publication.tabs.bind(
+            "<<NotebookTabChanged>>", lambda _: self.layout_stage(), add=True
+        )
+        outputs = self.outputs = ttk.Frame(self)
         outputs.grid(row=6, column=0, sticky="ew", pady=(14, 0))
         for label, kind in [
             ("Edition folder", "folder"),
@@ -107,6 +109,7 @@ class Workspace(ttk.Frame):
                 text=label,
                 command=lambda k=kind: callbacks["open"](k),
             ).pack(side="left", padx=(0, 7))
+        self.layout_stage()
 
     @staticmethod
     def _text_tab(tabs, title):
@@ -158,6 +161,10 @@ class Workspace(ttk.Frame):
                 widget.grid()
             else:
                 widget.grid_remove()
+        if self.tabs.select() == str(self.publication) and self.publication.files_visible():
+            self.outputs.grid_remove()
+        else:
+            self.outputs.grid()
 
     def show_plan_tab(self):
         self.tabs.select(self.plan.master)

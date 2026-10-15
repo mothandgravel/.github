@@ -3,10 +3,29 @@
 from __future__ import annotations
 
 import os
+import platform
 import subprocess
 import sys
 import webbrowser
 from pathlib import Path
+
+
+def upload_path(path: Path) -> str:
+    """Give Windows file pickers a usable WSL path without copying the media."""
+    if os.environ.get("WSL_DISTRO_NAME") or "microsoft" in platform.release().lower():
+        try:
+            result = subprocess.run(
+                ["wslpath", "-w", str(path)], capture_output=True, text=True, check=True, timeout=5
+            )
+        except (OSError, subprocess.SubprocessError) as exc:
+            raise ValueError(
+                "Could not create a Windows upload path. Check WSL interop or open the upload folder."
+            ) from exc
+        value = result.stdout.strip()
+        if not value:
+            raise ValueError("WSL returned an empty upload path. Open the upload folder instead.")
+        return value
+    return str(path)
 
 
 def open_publisher() -> None:

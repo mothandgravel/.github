@@ -5,6 +5,7 @@ from datetime import date
 from tkinter import ttk
 
 from field_notes_studio.presentation.controls import ActionButton
+from field_notes_studio.presentation.package_files import PackageFiles
 from field_notes_studio.presentation.scroll import ScrollArea
 from field_notes_studio.presentation.theme import set_text
 
@@ -136,6 +137,12 @@ class Publication(ttk.Frame):
         self.record_status = ttk.Label(footer, text="", style="Muted.TLabel")
         self.record_status.pack(side="left", padx=12)
         self.form.bind_navigation()
+        self.files = PackageFiles(self.tabs, callbacks)
+        self.tabs.add(self.files, text="Package files")
+        self.tabs.bind(
+            "<<NotebookTabChanged>>",
+            lambda _: callbacks["package_refresh"]() if self.files_visible() else None,
+        )
         copy.bind("<Configure>", lambda e: self.basis.configure(wraplength=max(200, e.width - 24)))
         content.bind(
             "<Configure>",
@@ -204,6 +211,10 @@ class Publication(ttk.Frame):
         self.save.reset_feedback()
         self.record_status.configure(text="")
         self.defaults_button.configure(state="disabled")
+        self.files.clear()
+
+    def files_visible(self):
+        return self.tabs.select() == str(self.files)
 
     def clear(self, message="Loading upload copy…", *, loading=True):
         self.details = None

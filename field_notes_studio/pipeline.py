@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import re
 from collections.abc import Callable
+from contextlib import ExitStack
 from datetime import datetime
 from pathlib import Path
 
@@ -14,8 +16,24 @@ from field_notes_audio.production import packages, runner
 from field_notes_audio.production.config import load_settings, number
 from field_notes_audio.production.editions import AUDIO_FILES, cache_valid, fingerprint
 from field_notes_audio.production.metadata import load_metadata, publishing_copy
-from field_notes_audio.storage import read_object, write_json
-from field_notes_studio.models import ACTIONS, Episode, ReleaseDetails, ReviewSnapshot
+from field_notes_audio.storage import digest_file, read_object, write_json
+from field_notes_studio.models import (
+    ACTIONS,
+    Episode,
+    PackageFile,
+    PackageSnapshot,
+    ReleaseDetails,
+    ReviewSnapshot,
+)
+
+PACKAGE_MEDIA = {
+    "episode.mp4": "Video",
+    "thumbnail.png": "Thumbnail",
+    "captions.srt": "Subtitles · SRT",
+    "captions.vtt": "Subtitles · VTT",
+    "episode.mp3": "Podcast audio",
+    "transcript.txt": "Transcript",
+}
 
 
 class Pipeline:
@@ -114,6 +132,141 @@ class Pipeline:
         if len(matches) != 1:
             raise ValueError("Choose a prepared episode")
         return site.source_entry(matches[0])
+
+    def _upload_manifest(self, identifier):
+        if not isinstance(identifier, str) or not re.fullmatch(
+            r"[a-z0-9]+(?:-[a-z0-9]+)*", identifier
+        ):
+            raise ValueError("Choose a prepared episode")
+        directory = self.root / "artifacts/uploads" / identifier
+        path = directory / "upload.json"
+        manifest = read_object(path)
+        if (
+            directory.is_symlink()
+            or path.is_symlink()
+            or type(manifest.get("schema_version")) is not int
+            or manifest["schema_version"] != 1
+            or manifest.get("episode") != identifier
+            or not isinstance(manifest.get("files"), dict)
+            or set(manifest["files"]) != packages.UPLOAD_FILES
+            or not isinstance(manifest.get("review_status"), str)
+            or manifest["review_status"] not in {"pending", "approved"}
+            or not isinstance(manifest.get("fingerprint"), str)
+            or not re.fullmatch(r"[a-f0-9]{64}", manifest["fingerprint"])
+            or type(manifest.get("default_playback_rate")) is not int
+            or manifest["default_playback_rate"] != 1
+        ):
+            raise ValueError("Invalid upload package. Inspect and export the package again.")
+        return directory, manifest
+
+    def package_snapshot(self, identifier: str) -> PackageSnapshot:
+        entry = self.source(identifier)
+        uploads = self.root / "artifacts/uploads"
+        if not (uploads / identifier / "upload.json").exists():
+            return PackageSnapshot(
+                identifier,
+                "",
+                "missing",
+                "No upload package yet. Produce and review the full video, then Inspect package and queue export.",
+            )
+        with ExitStack() as stack:
+            edition, problem = None, ""
+            try:
+                edition = stack.enter_context(
+                    packages.locked_editions([entry], self.output, full_video=True)
+                )[0]
+            except (ValueError, OSError) as exc:
+                problem = str(exc)
+            # Same lock order as export: production first, then upload files.
+            with run_lock(uploads, "upload package check"):
+                directory, manifest = self._upload_manifest(identifier)
+                if not packages.upload_valid(directory, manifest["fingerprint"]):
+                    raise ValueError(
+                        "Upload files are missing or changed. Inspect and export the package again."
+                    )
+                files = tuple(
+                    PackageFile(
+                        name, purpose, (directory / name).stat().st_size, str(directory / name)
+                    )
+                    for name, purpose in PACKAGE_MEDIA.items()
+                )
+                status, summary = (
+                    "unverified",
+                    "Files checked; current edition unavailable: " + problem,
+                )
+                if edition is not None:
+                    expected = {
+                        name: edition.state["files"][name]
+                        for name in PACKAGE_MEDIA
+                        if name not in {"episode.mp4", "thumbnail.png"}
+                    }
+                    expected.update(
+                        {
+                            name: edition.video_state["files"][name]
+                            for name in ("episode.mp4", "thumbnail.png")
+                        }
+                    )
+                    current = (
+                        manifest.get("audio_fingerprint") == edition.state["fingerprint"]
+                        and manifest.get("video_fingerprint") == edition.video_state["fingerprint"]
+                        and all(
+                            manifest["files"][name] == value for name, value in expected.items()
+                        )
+                    )
+                    if not current:
+                        status, summary = (
+                            "stale",
+                            "This package contains an older or different edition. Inspect package and export again for the latest media.",
+                        )
+                    elif packages.review_status(edition, True) != "approved":
+                        status, summary = (
+                            "review",
+                            "Files match the saved edition; full-video review is pending. Review the video, then export again.",
+                        )
+                    elif manifest["review_status"] != "approved":
+                        status, summary = (
+                            "stale",
+                            "Full-video review is approved; export again to attach that approval to this package.",
+                        )
+                    else:
+                        status, summary = (
+                            "ready",
+                            "Files checked · current full edition · review approved. Ready for manual upload; platform publication is not checked.",
+                        )
+                link, published = self.publication_defaults(entry)
+                details = ReleaseDetails(
+                    *(
+                        (directory / name).read_text(encoding="utf-8").removesuffix("\n")
+                        for name in ("title.txt", "description.txt", "tags.txt", "hashtags.txt")
+                    ),
+                    link,
+                    published,
+                    "Saved upload package text (checksummed). Media and review status is shown in Package files.",
+                )
+                return PackageSnapshot(
+                    identifier, fingerprint(manifest), status, summary, files, details
+                )
+
+    def package_file(self, snapshot: PackageSnapshot, name: str) -> Path:
+        if not snapshot.identity or name not in PACKAGE_MEDIA:
+            raise ValueError("Select a checked package file first")
+        try:
+            with run_lock(self.root / "artifacts/uploads", "upload package check"):
+                directory, manifest = self._upload_manifest(snapshot.episode)
+                path = directory / name
+                if (
+                    fingerprint(manifest) != snapshot.identity
+                    or path.is_symlink()
+                    or digest_file(path) != manifest["files"][name]
+                ):
+                    raise ValueError(
+                        "The package changed after checking. Check the files again before opening or copying a path."
+                    )
+                return path
+        except OSError as exc:
+            raise ValueError(
+                "Package files are unavailable. Check the files again before opening or copying a path."
+            ) from exc
 
     def settings(self, identifier: str) -> dict:
         return load_settings(self.root / "audio/production/settings.json", identifier)

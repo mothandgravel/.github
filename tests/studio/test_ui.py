@@ -9,7 +9,13 @@ from pathlib import Path
 from unittest.mock import patch
 
 from field_notes_audio.storage import read_object, write_json
-from field_notes_studio.models import Episode, ReleaseDetails, ReviewSnapshot
+from field_notes_studio.models import (
+    Episode,
+    PackageFile,
+    PackageSnapshot,
+    ReleaseDetails,
+    ReviewSnapshot,
+)
 
 
 @unittest.skipUnless(os.environ.get("DISPLAY"), "Tk integration requires DISPLAY or xvfb-run")
@@ -501,3 +507,99 @@ class UITests(unittest.TestCase):
             publication.copy_button,
         ):
             self.assert_visible(widget)
+
+    def show_package_files(self, status="ready"):
+        files = self.app.workspace.publication.files
+        assets = tuple(
+            PackageFile(
+                name, purpose, size, str(self.directory / "artifacts/uploads/note-001" / name)
+            )
+            for name, purpose, size in (
+                ("episode.mp4", "Video", 123456789),
+                ("thumbnail.png", "Thumbnail", 123456),
+                ("captions.srt", "Subtitles · SRT", 12345),
+            )
+        )
+        snapshot = PackageSnapshot(
+            "note-001",
+            "package-version",
+            status,
+            "Files checked · current full edition · review approved. Ready for manual upload; platform publication is not checked.",
+            assets,
+        )
+        with patch.object(self.app.controller.studio, "package_snapshot", return_value=snapshot):
+            self.app.workspace.tabs.select(self.app.workspace.publication)
+            self.app.workspace.publication.tabs.select(files)
+            self.wait(lambda: files.snapshot == snapshot)
+        return files
+
+    def test_package_files_are_lazy_and_missing_package_has_a_next_step(self):
+        files = self.app.workspace.publication.files
+        self.assertIsNone(files.snapshot)
+        self.app.workspace.publication.tabs.select(files)
+        self.wait(lambda: files.snapshot is not None)
+        self.assertEqual(files.snapshot.status, "missing")
+        self.assertTrue(files.open.instate(["disabled"]))
+        self.assertTrue(files.copy.instate(["disabled"]))
+        self.assertIn("Inspect package", files.summary["text"])
+
+    def test_package_file_actions_copy_picker_path_and_reset_for_another_asset(self):
+        files = self.show_package_files()
+        expected = r"\\wsl.localhost\Ubuntu\home\user\episode.mp4"
+        with patch.object(
+            self.app.controller.studio, "package_upload_path", return_value=expected
+        ) as copied:
+            files.copy.invoke()
+            self.wait(lambda: files.copy["text"] == "Path copied")
+            self.assertEqual(self.root.clipboard_get(), expected)
+            copied.assert_called_once_with(files.snapshot, "episode.mp4")
+        files.tree.selection_set("thumbnail.png")
+        files.selected()
+        self.assertEqual(files.copy["text"], "Copy upload path")
+        with patch.object(self.app.controller.studio, "open_package_file") as opened:
+            files.open.invoke()
+            self.wait(lambda: opened.called)
+            opened.assert_called_once_with(files.snapshot, "thumbnail.png")
+        self.assertEqual(self.app.controller.studio.repository.publications(), {})
+
+    def test_package_copy_completion_respects_new_file_selection_and_refresh(self):
+        files = self.show_package_files()
+        self.root.clipboard_clear()
+        self.root.clipboard_append("Keep this clipboard")
+        pending = []
+        self.app.controller.task = lambda operation, callback, on_error=None: pending.append(
+            callback
+        )
+        files.copy.invoke()
+        files.tree.selection_set("thumbnail.png")
+        files.selected()
+        pending.pop(0)("Old video path")
+        self.assertEqual(self.root.clipboard_get(), "Keep this clipboard")
+        self.app.controller.refresh_package()
+        old = pending.pop(0)
+        self.app.controller.refresh_package()
+        old(PackageSnapshot("note-001", "old", "ready", "Old result"))
+        self.assertIsNone(files.snapshot)
+
+    def test_package_action_failure_keeps_recovery_available(self):
+        files = self.show_package_files()
+        with patch.object(
+            self.app.controller.studio,
+            "package_upload_path",
+            side_effect=ValueError("Package changed. Check files again."),
+        ):
+            files.copy.invoke()
+            self.wait(lambda: "Package changed" in files.summary["text"])
+        self.assertNotEqual(files.copy["text"], "Path copied")
+        self.assertFalse(files.refresh.instate(["disabled"]))
+
+    def test_package_files_actions_fit_minimum_window_with_an_active_queue(self):
+        self.root.geometry("1050x760")
+        self.queue_job()
+        files = self.show_package_files()
+        self.root.update()
+        self.assertFalse(self.app.workspace.outputs.winfo_ismapped())
+        for widget in (files.open, files.copy, files.folder, files.refresh):
+            self.assert_visible(widget)
+        self.assertTrue(files.tree.bbox("episode.mp4"))
+        self.capture("release-package-files")

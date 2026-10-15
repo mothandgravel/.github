@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 
 from field_notes_studio.models import ReviewSnapshot
 from field_notes_studio.pipeline import Pipeline
-from field_notes_studio.processes import launch_worker, open_path, open_publisher
+from field_notes_studio.processes import launch_worker, open_path, open_publisher, upload_path
 from field_notes_studio.repository import Repository
 
 
@@ -91,6 +91,15 @@ class Studio:
 
     def release_details(self, episode: str):
         return self.pipeline.release_details(episode)
+
+    def package_snapshot(self, episode: str):
+        return self.pipeline.package_snapshot(episode)
+
+    def open_package_file(self, snapshot, name: str) -> None:
+        open_path(self.pipeline.package_file(snapshot, name))
+
+    def package_upload_path(self, snapshot, name: str) -> str:
+        return upload_path(self.pipeline.package_file(snapshot, name))
 
     def open_publisher(self) -> None:
         open_publisher()

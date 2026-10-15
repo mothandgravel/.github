@@ -21,8 +21,9 @@ buttons appear in Produce; Review and Release use the space for their own contro
 2. **Inspect package** selects export and shows the plan. Use **Queue production**
    to create the package after checking it.
 3. **YouTube Studio** opens the upload destination in your system browser. Open
-   **Upload package**, choose its video/thumbnail/subtitles, and copy the title,
-   description and tags from **Release → Upload details**.
+   **Release → Package files**, check the saved package, and select its video,
+   thumbnail or subtitles. **Copy upload path** gives you a path to paste into the
+   browser's file picker. Copy the title, description and tags from **Upload details**.
 4. In **Publication record**, record the published link and its actual date.
 
 Episode links and dates now fill from the existing podcast catalog. This is data
@@ -56,6 +57,35 @@ that feedback. Refresh controls show when work is in flight. Search reports matc
 and explains empty results; Escape clears the query. Queue failures and interruptions
 have written status and an attention tint. Icons scale with the desktop and require
 no additional dependencies.
+
+## Know which package you are uploading
+
+**Package files** lists the video, thumbnail, both subtitle formats, podcast MP3 and
+transcript with their sizes. **Open file** previews the selected saved asset;
+**Open folder** opens the complete package. The panel distinguishes:
+
+- No package yet, with the next production/export step.
+- Checked files whose current full-video review is still pending.
+- An older package, or one that needs exporting again to attach a newer approval.
+- A package matching the current full edition and its approved human review.
+- Intact portable files whose latest production edition cannot be verified.
+
+“Ready for manual upload” describes those local checks. It does not establish that
+anything has been uploaded or published. A stale or unverified package can still be
+inspected, with its status visible. Missing or changed package files block file actions
+until the package is repaired and checked again.
+
+Checks run when opening or refreshing this panel, not on every queue poll. Refreshing
+upload details or completing production invalidates old package checks. Before opening
+an asset or copying its path, Studio checks that the package identity and selected file
+still match. Checked package text also refreshes the copy fields without changing an
+unfinished publication record.
+
+On WSL, **Copy upload path** uses `wslpath -w` to create a Windows-compatible path,
+including for files stored inside Linux. It does not copy or move the media. On a Linux
+desktop it copies the native path. If WSL translation fails, Studio explains the failure
+and keeps folder access available. This follows Microsoft's documented
+[WSL path translation](https://learn.microsoft.com/en-us/windows/dev-environment/wsl-interop#path-translation).
 
 ## Run in Ubuntu / WSL
 
@@ -189,7 +219,7 @@ bounded preview queues and the explorer's worker-to-queue-to-Tk pattern. Its com
 dashboard, camera/voice algorithms and Windows MCI playback are not copied. The first
 studio has no frame stream; use a bounded latest-frame queue when adding previews.
 
-## Validation and the first Field Note
+## Validation
 
 ```bash
 python3 tools/check_audio.py
@@ -200,7 +230,17 @@ CI covers real Tk editing, plan invalidation, queueing, reopening and publicatio
 records, main-thread delivery, cross-window conflicts, uncertain recovery, cooperative
 stopping and real FFmpeg cache reuse with retimed captions. No Cloud credentials.
 
-The experiment is **one published episode, one inspectable rebuild decision, one
-recovery question**: change an outro, produce it, close/reopen while the worker runs,
-inspect its outcome and listen to the result. Keep the Field Note provisional until
-a human has tried that workflow in their WSL setup.
+For a desktop smoke check, change an outro, inspect and queue it, close/reopen while
+the worker runs, review the saved media, export, check the package and try its upload
+paths in your browser. External players and the browser handoff depend on the desktop.
+
+## Remaining product gaps
+
+- Keep unfinished production and publication drafts across closing the window.
+- Expose intro/music settings and credit editing without editing production JSON.
+- Edit publishing metadata/templates in Studio instead of only copying generated text.
+- Inspect and queue several episodes together while retaining per-episode plans.
+- Surface toolchain and worker health before a job fails, including worker upgrades.
+
+Embedded playback and authenticated publishing are larger integrations. The current
+handoff is useful without requiring either.

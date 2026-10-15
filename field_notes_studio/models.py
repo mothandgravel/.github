@@ -63,5 +63,25 @@ class ReviewSnapshot:
     full_video: bool = False
 
 
+@dataclass(frozen=True)
+class PackageFile:
+    name: str
+    purpose: str
+    size: int
+    path: str
+
+
+@dataclass(frozen=True)
+class PackageSnapshot:
+    """Checked upload files; local readiness never establishes platform publication."""
+
+    episode: str
+    identity: str
+    status: str
+    summary: str
+    files: tuple[PackageFile, ...] = ()
+    details: ReleaseDetails | None = None
+
+
 class StopRequested(Exception):
     """A cooperative stop reached a safe production boundary."""
