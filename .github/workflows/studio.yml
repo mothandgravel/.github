@@ -4,16 +4,14 @@ on:
   pull_request:
     paths:
       - "field_notes_studio/**"
-      - "field_notes_audio/progress.py"
-      - "field_notes_audio/production/**"
+      - "field_notes_audio/**"
       - "tests/studio/**"
       - "pyproject.toml"
       - ".github/workflows/studio.yml"
   push:
     paths:
       - "field_notes_studio/**"
-      - "field_notes_audio/progress.py"
-      - "field_notes_audio/production/**"
+      - "field_notes_audio/**"
       - "tests/studio/**"
       - "pyproject.toml"
       - ".github/workflows/studio.yml"
@@ -35,7 +33,10 @@ jobs:
       - name: Install the pinned Python quality tool
         run: python -m pip install ruff==0.12.12
       - name: Verify idioms and formatting
-        run: python -m ruff check && python -m ruff format --check
+        run: |
+          python -m ruff check
+          # Preserve the failing gate and expose the exact formatting repair.
+          python -m ruff format --check || { python -m ruff format --diff; exit 1; }
       - name: Verify real Tk controls, media finishing, journals and recovery
         env:
           STUDIO_SCREENSHOT_DIR: artifacts/studio-ui

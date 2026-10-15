@@ -7,7 +7,10 @@ from pathlib import Path
 from tkinter import ttk
 
 from field_notes_studio.controller import Controller
+from field_notes_studio.preparation import Preparation
+from field_notes_studio.preparation_controller import PreparationController
 from field_notes_studio.presentation import theme
+from field_notes_studio.presentation.preparation import PreparationWindow
 from field_notes_studio.presentation.queue import ProductionQueue
 from field_notes_studio.presentation.shelf import Shelf
 from field_notes_studio.presentation.workspace import Workspace
@@ -17,6 +20,8 @@ from field_notes_studio.service import Studio
 class Application:
     def __init__(self, root, directory: Path):
         self.root = root
+        self.directory = directory
+        self.preparation = None
         self.closed = False
         self.tick_handle = None
         self.poll_handle = None
@@ -34,6 +39,10 @@ class Application:
         ttk.Label(main, text="Production studio", style="Studio.TLabel").grid(
             row=1, column=0, sticky="w", pady=(4, 16)
         )
+        self.prepare_button = ttk.Button(
+            main, text="Prepare new notes…", command=self.open_preparation
+        )
+        self.prepare_button.grid(row=1, column=0, sticky="e", pady=(4, 16))
         self.controller = Controller(Studio(directory), self)
         body = ttk.Panedwindow(main, orient="horizontal")
         body.grid(row=2, column=0, sticky="nsew")
@@ -99,6 +108,14 @@ class Application:
         self.tick()
         self.poll()
 
+    def open_preparation(self):
+        if self.preparation is not None and not self.preparation.closed:
+            self.preparation.view.window.lift()
+            return
+        self.preparation = PreparationController(
+            Preparation(self.directory), PreparationWindow(self.root)
+        )
+
     def status(self, message):
         self.message.configure(text=message)
 
@@ -129,6 +146,8 @@ class Application:
             )
             return
         self.closed = True
+        if self.preparation is not None:
+            self.preparation.close()
         for handle in (self.tick_handle, self.poll_handle):
             if handle is not None:
                 self.root.after_cancel(handle)

@@ -18,6 +18,8 @@ class BoundaryTests(unittest.TestCase):
                     "models.py",
                     "repository.py",
                     "processes.py",
+                    "preparation_controller.py",
+                    "preparation_models.py",
                 )
             ],
         ]
@@ -35,6 +37,7 @@ class BoundaryTests(unittest.TestCase):
                         any(
                             name in {"sqlite3", "subprocess", "socket", "threading"}
                             or name.startswith("field_notes_studio.pipeline")
+                            or name == "field_notes_studio.preparation"
                             for name in modules
                         )
                     )
