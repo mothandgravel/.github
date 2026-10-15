@@ -15,9 +15,7 @@ await mkdir(output, { recursive: true });
 async function review(page, label, capture = false) {
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), label + ': no horizontal overflow');
   await page.addScriptTag({ content: axe.source });
-  const violations = await page.evaluate(async () => (await axe.run(document, {
-    runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'] },
-  })).violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => n.target) })));
+  const violations = await page.evaluate(async () => (await axe.run(document)).violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => n.target) })));
   assert(!violations.length, label + ': ' + JSON.stringify(violations));
   results.push({ label, violations });
   if (capture) await page.screenshot({ path: join(output, label + '.png'), animations: 'disabled' });
@@ -56,7 +54,7 @@ try {
     assert(await exit.count() === 1, note.id + ': one coherent ending');
     const links = await exit.locator('a').evaluateAll(els => els.map(el => el.getAttribute('href')));
     assert(new Set(links).size === links.length, note.id + ': distinct exits without repeated recommendations');
-    assert(await exit.locator('.reading-next').getAttribute('aria-describedby') === 'next-reading-bridge', note.id + ': connection available to assistive technology');
+    assert(!await exit.locator('.reading-next').getAttribute('aria-labelledby') && (await exit.locator('.reading-next').innerText()).includes(note.nextReading.bridge), note.id + ': native link name retains its visible connection');
     await exit.locator('.reading-next').focus(); await page.keyboard.press('Enter');
     const next = notes.find(n => n.id === note.nextReading.id);
     await page.waitForURL(origin + '/notes/' + next.slug);

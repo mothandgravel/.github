@@ -125,7 +125,7 @@ def reading_exit(n, notes):
     if next_id:
         other = by_id[next_id]
         bridge = next_reading['bridge'] if next_reading else other['summary']
-        continuation = f'''<a class="reading-next" href="./{other['slug']}" aria-labelledby="next-reading-title" aria-describedby="next-reading-bridge">
+        continuation = f'''<a class="reading-next" href="./{other['slug']}">
           <span class="mono">FOLLOW THE QUESTION / {other['id']}</span>
           <h2 id="next-reading-title">{escape(other['title'])}</h2>
           <p id="next-reading-bridge">{escape(bridge)}</p>
