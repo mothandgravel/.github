@@ -48,6 +48,8 @@ try {
   }
   // Follow every recommendation, rather than merely comparing generated strings.
   const page = await browser.newPage({ viewport: { width: 390, height: 900 }, reducedMotion: 'reduce' });
+  const journeyErrors = [];
+  page.on('pageerror', error => journeyErrors.push(error.message));
   for (const note of notes) {
     await page.goto(origin + '/notes/' + note.slug);
     const exit = page.locator('.reading-exit');
@@ -75,14 +77,28 @@ try {
   await page.goto(origin + '/notes/013-work-outlives-the-window.html');
   const saved = JSON.stringify({ version: 1, answers: { making: 'An existing unfinished question', difficulty: 'Keep these exact words.' } });
   await page.evaluate(({ key, saved }) => sessionStorage.setItem(key, saved), { key: draftKey, saved });
-  await page.getByRole('link', { name: 'Bring your version' }).click();
+  // Exercise an actual deferred enhancement. Visible HTML can arrive before its
+  // module restores the draft; the revealed controls mark initialization complete.
+  let releaseModule;
+  const moduleGate = new Promise(resolve => { releaseModule = resolve; });
+  const modulePattern = '**/assets/loose-end-v2.mjs*';
+  await page.route(modulePattern, async route => { await moduleGate; await route.continue(); });
+  await page.getByRole('link', { name: 'Bring your version' }).click({ noWaitAfter: true });
+  await page.waitForURL(origin + '/questions/', { waitUntil: 'commit' });
+  await page.locator('#making').waitFor({ state: 'attached' });
+  assert(await page.locator('#journey-controls').isHidden(), 'Question sheet remains native while its module is deferred');
+  releaseModule();
+  await page.locator('#journey-controls').waitFor({ state: 'visible' });
+  await page.unroute(modulePattern);
   assert(new URL(page.url()).pathname === '/questions/', 'Invitation opens the actual question sheet');
   assert(await page.locator('#making').inputValue() === 'An existing unfinished question', 'Editorial invitation restores the visitor’s own words');
   assert(await page.evaluate(key => sessionStorage.getItem(key), draftKey) === saved, 'Reading route does not replace stored material');
   await page.evaluate(key => sessionStorage.removeItem(key), draftKey);
   await page.goto(origin + '/notes/013-work-outlives-the-window.html');
   await page.getByRole('link', { name: 'Bring your version' }).click();
+  await page.locator('#journey-controls').waitFor({ state: 'visible' });
   assert(await page.locator('#making').inputValue() === '', 'Fresh editorial invitation does not invent a visitor’s question');
+  assert(!journeyErrors.length, 'Reading and question journeys have no browser errors: ' + journeyErrors);
   await page.close();
   const fallback = await browser.newPage({ viewport: { width: 320, height: 900 }, javaScriptEnabled: false });
   await fallback.goto(origin + '/notes/');
