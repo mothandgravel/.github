@@ -16,6 +16,45 @@ class Value:
 
 
 class ControllerTests(unittest.TestCase):
+    def test_review_result_for_an_old_queue_selection_cannot_redirect_the_workspace(self):
+        selection = Value("old-job")
+        navigated = []
+        view = SimpleNamespace(
+            jobs=SimpleNamespace(selection=selection.get),
+            shelf=SimpleNamespace(reveal=lambda identifier: navigated.append(identifier)),
+            status=lambda _: None,
+        )
+        job = SimpleNamespace(episode="note-001", action="video", status="succeeded")
+        studio = SimpleNamespace(repository=SimpleNamespace(get=lambda _: job))
+        controller = Controller(studio, view)
+        self.addCleanup(controller.close)
+        controller.episodes = {"note-001": object()}
+        pending = []
+        controller.task = lambda operation, callback: pending.append((operation, callback))
+        controller.review_job()
+        selection.value = "another-job"
+        operation, callback = pending.pop()
+        callback(operation())
+        self.assertEqual(navigated, [])
+        self.assertIsNone(controller.selected)
+
+    def test_queue_review_does_not_offer_preview_or_missing_episode_as_full_video(self):
+        messages = []
+        view = SimpleNamespace(
+            jobs=SimpleNamespace(selection=lambda: "job"), status=messages.append
+        )
+        job = SimpleNamespace(episode="removed-episode", action="preview", status="succeeded")
+        studio = SimpleNamespace(repository=SimpleNamespace(get=lambda _: job))
+        controller = Controller(studio, view)
+        self.addCleanup(controller.close)
+        controller.task = lambda operation, callback: callback(operation())
+        controller.review_job()
+        self.assertIn("completed audio or full-video", messages[-1])
+        job.action = "video"
+        controller.review_job()
+        self.assertIn("no longer", messages[-1])
+        self.assertIsNone(controller.selected)
+
     def test_changed_controls_cannot_queue_an_old_plan(self):
         calls = []
         workspace = SimpleNamespace(

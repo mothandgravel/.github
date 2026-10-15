@@ -49,6 +49,8 @@ class Workspace(ttk.Frame):
                 state="readonly" if label == "Output" else "normal",
             )
             combo.pack(anchor="w", pady=5)
+            if label != "Output":
+                setattr(self, "speed_control" if label == "Pace ×" else "outro_control", combo)
             variable.trace_add("write", lambda *_: callbacks["changed"]())
         buttons = ttk.Frame(self)
         buttons.grid(row=3, column=0, sticky="ew", pady=(10, 16))
@@ -65,7 +67,7 @@ class Workspace(ttk.Frame):
         self.guidance.grid(row=4, column=0, sticky="w", pady=(0, 10))
         self.action.trace_add("write", lambda *_: self.output_guidance())
         self.output_guidance()
-        tabs = ttk.Notebook(self)
+        tabs = self.tabs = ttk.Notebook(self)
         tabs.grid(row=5, column=0, sticky="nsew")
         self.plan = self._text_tab(tabs, "Rebuild plan")
         self.review = Review(tabs, callbacks)
@@ -138,3 +140,9 @@ class Workspace(ttk.Frame):
             "export": "Export → package the saved full edition with title, description, tags and subtitles.",
         }
         self.guidance.configure(text=messages[self.action.get()])
+        state = "disabled" if self.action.get() == "export" else "normal"
+        self.speed_control.configure(state=state)
+        self.outro_control.configure(state=state)
+
+    def show_review(self):
+        self.tabs.select(self.review)

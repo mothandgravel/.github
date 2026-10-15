@@ -26,6 +26,7 @@ def apply(root) -> None:
     style.configure("Title.TLabel", font=("DejaVu Serif", 23), foreground=INK)
     style.configure("Heading.TLabel", font=("DejaVu Sans", 11, "bold"))
     style.configure("TButton", padding=(12, 7), background=SURFACE, foreground=INK)
+    style.configure("Compact.TButton", padding=(8, 7))
     style.configure("Accent.TButton", background=BRASS, foreground=SURFACE)
     style.map("Accent.TButton", background=[("active", "#685025")])
     style.configure(

@@ -73,6 +73,23 @@ class Studio:
     def open_output(self, episode: str, kind: str) -> None:
         open_path(self.pipeline.output_path(episode, kind))
 
+    def open_job_output(self, identifier: str) -> None:
+        """Open the selected job's durable result, rather than a moving latest pointer."""
+        job = self.repository.get(identifier)
+        if job.status != "succeeded" or not job.result:
+            raise ValueError("Choose a completed job with saved output")
+        directory = Path(job.result).resolve()
+        expected = self.root / "artifacts" / ("uploads" if job.action == "export" else "production")
+        if not directory.is_relative_to(expected.resolve()):
+            raise ValueError("Saved job output is outside the production directory")
+        filename = {
+            "audio": "episode.mp3",
+            "preview": "episode.mp4",
+            "video": "episode.mp4",
+            "export": "",
+        }[job.action]
+        open_path(directory / filename if filename else directory)
+
     def review_snapshot(self, episode: str, full_video: bool = False) -> ReviewSnapshot:
         return self.pipeline.review_snapshot(episode, full_video)
 

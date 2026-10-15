@@ -36,6 +36,22 @@ inspected plan. `audio` finishes an MP3 and retimed captions; `preview` also ren
 the first ten seconds of video; `video` produces the full video and thumbnail;
 `export` packages the selected completed full edition. Export ignores pace/outro
 controls and refuses a changed edition pointer. Export does not upload anything.
+Pace and outro controls are disabled while export is selected.
+
+The queue shows running, waiting and failed/interrupted job counts. Select a row to
+see its captured recipe, latest stage or error, and the next useful action:
+
+- **Listen to saved audio**, **Watch preview** or **Watch saved video** opens that
+  job's exact saved output, even when a newer edition has since been produced.
+- **Open upload package** opens the selected export job's folder.
+- **Review latest** selects the job's episode and opens Review with audio
+  or full-video scope. It clears a shelf filter if needed. Review always verifies
+  the latest saved edition, which may be newer than the selected job.
+- **Request stop** is available for queued/running jobs until a stop is requested.
+  **Retry** is available for failed, interrupted or stopped jobs when that
+  episode has no active job. **History** retains the detailed stage journal.
+
+Previews can be watched from the queue; they cannot be approved as full videos.
 
 **Listen** and **Check subtitles** open the latest local edition in system applications.
 **Watch video** opens the saved full video. Playback is external in this version;

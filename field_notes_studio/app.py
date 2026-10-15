@@ -59,6 +59,8 @@ class Application:
             self.controller.retry,
             self.controller.job_detail,
             self.controller.history,
+            self.controller.open_job_output,
+            self.controller.review_job,
         )
         self.jobs.grid(row=3, column=0, sticky="ew")
         root.bind("<Configure>", self.resize)
@@ -77,6 +79,8 @@ class Application:
     def resize(self, event):
         if event.widget is self.root:
             self.jobs.tree.configure(height=1 if event.height < 850 else 2)
+            self.jobs.detail.configure(wraplength=max(500, event.width - 70))
+            self.message.configure(wraplength=max(500, event.width - 70))
 
     def tick(self):
         if not self.closed:

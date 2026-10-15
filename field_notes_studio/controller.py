@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import queue
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -53,8 +54,10 @@ class Controller:
             self.view.shelf.tree.selection_set(episodes[0].identifier)
             self.select(episodes[0].identifier)
 
-    def select(self, identifier):
+    def select(self, identifier, review_scope=None):
         if identifier == self.selected:
+            if review_scope is not None:
+                self.show_review(review_scope)
             return
         self.selected = identifier
         self.review_generation += 1
@@ -68,7 +71,10 @@ class Controller:
                 self.view.workspace.load(self.episodes[identifier], settings)
                 self.loading = False
                 self.changed()
-                self.refresh_review()
+                if review_scope is None:
+                    self.refresh_review()
+                else:
+                    self.show_review(review_scope)
 
         self.task(lambda: self.studio.settings(identifier), loaded)
 
@@ -148,6 +154,39 @@ class Controller:
         if identifier:
             self.task(lambda: self.studio.open_output(identifier, kind), lambda _: None)
 
+    def open_job_output(self):
+        identifier = self.view.jobs.selection()
+        if identifier:
+            self.task(lambda: self.studio.open_job_output(identifier), lambda _: None)
+
+    def show_review(self, full_video):
+        review = self.view.workspace.review
+        review.scope.set("Full video and audio" if full_video else "Audio and captions")
+        self.view.workspace.show_review()
+        self.refresh_review()
+
+    def review_job(self):
+        identifier = self.view.jobs.selection()
+        if not identifier:
+            return
+
+        def loaded(job):
+            if self.view.jobs.selection() != identifier:
+                return
+            if job.status != "succeeded" or job.action not in {"audio", "video"}:
+                self.view.status(
+                    "Choose a completed audio or full-video job to review its episode."
+                )
+                return
+            if job.episode not in self.episodes:
+                self.view.status("This job's episode is no longer in the prepared episode shelf.")
+                return
+            self.view.shelf.reveal(job.episode)
+            self.select(job.episode, review_scope=job.action == "video")
+            self.view.status("Reviewing the latest saved edition; it may be newer than this job.")
+
+        self.task(lambda: self.studio.repository.get(identifier), loaded)
+
     def refresh_review(self):
         if not self.selected or self.loading:
             return
@@ -225,7 +264,25 @@ class Controller:
                     result = "Saved: " + str(Path(result).relative_to(self.studio.root))
                 except ValueError:
                     pass
-            self.view.jobs.detail.configure(text=job.error or result or last)
+            settings = json.loads(job.request).get("settings", {})
+            recipe = (
+                "Saved edition · recipe controls do not affect export"
+                if job.action == "export"
+                else f"{settings.get('speed', '—')}× pace · {settings.get('outro_seconds', '—')}s outro"
+            )
+            guidance = {
+                "queued": "Waiting for the worker; jobs run one at a time.",
+                "running": "Stage in progress; closing the window keeps production running.",
+                "failed": "Retry the captured recipe, or inspect a fresh plan after source changes.",
+                "interrupted": "Outcome unknown. Inspect saved output or retry with validated caches.",
+                "cancelled": "Stopped at a safe boundary. Retry reuses validated completed stages.",
+                "succeeded": "Open the saved output. Audio and full video can be reviewed before export.",
+            }.get(job.status, "")
+            if job.cancel_requested and job.status in {"queued", "running"}:
+                guidance = "Stop requested; the current stage finishes its writes before stopping."
+            self.view.jobs.detail.configure(
+                text=f"{recipe} · {guidance}\n{job.error or result or last}"
+            )
 
         self.task(
             lambda: (

@@ -170,3 +170,78 @@ class UITests(unittest.TestCase):
             x = widget.winfo_rootx() + widget.winfo_width() // 2
             y = widget.winfo_rooty() + widget.winfo_height() // 2
             self.assertIs(self.root.winfo_containing(x, y), widget)
+
+    def queue_job(self, action="audio", episode="note-001", status="queued", result=""):
+        repository = self.app.controller.studio.repository
+        identifier = repository.submit(
+            episode, action, {"settings": {"speed": 1.15, "outro_seconds": 8}}
+        )
+        if status != "queued":
+            repository.finish(identifier, status, result=result)
+        self.app.jobs.render(repository.jobs())
+        self.app.jobs.tree.selection_set(identifier)
+        self.root.update()
+        return identifier
+
+    def test_queue_controls_follow_job_state_and_conflicting_retries(self):
+        repository = self.app.controller.studio.repository
+        buttons = self.app.jobs.buttons
+        self.assertTrue(all(button.instate(["disabled"]) for button in buttons.values()))
+        identifier = self.queue_job()
+        self.assertFalse(buttons["stop"].instate(["disabled"]))
+        self.assertTrue(buttons["retry"].instate(["disabled"]))
+        repository.cancel(identifier)
+        self.app.jobs.render(repository.jobs())
+        self.assertTrue(buttons["stop"].instate(["disabled"]))
+        repository.finish(identifier, "interrupted", error="Unknown outcome")
+        self.app.jobs.render(repository.jobs())
+        self.assertFalse(buttons["retry"].instate(["disabled"]))
+        self.assertIn("1 need attention", self.app.jobs.summary["text"])
+        self.assertTrue(buttons["open"].instate(["disabled"]))
+        repository.submit("note-001", "audio", {"settings": {}})
+        self.app.jobs.render(repository.jobs())
+        self.assertTrue(buttons["retry"].instate(["disabled"]))
+
+    def test_completed_preview_opens_selected_job_and_is_not_offered_for_approval(self):
+        identifier = self.queue_job("preview", status="succeeded", result="/tmp/preview")
+        buttons = self.app.jobs.buttons
+        self.assertEqual(buttons["open"]["text"], "Watch preview")
+        self.assertTrue(buttons["review"].instate(["disabled"]))
+        with patch.object(self.app.controller.studio, "open_job_output") as opened:
+            buttons["open"].invoke()
+            self.wait(lambda: opened.called)
+            opened.assert_called_once_with(identifier)
+
+    def test_review_job_reveals_filtered_episode_and_selects_full_video_scope(self):
+        from field_notes_studio.models import Episode
+
+        episode = Episode("note-002", "Second episode", 90, "Second transcript")
+        self.app.controller.episodes[episode.identifier] = episode
+        self.app.shelf.load(list(self.app.controller.episodes.values()))
+        self.app.shelf.query.set("Curiosity")
+        self.assertFalse(self.app.shelf.tree.exists("note-002"))
+        self.queue_job("video", episode="note-002", status="succeeded", result="/tmp/video")
+        snapshot = ReviewSnapshot("video", "Full video pending", full_video=True)
+        with patch.object(self.app.controller.studio, "review_snapshot", return_value=snapshot):
+            self.app.jobs.buttons["review"].invoke()
+            self.wait(lambda: self.app.workspace.review.snapshot == snapshot)
+        self.assertEqual(self.app.controller.selected, "note-002")
+        self.assertEqual(self.app.shelf.tree.selection(), ("note-002",))
+        self.assertTrue(self.app.workspace.review.full_video())
+        self.assertEqual(self.app.workspace.tabs.select(), str(self.app.workspace.review))
+        self.assertFalse(self.app.workspace.review.audio_checked.get())
+
+    def test_export_disables_recipe_controls_and_queue_actions_fit_small_window(self):
+        workspace = self.app.workspace
+        workspace.action.set("export")
+        self.assertTrue(workspace.speed_control.instate(["disabled"]))
+        self.assertTrue(workspace.outro_control.instate(["disabled"]))
+        workspace.action.set("audio")
+        self.assertFalse(workspace.speed_control.instate(["disabled"]))
+        self.queue_job(status="succeeded", result="/tmp/audio")
+        self.root.geometry("1050x760")
+        self.root.update()
+        for widget in (*self.app.jobs.buttons.values(), self.app.message):
+            x = widget.winfo_rootx() + widget.winfo_width() // 2
+            y = widget.winfo_rooty() + widget.winfo_height() // 2
+            self.assertIs(self.root.winfo_containing(x, y), widget)

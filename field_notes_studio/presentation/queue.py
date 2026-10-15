@@ -3,18 +3,33 @@
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.models import TERMINAL
 from field_notes_studio.presentation.theme import set_text
 
 
 class ProductionQueue(ttk.Frame):
-    def __init__(self, parent, stop, retry, select, history):
+    def __init__(self, parent, stop, retry, select, history, open_result, review):
         super().__init__(parent, padding=(0, 16, 0, 0))
+        self.jobs = {}
         heading = ttk.Frame(self)
         heading.pack(fill="x", pady=(0, 8))
-        ttk.Label(heading, text="PRODUCTION QUEUE", style="Heading.TLabel").pack(side="left")
-        ttk.Button(heading, text="Job history", command=history).pack(side="right", padx=8)
-        ttk.Button(heading, text="Request stop", command=stop).pack(side="right")
-        ttk.Button(heading, text="Retry selected job", command=retry).pack(side="right", padx=8)
+        self.summary = ttk.Label(heading, text="Queue · no jobs yet", style="Muted.TLabel")
+        self.summary.pack(side="left")
+        actions = ttk.Frame(heading)
+        actions.pack(side="right")
+        self.buttons = {}
+        for name, label, command in (
+            ("open", "Open saved output", open_result),
+            ("review", "Review latest", review),
+            ("history", "History", history),
+            ("retry", "Retry", retry),
+            ("stop", "Request stop", stop),
+        ):
+            button = ttk.Button(
+                actions, text=label, command=command, state="disabled", style="Compact.TButton"
+            )
+            button.pack(side="left", padx=(6, 0))
+            self.buttons[name] = button
         region = ttk.Frame(self)
         region.pack(fill="x")
         self.tree = ttk.Treeview(
@@ -31,7 +46,12 @@ class ProductionQueue(ttk.Frame):
         self.tree.configure(yscrollcommand=scrollbar.set)
         self.tree.pack(side="left", fill="x", expand=True)
         scrollbar.pack(side="right", fill="y")
-        self.tree.bind("<<TreeviewSelect>>", lambda _event: select())
+
+        def selected(_event):
+            self.update_controls()
+            select()
+
+        self.tree.bind("<<TreeviewSelect>>", selected)
         self.detail = ttk.Label(
             self,
             text="Completed editions remain available after a stop. Running stages finish before a stop takes effect.",
@@ -43,6 +63,31 @@ class ProductionQueue(ttk.Frame):
     def selection(self):
         selected = self.tree.selection()
         return selected[0] if selected else None
+
+    def update_controls(self):
+        job = self.jobs.get(self.selection())
+        conflicting = job and any(
+            other.episode == job.episode and other.status not in TERMINAL
+            for other in self.jobs.values()
+        )
+        enabled = {
+            "history": job is not None,
+            "stop": bool(job and job.status not in TERMINAL and not job.cancel_requested),
+            "retry": bool(
+                job and job.status in {"failed", "interrupted", "cancelled"} and not conflicting
+            ),
+            "open": bool(job and job.status == "succeeded" and job.result),
+            "review": bool(job and job.status == "succeeded" and job.action in {"audio", "video"}),
+        }
+        for name, button in self.buttons.items():
+            button.configure(state="normal" if enabled[name] else "disabled")
+        labels = {
+            "audio": "Listen to saved audio",
+            "preview": "Watch preview",
+            "video": "Watch saved video",
+            "export": "Open upload package",
+        }
+        self.buttons["open"].configure(text=labels[job.action] if job else "Open saved output")
 
     def show_history(self, job, events):
         window = tk.Toplevel(self)
@@ -58,6 +103,15 @@ class ProductionQueue(ttk.Frame):
 
     def render(self, jobs):
         selected = self.selection()
+        self.jobs = {job.identifier: job for job in jobs}
+        running = sum(job.status == "running" for job in jobs)
+        queued = sum(job.status == "queued" for job in jobs)
+        attention = sum(job.status in {"failed", "interrupted"} for job in jobs)
+        self.summary.configure(
+            text=f"Queue · {running} running · {queued} queued · {attention} need attention"
+            if jobs
+            else "Queue · no jobs yet"
+        )
         ids = {job.identifier for job in jobs}
         for identifier in self.tree.get_children():
             if identifier not in ids:
@@ -74,5 +128,6 @@ class ProductionQueue(ttk.Frame):
                     self.tree.item(job.identifier, values=values)
             else:
                 self.tree.insert("", 0, iid=job.identifier, values=values)
-        if not selected and jobs:
+        if (not selected or selected not in ids) and jobs:
             self.tree.selection_set(jobs[0].identifier)
+        self.update_controls()

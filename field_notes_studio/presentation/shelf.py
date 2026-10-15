@@ -38,6 +38,14 @@ class Shelf(ttk.Frame):
         self.episodes = episodes
         self.render()
 
+    def reveal(self, identifier):
+        if not self.tree.exists(identifier):
+            self.query.set("")
+        if self.tree.exists(identifier):
+            self.tree.selection_set(identifier)
+            self.tree.focus(identifier)
+            self.tree.see(identifier)
+
     def render(self):
         selected = self.tree.selection()
         self.tree.delete(*self.tree.get_children())
