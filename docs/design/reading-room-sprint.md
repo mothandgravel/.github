@@ -32,8 +32,8 @@ This is an authored design decision supported by layout and interaction checks. 
 
 The review found two authoring regressions beyond the currently published catalog. The browser audit assumed every note supplied the optional `nextReading` choice, and relationship deduplication consumed a revised study under general related reading before it could be labelled as a revisit.
 
-The audit now uses the same navigation checks for current notes and generated authoring fixtures: no explicit choice, no relationships, an overlapping revision/thread/relation, and a featured revision. An independent ending uses one column and keeps its general exits. Revisited studies retain their specific label, including when they are the primary continuation; thread relationships take precedence over general related reading.
+The audit now uses the same navigation checks for current notes and generated authoring fixtures: no explicit choice, no relationships, a thread without a primary continuation, an overlapping revision/thread/relation, and a featured revision. An independent ending uses one column and keeps its general exits. A thread-only ending retains its heading hierarchy. Revisited studies retain their specific label, including when they are the primary continuation; thread relationships take precedence over general related reading.
 
 The integrity check also enforces one reading stylesheet and one generated ending outside narrated prose, including nested article material. This catches new pages copied from older templates before a duplicate ending or unstyled coda can ship. The archive's stylesheet is checked as well.
 
-Verification adds seven authoring-contract tests and eight browser fixture reviews. The expanded reading audit passes 299 assertions across 38 responsive/theme/fixture states. The fixture relationships remain test material and never enter the public catalog or narration.
+Verification adds eight authoring-contract tests and ten browser fixture reviews. The expanded reading audit passes 313 assertions across 40 responsive/theme/fixture states. The fixture relationships remain test material and never enter the public catalog or narration.

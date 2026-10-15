@@ -67,7 +67,7 @@
 .reading-next:focus-visible { outline: 2px solid #907449; outline-offset: 5px; }
 .reading-alternatives { min-width: 0; }
 .reading-connections { margin-bottom: 25px; }
-.reading-connections h3 { font-size: 10px; font-weight: 400; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+.reading-connections > .mono { font-size: 10px; font-weight: 400; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
 .reading-connections a, .reading-routes a { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 48px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); font-size: 15px; line-height: 1.5; }
 .reading-connections a > span, .reading-routes a > span { flex-shrink: 0; color: var(--gold-bright); }
 .reading-connections a:hover, .reading-routes a:hover { color: var(--gold-bright); border-color: currentColor; }

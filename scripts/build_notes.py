@@ -122,7 +122,8 @@ def reading_exit(n, notes):
             seen.add(other['id'])
             links.append(f'<a href="./{other["slug"]}">{escape(other["title"])} <span aria-hidden="true">↗</span></a>')
         if links:
-            groups.append(f'<div class="reading-connections"><h3 class="mono">{label}</h3>{"".join(links)}</div>')
+            heading = 3 if next_id else 2
+            groups.append(f'<div class="reading-connections"><h{heading} class="mono">{label}</h{heading}>{"".join(links)}</div>')
     continuation = ''
     if next_id:
         other = by_id[next_id]

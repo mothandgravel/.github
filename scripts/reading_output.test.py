@@ -12,7 +12,7 @@ from check_site import SiteParser
 
 def fixtures():
     result = []
-    for case in ('fallback', 'independent', 'overlapping-revision', 'featured-revision'):
+    for case in ('fallback', 'independent', 'thread-only', 'overlapping-revision', 'featured-revision'):
         notes = deepcopy(load_notes())
         by_id = {note['id']: note for note in notes}
         note = by_id['001']
@@ -22,6 +22,10 @@ def fixtures():
         next_id = '002'
         if case == 'independent':
             note['related'] = []
+            next_id = None
+        elif case == 'thread-only':
+            note['related'] = []
+            note['thread'] = by_id['002']['thread'] = 'fixture-thread'
             next_id = None
         elif case == 'overlapping-revision':
             note['related'].append('003')
@@ -72,6 +76,11 @@ class ReadingOutputTests(unittest.TestCase):
 
     def test_featured_revision_is_identified_as_a_revisit(self):
         self.assertIn('REVISITED IN / 002', self.cases['featured-revision']['html'])
+
+    def test_thread_without_a_primary_continuation_does_not_skip_a_heading_level(self):
+        html = self.cases['thread-only']['html']
+        self.assertIn('<h2 class="mono">Continue the thread</h2>', html)
+        self.assertNotIn('<h3', html)
 
     def test_page_contract_accepts_one_styled_ending_outside_prose(self):
         page = SiteParser()
