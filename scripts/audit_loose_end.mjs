@@ -47,6 +47,8 @@ try {
     await page.goto(origin+'/questions/');
     if (theme==='afterlight') await page.locator('#light-switch').click();
     await page.locator('#question-progress').waitFor({state:'visible'});
+    assert(await page.locator('.question-boundary').isVisible(), 'Local-only boundary is visible before the first answer');
+    assert(await page.locator('#question-meter').evaluate(el=>el.value===1&&el.max===6), 'Progress starts at one of six');
     const contrast = await page.evaluate(() => {
       const link = document.querySelector('.journey-aside a');
       const foreground=getComputedStyle(link).color, background=getComputedStyle(document.body).backgroundColor;
@@ -76,6 +78,7 @@ try {
       await audit(page,`constraints-${theme}-${viewport.width}`,true);
     }
     await next(page);
+    assert(await page.locator('#question-meter').evaluate(el=>el.value===6), 'Review completes the progress meter');
     const fullBrief=await page.locator('#brief-text').inputValue();
     assert(withFollowups ? fullBrief.includes('USD 2,000–4,000')&&fullBrief.includes('private-prototype-marker') : !fullBrief.includes('Working budget\n'), 'Optional follow-ups must be included only when answered');
     await audit(page,`brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
@@ -88,6 +91,9 @@ try {
     const downloadPromise = page.waitForEvent('download');
     await page.locator('#download-brief').click();
     const download = await downloadPromise;
+    assert((await page.locator('.brief-keep [data-room-feedback]').innerText()).includes('prepared for download'), 'Download confirmation stays beside the keep actions');
+    assert(await page.locator('.brief-keep [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Download confirmation is within the visible viewport');
+    assert(await page.locator('[role="status"]').count()===1, 'Feedback has one live announcement channel');
     const downloaded = await readFile(await download.path(),'utf8');
     assert(downloaded.includes('find their footing'),'Download must include the visitor’s actual answers');
     assert(!withFollowups||downloaded.includes('private-prototype-marker'),'Download must retain the material at the end of the brief');
@@ -142,6 +148,7 @@ try {
   await page.locator('#making').fill(hostile+' edited');
   await next(page);await next(page);await next(page);await next(page);
   assert(await page.locator('#brief-text').inputValue()==='My edited brief. private-marker-983','Returning from answers must preserve manual brief edits');
+  assert((await page.locator('.brief-keep [data-room-feedback]').innerText()).includes('edits. They were kept'), 'Preserved edits are explained beside the brief');
   await page.locator('#carry-question').click();
   await page.locator('#your-question').waitFor({state:'visible'});
   await page.locator('#your-question summary').filter({hasText:'Your edited brief'}).click();
@@ -177,6 +184,7 @@ try {
   await historyPage.locator('#difficulty').waitFor({state:'visible'});
   assert(!historyPage.url().includes('Keep'),'Question history must not expose answers in URLs');
   await historyPage.locator('#clear-draft').click();
+  assert((await historyPage.locator('.question-housekeeping [data-room-feedback]').innerText()).includes('cleared'), 'Clear confirmation is visible beside Clear');
   await historyPage.goBack();
   await historyPage.locator('#making').waitFor({state:'visible'});
   assert(await historyPage.locator('#making').inputValue()==='','History must not recover cleared words');
@@ -188,7 +196,21 @@ try {
   const blockedPage=await blocked.newPage();
   await blockedPage.goto(origin+'/questions/');
   await makeBrief(blockedPage);
-  await blockedPage.locator('#carry-question').click();
+  const beforeCopy=await blockedPage.locator('#brief-text').inputValue();
+  await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__copiedBrief=text;}},configurable:true}));
+  await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
+  await blockedPage.locator('.brief-keep [data-room-feedback]').filter({hasText:'Brief copied'}).waitFor({state:'visible'});
+  assert(await blockedPage.evaluate(()=>window.__copiedBrief)===beforeCopy, 'Copy keeps the exact editable brief');
+  await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw new Error('Clipboard denied');}},configurable:true}));
+  // Programmatic clicks model browsers that do not focus a clicked button.
+  await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
+  await blockedPage.locator('.brief-keep [data-room-feedback]').filter({hasText:'Select and copy'}).waitFor({state:'visible'});
+  assert(await blockedPage.locator('.brief-keep [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Clipboard recovery stays in view');
+  assert(await blockedPage.locator('#brief-text').evaluate(el=>el===document.activeElement), 'Denied clipboard selects the editable brief');
+  await blockedPage.locator('#rebuild-brief').evaluate(el=>el.click());
+  assert((await blockedPage.locator('.brief-keep [data-room-feedback]').innerText()).includes('rebuilt'), 'Rebuild feedback is independent of click focus');
+  await blockedPage.locator('#carry-question').evaluate(el=>el.click());
+  assert((await blockedPage.locator('.brief-preview [data-room-feedback]').innerText()).includes('cannot carry'), 'Blocked handoff explains recovery beside its action');
   assert(blockedPage.url().endsWith('/questions/'),'Failed handoff must retain the visitor’s brief');
   assert((await blockedPage.locator('#draft-status').innerText()).includes('cannot carry'),'Storage failure must offer a truthful recovery');
   await blockedPage.goto(origin+'/workbench/');
@@ -224,6 +246,8 @@ try {
     assert(!await page.locator('#question-next').isVisible(),fallback+': dead guided controls must stay hidden');
     await page.locator('[data-followup]:has(#materials) summary').click();
     assert(await page.locator('#materials').isVisible(),fallback+': optional material needs a native disclosure');
+    if (fallback==='no-javascript') assert(await page.locator('#primary-nav').isVisible()&&!await page.locator('#menu-toggle').isVisible(), 'Native question navigation has links and no dead menu');
+    await audit(page,'questions-'+fallback,true);
     await page.goto(origin+'/workbench/');
     assert(await page.locator('[data-surface="item"]').isVisible()&&await page.locator('[data-surface="damage"]').isVisible(),fallback+': both approaches must remain inspectable');
     await page.locator('summary').filter({hasText:'What we left aside'}).click();

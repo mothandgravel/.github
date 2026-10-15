@@ -1,0 +1,38 @@
+/* The question stays still; paper, brass and the light locate the next move. */
+.question-room .journey-heading { padding-bottom:24px; }
+.question-boundary { border-left:1px solid var(--gold);padding:8px 0 8px 18px;margin:0 0 38px;color:var(--secondary);font-size:14px;line-height:1.8;max-width:65ch; }
+.question-boundary strong { color:var(--ink);display:block;font-weight:600; }
+.question-room .question-sheet { background:var(--material-grain),linear-gradient(135deg,var(--paper-edge),transparent 65%),var(--surface);box-shadow:inset 1px 1px var(--paper-edge),7px 11px 22px -16px var(--contact-shadow);border-top:2px solid var(--gold);scroll-margin-top:110px; }
+.question-position { margin-bottom:30px; }
+.question-room .question-progress { border:0;padding:0;margin:0 0 14px;font-size:11px;line-height:1.7; }
+#question-meter { display:block;width:100%;height:3px;border:0;border-radius:0;appearance:none;background:var(--line);color:var(--gold-bright); }
+#question-meter::-webkit-progress-bar { background:var(--line); }
+#question-meter::-webkit-progress-value { background:var(--gold-bright); }
+#question-meter::-moz-progress-bar { background:var(--gold-bright); }
+.question-room .choice { background:var(--bg);border-color:var(--line); }
+.question-room .choice:has(input:checked) { background:var(--surface-2);border-color:var(--gold-bright);box-shadow:inset 3px 0 var(--gold-bright); }
+.question-room textarea { background:var(--bg);box-shadow:inset 1px 2px 4px #0000000a; }
+.question-room #brief-text { min-height:440px;font-size:16px; }
+.question-room .brief-revise { gap:10px;margin-top:14px; }
+.question-room .brief-revise .quiet-button { font-size:13px; }
+.brief-preview { margin-top:36px;padding:28px 0 4px;border-top:1px solid var(--gold); }
+.brief-preview>.mono { color:var(--gold-bright);font-size:10px;line-height:1.8; }
+.brief-preview h3 { font:400 28px/1.3 var(--serif);margin:14px 0; }
+.brief-preview .journey-actions { margin-top:18px; }
+.question-housekeeping { border-top:1px solid var(--line);margin-top:28px;padding-top:4px; }
+.question-housekeeping a { display:inline-flex;align-items:center;min-height:48px;font-size:13px;line-height:1.7; }
+.question-room .question-feedback { color:var(--gold-bright);border-left:1px solid var(--gold);padding-left:12px;margin:20px 0 0;font-size:14px;line-height:1.8; }
+.question-feedback:empty { display:none; }
+.question-room #draft-status { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;min-height:0; }
+@media(max-width:660px) { .question-boundary { margin-bottom:28px;padding-left:14px; }.question-position { margin-bottom:24px; }.question-room .journey-actions { gap:12px; }.question-room .brief-revise { display:grid;grid-template-columns:1fr;gap:10px; }.question-room .brief-revise button { text-align:left; }.question-room .brief-keep>.journey-actions>.quiet-button { width:100%; }.brief-preview { margin-top:28px;padding-top:24px; }.brief-preview #carry-question { width:100%;text-align:left; }.question-room #brief-text { min-height:380px; } }
+@media print { .question-boundary,.question-position,.question-housekeeping,.question-feedback,.brief-preview { display:none!important; }.question-room .question-sheet { background:white;color:black;box-shadow:none; } }
+/* The kept object gets its own paper plane in either room light. */
+.question-room #brief-text { background:var(--material-grain),linear-gradient(135deg,#fffaf0,#eee7d8);color:#202222;border-color:#8d7858;box-shadow:inset 1px 1px #fff9,3px 5px 8px -6px #000a; }
+@media print { .question-room #brief-text { background:white;box-shadow:none; } }
+/* Navigation remains ordinary links when the site enhancement cannot start. */
+html:not(.has-nav-sheet) .question-room .header-actions { display:none; }
+@media(max-width:900px) {
+  html:not(.has-nav-sheet) .question-room .site-header { position:relative; }
+  html:not(.has-nav-sheet) .question-room .header-inner { height:auto;flex-wrap:wrap;padding-top:18px;gap:18px; }
+  html:not(.has-nav-sheet) .question-room .main-nav { display:flex;position:static;flex-basis:100%;padding:0 0 12px;border:0; }
+}

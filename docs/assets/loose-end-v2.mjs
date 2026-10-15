@@ -2,10 +2,13 @@ import { fields, followups, briefLimit, intents, labels, draftKey, roomKey, norm
 
 const intake = document.getElementById('loose-end');
 const status = document.getElementById('draft-status');
-function announce(message) {
+function announce(message, source = document.activeElement) {
   status.textContent = message;
-  const feedback = document.activeElement?.closest('[data-feedback-scope]')?.querySelector('[data-room-feedback]');
-  if (feedback) feedback.textContent = message;
+  const feedback = source?.closest('[data-feedback-scope]')?.querySelector('[data-room-feedback]') || intake?.querySelector('#question-guidance');
+  if (feedback) {
+    feedback.textContent = message;
+    if (intake && source?.tagName === 'BUTTON') feedback.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+  }
 }
 function storage() { try { return sessionStorage; } catch { return null; } }
 function clearSaved() { const saved = storage(); try { saved?.removeItem(draftKey); saved?.removeItem(roomKey); } catch {} }
@@ -64,13 +67,17 @@ if (intake) {
     }
     panels.forEach((panel, i) => { panel.hidden = i !== step; });
     progress.textContent = `${step + 1} / ${panels.length} — ${panels[step].dataset.title}`;
+    const meter = document.getElementById('question-meter');
+    if (meter) { meter.max = panels.length; meter.value = step + 1; }
+    intake.querySelectorAll('[data-room-feedback]').forEach(el => { el.textContent = ''; });
+    status.textContent = '';
     back.hidden = step === 0;
     next.hidden = step === panels.length - 1;
     next.textContent = step === panels.length - 2 ? 'Gather the brief →' : step === 0 ? 'Start with what you have →' : 'Continue →';
     if (step === panels.length - 1) {
       const generated = briefText(answers());
       if (!generatedBrief || brief.value === generatedBrief) brief.value = generated;
-      else if (generated !== generatedBrief) announce('Your brief has edits. They were kept. Use Rebuild from answers if you want to replace them with your updated answers.');
+      else if (generated !== generatedBrief) announce('Your brief has edits. They were kept. Use Rebuild from answers if you want to replace them with your updated answers.', brief);
       generatedBrief = generated;
     }
     if (focus) panels[step].querySelector('legend, h2').focus();
@@ -90,31 +97,32 @@ if (intake) {
   back.addEventListener('click', () => { if (guidedHistory) history.back(); else show(step - 1); });
   next.addEventListener('click', () => { if (step === 1 && !validate()) return; show(step + 1); });
   document.getElementById('edit-answers').addEventListener('click', () => { if (guidedHistory) history.go(1 - step); else show(1); });
-  document.getElementById('rebuild-brief').addEventListener('click', () => {
+  document.getElementById('rebuild-brief').addEventListener('click', event => {
     generatedBrief = briefText(answers()); brief.value = generatedBrief;
-    announce('Brief rebuilt from your answers, replacing the edits in the brief.');
+    announce('Brief rebuilt from your answers, replacing the edits in the brief.', event.currentTarget);
   });
-  document.getElementById('download-brief').addEventListener('click', () => { download(brief.value, 'moth-and-gravel-loose-end.txt'); announce('Your edited brief was prepared for download. Nothing was sent to the studio.'); });
-  document.getElementById('copy-brief').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(brief.value); announce('Brief copied. Nothing was sent to the studio.'); }
-    catch { brief.focus(); brief.select(); announce('Select and copy the brief here, or use Download.'); }
+  document.getElementById('download-brief').addEventListener('click', event => { download(brief.value, 'moth-and-gravel-loose-end.txt'); announce('Your edited brief was prepared for download. Nothing was sent to the studio.', event.currentTarget); });
+  document.getElementById('copy-brief').addEventListener('click', async event => {
+    const source = event.currentTarget;
+    try { await navigator.clipboard.writeText(brief.value); announce('Brief copied. Nothing was sent to the studio.', source); }
+    catch { brief.focus({ preventScroll: true }); brief.select(); announce('Select and copy the brief here, or use Download.', source); }
   });
-  document.getElementById('carry-question').addEventListener('click', () => {
+  document.getElementById('carry-question').addEventListener('click', event => {
     try {
       const saved = storage(); if (!saved) throw new Error('Storage unavailable');
       saved.setItem(draftKey, JSON.stringify({ version: 1, answers: answers(), brief: brief.value.slice(0, briefLimit) }));
       // New handoff replaces the room's previous experimental annotations.
       saved.removeItem(roomKey);
       location.assign('../workbench/');
-    } catch { announce('This browser cannot carry a draft between pages. Download your brief, or open the example workbench below.'); }
+    } catch { announce('This browser cannot carry a draft between pages. Download your brief, or open the example workbench below.', event.currentTarget); }
   });
-  document.getElementById('clear-draft').addEventListener('click', () => {
+  document.getElementById('clear-draft').addEventListener('click', event => {
     clearSaved();
     for (const key of fields) if (key !== 'intent') document.getElementById(key).value = '';
     intake.querySelectorAll('[data-followup]').forEach(el => { el.open = false; });
     intake.querySelectorAll('input[name="intent"]').forEach(el => { el.checked = el.value === intents[3]; });
     document.getElementById('making').removeAttribute('aria-invalid'); document.getElementById('making-error').hidden = true;
-    brief.value = ''; generatedBrief = ''; show(0); announce('Your answers and workbench draft were cleared from this tab. Downloaded copies remain yours.');
+    brief.value = ''; generatedBrief = ''; show(0); announce('Your answers and workbench draft were cleared from this tab. Downloaded copies remain yours.', event.currentTarget);
   });
   controls.hidden = false;
   document.querySelectorAll('[data-enhance]').forEach(el => { el.hidden = false; });
