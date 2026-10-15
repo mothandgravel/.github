@@ -10,6 +10,7 @@ class Shelf(ttk.Frame):
     def __init__(self, parent, select):
         super().__init__(parent, padding=(0, 0, 16, 0))
         self.episodes = []
+        self.current = None
         self.select = select
         ttk.Label(self, text="EPISODES", style="Heading.TLabel").pack(anchor="w", pady=(0, 8))
         ttk.Label(
@@ -55,12 +56,13 @@ class Shelf(ttk.Frame):
         if not self.tree.exists(identifier):
             self.query.set("")
         if self.tree.exists(identifier):
+            self.current = identifier
             self.tree.selection_set(identifier)
             self.tree.focus(identifier)
             self.tree.see(identifier)
 
     def render(self):
-        selected = self.tree.selection()
+        selected = self.tree.selection() or ((self.current,) if self.current else ())
         self.tree.delete(*self.tree.get_children())
         query = self.query.get().casefold()
         for episode in self.episodes:
@@ -93,4 +95,5 @@ class Shelf(ttk.Frame):
     def _selected(self, _event):
         selection = self.tree.selection()
         if selection:
+            self.current = selection[0]
             self.select(selection[0])

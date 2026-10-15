@@ -36,8 +36,7 @@ class ProductionQueue(ttk.Frame):
             )
             button.pack(side="left", padx=(6, 0))
             self.buttons[name] = button
-        region = ttk.Frame(self)
-        region.pack(fill="x")
+        region = self.region = ttk.Frame(self)
         self.tree = ttk.Treeview(
             region,
             columns=("episode", "action", "status", "stage"),
@@ -62,7 +61,7 @@ class ProductionQueue(ttk.Frame):
         self.tree.bind("<<TreeviewSelect>>", selected)
         self.detail = ttk.Label(
             self,
-            text="Completed editions remain available after a stop. Running stages finish before a stop takes effect.",
+            text="Inspect an episode's changes to start production. Jobs will appear here.",
             style="Muted.TLabel",
             wraplength=1050,
         )
@@ -115,6 +114,14 @@ class ProductionQueue(ttk.Frame):
         set_text(text, "\n\n".join(entries))
 
     def render(self, jobs):
+        if jobs:
+            if not self.region.winfo_manager():
+                self.region.pack(fill="x", before=self.detail)
+        else:
+            self.region.pack_forget()
+            self.detail.configure(
+                text="Inspect an episode's changes to start production. Jobs will appear here."
+            )
         selected = self.selection()
         self.jobs = {job.identifier: job for job in jobs}
         running = sum(job.status == "running" for job in jobs)

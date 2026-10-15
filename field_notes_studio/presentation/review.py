@@ -12,7 +12,7 @@ class Review(ttk.Frame):
         super().__init__(parent)
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
-        self.scroller = ScrollArea(self)
+        self.scroller = ScrollArea(self, padding=12)
         self.scroller.grid(row=0, column=0, sticky="nsew")
         self.canvas = self.scroller.canvas
         content = self.scroller.content
@@ -27,11 +27,15 @@ class Review(ttk.Frame):
         header.pack(fill="x")
         ttk.Label(header, text="Review saved edition", style="Heading.TLabel").pack(side="left")
         self.refresh = ActionButton(
-            header, pictogram="refresh", text="Refresh edition", command=callbacks["refresh"]
+            header,
+            pictogram="refresh",
+            text="Refresh edition",
+            command=callbacks["refresh"],
+            style="Compact.TButton",
         )
         self.refresh.pack(side="right")
         self.summary = ttk.Label(content, text="Loading edition…", wraplength=590)
-        self.summary.pack(anchor="w", pady=12)
+        self.summary.pack(anchor="w", pady=8)
         content.bind(
             "<Configure>",
             lambda e: self.summary.configure(wraplength=max(250, e.width - 35)),
@@ -59,6 +63,7 @@ class Review(ttk.Frame):
                 pictogram=kind,
                 text=label,
                 command=lambda k=kind: callbacks["open_review"](k),
+                style="Compact.TButton",
             )
             button.pack(side="left", padx=(0, 6))
             self.asset_buttons[kind] = button
@@ -127,7 +132,10 @@ class Review(ttk.Frame):
             button.configure(
                 state="normal" if available and getattr(self.snapshot, kind) else "disabled"
             )
-        self.video_check.configure(state="normal" if self.full_video() else "disabled")
+        if self.full_video():
+            self.video_check.pack(anchor="w")
+        else:
+            self.video_check.pack_forget()
         ready = (
             available
             and self.reviewer.get().strip()

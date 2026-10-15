@@ -47,6 +47,7 @@ def apply(root) -> None:
         focuscolor=BRASS,
         focusthickness=2,
         anchor="center",
+        width=-1,
     )
     style.map(
         "TButton",
@@ -87,7 +88,7 @@ def apply(root) -> None:
         selectforeground=[("readonly", INK)],
     )
     style.configure(
-        "TCheckbutton", background=PAPER, foreground=INK, padding=(0, 4), focuscolor=BRASS
+        "TCheckbutton", background=PAPER, foreground=INK, padding=(0, 2), focuscolor=BRASS
     )
     style.configure("TNotebook", background=PAPER, bordercolor=LINE, tabmargins=(0, 0, 0, 0))
     style.configure(

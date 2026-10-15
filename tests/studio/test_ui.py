@@ -106,6 +106,13 @@ class UITests(unittest.TestCase):
             stdout=subprocess.DEVNULL,
         )
 
+    def assert_visible(self, widget):
+        """Check the button's edges too; a visible center can conceal clipping."""
+        left, top = widget.winfo_rootx(), widget.winfo_rooty()
+        right, bottom = left + widget.winfo_width() - 3, top + widget.winfo_height() - 3
+        for x, y in ((left + 2, top + 2), (right, top + 2), (left + 2, bottom), (right, bottom)):
+            self.assertIs(self.root.winfo_containing(x, y), widget)
+
     def test_edit_plan_queue_close_and_reopen(self):
         import tkinter as tk
 
@@ -272,6 +279,7 @@ class UITests(unittest.TestCase):
         self.app.shelf.query.set("")
         self.assertIn("1 of 1", self.app.shelf.count["text"])
         self.assertTrue(self.app.shelf.tree.exists("note-001"))
+        self.assertEqual(self.app.shelf.tree.selection(), ("note-001",))
 
     def test_an_old_release_copy_cannot_replace_a_new_episode(self):
         pending = []
@@ -291,9 +299,7 @@ class UITests(unittest.TestCase):
         self.assertFalse(self.app.workspace.controls.winfo_ismapped())
         self.capture("release-upload-details")
         for widget in (*publication.actions.values(), publication.copy_button):
-            x = widget.winfo_rootx() + widget.winfo_width() // 2
-            y = widget.winfo_rooty() + widget.winfo_height() // 2
-            self.assertIs(self.root.winfo_containing(x, y), widget)
+            self.assert_visible(widget)
         self.assertGreaterEqual(publication.text.winfo_height(), 20)
         publication.field.set("Description")
         self.capture("release-upload-description")
@@ -411,7 +417,9 @@ class UITests(unittest.TestCase):
         repository = self.app.controller.studio.repository
         buttons = self.app.jobs.buttons
         self.assertTrue(all(button.instate(["disabled"]) for button in buttons.values()))
+        self.assertFalse(self.app.jobs.region.winfo_ismapped())
         identifier = self.queue_job()
+        self.assertTrue(self.app.jobs.region.winfo_ismapped())
         self.assertFalse(buttons["stop"].instate(["disabled"]))
         self.assertTrue(buttons["retry"].instate(["disabled"]))
         repository.cancel(identifier)
@@ -474,11 +482,10 @@ class UITests(unittest.TestCase):
         self.root.geometry("1050x760")
         publication = self.app.workspace.publication
         self.app.workspace.tabs.select(publication)
-        self.queue_job(status="interrupted")
+        interrupted = self.queue_job(status="interrupted")
+        self.queue_job(episode="note-002")
         self.root.update()
-        self.assertEqual(
-            self.app.jobs.tree.item(self.app.jobs.selection(), "values")[2], "Interrupted"
-        )
+        self.assertEqual(self.app.jobs.tree.item(interrupted, "values")[2], "Interrupted")
         publication.copy_button.invoke()
         self.root.update()
         self.capture("release-copy-feedback")
@@ -487,6 +494,4 @@ class UITests(unittest.TestCase):
             *self.app.jobs.buttons.values(),
             publication.copy_button,
         ):
-            x = widget.winfo_rootx() + widget.winfo_width() // 2
-            y = widget.winfo_rooty() + widget.winfo_height() // 2
-            self.assertIs(self.root.winfo_containing(x, y), widget)
+            self.assert_visible(widget)

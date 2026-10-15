@@ -60,12 +60,15 @@ ink and brass palette, serif episode titles and native ttk controls.
 | [Buzzsprout's short upload sequence](https://www.buzzsprout.com/help/3-upload-audio) gives each step a clear action. | Keep the three numbered release actions together, with a single brass browser handoff; approval and record saving have their own primary actions in their respective panels. |
 | [Transistor's preparation checklist](https://transistor.fm/changelog/publishing-checklist/) makes missing requirements visible. Its linked screenshot illustrates an established pattern, not a verified current signed-in layout. | Show catalog suggestions, unsaved edits and saved-local records explicitly. Existing review checks remain explicit. |
 | Actions lacked nearby feedback. | Copy changes briefly to a checkmark and “Copied”; Save confirms locally. Editing, selecting another field or refreshing cancels obsolete feedback. In-flight refresh and approval controls describe their work. |
-| Dense controls competed for height. | Compact the application heading, soften borders, retain fixed footers and shorten queue commands. Minimum-window checks cover primary actions and feedback states. |
+| Dense controls competed for height. | Compact the application heading, soften borders, retain fixed footers and shorten queue commands. Collapse an empty queue table; show video confirmation only for full-video review. Minimum-window checks cover action edges, not just their centers. |
 | Search and queue recovery were hard to scan. | Label search, report matches and explain empty results; Escape clears the query. Attention rows retain written status as well as color. |
 
 Pictograms are original small stroke drawings rendered at the desktop scale, cached
 per window and paired with text. No emoji, icon font, network assets or extra runtime
 dependencies are needed. Hover, pressed and keyboard-focus states are shared styles.
+The first screenshot review caught crowding after a long queue count: natural button
+widths now prevent the final action from being clipped. Clearing a search restores the
+selected episode's shelf highlight. The empty queue leaves space for the current task.
 The only timed effect is brief completion feedback; there is no decorative motion or
 simulated progress. Timers cancel when a button is destroyed or its context changes.
 
