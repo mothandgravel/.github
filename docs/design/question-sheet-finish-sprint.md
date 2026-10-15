@@ -22,7 +22,10 @@ handoff and the fictional mending study keep their existing contracts. No
 server submission or private enquiry is introduced. The complete native
 question sheet and optional disclosures remain available if the module fails
 or JavaScript is disabled. Narrow native navigation keeps its links visible and
-hides unpowered menu and theme controls. Cached older HTML still works with the shared module;
+hides unpowered menu and theme controls. The synchronous JavaScript marker
+keeps that fallback from flashing open before normal deferred navigation starts;
+a script error explicitly activates it. The loading audit delays and blocks
+the site script to cover both paths. Cached older HTML still works with the shared module;
 the new progress element is optional to that module.
 
 ## Review evidence

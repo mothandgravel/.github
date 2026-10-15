@@ -30,9 +30,9 @@
 .question-room #brief-text { background:var(--material-grain),linear-gradient(135deg,#fffaf0,#eee7d8);color:#202222;border-color:#8d7858;box-shadow:inset 1px 1px #fff9,3px 5px 8px -6px #000a; }
 @media print { .question-room #brief-text { background:white;box-shadow:none; } }
 /* Navigation remains ordinary links when the site enhancement cannot start. */
-html:not(.has-nav-sheet) .question-room .header-actions { display:none; }
+html:is(:not(.has-js),.site-script-unavailable) .question-room .header-actions { display:none; }
 @media(max-width:900px) {
-  html:not(.has-nav-sheet) .question-room .site-header { position:relative; }
-  html:not(.has-nav-sheet) .question-room .header-inner { height:auto;flex-wrap:wrap;padding-top:18px;gap:18px; }
-  html:not(.has-nav-sheet) .question-room .main-nav { display:flex;position:static;flex-basis:100%;padding:0 0 12px;border:0; }
+  html:is(:not(.has-js),.site-script-unavailable) .question-room .site-header { position:relative; }
+  html:is(:not(.has-js),.site-script-unavailable) .question-room .header-inner { height:auto;flex-wrap:wrap;padding-top:18px;gap:18px; }
+  html:is(:not(.has-js),.site-script-unavailable) .question-room .main-nav { display:flex;position:static;flex-basis:100%;padding:0 0 12px;border:0; }
 }

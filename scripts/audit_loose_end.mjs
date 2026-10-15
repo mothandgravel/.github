@@ -220,6 +220,28 @@ try {
   results.push({label:'storage-denied',passed:true});
   await blocked.close();
 
+  // The native header must not flash open while deferred enhancement loads.
+  for (const mode of ['delayed-site-script','blocked-site-script']) {
+    const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+    await context.addInitScript(()=>{
+      window.__questionShifts=[];
+      new PerformanceObserver(list=>{for(const entry of list.getEntries())if(!entry.hadRecentInput)window.__questionShifts.push(entry.value);}).observe({type:'layout-shift',buffered:true});
+    });
+    await context.route('**/assets/site.js',async route=>{
+      if(mode==='blocked-site-script') return route.abort();
+      await new Promise(resolve=>setTimeout(resolve,800));
+      await route.continue();
+    });
+    const page=await context.newPage();
+    await page.goto(origin+'/questions/');
+    await page.locator('#question-next').waitFor({state:'visible'});
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    if(mode==='delayed-site-script') assert(await page.evaluate(()=>window.__questionShifts.reduce((sum,value)=>sum+value,0))<=.1,'Deferred navigation must not shift the question entrance');
+    else assert(await page.locator('#primary-nav').isVisible()&&!await page.locator('#menu-toggle').isVisible(),'Blocked site script leaves ordinary navigation and no dead menu');
+    await audit(page,'questions-'+mode,true);
+    await context.close();
+  }
+
   // A cached six-field page must still be able to use its published modules.
   const legacy = await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
   const currentHTML=await readFile(new URL('../docs/questions/index.html',import.meta.url),'utf8');
