@@ -284,3 +284,37 @@ explanation. Refresh health to verify the replacement heartbeat.
 
 Embedded playback, native Windows packaging and authenticated publishing remain
 larger integrations outside this local production workflow.
+
+
+## A second window and the next episode
+
+Episode drafts carry the identity of the checkpoint each window loaded. A stale
+window cannot silently replace a newer draft. The conflict panel keeps the local
+text open and offers **Load saved draft**, **Keep my draft** and **Open recovery
+copies**. Recovery JSON under `artifacts/studio/draft-recovery/` preserves both
+versions when resolving a conflict. An unchanged window can close without rewriting
+the shared draft. Use updated Studio windows together; old running GUI processes do
+not gain this protection until reopened.
+
+[Field Note 012: The work outlives the window](../docs/notes/012-work-outlives-the-window.html)
+documents the experiment with a real desktop fixture capture and pinned first-pass
+validation. Its source-preserving narration candidate and publishing tags are ready;
+no narration request or new podcast publication was made for the written release.
+
+The next useful passes, in order:
+
+1. **A new note into the shelf:** surface notes whose narration/captions are still
+   missing, show the script and prerequisites, and inspect generation before any
+   service request. Studio currently lists prepared recordings.
+2. **A human release rehearsal:** take note-012 through narration, caption checks,
+   production, media review and the actual browser handoff. Record decisions and
+   interruptions; automated layout checks do not establish everyday usability.
+3. **Collection readiness:** show which episodes need audio, full video, review or
+   re-export without opening each episode. Keep cached local state distinct from
+   verified external publication.
+4. **Destination records and recovery portability:** keep separate release histories
+   per destination and provide a guided backup/restore of the local journal and
+   settings. The current publication form holds one editable release record, and
+   SQLite durability still depends on preserving the checkout's artifacts directory.
+
+Embedded playback and direct authenticated uploads remain later integration choices.

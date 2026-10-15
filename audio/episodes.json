@@ -329,5 +329,30 @@
       "kind": "note",
       "note_id": "011"
     }
+  },
+  {
+    "id": "note-012",
+    "title": "The work outlives the window.",
+    "format": "narration",
+    "script": "scripts/note-012.txt",
+    "language": "en-US",
+    "notes": [
+      "012"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "012": "6315f11d10465563c3f0eb8fb59bd0e6f70d7785bcb53c35213f34dbcd47e91d"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "012"
+    }
   }
 ]

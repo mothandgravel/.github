@@ -143,6 +143,35 @@ class Workspace(ttk.Frame):
             command=callbacks["worker_restart"],
         ).pack(side="left")
         self.layout_stage()
+        self.conflict = ttk.Frame(self, padding=(0, 8))
+        ttk.Label(
+            self.conflict,
+            text="Newer draft in another window · your recovery copy is saved",
+            style="Draft.TLabel",
+        ).pack(anchor="w")
+        actions = ttk.Frame(self.conflict)
+        actions.pack(anchor="w", pady=(4, 0))
+        for label, callback in (
+            ("Load saved draft", "draft_reload"),
+            ("Keep my draft", "draft_keep"),
+            ("Open recovery copies", "draft_recovery"),
+        ):
+            ActionButton(
+                actions,
+                pictogram="save"
+                if callback == "draft_keep"
+                else "folder"
+                if callback == "draft_recovery"
+                else "refresh",
+                text=label,
+                command=callbacks[callback],
+            ).pack(side="left", padx=(0, 6))
+
+    def draft_conflict(self, visible):
+        if visible:
+            self.conflict.grid(row=7, column=0, sticky="ew")
+        else:
+            self.conflict.grid_remove()
 
     @staticmethod
     def _text_tab(tabs, title):

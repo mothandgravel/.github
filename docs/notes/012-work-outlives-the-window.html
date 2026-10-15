@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17191b">
+  <meta name="description" content="A podcast pipeline becomes a small desktop workbench. What closing its window taught us about drafts, jobs, review and a trustworthy route to release.">
+  <meta name="robots" content="index, follow">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Moth & Gravel">
+  <meta property="og:title" content="The work outlives the window. — Moth & Gravel">
+  <meta property="og:description" content="A podcast pipeline becomes a small desktop workbench. What closing its window taught us about drafts, jobs, review and a trustworthy route to release.">
+  <meta property="og:url" content="https://mothandgravel.com/notes/012-work-outlives-the-window.html">
+  <meta property="og:image" content="https://mothandgravel.com/assets/notes/012-cover-social.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Native Tkinter production Studio showing the episode shelf, sound controls and an inspected production plan.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mothandgravel.com/assets/notes/012-cover-social.jpg">
+  <link rel="alternate" type="application/rss+xml" title="Moth &amp; Gravel — Field Notes" href="https://mothandgravel.com/notes/feed.xml">
+  <link rel="canonical" href="https://mothandgravel.com/notes/012-work-outlives-the-window.html">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/site.css">
+  <script>document.documentElement.classList.add("has-js")</script>
+  <script src="../assets/site.js" defer></script>
+  <title>The work outlives the window. — Moth &amp; Gravel</title>
+<!-- discovery:start -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://mothandgravel.com/#studio","name":"Moth & Gravel","url":"https://mothandgravel.com/","description":"An independent software and design studio based in Finland. Useful tools and thoughtful interfaces, with an invitation to questions from anywhere.","logo":"https://mothandgravel.com/assets/nav-mark.svg","location":{"@type":"Place","name":"Finland"},"founder":{"@type":"Person","name":"slideep"},"sameAs":["https://github.com/mothandgravel"]},{"@type":"WebSite","@id":"https://mothandgravel.com/#website","url":"https://mothandgravel.com/","name":"Moth & Gravel","inLanguage":"en","publisher":{"@id":"https://mothandgravel.com/#studio"}},{"@type":"WebPage","@id":"https://mothandgravel.com/notes/012-work-outlives-the-window.html#page","url":"https://mothandgravel.com/notes/012-work-outlives-the-window.html","name":"The work outlives the window.","inLanguage":"en","isPartOf":{"@id":"https://mothandgravel.com/#website"},"mainEntity":{"@id":"https://mothandgravel.com/notes/012-work-outlives-the-window.html#article"}},{"@type":"BlogPosting","@id":"https://mothandgravel.com/notes/012-work-outlives-the-window.html#article","url":"https://mothandgravel.com/notes/012-work-outlives-the-window.html","headline":"The work outlives the window.","description":"A podcast pipeline becomes a small desktop workbench. What closing its window taught us about drafts, jobs, review and a trustworthy route to release.","inLanguage":"en","mainEntityOfPage":{"@id":"https://mothandgravel.com/notes/012-work-outlives-the-window.html#page"},"author":{"@id":"https://mothandgravel.com/#studio"},"publisher":{"@id":"https://mothandgravel.com/#studio"},"image":"https://mothandgravel.com/assets/notes/012-cover-social.jpg","keywords":["Interface","Making","Audio"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Moth & Gravel","item":"https://mothandgravel.com/"},{"@type":"ListItem","position":2,"name":"Field Notes","item":"https://mothandgravel.com/notes/"},{"@type":"ListItem","position":3,"name":"The work outlives the window.","item":"https://mothandgravel.com/notes/012-work-outlives-the-window.html"}]}]}</script>
+<!-- discovery:end -->
+<!-- audio-head:start -->
+<link rel="alternate" type="application/rss+xml" title="Moth &amp; Gravel — Field Notes audio" href="./podcast.xml">
+<link rel="stylesheet" href="../assets/field-audio.css">
+<script type="module" src="../assets/field-listen.mjs"></script>
+<!-- audio-head:end -->
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to note</a>
+  <header class="site-header">
+    <div class="header-inner shell">
+      <a class="brand" href="../">
+        <span class="brand-stamp" aria-hidden="true"><img src="../assets/nav-mark.svg" alt="" width="44" height="44"></span>
+        <span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span>
+      </a>
+      <nav class="main-nav" id="primary-nav" aria-label="Main navigation">
+        <a href="../#work">Workbench</a><a href="./" >Field notes</a><a href="../#ethos">The thinking</a>
+      </nav>
+      <div class="header-actions">
+        <button class="light-switch" id="light-switch" type="button" aria-pressed="false" aria-label="Afterlight theme">
+          <span class="switch-orb" aria-hidden="true"></span>
+          <span class="switch-label">Afterlight</span>
+        </button>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="note-main shell telemetry-note">
+    <div class="note-meta mono"><span>FIELD NOTE / 012</span><span>WORKING EXPERIMENT</span></div>
+    <div class="note-heading illustrated-heading telemetry-heading"><div><p class="eyebrow"><span class="line-mark" aria-hidden="true"></span> NOTES ON A TOOL THAT KEEPS THE THREAD</p><h1>The work outlives<br><em>the window.</em></h1><p class="note-deck">We gave our podcast pipeline a small desktop. Closing it became a useful design test.</p><!-- note-audio:start -->
+
+<!-- note-audio:end -->
+</div>
+    <figure class="note-cover-figure"><a href="../assets/notes/012-studio-workspace.png" aria-label="Open the full-size native Studio screenshot"><img src="../assets/notes/012-studio-workspace.png" width="1280" height="920" fetchpriority="high" decoding="async" alt="Native production Studio with an episode shelf, Produce, Review and Release tabs, pace and outro controls, and an inspected plan above the production queue."></a><figcaption>The real Tk interface, captured during automated desktop verification. The episode and media state are a controlled test fixture. <a href="../assets/notes/012-studio-workspace.png">Open full size ↗</a></figcaption></figure></div>
+    <div class="note-rule" aria-hidden="true"><span>✳</span></div>
+    <div class="note-body"><aside class="note-aside mono" aria-label="Field note context"><p>THE WORKBENCH<br>FIELD NOTES STUDIO</p><p>THE QUESTION<br>WHAT SURVIVES CLOSING?</p><p>THE MATERIAL<br>A PIPELINE / A WINDOW</p><a href="#experiment-record">OPEN THE EXPERIMENT RECORD ↓</a></aside><article class="note-prose"><p>An episode is rendering. You close its window. What should happen when you open it again?</p>
+<p>That question became a useful test for our podcast experiment. We already had the pieces: written Field Notes, narration, music, retimed captions and a video renderer. They could produce an episode. A person still had to remember which command came next, which folder held the result and which version they had actually checked.</p>
+<p>We wanted a small workbench for that journey. Somewhere to change the sound, inspect the consequences, let the machine work and come back with enough context to continue.</p>
+<h2>A familiar material</h2>
+<p>We used Tkinter. The production engine was already Python, and an earlier robot workbench had given us useful experience with Tk: themed sections, background work and a queue that hands results back to the interface.</p>
+<p>That made it a reasonable material for this experiment. The studio could live beside the existing engine in Ubuntu or WSL, with ordinary desktop controls and no separate web service to operate. We kept the production engine behind an adapter so that the interface could change without taking ownership of everything underneath it.</p>
+<p>The first useful shape was three stages: Produce, Review and Release. Each stage needed a clear answer to a different question. What will change? What have I checked? What is ready to take to the publisher?</p>
+<h2>Give the job a life of its own</h2>
+<p>The important decision was where the work should live.</p>
+<p>The window holds an editable view. A local journal keeps drafts, queued recipes and job results. A separate worker owns production. Closing the window leaves that worker and its queue in place.</p>
+<figure class="freshness-figure"><a href="../assets/notes/012-work-ownership.svg" aria-label="Open the full-size work ownership diagram"><img src="../assets/notes/012-work-ownership.svg" width="1200" height="650" style="width:100%;height:auto" loading="lazy" decoding="async" alt="The desktop exchanges drafts and recipes with a local journal. A detached worker claims jobs and writes saved media. Reopening the desktop restores the journal and verifies the saved edition for human review."></a><figcaption>Four responsibilities, with the window allowed to disappear. The diagram describes the implemented ownership boundary. <a href="../assets/notes/012-work-ownership.svg">Open the full-size diagram ↗</a></figcaption></figure>
+<p>Suppose an episode is queued at 1.15 times the original pace. Changing the control afterwards should affect the next plan. The job already in the queue keeps the recipe that was inspected.</p>
+<p>Unfinished edits have a different need. Half a date or an empty numeric field is perfectly ordinary while someone is typing. We preserve that raw text as a draft and validate it when the person asks to use it. Returning to the work should not require reconstructing a thought that happened to be incomplete.</p>
+<p>A restart can also leave an uncertain result. In that case the journal says interrupted. There is a saved record to inspect and an explicit retry. Guessing that a job succeeded would make the interface easier to colour green and harder to trust.</p>
+<h2>Let the labels earn their confidence</h2>
+<p>A saved video, a checked video and a published video are different events.</p>
+<p>Review therefore belongs to the saved edition. Listen to it, check its captions, watch the full video where appropriate, and record the confirmations. If the media changes, the earlier approval cannot quietly move across to it. Reopening the window restores the workspace; the review checkboxes need attention again.</p>
+<p>Release makes the handoff tangible. It lists the actual video, thumbnail, subtitle files, audio and transcript, with their sizes. Upload copy comes from the checked package when one exists. There is a route to open a file, a folder or YouTube Studio, and a Windows-compatible upload path when the tool is running in WSL.</p>
+<p>“Ready for manual upload” describes those local checks. The person still uploads the package and records the real publication details. A local success message cannot establish what happened in another service.</p>
+<h2>A small window exposes a large assumption</h2>
+<p>The design acquired the studio’s paper, ink and brass, labelled pictograms and visible feedback. The more revealing work was making it fit.</p>
+<p>One desktop test run passed while its screenshots showed an awkward result: the publishing buttons were visible, but the editable fields had been squeezed away at the minimum window size. The batch checklist had the same problem. We had checked that the actions existed without checking that the material they acted on remained usable.</p>
+<p>We shortened the guidance, removed competing folder actions from those focused panels and made the checks cover the fields and choices themselves. The screenshot was evidence about a question the earlier assertions had missed.</p>
+<p>A second window exposes another boundary worth making explicit. Two copies of the interface can hold different drafts of one episode. A newer checkpoint needs an identity, and the other window needs a chance to resolve that conflict while keeping its edits. “Saved” should mean that this version was saved.</p>
+<h2>Enough to use, with a next question</h2>
+<p>By the end of the first complete pass, the studio had durable drafts, sound controls, editable publishing copy, batch inspection and worker health. Its verification included 86 tests, with 31 exercising real Tk controls. A separate production run finished all 13 existing recordings, checked their retimed captions and rendered short video previews and thumbnails. A repeat run checked cache reuse.</p>
+<p>Those are useful boundaries for the result. They establish considerably more than a promising mockup. They do not replace listening to the finished episodes or completing the browser upload.</p>
+<p>The next question is close at hand: can this workbench help us release its own Field Note without someone keeping the terminal sequence in their head?</p>
+<p>There is still a gap at the beginning. Studio starts from prepared recordings. A new written note needs a narration script, a deliberate generation step and captions before it reaches that shelf. That handoff deserves the same care as the final upload: visible prerequisites, an inspectable plan and a clear account of any service being used.</p>
+<p>For now, the experiment has become a usable local tool for the episodes we already have. The next specimen is this note.</p>
+    <aside class="native-study-status" id="experiment-record" aria-labelledby="experiment-record-title"><p class="mono">EXPERIMENT RECORD / WORKING SOFTWARE</p><h2 id="experiment-record-title">What this pass establishes.</h2><p>The first-pass counts and desktop capture refer to <a href="https://github.com/mothandgravel/.github/tree/571cc165835da5edd1c9959950c2e89198a39807/field_notes_studio">the implementation at 571cc16</a>. Its <a href="https://github.com/mothandgravel/.github/actions/runs/38725006189">native desktop checks</a> and <a href="https://github.com/mothandgravel/.github/actions/runs/38725006190">real-media production run</a> passed. The capture is a controlled fixture, and the ownership graphic is a schematic. The production run rendered short previews, rather than full-length videos of the entire collection.</p><p>The <a href="https://github.com/mothandgravel/.github/pull/33">continuing implementation</a> and <a href="https://github.com/mothandgravel/.github/blob/studio/tkinter-production-workspace/studio/README.md">Studio guide</a> contain the current behaviour and validation. Native Windows packaging, embedded playback and authenticated publishing remain outside this local Linux/WSL experiment. Narration and publication of this note are separate steps from the verification described here.</p></aside></article></div>
+    <div class="note-end"><p class="mono">END OF FIELD NOTE / 012</p><a class="button button-brass" href="./">All Field Notes <span class="button-arrow" aria-hidden="true">↗</span></a><a class="under-link" href="../#field-notes">Back to the studio ↗</a></div>
+    <p class="note-enquiry">A question of your own? <a href="../#contact">Bring it to the studio ↗</a></p>
+    <!-- related-notes:start -->
+<aside class="note-related" aria-label="Related Field Notes"><p class="mono">RELATED READING</p><a class="editorial-link" href="./005-green-light.html">A green light should mean something. <span aria-hidden="true">↗</span></a><a class="editorial-link" href="./004-controls-stay-put.html">A control should stay where you left it. <span aria-hidden="true">↗</span></a><a class="editorial-link" href="./001-curiosity-with-calluses.html">Curiosity with calluses. <span aria-hidden="true">↗</span></a></aside>
+<!-- related-notes:end -->
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <a class="footer-brand" href="../">MOTH <span>&amp;</span> GRAVEL <small>INDEPENDENT WORKS</small></a>
+      <div class="footer-end mono"><span>© <span id="year">2026</span> MOTH &amp; GRAVEL</span><a href="../">HOME ↑</a></div>
+    </div>
+  </footer>
+</body>
+</html>

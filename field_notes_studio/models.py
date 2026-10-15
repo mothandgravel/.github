@@ -10,6 +10,10 @@ ACTIONS = ("audio", "video", "preview", "export")
 TERMINAL = frozenset({"succeeded", "failed", "cancelled", "interrupted"})
 
 
+class DraftConflict(ValueError):
+    """Another window checkpointed a newer draft; explicit resolution is required."""
+
+
 @dataclass(frozen=True)
 class Episode:
     identifier: str

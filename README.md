@@ -11,8 +11,10 @@ This repository contains the [website](docs/), the [GitHub organization profile]
 The [Field Notes audio workflow](audio/README.md) covers every published note, a brisker comparison and a two-voice conversation. `python3 -m field_notes_audio make-all --publish` reuses or generates recordings, subtitles them, builds article listening controls and an archive queue, and pushes completed assets to a PR. Web playback defaults to 1.15×. The separate podcast feed is `notes/podcast.xml`; article RSS stays available. Google settings and job state remain local, and CI validates with synthetic clips without paid requests.
 
 The [local production studio](studio/README.md) opens with `python3 -m field_notes_studio`
-in Ubuntu/WSL. Its Tkinter workspace inspects pace/outro changes, queues local audio/video
-work, reconnects to durable jobs and records publication links separately.
+in Ubuntu/WSL. Its Tkinter workspace restores unfinished drafts, edits sound and publishing
+copy, inspects individual or batch plans, and reconnects to durable production jobs.
+[Field Note 012](docs/notes/012-work-outlives-the-window.html) follows the experiment
+from a pipeline to a usable desktop workbench.
 
 ## Keeping the site useful
 

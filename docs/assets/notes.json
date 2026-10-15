@@ -23,7 +23,7 @@
     "id": "002",
     "slug": "002-afterlight-nightfall.html",
     "title": "Afterlight / Nightfall.",
-    "summary": "A practical study in bone, charcoal and brass\u2014and what an expressive identity owes to legible interfaces.",
+    "summary": "A practical study in bone, charcoal and brass—and what an expressive identity owes to legible interfaces.",
     "date": "2026-10-13",
     "type": "Design study",
     "topics": [
@@ -220,7 +220,7 @@
       "011"
     ],
     "visual": "forms",
-    "featured": true,
+    "featured": false,
     "cover": {
       "small": "009-cover-800.webp",
       "large": "009-cover-1600.webp",
@@ -276,6 +276,35 @@
     "cover": {
       "small": "011-cover-800.webp",
       "large": "011-cover-1600.webp",
+      "width": 1600,
+      "height": 900
+    }
+  },
+  {
+    "id": "012",
+    "slug": "012-work-outlives-the-window.html",
+    "title": "The work outlives the window.",
+    "summary": "A podcast pipeline becomes a small desktop workbench. What closing its window taught us about drafts, jobs, review and a trustworthy route to release.",
+    "date": "2026-10-15",
+    "type": "Working experiment",
+    "topics": [
+      "Interface",
+      "Making",
+      "Audio"
+    ],
+    "project": "Moth & Gravel / Field Notes Studio",
+    "thread": "",
+    "related": [
+      "001",
+      "004",
+      "005"
+    ],
+    "supersedes": [],
+    "visual": "forms",
+    "featured": true,
+    "cover": {
+      "small": "012-cover-800.webp",
+      "large": "012-cover-1600.webp",
       "width": 1600,
       "height": 900
     }

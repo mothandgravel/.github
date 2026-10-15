@@ -49,6 +49,11 @@ class Studio:
     def restart_worker(self):
         return restart(self.repository, self.root)
 
+    def open_draft_recovery(self):
+        directory = self.repository.path.parent / "draft-recovery"
+        directory.mkdir(parents=True, exist_ok=True)
+        open_path(directory)
+
     def plan(
         self,
         episode: str,

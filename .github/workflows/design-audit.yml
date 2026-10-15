@@ -50,6 +50,7 @@ jobs:
           node scripts/audit_moth_volume.mjs
           node scripts/audit_rooms.mjs
           node scripts/audit_connection.mjs
+          node scripts/audit_studio_note.mjs
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4

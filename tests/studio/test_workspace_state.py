@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from field_notes_audio.storage import digest_file, read_object, write_json
+from field_notes_studio.models import DraftConflict
 from field_notes_studio.pipeline import Pipeline
 from field_notes_studio.repository import Repository
 from field_notes_studio.service import Studio
@@ -49,6 +50,29 @@ class WorkspaceStateTests(unittest.TestCase):
         self.assertEqual(reopened.state("session")["tab"], 2)
         self.assertEqual(reopened.publications(), {})
         self.assertEqual(reopened.jobs(), [])
+
+    def test_stale_window_cannot_replace_a_newer_draft_or_partially_save_its_session(self):
+        key = "draft:note-001"
+        initial = self.repository.checkpoint({key: {"recipe": {"speed": "1.1"}}})[key]
+        other = Repository(self.repository.path)
+        other.checkpoint({key: {"recipe": {"speed": "1.2"}}}, expected={key: initial})
+        with self.assertRaises(DraftConflict):
+            self.repository.checkpoint(
+                {"session": {"episode": "stale"}, key: {"recipe": {"speed": "1.3"}}},
+                expected={key: initial},
+            )
+        self.assertEqual(other.state(key)["recipe"]["speed"], "1.2")
+        self.assertEqual(other.state("session"), {})
+        draft, identity = other.state_snapshot(key)
+        saved = other.checkpoint({key: draft}, expected={key: identity})
+        self.assertEqual(saved[key], identity)
+
+    def test_recovery_copy_keeps_raw_text_without_changing_the_shared_draft(self):
+        self.repository.checkpoint({"draft:note-001": {"recipe": {"speed": "1.2"}}})
+        draft = {"recipe": {"speed": "unfinished"}, "publication": ["link", "2026-", "", True]}
+        path = self.repository.recover_draft("note-001", "window", draft)
+        self.assertEqual(read_object(path)["draft"], draft)
+        self.assertEqual(self.repository.state("draft:note-001")["recipe"]["speed"], "1.2")
 
     def test_late_batch_conflict_rolls_back_every_insert(self):
         self.repository.submit("note-002", "audio", {})

@@ -222,6 +222,46 @@ class UITests(unittest.TestCase):
         self.assertEqual(self.app.workspace.outro.get(), "unfinished")
         self.assertIn("disk full", self.app.message["text"])
 
+    def test_other_window_draft_conflict_keeps_both_versions_and_can_be_resolved(self):
+        from field_notes_studio.models import DraftConflict
+        from field_notes_studio.repository import Repository
+
+        controller = self.app.controller
+        self.wait(lambda: self.app.workspace.publication.editor.loaded)
+        controller.checkpoint()
+        other = Repository(controller.studio.repository.path)
+        draft = other.state("draft:note-001")
+        draft["recipe"]["outro"] = "9"
+        other.checkpoint({"draft:note-001": draft})
+        self.app.workspace.outro.set("7")
+        with self.assertRaises(DraftConflict):
+            controller.checkpoint()
+        self.root.update()
+        self.assertEqual(other.state("draft:note-001")["recipe"]["outro"], "9")
+        self.assertEqual(self.app.workspace.outro.get(), "7")
+        for button in self.app.workspace.conflict.winfo_children()[1].winfo_children():
+            self.assert_visible(button)
+        self.capture("draft-conflict")
+        controller.resolve_draft(True)
+        self.assertEqual(other.state("draft:note-001")["recipe"]["outro"], "7")
+        copies = list((other.path.parent / "draft-recovery").glob("*.json"))
+        self.assertEqual(
+            {read_object(path)["draft"]["recipe"]["outro"] for path in copies}, {"7", "9"}
+        )
+        self.assertFalse(self.app.workspace.conflict.winfo_ismapped())
+
+    def test_unchanged_window_can_close_without_overwriting_the_other_draft(self):
+        controller = self.app.controller
+        self.wait(lambda: self.app.workspace.publication.editor.loaded)
+        controller.checkpoint()
+        repository = controller.studio.repository
+        draft = repository.state("draft:note-001")
+        draft["recipe"]["outro"] = "9"
+        repository.checkpoint({"draft:note-001": draft})
+        self.app.close()
+        self.assertTrue(self.app.closed)
+        self.assertEqual(repository.state("draft:note-001")["recipe"]["outro"], "9")
+
     def test_sound_batch_and_health_surfaces_fit_the_minimum_window(self):
         workspace = self.app.workspace
         self.wait(lambda: workspace.publication.editor.loaded)

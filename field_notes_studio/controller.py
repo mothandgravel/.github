@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import json
 import queue
+import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from field_notes_studio.models import DraftConflict
 from field_notes_studio.processes import launch_worker
 
 
@@ -33,6 +35,9 @@ class Controller:
         self.batch_ready = None
         self.batch_generation = 0
         self.health_busy = False
+        self.window_id = uuid.uuid4().hex
+        self.draft_identity = ""
+        self.draft_value = None
 
     def draft_changed(self):
         if self.loading or self.closed or not getattr(self.view, "root", None):
@@ -57,9 +62,48 @@ class Controller:
                 "batch": workspace.batch.selection(),
             },
         }
-        if not self.loading:
-            values["draft:" + self.selected] = workspace.draft()
-        self.studio.repository.checkpoint(values)
+        key = "draft:" + self.selected
+        draft = workspace.draft() if not self.loading else None
+        expected = {}
+        if draft is not None and draft != self.draft_value:
+            values[key] = draft
+            expected[key] = self.draft_identity
+        try:
+            identities = self.studio.repository.checkpoint(values, expected=expected)
+        except DraftConflict:
+            self.studio.repository.recover_draft(self.selected, self.window_id, draft)
+            workspace.draft_conflict(True)
+            raise
+        if key in identities:
+            self.draft_identity = identities[key]
+            self.draft_value = draft
+
+    def resolve_draft(self, keep):
+        if not self.selected or self.loading:
+            return
+        try:
+            if keep:
+                saved, identity = self.studio.repository.state_snapshot("draft:" + self.selected)
+                self.studio.repository.recover_draft(
+                    self.selected, self.window_id + "-other", saved
+                )
+                self.draft_identity = identity
+                self.draft_value = None
+                self.checkpoint()
+                self.view.workspace.draft_conflict(False)
+                self.view.status(
+                    "This window's draft saved. Both versions remain in draft-recovery."
+                )
+            else:
+                self.studio.repository.recover_draft(
+                    self.selected, self.window_id, self.view.workspace.draft()
+                )
+                self.select(self.selected, reload=True)
+        except Exception as exc:
+            self.view.status(str(exc))
+
+    def open_draft_recovery(self):
+        self.task(self.studio.open_draft_recovery, lambda _: None)
 
     def autosave(self):
         self.draft_timer = None
@@ -102,13 +146,14 @@ class Controller:
             self.view.shelf.reveal(identifier)
             self.select(identifier)
 
-    def select(self, identifier, review_scope=None):
-        if identifier == self.selected:
+    def select(self, identifier, review_scope=None, *, reload=False):
+        if identifier == self.selected and not reload:
             if review_scope is not None:
                 self.show_review(review_scope)
             return
         try:
-            self.checkpoint()
+            if not reload:
+                self.checkpoint()
         except Exception as exc:
             self.view.status(f"Keep this draft open: checkpoint failed: {exc}")
             return
@@ -124,12 +169,19 @@ class Controller:
         self.changed()
         self.loading = True
         self.view.workspace.publication.loading_episode()
+        if getattr(self.view, "root", None):
+            self.view.workspace.draft_conflict(False)
+            self.view.workspace.publication.drafts.pop(identifier, None)
 
         def loaded(settings):
             if selection == self.selection_generation:
                 self.view.workspace.load(self.episodes[identifier], settings)
                 if getattr(self.view, "root", None):
-                    self.view.workspace.restore(self.studio.repository.state("draft:" + identifier))
+                    draft, self.draft_identity = self.studio.repository.state_snapshot(
+                        "draft:" + identifier
+                    )
+                    self.view.workspace.restore(draft)
+                    self.draft_value = self.view.workspace.draft()
                     session, self.restore_session = self.restore_session, None
                     if session:
                         self.view.workspace.tabs.select(

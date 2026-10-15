@@ -2,14 +2,17 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import sqlite3
+import tempfile
 import uuid
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-from field_notes_studio.models import ACTIONS, TERMINAL, Job
+from field_notes_studio.models import ACTIONS, TERMINAL, DraftConflict, Job
 
 
 def timestamp() -> str:
@@ -202,15 +205,62 @@ class Repository:
             )
 
     def state(self, name: str) -> dict:
+        return self.state_snapshot(name)[0]
+
+    def state_snapshot(self, name: str) -> tuple[dict, str]:
         with self.connection() as db:
             row = db.execute("SELECT value FROM workspace WHERE name=?", (name,)).fetchone()
-        return json.loads(row[0]) if row else {}
+        return (json.loads(row[0]), self.state_identity(row[0])) if row else ({}, "")
 
-    def checkpoint(self, values: dict[str, dict]) -> None:
+    @staticmethod
+    def state_identity(value: str) -> str:
+        return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+    def checkpoint(
+        self, values: dict[str, dict], *, expected: dict[str, str] | None = None
+    ) -> dict[str, str]:
         """Store raw unfinished text and navigation atomically, separate from approvals."""
         with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            encoded = {
+                name: json.dumps(value, ensure_ascii=False) for name, value in values.items()
+            }
+            for name, identity in (expected or {}).items():
+                row = db.execute("SELECT value FROM workspace WHERE name=?", (name,)).fetchone()
+                actual = self.state_identity(row[0]) if row else ""
+                if actual != identity and (not row or row[0] != encoded[name]):
+                    raise DraftConflict(
+                        "Another window saved a newer episode draft. Choose Load saved draft or Keep my draft; your edits stay open."
+                    )
             db.executemany(
                 "INSERT INTO workspace VALUES(?,?) ON CONFLICT(name) "
                 "DO UPDATE SET value=excluded.value",
-                [(name, json.dumps(value, ensure_ascii=False)) for name, value in values.items()],
+                list(encoded.items()),
             )
+        return {name: self.state_identity(value) for name, value in encoded.items()}
+
+    def recover_draft(self, episode: str, window: str, draft: dict) -> Path:
+        """Keep a readable recovery copy without replacing the shared draft."""
+        directory = self.path.parent / "draft-recovery"
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / f"{episode}-{window}.json"
+        temporary = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=directory, delete=False
+            ) as handle:
+                temporary = Path(handle.name)
+                json.dump(
+                    {"episode": episode, "saved_at": timestamp(), "draft": draft},
+                    handle,
+                    ensure_ascii=False,
+                    indent=2,
+                )
+                handle.write("\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            temporary.replace(path)
+        finally:
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
+        return path
