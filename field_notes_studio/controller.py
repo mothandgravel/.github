@@ -212,6 +212,15 @@ class Controller:
         def failed(_message):
             if selection == self.selection_generation:
                 self.loading = False
+                # Old controls do not belong to the failed selection. In particular,
+                # closing must not checkpoint them under the new episode's identity.
+                self.selected = None
+                if getattr(self.view, "root", None):
+                    self.view.shelf.tree.selection_remove(identifier)
+                    self.view.workspace.title.configure(text="Episode settings unavailable")
+                    self.view.workspace.subtitle.configure(
+                        text="Choose the episode again to retry loading its settings."
+                    )
 
         self.task(lambda: self.studio.settings(identifier), loaded, failed)
 

@@ -262,6 +262,29 @@ class UITests(unittest.TestCase):
         self.assertTrue(self.app.closed)
         self.assertEqual(repository.state("draft:note-001")["recipe"]["outro"], "9")
 
+    def test_failed_settings_load_cannot_queue_or_checkpoint_the_previous_controls(self):
+        controller = self.app.controller
+        self.wait(lambda: self.app.workspace.publication.editor.loaded)
+        controller.checkpoint()
+        episode = Episode("note-002", "Second episode", 90, "Second transcript")
+        controller.episodes[episode.identifier] = episode
+        self.app.shelf.load(list(controller.episodes.values()))
+        repository = controller.studio.repository
+        repository.checkpoint({"draft:note-002": {"recipe": {"speed": "1.3", "outro": "6"}}})
+        self.app.workspace.speed.set("1.1")
+        with patch.object(
+            controller.studio, "settings", side_effect=OSError("settings unavailable")
+        ):
+            controller.select("note-002")
+            self.wait(lambda: controller.selected is None and not controller.loading)
+        controller.checkpoint()
+        controller.inspect()
+        self.assertIsNone(controller.ready)
+        self.assertEqual(repository.state("draft:note-002")["recipe"]["speed"], "1.3")
+        controller.select("note-002")
+        self.wait(lambda: controller.selected == "note-002" and not controller.loading)
+        self.assertEqual(self.app.workspace.speed.get(), "1.3")
+
     def test_sound_batch_and_health_surfaces_fit_the_minimum_window(self):
         workspace = self.app.workspace
         self.wait(lambda: workspace.publication.editor.loaded)
