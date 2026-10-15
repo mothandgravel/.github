@@ -47,6 +47,8 @@ try {
     await page.goto(origin+'/questions/');
     if (theme==='afterlight') await page.locator('#light-switch').click();
     await page.locator('#question-progress').waitFor({state:'visible'});
+    assert(await page.locator('.question-boundary').isVisible(), 'Local-only boundary is visible before the first answer');
+    assert(await page.locator('#question-meter').evaluate(el=>el.value===1&&el.max===6), 'Progress starts at one of six');
     const contrast = await page.evaluate(() => {
       const link = document.querySelector('.journey-aside a');
       const foreground=getComputedStyle(link).color, background=getComputedStyle(document.body).backgroundColor;
@@ -76,6 +78,7 @@ try {
       await audit(page,`constraints-${theme}-${viewport.width}`,true);
     }
     await next(page);
+    assert(await page.locator('#question-meter').evaluate(el=>el.value===6), 'Review completes the progress meter');
     const fullBrief=await page.locator('#brief-text').inputValue();
     assert(withFollowups ? fullBrief.includes('USD 2,000–4,000')&&fullBrief.includes('private-prototype-marker') : !fullBrief.includes('Working budget\n'), 'Optional follow-ups must be included only when answered');
     await audit(page,`brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
@@ -88,6 +91,9 @@ try {
     const downloadPromise = page.waitForEvent('download');
     await page.locator('#download-brief').click();
     const download = await downloadPromise;
+    assert((await page.locator('.brief-keep [data-room-feedback]').innerText()).includes('prepared for download'), 'Download confirmation stays beside the keep actions');
+    assert(await page.locator('.brief-keep [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Download confirmation is within the visible viewport');
+    assert(await page.locator('[role="status"]').count()===1, 'Feedback has one live announcement channel');
     const downloaded = await readFile(await download.path(),'utf8');
     assert(downloaded.includes('find their footing'),'Download must include the visitor’s actual answers');
     assert(!withFollowups||downloaded.includes('private-prototype-marker'),'Download must retain the material at the end of the brief');
@@ -125,6 +131,8 @@ try {
     await page.goto(origin+'/questions/');
     assert(await page.locator('#making').inputValue()==='','Cleared answers must not return');
     for (const key of ['timing','budget','materials']) assert(await page.locator('#'+key).inputValue()==='', 'Cleared '+key+' must not return');
+    await page.locator('#clear-draft').click();
+    assert(await page.locator('#clear-draft').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().top>=document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().bottom<=innerHeight),`Clear keeps visible focus in ${theme}/${viewport.width}`);
     assert(errors.length===0,JSON.stringify({viewport,theme,errors}));
     await context.close();
   }
@@ -142,6 +150,7 @@ try {
   await page.locator('#making').fill(hostile+' edited');
   await next(page);await next(page);await next(page);await next(page);
   assert(await page.locator('#brief-text').inputValue()==='My edited brief. private-marker-983','Returning from answers must preserve manual brief edits');
+  assert((await page.locator('.brief-keep [data-room-feedback]').innerText()).includes('edits. They were kept'), 'Preserved edits are explained beside the brief');
   await page.locator('#carry-question').click();
   await page.locator('#your-question').waitFor({state:'visible'});
   await page.locator('#your-question summary').filter({hasText:'Your edited brief'}).click();
@@ -177,6 +186,7 @@ try {
   await historyPage.locator('#difficulty').waitFor({state:'visible'});
   assert(!historyPage.url().includes('Keep'),'Question history must not expose answers in URLs');
   await historyPage.locator('#clear-draft').click();
+  assert((await historyPage.locator('.question-housekeeping [data-room-feedback]').innerText()).includes('cleared'), 'Clear confirmation is visible beside Clear');
   await historyPage.goBack();
   await historyPage.locator('#making').waitFor({state:'visible'});
   assert(await historyPage.locator('#making').inputValue()==='','History must not recover cleared words');
@@ -188,7 +198,21 @@ try {
   const blockedPage=await blocked.newPage();
   await blockedPage.goto(origin+'/questions/');
   await makeBrief(blockedPage);
-  await blockedPage.locator('#carry-question').click();
+  const beforeCopy=await blockedPage.locator('#brief-text').inputValue();
+  await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__copiedBrief=text;}},configurable:true}));
+  await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
+  await blockedPage.locator('.brief-keep [data-room-feedback]').filter({hasText:'Brief copied'}).waitFor({state:'visible'});
+  assert(await blockedPage.evaluate(()=>window.__copiedBrief)===beforeCopy, 'Copy keeps the exact editable brief');
+  await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw new Error('Clipboard denied');}},configurable:true}));
+  // Programmatic clicks model browsers that do not focus a clicked button.
+  await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
+  await blockedPage.locator('.brief-keep [data-room-feedback]').filter({hasText:'Select and copy'}).waitFor({state:'visible'});
+  assert(await blockedPage.locator('.brief-keep [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Clipboard recovery stays in view');
+  assert(await blockedPage.locator('#brief-text').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().bottom>document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().top<innerHeight), 'Denied clipboard selects a visible editable brief');
+  await blockedPage.locator('#rebuild-brief').evaluate(el=>el.click());
+  assert((await blockedPage.locator('.brief-keep [data-room-feedback]').innerText()).includes('rebuilt'), 'Rebuild feedback is independent of click focus');
+  await blockedPage.locator('#carry-question').evaluate(el=>el.click());
+  assert((await blockedPage.locator('.brief-preview [data-room-feedback]').innerText()).includes('cannot carry'), 'Blocked handoff explains recovery beside its action');
   assert(blockedPage.url().endsWith('/questions/'),'Failed handoff must retain the visitor’s brief');
   assert((await blockedPage.locator('#draft-status').innerText()).includes('cannot carry'),'Storage failure must offer a truthful recovery');
   await blockedPage.goto(origin+'/workbench/');
@@ -198,10 +222,113 @@ try {
   results.push({label:'storage-denied',passed:true});
   await blocked.close();
 
+  // A permission prompt may settle after the visitor has moved on.
+  for (const outcome of ['resolve','reject']) for (const action of ['clear','back','edit','rebuild','download','failed-handoff','focus-elsewhere']) {
+    const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+    await page.goto(origin+'/questions/');
+    await makeBrief(page);
+    await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:()=>new Promise((resolve,reject)=>{window.__copyResolve=resolve;window.__copyReject=reject;})},configurable:true}));
+    await page.locator('#copy-brief').evaluate(el=>el.click());
+    if(action==='clear') await page.locator('#clear-draft').click();
+    if(action==='back') { await page.locator('#question-back').click();await page.locator('#constraints').waitFor({state:'visible'}); }
+    if(action==='focus-elsewhere') await page.locator('#menu-toggle').focus();
+    if(action==='edit') await page.locator('#brief-text').fill('My newer wording.');
+    if(action==='rebuild') await page.locator('#rebuild-brief').click();
+    if(action==='download') { const downloaded=page.waitForEvent('download');await page.locator('#download-brief').click();await downloaded; }
+    if(action==='failed-handoff') {
+      await page.evaluate(()=>{Storage.prototype.setItem=()=>{throw new Error('Storage denied');};});
+      await page.locator('#carry-question').click();
+    }
+    if(action==='clear') assert(await page.locator('#clear-draft').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().top>=document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().bottom<=innerHeight),'Clear retains visible focus beside its confirmation');
+    const before=await page.evaluate(()=>({status:document.getElementById('draft-status').textContent,brief:document.getElementById('brief-text').value}));
+    // Keep the focus reference inside the page rather than serializing a node.
+    await page.evaluate(()=>{window.__focusBeforeCopyResult=document.activeElement;});
+    await page.evaluate(outcome=>{if(outcome==='resolve')window.__copyResolve();else window.__copyReject(new Error('Clipboard denied'));},outcome);
+    assert(await page.locator('#draft-status').innerText()===before.status,`Late copy ${outcome}/${action} must preserve current feedback`);
+    assert(await page.evaluate(()=>document.activeElement===window.__focusBeforeCopyResult),`Late copy ${outcome}/${action} must preserve focus`);
+    assert(await page.locator('#brief-text').inputValue()===before.brief,`Late copy ${outcome}/${action} must preserve the current brief`);
+    results.push({label:`pending-copy-${outcome}-${action}`,passed:true});
+    await page.close();
+  }
+  const latestCopy=await browser.newPage({viewport:{width:390,height:844}});
+  await latestCopy.goto(origin+'/questions/');await makeBrief(latestCopy);
+  await latestCopy.evaluate(()=>{window.__copyRequests=[];Object.defineProperty(navigator,'clipboard',{value:{writeText:()=>new Promise((resolve,reject)=>window.__copyRequests.push({resolve,reject}))},configurable:true});});
+  await latestCopy.locator('#copy-brief').evaluate(el=>{el.click();el.click();});
+  await latestCopy.evaluate(()=>window.__copyRequests[0].reject(new Error('Superseded')));
+  assert(await latestCopy.locator('#draft-status').innerText()==='','An older copy must not interrupt the newest copy');
+  await latestCopy.evaluate(()=>window.__copyRequests[1].resolve());
+  assert((await latestCopy.locator('.brief-keep [data-room-feedback]').innerText()).includes('Brief copied'),'The newest copy still reports success');
+  results.push({label:'latest-copy-owns-feedback',passed:true});await latestCopy.close();
+
+  // Poison the formerly published module URL, as a browser cache could retain it.
+  const cached=await browser.newContext({viewport:{width:390,height:844}});
+  const staleModule=await readFile(new URL('../docs/assets/loose-end.mjs',import.meta.url),'utf8');
+  let staleRequested=false;
+  await cached.route('**/assets/loose-end-v2.mjs?v=mending',route=>{staleRequested=true;return route.fulfill({contentType:'text/javascript',body:staleModule});});
+  const cachedPage=await cached.newPage();await cachedPage.goto(origin+'/questions/');await makeBrief(cachedPage);
+  await cachedPage.locator('#rebuild-brief').evaluate(el=>el.click());
+  assert(!staleRequested,'The new question sheet must request a fresh feedback module URL');
+  assert((await cachedPage.locator('.brief-keep [data-room-feedback]').innerText()).includes('rebuilt'),'A prior module cache must not hide local feedback');
+  results.push({label:'stale-module-cache',passed:true});await cached.close();
+
+  for(const theme of ['night','afterlight']) {
+    const page=await browser.newPage({viewport:{width:1024,height:768},reducedMotion:'reduce'});
+    await page.goto(origin+'/questions/');if(theme==='afterlight')await page.locator('#light-switch').click();
+    await next(page);await page.locator('#making').fill('An answer worth keeping on paper.');
+    await page.emulateMedia({media:'print'});
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    assert(await page.locator('[data-step]:visible').count()===6,'Printing includes every question stage');
+    assert(await page.locator('#making').inputValue()==='An answer worth keeping on paper.','Printing preserves the actual answer');
+    const printContrast=await page.evaluate(()=>{
+      const luminance=color=>color.match(/[\d.]+/g).slice(0,3).map(Number).map(c=>{const v=c/255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((sum,c,i)=>sum+c*[.2126,.7152,.0722][i],0);
+      return ['.choice','.question-help','#making','summary'].map(selector=>{
+        const element=document.querySelector(selector),style=getComputedStyle(element);
+        const background=style.backgroundColor==='rgba(0, 0, 0, 0)'?getComputedStyle(document.getElementById('loose-end')).backgroundColor:style.backgroundColor;
+        const foreground=style.color,fg=luminance(foreground),bg=luminance(background);
+        return {selector,foreground,background,ratio:(Math.max(fg,bg)+.05)/(Math.min(fg,bg)+.05)};
+      });
+    });
+    assert(printContrast.every(item=>item.ratio>=4.5),'Printed choices, help, answers and disclosures meet contrast in '+theme+': '+JSON.stringify(printContrast));
+    await audit(page,'questions-print-'+theme,true);await page.close();
+  }
+
+  // The native header must not flash open while deferred enhancement loads.
+  for (const mode of ['delayed-site-script','blocked-site-script']) {
+    const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+    await context.addInitScript(()=>{
+      window.__questionShifts=[];
+      new PerformanceObserver(list=>{for(const entry of list.getEntries())if(!entry.hadRecentInput)window.__questionShifts.push(entry.value);}).observe({type:'layout-shift',buffered:true});
+    });
+    await context.route('**/assets/site.js',async route=>{
+      if(mode==='blocked-site-script') return route.abort();
+      await new Promise(resolve=>setTimeout(resolve,800));
+      await route.continue();
+    });
+    const page=await context.newPage();
+    await page.goto(origin+'/questions/');
+    await page.locator('#question-next').waitFor({state:'visible'});
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    if(mode==='delayed-site-script') assert(await page.evaluate(()=>window.__questionShifts.reduce((sum,value)=>sum+value,0))<=.1,'Deferred navigation must not shift the question entrance');
+    else assert(await page.locator('#primary-nav').isVisible()&&!await page.locator('#menu-toggle').isVisible(),'Blocked site script leaves ordinary navigation and no dead menu');
+    await audit(page,'questions-'+mode,true);
+    await context.close();
+  }
+
   // A cached six-field page must still be able to use its published modules.
   const legacy = await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
   const currentHTML=await readFile(new URL('../docs/questions/index.html',import.meta.url),'utf8');
-  const legacyHTML=currentHTML.replace(/<details data-followup>.*?<\/details>/gs,'').replace('loose-end-v2.mjs','loose-end.mjs');
+  const previousHTML=currentHTML
+    .replace(/  <link rel="stylesheet" href="[^"]*question-room\.css[^"]*">\n/,'')
+    .replace('<body class="question-room">','<body>')
+    .replace(/<div class="question-position".*?<\/div>/s,'<p class="mono question-progress" id="question-progress" data-enhance hidden></p>')
+    .replace(/ data-feedback-scope/g,'').replace(/<p[^>]*data-room-feedback[^>]*><\/p>/g,'');
+  const previous=await browser.newContext({viewport:{width:390,height:844}});
+  await previous.route('**/questions/',route=>route.fulfill({contentType:'text/html',body:previousHTML}));
+  const previousPage=await previous.newPage();await previousPage.goto(origin+'/questions/');await makeBrief(previousPage);
+  await previousPage.locator('#rebuild-brief').evaluate(el=>el.click());
+  assert((await previousPage.locator('#draft-status').innerText()).includes('rebuilt')&&(await previousPage.locator('#draft-status').boundingBox()).width>100,'Current module keeps visible global feedback on the previous page contract');
+  results.push({label:'previous-page-current-module',passed:true});await previous.close();
+  const legacyHTML=previousHTML.replace(/<details data-followup>.*?<\/details>/gs,'').replace('loose-end-v2.mjs','loose-end.mjs');
   await legacy.route('**/questions/',route=>route.fulfill({contentType:'text/html',body:legacyHTML}));
   const legacyPage=await legacy.newPage();
   const legacyErrors=[];legacyPage.on('pageerror',e=>legacyErrors.push(e.message));
@@ -224,6 +351,8 @@ try {
     assert(!await page.locator('#question-next').isVisible(),fallback+': dead guided controls must stay hidden');
     await page.locator('[data-followup]:has(#materials) summary').click();
     assert(await page.locator('#materials').isVisible(),fallback+': optional material needs a native disclosure');
+    if (fallback==='no-javascript') assert(await page.locator('#primary-nav').isVisible()&&!await page.locator('#menu-toggle').isVisible(), 'Native question navigation has links and no dead menu');
+    await audit(page,'questions-'+fallback,true);
     await page.goto(origin+'/workbench/');
     assert(await page.locator('[data-surface="item"]').isVisible()&&await page.locator('[data-surface="damage"]').isVisible(),fallback+': both approaches must remain inspectable');
     await page.locator('summary').filter({hasText:'What we left aside'}).click();
