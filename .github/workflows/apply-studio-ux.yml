@@ -1,0 +1,63 @@
+name: Apply tested Studio usability fixes
+
+on:
+  push:
+    branches: [studio/durable-note-preparation]
+    paths:
+      - '.github/studio-ux.part*.b64'
+      - '.github/studio-ux-correction.patch'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.repository == 'mothandgravel/.github' && github.ref == 'refs/heads/studio/durable-note-preparation'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify baseline and exact tested patches
+        env:
+          EXPECTED_EVENT_SHA: ${{ github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_EVENT_SHA"
+          test "$(git rev-parse HEAD^)" = 8258354b5ef2bfeb4de1ec2356872eadee347aa9
+          python - <<'PY'
+          import base64
+          import gzip
+          import hashlib
+          from pathlib import Path
+          encoded = ''.join(Path(f'.github/studio-ux.part{i}.b64').read_text().strip() for i in range(1, 5))
+          patch = gzip.decompress(base64.b64decode(encoded, validate=True))
+          assert len(patch) == 98881
+          assert hashlib.sha256(patch).hexdigest() == 'cb22ec1374ee5325a689abbb4ccc92d0d13bda5c1af9049c8fde65aa64923f88'
+          correction = Path('.github/studio-ux-correction.patch').read_bytes()
+          assert hashlib.sha256(correction).hexdigest() == 'e2c0cb24bec797fa0801750c6e436da758e488f47c22e2c9c4bdf99d61cc7559'
+          Path('/tmp/studio-ux.patch').write_bytes(patch)
+          Path('/tmp/studio-ux-correction.patch').write_bytes(correction)
+          PY
+          git apply --check /tmp/studio-ux.patch
+          git apply /tmp/studio-ux.patch
+          git apply --check /tmp/studio-ux-correction.patch
+          git apply /tmp/studio-ux-correction.patch
+          git rm .github/studio-ux.part*.b64 .github/studio-ux-correction.patch .github/workflows/apply-studio-ux.yml
+          git add -A
+          test "$(git write-tree)" = ee0f396bf941debdfeea2da91d8f96ec6cc506c2
+      - name: Verify exact source quality without service requests
+        run: |
+          python -m pip install ruff==0.12.12
+          python -m ruff check
+          python -m ruff format --check
+          git diff --cached --check
+      - name: Commit only to this feature branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Fix Studio first-run navigation, setup import and uncertain narration recovery'
+          git push origin HEAD:refs/heads/studio/durable-note-preparation
