@@ -49,3 +49,46 @@ Remaining human acceptance: inspect the original diagnostic; deliberately decide
 whether to resend; finish narration/captions; produce and review actual media;
 export and complete the explicit publisher handoff. No successful live retry,
 listening approval or publication is inferred from implementation tests.
+
+## Follow-up: recovery reached chunk 3, then hit the client timeout
+
+The operator supplied the next job's history: chunk 1 was reused at 19:06:57 UTC,
+chunk 2 was requested and saved by 19:08:18, then chunk 3 failed at 19:11:19 with
+`TimeoutError after 180.2s` on 2026-10-15. The diagnostic path ends in
+`note-013/1f83cef69740a4af/chunk-003.json`. This establishes progress to two locally
+confirmed chunks, not a lost episode or a successful third request. Remote
+processing and billing remain unknown.
+
+The narration HTTP adapter used `urlopen(..., timeout=180)`. That local socket
+limit is consistent with the reported timing; the log does not establish why the
+service/network did not return in time. The third request is actually smaller
+than the first two. We did not change the script, model, voice, endpoint or chunk
+boundaries to respond to an unproven content-size diagnosis.
+
+New Studio inspections now capture a **600-second client socket timeout** outside
+the synthesis plan. Older queued requests without the field retain 180 seconds;
+fresh inspection is required to capture the longer policy. The original narration
+fingerprint and directory remain unchanged, including `1f83cef69740a4af` for this
+specimen. Changing transport policy does not discard verified chunks or waive
+receipt-bound resend consent. New receipts retain timeout and attempt duration;
+wrapped socket timeouts receive the same safe diagnosis without raw exception
+contents. A timeout never enters an automatic retry loop.
+
+The queue now displays locally elapsed waiting time for the active narration
+chunk, explicitly not provider progress. Stop remains a safe-boundary request; it
+does not kill an in-flight HTTP call. The longer socket timeout applies to blocking
+operations, not a guaranteed wall-clock completion time or a provider SLA. It is
+an application policy choice, not a Google-recommended deadline.
+
+The new regression reproduces two complete chunks and an uncertain third receipt,
+then simulates a response requiring more than 180 seconds (without sleeping or
+using a service). Fresh authorized recovery sends only chunk 3 with timeout 600;
+the first two files retain their hashes. Tests also check old-job compatibility,
+invalid timeouts, new uncertainty, receipt changes and real compact Tk feedback.
+This is test evidence of cache-preserving recovery, not a successful live retry.
+
+References for transport semantics: Python 3.12's `urllib.request.urlopen`
+documents timeouts for blocking operations; Google's Gemini-TTS guide documents
+synchronous synthesis but does not establish a 180-second completion promise.
+- https://docs.python.org/3.12/library/urllib.request.html#urllib.request.urlopen
+- https://docs.cloud.google.com/text-to-speech/docs/gemini-tts

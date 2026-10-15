@@ -168,3 +168,28 @@ backup/restore remain separate follow-ups. An absent script is shown with guidan
 not silently generated or approved.
 
 See [the first-run usability observations and regression cases](usability-rehearsal.md).
+
+## Narration response timeouts
+
+A narration chunk may take several minutes to return. Newly inspected Studio
+jobs capture a **600-second (10-minute) client socket timeout**. Inspect script
+shows this policy before authorization. It is not a completion estimate: Python
+applies the timeout to blocking socket operations, not the whole episode or a
+strict end-to-end deadline. The queue's elapsed waiting display is measured
+locally and does not pretend to know provider progress. Stop takes effect at the
+next safe boundary, not by aborting a request whose remote result is unknown.
+
+Older queued jobs lacking a captured timeout keep their original 180-second
+policy. After updating and reopening Studio, use **Inspect recovery → Inspect
+script** to capture the new policy. For the reported Note 013 failure, verified
+chunks 1 and 2 can be reused; only the uncertain chunk 3 needs a new narration
+request. Both preparation consent and the possible-duplicate-charge consent are
+still required. A new timeout requires another deliberate inspection/decision.
+Do not delete the receipts or regenerate the entire episode.
+
+The transport timeout is separate from the script/request/cache fingerprint, so
+this update does not move the recording directory or invalidate saved WAV chunks.
+It does not require Cloud setup, new credentials, or settings-file edits. It does
+not prove Google finished or billed the previous request, or guarantee that a
+longer wait will succeed. The synchronous response cannot be recovered by the
+caption **Resume** action; that action is only for saved caption operations.

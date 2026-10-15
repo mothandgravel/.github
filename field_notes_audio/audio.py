@@ -29,6 +29,18 @@ from field_notes_audio.progress import raise_if_stopped, report, stage, timed
 from field_notes_audio.storage import digest_file, read_object, write_json
 
 ROOT = Path(__file__).resolve().parents[1]
+# Transport policy is not narration content: never include it in cache fingerprints.
+# urllib applies this to blocking socket operations, not a total request deadline.
+TTS_TIMEOUT_SECONDS = 600
+LEGACY_TTS_TIMEOUT_SECONDS = 180
+
+
+def validate_tts_timeout(value: object) -> int:
+    if type(value) is not int or not 60 <= value <= 900:
+        raise ValueError("Narration socket timeout must be an integer from 60 to 900 seconds")
+    return value
+
+
 MODELS = {"gemini-2.5-flash-tts": 10, "gemini-2.5-pro-tts": 20}
 ENDPOINTS = {
     "eu": "eu-texttospeech.googleapis.com",
@@ -278,7 +290,15 @@ def access_token(auth: str) -> str:
     return google_auth.access_token(auth)
 
 
-def synthesize(data: dict, project: str, endpoint: str, token: str) -> bytes:
+def synthesize(
+    data: dict,
+    project: str,
+    endpoint: str,
+    token: str,
+    *,
+    timeout_seconds: int = TTS_TIMEOUT_SECONDS,
+) -> bytes:
+    timeout_seconds = validate_tts_timeout(timeout_seconds)
     req = request.Request(
         f"https://{ENDPOINTS[endpoint]}/v1/text:synthesize",
         data=json.dumps(data).encode("utf-8"),
@@ -290,7 +310,7 @@ def synthesize(data: dict, project: str, endpoint: str, token: str) -> bytes:
         },
     )
     try:
-        with timed("tts_request"), request.urlopen(req, timeout=180) as response:
+        with timed("tts_request"), request.urlopen(req, timeout=timeout_seconds) as response:
             result = json.load(response)
     except error.HTTPError as exc:
         if exc.code == 401:
@@ -417,6 +437,9 @@ def generate_locked(
     args: argparse.Namespace, plan: dict, directory: Path, *, root: Path | None = None
 ) -> Path:
     root = ROOT if root is None else root
+    timeout_seconds = validate_tts_timeout(
+        getattr(args, "tts_timeout_seconds", TTS_TIMEOUT_SECONDS)
+    )
     write_json(directory / "plan.json", plan)
     paths = []
     for index, data in enumerate(plan["requests"], start=1):
@@ -456,7 +479,8 @@ def generate_locked(
                 )
             stage(
                 f"narration-{index}-of-{len(plan['requests'])}",
-                f"Narration chunk {index}/{len(plan['requests'])}: contacting the service; earlier completed chunks are retained.",
+                f"Narration chunk {index}/{len(plan['requests'])}: contacting the service; "
+                f"client socket timeout {timeout_seconds}s. No automatic resend; earlier completed chunks are retained.",
             )
             token = access_token(args.auth)
             raise_if_stopped(args)
@@ -470,12 +494,21 @@ def generate_locked(
             attempt_id = uuid.uuid4().hex
             write_json(
                 state_path,
-                {"status": "requesting", "request_sha256": expected, "attempt_id": attempt_id},
+                {
+                    "status": "requesting",
+                    "request_sha256": expected,
+                    "attempt_id": attempt_id,
+                    "timeout_seconds": timeout_seconds,
+                },
             )
             report(f"Chunk {index}/{len(plan['requests'])}: generate", flush=True)
             attempt_start = time.perf_counter()
+            failure_phase = "narration_request"
             try:
-                audio = synthesize(data, args.project, args.endpoint, token)
+                audio = synthesize(
+                    data, args.project, args.endpoint, token, timeout_seconds=timeout_seconds
+                )
+                failure_phase = "local_save"
                 wav_path.write_bytes(audio)
                 write_json(
                     state_path,
@@ -484,6 +517,9 @@ def generate_locked(
                         "request_sha256": expected,
                         "audio_sha256": digest(audio),
                         "duration_seconds": validate_wav(audio),
+                        "attempt_id": attempt_id,
+                        "timeout_seconds": timeout_seconds,
+                        "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
                     },
                 )
             except error.HTTPError as exc:
@@ -502,6 +538,8 @@ def generate_locked(
                         "status": status,
                         "request_sha256": expected,
                         "attempt_id": attempt_id,
+                        "timeout_seconds": timeout_seconds,
+                        "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
                         **diagnostic,
                     },
                 )
@@ -512,19 +550,34 @@ def generate_locked(
                     f"Diagnostic: {state_path.relative_to(root)}"
                 ) from None
             except Exception as exc:
+                elapsed = time.perf_counter() - attempt_start
+                timed_out = failure_phase == "narration_request" and (
+                    isinstance(exc, TimeoutError)
+                    or (isinstance(exc, error.URLError) and isinstance(exc.reason, TimeoutError))
+                )
+                kind = "TimeoutError" if timed_out else type(exc).__name__
                 write_json(
                     state_path,
                     {
                         "status": "uncertain",
                         "request_sha256": expected,
                         "attempt_id": attempt_id,
-                        "failure_kind": type(exc).__name__,
-                        "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
+                        "failure_kind": kind,
+                        "failure_phase": failure_phase,
+                        "timeout_seconds": timeout_seconds,
+                        "attempt_seconds": round(elapsed, 4),
                     },
                 )
+                timing = (
+                    f"Client wait for narration timed out (socket timeout {timeout_seconds}s); "
+                    "remote processing and billing are unknown. "
+                    if timed_out
+                    else ""
+                )
                 raise RuntimeError(
-                    f"Narration chunk {index}/{len(plan['requests'])}: {type(exc).__name__} after {time.perf_counter() - attempt_start:.1f}s. "
-                    "No completed audio was confirmed locally. Inspect recovery; resending this chunk can incur another charge. "
+                    f"Narration chunk {index}/{len(plan['requests'])}: {kind} after {elapsed:.1f}s. "
+                    + timing
+                    + "No completed audio was confirmed locally. Inspect recovery; resending this chunk can incur another charge. "
                     f"Diagnostic: {state_path.relative_to(root)}"
                 ) from None
         paths.append(wav_path)

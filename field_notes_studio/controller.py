@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import json
 import queue
+import re
 import uuid
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 from pathlib import Path
 
 from field_notes_studio.models import DraftConflict
@@ -716,6 +718,31 @@ class Controller:
                 if job.stage in {"failed", "interrupted", "cancelled"} and meaningful
                 else job.stage
             )
+            if (
+                job.action == "prepare"
+                and job.status == "running"
+                and re.fullmatch(r"narration-\d+-of-\d+", at)
+            ):
+                started = next((e["time"] for e in reversed(events) if e["stage"] == at), None)
+                try:
+                    elapsed = max(
+                        0,
+                        int(
+                            (
+                                datetime.now(timezone.utc) - datetime.fromisoformat(started)
+                            ).total_seconds()
+                        ),
+                    )
+                except (TypeError, ValueError, OverflowError):
+                    elapsed = None
+                waiting = (
+                    f" · {elapsed // 60}:{elapsed % 60:02d} elapsed locally"
+                    if elapsed is not None
+                    else ""
+                )
+                guidance = (
+                    "Waiting for narration response" + waiting + "; provider progress unavailable."
+                )
             if job.cancel_requested and job.status in {"queued", "running"}:
                 guidance = "Stop requested; the current stage finishes its writes before stopping."
             context = f"{job.episode} · {at}"

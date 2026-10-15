@@ -103,6 +103,8 @@ class PreparationJobs:
             "source_identity": snapshot.identity,
             "configuration": config,
             "plan": plan,
+            # Captured operational policy, intentionally outside the synthesis plan/hash.
+            "tts_timeout_seconds": audio.TTS_TIMEOUT_SECONDS,
         }
         directory = self._recording(plan)
         self._check_cache_paths(directory)
@@ -163,6 +165,8 @@ class PreparationJobs:
             + f"Cloud project: {config['project']}\n"
             f"Private working bucket: {config['bucket']}\n"
             "Charges may apply to missing narration and caption requests.\n"
+            f"Client narration socket timeout: {audio.TTS_TIMEOUT_SECONDS}s ({audio.TTS_TIMEOUT_SECONDS / 60:g} minutes). "
+            "This is a wait policy, not a completion promise or automatic retry.\n"
             f"Captions: {config['caption_model']} · {config['location']}. Authentication: {config['auth']}.\n"
             f"{complete}/{len(plan['requests'])} narration cache records report completion; the worker verifies their bytes.\n"
             f"{caption_state}\n\n"
@@ -191,12 +195,15 @@ class PreparationJobs:
     def validate(self, request: dict) -> dict:
         if (
             not isinstance(request, dict)
-            or (set(request) - {"resume", "uncertain_chunks"})
+            or (set(request) - {"resume", "uncertain_chunks", "tts_timeout_seconds"})
             != {"version", "note", "episode", "source_identity", "configuration", "plan"}
             or type(request["version"]) is not int
             or request["version"] != 1
         ):
             raise ValueError("Invalid captured preparation request")
+        audio.validate_tts_timeout(
+            request.get("tts_timeout_seconds", audio.LEGACY_TTS_TIMEOUT_SECONDS)
+        )
         snapshot = self.preparation.inspect(request["note"])
         if (
             snapshot.episode != request["episode"]
@@ -273,6 +280,10 @@ class PreparationJobs:
             episode=request["episode"],
             **config,
             retry_uncertain=False,
+            # Legacy queued jobs retain their original policy. Reinspection captures 600s.
+            tts_timeout_seconds=request.get(
+                "tts_timeout_seconds", audio.LEGACY_TTS_TIMEOUT_SECONDS
+            ),
             retry_receipts=request.get("uncertain_chunks", {}),
             _cancel_event=Guard(),
         )
@@ -360,6 +371,11 @@ def narration_diagnostic(state: dict) -> str:
     elapsed = state.get("attempt_seconds")
     if isinstance(elapsed, int | float) and not isinstance(elapsed, bool) and 0 <= elapsed <= 86400:
         parts.append(f"after {elapsed:g}s")
+    timeout = state.get("timeout_seconds")
+    if type(timeout) is int and 60 <= timeout <= 900:
+        parts.append(f"client socket timeout {timeout}s")
+    if state.get("failure_kind") == "TimeoutError":
+        parts.append("response not confirmed; remote processing/billing unknown")
     return (
         "; ".join(parts)
         if parts
