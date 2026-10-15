@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import re
+import tempfile
 from collections.abc import Callable
 from contextlib import ExitStack
 from datetime import datetime
@@ -13,7 +15,7 @@ from pathlib import Path
 from field_notes_audio import site
 from field_notes_audio.locks import run_lock
 from field_notes_audio.production import packages, runner
-from field_notes_audio.production.config import load_settings, number
+from field_notes_audio.production.config import load_settings, number, validate_settings
 from field_notes_audio.production.editions import AUDIO_FILES, cache_valid, fingerprint
 from field_notes_audio.production.metadata import load_metadata, publishing_copy
 from field_notes_audio.storage import digest_file, read_object, write_json
@@ -132,6 +134,94 @@ class Pipeline:
         if len(matches) != 1:
             raise ValueError("Choose a prepared episode")
         return site.source_entry(matches[0])
+
+    def metadata_editor(self, identifier: str) -> dict:
+        path = self.root / "audio/production/publishing.json"
+        (self.root / "artifacts/studio/publishing").mkdir(parents=True, exist_ok=True)
+        with run_lock(self.root / "artifacts/studio/publishing", "publishing settings"):
+            config = load_metadata(path)
+            baseline = digest_file(path)
+        entry = self.source(identifier)
+        override = config["episodes"].get(identifier, {})
+        values = {
+            "title": override.get("title", entry["title"]),
+            "description": override.get("description", entry["description"]),
+            "tags": ", ".join(override.get("tags", [])),
+            "hashtags": " ".join(override.get("hashtags", [])),
+            "show_title": config["show"]["title"],
+            "show_description": config["show"]["description"],
+            "shared_tags": ", ".join(config["shared_tags"]),
+            "shared_hashtags": " ".join(config["shared_hashtags"]),
+        }
+        return {"baseline": baseline, "values": values}
+
+    def health(self) -> str:
+        lines = []
+
+        def preflight(audio_only, name):
+            try:
+                runner.preflight(
+                    self.root, argparse.Namespace(audio_only=audio_only, browser_executable=None)
+                )
+                lines.append(f"{name} preflight: ready")
+            except (OSError, ValueError) as exc:
+                lines.append(f"{name} preflight: {exc}")
+
+        preflight(True, "Audio")
+        preflight(False, "Full video")
+        try:
+            load_metadata(self.root / "audio/production/publishing.json")
+            for entry in self.entries():
+                self.settings(entry["id"])
+            lines.append("Production and publishing settings: valid")
+        except (OSError, ValueError) as exc:
+            lines.append(f"Settings: {exc}")
+        return "\n".join(lines)
+
+    def save_metadata(self, identifier: str, snapshot: dict) -> dict:
+        """Validate the whole template before atomically replacing shared settings."""
+        path = self.root / "audio/production/publishing.json"
+        with run_lock(self.root / "artifacts/studio/publishing", "publishing settings"):
+            if digest_file(path) != snapshot["baseline"]:
+                raise ValueError(
+                    "Publishing settings changed elsewhere. Reload saved settings, then reapply your edits."
+                )
+            config = copy.deepcopy(load_metadata(path))
+            values = snapshot["values"]
+            config["show"] = {
+                "title": values["show_title"],
+                "description": values["show_description"],
+            }
+            config["shared_tags"] = [
+                item.strip() for item in values["shared_tags"].split(",") if item.strip()
+            ]
+            config["shared_hashtags"] = values["shared_hashtags"].split()
+            config["episodes"][identifier] = {
+                "title": values["title"],
+                "description": values["description"],
+                "tags": [item.strip() for item in values["tags"].split(",") if item.strip()],
+                "hashtags": values["hashtags"].split(),
+            }
+            with tempfile.TemporaryDirectory() as temporary:
+                candidate = Path(temporary) / "publishing.json"
+                write_json(candidate, config)
+                validated = load_metadata(candidate)
+                # Shared template edits must remain exportable for every episode.
+                entries = self.entries()
+                if not any(entry["id"] == identifier for entry in entries):
+                    entries = [*entries, self.source(identifier)]
+                for entry in entries:
+                    source = site.source_entry(entry)
+                    settings = self.settings(source["id"])
+                    publishing_copy(
+                        validated,
+                        source,
+                        settings["music_credit"]
+                        if settings["music_mode"] != "none"
+                        else "No music.",
+                    )
+            write_json(path, validated)
+        return self.metadata_editor(identifier)
 
     def _upload_manifest(self, identifier):
         if not isinstance(identifier, str) or not re.fullmatch(
@@ -352,15 +442,35 @@ class Pipeline:
             packages.record_review(edition, reviewer)
 
     def request(
-        self, identifier: str, action: str, speed: float | None, outro: float | None
+        self,
+        identifier: str,
+        action: str,
+        speed: float | None,
+        outro: float | None,
+        sound: dict | None = None,
     ) -> dict:
         if action not in ACTIONS:
             raise ValueError("Unknown studio action")
         settings = self.settings(identifier)
         if action != "export":
+            if sound is not None:
+                allowed = {
+                    "intro_seconds",
+                    "music_overlap_seconds",
+                    "music_gain_db",
+                    "target_lufs",
+                    "true_peak_db",
+                    "music_mode",
+                    "music_file",
+                    "music_credit",
+                }
+                if sound.keys() - allowed:
+                    raise ValueError("Unknown sound control")
+                settings.update(sound)
             settings.update(
                 speed=number(speed, 0.75, 1.5, "Speed"), outro_seconds=number(outro, 0, 15, "Outro")
             )
+            validate_settings(settings, self.root / "audio/production")
         request = {"settings": settings, "source": fingerprint(self.source(identifier))}
         if action == "export":
             request["edition"] = read_object(self.output / identifier / "latest.json")

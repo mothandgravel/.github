@@ -5,6 +5,7 @@ from datetime import date
 from tkinter import ttk
 
 from field_notes_studio.presentation.controls import ActionButton
+from field_notes_studio.presentation.editors import PUBLISHING, Editor
 from field_notes_studio.presentation.package_files import PackageFiles
 from field_notes_studio.presentation.scroll import ScrollArea
 from field_notes_studio.presentation.theme import set_text
@@ -23,6 +24,7 @@ class Publication(ttk.Frame):
         self.episode = None
         self.defaults = ("", "")
         self.drafts = {}
+        self.metadata_draft = {}
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         actions = ttk.Frame(self, padding=(10, 8))
@@ -139,6 +141,15 @@ class Publication(ttk.Frame):
         self.form.bind_navigation()
         self.files = PackageFiles(self.tabs, callbacks)
         self.tabs.add(self.files, text="Package files")
+        self.editor = Editor(
+            self.tabs,
+            PUBLISHING,
+            callbacks["draft"],
+            "Edit episode copy and reusable show defaults. Tags and hashtags combine with shared values. Saving affects future exports; the Upload details tab continues to show the actual saved package until you export again.",
+            save=callbacks["metadata_save"],
+            reload=callbacks["metadata_reload"],
+        )
+        self.tabs.add(self.editor, text="Publishing editor")
         self.tabs.bind(
             "<<NotebookTabChanged>>",
             lambda _: callbacks["package_refresh"]() if self.files_visible() else None,
@@ -151,6 +162,7 @@ class Publication(ttk.Frame):
         )
 
     def load_episode(self, episode):
+        self.current_episode = episode
         self.episode = episode.identifier
         self.defaults = (episode.podcast_url, episode.podcast_date)
         self.filling = True
@@ -167,7 +179,7 @@ class Publication(ttk.Frame):
         self.filling = False
         self.source.configure(
             text=(
-                "Unsaved details kept for this episode. Save before closing Studio."
+                "Draft details restored for this episode. Save to record the actual release."
                 if draft
                 else episode.publication_source or "No publication details recorded yet."
             )
@@ -200,6 +212,10 @@ class Publication(ttk.Frame):
             self.save.complete("Saved")
 
     def loading_episode(self):
+        self.editor.loaded = False
+        self.editor.enable(False)
+        self.editor.save.configure(state="disabled")
+        self.metadata_draft = {}
         self.episode = None
         self.clear()
         self.filling = True
@@ -274,6 +290,7 @@ class Publication(ttk.Frame):
                 self.loaded_url,
                 self.date_edited,
             )
+            self.callbacks["draft"]()
 
     def link_changed(self):
         if self.filling:

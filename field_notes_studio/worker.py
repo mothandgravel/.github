@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 import json
+import threading
 import time
 from pathlib import Path
 
 from field_notes_audio.locks import run_lock
 from field_notes_audio.progress import observe
+from field_notes_studio.health import process_id, revision
 from field_notes_studio.models import StopRequested
 from field_notes_studio.pipeline import Pipeline
+from field_notes_studio.processes import launch_worker
 from field_notes_studio.repository import Repository
 
 
@@ -44,18 +47,56 @@ def execute(repository: Repository, pipeline: Pipeline, job) -> None:
 def work(root: Path, *, once: bool = False) -> None:
     repository = Repository(root / "artifacts/studio/studio.sqlite3")
     pipeline = Pipeline(root)
+    loaded = revision()
+    replacement = False
     # The OS releases this lock after a crash. Only its owner can reconcile jobs.
     try:
         with run_lock(repository.path.parent, "studio worker"):
             repository.recover()
-            while True:
-                job = repository.claim()
-                if job is not None:
-                    execute(repository, pipeline, job)
-                elif once:
-                    return
-                else:
-                    time.sleep(0.5)
+            control = repository.state("worker_control").get("restart")
+            stopped = threading.Event()
+            activity = "idle"
+
+            def heartbeat():
+                while not stopped.is_set():
+                    repository.checkpoint(
+                        {
+                            "worker": {
+                                "pid": process_id(),
+                                "revision": loaded,
+                                "heartbeat": time.time(),
+                                "activity": activity,
+                            }
+                        }
+                    )
+                    stopped.wait(2)
+
+            monitor = threading.Thread(target=heartbeat, daemon=True, name="studio-heartbeat")
+            monitor.start()
+            try:
+                while True:
+                    # Never unload code or terminate a media stage to perform an upgrade.
+                    if (
+                        revision() != loaded
+                        or repository.state("worker_control").get("restart") != control
+                    ):
+                        replacement = not once
+                        break
+                    job = repository.claim()
+                    if job is not None:
+                        activity = f"{job.episode} · {job.action}"
+                        execute(repository, pipeline, job)
+                        activity = "idle"
+                    elif once:
+                        break
+                    else:
+                        time.sleep(0.5)
+            finally:
+                stopped.set()
+                monitor.join(timeout=12)
     except ValueError as exc:
         if "Another studio worker" not in str(exc):
             raise
+    if replacement:
+        # The replacement may claim jobs only after this process releases its flock.
+        launch_worker(root)

@@ -8,6 +8,7 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from field_notes_studio.health import restart, tool_status, worker_status
 from field_notes_studio.models import ReviewSnapshot
 from field_notes_studio.pipeline import Pipeline
 from field_notes_studio.processes import launch_worker, open_path, open_publisher, upload_path
@@ -41,17 +42,29 @@ class Studio:
             for episode in self.pipeline.catalog()
         ]
 
+    def health(self) -> str:
+        worker = worker_status(self.repository)
+        return worker["message"] + "\n\n" + self.pipeline.health() + "\n\n" + tool_status(self.root)
+
+    def restart_worker(self):
+        return restart(self.repository, self.root)
+
     def plan(
-        self, episode: str, action: str, speed: float | None, outro: float | None
+        self,
+        episode: str,
+        action: str,
+        speed: float | None,
+        outro: float | None,
+        sound: dict | None = None,
     ) -> tuple[dict, str]:
-        request = self.pipeline.request(episode, action, speed, outro)
+        request = self.pipeline.request(episode, action, speed, outro, sound)
         return request, self.pipeline.plan(episode, action, request)
 
     def settings(self, episode: str) -> dict:
         settings = self.pipeline.settings(episode)
         saved = self.repository.latest_recipe(episode)
         if saved is not None:
-            settings.update(speed=saved["speed"], outro_seconds=saved["outro_seconds"])
+            settings.update(saved)
         return settings
 
     def retry(self, identifier: str) -> str:
@@ -64,6 +77,61 @@ class Studio:
         # Spawn before persisting; if process creation fails no orphan request is queued.
         launch_worker(self.root)
         return self.repository.submit(episode, action, request)
+
+    def batch_plan(self, identifiers: list[str], action: str):
+        if not identifiers or len(identifiers) > 32:
+            raise ValueError("Choose 1–32 episodes to inspect")
+        plans, summaries = [], []
+        for identifier in identifiers:
+            settings = self.settings(identifier)
+            draft = self.repository.state("draft:" + identifier)
+            recipe = draft.get("recipe", {})
+            speed = float(recipe.get("speed", settings["speed"])) if action != "export" else None
+            outro = (
+                float(recipe.get("outro", settings["outro_seconds"]))
+                if action != "export"
+                else None
+            )
+            sound = (
+                draft.get(
+                    "sound",
+                    {
+                        key: settings[key]
+                        for key in (
+                            "intro_seconds",
+                            "music_overlap_seconds",
+                            "music_gain_db",
+                            "target_lufs",
+                            "true_peak_db",
+                            "music_mode",
+                            "music_file",
+                            "music_credit",
+                        )
+                    },
+                )
+                if action != "export"
+                else None
+            )
+            if sound:
+                sound = dict(sound)
+                for key in (
+                    "intro_seconds",
+                    "music_overlap_seconds",
+                    "music_gain_db",
+                    "target_lufs",
+                    "true_peak_db",
+                ):
+                    sound[key] = float(sound[key])
+                if sound["music_mode"] != "file":
+                    sound["music_file"] = None
+            request, summary = self.plan(identifier, action, speed, outro, sound)
+            plans.append((identifier, action, request))
+            summaries.append(f"{identifier} · {action}\n{summary}")
+        return plans, "\n\n".join(summaries)
+
+    def submit_batch(self, plans):
+        launch_worker(self.root)
+        return self.repository.submit_batch(plans)
 
     def publication(self, episode: str, url: str, published: str) -> None:
         url, published = url.strip(), published.strip()

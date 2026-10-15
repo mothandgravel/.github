@@ -3,7 +3,9 @@
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.presentation.batch import Batch
 from field_notes_studio.presentation.controls import ActionButton
+from field_notes_studio.presentation.editors import SOUND, Editor
 from field_notes_studio.presentation.icons import icon
 from field_notes_studio.presentation.publication import Publication
 from field_notes_studio.presentation.review import Review
@@ -81,6 +83,18 @@ class Workspace(ttk.Frame):
         self.publication = Publication(tabs, callbacks)
         tabs.add(self.publication, text="Release")
         self.transcript = self._text_tab(tabs, "Transcript")
+        self.sound = Editor(
+            tabs,
+            SOUND,
+            callbacks["changed"],
+            "Sound recipe · Pace and outro are in Produce. Custom music requires a file and a credit including its license. Inspect changes before queueing; existing jobs keep their captured recipe.",
+        )
+        tabs.add(self.sound, text="Sound")
+        self.batch = Batch(
+            tabs, callbacks["batch_inspect"], callbacks["batch_submit"], callbacks["batch_changed"]
+        )
+        tabs.add(self.batch, text="Batch")
+        self.health = self._text_tab(tabs, "Health")
         for tab, glyph in (
             (self.plan.master, "produce"),
             (self.review, "review"),
@@ -109,6 +123,19 @@ class Workspace(ttk.Frame):
                 text=label,
                 command=lambda k=kind: callbacks["open"](k),
             ).pack(side="left", padx=(0, 7))
+        self.health_actions = ttk.Frame(self)
+        ActionButton(
+            self.health_actions,
+            pictogram="refresh",
+            text="Check health",
+            command=callbacks["health"],
+        ).pack(side="left", padx=4)
+        ActionButton(
+            self.health_actions,
+            pictogram="produce",
+            text="Start / restart worker",
+            command=callbacks["worker_restart"],
+        ).pack(side="left")
         self.layout_stage()
 
     @staticmethod
@@ -131,6 +158,7 @@ class Workspace(ttk.Frame):
         )
         self.speed.set(f"{settings['speed']:g}")
         self.outro.set(f"{settings['outro_seconds']:g}")
+        self.sound.fill(settings)
         self.publication.load_episode(episode)
         set_text(self.transcript, episode.transcript)
         set_text(self.plan, "Inspect your changes before queueing an edition.")
@@ -138,6 +166,32 @@ class Workspace(ttk.Frame):
     def show_plan(self, text, ready=False):
         set_text(self.plan, text)
         self.produce.configure(state="normal" if ready else "disabled")
+
+    def draft(self):
+        publication = self.publication
+        return {
+            "recipe": {
+                "speed": self.speed.get(),
+                "outro": self.outro.get(),
+                "action": self.action.get(),
+            },
+            "publication": publication.drafts.get(publication.episode),
+            "sound": self.sound.raw(),
+            "metadata": publication.editor.snapshot() or publication.metadata_draft,
+        }
+
+    def restore(self, draft):
+        if draft.get("sound"):
+            self.sound.fill(draft["sound"])
+        self.publication.metadata_draft = draft.get("metadata", {})
+        for key, value in draft.get("recipe", {}).items():
+            if key in {"speed", "outro", "action"} and (
+                key != "action" or value in {"audio", "preview", "video", "export"}
+            ):
+                getattr(self, key).set(value)
+        if draft.get("publication"):
+            self.publication.drafts[self.publication.episode] = tuple(draft["publication"])
+            self.publication.load_episode(self.publication.current_episode)
 
     def output_guidance(self):
         messages = {
@@ -161,10 +215,17 @@ class Workspace(ttk.Frame):
                 widget.grid()
             else:
                 widget.grid_remove()
-        if self.tabs.select() == str(self.publication) and self.publication.files_visible():
+        health = self.tabs.select() == str(self.health.master)
+        if health or (
+            self.tabs.select() == str(self.publication) and self.publication.files_visible()
+        ):
             self.outputs.grid_remove()
         else:
             self.outputs.grid()
+        if health:
+            self.health_actions.grid(row=6, column=0, sticky="ew", pady=(14, 0))
+        else:
+            self.health_actions.grid_remove()
 
     def show_plan_tab(self):
         self.tabs.select(self.plan.master)

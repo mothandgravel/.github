@@ -154,6 +154,106 @@ class UITests(unittest.TestCase):
         self.app.controller.stop()
         self.wait(lambda: self.app.controller.studio.repository.stopped(job.identifier))
 
+    def test_unqueued_partial_edits_and_session_survive_closing(self):
+        import tkinter as tk
+
+        from field_notes_studio.app import Application
+
+        workspace = self.app.workspace
+        self.wait(lambda: workspace.publication.editor.loaded)
+        workspace.speed.set("1.")
+        workspace.outro.set("")
+        workspace.sound.values["music_gain_db"].set("-2")
+        workspace.sound.values["music_credit"].set("A credit\nLicense details")
+        workspace.url.set("unfinished link")
+        workspace.date.set("2026-")
+        workspace.publication.editor.values["description"].set(
+            "Paragraph one.\n\nUnfinished paragraph two"
+        )
+        workspace.tabs.select(workspace.publication)
+        workspace.publication.tabs.select(workspace.publication.editor)
+        self.root.update()
+        self.app.close()
+        self.assertTrue(self.app.closed)
+        self.root = tk.Tk()
+        self.app = Application(self.root, self.directory)
+        self.wait(lambda: self.app.controller.selected and not self.app.controller.loading)
+        workspace = self.app.workspace
+        self.wait(lambda: workspace.publication.editor.loaded)
+        self.assertEqual(workspace.speed.get(), "1.")
+        self.assertEqual(workspace.outro.get(), "")
+        self.assertEqual(workspace.sound.raw()["music_credit"], "A credit\nLicense details")
+        self.assertEqual(workspace.url.get(), "unfinished link")
+        self.assertEqual(workspace.date.get(), "2026-")
+        self.assertEqual(
+            workspace.publication.editor.raw()["description"],
+            "Paragraph one.\n\nUnfinished paragraph two",
+        )
+        self.assertEqual(workspace.tabs.select(), str(workspace.publication))
+        self.assertEqual(workspace.publication.tabs.select(), str(workspace.publication.editor))
+        self.assertIsNone(self.app.controller.ready)
+        self.assertFalse(workspace.review.audio_checked.get())
+        self.assertEqual(self.app.controller.studio.repository.jobs(), [])
+        self.assertEqual(self.app.controller.studio.repository.publications(), {})
+
+    def test_checkpoint_failure_keeps_the_window_and_edits_open(self):
+        self.app.workspace.outro.set("unfinished")
+        with patch.object(
+            self.app.controller.studio.repository, "checkpoint", side_effect=OSError("disk full")
+        ):
+            self.app.close()
+        self.assertFalse(self.app.closed)
+        self.assertFalse(self.app.controller.closed)
+        self.assertEqual(self.app.workspace.outro.get(), "unfinished")
+        self.assertIn("disk full", self.app.message["text"])
+
+    def test_sound_batch_and_health_surfaces_fit_the_minimum_window(self):
+        workspace = self.app.workspace
+        self.wait(lambda: workspace.publication.editor.loaded)
+        self.root.geometry("1050x760")
+        self.queue_job(status="interrupted")
+        workspace.tabs.select(workspace.sound)
+        self.root.update()
+        workspace.sound.form.reveal(workspace.sound.widgets["music_credit"])
+        self.root.update()
+        self.capture("sound-recipe")
+        workspace.tabs.select(workspace.batch)
+        self.root.update()
+        self.assert_visible(workspace.batch.queue)
+        self.capture("batch-inspection")
+        workspace.tabs.select(workspace.publication)
+        workspace.publication.tabs.select(workspace.publication.editor)
+        self.root.update()
+        self.assert_visible(workspace.publication.editor.save)
+        self.capture("publishing-editor")
+        workspace.tabs.select(workspace.health.master)
+        with patch.object(
+            self.app.controller.studio,
+            "health",
+            return_value="Worker current · idle\nAudio preflight: ready\nFull video preflight: ready",
+        ):
+            self.app.controller.health()
+            self.wait(lambda: "Worker current" in workspace.health.get("1.0", "end"))
+        self.root.update()
+        for button in workspace.health_actions.winfo_children():
+            self.assert_visible(button)
+        self.capture("worker-health")
+
+    def test_batch_inspection_is_invalidated_by_new_recipe_edits(self):
+        workspace = self.app.workspace
+        workspace.batch.choices["note-001"].set(True)
+        self.app.controller.inspect_batch()
+        self.wait(lambda: self.app.controller.batch_ready is not None)
+        workspace.outro.set("7")
+        self.assertIsNone(self.app.controller.batch_ready)
+        self.assertTrue(workspace.batch.queue.instate(["disabled"]))
+        self.app.controller.inspect_batch()
+        self.wait(lambda: self.app.controller.batch_ready is not None)
+        workspace.batch.queue.invoke()
+        self.wait(lambda: bool(self.app.controller.studio.repository.jobs()))
+        self.assertIsNone(self.app.controller.batch_ready)
+        self.assertEqual(len(self.app.controller.studio.repository.jobs()), 1)
+
     def test_publication_link_remains_separate_from_production(self):
         self.app.workspace.url.set("https://youtu.be/published-episode")
         self.app.workspace.date.set("2026-10-14")

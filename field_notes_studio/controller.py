@@ -28,6 +28,43 @@ class Controller:
         self.release_generation = 0
         self.selection_generation = 0
         self.package_generation = 0
+        self.draft_timer = None
+        self.restore_session = None
+        self.batch_ready = None
+        self.batch_generation = 0
+
+    def draft_changed(self):
+        if self.loading or self.closed or not getattr(self.view, "root", None):
+            return
+        if self.draft_timer is not None:
+            self.view.root.after_cancel(self.draft_timer)
+        self.draft_timer = self.view.root.after(400, self.autosave)
+
+    def checkpoint(self):
+        if not getattr(self.view, "root", None) or not self.selected or self.loading:
+            return
+        workspace = self.view.workspace
+        self.studio.repository.checkpoint(
+            {
+                "draft:" + self.selected: workspace.draft(),
+                "session": {
+                    "episode": self.selected,
+                    "tab": workspace.tabs.index(workspace.tabs.select()),
+                    "release_tab": workspace.publication.tabs.index(
+                        workspace.publication.tabs.select()
+                    ),
+                    "search": self.view.shelf.query.get(),
+                    "geometry": self.view.root.geometry(),
+                },
+            }
+        )
+
+    def autosave(self):
+        self.draft_timer = None
+        try:
+            self.checkpoint()
+        except Exception as exc:
+            self.view.status(f"Draft could not be saved: {exc}. Keep Studio open and retry.")
 
     def task(self, operation, callback, on_error=None):
         future = self.executor.submit(operation)
@@ -48,20 +85,32 @@ class Controller:
     def loaded(self, episodes):
         self.episodes = {episode.identifier: episode for episode in episodes}
         self.view.shelf.load(episodes)
+        self.view.workspace.batch.load(episodes)
         self.view.status(
             "Choose an episode → inspect changes → queue production → review saved media."
             if episodes
             else "No prepared episodes found. This checkout needs the original media and captions."
         )
         if episodes and self.selected is None:
-            self.view.shelf.tree.selection_set(episodes[0].identifier)
-            self.select(episodes[0].identifier)
+            session = self.studio.repository.state("session")
+            self.restore_session = session
+            identifier = session.get("episode", episodes[0].identifier)
+            if identifier not in self.episodes:
+                identifier = episodes[0].identifier
+            self.view.shelf.reveal(identifier)
+            self.select(identifier)
 
     def select(self, identifier, review_scope=None):
         if identifier == self.selected:
             if review_scope is not None:
                 self.show_review(review_scope)
             return
+        try:
+            self.checkpoint()
+        except Exception as exc:
+            self.view.status(f"Keep this draft open: checkpoint failed: {exc}")
+            return
+        self.loading = True
         self.selected = identifier
         self.package_generation += 1
         self.selection_generation += 1
@@ -77,6 +126,23 @@ class Controller:
         def loaded(settings):
             if selection == self.selection_generation:
                 self.view.workspace.load(self.episodes[identifier], settings)
+                if getattr(self.view, "root", None):
+                    self.view.workspace.restore(self.studio.repository.state("draft:" + identifier))
+                    session, self.restore_session = self.restore_session, None
+                    if session:
+                        self.view.workspace.tabs.select(
+                            min(session.get("tab", 0), len(self.view.workspace.tabs.tabs()) - 1)
+                        )
+                        self.view.workspace.publication.tabs.select(
+                            min(
+                                session.get("release_tab", 0),
+                                len(self.view.workspace.publication.tabs.tabs()) - 1,
+                            )
+                        )
+                        self.view.shelf.query.set(session.get("search", ""))
+                        geometry = session.get("geometry", "")
+                        if geometry:
+                            self.view.root.geometry(geometry)
                 self.loading = False
                 self.changed()
                 if review_scope is None:
@@ -84,6 +150,8 @@ class Controller:
                 else:
                     self.show_review(review_scope)
                 self.refresh_release()
+                if getattr(self.view, "root", None):
+                    self.load_metadata()
 
         def failed(_message):
             if selection == self.selection_generation:
@@ -95,19 +163,82 @@ class Controller:
         self.generation += 1
         self.ready = None
         self.view.workspace.show_plan("Inspect your changes before queueing an edition.")
+        self.draft_changed()
+        if hasattr(self.view.workspace, "batch"):
+            self.batch_changed()
+
+    def batch_changed(self):
+        self.batch_generation += 1
+        self.batch_ready = None
+        self.view.workspace.batch.show("Inspect the selected episodes before queueing.")
+
+    def health(self):
+        from field_notes_studio.presentation.theme import set_text
+
+        set_text(
+            self.view.workspace.health, "Checking worker, media tools and production settings…"
+        )
+        self.task(self.studio.health, lambda message: set_text(self.view.workspace.health, message))
+
+    def restart_worker(self):
+        def restarted(message):
+            self.view.status(message)
+            self.health()
+
+        self.task(self.studio.restart_worker, restarted)
+
+    def inspect_batch(self):
+        if self.loading:
+            return
+        try:
+            self.checkpoint()
+        except Exception as exc:
+            self.view.status(f"Batch blocked: draft save failed: {exc}")
+            return
+        self.batch_changed()
+        generation = self.batch_generation
+        identifiers = self.view.workspace.batch.selection()
+        action = self.view.workspace.action.get()
+        self.view.workspace.batch.show("Inspecting every selected episode…")
+
+        def loaded(result):
+            if generation == self.batch_generation:
+                self.batch_ready, summary = result
+                self.view.workspace.batch.show(summary, ready=True)
+
+        def failed(message):
+            if generation == self.batch_generation:
+                self.view.workspace.batch.show("Nothing queued. " + message)
+
+        self.task(lambda: self.studio.batch_plan(identifiers, action), loaded, failed)
+
+    def submit_batch(self):
+        if self.batch_ready is None:
+            return
+        plans = self.batch_ready
+        self.batch_changed()
+        self.task(
+            lambda: self.studio.submit_batch(plans),
+            lambda jobs: self.view.status(
+                f"Queued {len(jobs)} episodes with their inspected recipes."
+            ),
+        )
 
     def inspect(self):
         if not self.selected or self.loading:
             self.view.status("Choose an episode and wait for its settings to load.")
             return
         action = self.view.workspace.action.get()
+        sound = None
         speed = outro = None
         if action != "export":
             try:
                 speed = float(self.view.workspace.speed.get())
                 outro = float(self.view.workspace.outro.get())
+                if hasattr(self.view.workspace, "sound"):
+                    sound = self.view.workspace.sound.sound()
             except ValueError:
-                self.view.status("Pace and outro must be numbers.")
+                self.view.status("Pace, outro and sound levels must be valid numbers.")
                 return
         generation = self.generation
         identifier = self.selected
@@ -121,7 +252,59 @@ class Controller:
             self.view.workspace.show_plan(summary, ready=True)
             self.view.status("Plan inspected. Queue this edition when ready.")
 
-        self.task(lambda: self.studio.plan(identifier, action, speed, outro), planned)
+        self.task(
+            lambda: self.studio.plan(identifier, action, speed, outro, sound)
+            if sound is not None
+            else self.studio.plan(identifier, action, speed, outro),
+            planned,
+        )
+
+    def load_metadata(self, discard=False):
+        if not self.selected or self.loading:
+            return
+        identifier, selection = self.selected, self.selection_generation
+        publication = self.view.workspace.publication
+        editor = publication.editor
+        editor.save.configure(state="disabled")
+        if discard:
+            publication.metadata_draft = {}
+            editor.loaded = False
+
+        def loaded(snapshot):
+            if identifier == self.selected and selection == self.selection_generation:
+                editor.load(publication.metadata_draft or snapshot)
+                publication.metadata_draft = {}
+                self.draft_changed()
+
+        self.task(lambda: self.studio.pipeline.metadata_editor(identifier), loaded)
+
+    def save_metadata(self):
+        if not self.selected or self.loading:
+            return
+        identifier, selection = self.selected, self.selection_generation
+        editor = self.view.workspace.publication.editor
+        if not editor.loaded or str(editor.save["state"]) == "disabled":
+            return
+        snapshot = editor.snapshot()
+        editor.save.configure(state="disabled")
+
+        def saved(result):
+            if identifier == self.selected and selection == self.selection_generation:
+                # Preserve text typed while the write was in flight, with its new file identity.
+                editor.baseline = result["baseline"]
+                editor.save.configure(state="normal")
+                editor.save.complete("Saved")
+                self.draft_changed()
+                self.refresh_release()
+            self.view.status(
+                "Publishing settings saved. Export again to update an existing upload package."
+            )
+
+        def failed(_):
+            if identifier == self.selected and selection == self.selection_generation:
+                editor.save.configure(state="normal")
+
+        self.task(lambda: self.studio.pipeline.save_metadata(identifier, snapshot), saved, failed)
 
     def submit(self):
         if self.ready is None:
@@ -164,6 +347,7 @@ class Controller:
             episode = self.episodes.get(identifier)
             if episode is not None:
                 self.view.workspace.publication.record_saved(episode, url, published)
+                self.draft_changed()
             self.view.status(f"Publication record saved for {identifier}.")
 
         def saved(_):
@@ -483,5 +667,8 @@ class Controller:
                 callback(value)
 
     def close(self):
+        self.checkpoint()
+        if self.draft_timer is not None:
+            self.view.root.after_cancel(self.draft_timer)
         self.closed = True
         self.executor.shutdown(wait=False, cancel_futures=True)

@@ -37,6 +37,9 @@ class Repository:
                 CREATE TABLE IF NOT EXISTS publications (
                     episode TEXT PRIMARY KEY, url TEXT NOT NULL, date TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS workspace (
+                    name TEXT PRIMARY KEY, value TEXT NOT NULL
+                );
                 CREATE UNIQUE INDEX IF NOT EXISTS active_episode
                     ON jobs(episode) WHERE status IN ('queued', 'running');
             """)
@@ -53,24 +56,40 @@ class Repository:
             db.close()
 
     def submit(self, episode: str, action: str, request: dict) -> str:
+        return self.submit_batch([(episode, action, request)])[0]
+
+    def submit_batch(self, items: list[tuple[str, str, dict]]) -> list[str]:
+        if not items or len(items) > 32 or len({item[0] for item in items}) != len(items):
+            raise ValueError("Choose 1–32 different episodes for a batch")
+        identifiers = []
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            if (
+                db.execute("SELECT COUNT(*) FROM jobs WHERE status='queued'").fetchone()[0]
+                + len(items)
+                > 32
+            ):
+                raise ValueError("The queue is full; wait for pending work to finish")
+            for episode, action, request in items:
+                identifiers.append(self._insert(db, episode, action, request))
+        return identifiers
+
+    @staticmethod
+    def _insert(db, episode: str, action: str, request: dict) -> str:
         if action not in ACTIONS:
             raise ValueError("Unknown studio action")
         identifier = uuid.uuid4().hex
-        with self.connection() as db:
-            db.execute("BEGIN IMMEDIATE")
-            # Prevent double clicks and conflicting editions, including across windows.
-            if db.execute(
-                "SELECT 1 FROM jobs WHERE episode=? AND status IN ('queued', 'running')",
-                (episode,),
-            ).fetchone():
-                raise ValueError("This episode already has a queued or running job")
-            if db.execute("SELECT COUNT(*) FROM jobs WHERE status='queued'").fetchone()[0] >= 32:
-                raise ValueError("The queue is full; wait for pending work to finish")
-            db.execute(
-                "INSERT INTO jobs(identifier,episode,action,status,stage,created,request) "
-                "VALUES(?,?,?,'queued','queued',?,?)",
-                (identifier, episode, action, timestamp(), json.dumps(request, sort_keys=True)),
-            )
+        # The caller owns the transaction; a late conflict rolls back the whole batch.
+        if db.execute(
+            "SELECT 1 FROM jobs WHERE episode=? AND status IN ('queued', 'running')",
+            (episode,),
+        ).fetchone():
+            raise ValueError(f"This episode already has a queued or running job: {episode}")
+        db.execute(
+            "INSERT INTO jobs(identifier,episode,action,status,stage,created,request) "
+            "VALUES(?,?,?,'queued','queued',?,?)",
+            (identifier, episode, action, timestamp(), json.dumps(request, sort_keys=True)),
+        )
         return identifier
 
     def jobs(self) -> list[Job]:
@@ -180,4 +199,18 @@ class Repository:
                 "INSERT INTO publications VALUES(?,?,?) ON CONFLICT(episode) "
                 "DO UPDATE SET url=excluded.url,date=excluded.date",
                 (episode, url, date),
+            )
+
+    def state(self, name: str) -> dict:
+        with self.connection() as db:
+            row = db.execute("SELECT value FROM workspace WHERE name=?", (name,)).fetchone()
+        return json.loads(row[0]) if row else {}
+
+    def checkpoint(self, values: dict[str, dict]) -> None:
+        """Store raw unfinished text and navigation atomically, separate from approvals."""
+        with self.connection() as db:
+            db.executemany(
+                "INSERT INTO workspace VALUES(?,?) ON CONFLICT(name) "
+                "DO UPDATE SET value=excluded.value",
+                [(name, json.dumps(value, ensure_ascii=False)) for name, value in values.items()],
             )

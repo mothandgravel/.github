@@ -42,6 +42,14 @@ class Application:
             body,
             {
                 "changed": self.controller.changed,
+                "draft": self.controller.draft_changed,
+                "metadata_save": self.controller.save_metadata,
+                "metadata_reload": lambda: self.controller.load_metadata(discard=True),
+                "batch_inspect": self.controller.inspect_batch,
+                "batch_submit": self.controller.submit_batch,
+                "batch_changed": self.controller.batch_changed,
+                "health": self.controller.health,
+                "worker_restart": self.controller.restart_worker,
                 "plan": self.controller.inspect,
                 "submit": self.controller.submit,
                 "publication": self.controller.publication,
@@ -77,6 +85,13 @@ class Application:
         )
         self.message.grid(row=4, column=0, sticky="w", pady=(8, 0))
         root.protocol("WM_DELETE_WINDOW", self.close)
+        self.workspace.tabs.bind(
+            "<<NotebookTabChanged>>", lambda _: self.controller.draft_changed(), add=True
+        )
+        self.workspace.publication.tabs.bind(
+            "<<NotebookTabChanged>>", lambda _: self.controller.draft_changed(), add=True
+        )
+        self.shelf.query.trace_add("write", lambda *_: self.controller.draft_changed())
         self.controller.start()
         self.tick()
         self.poll()
@@ -101,11 +116,19 @@ class Application:
             self.poll_handle = self.root.after(1000, self.poll)
 
     def close(self):
+        if self.closed:
+            return
+        try:
+            self.controller.close()
+        except Exception as exc:
+            self.status(
+                f"Draft save failed: {exc}. Studio stays open so you can recover your edits."
+            )
+            return
         self.closed = True
         for handle in (self.tick_handle, self.poll_handle):
             if handle is not None:
                 self.root.after_cancel(handle)
-        self.controller.close()
         self.root.destroy()
 
 

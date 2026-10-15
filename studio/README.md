@@ -35,8 +35,9 @@ an untouched suggested date, so a podcast date is not silently assigned to YouTu
 An explicitly edited date is preserved. **Today** fills the local system date only
 when clicked. Save remains an explicit action.
 Unfinished publication fields stay with their episode when you switch away and back
-within the open window. Save the record before closing Studio. Restoring podcast
-details remains available even if upload-copy generation fails.
+and across closing Studio. Draft checkpoints preserve unfinished text; **Save publication
+record** still records the actual release explicitly. Restoring podcast details remains
+available even if upload-copy generation fails.
 
 Upload copy reuses the same publishing settings and copy generator as export,
 including shared/per-episode tags, hashtags, disclosures, the written-edition link
@@ -167,8 +168,12 @@ python3 -m field_notes_audio review note-001 --audio-only --approve --reviewer "
   `artifacts/studio/studio.sqlite3`. Media remains in `artifacts/production`.
 - Each job captures its recipe. Later edits cannot change that job. A changed source
   blocks it; retry keeps the original recipe and source identity.
-- The shelf restores the last queued pace/outro for each episode. Unqueued edits are
-  drafts and are not saved. Other settings come from the production config.
+- Raw production, sound, publishing-editor and publication-record drafts checkpoint
+  locally after a short pause, on episode switches and before closing. Partially typed
+  numbers and dates survive. A failed close checkpoint keeps the window open.
+- Studio restores the selected episode, workspace/release tabs, search and window size.
+  It does not restore inspected plans, review confirmations or approval checkboxes.
+  Without a draft, settings recall the last queued recipe, then configured defaults.
 - A worker restart takes its exclusive OS lock before marking previously running jobs
   **interrupted**. This means an unknown outcome, never assumed success. Reopen the
   studio to restart a crashed worker, inspect outputs and retry explicitly.
@@ -209,8 +214,8 @@ Its diagnostic log is `artifacts/studio/worker.log`.
 | `worker.py` | Exclusive queue ownership, execution and reconciliation |
 | `app.py` | Composition and Tk event-loop lifecycle |
 
-The engine gains an optional structured stage observer. Existing CLI output and cache
-identities are unchanged. The adapter requests one audio worker so callbacks stay in
+The engine gains an optional structured stage observer. Existing CLI behavior is preserved; production implementation changes correctly
+participate in the engine’s cache identity. The adapter requests one audio worker so callbacks stay in
 the owning context. Views receive background results through a main-thread mailbox;
 workers never receive widget references. Boundary tests enforce dependency direction.
 
@@ -234,13 +239,48 @@ For a desktop smoke check, change an outro, inspect and queue it, close/reopen w
 the worker runs, review the saved media, export, check the package and try its upload
 paths in your browser. External players and the browser handoff depend on the desktop.
 
-## Remaining product gaps
+## Sound and publishing editors
 
-- Keep unfinished production and publication drafts across closing the window.
-- Expose intro/music settings and credit editing without editing production JSON.
-- Edit publishing metadata/templates in Studio instead of only copying generated text.
-- Inspect and queue several episodes together while retaining per-episode plans.
-- Surface toolchain and worker health before a job fails, including worker upgrades.
+**Sound** exposes intro, music overlap, music level, loudness, peak ceiling, music
+mode, custom file selection and music credit/license. Pace and outro stay in Produce.
+Inspection uses the production engine's shared validation, including numeric ranges
+and custom-music requirements. Jobs capture the complete recipe; later edits cannot
+change queued work. Export packages saved media and ignores unfinished sound controls.
 
-Embedded playback and authenticated publishing are larger integrations. The current
-handoff is useful without requiring either.
+**Release → Publishing editor** edits the episode title, multiline summary, additional
+tags/hashtags and reusable show defaults. Shared and episode tags combine using the
+existing publishing generator. Saving validates settings and generated copy for the
+prepared catalog, then atomically replaces `audio/production/publishing.json`.
+A file-identity check rejects stale saves from another window or editor. **Reload saved
+settings** deliberately replaces this editor's draft with current file values.
+Saving does not rewrite an existing upload package; export again to apply it. Existing
+queued exports use the publishing file at execution, as the CLI does.
+
+## Batch inspection
+
+Choose **Batch**, select episodes and **Inspect selected episodes**. Output follows
+Produce. Inspection shows a separate plan for each episode using its checkpointed
+draft, last queued recipe or configured defaults. Invalid unfinished fields block the
+inspection; nothing is queued. Editing the current recipe or episode checklist clears
+the inspected batch. **Queue inspected batch** commits all requests in one SQLite
+transaction: any active episode conflict or insufficient capacity leaves the whole
+batch unqueued. Each job keeps its inspected recipe and source identity.
+
+## Health and worker upgrades
+
+**Health** checks the actual worker lock, heartbeat, loaded/checkout code identities,
+audio/video preflight, settings, FFmpeg/FFprobe/Node versions and video dependencies.
+Missing or stale video dependencies include the existing install command. No tools are
+installed automatically. The log path is shown for diagnosis.
+
+**Start / restart worker** starts a stopped worker or requests a handoff after the
+current job finishes. Updated workers also detect changed Python code between jobs,
+release the lock and launch the checkout's code; they never unload a running media
+stage. An older worker without heartbeat/control support can be restarted only when
+no job runs. That path fences new claims in a database transaction, verifies the actual
+lock-owning process command/root/checkout, and uses a Linux process handle to avoid PID
+reuse. Unverifiable identities and busy legacy workers are left running with an
+explanation. Refresh health to verify the replacement heartbeat.
+
+Embedded playback, native Windows packaging and authenticated publishing remain
+larger integrations outside this local production workflow.
