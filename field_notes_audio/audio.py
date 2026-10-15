@@ -24,6 +24,7 @@ from pathlib import Path
 from urllib import error, request
 
 from field_notes_audio import auth as google_auth
+from field_notes_audio.diagnostics import provider_text
 from field_notes_audio.locks import run_lock
 from field_notes_audio.progress import raise_if_stopped, report, stage, timed
 from field_notes_audio.storage import digest_file, read_object, write_json
@@ -382,16 +383,11 @@ def http_diagnostic(exc: error.HTTPError, token: str) -> dict:
         message = provider.get("message", "")
     except ValueError:
         # Gateways can return HTML or plain text rather than Google's JSON error.
-        message = re.sub(r"<[^>]*>", " ", raw)
+        message = raw
     if isinstance(message, str) and message:
-        message = message.replace(token, "[redacted]") if token else message
-        message = re.sub(r"(?i)Bearer\s+\S+", "Bearer [redacted]", message)
-        message = re.sub(
-            r"(?i)(access_token|refresh_token|api_key|authorization)\s*[:=]\s*\S+",
-            r"\1=[redacted]",
-            message,
-        )
-        result["provider_message"] = re.sub(r"\s+", " ", message).strip()[:500]
+        cleaned = provider_text(message, token)
+        if cleaned:
+            result["provider_message"] = cleaned
     return result
 
 
@@ -545,8 +541,11 @@ def generate_locked(
                 )
                 detail = diagnostic.get("provider_status") or diagnostic.get("provider_message")
                 label = f" ({detail})" if detail else ""
+                elapsed = time.perf_counter() - attempt_start
                 raise RuntimeError(
-                    f"Narration chunk {index}/{len(plan['requests'])}: Google returned HTTP {exc.code}{label}. {http_guidance(exc.code, args.episode)} "
+                    f"Narration chunk {index}/{len(plan['requests'])}: Google returned HTTP {exc.code}{label} "
+                    f"after {elapsed:.1f}s (client socket timeout {timeout_seconds}s). "
+                    f"{http_guidance(exc.code, args.episode)} "
                     f"Diagnostic: {state_path.relative_to(root)}"
                 ) from None
             except Exception as exc:

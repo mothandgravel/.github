@@ -68,6 +68,7 @@ class Application:
                 "draft_recovery": self.controller.open_draft_recovery,
                 "plan": self.controller.inspect,
                 "submit": self.controller.submit,
+                "produce_episode": self.controller.production.start,
                 "publication": self.controller.publication,
                 "open": self.controller.open_output,
                 "refresh": self.controller.refresh_review,
@@ -115,7 +116,13 @@ class Application:
     def open_preparation(self, *, note="", query=""):
         if self.preparation is not None and not self.preparation.closed:
             self.preparation.view.window.lift()
-            if note:
+            if not self.preparation.busy:
+                # Apply navigation after the fresh catalog arrives. Revealing a
+                # row first schedules selection events that can stale the read.
+                self.preparation.target_note = note
+                self.preparation.target_query = query
+                self.preparation.refresh()
+            elif note:
                 self.preparation.view.reveal(note)
             elif query:
                 self.preparation.view.query.set(query)

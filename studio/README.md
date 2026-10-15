@@ -12,6 +12,30 @@ without publishing or human approval. Choose a prepared episode, inspect the con
 and check subtitles, then prepare the upload package. Record URLs and publication
 dates for episodes you have already published separately from their production jobs.
 
+## One production job, one full-episode review
+
+**Produce episode** is the primary action for a prepared recording. It validates
+and captures the selected episode's current recipe, then queues **one full `video`
+job**: audio finishing, retimed captions, full video and thumbnail. It does not
+merely open a tab. Narration/captions are reused, not requested from Cloud again.
+The button is available both in Produce and on a completed preparation job.
+
+The optional output selector and **Inspect changes → Queue inspected output** are
+for deliberate audio-only, preview or export work. Audio-only is not a prerequisite
+for a full episode. See [the production-flow observation record](episode-production-flow.md).
+
+**Review** defaults to the full episode. Watch with sound, confirm that combined
+check, check subtitles, enter the reviewer name and record **one approval**. A
+separate MP3 listen or audio-only approval is not required. Existing full approval
+is not downgraded by an optional recheck of the same audio; changed media still
+invalidates approval.
+
+**Upload details** generates title, description, tags, hashtags and the written-note
+link. **Published destination** records the actual external release URL/date after
+publishing. Known feed data still prefills; new private recordings do not invent a
+YouTube URL or publication date. **Use today** fills the date only when selected;
+existing drafts and explicitly blank saved records are preserved.
+
 ## Get an episode out
 
 Open **Release** for the guided handoff:
@@ -19,14 +43,14 @@ Open **Release** for the guided handoff:
 **Produce → Review → Release** keeps each stage focused. Pace, outro and production
 buttons appear in Produce; Review and Release use the space for their own controls.
 
-1. **Review full video** opens the saved-edition review with the correct scope.
-2. **Inspect package** selects export and shows the plan. Use **Queue production**
+1. **Review video** opens the saved-edition review with full audio/video scope.
+2. **Inspect package** selects export and shows the plan. Use **Queue inspected output**
    to create the package after checking it.
 3. **YouTube Studio** opens the upload destination in your system browser. Open
    **Release → Package files**, check the saved package, and select its video,
    thumbnail or subtitles. **Copy upload path** gives you a path to paste into the
    browser's file picker. Copy the title, description and tags from **Upload details**.
-4. In **Publication record**, record the published link and its actual date.
+4. In **Published destination**, record the published link and its actual date.
 
 Episode links and dates now fill from the existing podcast catalog. This is data
 from the checkout, not a live check of YouTube or another platform. Dates preserve
@@ -34,7 +58,7 @@ the catalog timestamp's timezone. Saved user records always take precedence,
 including intentionally blank dates/links; automatic defaults do not write records.
 **Use podcast details** restores those defaults explicitly. Changing a link clears
 an untouched suggested date, so a podcast date is not silently assigned to YouTube.
-An explicitly edited date is preserved. **Today** fills the local system date only
+An explicitly edited date is preserved. **Use today** fills the local system date only
 when clicked. Save remains an explicit action.
 Unfinished publication fields stay with their episode when you switch away and back
 and across closing Studio. Draft checkpoints preserve unfinished text; **Save publication
@@ -116,8 +140,9 @@ The studio launches the worker itself; no terminal production command is needed.
 The selected episode shows its verified saved-edition status. Output guidance explains
 the next step for audio, preview, full video or export.
 
-Use **Inspect changes**, then **Queue production**. Editing a control invalidates the
-inspected plan. `audio` finishes an MP3 and retimed captions; `preview` also renders
+Use **Produce episode** for the complete edition, or deliberately choose an optional
+output, **Inspect changes**, then **Queue inspected output**. Editing a control
+invalidates the inspected plan. `audio` finishes an MP3 and retimed captions; `preview` also renders
 the first ten seconds of video; `video` produces the full video and thumbnail;
 `export` packages the selected completed full edition. Narration/caption `prepare`
 jobs are queued only through the separate authorized preparation window, not this
@@ -148,9 +173,11 @@ The transcript tab shows the published transcript. Production always uses the pr
 source narration, including when the feed already contains finished audio. New editions
 retain pending human review state. In the **Review** tab:
 
-1. Choose **Audio and captions**, or **Full video and audio** for a YouTube edition.
-2. Open the saved assets with **Listen**, **Check subtitles** and **Watch video**.
-3. Check the corresponding confirmations, enter your name, then **Record approval**.
+1. Keep the default **Full video and audio** for a complete episode. **Audio and
+   captions** is an explicit audio-only alternative, not a preceding review step.
+2. **Watch video** with sound and **Check subtitles**. **Listen separately** is optional.
+3. Confirm watching/listening and subtitle checks, enter your name, then
+   **Record approval** once for the full episode.
 4. For a full edition, choose **export**, inspect changes and queue the upload package.
 
 Review is attached to the exact verified media, independently of your draft pace/outro
@@ -336,7 +363,8 @@ The main shelf is **Prepared recordings**; new written notes are reached through
 **Find / prepare a written note…** beside its search, or the header action. The
 written-note window supports title/number search and a deliberate **Import existing
 setup…** from an earlier checkout. Failed preparation offers **Inspect recovery**,
-not a blind resend. Completed preparation offers **Produce episode** without
-automatically queuing or approving media. See [preparation and recovery](preparation.md)
+not a blind resend. On a completed preparation job, **Produce episode** validates
+and queues one full audio/video edition. It never approves or publishes media.
+The preparation window's **Open in production** is navigation only. See [preparation and recovery](preparation.md)
 and the [operator-observation record](usability-rehearsal.md), including the explicit
 consent required to resend a receipt-bound uncertain narration request.

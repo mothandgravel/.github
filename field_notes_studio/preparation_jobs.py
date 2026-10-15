@@ -127,7 +127,12 @@ class PreparationJobs:
                     )
                 else:
                     uncertain[str(index)] = digest_file(path)
-                    diagnostics.append(f"Chunk {index}: " + narration_diagnostic(state))
+                    diagnostics.append(
+                        f"Chunk {index}: "
+                        + narration_diagnostic(state)
+                        + "\nCurrent receipt: "
+                        + str(path.relative_to(self.root))
+                    )
         caption_state = "No matching local caption state inspected yet."
         if (directory / "episode.mp3").exists():
             args = self._caption_args(plan, config, directory / "episode.mp3")
@@ -364,6 +369,8 @@ def narration_diagnostic(state: dict) -> str:
     parts = []
     if type(state.get("http_status")) is int:
         parts.append(f"HTTP {state['http_status']}")
+        if state["http_status"] == 502:
+            parts.append("Bad Gateway: server/gateway error, not a client socket timeout")
     for key in ("provider_status", "failure_kind"):
         value = state.get(key)
         if isinstance(value, str) and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,63}", value):
@@ -374,8 +381,11 @@ def narration_diagnostic(state: dict) -> str:
     timeout = state.get("timeout_seconds")
     if type(timeout) is int and 60 <= timeout <= 900:
         parts.append(f"client socket timeout {timeout}s")
-    if state.get("failure_kind") == "TimeoutError":
+    if state.get("failure_kind") == "TimeoutError" or state.get("http_status") == 502:
         parts.append("response not confirmed; remote processing/billing unknown")
+    attempt = state.get("attempt_id")
+    if isinstance(attempt, str) and re.fullmatch(r"[a-f0-9]{32}", attempt):
+        parts.append(f"saved attempt {attempt[:8]}")
     return (
         "; ".join(parts)
         if parts

@@ -9,6 +9,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from field_notes_studio.health import restart, tool_status, worker_status
+from field_notes_studio.job_history import resolved_failures
 from field_notes_studio.models import ReviewSnapshot
 from field_notes_studio.pipeline import Pipeline
 from field_notes_studio.preparation_jobs import PreparationJobs
@@ -77,6 +78,10 @@ class Studio:
         job = self.repository.get(identifier)
         if job.status not in {"failed", "interrupted", "cancelled", "waiting"}:
             raise ValueError("Only failed, interrupted or stopped jobs can be retried")
+        if identifier in resolved_failures(self.repository.jobs()):
+            raise ValueError(
+                "A later attempt completed. Use the ready episode instead of retrying this historical failure."
+            )
         request = json.loads(job.request)
         if job.action == "prepare":
             if request.get("uncertain_chunks"):

@@ -17,7 +17,7 @@ class Review(ttk.Frame):
         self.canvas = self.scroller.canvas
         content = self.scroller.content
         self.snapshot = None
-        self.scope = tk.StringVar(value="Audio and captions")
+        self.scope = tk.StringVar(value="Full video and audio")
         self.reviewer = tk.StringVar()
         self.audio_checked = tk.BooleanVar()
         self.captions_checked = tk.BooleanVar()
@@ -54,7 +54,7 @@ class Review(ttk.Frame):
         assets.pack(fill="x", pady=(0, 8))
         self.asset_buttons = {}
         for label, kind in (
-            ("Listen", "audio"),
+            ("Listen separately", "audio"),
             ("Check subtitles", "captions"),
             ("Watch video", "video"),
         ):
@@ -67,15 +67,31 @@ class Review(ttk.Frame):
             )
             button.pack(side="left", padx=(0, 6))
             self.asset_buttons[kind] = button
-        for text, variable in (
-            ("I listened to this saved audio", self.audio_checked),
-            ("I checked its subtitles", self.captions_checked),
-        ):
-            ttk.Checkbutton(content, text=text, variable=variable).pack(anchor="w")
-        self.video_check = ttk.Checkbutton(
-            content, text="I watched the full video", variable=self.video_checked
+        self.review_help = ttk.Label(
+            content,
+            style="Muted.TLabel",
+            wraplength=540,
+            text="Watch with sound, check subtitles, approve once. Separate audio playback is optional.",
         )
-        self.video_check.pack(anchor="w")
+        self.review_help.pack(anchor="w", pady=(0, 6))
+        content.bind(
+            "<Configure>",
+            lambda e: self.review_help.configure(wraplength=max(250, e.width - 35)),
+            add=True,
+        )
+        self.audio_check = ttk.Checkbutton(
+            content, text="I listened to this saved audio", variable=self.audio_checked
+        )
+        self.video_check = ttk.Checkbutton(
+            content,
+            text="I watched and listened to the full episode",
+            variable=self.video_checked,
+            command=self.watched_episode,
+        )
+        self.captions_check = ttk.Checkbutton(
+            content, text="I checked this episode's subtitles", variable=self.captions_checked
+        )
+        self.captions_check.pack(anchor="w")
         footer = ttk.Frame(self, padding=(16, 10))
         footer.grid(row=1, column=0, columnspan=2, sticky="ew")
         ttk.Label(footer, text="Reviewed by").pack(side="left", padx=(0, 8))
@@ -97,6 +113,12 @@ class Review(ttk.Frame):
             variable.trace_add("write", lambda *_: self.update_controls())
         self.update_controls()
         self.bind_navigation(content)
+
+    def watched_episode(self):
+        # Only this explicit, labelled user action confirms both watching AND listening.
+        # Loading snapshots or changing scope never manufactures either confirmation.
+        if self.full_video():
+            self.audio_checked.set(self.video_checked.get())
 
     def bind_navigation(self, widget):
         self.scroller.bind_navigation(widget)
@@ -123,6 +145,8 @@ class Review(ttk.Frame):
 
     def load(self, snapshot):
         self.clear(snapshot.summary)
+        if snapshot.identity:
+            self.scope.set("Full video and audio" if snapshot.full_video else "Audio and captions")
         self.snapshot = snapshot
         self.update_controls()
 
@@ -133,17 +157,32 @@ class Review(ttk.Frame):
                 state="normal" if available and getattr(self.snapshot, kind) else "disabled"
             )
         if self.full_video():
-            self.video_check.pack(anchor="w")
+            self.audio_check.pack_forget()
+            self.video_check.pack(anchor="w", before=self.captions_check)
+            self.review_help.configure(
+                text="Watch with sound, check subtitles, approve once. Separate audio playback is optional."
+            )
         else:
             self.video_check.pack_forget()
+            self.audio_check.pack(anchor="w", before=self.captions_check)
+            self.review_help.configure(
+                text="Audio-only review. For a video release, choose Full video and audio and approve that complete edition once."
+            )
         ready = (
             available
+            and not self.snapshot.approved
             and self.reviewer.get().strip()
             and self.audio_checked.get()
             and self.captions_checked.get()
             and (not self.full_video() or self.video_checked.get())
         )
         self.approve.configure(state="normal" if ready else "disabled")
-        self.approve.configure(text="Recording…" if self.busy else "Record approval")
+        self.approve.configure(
+            text="Recording…"
+            if self.busy
+            else "Approved"
+            if available and self.snapshot.approved
+            else "Record approval"
+        )
         if self.busy:
             self.refresh.configure(state="disabled")

@@ -1,6 +1,7 @@
 """Preparation navigation, explicit consent and local setup import prompts; no file IO."""
 
 import tkinter as tk
+from dataclasses import replace
 from tkinter import filedialog, messagebox, ttk
 
 
@@ -192,6 +193,26 @@ class PreparationWindow:
             self.open_job(identifier)
 
     def queued(self, episode, identifier):
+        # A completed submission must not leave this note's previous failure as
+        # its visible next step. Do not change another selected note or its edits.
+        for note, item in self.items.items():
+            if item.episode != episode:
+                continue
+            item = replace(
+                item,
+                state="Queued",
+                job_id=identifier,
+                detail=(
+                    f"{episode}: queued as job {identifier[:8]}. "
+                    "Use Show job for current progress; do not queue another copy."
+                ),
+            )
+            self.items[note] = item
+            if self.tree.exists(note):
+                self.tree.item(note, values=(item.note, item.title, item.state))
+            if self.selected() == note:
+                self._put(self.plan, item.detail)
+            break
         self.queued_id = identifier
         self.job_button.configure(state="normal")
         self.message.configure(

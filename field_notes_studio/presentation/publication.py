@@ -10,7 +10,13 @@ from field_notes_studio.presentation.package_files import PackageFiles
 from field_notes_studio.presentation.scroll import ScrollArea
 from field_notes_studio.presentation.theme import set_text
 
-FIELDS = {"Title": "title", "Description": "description", "Tags": "tags", "Hashtags": "hashtags"}
+FIELDS = {
+    "Title": "title",
+    "Description": "description",
+    "Tags": "tags",
+    "Hashtags": "hashtags",
+    "Written note link": "written_url",
+}
 
 
 class Publication(ttk.Frame):
@@ -23,6 +29,7 @@ class Publication(ttk.Frame):
         self.loaded_url = ""
         self.episode = None
         self.defaults = ("", "")
+        self.written_url = ""
         self.drafts = {}
         self.metadata_draft = {}
         self.columnconfigure(0, weight=1)
@@ -58,7 +65,7 @@ class Publication(ttk.Frame):
         toolbar.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(0, 6))
         self.field = tk.StringVar(value="Title")
         ttk.Combobox(
-            toolbar, textvariable=self.field, values=tuple(FIELDS), state="readonly", width=15
+            toolbar, textvariable=self.field, values=tuple(FIELDS), state="readonly", width=20
         ).pack(side="left")
         self.copy_button = ActionButton(
             toolbar,
@@ -86,10 +93,17 @@ class Publication(ttk.Frame):
         record = ttk.Frame(self.tabs)
         record.columnconfigure(0, weight=1)
         record.rowconfigure(0, weight=1)
-        self.tabs.add(record, text="Publication record")
+        self.tabs.add(record, text="Published destination")
         self.form = ScrollArea(record, padding=8)
         self.form.grid(row=0, column=0, sticky="nsew")
         content = self.form.content
+        self.record_help = ttk.Label(
+            content,
+            text="Title, description, tags and the written-note link are generated in Upload details. This form records where you actually published the episode.",
+            style="Muted.TLabel",
+            wraplength=540,
+        )
+        self.record_help.pack(anchor="w", pady=(0, 6))
         self.source = ttk.Label(content, text="", style="Muted.TLabel", wraplength=540)
         self.source.pack(anchor="w", pady=(0, 4))
         self.url, self.date = tk.StringVar(), tk.StringVar()
@@ -97,20 +111,21 @@ class Publication(ttk.Frame):
         self.date.trace_add("write", lambda *_: self.date_changed())
         links = ttk.Frame(content)
         links.pack(fill="x", pady=(0, 2))
-        ttk.Label(links, text="Episode link", width=18).pack(side="left")
+        ttk.Label(links, text="Published URL", width=18).pack(side="left")
         self.url_entry = ttk.Entry(links, textvariable=self.url)
         self.url_entry.pack(side="left", fill="x", expand=True)
         dates = ttk.Frame(content)
         dates.pack(fill="x")
-        ttk.Label(dates, text="Date · YYYY-MM-DD", width=18).pack(side="left")
+        ttk.Label(dates, text="Published date", width=18).pack(side="left")
         self.date_entry = ttk.Entry(dates, textvariable=self.date, width=13)
         self.date_entry.pack(side="left")
-        ttk.Button(
+        self.today = ttk.Button(
             dates,
-            text="Today",
+            text="Use today",
             command=lambda: self.date.set(date.today().isoformat()),
             style="Compact.TButton",
-        ).pack(side="left", padx=6)
+        )
+        self.today.pack(side="left", padx=6)
         self.defaults_button = ttk.Button(
             dates,
             text="Use podcast details",
@@ -121,7 +136,7 @@ class Publication(ttk.Frame):
         self.defaults_button.pack(side="left")
         ttk.Label(
             content,
-            text="The podcast date follows the catalog timestamp's timezone. For a YouTube release, replace the link and date with that release's details.",
+            text="After publishing, paste the actual destination URL. Use today only for a release published today. This record does not upload or verify publication.",
             style="Muted.TLabel",
             wraplength=540,
         ).pack(anchor="w", pady=(6, 0))
@@ -157,13 +172,17 @@ class Publication(ttk.Frame):
         copy.bind("<Configure>", lambda e: self.basis.configure(wraplength=max(200, e.width - 24)))
         content.bind(
             "<Configure>",
-            lambda e: self.source.configure(wraplength=max(200, e.width - 24)),
+            lambda e: (
+                self.source.configure(wraplength=max(200, e.width - 24)),
+                self.record_help.configure(wraplength=max(200, e.width - 24)),
+            ),
             add=True,
         )
 
     def load_episode(self, episode):
         self.current_episode = episode
         self.episode = episode.identifier
+        self.written_url = episode.written_url
         self.defaults = (episode.podcast_url, episode.podcast_date)
         self.filling = True
         draft = self.drafts.get(self.episode)
@@ -191,7 +210,9 @@ class Publication(ttk.Frame):
             if draft
             else "Saved locally"
             if episode.publication_saved
-            else "Catalog suggestion",
+            else "Catalog suggestion"
+            if any(self.defaults)
+            else "Not recorded",
             style="Draft.TLabel"
             if draft
             else "Success.TLabel"
@@ -217,6 +238,7 @@ class Publication(ttk.Frame):
         self.editor.save.configure(state="disabled")
         self.metadata_draft = {}
         self.episode = None
+        self.written_url = ""
         self.clear()
         self.filling = True
         self.url.set("")
@@ -253,7 +275,11 @@ class Publication(ttk.Frame):
     def render_copy(self):
         self.copy_button.reset_feedback("Copy " + self.field.get().lower())
         if self.details:
-            value = getattr(self.details, FIELDS[self.field.get()])
+            value = (
+                self.written_url
+                if self.field.get() == "Written note link"
+                else getattr(self.details, FIELDS[self.field.get()])
+            )
             set_text(self.text, value)
             self.copy_button.configure(state="normal")
             self.measure.configure(
@@ -263,7 +289,12 @@ class Publication(ttk.Frame):
     def copy(self):
         if self.details:
             self.clipboard_clear()
-            self.clipboard_append(getattr(self.details, FIELDS[self.field.get()]))
+            value = (
+                self.written_url
+                if self.field.get() == "Written note link"
+                else getattr(self.details, FIELDS[self.field.get()])
+            )
+            self.clipboard_append(value)
             self.copy_button.complete()
             self.callbacks["status"](self.field.get() + " copied. Paste it into the upload form.")
 

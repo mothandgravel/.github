@@ -12,6 +12,7 @@ from pathlib import Path
 
 from field_notes_studio.models import DraftConflict
 from field_notes_studio.processes import launch_worker
+from field_notes_studio.production_flow import ProductionFlow
 
 
 class Controller:
@@ -41,6 +42,7 @@ class Controller:
         self.window_id = uuid.uuid4().hex
         self.draft_identity = ""
         self.draft_value = None
+        self.production = ProductionFlow(self)
 
     def draft_changed(self):
         if self.loading or self.closed or not getattr(self.view, "root", None):
@@ -149,18 +151,26 @@ class Controller:
             self.view.shelf.reveal(identifier)
             self.select(identifier)
 
-    def select(self, identifier, review_scope=None, *, reload=False):
+    def select(
+        self, identifier, review_scope=None, *, reload=False, after_load=None, on_error=None
+    ):
         if identifier == self.selected and not reload:
             if review_scope is not None:
                 self.show_review(review_scope)
+            if after_load is not None:
+                after_load()
             return
         try:
             if not reload:
                 self.checkpoint()
         except Exception as exc:
             self.view.status(f"Keep this draft open: checkpoint failed: {exc}")
+            if on_error is not None:
+                on_error(str(exc))
             return
         self.loading = True
+        if hasattr(self.view.workspace, "episode_available"):
+            self.view.workspace.episode_available(False)
         self.selected = identifier
         self.package_generation += 1
         self.selection_generation += 1
@@ -203,16 +213,26 @@ class Controller:
                         if geometry:
                             self.view.root.geometry(geometry)
                 self.loading = False
+                if hasattr(self.view.workspace, "episode_available"):
+                    self.view.workspace.episode_available(True)
                 self.changed()
                 if review_scope is None:
+                    if hasattr(self.view.workspace.review, "scope"):
+                        self.view.workspace.review.scope.set("Full video and audio")
                     self.refresh_review()
                 else:
                     self.show_review(review_scope)
                 self.refresh_release()
                 if getattr(self.view, "root", None):
                     self.load_metadata()
+                if after_load is not None:
+                    after_load()
+            elif on_error is not None:
+                on_error("Selection changed while loading the episode. No production was queued.")
 
         def failed(_message):
+            if on_error is not None:
+                on_error(_message)
             if selection == self.selection_generation:
                 self.loading = False
                 # Old controls do not belong to the failed selection. In particular,
@@ -380,6 +400,11 @@ class Controller:
         self.task(lambda: self.studio.save_metadata(identifier, snapshot), saved, failed)
 
     def submit(self):
+        if self.production.busy:
+            self.view.status(
+                "Full episode is being inspected or queued. No second job was submitted."
+            )
+            return
         if self.ready is None:
             self.view.status("Inspect the current changes first.")
             return
@@ -582,7 +607,7 @@ class Controller:
                 self.view.shelf.reveal(episode)
                 self.view.workspace.tabs.select(0)
                 self.view.status(
-                    "Recording ready. Choose video for the full episode, inspect changes, then queue production. Review follows production; nothing is published."
+                    "Recording ready. Click Produce episode for audio, captions, full video and thumbnail together. Review and publication remain separate."
                 )
                 if getattr(self.view, "preparation", None):
                     self.view.preparation.close()
@@ -593,13 +618,14 @@ class Controller:
         identifier = self.view.jobs.selection()
         if not identifier:
             return
+        selected_job = getattr(self.view.jobs, "jobs", {}).get(identifier)
+        if selected_job and selected_job.status == "succeeded" and selected_job.action == "prepare":
+            self.production.start(selected_job.episode)
+            return
         generation = self.generation
 
         def loaded(job):
             if self.view.jobs.selection() != identifier or generation != self.generation:
-                return
-            if job.status == "succeeded" and job.action == "prepare":
-                self.open_prepared(job.episode)
                 return
             if job.status != "succeeded" or job.action not in {"audio", "video"}:
                 self.view.status(
@@ -705,9 +731,11 @@ class Controller:
                 guidance = {
                     "failed": "Preparation stopped. Use Inspect recovery; do not delete caches or blindly resend.",
                     "interrupted": "Outcome unknown. Inspect recovery before another request.",
-                    "succeeded": "Recording ready, not published. Use Produce episode, then inspect and queue the full video.",
+                    "succeeded": "Recording ready. Produce episode finishes audio, captions, full video and thumbnail in one job. Review follows; nothing is published.",
                     "waiting": "Use Resume to check the same caption operation. No new narration is generated.",
                 }.get(job.status, guidance)
+            if job.identifier in getattr(self.view.jobs, "resolved", set()):
+                guidance = "Historical attempt: a later attempt completed. No recovery is needed for this earlier failure; keep its history."
             meaningful = [
                 event["stage"]
                 for event in events
@@ -813,6 +841,18 @@ class Controller:
                 previous = self.review_jobs
                 self.review_jobs = signature
                 if previous is not None:
+                    old = dict(previous)
+                    if any(
+                        job.episode == self.selected
+                        and job.action == "video"
+                        and job.status == "succeeded"
+                        and old.get(job.identifier) != "succeeded"
+                        for job in jobs
+                    ):
+                        self.view.workspace.review.scope.set("Full video and audio")
+                        self.view.status(
+                            f"{self.selected}: full episode ready. Review its audio, video and subtitles together, then export."
+                        )
                     self.refresh_review()
                     self.refresh_release()
 

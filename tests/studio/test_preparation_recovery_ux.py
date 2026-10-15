@@ -235,7 +235,7 @@ class PreparationUxTests(unittest.TestCase):
         self.app.shelf.query.set("104")
         self.assertIn("Find / prepare", self.app.shelf.count.cget("text"))
         self.app.shelf.prepare.invoke()
-        self.app.root.update()
+        self.h.wait(lambda: not self.app.preparation.busy and self.view.query.get() == "104")
         self.assertEqual(self.view.query.get(), "104")
         self.assertEqual(self.view.tree.get_children(), ("104",))
 

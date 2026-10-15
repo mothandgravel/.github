@@ -96,6 +96,7 @@ class PreparationApplicationTests(unittest.TestCase):
         original = self.app.preparation
         self.app.prepare_button.invoke()
         self.assertIs(self.app.preparation, original)
+        self.wait(lambda: not self.app.preparation.busy)
         self.inspect()
         self.view.queue_button.invoke()
         self.assertEqual(self.fixture.repository.jobs(), [])

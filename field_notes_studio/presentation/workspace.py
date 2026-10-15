@@ -35,7 +35,9 @@ class Workspace(ttk.Frame):
         controls.grid(row=2, column=0, sticky="ew")
         self.speed = tk.StringVar(value="1.15")
         self.outro = tk.StringVar(value="5")
-        self.action = tk.StringVar(value="audio")
+        self.action = tk.StringVar(value="video")
+        self.production_busy = False
+        self.has_episode = False
         for column, (label, variable, values) in enumerate(
             [
                 ("Pace ×", self.speed, ("0.75", "1", "1.15", "1.25", "1.5")),
@@ -45,7 +47,9 @@ class Workspace(ttk.Frame):
         ):
             box = ttk.Frame(controls)
             box.grid(row=0, column=column, sticky="w", padx=(0, 18))
-            ttk.Label(box, text=label, style="Muted.TLabel").pack(anchor="w")
+            ttk.Label(
+                box, text="Optional output" if label == "Output" else label, style="Muted.TLabel"
+            ).pack(anchor="w")
             combo = ttk.Combobox(
                 box,
                 textvariable=variable,
@@ -62,12 +66,21 @@ class Workspace(ttk.Frame):
         ActionButton(
             buttons, pictogram="search", text="Inspect changes", command=callbacks["plan"]
         ).pack(side="left")
+        self.full_episode = ActionButton(
+            buttons,
+            pictogram="produce",
+            text="Produce episode",
+            command=callbacks["produce_episode"],
+            style="Accent.TButton",
+            state="disabled",
+        )
+        self.full_episode.pack(side="left", before=buttons.winfo_children()[0], padx=(0, 8))
         self.produce = ActionButton(
             buttons,
             pictogram="produce",
-            text="Queue production",
+            text="Queue inspected output",
             command=callbacks["submit"],
-            style="Accent.TButton",
+            style="Compact.TButton",
             state="disabled",
         )
         self.produce.pack(side="left", padx=8)
@@ -200,7 +213,20 @@ class Workspace(ttk.Frame):
 
     def show_plan(self, text, ready=False):
         set_text(self.plan, text)
-        self.produce.configure(state="normal" if ready else "disabled")
+        self.produce.configure(state="normal" if ready and not self.production_busy else "disabled")
+
+    def episode_available(self, value):
+        self.has_episode = value
+        self.production_working(self.production_busy)
+
+    def production_working(self, value):
+        self.production_busy = value
+        self.full_episode.configure(
+            state="normal" if self.has_episode and not value else "disabled",
+            text="Checking episode…" if value else "Produce episode",
+        )
+        if value:
+            self.produce.configure(state="disabled")
 
     def show_health(self, message):
         set_text(self.health, message)
@@ -235,12 +261,15 @@ class Workspace(ttk.Frame):
         if hasattr(self, "batch"):
             self.batch.output(self.action.get())
         messages = {
-            "audio": "Audio → finish an MP3 and subtitles. Then open Review to listen and approve.",
+            "audio": "Audio only → MP3 and subtitles; no video. This is an alternative, not a prerequisite.",
             "preview": "Preview → render the first 10 seconds to check the video style.",
-            "video": "Video → render the full episode and thumbnail. Then review the full video.",
+            "video": "Full episode → audio, retimed captions, full video and thumbnail, in one job.",
             "export": "Export → package the saved full edition with title, description, tags and subtitles.",
         }
-        self.guidance.configure(text=messages[self.action.get()])
+        self.guidance.configure(
+            text="Produce episode: audio + captions + full video + thumbnail. Review before export.\n"
+            "Optional inspected output: " + messages[self.action.get()]
+        )
         state = "disabled" if self.action.get() == "export" else "normal"
         self.speed_control.configure(state=state)
         self.outro_control.configure(state=state)
@@ -262,6 +291,7 @@ class Workspace(ttk.Frame):
         if (
             health
             or release_editor
+            or self.tabs.select() == str(self.review)
             or self.tabs.select() in {str(self.sound), str(self.batch)}
             or (self.tabs.select() == str(self.publication) and self.publication.files_visible())
         ):

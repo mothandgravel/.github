@@ -66,6 +66,10 @@ class Pipeline:
                     ),
                     podcast_url=link,
                     podcast_date=published,
+                    written_url=site.DOMAIN
+                    + (
+                        "/notes/" + entry["slug"] if entry.get("slug") else "/notes/#listen-archive"
+                    ),
                 )
             )
         return episodes
@@ -404,7 +408,8 @@ class Pipeline:
     def review_snapshot(self, identifier: str, full_video: bool = False) -> ReviewSnapshot:
         if not (self.output / identifier / "latest.json").exists():
             return ReviewSnapshot(
-                "", "No local edition yet. Select audio, inspect changes, then queue production."
+                "",
+                "No local edition yet. Choose Produce episode for audio, captions, full video and thumbnail together.",
             )
         try:
             with packages.locked_editions(
@@ -426,7 +431,11 @@ class Pipeline:
                         else "Review recorded. For a YouTube package, produce and review the full video, then export."
                     )
                 else:
-                    detail += "Open the saved assets below, check them, then record your review."
+                    detail += (
+                        "Watch and listen to the full episode, check its subtitles, then record one approval for all three."
+                        if full_video
+                        else "Listen to the audio, check its subtitles, then record approval."
+                    )
                 return ReviewSnapshot(
                     self.review_identity(edition),
                     detail,
@@ -434,6 +443,7 @@ class Pipeline:
                     str(edition.audio / "captions.srt"),
                     str(edition.video / "episode.mp4") if edition.video else "",
                     full_video,
+                    approved=status == "approved",
                 )
         except (ValueError, OSError) as exc:
             return ReviewSnapshot("", f"Review unavailable: {exc}")
@@ -452,6 +462,10 @@ class Pipeline:
                 raise ValueError(
                     "Edition changed while you were reviewing. Refresh and check the new assets."
                 )
+            if not expected.full_video and packages.review_status(edition) == "approved":
+                # An optional audio-only recheck must not erase the existing fuller
+                # approval for these exact audio bytes. The identity is checked above.
+                return
             packages.record_review(edition, reviewer)
 
     def request(

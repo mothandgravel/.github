@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.job_history import resolved_failures
 from field_notes_studio.presentation.controls import ActionButton
 from field_notes_studio.presentation.theme import SUCCESS, WARNING, set_text
 
@@ -11,6 +12,8 @@ class ProductionQueue(ttk.Frame):
     def __init__(self, parent, stop, retry, select, history, open_result, review):
         super().__init__(parent, padding=(0, 16, 0, 0))
         self.jobs = {}
+        self.resolved = set()
+        self.production_busy = False
         heading = ttk.Frame(self)
         heading.pack(fill="x", pady=(0, 8))
         heading.columnconfigure(0, weight=1)
@@ -74,6 +77,10 @@ class ProductionQueue(ttk.Frame):
         )
         self.detail.pack(anchor="w", pady=8)
 
+    def production_working(self, value):
+        self.production_busy = value
+        self.update_controls()
+
     def selection(self):
         selected = self.tree.selection()
         return selected[0] if selected else None
@@ -93,10 +100,14 @@ class ProductionQueue(ttk.Frame):
                 job
                 and job.status in {"failed", "interrupted", "cancelled", "waiting"}
                 and not conflicting
+                and job.identifier not in self.resolved
             ),
             "open": bool(job and job.status == "succeeded" and job.result),
             "review": bool(
-                job and job.status == "succeeded" and job.action in {"audio", "video", "prepare"}
+                job
+                and job.status == "succeeded"
+                and job.action in {"audio", "video", "prepare"}
+                and not (job.action == "prepare" and (self.production_busy or conflicting))
             ),
         }
         for name, button in self.buttons.items():
@@ -154,7 +165,12 @@ class ProductionQueue(ttk.Frame):
         self.jobs = {job.identifier: job for job in jobs}
         running = sum(job.status == "running" for job in jobs)
         queued = sum(job.status == "queued" for job in jobs)
-        attention = sum(job.status in {"failed", "interrupted", "waiting"} for job in jobs)
+        self.resolved = resolved_failures(jobs)
+        attention = sum(
+            job.status in {"failed", "interrupted", "waiting"}
+            and job.identifier not in self.resolved
+            for job in jobs
+        )
         self.summary.configure(
             text=f"Queue · {running} running · {queued} queued · {attention} need attention"
             if jobs
@@ -187,6 +203,9 @@ class ProductionQueue(ttk.Frame):
                 stage = "Inspect recovery"
             if job.action == "prepare" and job.status == "succeeded":
                 status, stage = "Recording ready", "Next: Produce episode"
+            historical = job.identifier in self.resolved
+            if historical:
+                status, stage = "Earlier attempt", "Later attempt completed"
             values = (
                 job.episode,
                 "Prepare recording" if job.action == "prepare" else job.action,
@@ -195,7 +214,7 @@ class ProductionQueue(ttk.Frame):
             )
             tags = (
                 ("attention",)
-                if job.status in {"failed", "interrupted", "waiting"}
+                if job.status in {"failed", "interrupted", "waiting"} and not historical
                 else ("complete",)
                 if job.status == "succeeded"
                 else ()

@@ -51,7 +51,7 @@ class PreparationService:
                 item = replace(
                     item,
                     state="Ready for production",
-                    detail="Narration and captions are available. Open in production, choose full video, then inspect and queue. This is not media approval or publication.",
+                    detail="Narration and captions are ready. Open in production, then Produce episode for audio and video together. Review and publication remain separate.",
                 )
             elif (job := latest.get(item.episode)) and job.status in {
                 "failed",
@@ -63,8 +63,11 @@ class PreparationService:
                     state="Needs recovery",
                     job_id=job.identifier,
                     detail=(
+                        f"Job history from the last refresh · {job.identifier[:8]} · created {job.created}\n"
                         f"{item.episode}: {job.status} at {job.stage}. {job.error}\n"
-                        "Inspect script / recovery to see the saved chunks and permitted next action. Do not delete receipts or restart the whole episode."
+                        "This is a saved job result, not a fresh read of the narration receipts. "
+                        "Refresh notes for current job state, or inspect script / recovery for current receipts. "
+                        "Do not delete receipts or restart the whole episode."
                     ),
                 )
             values.append(item)
