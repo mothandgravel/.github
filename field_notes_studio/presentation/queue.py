@@ -115,6 +115,10 @@ class ProductionQueue(ttk.Frame):
 
     def render(self, jobs):
         if jobs:
+            if not self.jobs:
+                self.detail.configure(
+                    text="Select a job to inspect its recipe, status and saved output."
+                )
             if not self.region.winfo_manager():
                 self.region.pack(fill="x", before=self.detail)
         else:

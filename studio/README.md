@@ -1,6 +1,9 @@
 # Moth & Gravel production studio
 
-![A real episode in the Tkinter production workspace](workspace.png)
+![The native Tk studio with labelled pictograms and an inspected production plan](workspace.png)
+
+Real desktop screenshot from the automated UI fixture; media and publication states
+in these checks are controlled examples.
 
 A Tkinter/ttk workspace for the existing local production engine. Choose a prepared
 episode, inspect the consequences of pace/outro changes, queue an edition, listen

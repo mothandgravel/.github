@@ -9,24 +9,28 @@ from field_notes_studio.presentation.icons import icon
 class Shelf(ttk.Frame):
     def __init__(self, parent, select):
         super().__init__(parent, padding=(0, 0, 16, 0))
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(3, weight=1)
         self.episodes = []
         self.current = None
         self.select = select
-        ttk.Label(self, text="EPISODES", style="Heading.TLabel").pack(anchor="w", pady=(0, 8))
+        ttk.Label(self, text="EPISODES", style="Heading.TLabel").grid(
+            row=0, column=0, sticky="w", pady=(0, 8)
+        )
         ttk.Label(
             self,
             text="Search by title or note number",
             image=icon(self, "search"),
             compound="left",
             style="Muted.TLabel",
-        ).pack(anchor="w", pady=(0, 4))
+        ).grid(row=1, column=0, sticky="w", pady=(0, 4))
         self.query = tk.StringVar()
         entry = ttk.Entry(self, textvariable=self.query)
-        entry.pack(fill="x", pady=(0, 10))
+        entry.grid(row=2, column=0, sticky="ew", pady=(0, 10))
         entry.bind("<Escape>", lambda _: self.query.set(""))
         self.query.trace_add("write", lambda *_: self.render())
         region = ttk.Frame(self)
-        region.pack(fill="both", expand=True)
+        region.grid(row=3, column=0, sticky="nsew")
         self.tree = ttk.Treeview(
             region, columns=("publication",), show="tree headings", selectmode="browse"
         )
@@ -41,12 +45,13 @@ class Shelf(ttk.Frame):
         scrollbar.pack(side="right", fill="y")
         self.tree.bind("<<TreeviewSelect>>", self._selected)
         self.count = ttk.Label(self, text="Loading episodes…", style="Muted.TLabel")
-        self.count.pack(anchor="w", pady=(8, 0))
-        ttk.Label(
+        self.count.grid(row=4, column=0, sticky="w", pady=(8, 0))
+        self.help = ttk.Label(
             self,
             text="Catalog links fill automatically.\nSaved records take precedence.",
             style="Muted.TLabel",
-        ).pack(anchor="w", pady=(4, 0))
+        )
+        self.help.grid(row=5, column=0, sticky="w", pady=(4, 0))
 
     def load(self, episodes):
         self.episodes = episodes

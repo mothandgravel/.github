@@ -322,6 +322,8 @@ class UITests(unittest.TestCase):
         x, y, _, _ = bounds
         visible = self.root.winfo_containing(tree.winfo_rootx() + x + 5, tree.winfo_rooty() + y + 5)
         self.assertIs(visible, tree)
+        self.assert_visible(self.app.shelf.count)
+        self.assert_visible(self.app.shelf.help)
         bottom = self.app.message.winfo_rooty() + self.app.message.winfo_height()
         self.assertLessEqual(bottom, self.root.winfo_rooty() + self.root.winfo_height())
 
@@ -486,6 +488,7 @@ class UITests(unittest.TestCase):
         self.queue_job(episode="note-002")
         self.root.update()
         self.assertEqual(self.app.jobs.tree.item(interrupted, "values")[2], "Interrupted")
+        self.assertNotIn("Jobs will appear here", self.app.jobs.detail["text"])
         publication.copy_button.invoke()
         self.root.update()
         self.capture("release-copy-feedback")
