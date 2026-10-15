@@ -542,6 +542,7 @@ class UITests(unittest.TestCase):
         self.assertTrue(files.open.instate(["disabled"]))
         self.assertTrue(files.copy.instate(["disabled"]))
         self.assertIn("Inspect package", files.summary.get("1.0", "end"))
+        self.assertFalse(files.folder.instate(["disabled"]))
 
     def test_package_file_actions_copy_picker_path_and_reset_for_another_asset(self):
         files = self.show_package_files()
@@ -595,6 +596,11 @@ class UITests(unittest.TestCase):
         self.assertNotEqual(files.copy["text"], "Path copied")
         self.assertFalse(files.copy.instate(["disabled"]))
         self.assertFalse(files.refresh.instate(["disabled"]))
+        files.clear("Package files changed. Export again.")
+        with patch.object(self.app.controller.studio, "open_output") as opened:
+            files.folder.invoke()
+            self.wait(lambda: opened.called)
+            opened.assert_called_once_with("note-001", "uploads")
 
     def test_package_files_actions_fit_minimum_window_with_an_active_queue(self):
         self.root.geometry("1050x760")

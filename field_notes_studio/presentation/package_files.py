@@ -85,7 +85,6 @@ class PackageFiles(ttk.Frame):
             pictogram="folder",
             text="Open folder",
             command=lambda: callbacks["open"]("uploads"),
-            state="disabled",
             style="Compact.TButton",
         )
         self.folder.pack(side="left")
@@ -126,9 +125,6 @@ class PackageFiles(ttk.Frame):
         self.path.set(asset.path if asset else "")
         self.open.reset_feedback()
         self.copy.reset_feedback()
-        self.folder.configure(
-            state="normal" if self.snapshot and self.snapshot.identity else "disabled"
-        )
         for button in (self.open, self.copy):
             button.configure(state="normal" if asset else "disabled")
 
