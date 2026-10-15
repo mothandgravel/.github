@@ -2,7 +2,7 @@
 <title id="title">A window onto work that persists</title><desc id="desc">The desktop reads and writes a local journal of drafts and captured job recipes. A separate worker claims those jobs and writes saved media. Reopening the desktop reads the journal and checks the saved media for human review.</desc>
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#82632e"/></marker></defs>
 <rect width="1200" height="650" fill="#f1eee7"/>
-<g fill="#242b27" font-family="Arial, sans-serif"><text x="56" y="58" font-size="17" letter-spacing="2">FIELD NOTE 012 / WHO OWNS THE WORK?</text>
+<g fill="#242b27" font-family="Arial, sans-serif"><text x="56" y="58" font-size="17" letter-spacing="2">FIELD NOTE 013 / WHO OWNS THE WORK?</text>
 <rect x="360" y="95" width="480" height="112" rx="3" fill="#fffdf8" stroke="#82632e" stroke-width="2" stroke-dasharray="8 6"/>
 <text x="388" y="132" font-size="24">Desktop window</text><text x="388" y="164" font-size="18">Inspect · edit · return to the work</text><text x="388" y="188" font-size="16" fill="#59645c">This part can close.</text>
 <rect x="56" y="290" width="470" height="118" rx="3" fill="#fffdf8" stroke="#c9c4b6"/>

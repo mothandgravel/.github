@@ -296,7 +296,7 @@ versions when resolving a conflict. An unchanged window can close without rewrit
 the shared draft. Use updated Studio windows together; old running GUI processes do
 not gain this protection until reopened.
 
-[Field Note 012: The work outlives the window](../docs/notes/012-work-outlives-the-window.html)
+[Field Note 013: The work outlives the window](../docs/notes/013-work-outlives-the-window.html)
 documents the experiment with a real desktop fixture capture and pinned first-pass
 validation. Its source-preserving narration candidate and publishing tags are ready;
 no narration request or new podcast publication was made for the written release.
@@ -306,7 +306,7 @@ The next useful passes, in order:
 1. **A new note into the shelf:** surface notes whose narration/captions are still
    missing, show the script and prerequisites, and inspect generation before any
    service request. Studio currently lists prepared recordings.
-2. **A human release rehearsal:** take note-012 through narration, caption checks,
+2. **A human release rehearsal:** take note-013 through narration, caption checks,
    production, media review and the actual browser handoff. Record decisions and
    interruptions; automated layout checks do not establish everyday usability.
 3. **Collection readiness:** show which episodes need audio, full video, review or

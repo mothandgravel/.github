@@ -1,73 +1,71 @@
-Moth and Gravel. Field Note 12. The work outlives the window.
+Moth and Gravel. Field Note 12. The picture stays.
 
 An AI-narrated edition of the published note.
 
-An episode is rendering. You close its window. What should happen when you open it again?
+We stopped the local server. The coastline stayed where it was. So did the last vessel positions.
 
-That question became a useful test for our podcast experiment. We already had the pieces: written Field Notes, narration, music, retimed captions and a video renderer. They could produce an episode. A person still had to remember which command came next, which folder held the result and which version they had actually checked.
+The picture still had its shape. Helsinki above, Tallinn below, a few marks in the water between them. There was plenty left to look at. The connection message had changed, and the age beside the selected observation kept growing.
 
-We wanted a small workbench for that journey. Somewhere to change the sound, inspect the consequences, let the machine work and come back with enough context to continue.
+That quiet interval became the useful part of Coastal watch.
 
-A familiar material
+A coastline lends conviction
 
-We used Tkinter. The production engine was already Python, and an earlier robot workbench had given us useful experience with Tk: themed sections, background work and a queue that hands results back to the interface.
+Coastal watch began with a maritime dashboard in Raivari’s defense concept. A track plot needed a place to belong. We gave it a basemap, then worked on selecting a mark and keeping its record close.
 
-That made it a reasonable material for this experiment. The studio could live beside the existing engine in Ubuntu or WSL, with ordinary desktop controls and no separate web service to operate. We kept the production engine behind an adapter so that the interface could change without taking ownership of everything underneath it.
+The coastline helped immediately: a position could be read in relation to a shore. Zooming gave the view a different scale. Selecting a track linked the mark to a source, a time and a short history.
 
-The first useful shape was three stages: Produce, Review and Release. Each stage needed a clear answer to a different question. What will change? What have I checked? What is ready to take to the publisher?
+It also made the whole thing look more settled. A recognisable coast gives a drawing some borrowed authority. The land can be real while every vessel on it is synthetic. In this study, that is exactly the arrangement.
 
-Give the job a life of its own
+Finishing the picture gave us another obligation: make its limits as easy to find as its details.
 
-The important decision was where the work should live.
+There is more than one clock
 
-The window holds an editable view. A local journal keeps drafts, queued recipes and job results. A separate worker owns production. Closing the window leaves that worker and its queue in place.
+A message has an observation time. The dashboard also has a time when it received that message. Those are two useful pieces of information.
 
-The diagram in the written edition separates four responsibilities, with the window allowed to disappear. It describes the implemented ownership boundary.
+A recently received message can describe an older position. A connected stream can carry an ageing observation. The reassuring word “connected” answers a question about the connection; the mark still needs a time of its own.
 
-Suppose an episode is queued at 1.15 times the original pace. Changing the control afterwards should affect the next plan. The job already in the queue keeps the recipe that was inspected.
+We kept observation age and receipt age separate. The selected record puts the source and observation age beside the position and movement. You can look into one mark without giving up the surrounding water.
 
-Unfinished edits have a different need. Half a date or an empty numeric field is perfectly ordinary while someone is typing. We preserve that raw text as a draft and validate it when the person asks to use it. Returning to the work should not require reconstructing a thought that happened to be incomplete.
+That is a small arrangement of labels. It changes what the reader has to remember.
 
-A restart can also leave an uncertain result. In that case the journal says interrupted. There is a saved record to inspect and an explicit retry. Guessing that a job succeeded would make the interface easier to colour green and harder to trust.
+Let the gap become visible
 
-Let the labels earn their confidence
+The server has stopped. The last position remains, its age continues to grow, and the interface offers a reload. Actual capture from the synthetic rehearsal. See the interruption in the short film
 
-A saved video, a checked video and a published video are different events.
+Removing every mark when the connection drops would remove useful context too. Leaving the picture untouched would make the gap hard to see.
 
-Review therefore belongs to the saved edition. Listen to it, check its captions, watch the full video where appropriate, and record the confirmations. If the media changes, the earlier approval cannot quietly move across to it. Reopening the window restores the workspace; the review checkboxes need attention again.
+In the prototype, the last position stays. The connection state changes. The age continues to count, even though no new message arrives to prompt it.
 
-Release makes the handoff tangible. It lists the actual video, thumbnail, subtitle files, audio and transcript, with their sizes. Upload copy comes from the checked package when one exists. There is a route to open a file, a folder or YouTube Studio, and a Windows-compatible upload path when the tool is running in WSL.
+The retained position now has a more modest job: this is where the last observation put the vessel. The screen has no new observation to offer.
 
-“Ready for manual upload” describes those local checks. The person still uploads the package and records the real publication details. A local success message cannot establish what happened in another service.
+We made the interruption by stopping the local server. The recording shows that behaviour. It does not tell us whether someone arriving halfway through the gap would understand it.
 
-A small window exposes a large assumption
+Keep the record within reach
 
-The design acquired the studio’s paper, ink and brass, labelled pictograms and visible feedback. The more revealing work was making it fit.
+A mark is good at attracting attention. Its record gives that attention somewhere to go.
 
-One desktop test run passed while its screenshots showed an awkward result: the publishing buttons were visible, but the editable fields had been squeezed away at the minimum window size. The batch checklist had the same problem. We had checked that the actions existed without checking that the material they acted on remained usable.
+The reported identifier, source, age and recent positions belong together. A quality figure needs its own explanation: the demonstration heuristic in this dashboard cannot establish a vessel’s identity or intent. Zooming closer cannot supply that missing evidence either.
 
-We shortened the guidance, removed competing folder actions from those focused panels and made the checks cover the fields and choices themselves. The screenshot was evidence about a question the earlier assertions had missed.
+This is where polish becomes more than a surface. The selection colour needs to connect the chart and the record. The words need to say what was observed. The older position needs to remain recognisably older.
 
-A second window exposes another boundary worth making explicit. Two copies of the interface can hold different drafts of one episode. A newer checkpoint needs an identity, and the other window needs a chance to resolve that conflict while keeping its edits. “Saved” should mean that this version was saved.
+Ask someone to read the silence
 
-Enough to use, with a next question
+The next useful study is quite plain. Show someone the interrupted view, without explaining it first. Ask where the selected vessel is, how they know, and what they would want to check next.
 
-By the end of the first complete pass, the studio had durable drafts, sound controls, editable publishing copy, batch inspection and worker health. Its verification included 86 tests, with 31 exercising real Tk controls. A separate production run finished all 13 existing recordings, checked their retimed captions and rendered short video previews and thumbnails. A repeat run checked cache reuse.
+Listen for the difference between “it is here” and “it was last seen here”. Then ask them to find the source and the age. A label can be present without doing its work.
 
-Those are useful boundaries for the result. They establish considerably more than a promising mockup. They do not replace listening to the finished episodes or completing the browser upload.
+We have not run that observation yet. For now, Coastal watch gives us a working picture and a gap we can repeat. Enough to put a better question in front of someone.
 
-The next question is close at hand: can this workbench help us release its own Field Note without someone keeping the terminal sequence in their head?
+The water stays on the screen. The account of it needs to keep its time.
 
-There is still a gap at the beginning. Studio starts from prepared recordings. A new written note needs a narration script, a deliberate generation step and captions before it reaches that shelf. That handoff deserves the same care as the final upload: visible prerequisites, an inspectable plan and a clear account of any service being used.
+STUDY SCOPE / WORKING PROTOTYPE
 
-For now, the experiment has become a usable local tool for the episodes we already have. The next specimen is this note.
+What this picture contains.
 
-EXPERIMENT RECORD / WORKING SOFTWARE
+This note accompanies the Coastal watch specimen and its recorded local rehearsal. The basemap uses Natural Earth land geometry. Vessel tracks are synthetic; alert examples are separate static fixtures. The dashboard does not run the track-fusion pipeline.
 
-What this pass establishes.
+The captures show selection, zoom and a real interruption of the local demo stream. The 27-second silent film has direct cuts where capture gaps were removed. The application source is private. No operator comprehension result or operational validation is established.
 
-The first-pass counts and desktop capture refer to the implementation linked in the written edition. Its native desktop checks and real-media production run passed. The capture is a controlled fixture, and the ownership graphic is a schematic. The production run rendered short previews, rather than full-length videos of the entire collection.
-
-The continuing implementation and Studio guide contain the current behaviour and validation. Native Windows packaging, embedded playback and authenticated publishing remain outside this local Linux/WSL experiment. Narration and publication of this note are separate steps from the verification described here.
+Inspect the captures and working record · Read the source and media provenance
 
 You have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.

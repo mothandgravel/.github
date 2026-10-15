@@ -42,7 +42,7 @@ def build(check=False):
                 'headline': note['title'], 'description': note['summary'],
                 'inLanguage': 'en', 'mainEntityOfPage': {'@id': page['@id']},
                 'author': {'@id': organization['@id']}, 'publisher': {'@id': organization['@id']},
-                'image': DOMAIN + ('assets/notes/' + note['id'] + '-cover-social.jpg' if note.get('cover') else 'assets/social-cover.png'),
+                'image': DOMAIN + note.get('socialImage', 'assets/notes/' + note['id'] + '-cover-social.jpg' if note.get('cover') else 'assets/social-cover.png'),
                 'keywords': note['topics'],
             }]
             page['mainEntity'] = {'@id': url + '#article'}

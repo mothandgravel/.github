@@ -282,7 +282,29 @@
   },
   {
     "id": "012",
-    "slug": "012-work-outlives-the-window.html",
+    "slug": "012-the-picture-stays.html",
+    "title": "The picture stays.",
+    "summary": "The stream stops. The last position remains. A Coastal watch study in maps, observation age and the confidence a finished picture can borrow.",
+    "date": "2026-10-15",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "Coastal watch / Raivari",
+    "socialImage": "assets/specimens/coastal-watch/04-stream-interrupted.jpg",
+    "related": [
+      "005",
+      "006",
+      "007"
+    ],
+    "visual": "forms",
+    "featured": false
+  },
+  {
+    "id": "013",
+    "slug": "013-work-outlives-the-window.html",
     "title": "The work outlives the window.",
     "summary": "A podcast pipeline becomes a small desktop workbench. What closing its window taught us about drafts, jobs, review and a trustworthy route to release.",
     "date": "2026-10-15",
@@ -303,8 +325,8 @@
     "visual": "forms",
     "featured": true,
     "cover": {
-      "small": "012-cover-800.webp",
-      "large": "012-cover-1600.webp",
+      "small": "013-cover-800.webp",
+      "large": "013-cover-1600.webp",
       "width": 1600,
       "height": 900
     }

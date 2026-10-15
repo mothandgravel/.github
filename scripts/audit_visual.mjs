@@ -409,6 +409,7 @@ try {
     { name: "note-009", path: "/notes/009-place-to-stand.html", heading: ".telemetry-heading h1", social: "https://mothandgravel.com/assets/notes/009-cover-social.jpg" },
     { name: "note-010", path: "/notes/010-almost-the-same.html", heading: ".telemetry-heading h1", social: "https://mothandgravel.com/assets/notes/010-cover-social.jpg" },
     { name: "note-011", path: "/notes/011-model-needs-a-place.html", heading: ".telemetry-heading h1", social: "https://mothandgravel.com/assets/notes/011-cover-social.jpg" },
+    { name: "note-012", path: "/notes/012-the-picture-stays.html", heading: ".telemetry-heading h1", social: "https://mothandgravel.com/assets/specimens/coastal-watch/04-stream-interrupted.jpg", studyFigure: '.freshness-figure img[src="../assets/specimens/coastal-watch/04-stream-interrupted.jpg"]' },
     { name: "note-telemetry", path: "/notes/007-fast-signals.html", heading: ".telemetry-heading h1" },
   ]) {
     for (const viewport of widths) {
@@ -491,7 +492,7 @@ try {
       }
       if (editorial.social) {
         assert(await page.locator('.note-cover-figure img').count() === 1, label + ': editorial cover missing');
-        assert(await page.locator('.freshness-figure img[src$=".svg"]').count() === 1, label + ': scalable study diagram missing');
+        assert(await page.locator(editorial.studyFigure || '.freshness-figure img[src$=".svg"]').count() === 1, label + ': study figure missing');
         assert(await page.locator('#study-status').count() === 1, label + ': study scope missing');
         assert(layout.hasIndexRoute, label + ': missing back route to Field Notes');
         assert(!/digablesolutions|\b[0-9a-f]{40}\b/.test(await page.locator('.note-prose').innerText()), label + ': repository identifiers leaked into reading copy');
@@ -623,8 +624,16 @@ try {
   await newNote.locator('.note-feature .editorial-link').click();
   await newNote.locator('.note-heading h1').waitFor();
   assert(newNote.url().endsWith('/notes/' + featured.slug), 'Featured note route failed');
-  await newNote.locator('.note-aside a').click();
-  assert(newNote.url().endsWith('#study-status'), 'Component study scope link failed');
+  const scopeLink = newNote.locator('.note-aside a');
+  const scopeTarget = await scopeLink.getAttribute('href');
+  assert(/^#[a-z0-9-]+$/.test(scopeTarget) && await newNote.locator(scopeTarget).count() === 1,
+    'Featured note scope link has no unique local destination');
+  await scopeLink.click();
+  assert(newNote.url().endsWith(scopeTarget), 'Featured note scope link failed');
+  assert(await newNote.locator(scopeTarget).evaluate(element => {
+    const box = element.getBoundingClientRect();
+    return box.top < innerHeight && box.bottom > 0;
+  }), 'Featured note scope link did not reveal its destination');
   const neighbor = catalog.find(n => n.id === featured.related[0]);
   await newNote.locator(`.note-related a[href="./${neighbor.slug}"]`).click();
   await newNote.locator('.note-heading h1').waitFor();

@@ -13,7 +13,7 @@ The [Field Notes audio workflow](audio/README.md) covers every published note, a
 The [local production studio](studio/README.md) opens with `python3 -m field_notes_studio`
 in Ubuntu/WSL. Its Tkinter workspace restores unfinished drafts, edits sound and publishing
 copy, inspects individual or batch plans, and reconnects to durable production jobs.
-[Field Note 012](docs/notes/012-work-outlives-the-window.html) follows the experiment
+[Field Note 013](docs/notes/013-work-outlives-the-window.html) follows the experiment
 from a pipeline to a usable desktop workbench.
 
 ## Keeping the site useful
