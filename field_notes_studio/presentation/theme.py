@@ -63,6 +63,7 @@ def apply(root) -> None:
         lightcolor=BRASS,
         darkcolor=BRASS,
         bordercolor=BRASS,
+        focuscolor=SURFACE,
     )
     style.map(
         "Accent.TButton",
