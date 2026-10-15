@@ -52,6 +52,7 @@ try {
     for(const [i,id] of ['reading','reply','promise'].entries()) {
       await nav.nth(i).focus();await page.keyboard.press('Enter');
       await atFragment(page,id,`keyboard-${theme}-${width}-${id}`);
+      assert(await page.evaluate(()=>document.activeElement.id)===id,'Keyboard focus follows the selected stop');
     }
     const motion=await page.locator('.thread-wire').first().evaluate(el=>getComputedStyle(el).animationName);
     assert(motion==='none','Reduced motion keeps thread still');
@@ -76,7 +77,9 @@ try {
       assert(await page.locator('#making').inputValue()==='','Prompt does not fill visitor’s words');
       assert(await page.evaluate(()=>sessionStorage.getItem('mg-loose-end-v1'))===null,'Prompt creates no draft');
       await review(page,`thread-prompt-${theme}-${width}`,true);
-      await page.getByRole('link',{name:'Write your version below'}).click();
+      await page.getByRole('link',{name:'Write your version below'}).focus();
+      await page.keyboard.press('Enter');await page.keyboard.press('Tab');
+      assert(await page.evaluate(()=>document.activeElement.name)==='intent','Keyboard handoff reaches the visitor’s answers');
       await page.locator('#question-next').click();
       await page.locator('#making').fill('People cannot tell whether their export finished.');
       for(let i=0;i<4;i++) await page.locator('#question-next').click();
@@ -84,6 +87,13 @@ try {
       assert(brief.includes('export finished')&&!brief.includes('LiveConnect')&&!brief.includes('What did the surface say?'),'Brief contains only visitor’s words');
       const downloading=page.waitForEvent('download');await page.locator('#download-brief').click();
       assert((await readFile(await (await downloading).path(),'utf8'))===brief,'Download preserves literal brief');
+      await page.locator('#carry-question').click();
+      await page.locator('#your-question').waitFor({state:'visible'});
+      assert(await page.locator('#carried-brief').textContent()===brief,'Workbench carries the exact visitor brief after the thread');
+      assert(await page.locator('#original-question').textContent()==='People cannot tell whether their export finished.','Thread material stays separate from the carried question');
+      await page.getByRole('link',{name:'Back to your question'}).click();
+      assert(!await page.locator('#signals-context').isVisible(),'Ordinary return does not show an unrequested thread prompt');
+      assert(await page.locator('#making').inputValue()==='People cannot tell whether their export finished.','Return keeps the visitor’s question');
     }
     assert(!errors.length,JSON.stringify({width,theme,errors}));
     await context.close();
@@ -94,6 +104,7 @@ try {
   const page=await context.newPage(), requests=[];
   page.on('request',r=>requests.push({url:r.url(),method:r.method()}));
   await page.goto(origin+'/questions/');
+  assert(!await page.locator('#signals-context').isVisible(),'Direct question-sheet entry retains its usual introduction');
   const saved=JSON.stringify({version:1,answers:{making:'My own question.',difficulty:'An ambiguous answer.',materials:'private-marker-thread-201'},brief:'My edited brief. Keep every word.'});
   await page.evaluate(value=>{sessionStorage.setItem('mg-loose-end-v1',value);sessionStorage.setItem('mg-mending-workbench-v1','{"version":1,"note":"Keep this observation"}');},saved);
   await page.goto(origin+route);
@@ -119,6 +130,32 @@ try {
   await deniedPage.locator('#question-next').click();await deniedPage.locator('#making').fill('My signal is ambiguous.');
   assert(await deniedPage.locator('#making').inputValue()==='My signal is ambiguous.','Works when storage is denied');
   await denied.close();
+
+  // Optional motion finishes while reading and link hit areas stay still.
+  const motionContext=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
+  const moving=await motionContext.newPage();
+  await moving.goto(origin+route);
+  const label=moving.locator('.thread-map a').first();
+  await label.scrollIntoViewIfNeeded();
+  const before=await label.boundingBox();
+  await label.hover();
+  await moving.waitForFunction(()=>document.querySelector('.thread-wire').getAnimations().some(a=>a.playState==='running'));
+  await moving.waitForFunction(()=>document.querySelector('.thread-wire').getAnimations().every(a=>a.playState==='finished'));
+  assert(JSON.stringify(before)===JSON.stringify(await label.boundingBox()),'Optional glint never moves the question or its hit area');
+  await moving.locator('#menu-toggle').click();
+  assert(await moving.locator('.nav-sheet-invitation').getAttribute('href')===origin+'/questions/','Nested thread masthead resolves the correct question route');
+  await moving.keyboard.press('Escape');
+  assert(await moving.locator('#menu-toggle').evaluate(el=>el===document.activeElement),'Closing the menu restores keyboard focus');
+  await moving.goto(origin+'/notes/');
+  await moving.locator('#collection-thread-title a').click();
+  await moving.waitForURL(origin+route);
+  assert(await moving.locator('.thread-map').isVisible(),'The archive offers a working entry outside its filtered note list');
+  await motionContext.close();
+  const touchContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'no-preference'});
+  const touching=await touchContext.newPage();await touching.goto(origin+route);
+  await touching.locator('.thread-map a').first().tap();
+  assert(await touching.locator('.thread-wire').first().evaluate(el=>getComputedStyle(el).animationName)==='none','Touch receives a still thread');
+  await touchContext.close();
 
   // Native routes remain complete when scripts are absent or fail to load.
   for(const mode of ['no-javascript','blocked-scripts']) {
