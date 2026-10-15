@@ -289,8 +289,31 @@ def main() -> int:
         check(theme_html.count('class="study-metric"') == 6, "Theme study needs six color pair measurements")
         check('href="./"' in theme_html, "Theme study must link back to the Field Notes index")
 
+    # Curated routes must work as ordinary documents, including return fragments.
+    thread_page = ROOT / 'threads/something-happened/index.html'
+    thread_html = thread_page.read_text()
+    thread_parser = SiteParser()
+    thread_parser.feed(thread_html)
+    for anchor in thread_parser.anchors:
+        check(anchor in thread_parser.ids, f'Thread broken anchor #{anchor}')
+    for relative in re.findall(r'(?:href|src)="([^"]+)"', thread_html):
+        url = urlsplit(relative)
+        if url.scheme or url.netloc or not url.path:
+            continue
+        target = (thread_page.parent / url.path).resolve()
+        if target.is_dir():
+            target /= 'index.html'
+        check(target.is_relative_to(ROOT.resolve()) and target.is_file(),
+              f'Thread missing local destination: {relative}')
+        if url.fragment and target.is_file():
+            destination = SiteParser()
+            destination.feed(target.read_text())
+            check(url.fragment in destination.ids, f'Thread missing destination fragment: {relative}')
+    check('https://mothandgravel.com/threads/something-happened/' in (ROOT / 'sitemap.xml').read_text(),
+          'Curated thread missing from sitemap')
+
     # Discovery must survive a text-only request and agree with the public record.
-    for file in [ROOT / 'index.html', note_index, connection_page, mapping_page] + [ROOT / 'notes' / n['slug'] for n in catalog]:
+    for file in [ROOT / 'index.html', note_index, connection_page, mapping_page, thread_page] + [ROOT / 'notes' / n['slug'] for n in catalog]:
         source = file.read_text()
         blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', source, re.S)
         check(len(blocks) == 1, f'{file.name}: expected one generated identity graph')
