@@ -1,0 +1,68 @@
+{
+  "title": "Coastal watch",
+  "studio": "Moth & Gravel",
+  "workingTitle": "The water between updates.",
+  "question": "How much can a mark on a map honestly tell us?",
+  "suggestedCaption": "A working maritime observation interface. Real coastline, synthetic tracks. Select a mark to inspect its source, timing and recorded movement; interrupt the stream to see what remains.",
+  "capturedOn": "2026-10-15",
+  "source": {
+    "repository": "https://github.com/navivra/raivari",
+    "branch": "codex/coastal-watch-specimen",
+    "commit": "397a91e875aa942bdefb31dacb9c49099b0dc7fe",
+    "basemapCommit": "eb4bec0",
+    "availability": "Revision committed locally at capture time; repository link does not imply this revision is published."
+  },
+  "recording": {
+    "method": "634 browser screenshot frames captured from the running application, encoded with their capture intervals at 30 output frames per second.",
+    "edits": "10.85 seconds of uncaptured gaps removed with direct cuts. The interface clock can jump at those cuts. No fabricated observations or interpolated movement. Silent.",
+    "dimensions": "Native 1275 by 884 browser capture; video padded by one pixel for H.264 compatibility. No upscaling."
+  },
+  "boundaries": [
+    "Tracks and alert examples are synthetic; coastline is real Natural Earth public-domain land geometry.",
+    "Demo alerts are static fixtures independent of the moving vessel tracks.",
+    "Dashboard does not run the track-fusion pipeline. Quality is a demo heuristic, not identity or threat confidence.",
+    "Observation age and receipt age are distinct. Reconnection is manual through Reload preview and demo-role selection.",
+    "No operator comprehension study, operational validation or certification is established."
+  ],
+  "assets": [
+    {
+      "caption": "Between two shores. The regional chart and the observed-picture summary.",
+      "alt": "Coastal watch dashboard with a Gulf of Finland coastline, twelve synthetic tracks and an observation summary.",
+      "file": "assets/specimens/coastal-watch/01-overview.jpg",
+      "sha256": "3979d6ecb499c3487844ea50f745cf977a5c392d4f7bd4e03c6bec6dba7b4e62",
+      "bytes": 109411
+    },
+    {
+      "caption": "One mark, opened. Source, elapsed age, movement and bounded local history.",
+      "alt": "A brass selected track linked to an observation record with its MMSI, age, position, movement and recent history.",
+      "file": "assets/specimens/coastal-watch/02-observation-record.jpg",
+      "sha256": "9e7d59846fd95d4b6c14185f1069e49c2753b3219ad3460b0c4949312b5e075d",
+      "bytes": 105861
+    },
+    {
+      "caption": "A closer look at the water between Helsinki and Tallinn.",
+      "alt": "Zoomed Gulf of Finland coastline with a selected synthetic AIS track and its observation record.",
+      "file": "assets/specimens/coastal-watch/03-coastline-close.jpg",
+      "sha256": "986f39ba40904e5f7992b2ed4bc197c4c382bce0926a1b693857c7db9f063ea1",
+      "bytes": 99993
+    },
+    {
+      "caption": "The connection stops. The last position stays; its age continues to increase.",
+      "alt": "Disconnected dashboard retaining the last received position, showing an observation age of fifteen seconds and a Reload preview action.",
+      "file": "assets/specimens/coastal-watch/04-stream-interrupted.jpg",
+      "sha256": "d3db14bc80d3eba20383f43a1950a60d0d6818b41f8944688e91fb652aa8113f",
+      "bytes": 103596
+    },
+    {
+      "durationSeconds": 27.433333,
+      "width": 1276,
+      "height": 884,
+      "codec": "H.264",
+      "audio": false,
+      "caption": "Overview, track selection, closer coastline view, and a real interruption of the local demo stream.",
+      "file": "assets/specimens/coastal-watch/coastal-watch.mp4",
+      "sha256": "a75cdd96eb4815157cad6ca21d96276c99f0dd07ce0bf91f2819cafdc2062c6b",
+      "bytes": 747687
+    }
+  ]
+}

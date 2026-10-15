@@ -2,6 +2,15 @@
   "selection": "The owner authorised selection from the portfolio strategy and Navivra repositories. Planning material informed the shortlist; no customer research, pricing hypotheses or employment material is reproduced.",
   "artifacts": [
     {
+      "id": "coastal-watch",
+      "project": "Coastal watch",
+      "classification": "working application captures with synthetic observations",
+      "study": "../specimens/coastal-watch/",
+      "existingProvenance": "coastal-watch-provenance.json",
+      "method": "Four unchanged browser stills and an edited silent recording of a local Raivari build, including a real interruption of its demo server.",
+      "limits": "Real coastline, synthetic tracks and independent fixture alerts. No live feed, fusion-pipeline result or operator comprehension study."
+    },
+    {
       "id": "liveconnect",
       "project": "LiveConnect",
       "classification": "source-helper replay with authored fixtures",

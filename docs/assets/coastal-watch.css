@@ -1,0 +1,46 @@
+.coastal-main{padding-block:38px 80px;max-width:1260px;}
+.coastal-index{display:flex;justify-content:space-between;gap:24px;color:var(--secondary);margin-bottom:64px;}
+.coastal-index a{text-decoration:underline;text-underline-offset:5px;}
+.coastal-heading{display:grid;grid-template-columns:1.35fr 1fr;gap:64px;align-items:end;margin-bottom:44px;}
+.coastal-heading h1{font:900 clamp(46px,6.8vw,94px)/1 var(--sans);letter-spacing:-.055em;margin:0;}
+.coastal-heading h1 em,.coastal-question h2 em{font-family:var(--serif);font-weight:400;}
+.coastal-intro{font-size:17px;line-height:1.75;color:var(--secondary);max-width:48ch;}
+.coastal-intro p:last-of-type{margin-bottom:24px;}
+.coastal-capture{margin:0;border:1px solid var(--line);background:var(--surface);}
+.coastal-capture>a{display:block;}
+.coastal-capture img,.coastal-film video{display:block;width:100%;height:auto;}
+.coastal-capture figcaption{padding:18px 22px;font-size:13px;line-height:1.7;color:var(--secondary);}
+.coastal-capture figcaption strong{display:block;color:var(--ink);font-weight:500;margin-bottom:4px;}
+.coastal-capture figcaption a,.coastal-film figcaption a,.coastal-record a,.coastal-transcript a{color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px;}
+.coastal-scope{max-width:85ch;margin:22px 0 0;padding-left:18px;border-left:2px solid var(--gold);font-size:14px;line-height:1.8;color:var(--secondary);}
+.coastal-section{padding-top:72px;scroll-margin-top:110px;}
+.coastal-section-lead{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:28px;}
+.coastal-section h2,.coastal-question h2{font:900 clamp(30px,4vw,48px)/1.1 var(--sans);letter-spacing:-.04em;margin:14px 0 0;}
+.coastal-section-lead>p{color:var(--secondary);font-size:16px;line-height:1.75;max-width:52ch;margin:0;}
+.coastal-section .mono,.coastal-question .mono{color:var(--gold-bright);}
+.coastal-film{margin:0;}
+.coastal-film video{border:1px solid var(--line);background:#171c1e;aspect-ratio:1276/884;}
+.coastal-film figcaption{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-top:16px;font-size:13px;color:var(--secondary);}
+.coastal-transcript{padding:22px 0 0;max-width:80ch;line-height:1.75;color:var(--secondary);font-size:14px;}
+.coastal-transcript summary,.coastal-record summary{color:var(--ink);cursor:pointer;min-height:44px;padding-block:10px;}
+.coastal-transcript ol{padding-left:22px;}
+.coastal-transcript li{padding-bottom:10px;}
+.coastal-transcript strong{color:var(--ink);font-weight:500;}
+.coastal-observations{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;padding:44px 0 0;margin:0;list-style:none;}
+.coastal-observations li{padding-top:20px;border-top:1px solid var(--line);}
+.coastal-observations h3{font:400 27px/1.2 var(--serif);margin:14px 0 12px;}
+.coastal-observations p{color:var(--secondary);font-size:14px;line-height:1.8;margin:0;}
+.coastal-pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.coastal-pair .coastal-capture figcaption{min-height:150px;}
+.coastal-close{margin-top:24px;}
+.coastal-close summary{cursor:pointer;padding:16px 0;min-height:44px;color:var(--gold-bright);font-size:14px;}
+.coastal-record{border-block:1px solid var(--line);margin-top:32px;padding:12px 0;color:var(--secondary);font-size:14px;line-height:1.8;}
+.coastal-record>div{max-width:85ch;padding-block:12px;}
+.coastal-record p{margin-bottom:16px;}
+.coastal-record code{font-size:12px;overflow-wrap:anywhere;}
+.coastal-question{display:grid;grid-template-columns:1fr 1fr;gap:64px;padding-block:72px;border-bottom:1px solid var(--line);}
+.coastal-question>div:last-child{color:var(--secondary);font-size:16px;line-height:1.85;}
+.coastal-next{padding-top:40px;display:flex;gap:28px;align-items:baseline;flex-wrap:wrap;}
+.coastal-next p{font:italic 24px/1.4 var(--serif);margin:0;}
+@media(max-width:900px){.coastal-heading{grid-template-columns:1fr;gap:28px;}.coastal-intro{max-width:65ch;}.coastal-index{margin-bottom:40px;}.coastal-section-lead{gap:24px;}.coastal-pair{grid-template-columns:1fr;}.coastal-pair .coastal-capture figcaption{min-height:0;}.coastal-question{gap:28px;}}
+@media(max-width:660px){.coastal-main{padding-block:26px 48px;}.coastal-index{font-size:9px;align-items:start;gap:16px;}.coastal-index a{max-width:12ch;text-align:right;}.coastal-heading h1{font-size:clamp(40px,11vw,68px);}.coastal-intro{font-size:16px;}.coastal-section{padding-top:48px;}.coastal-section-lead,.coastal-question{grid-template-columns:1fr;gap:20px;}.coastal-observations{grid-template-columns:1fr;gap:22px;padding-top:30px;}.coastal-capture figcaption{padding:14px 16px;}.coastal-film figcaption{gap:12px;}.coastal-question{padding-block:48px;}.coastal-next{gap:16px;}}

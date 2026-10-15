@@ -148,7 +148,7 @@ def main() -> int:
         check(f'id="specimen-{specimen}"' in html, f'Missing {specimen} specimen')
     check(html.count('class="specimen-record"') == 3, 'Each specimen needs a native working record')
     provenance = json.loads((ROOT / 'design/working-specimens-provenance.json').read_text())
-    check([item['id'] for item in provenance['artifacts']] == ['liveconnect', 'ajo', 'skystack', 'kitronik'],
+    check([item['id'] for item in provenance['artifacts']] == ['coastal-watch', 'liveconnect', 'ajo', 'skystack', 'kitronik'],
           'Specimen provenance must match the visible selection')
     for item in provenance['artifacts']:
         if 'asset' in item:
@@ -182,6 +182,33 @@ def main() -> int:
         check('href="../../#specimen-ajo"' in connection_html, 'Specimen needs its next question')
         check('<noscript>' in connection_html and '<table>' in connection_html,
               'Specimen must retain all three readings without JavaScript')
+    coastal_page = ROOT / 'specimens/coastal-watch/index.html'
+    check(coastal_page.is_file(), 'Missing Coastal watch specimen')
+    check('id="specimen-coastal-watch"' in html and 'href="./specimens/coastal-watch/"' in html,
+          'Coastal watch must be discoverable from the bench')
+    coastal_record = json.loads((ROOT / 'design/coastal-watch-provenance.json').read_text())
+    for item in coastal_record['assets']:
+        asset = ROOT / item['file']
+        check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['sha256'],
+              f"Coastal watch media differs from recorded capture: {item['file']}")
+    if coastal_page.is_file():
+        coastal_html = coastal_page.read_text(encoding='utf-8')
+        coastal_parser = SiteParser()
+        coastal_parser.feed(coastal_html)
+        for anchor in coastal_parser.anchors:
+            check(anchor in coastal_parser.ids, f'Coastal watch broken anchor #{anchor}')
+        for relative in re.findall(r'(?:href|src|poster)="(\.\.?/[^\"]+)"', coastal_html):
+            target = (coastal_page.parent / urlsplit(relative).path).resolve()
+            check(target.is_relative_to(ROOT.resolve()) and (target.is_file() or
+                  (target.is_dir() and (target / 'index.html').is_file())),
+                  f'Coastal watch broken destination {relative}')
+        video = re.search(r'<video\b([^>]*)>', coastal_html)
+        check(video is not None and 'controls' in video[1] and 'preload="none"' in video[1]
+              and 'autoplay' not in video[1], 'Coastal watch film must be user-initiated')
+        check('id="film-description"' in coastal_html and '<ol>' in coastal_html,
+              'Silent film needs a readable sequence')
+        check('https://mothandgravel.com/specimens/coastal-watch/' in (ROOT / 'sitemap.xml').read_text(),
+              'Coastal watch missing from sitemap')
     mapping_page = ROOT / 'specimens/whose-map/index.html'
     check(mapping_page.is_file(), 'Missing camera and mapping capture study')
     captures = json.loads((ROOT / 'design/buggy-captures-provenance.json').read_text())
