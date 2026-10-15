@@ -32,6 +32,7 @@
 }
 .reading-exit .reading-end-mark { margin: 0 0 28px; font-size: 10px; color: var(--muted); }
 .reading-exit-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 44px; align-items: start; }
+.reading-exit-solo { grid-template-columns: minmax(0, 1fr); }
 .reading-next {
   --ink: #202222;
   --secondary: #4a4a46;

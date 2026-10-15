@@ -28,9 +28,24 @@ class SiteParser(HTMLParser):
         self.references: list[str] = []
         self.anchors: list[str] = []
         self.image_count = 0
+        self.stylesheets: list[str] = []
+        self.note_ends = 0
+        self.reading_ends = 0
+        self.article_stack: list[bool] = []
+        self.reading_end_in_prose = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attributes = dict(attrs)
+        classes = (attributes.get('class') or '').split()
+        if tag == 'link' and 'stylesheet' in (attributes.get('rel') or '').split():
+            self.stylesheets.append(attributes.get('href') or '')
+        if tag == 'article':
+            self.article_stack.append('note-prose' in classes)
+        if 'note-end' in classes:
+            self.note_ends += 1
+        if 'reading-exit' in classes:
+            self.reading_ends += 1
+            self.reading_end_in_prose |= any(self.article_stack)
         identifier = attributes.get("id")
         if identifier:
             check(identifier not in self.ids, f"Duplicate HTML id: {identifier}")
@@ -47,6 +62,20 @@ class SiteParser(HTMLParser):
             value = attributes.get(key, "") or ""
             if value.startswith("./"):
                 self.references.append(value)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == 'article' and self.article_stack:
+            self.article_stack.pop()
+
+    def reading_issues(self) -> list[str]:
+        issues = []
+        if self.stylesheets.count('../assets/reading-room.css') != 1:
+            issues.append('needs exactly one reading-room stylesheet')
+        if self.note_ends != 1 or self.reading_ends != 1:
+            issues.append('needs one generated ending, with no separate legacy ending')
+        if self.reading_end_in_prose:
+            issues.append('reading ending must stay outside narrated article prose')
+        return issues
 
 
 
@@ -282,6 +311,9 @@ def main() -> int:
         extra_pages[name] = body
         page_parser = SiteParser()
         page_parser.feed(body)
+        if file == note_index:
+            check(page_parser.stylesheets.count('../assets/reading-room.css') == 1,
+                  'Field Notes index needs exactly one reading-room stylesheet')
         check('<html lang="en"' in body, f"{name} needs an HTML language")
         check('<main id="main"' in body, f"{name} needs a main landmark")
         check(body.count("<h1") == 1, f"{name} should have exactly one h1")
@@ -298,6 +330,8 @@ def main() -> int:
               f'{note["id"]} canonical route missing')
         page_parser = SiteParser()
         page_parser.feed(note_source)
+        for issue in page_parser.reading_issues():
+            check(False, f'{note["id"]} {issue}')
         for anchor in page_parser.anchors:
             check(anchor in page_parser.ids, f'{note["id"]} broken local anchor #{anchor}')
         for relative in re.findall(r'(?:href|src)="(\.\.?/[^\"]+)"', note_source):

@@ -4,6 +4,7 @@ import axe from 'axe-core';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { draftKey } from '../docs/assets/loose-end-model-v2.mjs';
+import { execFileSync } from 'node:child_process';
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 const notes = JSON.parse(await readFile('docs/assets/notes.json', 'utf8'));
@@ -19,6 +20,22 @@ async function review(page, label, capture = false) {
   assert(!violations.length, label + ': ' + JSON.stringify(violations));
   results.push({ label, violations });
   if (capture) await page.screenshot({ path: join(output, label + '.png'), animations: 'disabled' });
+}
+async function followContinuation(page, note, collection) {
+  const exit = page.locator('.reading-exit');
+  assert(await exit.count() === 1, note.id + ': one coherent ending');
+  const links = await exit.locator('a').evaluateAll(els => els.map(el => el.getAttribute('href')));
+  assert(new Set(links).size === links.length, note.id + ': distinct exits without repeated recommendations');
+  const nextId = note.nextReading?.id || note.related?.[0];
+  const next = collection.find(n => n.id === nextId);
+  if (next) {
+    const bridge = note.nextReading?.bridge || next.summary;
+    assert(!await exit.locator('.reading-next').getAttribute('aria-labelledby') && (await exit.locator('.reading-next').innerText()).includes(bridge), note.id + ': native link name retains its visible connection');
+    await exit.locator('.reading-next').focus(); await page.keyboard.press('Enter');
+    await page.waitForURL(origin + '/notes/' + next.slug);
+    assert(await page.locator('h1').count() === 1 && await page.locator('article.note-prose').first().isVisible(), note.id + ': opens a complete published article');
+  } else assert(await exit.locator('.reading-next').count() === 0, note.id + ': independent note has no invented recommendation');
+  assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), note.id + ': article fits viewport');
 }
 try {
   for (const width of [1440, 1024, 768, 390, 320]) for (const theme of ['night', 'afterlight']) {
@@ -40,7 +57,9 @@ try {
       const note = notes.find(n => n.id === id);
       await page.goto(origin + '/notes/' + note.slug);
       await page.locator('.reading-exit').scrollIntoViewIfNeeded();
-      assert(await page.locator('.reading-next').evaluate(el => getComputedStyle(el).transform === 'none'), 'Reading surface remains still');
+      if (await page.locator('.reading-next').count())
+        assert(await page.locator('.reading-next').evaluate(el => getComputedStyle(el).transform === 'none'), 'Reading surface remains still');
+      else assert(await page.locator('.reading-alternatives').isVisible(), 'Independent ending keeps its native exits');
       await review(page, `reading-ending-${id}-${width}-${theme}`, [1440, 390, 320].includes(width));
     }
     assert(!errors.length, `${width}/${theme}: no browser errors ${errors}`);
@@ -52,16 +71,7 @@ try {
   page.on('pageerror', error => journeyErrors.push(error.message));
   for (const note of notes) {
     await page.goto(origin + '/notes/' + note.slug);
-    const exit = page.locator('.reading-exit');
-    assert(await exit.count() === 1, note.id + ': one coherent ending');
-    const links = await exit.locator('a').evaluateAll(els => els.map(el => el.getAttribute('href')));
-    assert(new Set(links).size === links.length, note.id + ': distinct exits without repeated recommendations');
-    assert(!await exit.locator('.reading-next').getAttribute('aria-labelledby') && (await exit.locator('.reading-next').innerText()).includes(note.nextReading.bridge), note.id + ': native link name retains its visible connection');
-    await exit.locator('.reading-next').focus(); await page.keyboard.press('Enter');
-    const next = notes.find(n => n.id === note.nextReading.id);
-    await page.waitForURL(origin + '/notes/' + next.slug);
-    assert(await page.locator('h1').count() === 1 && await page.locator('article.note-prose').first().isVisible(), note.id + ': opens a complete published article');
-    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), note.id + ': article fits phone');
+    await followContinuation(page, note, notes);
   }
   await page.goto(origin + '/notes/?topic=Robotics&sort=oldest#archive');
   await page.locator('#archive-controls').waitFor({ state: 'visible' });
@@ -107,7 +117,8 @@ try {
   assert(new URL(fallback.url()).hash === '#reading-selection', 'Reading entrance needs no script');
   for (const note of notes) {
     await fallback.goto(origin + '/notes/' + note.slug);
-    assert(await fallback.locator('.reading-next').isVisible(), note.id + ': no-script continuation visible');
+    const hasNext = Boolean(note.nextReading?.id || note.related?.length);
+    assert(hasNext ? await fallback.locator('.reading-next').isVisible() : await fallback.locator('.reading-next').count() === 0, note.id + ': no-script continuation reflects available relationships');
     assert(await fallback.locator('.reading-exit a[href="../questions/"]').isVisible(), note.id + ': no-script invitation visible');
   }
   await fallback.close();
@@ -116,6 +127,24 @@ try {
   await denied.goto(origin + '/notes/', { waitUntil: 'networkidle' });
   assert(await denied.locator('#archive-fallback article').count() === notes.length && await denied.locator('#archive-controls').isHidden(), 'Failed catalog leaves the complete static reading route');
   await denied.close();
+  // Render actual generator output for valid authoring states absent from today's
+  // catalog. The fixture-only relationships never enter published pages or audio.
+  const fixtures = JSON.parse(execFileSync('python3', ['scripts/reading_output.test.py', '--fixtures'], { encoding: 'utf8' }));
+  const template = await readFile('docs/notes/001-curiosity-with-calluses.html', 'utf8');
+  for (const fixture of fixtures) for (const width of [320, 1440]) {
+    const sample = await browser.newPage({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
+    const html = template.replace(/<!-- related-notes:start -->[\s\S]*?<!-- related-notes:end -->/, () => fixture.html);
+    await sample.route('**/notes/001-curiosity-with-calluses.html', route => route.fulfill({ contentType: 'text/html', body: html }));
+    await sample.goto(origin + '/notes/001-curiosity-with-calluses.html');
+    await sample.locator('.reading-exit').scrollIntoViewIfNeeded();
+    await review(sample, `reading-authoring-${fixture.case}-${width}`, true);
+    if (!fixture.nextSlug) {
+      const grid = sample.locator('.reading-exit-grid');
+      assert(await grid.evaluate(el => Math.abs(el.getBoundingClientRect().width - el.firstElementChild.getBoundingClientRect().width) < 1), 'Independent ending uses the available width');
+    }
+    await followContinuation(sample, fixture.note, fixture.notes);
+    await sample.close();
+  }
 } finally { await browser.close(); }
 await writeFile(join(output, 'reading-review.json'), JSON.stringify({ assertions, results, failures }, null, 2));
 console.log(JSON.stringify({ assertions, responsiveReviews: results.length, failures }, null, 2));

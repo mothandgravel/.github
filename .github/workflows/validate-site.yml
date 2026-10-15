@@ -32,6 +32,7 @@ jobs:
       - name: Verify generated editorial slots and archive behavior
         run: |
           python3 scripts/build_notes.py --check
+          python3 scripts/reading_output.test.py
           node --test scripts/notes_model.test.mjs
           node --test scripts/field_listen_model.test.mjs
           node --test scripts/loose_end_model.test.mjs

@@ -108,9 +108,11 @@ def reading_exit(n, notes):
     seen = {n['id'], next_id}
     groups = []
     candidates = (
-        ('Other connections', [by_id[i] for i in n['related']]),
-        ('Continue the thread', [other for other in notes if n['thread'] and other['thread'] == n['thread']]),
+        # Keep the most specific relationship when one destination belongs to
+        # several groups. Deduplication must not erase the fact of a revision.
         ('Revisited in', [other for other in notes if n['id'] in other['supersedes']]),
+        ('Continue the thread', [other for other in notes if n['thread'] and other['thread'] == n['thread']]),
+        ('Other connections', [by_id[i] for i in n['related']]),
     )
     for label, entries in candidates:
         links = []
@@ -125,8 +127,9 @@ def reading_exit(n, notes):
     if next_id:
         other = by_id[next_id]
         bridge = next_reading['bridge'] if next_reading else other['summary']
+        relation = 'REVISITED IN' if n['id'] in other['supersedes'] else 'FOLLOW THE QUESTION'
         continuation = f'''<a class="reading-next" href="./{other['slug']}">
-          <span class="mono">FOLLOW THE QUESTION / {other['id']}</span>
+          <span class="mono">{relation} / {other['id']}</span>
           <h2 id="next-reading-title">{escape(other['title'])}</h2>
           <p id="next-reading-bridge">{escape(bridge)}</p>
           <span class="reading-next-action">Read Field Note {other['id']} <span aria-hidden="true">↗</span></span>
@@ -136,7 +139,7 @@ def reading_exit(n, notes):
         specimen = f'<a href="{escape(n["specimen"]["href"], quote=True)}">{escape(n["specimen"]["label"])} <span aria-hidden="true">↗</span></a>'
     return f'''<section class="note-end note-related reading-exit" aria-label="After Field Note {n['id']}">
       <p class="reading-end-mark mono">END OF FIELD NOTE / {n['id']}</p>
-      <div class="reading-exit-grid">{continuation}<nav class="reading-alternatives" aria-label="More from the workbench">{''.join(groups)}
+      <div class="reading-exit-grid{' reading-exit-solo' if not continuation else ''}">{continuation}<nav class="reading-alternatives" aria-label="More from the workbench">{''.join(groups)}
         <div class="reading-routes"><a href="./">All Field Notes <span aria-hidden="true">↗</span></a>{specimen}<a href="../#work">Working specimens <span aria-hidden="true">↗</span></a></div>
       </nav></div>
       <div class="reading-invitation"><div><h2>Something here feels familiar?</h2><p>A rough edge, an unfinished idea, a question that keeps returning.</p></div><a class="editorial-link" href="../questions/">Bring your version <span aria-hidden="true">↗</span></a></div>

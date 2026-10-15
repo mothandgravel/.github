@@ -27,3 +27,13 @@ All article bodies and listening blocks remain byte-for-byte identical to the sp
 The existing visual and editorial-thread audits cover the surrounding journey. The performance audit now includes the archive and Studio article, with three cold loads per mobile/desktop profile. They use the existing secondary-page budgets: FCP ≤1800 ms, LCP ≤2500 ms, TBT ≤200 ms, CLS ≤0.1, performance ≥90 and technical SEO ≥95. The homepage retains its 1000 ms FCP budget.
 
 This is an authored design decision supported by layout and interaction checks. Reader comprehension and whether the chosen bridges prompt worthwhile further reading still need observation with people.
+
+## Audit follow-up
+
+The review found two authoring regressions beyond the currently published catalog. The browser audit assumed every note supplied the optional `nextReading` choice, and relationship deduplication consumed a revised study under general related reading before it could be labelled as a revisit.
+
+The audit now uses the same navigation checks for current notes and generated authoring fixtures: no explicit choice, no relationships, an overlapping revision/thread/relation, and a featured revision. An independent ending uses one column and keeps its general exits. Revisited studies retain their specific label, including when they are the primary continuation; thread relationships take precedence over general related reading.
+
+The integrity check also enforces one reading stylesheet and one generated ending outside narrated prose, including nested article material. This catches new pages copied from older templates before a duplicate ending or unstyled coda can ship. The archive's stylesheet is checked as well.
+
+Verification adds seven authoring-contract tests and eight browser fixture reviews. The expanded reading audit passes 299 assertions across 38 responsive/theme/fixture states. The fixture relationships remain test material and never enter the public catalog or narration.
