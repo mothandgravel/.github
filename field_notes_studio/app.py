@@ -49,6 +49,11 @@ class Application:
                 "refresh": self.controller.refresh_review,
                 "open_review": self.controller.open_review,
                 "approve": self.controller.approve,
+                "release_refresh": self.controller.refresh_release,
+                "release_review": self.controller.release_review,
+                "release_package": self.controller.prepare_package,
+                "youtube": self.controller.open_publisher,
+                "status": self.status,
             },
         )
         body.add(self.shelf, weight=1)

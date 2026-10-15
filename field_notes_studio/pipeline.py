@@ -3,15 +3,19 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 from collections.abc import Callable
+from datetime import datetime
 from pathlib import Path
 
 from field_notes_audio import site
+from field_notes_audio.locks import run_lock
 from field_notes_audio.production import packages, runner
 from field_notes_audio.production.config import load_settings, number
 from field_notes_audio.production.editions import AUDIO_FILES, cache_valid, fingerprint
+from field_notes_audio.production.metadata import load_metadata, publishing_copy
 from field_notes_audio.storage import read_object, write_json
-from field_notes_studio.models import ACTIONS, Episode, ReviewSnapshot
+from field_notes_studio.models import ACTIONS, Episode, ReleaseDetails, ReviewSnapshot
 
 
 class Pipeline:
@@ -29,9 +33,75 @@ class Pipeline:
                 entry["title"],
                 entry["duration_seconds"],
                 site.media_path(self.root, entry["transcript"]).read_text(encoding="utf-8"),
+                *self.publication_defaults(entry),
+                "Podcast catalog in this checkout; external platforms have not been checked.",
             )
             for entry in self.entries()
         ]
+
+    @staticmethod
+    def publication_defaults(entry: dict) -> tuple[str, str]:
+        # Match the existing podcast feed's article/archive destinations.
+        link = site.DOMAIN + (
+            "/notes/" + entry["slug"] if entry.get("slug") else "/notes/#listen-archive"
+        )
+        published = entry.get("published_at", "")
+        return link, datetime.fromisoformat(published).date().isoformat() if published else ""
+
+    def release_details(self, identifier: str) -> ReleaseDetails:
+        entry = self.source(identifier)
+        link, published = self.publication_defaults(entry)
+        uploads = self.root / "artifacts/uploads"
+        directory = uploads / identifier
+        if (directory / "upload.json").exists():
+            with run_lock(uploads, "upload export"):
+                manifest = read_object(directory / "upload.json")
+                names = ("title.txt", "description.txt", "tags.txt", "hashtags.txt")
+                message = "Saved upload text changed. Export again to repair the package."
+                if (
+                    directory.is_symlink()
+                    or manifest.get("episode") != identifier
+                    or not isinstance(manifest.get("files"), dict)
+                ):
+                    raise ValueError(message)
+                values = []
+                for name in names:
+                    path = directory / name
+                    content = path.read_bytes()
+                    if path.is_symlink() or hashlib.sha256(content).hexdigest() != manifest[
+                        "files"
+                    ].get(name):
+                        raise ValueError(message)
+                    values.append(content.decode("utf-8").removesuffix("\n"))
+            return ReleaseDetails(
+                *values,
+                link,
+                published,
+                "Saved upload package text (checksummed). Export again to apply later changes; media approval stays in Review.",
+            )
+        config = load_metadata(self.root / "audio/production/publishing.json")
+        settings = self.settings(identifier)
+        basis = (
+            "Draft copy from publishing settings. Produce an edition to confirm its music credit."
+        )
+        if (self.output / identifier / "latest.json").exists():
+            with packages.locked_editions([entry], self.output, full_video=False) as editions:
+                settings = editions[0].state["settings"]
+                basis = "Copy from publishing settings and the verified saved audio's music credit."
+        copy = publishing_copy(
+            config,
+            entry,
+            settings["music_credit"] if settings["music_mode"] != "none" else "No music.",
+        )
+        return ReleaseDetails(
+            copy.title,
+            copy.description,
+            ", ".join(copy.tags),
+            " ".join(copy.hashtags),
+            link,
+            published,
+            basis,
+        )
 
     def source(self, identifier: str) -> dict:
         matches = [entry for entry in self.entries() if entry["id"] == identifier]

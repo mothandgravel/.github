@@ -73,6 +73,10 @@ class PipelineTests(unittest.TestCase):
         settings = read_object(ROOT / "audio/production/settings.json")
         settings.update(intro_seconds=0.5, outro_seconds=0.5, music_overlap_seconds=0.2)
         write_json(self.root / "audio/production/settings.json", settings)
+        write_json(
+            self.root / "audio/production/publishing.json",
+            read_object(ROOT / "audio/production/publishing.json"),
+        )
         self.pipeline = Pipeline(self.root)
         self.repository = Repository(self.root / "artifacts/studio/studio.sqlite3")
         mock = patch("field_notes_audio.site.load_entries", return_value=[self.entry])
@@ -86,6 +90,69 @@ class PipelineTests(unittest.TestCase):
         job = self.repository.get(identifier)
         self.assertEqual(job.status, "succeeded", job.error)
         return Path(job.result)
+
+    def test_publication_defaults_use_catalog_date_and_real_article_or_archive_links(self):
+        link, published = self.pipeline.publication_defaults(
+            {
+                "id": "fixture",
+                "slug": "fixture.html",
+                "published_at": "2026-10-13T23:55:00+00:00",
+            }
+        )
+        self.assertEqual(link, "https://mothandgravel.com/notes/fixture.html")
+        self.assertEqual(published, "2026-10-13")
+        self.assertEqual(
+            self.pipeline.publication_defaults({"id": "fixture"}),
+            (
+                "https://mothandgravel.com/notes/#listen-archive",
+                "",
+            ),
+        )
+
+    def test_upload_copy_uses_saved_music_credit_and_publishing_overrides(self):
+        self.run_audio(0.5)
+        settings_path = self.root / "audio/production/settings.json"
+        settings = read_object(settings_path)
+        credit = settings["music_credit"]
+        settings.update(music_mode="none", music_credit="Changed draft credit")
+        write_json(settings_path, settings)
+        metadata_path = self.root / "audio/production/publishing.json"
+        metadata = read_object(metadata_path)
+        metadata["episodes"]["fixture"] = {"title": "Release title", "tags": ["specific tag"]}
+        write_json(metadata_path, metadata)
+        details = self.pipeline.release_details("fixture")
+        self.assertEqual(details.title, "Release title")
+        self.assertIn(credit, details.description)
+        self.assertNotIn("Changed draft credit", details.description)
+        self.assertIn("specific tag", details.tags)
+        self.assertIn("verified saved audio", details.basis)
+
+    def test_copy_prefers_actual_exported_text_after_later_settings_edits(self):
+        directory = self.root / "artifacts/uploads/fixture"
+        directory.mkdir(parents=True)
+        values = {
+            "title.txt": "Exported title",
+            "description.txt": "Exported description",
+            "tags.txt": "exported tags",
+            "hashtags.txt": "#Exported",
+        }
+        for name, value in values.items():
+            (directory / name).write_text(value + "\n")
+        write_json(
+            directory / "upload.json",
+            {
+                "episode": "fixture",
+                "files": {name: digest_file(directory / name) for name in values},
+            },
+        )
+        details = self.pipeline.release_details("fixture")
+        self.assertEqual(details.title, "Exported title")
+        self.assertEqual(details.description, "Exported description")
+        self.assertEqual(details.tags, "exported tags")
+        self.assertIn("Saved upload package text", details.basis)
+        (directory / "title.txt").write_text("Changed behind the package's back")
+        with self.assertRaisesRegex(ValueError, "Export again"):
+            self.pipeline.release_details("fixture")
 
     def test_outro_changes_create_another_edition_and_repeating_recipe_reuses_media(self):
         before = digest_file(self.root / "docs/assets/audio/fixture.mp3")

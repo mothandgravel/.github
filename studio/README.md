@@ -7,6 +7,41 @@ episode, inspect the consequences of pace/outro changes, queue an edition, liste
 and check subtitles, then prepare the upload package. Record URLs and publication
 dates for episodes you have already published separately from their production jobs.
 
+## Get an episode out
+
+Open **Release** for the guided handoff:
+
+1. **Review full video** opens the saved-edition review with the correct scope.
+2. **Inspect package** selects export and shows the plan. Use **Queue production**
+   to create the package after checking it.
+3. **YouTube Studio** opens the upload destination in your system browser. Open
+   **Upload package**, choose its video/thumbnail/subtitles, and copy the title,
+   description and tags from **Release → Upload details**.
+4. In **Publication record**, record the published link and its actual date.
+
+Episode links and dates now fill from the existing podcast catalog. This is data
+from the checkout, not a live check of YouTube or another platform. Dates preserve
+the catalog timestamp's timezone. Saved user records always take precedence,
+including intentionally blank dates/links; automatic defaults do not write records.
+**Use podcast details** restores those defaults explicitly. Changing a link clears
+an untouched suggested date, so a podcast date is not silently assigned to YouTube.
+An explicitly edited date is preserved. **Today** fills the local system date only
+when clicked. Save remains an explicit action.
+
+Upload copy reuses the same publishing settings and copy generator as export,
+including shared/per-episode tags, hashtags, disclosures, the written-edition link
+and music credit. With a local edition, credit comes from its verified saved recipe;
+without one, the copy is labelled a draft using configured credit. Refreshing copy
+does not replace unfinished publication edits. If an upload package exists, copy comes
+from its checksummed title/description/tags/hashtags files. Export again to apply new
+settings; then refresh the copy. Export retains its existing shared-settings behavior,
+including for already-running workers.
+
+No account connection is needed for this workflow. The browser handoff opens
+YouTube Studio; file selection and publication happen there. Studio never infers
+that an upload package or a saved URL means a platform publication was verified.
+The UI research and adaptation choices are in [publishing-ux.md](publishing-ux.md).
+
 ## Run in Ubuntu / WSL
 
 The first version runs **inside the existing Linux/WSL production checkout**.
@@ -117,7 +152,7 @@ Its diagnostic log is `artifacts/studio/worker.log`.
 | Module | Responsibility |
 |---|---|
 | `models.py` | Episode/job values and states |
-| `presentation/` | Shelf, workspace, queue and theme; no workers or files |
+| `presentation/` | Shelf, workspace, queue, release/review forms, shared scrolling and theme; no workers or files |
 | `controller.py` | UI intent, stale-plan protection and main-thread mailbox |
 | `service.py` | Application use cases; no widgets or production internals |
 | `repository.py` | Atomic SQLite jobs, events and publication records |

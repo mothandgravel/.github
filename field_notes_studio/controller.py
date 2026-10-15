@@ -25,6 +25,7 @@ class Controller:
         self.loading = False
         self.review_generation = 0
         self.review_jobs = None
+        self.release_generation = 0
 
     def task(self, operation, callback, on_error=None):
         future = self.executor.submit(operation)
@@ -60,11 +61,13 @@ class Controller:
                 self.show_review(review_scope)
             return
         self.selected = identifier
+        self.release_generation += 1
         self.review_generation += 1
         self.review_jobs = None
         self.view.workspace.review.clear()
         self.changed()
         self.loading = True
+        self.view.workspace.publication.loading_episode()
 
         def loaded(settings):
             if self.selected == identifier:
@@ -75,8 +78,13 @@ class Controller:
                     self.refresh_review()
                 else:
                     self.show_review(review_scope)
+                self.refresh_release()
 
-        self.task(lambda: self.studio.settings(identifier), loaded)
+        def failed(_message):
+            if self.selected == identifier:
+                self.loading = False
+
+        self.task(lambda: self.studio.settings(identifier), loaded, failed)
 
     def changed(self):
         self.generation += 1
@@ -140,16 +148,64 @@ class Controller:
             )
 
     def publication(self):
-        if not self.selected:
+        if not self.selected or self.loading:
             return
         identifier = self.selected
         url, published = self.view.workspace.url.get(), self.view.workspace.date.get()
 
+        def refreshed(episodes):
+            self.episodes = {episode.identifier: episode for episode in episodes}
+            self.view.shelf.load(episodes)
+            if (
+                self.selected == identifier
+                and self.view.workspace.url.get() == url
+                and self.view.workspace.date.get() == published
+            ):
+                self.view.workspace.publication.load_episode(self.episodes[identifier])
+            self.view.status(f"Publication record saved for {identifier}.")
+
         def saved(_):
-            self.view.status("Publication record saved.")
-            self.task(self.studio.catalog, self.loaded)
+            self.task(self.studio.catalog, refreshed)
 
         self.task(lambda: self.studio.publication(identifier, url, published), saved)
+
+    def refresh_release(self):
+        if not self.selected or self.loading:
+            return
+        identifier = self.selected
+        self.release_generation += 1
+        generation = self.release_generation
+        publication = self.view.workspace.publication
+        publication.clear()
+
+        def loaded(details):
+            if generation == self.release_generation and identifier == self.selected:
+                publication.load_details(details)
+
+        def failed(message):
+            if generation == self.release_generation and identifier == self.selected:
+                publication.clear("Upload copy unavailable: " + message)
+
+        self.task(lambda: self.studio.release_details(identifier), loaded, failed)
+
+    def prepare_package(self):
+        if not self.selected or self.loading:
+            return
+        self.view.workspace.action.set("export")
+        self.view.workspace.show_plan_tab()
+        self.inspect()
+
+    def release_review(self):
+        if self.selected and not self.loading:
+            self.show_review(True)
+
+    def open_publisher(self):
+        self.task(
+            self.studio.open_publisher,
+            lambda _: self.view.status(
+                "YouTube Studio opened. Upload the saved package, then record its published link/date."
+            ),
+        )
 
     def open_output(self, kind):
         identifier = self.selected
@@ -323,8 +379,12 @@ class Controller:
                 self.review_jobs = signature
                 if previous is not None:
                     self.refresh_review()
+                    self.refresh_release()
 
-        self.task(self.studio.repository.jobs, loaded)
+        def failed(_message):
+            self.polling = False
+
+        self.task(self.studio.repository.jobs, loaded, failed)
 
     def pump(self):
         if self.closed:
@@ -335,8 +395,6 @@ class Controller:
             except queue.Empty:
                 break
             if error:
-                self.polling = False
-                self.loading = False
                 self.view.status(error)
                 if on_error:
                     on_error(error)

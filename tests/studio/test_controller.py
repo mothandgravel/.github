@@ -16,6 +16,19 @@ class Value:
 
 
 class ControllerTests(unittest.TestCase):
+    def test_background_copy_error_does_not_unlock_unrelated_episode_loading_or_polling(self):
+        controller = Controller(None, SimpleNamespace(status=lambda _: None))
+        self.addCleanup(controller.close)
+        controller.loading = controller.polling = True
+        errors = []
+        controller.mailbox.put(
+            (lambda _: None, None, "Old release copy unavailable", errors.append)
+        )
+        controller.pump()
+        self.assertTrue(controller.loading)
+        self.assertTrue(controller.polling)
+        self.assertEqual(errors, ["Old release copy unavailable"])
+
     def test_export_planning_ignores_unfinished_recipe_fields(self):
         planned = []
         workspace = SimpleNamespace(

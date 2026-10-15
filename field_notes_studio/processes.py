@@ -5,7 +5,13 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import webbrowser
 from pathlib import Path
+
+
+def open_publisher() -> None:
+    if not webbrowser.open("https://studio.youtube.com"):
+        raise ValueError("Open https://studio.youtube.com in your browser to upload this package")
 
 
 def launch_worker(root: Path) -> subprocess.Popen:

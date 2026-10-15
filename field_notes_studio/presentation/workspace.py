@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.presentation.publication import Publication
 from field_notes_studio.presentation.review import Review
 from field_notes_studio.presentation.theme import set_text
 
@@ -73,26 +74,9 @@ class Workspace(ttk.Frame):
         self.review = Review(tabs, callbacks)
         tabs.add(self.review, text="Review")
         self.transcript = self._text_tab(tabs, "Transcript")
-        publishing = ttk.Frame(tabs, padding=15)
-        tabs.add(publishing, text="Publication")
-        ttk.Label(
-            publishing, text="Record an episode you already published.", style="Heading.TLabel"
-        ).pack(anchor="w", pady=(0, 16))
-        self.url = tk.StringVar()
-        self.date = tk.StringVar()
-        ttk.Label(publishing, text="Episode URL").pack(anchor="w")
-        ttk.Entry(publishing, textvariable=self.url).pack(fill="x", pady=(5, 12))
-        ttk.Label(publishing, text="Publication date · YYYY-MM-DD (optional)").pack(anchor="w")
-        ttk.Entry(publishing, textvariable=self.date).pack(fill="x", pady=(5, 12))
-        ttk.Button(
-            publishing, text="Save publication record", command=callbacks["publication"]
-        ).pack(anchor="w")
-        ttk.Label(
-            publishing,
-            text="A saved URL records publication; a completed job records production.\nA new edition does not replace the published one.",
-            style="Muted.TLabel",
-            wraplength=600,
-        ).pack(anchor="w", pady=16)
+        self.publication = Publication(tabs, callbacks)
+        tabs.add(self.publication, text="Release")
+        self.url, self.date = self.publication.url, self.publication.date
         outputs = ttk.Frame(self)
         outputs.grid(row=6, column=0, sticky="ew", pady=(14, 0))
         for label, kind in [
@@ -123,8 +107,7 @@ class Workspace(ttk.Frame):
         )
         self.speed.set(f"{settings['speed']:g}")
         self.outro.set(f"{settings['outro_seconds']:g}")
-        self.url.set(episode.publication_url)
-        self.date.set(episode.publication_date)
+        self.publication.load_episode(episode)
         set_text(self.transcript, episode.transcript)
         set_text(self.plan, "Inspect your changes before queueing an edition.")
 
@@ -146,3 +129,6 @@ class Workspace(ttk.Frame):
 
     def show_review(self):
         self.tabs.select(self.review)
+
+    def show_plan_tab(self):
+        self.tabs.select(self.plan.master)

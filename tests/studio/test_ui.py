@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from field_notes_audio.storage import read_object, write_json
-from field_notes_studio.models import Episode, ReviewSnapshot
+from field_notes_studio.models import Episode, ReleaseDetails, ReviewSnapshot
 
 
 @unittest.skipUnless(os.environ.get("DISPLAY"), "Tk integration requires DISPLAY or xvfb-run")
@@ -23,12 +23,25 @@ class UITests(unittest.TestCase):
         self.directory = Path(temporary.name)
         defaults = Path(__file__).resolve().parents[2] / "audio/production/settings.json"
         write_json(self.directory / "audio/production/settings.json", read_object(defaults))
+        write_json(
+            self.directory / "audio/production/publishing.json",
+            read_object(defaults.with_name("publishing.json")),
+        )
         episode = Episode("note-001", "Curiosity with calluses.", 199, "A studio transcript.")
         for mock in [
             patch("field_notes_studio.controller.launch_worker"),
             patch("field_notes_studio.service.launch_worker"),
             patch("field_notes_studio.pipeline.Pipeline.catalog", return_value=[episode]),
-            patch("field_notes_studio.pipeline.Pipeline.source", return_value={"id": "note-001"}),
+            patch(
+                "field_notes_studio.pipeline.Pipeline.source",
+                return_value={
+                    "id": "note-001",
+                    "title": episode.title,
+                    "description": "Episode summary",
+                    "slug": "001-curiosity-with-calluses.html",
+                    "published_at": "2026-10-13T22:04:00+00:00",
+                },
+            ),
         ]:
             mock.start()
             self.addCleanup(mock.stop)
@@ -36,6 +49,7 @@ class UITests(unittest.TestCase):
         self.app = Application(self.root, self.directory)
         self.addCleanup(lambda: self.app.close() if not self.app.closed else None)
         self.wait(lambda: self.app.controller.selected and not self.app.controller.loading)
+        self.wait(lambda: self.app.workspace.publication.details is not None)
 
     def wait(self, condition):
         deadline = time.monotonic() + 8
@@ -83,6 +97,71 @@ class UITests(unittest.TestCase):
         self.app.controller.publication()
         self.wait(lambda: bool(self.app.controller.studio.repository.publications()))
         self.assertEqual(self.app.controller.studio.repository.jobs(), [])
+
+    def test_release_copy_is_ready_and_refresh_keeps_unsaved_publication_fields(self):
+        publication = self.app.workspace.publication
+        self.assertEqual(publication.details.title, "Curiosity with calluses.")
+        publication.field.set("Description")
+        publication.copy_button.invoke()
+        self.assertIn("Written edition:", self.root.clipboard_get())
+        self.assertIn("AI-narrated", self.root.clipboard_get())
+        publication.url.set("https://youtu.be/finished-release")
+        publication.date.set("2026-10-14")
+        self.app.controller.refresh_release()
+        self.wait(lambda: publication.details is not None)
+        self.assertEqual(publication.url.get(), "https://youtu.be/finished-release")
+        self.assertEqual(publication.date.get(), "2026-10-14")
+        publication.use_defaults()
+        self.assertEqual(publication.date.get(), "2026-10-13")
+        publication.url.set("https://youtu.be/another-release")
+        self.assertEqual(publication.date.get(), "")
+        publication.use_defaults()
+        publication.date.set("2026-10-15")
+        publication.url.set("https://youtu.be/another-release")
+        self.assertEqual(publication.date.get(), "2026-10-15")
+
+    def test_release_handoff_selects_review_scope_and_inspects_export_without_queueing(self):
+        publication = self.app.workspace.publication
+        publication.actions["review"].invoke()
+        self.assertTrue(self.app.workspace.review.full_video())
+        self.assertEqual(self.app.workspace.tabs.select(), str(self.app.workspace.review))
+        with patch.object(
+            self.app.controller.studio, "plan", return_value=({"edition": {}}, "Package plan")
+        ):
+            publication.actions["package"].invoke()
+            self.wait(lambda: self.app.controller.ready is not None)
+        self.assertEqual(self.app.workspace.action.get(), "export")
+        self.assertEqual(self.app.workspace.tabs.select(), str(self.app.workspace.plan.master))
+        self.assertEqual(self.app.controller.studio.repository.jobs(), [])
+
+    def test_an_old_release_copy_cannot_replace_a_new_episode(self):
+        pending = []
+        self.app.controller.task = lambda operation, callback, on_error=None: pending.append(
+            callback
+        )
+        self.app.controller.refresh_release()
+        self.app.controller.selected = "note-002"
+        pending.pop()(ReleaseDetails("Old", "", "", "", "", "", "Old episode"))
+        self.assertIsNone(self.app.workspace.publication.details)
+
+    def test_release_actions_and_record_save_remain_accessible_at_minimum_size(self):
+        self.root.geometry("1050x760")
+        publication = self.app.workspace.publication
+        self.app.workspace.tabs.select(publication)
+        self.root.update()
+        for widget in (*publication.actions.values(), publication.copy_button):
+            x = widget.winfo_rootx() + widget.winfo_width() // 2
+            y = widget.winfo_rooty() + widget.winfo_height() // 2
+            self.assertIs(self.root.winfo_containing(x, y), widget)
+        self.assertGreaterEqual(publication.text.winfo_height(), 20)
+        publication.tabs.select(1)
+        self.root.update()
+        publication.form.reveal(publication.url_entry)
+        self.root.update()
+        for widget in (publication.url_entry, publication.save):
+            x = widget.winfo_rootx() + widget.winfo_width() // 2
+            y = widget.winfo_rooty() + widget.winfo_height() // 2
+            self.assertIs(self.root.winfo_containing(x, y), widget)
 
     def test_shelf_rows_and_status_remain_visible_at_minimum_window_size(self):
         self.root.geometry("1050x760")

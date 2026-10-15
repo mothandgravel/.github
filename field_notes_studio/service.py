@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 
 from field_notes_studio.models import ReviewSnapshot
 from field_notes_studio.pipeline import Pipeline
-from field_notes_studio.processes import launch_worker, open_path
+from field_notes_studio.processes import launch_worker, open_path, open_publisher
 from field_notes_studio.repository import Repository
 
 
@@ -25,8 +25,18 @@ class Studio:
         return [
             replace(
                 episode,
-                publication_url=publications.get(episode.identifier, ("", ""))[0],
-                publication_date=publications.get(episode.identifier, ("", ""))[1],
+                publication_url=publications.get(
+                    episode.identifier, (episode.publication_url, episode.publication_date)
+                )[0],
+                publication_date=publications.get(
+                    episode.identifier, (episode.publication_url, episode.publication_date)
+                )[1],
+                publication_source=(
+                    "Your saved release record"
+                    if episode.identifier in publications
+                    else episode.publication_source
+                ),
+                publication_saved=episode.identifier in publications,
             )
             for episode in self.pipeline.catalog()
         ]
@@ -74,6 +84,12 @@ class Studio:
 
     def open_output(self, episode: str, kind: str) -> None:
         open_path(self.pipeline.output_path(episode, kind))
+
+    def release_details(self, episode: str):
+        return self.pipeline.release_details(episode)
+
+    def open_publisher(self) -> None:
+        open_publisher()
 
     def open_job_output(self, identifier: str) -> None:
         """Open the selected job's durable result, rather than a moving latest pointer."""

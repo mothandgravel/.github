@@ -30,7 +30,7 @@ class Shelf(ttk.Frame):
         self.tree.bind("<<TreeviewSelect>>", self._selected)
         ttk.Label(
             self,
-            text="Publication links are your records.\nProduction never uploads an episode.",
+            text="Catalog links fill automatically.\nSaved records take precedence.",
             style="Muted.TLabel",
         ).pack(anchor="w", pady=12)
 
@@ -57,7 +57,11 @@ class Shelf(ttk.Frame):
                     "end",
                     iid=episode.identifier,
                     text=episode.title,
-                    values=("Saved" if episode.publication_url else "—",),
+                    values=(
+                        ("Saved" if episode.publication_saved else "Feed")
+                        if episode.publication_url
+                        else "—",
+                    ),
                 )
         if selected and self.tree.exists(selected[0]):
             self.tree.selection_set(selected[0])

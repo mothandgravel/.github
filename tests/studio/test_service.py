@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from field_notes_studio.models import Episode
 from field_notes_studio.service import Studio
 
 
@@ -14,6 +15,32 @@ class JobOutputTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
         self.studio = Studio(self.root)
+
+    def test_catalog_defaults_do_not_write_or_override_saved_release_records(self):
+        episode = Episode(
+            "fixture",
+            "Fixture",
+            10,
+            "Transcript",
+            "https://mothandgravel.com/notes/fixture.html",
+            "2026-10-13",
+            "Podcast catalog",
+        )
+        with patch.object(self.studio.pipeline, "catalog", return_value=[episode]):
+            automatic = self.studio.catalog()[0]
+            self.assertEqual(automatic.publication_url, episode.publication_url)
+            self.assertEqual(automatic.publication_date, "2026-10-13")
+            self.assertFalse(automatic.publication_saved)
+            self.assertEqual(self.studio.repository.publications(), {})
+            self.studio.publication("fixture", "https://youtu.be/already-published", "")
+            saved = self.studio.catalog()[0]
+            self.assertEqual(saved.publication_url, "https://youtu.be/already-published")
+            self.assertEqual(saved.publication_date, "")
+            self.assertTrue(saved.publication_saved)
+            self.studio.publication("fixture", "", "")
+            cleared = self.studio.catalog()[0]
+            self.assertEqual(cleared.publication_url, "")
+            self.assertEqual(cleared.publication_date, "")
 
     def test_each_completed_output_opens_the_exact_saved_job(self):
         for action, filename in (

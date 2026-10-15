@@ -18,6 +18,21 @@ class Episode:
     transcript: str
     publication_url: str = ""
     publication_date: str = ""
+    publication_source: str = ""
+    publication_saved: bool = False
+
+
+@dataclass(frozen=True)
+class ReleaseDetails:
+    """Generated handoff copy and known publication data, with explicit provenance."""
+
+    title: str
+    description: str
+    tags: str
+    hashtags: str
+    podcast_url: str
+    podcast_date: str
+    basis: str
 
 
 @dataclass(frozen=True)
