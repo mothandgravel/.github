@@ -13,6 +13,8 @@ on:
       - "scripts/audit_connection.mjs"
       - "scripts/audit_mapping.mjs"
       - "scripts/audit_thread.mjs"
+      - "scripts/audit_reading.mjs"
+      - "scripts/reading_output.test.py"
       - ".github/workflows/design-audit.yml"
   workflow_dispatch:
 
@@ -45,6 +47,7 @@ jobs:
           exit 1
       - name: Capture desktop and mobile review / assert interaction health
         run: |
+          node scripts/audit_reading.mjs
           node scripts/audit_visual.mjs
           node scripts/audit_loose_end.mjs
           node scripts/audit_moth.mjs
