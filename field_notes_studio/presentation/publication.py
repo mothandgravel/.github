@@ -66,37 +66,45 @@ class Publication(ttk.Frame):
         record.columnconfigure(0, weight=1)
         record.rowconfigure(0, weight=1)
         self.tabs.add(record, text="Publication record")
-        self.form = ScrollArea(record, padding=10)
+        self.form = ScrollArea(record, padding=8)
         self.form.grid(row=0, column=0, sticky="nsew")
         content = self.form.content
         self.source = ttk.Label(content, text="", style="Muted.TLabel", wraplength=540)
-        self.source.pack(anchor="w", pady=(0, 8))
+        self.source.pack(anchor="w", pady=(0, 4))
         self.url, self.date = tk.StringVar(), tk.StringVar()
         self.url.trace_add("write", lambda *_: self.link_changed())
         self.date.trace_add("write", lambda *_: self.date_changed())
-        ttk.Label(content, text="Episode link · podcast page or published platform URL").pack(
-            anchor="w"
-        )
-        self.url_entry = ttk.Entry(content, textvariable=self.url)
-        self.url_entry.pack(fill="x", pady=(4, 8))
-        ttk.Label(content, text="Publication date · YYYY-MM-DD (optional)").pack(anchor="w")
+        links = ttk.Frame(content)
+        links.pack(fill="x", pady=(0, 2))
+        ttk.Label(links, text="Episode link", width=18).pack(side="left")
+        self.url_entry = ttk.Entry(links, textvariable=self.url)
+        self.url_entry.pack(side="left", fill="x", expand=True)
         dates = ttk.Frame(content)
-        dates.pack(fill="x", pady=4)
-        ttk.Entry(dates, textvariable=self.date, width=15).pack(side="left")
+        dates.pack(fill="x")
+        ttk.Label(dates, text="Date · YYYY-MM-DD", width=18).pack(side="left")
+        self.date_entry = ttk.Entry(dates, textvariable=self.date, width=13)
+        self.date_entry.pack(side="left")
         ttk.Button(
-            dates, text="Today", command=lambda: self.date.set(date.today().isoformat())
+            dates,
+            text="Today",
+            command=lambda: self.date.set(date.today().isoformat()),
+            style="Compact.TButton",
         ).pack(side="left", padx=6)
         self.defaults_button = ttk.Button(
-            content, text="Use podcast details", command=self.use_defaults, state="disabled"
+            dates,
+            text="Use podcast details",
+            command=self.use_defaults,
+            state="disabled",
+            style="Compact.TButton",
         )
-        self.defaults_button.pack(anchor="w", pady=(6, 8))
+        self.defaults_button.pack(side="left")
         ttk.Label(
             content,
             text="The podcast date follows the catalog timestamp's timezone. For a YouTube release, replace the link and date with that release's details.",
             style="Muted.TLabel",
             wraplength=540,
-        ).pack(anchor="w")
-        footer = ttk.Frame(record, padding=10)
+        ).pack(anchor="w", pady=(6, 0))
+        footer = ttk.Frame(record, padding=(10, 6))
         footer.grid(row=1, column=0, sticky="ew")
         self.save = ttk.Button(
             footer, text="Save publication record", command=callbacks["publication"]

@@ -28,7 +28,15 @@ class UITests(unittest.TestCase):
             self.directory / "audio/production/publishing.json",
             read_object(defaults.with_name("publishing.json")),
         )
-        episode = Episode("note-001", "Curiosity with calluses.", 199, "A studio transcript.")
+        episode = Episode(
+            "note-001",
+            "Curiosity with calluses.",
+            199,
+            "A studio transcript.",
+            "https://mothandgravel.com/notes/001-curiosity-with-calluses.html",
+            "2026-10-13",
+            "Podcast catalog in this checkout; external platforms have not been checked.",
+        )
         for mock in [
             patch("field_notes_studio.controller.launch_worker"),
             patch("field_notes_studio.service.launch_worker"),
@@ -76,6 +84,8 @@ class UITests(unittest.TestCase):
                 "error",
                 "-f",
                 "x11grab",
+                "-draw_mouse",
+                "0",
                 "-video_size",
                 f"{self.root.winfo_width()}x{self.root.winfo_height()}",
                 "-i",
@@ -196,7 +206,7 @@ class UITests(unittest.TestCase):
         self.root.update()
         publication.form.reveal(publication.url_entry)
         self.root.update()
-        for widget in (publication.url_entry, publication.save):
+        for widget in (publication.url_entry, publication.date_entry, publication.save):
             x = widget.winfo_rootx() + widget.winfo_width() // 2
             y = widget.winfo_rooty() + widget.winfo_height() // 2
             self.assertIs(self.root.winfo_containing(x, y), widget)
