@@ -4,7 +4,8 @@ import tkinter as tk
 from tkinter import ttk
 
 from field_notes_studio.models import TERMINAL
-from field_notes_studio.presentation.theme import set_text
+from field_notes_studio.presentation.controls import ActionButton
+from field_notes_studio.presentation.theme import SUCCESS, WARNING, set_text
 
 
 class ProductionQueue(ttk.Frame):
@@ -18,15 +19,20 @@ class ProductionQueue(ttk.Frame):
         actions = ttk.Frame(heading)
         actions.pack(side="right")
         self.buttons = {}
-        for name, label, command in (
-            ("open", "Open saved output", open_result),
-            ("review", "Review latest", review),
-            ("history", "History", history),
-            ("retry", "Retry", retry),
-            ("stop", "Request stop", stop),
+        for name, label, command, pictogram in (
+            ("open", "Open output", open_result, "folder"),
+            ("review", "Review latest", review, "review"),
+            ("history", "History", history, "history"),
+            ("retry", "Retry", retry, "refresh"),
+            ("stop", "Stop", stop, "stop"),
         ):
-            button = ttk.Button(
-                actions, text=label, command=command, state="disabled", style="Compact.TButton"
+            button = ActionButton(
+                actions,
+                pictogram=pictogram,
+                text=label,
+                command=command,
+                state="disabled",
+                style="Compact.TButton",
             )
             button.pack(side="left", padx=(6, 0))
             self.buttons[name] = button
@@ -40,12 +46,14 @@ class ProductionQueue(ttk.Frame):
             selectmode="browse",
         )
         for name, width in [("episode", 130), ("action", 100), ("status", 130), ("stage", 230)]:
-            self.tree.heading(name, text=name.title())
+            self.tree.heading(name, text=name.title(), anchor="w")
             self.tree.column(name, width=width)
         scrollbar = ttk.Scrollbar(region, command=self.tree.yview)
         self.tree.configure(yscrollcommand=scrollbar.set)
         self.tree.pack(side="left", fill="x", expand=True)
         scrollbar.pack(side="right", fill="y")
+        self.tree.tag_configure("attention", background="#f4e8d5", foreground=WARNING)
+        self.tree.tag_configure("complete", foreground=SUCCESS)
 
         def selected(_event):
             self.update_controls()
@@ -82,12 +90,17 @@ class ProductionQueue(ttk.Frame):
         for name, button in self.buttons.items():
             button.configure(state="normal" if enabled[name] else "disabled")
         labels = {
-            "audio": "Listen to saved audio",
+            "audio": "Listen to audio",
             "preview": "Watch preview",
-            "video": "Watch saved video",
-            "export": "Open upload package",
+            "video": "Watch video",
+            "export": "Open package",
         }
-        self.buttons["open"].configure(text=labels[job.action] if job else "Open saved output")
+        self.buttons["open"].configure(text=labels[job.action] if job else "Open output")
+        self.buttons["open"].set_icon(
+            {"audio": "audio", "preview": "video", "video": "video", "export": "package"}.get(
+                job.action if job else "", "folder"
+            )
+        )
 
     def show_history(self, job, events):
         window = tk.Toplevel(self)
@@ -120,14 +133,28 @@ class ProductionQueue(ttk.Frame):
             status = (
                 "stop requested"
                 if job.cancel_requested and job.status in {"queued", "running"}
-                else job.status
+                else {
+                    "succeeded": "Complete",
+                    "failed": "Failed",
+                    "interrupted": "Interrupted",
+                    "cancelled": "Stopped",
+                    "queued": "Queued",
+                    "running": "Working",
+                }.get(job.status, job.status)
             )
             values = (job.episode, job.action, status, job.stage)
+            tags = (
+                ("attention",)
+                if job.status in {"failed", "interrupted"}
+                else ("complete",)
+                if job.status == "succeeded"
+                else ()
+            )
             if self.tree.exists(job.identifier):
                 if self.tree.item(job.identifier, "values") != values:
-                    self.tree.item(job.identifier, values=values)
+                    self.tree.item(job.identifier, values=values, tags=tags)
             else:
-                self.tree.insert("", 0, iid=job.identifier, values=values)
+                self.tree.insert("", 0, iid=job.identifier, values=values, tags=tags)
         if (not selected or selected not in ids) and jobs:
             self.tree.selection_set(jobs[0].identifier)
         self.update_controls()

@@ -184,7 +184,7 @@ class Controller:
 
         def failed(message):
             if generation == self.release_generation and identifier == self.selected:
-                publication.clear("Upload copy unavailable: " + message)
+                publication.clear("Upload copy unavailable: " + message, loading=False)
 
         self.task(lambda: self.studio.release_details(identifier), loaded, failed)
 
@@ -254,7 +254,7 @@ class Controller:
         generation = self.review_generation
         review = self.view.workspace.review
         full_video = review.full_video()
-        review.clear()
+        review.clear(loading=True)
 
         def loaded(snapshot):
             if generation != self.review_generation or identifier != self.selected:

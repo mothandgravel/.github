@@ -47,6 +47,12 @@ No account connection is needed for this workflow. The browser handoff opens
 YouTube Studio; file selection and publication happen there. Studio never infers
 that an upload package or a saved URL means a platform publication was verified.
 The UI research and adaptation choices are in [publishing-ux.md](publishing-ux.md).
+Labelled pictograms, stronger selected tabs and a shared brass primary-action style
+help distinguish stages. Copy and Save confirm beside the action; later edits clear
+that feedback. Refresh controls show when work is in flight. Search reports matches
+and explains empty results; Escape clears the query. Queue failures and interruptions
+have written status and an attention tint. Icons scale with the desktop and require
+no additional dependencies.
 
 ## Run in Ubuntu / WSL
 

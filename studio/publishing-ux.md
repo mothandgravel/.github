@@ -7,7 +7,7 @@ from documented workflows; this was not an authenticated usability test of the p
 |---|---|---|
 | [Spotify for Creators](https://support.spotify.com/us/creators/article/publishing-a-saved-episode/) | Drafts expose title/description and a deliberate publish or schedule decision. | Provide the known copy first; keep recording publication explicit. We do not expose a scheduler without a publishing transport. |
 | [Buzzsprout](https://www.buzzsprout.com/help/3-upload-audio) | Upload, add episode details, choose publication timing, then save; processing has a separate outcome. | A short Review → Package → Upload handoff, with saved production and publication records kept distinct. |
-| [Descript](https://help.descript.com/descript-tour/publish-tools) | Publishing preparation includes titles, descriptions and show notes after editing. | Reuse the existing deterministic copy generator, rather than asking for another title, summary or set of tags. Copy buttons sit beside a readable preview. |
+| [Descript](https://help.descript.com/export-and-share/youtube) | Its export panel exposes a destination alongside title, description, tags and export options. | Keep the destination near the package and the copy preview. Reuse known metadata; retain an explicit browser handoff. |
 | [Transistor](https://transistor.fm/features/integrations/) | Connected destinations can handle distribution after initial setup. | Put the destination beside the completed package. Use a browser handoff until account-backed upload exists. |
 | [Transistor API](https://developers.transistor.fm/) | Episode state, publication timestamp, sharing URL and YouTube URL are distinct fields. | Known podcast metadata is labelled with its source; a user-saved platform record takes precedence. A new link does not inherit an untouched date from a different destination. |
 
@@ -46,3 +46,29 @@ date belongs to which destination?
 
 Destination-specific multi-platform records, authenticated uploads and scheduling are
 future integrations. No publishing status is simulated for those capabilities.
+
+## Desktop design sprint
+
+The critique found equal visual weight on primary and secondary actions, repeated
+large headings, an unexplained search box, distant clipboard/save feedback and
+little distinction between queue outcomes. The polish keeps the existing paper,
+ink and brass palette, serif episode titles and native ttk controls.
+
+| Benchmark or critique | Applied design decision |
+|---|---|
+| [Spotify's Details and Content checks](https://support.spotify.com/us/creators/article/publishing-audio-episodes/) separate preparation from publication. | Keep Produce, Review and Release focused; selected tabs use a dark surface and labelled pictograms. No inferred publication completion. |
+| [Buzzsprout's short upload sequence](https://www.buzzsprout.com/help/3-upload-audio) gives each step a clear action. | Keep the three numbered release actions together, with a single brass browser handoff; approval and record saving have their own primary actions in their respective panels. |
+| [Transistor's preparation checklist](https://transistor.fm/changelog/publishing-checklist/) makes missing requirements visible. Its linked screenshot illustrates an established pattern, not a verified current signed-in layout. | Show catalog suggestions, unsaved edits and saved-local records explicitly. Existing review checks remain explicit. |
+| Actions lacked nearby feedback. | Copy changes briefly to a checkmark and “Copied”; Save confirms locally. Editing, selecting another field or refreshing cancels obsolete feedback. In-flight refresh and approval controls describe their work. |
+| Dense controls competed for height. | Compact the application heading, soften borders, retain fixed footers and shorten queue commands. Minimum-window checks cover primary actions and feedback states. |
+| Search and queue recovery were hard to scan. | Label search, report matches and explain empty results; Escape clears the query. Attention rows retain written status as well as color. |
+
+Pictograms are original small stroke drawings rendered at the desktop scale, cached
+per window and paired with text. No emoji, icon font, network assets or extra runtime
+dependencies are needed. Hover, pressed and keyboard-focus states are shared styles.
+The only timed effect is brief completion feedback; there is no decorative motion or
+simulated progress. Timers cancel when a button is destroyed or its context changes.
+
+These are design hypotheses backed by desktop layout and behavior checks. A human
+episode-through-publication session is still needed to judge whether the handoff is
+easier in practice. A screenshot or a green test does not establish that outcome.

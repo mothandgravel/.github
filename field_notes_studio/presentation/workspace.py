@@ -3,9 +3,11 @@
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.presentation.controls import ActionButton
+from field_notes_studio.presentation.icons import icon
 from field_notes_studio.presentation.publication import Publication
 from field_notes_studio.presentation.review import Review
-from field_notes_studio.presentation.theme import set_text
+from field_notes_studio.presentation.theme import SURFACE, set_text
 
 
 class Workspace(ttk.Frame):
@@ -26,7 +28,7 @@ class Workspace(ttk.Frame):
             lambda e: self.subtitle.configure(wraplength=max(250, e.width - 20)),
             add=True,
         )
-        self.subtitle.grid(row=1, column=0, sticky="w", pady=(0, 16))
+        self.subtitle.grid(row=1, column=0, sticky="w", pady=(0, 12))
         controls = self.controls = ttk.Frame(self)
         controls.grid(row=2, column=0, sticky="ew")
         self.speed = tk.StringVar(value="1.15")
@@ -55,9 +57,12 @@ class Workspace(ttk.Frame):
             variable.trace_add("write", lambda *_: callbacks["changed"]())
         buttons = self.production_buttons = ttk.Frame(self)
         buttons.grid(row=3, column=0, sticky="ew", pady=(10, 16))
-        ttk.Button(buttons, text="Inspect changes", command=callbacks["plan"]).pack(side="left")
-        self.produce = ttk.Button(
+        ActionButton(
+            buttons, pictogram="search", text="Inspect changes", command=callbacks["plan"]
+        ).pack(side="left")
+        self.produce = ActionButton(
             buttons,
+            pictogram="produce",
             text="Queue production",
             command=callbacks["submit"],
             style="Accent.TButton",
@@ -76,6 +81,17 @@ class Workspace(ttk.Frame):
         self.publication = Publication(tabs, callbacks)
         tabs.add(self.publication, text="Release")
         self.transcript = self._text_tab(tabs, "Transcript")
+        for tab, glyph in (
+            (self.plan.master, "produce"),
+            (self.review, "review"),
+            (self.publication, "package"),
+            (self.transcript.master, "transcript"),
+        ):
+            tabs.tab(
+                tab,
+                compound="left",
+                image=(icon(self, glyph), "selected", icon(self, glyph, SURFACE)),
+            )
         self.url, self.date = self.publication.url, self.publication.date
         tabs.bind("<<NotebookTabChanged>>", lambda _: self.layout_stage())
         self.layout_stage()
@@ -85,9 +101,12 @@ class Workspace(ttk.Frame):
             ("Edition folder", "folder"),
             ("Upload package", "uploads"),
         ]:
-            ttk.Button(outputs, text=label, command=lambda k=kind: callbacks["open"](k)).pack(
-                side="left", padx=(0, 7)
-            )
+            ActionButton(
+                outputs,
+                pictogram="folder" if kind == "folder" else "package",
+                text=label,
+                command=lambda k=kind: callbacks["open"](k),
+            ).pack(side="left", padx=(0, 7))
 
     @staticmethod
     def _text_tab(tabs, title):

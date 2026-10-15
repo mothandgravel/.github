@@ -24,15 +24,15 @@ class Application:
         root.title("Moth & Gravel · Production studio")
         root.geometry("1280x920")
         root.minsize(1050, 760)
-        main = ttk.Frame(root, padding=24)
+        main = ttk.Frame(root, padding=(24, 18))
         main.pack(fill="both", expand=True)
         main.columnconfigure(0, weight=1)
         main.rowconfigure(2, weight=1)
-        ttk.Label(main, text="MOTH & GRAVEL", style="Heading.TLabel").grid(
+        ttk.Label(main, text="MOTH & GRAVEL  /  LOCAL PRODUCTION", style="Brand.TLabel").grid(
             row=0, column=0, sticky="w"
         )
-        ttk.Label(main, text="Production studio", style="Title.TLabel").grid(
-            row=1, column=0, sticky="w", pady=(4, 20)
+        ttk.Label(main, text="Production studio", style="Studio.TLabel").grid(
+            row=1, column=0, sticky="w", pady=(4, 16)
         )
         self.controller = Controller(Studio(directory), self)
         body = ttk.Panedwindow(main, orient="horizontal")

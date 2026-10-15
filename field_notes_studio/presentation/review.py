@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.presentation.controls import ActionButton
 from field_notes_studio.presentation.scroll import ScrollArea
 
 
@@ -25,7 +26,10 @@ class Review(ttk.Frame):
         header = ttk.Frame(content)
         header.pack(fill="x")
         ttk.Label(header, text="Review saved edition", style="Heading.TLabel").pack(side="left")
-        ttk.Button(header, text="Refresh edition", command=callbacks["refresh"]).pack(side="right")
+        self.refresh = ActionButton(
+            header, pictogram="refresh", text="Refresh edition", command=callbacks["refresh"]
+        )
+        self.refresh.pack(side="right")
         self.summary = ttk.Label(content, text="Loading edition…", wraplength=590)
         self.summary.pack(anchor="w", pady=12)
         content.bind(
@@ -50,8 +54,11 @@ class Review(ttk.Frame):
             ("Check subtitles", "captions"),
             ("Watch video", "video"),
         ):
-            button = ttk.Button(
-                assets, text=label, command=lambda k=kind: callbacks["open_review"](k)
+            button = ActionButton(
+                assets,
+                pictogram=kind,
+                text=label,
+                command=lambda k=kind: callbacks["open_review"](k),
             )
             button.pack(side="left", padx=(0, 6))
             self.asset_buttons[kind] = button
@@ -68,8 +75,12 @@ class Review(ttk.Frame):
         footer.grid(row=1, column=0, columnspan=2, sticky="ew")
         ttk.Label(footer, text="Reviewed by").pack(side="left", padx=(0, 8))
         ttk.Entry(footer, textvariable=self.reviewer, width=20).pack(side="left")
-        self.approve = ttk.Button(
-            footer, text="Record approval", command=callbacks["approve"], style="Accent.TButton"
+        self.approve = ActionButton(
+            footer,
+            pictogram="review",
+            text="Record approval",
+            command=callbacks["approve"],
+            style="Accent.TButton",
         )
         self.approve.pack(side="left", padx=8)
         for variable in (
@@ -91,13 +102,17 @@ class Review(ttk.Frame):
     def full_video(self):
         return self.scope.get() == "Full video and audio"
 
-    def clear(self, message="Loading edition…"):
+    def clear(self, message="Loading edition…", *, loading=False):
         self.snapshot = None
         self.busy = False
         self.audio_checked.set(False)
         self.captions_checked.set(False)
         self.video_checked.set(False)
         self.summary.configure(text=message)
+        self.refresh.configure(
+            text="Checking…" if loading else "Refresh edition",
+            state="disabled" if loading else "normal",
+        )
         self.canvas.yview_moveto(0)
         self.update_controls()
 
@@ -121,3 +136,6 @@ class Review(ttk.Frame):
             and (not self.full_video() or self.video_checked.get())
         )
         self.approve.configure(state="normal" if ready else "disabled")
+        self.approve.configure(text="Recording…" if self.busy else "Record approval")
+        if self.busy:
+            self.refresh.configure(state="disabled")

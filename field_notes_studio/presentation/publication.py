@@ -4,6 +4,7 @@ import tkinter as tk
 from datetime import date
 from tkinter import ttk
 
+from field_notes_studio.presentation.controls import ActionButton
 from field_notes_studio.presentation.scroll import ScrollArea
 from field_notes_studio.presentation.theme import set_text
 
@@ -27,11 +28,17 @@ class Publication(ttk.Frame):
         actions.grid(row=0, column=0, sticky="ew")
         self.actions = {}
         for key, label, callback in (
-            ("review", "1. Review full video", callbacks["release_review"]),
+            ("review", "1. Review video", callbacks["release_review"]),
             ("package", "2. Inspect package", callbacks["release_package"]),
             ("upload", "3. YouTube Studio", callbacks["youtube"]),
         ):
-            button = ttk.Button(actions, text=label, command=callback, style="Compact.TButton")
+            button = ActionButton(
+                actions,
+                text=label,
+                command=callback,
+                pictogram={"review": "review", "package": "package", "upload": "external"}[key],
+                style="Accent.TButton" if key == "upload" else "Compact.TButton",
+            )
             button.pack(side="left", padx=(0, 6))
             self.actions[key] = button
         self.tabs = ttk.Notebook(self)
@@ -50,13 +57,21 @@ class Publication(ttk.Frame):
         ttk.Combobox(
             toolbar, textvariable=self.field, values=tuple(FIELDS), state="readonly", width=15
         ).pack(side="left")
-        self.copy_button = ttk.Button(
-            toolbar, text="Copy title", command=self.copy, state="disabled"
+        self.copy_button = ActionButton(
+            toolbar,
+            pictogram="copy",
+            text="Copy title",
+            command=self.copy,
+            state="disabled",
+            width=16,
         )
         self.copy_button.pack(side="left", padx=6)
-        ttk.Button(toolbar, text="Refresh details", command=callbacks["release_refresh"]).pack(
-            side="right"
+        self.refresh = ActionButton(
+            toolbar, pictogram="refresh", text="Refresh", command=callbacks["release_refresh"]
         )
+        self.refresh.pack(side="right")
+        self.measure = ttk.Label(copy, text="", style="Muted.TLabel")
+        self.measure.grid(row=3, column=0, columnspan=2, sticky="w", pady=(5, 0))
         self.text = tk.Text(
             copy, wrap="word", height=4, padx=10, pady=8, relief="flat", state="disabled"
         )
@@ -109,10 +124,17 @@ class Publication(ttk.Frame):
         ).pack(anchor="w", pady=(6, 0))
         footer = ttk.Frame(record, padding=(10, 6))
         footer.grid(row=1, column=0, sticky="ew")
-        self.save = ttk.Button(
-            footer, text="Save publication record", command=callbacks["publication"]
+        self.save = ActionButton(
+            footer,
+            pictogram="save",
+            text="Save publication record",
+            command=callbacks["publication"],
+            style="Accent.TButton",
+            width=24,
         )
         self.save.pack(side="left")
+        self.record_status = ttk.Label(footer, text="", style="Muted.TLabel")
+        self.record_status.pack(side="left", padx=12)
         self.form.bind_navigation()
         copy.bind("<Configure>", lambda e: self.basis.configure(wraplength=max(200, e.width - 24)))
         content.bind(
@@ -144,6 +166,19 @@ class Publication(ttk.Frame):
             )
         )
         self.save.configure(state="normal")
+        self.save.reset_feedback()
+        self.record_status.configure(
+            text="Unsaved changes"
+            if draft
+            else "Saved locally"
+            if episode.publication_saved
+            else "Catalog suggestion",
+            style="Draft.TLabel"
+            if draft
+            else "Success.TLabel"
+            if episode.publication_saved
+            else "Muted.TLabel",
+        )
         self.defaults_button.configure(state="normal" if any(self.defaults) else "disabled")
 
     def record_saved(self, episode, url, published):
@@ -155,6 +190,7 @@ class Publication(ttk.Frame):
             published,
         ):
             self.load_episode(episode)
+            self.save.complete("Saved")
 
     def loading_episode(self):
         self.episode = None
@@ -165,29 +201,43 @@ class Publication(ttk.Frame):
         self.filling = False
         self.source.configure(text="Loading publication details…")
         self.save.configure(state="disabled")
+        self.save.reset_feedback()
+        self.record_status.configure(text="")
         self.defaults_button.configure(state="disabled")
 
-    def clear(self, message="Loading upload copy…"):
+    def clear(self, message="Loading upload copy…", *, loading=True):
         self.details = None
         self.basis.configure(text=message)
         self.copy_button.configure(state="disabled")
+        self.copy_button.reset_feedback()
+        self.measure.configure(text="")
+        self.refresh.configure(
+            text="Refreshing…" if loading else "Refresh",
+            state="disabled" if loading else "normal",
+        )
         set_text(self.text, "")
 
     def load_details(self, details):
         self.details = details
         self.basis.configure(text=details.basis)
+        self.refresh.configure(text="Refresh", state="normal")
         self.render_copy()
 
     def render_copy(self):
-        self.copy_button.configure(text="Copy " + self.field.get().lower())
+        self.copy_button.reset_feedback("Copy " + self.field.get().lower())
         if self.details:
-            set_text(self.text, getattr(self.details, FIELDS[self.field.get()]))
+            value = getattr(self.details, FIELDS[self.field.get()])
+            set_text(self.text, value)
             self.copy_button.configure(state="normal")
+            self.measure.configure(
+                text=f"{len(value):,} characters · {self.field.get().lower()} for the upload form"
+            )
 
     def copy(self):
         if self.details:
             self.clipboard_clear()
             self.clipboard_append(getattr(self.details, FIELDS[self.field.get()]))
+            self.copy_button.complete()
             self.callbacks["status"](self.field.get() + " copied. Paste it into the upload form.")
 
     def use_defaults(self):
@@ -205,6 +255,8 @@ class Publication(ttk.Frame):
 
     def remember(self):
         if self.episode is not None:
+            self.save.reset_feedback()
+            self.record_status.configure(text="Unsaved changes", style="Draft.TLabel")
             self.drafts[self.episode] = (
                 self.url.get(),
                 self.date.get(),

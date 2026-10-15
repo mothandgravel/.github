@@ -115,6 +115,7 @@ class UITests(unittest.TestCase):
         self.app.controller.inspect()
         self.wait(lambda: self.app.controller.ready is not None)
         self.assertEqual(str(self.app.workspace.produce["state"]), "normal")
+        self.capture("produce-inspected-plan")
         self.app.workspace.outro.set("10")
         self.assertIsNone(self.app.controller.ready)
         self.assertEqual(str(self.app.workspace.produce["state"]), "disabled")
@@ -219,7 +220,12 @@ class UITests(unittest.TestCase):
     def test_podcast_defaults_remain_available_when_upload_copy_fails(self):
         publication = self.app.workspace.publication
         publication.url.set("https://youtu.be/unfinished")
-        publication.clear("Upload copy unavailable: damaged package")
+        with patch.object(
+            self.app.controller.studio, "release_details", side_effect=ValueError("Damaged package")
+        ):
+            self.app.controller.refresh_release()
+            self.wait(lambda: "Damaged package" in publication.basis["text"])
+        self.assertFalse(publication.refresh.instate(["disabled"]))
         publication.defaults_button.invoke()
         self.assertEqual(
             publication.url.get(),
@@ -228,6 +234,44 @@ class UITests(unittest.TestCase):
         self.assertEqual(publication.date.get(), "2026-10-13")
         self.assertIsNone(publication.details)
         self.assertEqual(self.app.controller.studio.repository.publications(), {})
+
+    def test_copy_feedback_is_local_and_resets_for_new_content_or_refresh(self):
+        publication = self.app.workspace.publication
+        publication.copy_button.invoke()
+        self.assertEqual(publication.copy_button["text"], "Copied")
+        self.assertTrue(publication.copy_button["image"])
+        publication.field.set("Description")
+        self.assertEqual(publication.copy_button["text"], "Copy description")
+        self.assertIn(str(len(publication.details.description)), publication.measure["text"])
+        publication.copy_button.invoke()
+        self.app.controller.refresh_release()
+        self.assertTrue(publication.copy_button.instate(["disabled"]))
+        self.assertNotEqual(publication.copy_button["text"], "Copied")
+        self.assertEqual(publication.refresh["text"], "Refreshing…")
+        self.wait(lambda: publication.details is not None)
+        self.assertEqual(publication.refresh["text"], "Refresh")
+        self.assertFalse(publication.refresh.instate(["disabled"]))
+
+    def test_saved_feedback_resets_immediately_when_record_is_edited(self):
+        publication = self.app.workspace.publication
+        publication.url.set("https://youtu.be/published")
+        publication.date.set("2026-10-15")
+        self.assertEqual(publication.record_status["text"], "Unsaved changes")
+        publication.save.invoke()
+        self.wait(lambda: publication.record_status["text"] == "Saved locally")
+        self.assertEqual(publication.save["text"], "Saved")
+        publication.date.set("2026-10-16")
+        self.assertEqual(publication.save["text"], "Save publication record")
+        self.assertEqual(publication.record_status["text"], "Unsaved changes")
+
+    def test_shelf_reports_empty_search_and_recovers_without_changing_episode(self):
+        self.app.shelf.query.set("No such episode")
+        self.assertFalse(self.app.shelf.tree.get_children())
+        self.assertIn("No matches", self.app.shelf.count["text"])
+        self.assertEqual(self.app.controller.selected, "note-001")
+        self.app.shelf.query.set("")
+        self.assertIn("1 of 1", self.app.shelf.count["text"])
+        self.assertTrue(self.app.shelf.tree.exists("note-001"))
 
     def test_an_old_release_copy_cannot_replace_a_new_episode(self):
         pending = []
@@ -343,6 +387,7 @@ class UITests(unittest.TestCase):
         )
         ttk.Notebook.nametowidget(self.app.workspace, review.winfo_parent()).select(review)
         self.root.update()
+        self.capture("review-saved-edition")
         for widget in (*review.asset_buttons.values(), review.approve):
             review.reveal(widget)
             self.root.update()
@@ -421,6 +466,27 @@ class UITests(unittest.TestCase):
         self.root.geometry("1050x760")
         self.root.update()
         for widget in (*self.app.jobs.buttons.values(), self.app.message):
+            x = widget.winfo_rootx() + widget.winfo_width() // 2
+            y = widget.winfo_rooty() + widget.winfo_height() // 2
+            self.assertIs(self.root.winfo_containing(x, y), widget)
+
+    def test_attention_state_and_release_feedback_fit_minimum_window(self):
+        self.root.geometry("1050x760")
+        publication = self.app.workspace.publication
+        self.app.workspace.tabs.select(publication)
+        self.queue_job(status="interrupted")
+        self.root.update()
+        self.assertEqual(
+            self.app.jobs.tree.item(self.app.jobs.selection(), "values")[2], "Interrupted"
+        )
+        publication.copy_button.invoke()
+        self.root.update()
+        self.capture("release-copy-feedback")
+        for widget in (
+            *publication.actions.values(),
+            *self.app.jobs.buttons.values(),
+            publication.copy_button,
+        ):
             x = widget.winfo_rootx() + widget.winfo_width() // 2
             y = widget.winfo_rooty() + widget.winfo_height() // 2
             self.assertIs(self.root.winfo_containing(x, y), widget)
