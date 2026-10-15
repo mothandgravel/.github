@@ -21,15 +21,27 @@ class PreparationWindow:
         main.rowconfigure(4, weight=2)
         ttk.Label(main, text="Prepare new notes", style="Studio.TLabel").grid(row=0, column=0, sticky="w")
         ttk.Label(
-            main, text="Written note → reviewed script → narration → captions → production",
-            style="Muted.TLabel", wraplength=700,
+            main,
+            text="Written note → reviewed script → narration → captions → production",
+            style="Muted.TLabel",
+            wraplength=700,
         ).grid(row=1, column=0, sticky="w", pady=(4, 12))
         table = ttk.Frame(main)
         table.grid(row=2, column=0, sticky="nsew")
         table.rowconfigure(0, weight=1)
         table.columnconfigure(0, weight=1)
-        self.tree = ttk.Treeview(table, columns=("note", "title", "state"), show="headings", selectmode="browse", height=7)
-        for name, heading, width in (("note", "Note", 70), ("title", "Written edition", 450), ("state", "Local preparation", 200)):
+        self.tree = ttk.Treeview(
+            table,
+            columns=("note", "title", "state"),
+            show="headings",
+            selectmode="browse",
+            height=7,
+        )
+        for name, heading, width in (
+            ("note", "Note", 70),
+            ("title", "Written edition", 450),
+            ("state", "Local preparation", 200),
+        ):
             self.tree.heading(name, text=heading)
             self.tree.column(name, width=width, minwidth=60, stretch=name == "title")
         scroll = ttk.Scrollbar(table, orient="vertical", command=self.tree.yview)
@@ -40,7 +52,9 @@ class PreparationWindow:
         actions.grid(row=3, column=0, sticky="ew", pady=10)
         self.refresh_button = ttk.Button(actions, text="Refresh written notes")
         self.refresh_button.pack(side="left")
-        self.inspect_button = ttk.Button(actions, text="Inspect script · no service request", state="disabled")
+        self.inspect_button = ttk.Button(
+            actions, text="Inspect script · no service request", state="disabled"
+        )
         self.inspect_button.pack(side="left", padx=(8, 0))
         tabs = ttk.Notebook(main)
         tabs.grid(row=4, column=0, sticky="nsew")
@@ -89,7 +103,11 @@ class PreparationWindow:
     def clear(self, message=""):
         self.snapshot = None
         item = self.items.get(self.selected())
-        detail = item.detail if item else "Select a written note, then inspect its saved narration script."
+        detail = (
+            item.detail
+            if item
+            else "Select a written note, then inspect its saved narration script."
+        )
         self._put(self.plan, detail)
         self._put(self.script, "")
         self.message.configure(text=message or detail)
@@ -111,7 +129,9 @@ class PreparationWindow:
         if selected in self.items:
             self.tree.selection_set(selected)
             self.tree.see(selected)
-        self.clear(f"{len(items)} written notes. Catalog presence is not verified media or platform publication.")
+        self.clear(
+            f"{len(items)} written notes. Catalog presence is not verified media or platform publication."
+        )
 
     def show_snapshot(self, snapshot):
         if snapshot.note != self.selected():
@@ -119,7 +139,9 @@ class PreparationWindow:
         self.snapshot = snapshot
         self._put(self.plan, snapshot.summary)
         self._put(self.script, snapshot.script)
-        self.message.configure(text="Offline inspection complete. No narration or caption request was made; generation is not enabled here yet.")
+        self.message.configure(
+            text="Offline inspection complete. No narration or caption request was made; generation is not enabled here yet."
+        )
 
     def schedule(self, delay, callback):
         return self.window.after(delay, callback)

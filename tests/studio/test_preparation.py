@@ -1,6 +1,5 @@
 """Written-note discovery and offline inspection, including moved note numbers."""
 
-import importlib.util
 import json
 import tempfile
 import unittest
@@ -20,10 +19,18 @@ class PreparationTests(unittest.TestCase):
             {"id": "105", "title": "A newer note.", "slug": "105-newer.html"},
         ]
         self.episodes = [
-            {"id": "studio-essay", "script": "scripts/studio.txt", "notes": ["104"],
-             "publication": {"kind": "note", "note_id": "104"}},
-            {"id": "workbench-001", "script": "scripts/workbench.txt", "notes": ["104", "105"],
-             "publication": {"kind": "workbench"}},
+            {
+                "id": "studio-essay",
+                "script": "scripts/studio.txt",
+                "notes": ["104"],
+                "publication": {"kind": "note", "note_id": "104"},
+            },
+            {
+                "id": "workbench-001",
+                "script": "scripts/workbench.txt",
+                "notes": ["104", "105"],
+                "publication": {"kind": "workbench"},
+            },
         ]
         self.write("docs/assets/notes.json", self.notes)
         self.write("audio/episodes.json", self.episodes)
@@ -46,7 +53,9 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(root, self.root)
         return {
             "script": (root / "audio/scripts/studio.txt").read_text().strip(),
-            "word_count": 3, "estimated_minutes": 0.02, "target_wpm": 140,
+            "word_count": 3,
+            "estimated_minutes": 0.02,
+            "target_wpm": 140,
             "requests": [{"input": {"text": "The saved narration."}}],
         }
 
@@ -135,7 +144,7 @@ class PreparationTests(unittest.TestCase):
                 path = self.root / relative
                 original = path.read_bytes() if path.exists() else None
 
-                def changed(*args):
+                def changed(*args, relative=relative, content=content):
                     result = self.plan(*args)
                     self.text(relative, content)
                     return result
@@ -155,12 +164,20 @@ class PreparationTests(unittest.TestCase):
             Preparation(self.root, stale).inspect("104")
 
     def test_inspection_has_no_network_process_or_file_write(self):
-        before = {str(p.relative_to(self.root)): p.read_bytes() for p in self.root.rglob("*") if p.is_file()}
+        before = {
+            str(p.relative_to(self.root)): p.read_bytes()
+            for p in self.root.rglob("*")
+            if p.is_file()
+        }
         with patch("socket.socket", side_effect=AssertionError("network")), patch(
             "subprocess.Popen", side_effect=AssertionError("process")
         ):
             snapshot = self.service.inspect("104")
-        after = {str(p.relative_to(self.root)): p.read_bytes() for p in self.root.rglob("*") if p.is_file()}
+        after = {
+            str(p.relative_to(self.root)): p.read_bytes()
+            for p in self.root.rglob("*")
+            if p.is_file()
+        }
         self.assertEqual(before, after)
         self.assertEqual(snapshot.script, "The saved narration.")
         self.assertEqual(len(snapshot.identity), 64)
@@ -177,15 +194,17 @@ class PreparationTests(unittest.TestCase):
             self.service.inspect("104")
 
     def test_real_engine_rejects_stale_source_and_never_authenticates(self):
-        if importlib.util.find_spec("field_notes_audio") is None:
-            self.skipTest("Full audio package is tested by the repository's integration CI")
         from field_notes_audio import audio
 
-        self.episodes[0].update({
-            "language": "en-US", "speakers": [{"alias": "Narrator", "voice": "Charon"}],
-            "prompt": "Read exactly.", "source_sha256": {"104": "0" * 64},
-            "target_wpm": 140,
-        })
+        self.episodes[0].update(
+            {
+                "language": "en-US",
+                "speakers": [{"alias": "Narrator", "voice": "Charon"}],
+                "prompt": "Read exactly.",
+                "source_sha256": {"104": "0" * 64},
+                "target_wpm": 140,
+            }
+        )
         self.write("audio/episodes.json", self.episodes)
         with patch.object(audio, "access_token", side_effect=AssertionError("auth")), patch.object(
             audio, "synthesize", side_effect=AssertionError("synthesis")

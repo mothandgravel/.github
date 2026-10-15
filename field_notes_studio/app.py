@@ -39,9 +39,7 @@ class Application:
         ttk.Label(main, text="Production studio", style="Studio.TLabel").grid(
             row=1, column=0, sticky="w", pady=(4, 16)
         )
-        self.prepare_button = ttk.Button(
-            main, text="Prepare new notes…", command=self.open_preparation
-        )
+        self.prepare_button = ttk.Button(main, text="Prepare new notes…", command=self.open_preparation)
         self.prepare_button.grid(row=1, column=0, sticky="e", pady=(4, 16))
         self.controller = Controller(Studio(directory), self)
         body = ttk.Panedwindow(main, orient="horizontal")

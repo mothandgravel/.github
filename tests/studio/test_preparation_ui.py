@@ -1,21 +1,29 @@
 """Real Tk preparation controls, read-only scripts and stale-selection protection."""
 
-import tkinter as tk
+import os
 import unittest
 
 from field_notes_studio.preparation_models import PreparationItem, PreparationSnapshot
-from field_notes_studio.presentation.preparation import PreparationWindow
 
 
+@unittest.skipUnless(os.environ.get("DISPLAY"), "Tk integration requires DISPLAY or xvfb-run")
 class PreparationWindowTests(unittest.TestCase):
     def setUp(self):
+        import tkinter as tk
+
+        from field_notes_studio.presentation import theme
+        from field_notes_studio.presentation.preparation import PreparationWindow
+
         self.root = tk.Tk()
+        theme.apply(self.root)
         self.root.withdraw()
         self.addCleanup(self.root.destroy)
         self.view = PreparationWindow(self.root)
         self.view.connect(lambda: None, self.view.clear, lambda: None, self.view.close)
         self.items = [
-            PreparationItem("104", "Window", "104-window.html", "studio-essay", "Inspect script", "Inspect first."),
+            PreparationItem(
+                "104", "Window", "104-window.html", "studio-essay", "Inspect script", "Inspect first."
+            ),
             PreparationItem("105", "Newer", "105-newer.html", "", "Needs script", "No script yet."),
         ]
         self.view.show_catalog(self.items)
@@ -26,7 +34,9 @@ class PreparationWindowTests(unittest.TestCase):
         self.root.update()
 
     def snapshot(self, note="104"):
-        return PreparationSnapshot(note, "studio-essay", "Window", "Exact script.", "Offline plan.", "a" * 64)
+        return PreparationSnapshot(
+            note, "studio-essay", "Window", "Exact script.", "Offline plan.", "a" * 64
+        )
 
     def test_new_notes_without_media_or_script_are_visible(self):
         self.assertEqual(self.view.tree.get_children(), ("104", "105"))
@@ -85,7 +95,12 @@ class PreparationWindowTests(unittest.TestCase):
         self.root.deiconify()
         self.view.window.geometry("760x580")
         self.root.update()
-        for widget in (self.view.tree, self.view.refresh_button, self.view.inspect_button, self.view.message):
+        for widget in (
+            self.view.tree,
+            self.view.refresh_button,
+            self.view.inspect_button,
+            self.view.message,
+        ):
             self.assertGreater(widget.winfo_width(), 10)
             self.assertLessEqual(
                 widget.winfo_rootx() + widget.winfo_width(),

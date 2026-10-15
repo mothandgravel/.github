@@ -82,9 +82,16 @@ class Preparation:
             and entry["publication"].get("kind") == "note"
             and entry["publication"].get("note_id") == identifier
         ]
-        state, detail, episode = "Needs script", "No dedicated episode is registered for this note.", ""
+        state, detail, episode = (
+            "Needs script",
+            "No dedicated episode is registered for this note.",
+            "",
+        )
         if len(matches) > 1:
-            state, detail = "Needs repair", "More than one episode claims this note; resolve the catalog conflict."
+            state, detail = (
+                "Needs repair",
+                "More than one episode claims this note; resolve the catalog conflict.",
+            )
         elif matches:
             entry = matches[0]
             episode = entry["id"]
@@ -114,8 +121,10 @@ class Preparation:
 
     def _identity(self, item: PreparationItem, episode: dict) -> str:
         paths = {
-            "docs/assets/notes.json", "audio/episodes.json",
-            "docs/assets/audio/episodes.json", "artifacts/audio/settings.json",
+            "docs/assets/notes.json",
+            "audio/episodes.json",
+            "docs/assets/audio/episodes.json",
+            "artifacts/audio/settings.json",
             "docs/notes/" + item.slug,
         }
         # Aggregate sources must participate too, even though note discovery uses
@@ -165,10 +174,12 @@ class Preparation:
             or current_notes.get(note_id) != notes[note_id]
             or current_episodes.get(item.episode) != episode
         ):
-            raise ValueError("Sources or settings changed during inspection. Refresh and inspect again.")
+            raise ValueError(
+                "Sources or settings changed during inspection. Refresh and inspect again."
+            )
         summary = (
             f"{item.episode} · {item.title}\n"
-            f"Source fingerprints and script checked by the narration engine.\n"
+            "Source fingerprints and script checked by the narration engine.\n"
             f"{plan['word_count']} words · approximately {plan['estimated_minutes']} minutes "
             f"at the {plan['target_wpm']} wpm planning pace.\n"
             f"{len(plan['requests'])} bounded narration requests · {model} · {endpoint}.\n\n"
