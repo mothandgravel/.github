@@ -31,6 +31,9 @@ def load_notes():
         assert re.fullmatch(r"\d{3,}", n["id"])
         assert re.fullmatch(r"\d{3,}-[a-z0-9-]+\.html", n["slug"])
         assert (ROOT / "docs/notes" / n["slug"]).is_file(), n["slug"]
+        if n.get('socialImage'):
+            image = (ROOT / 'docs' / n['socialImage']).resolve()
+            assert image.is_relative_to((ROOT / 'docs/assets').resolve()) and image.is_file()
         if n.get('cover'):
             for key in ('small', 'large'):
                 assert re.fullmatch(r'[a-z0-9-]+\.webp', n['cover'][key])
