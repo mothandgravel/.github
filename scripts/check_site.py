@@ -137,7 +137,7 @@ def main() -> int:
     check("prefers-reduced-motion" in css, "Reduced-motion support missing")
     check("@media (max-width:660px)" in css, "Mobile layout support missing")
     check(".has-nav-sheet .main-nav" in css, "Progressive enhancement for mobile navigation missing")
-    check('aria-label="Afterlight theme"' in html, "Theme toggle needs a stable accessible label")
+    check('data-theme-label' in html, "Theme control needs a visible label stating the current setting")
     check('src="./assets/nav-mark.svg"' in html, "Official brand symbol missing from masthead")
     try:
         light_accent = css_token(css, ':root[data-theme="afterlight"]', "gold-bright")
@@ -158,7 +158,7 @@ def main() -> int:
         check(False, str(error))
 
     js = (ROOT / "assets" / "site.js").read_text(encoding="utf-8")
-    check('aria-expanded' in js and 'aria-pressed' in js, "Accessible interactive controls not wired")
+    check('aria-expanded' in js and 'prefers-color-scheme' in js, "Menu state or system theme handling not wired")
     check("localStorage" in js, "Theme preference handling missing")
 
     check((ROOT / "CNAME").read_text(encoding="utf-8").strip() == "mothandgravel.com", "Wrong custom-domain CNAME")

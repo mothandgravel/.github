@@ -13,7 +13,7 @@ class LandingElements(HTMLParser):
         # Menu/root classes appear only after enhancement, but their styles must ship.
         self.classes = {'has-js', 'is-open', 'has-site-controls', 'has-nav-sheet', 'nav-sheet-heading',
                         'nav-sheet-index', 'nav-sheet-label', 'nav-sheet-hint',
-                        'nav-sheet-foot', 'nav-sheet-invitation'}
+                        'nav-sheet-foot', 'nav-sheet-invitation', 'nav-sheet-mail'}
         self.ids = set()
 
     def handle_starttag(self, tag, attrs):

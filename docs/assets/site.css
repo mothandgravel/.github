@@ -773,6 +773,7 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 }
 @media (max-width:760px) {
   .hero~.field-notes-section,.hero~.work-section { contain-intrinsic-block-size:auto 1600px; }
+  .hero~.contact-section { contain-intrinsic-block-size:auto 1250px; }
 }
 .section-kicker a { color:var(--gold-bright);text-underline-offset:4px; }
 .section-kicker a:hover { text-decoration:underline; }
@@ -1273,3 +1274,81 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .connection-teaser .work-specimen{padding:0;border:0;}
 
 .connection-teaser .work-specimen img{display:block;width:100%;height:auto;object-fit:contain;}
+
+/* Contact first: a plain address on every page, a copy aid, and one conversation route. */
+.visually-hidden {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+:root[data-theme="afterlight"] .skip-link {color:#f1eee6}
+.header-mail {display:flex;align-items:center;gap:6px;margin:0 0 0 auto;white-space:nowrap}
+.header-mail-link {display:inline-flex;align-items:center;min-height:44px;padding:0 6px;color:var(--ink);font-size:13px;font-weight:600;letter-spacing:.01em}
+.header-mail-link:hover {color:var(--gold-bright)}
+.header-mail .header-mail-short {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.copy-mail {min-height:32px;padding:0 10px;border:1px solid var(--line);background:none;color:var(--secondary);font-family:var(--mono);font-size:12px;letter-spacing:.06em;cursor:pointer;white-space:nowrap}
+.copy-mail:hover {border-color:var(--gold-bright);color:var(--ink)}
+.has-nav-sheet .header-actions {margin-left:0}
+:root[data-theme-choice="system"] .switch-orb {border-style:dashed}
+@media (min-width:1101px) {
+  .has-nav-sheet .menu-toggle {display:none}
+}
+@media (min-width:1101px) and (max-width:1320px) {
+  .main-nav {gap:22px;padding-left:12px}
+  .header-inner {gap:20px}
+}
+@media (min-width:661px) and (max-width:900px) {
+  .header-mail .copy-mail {display:none}
+}
+@media (max-width:660px) {
+  .header-mail .copy-mail {display:none}
+  .header-mail .header-mail-short {position:static;width:auto;height:auto;margin:0;overflow:visible;clip-path:none}
+  .header-mail .header-mail-address {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .header-mail-link {min-height:44px;padding:0 10px;border:1px solid var(--line);font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+  .switch-label {display:block;position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
+@media (max-width:660px) {
+  /* The 12px label floor leaves no room for the masthead subtitle beside three controls. */
+  .brand-sub {display:none}
+}
+@media (max-width:365px) {
+  .header-mail-link {padding:0 7px}
+}
+.nav-sheet-mail {display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;white-space:normal}
+.has-nav-sheet .main-nav.is-open .nav-sheet-mail a {display:inline-flex;align-items:center;min-height:44px;padding:0;border:0;color:#202222;font-size:14px;font-weight:600}
+.nav-sheet-mail .header-mail-short,.nav-sheet-mail .header-mail-address {position:static}
+.nav-sheet-mail .header-mail-short {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.nav-sheet-mail .copy-mail {color:#4a4a46;border-color:#1c1f1f4d}
+
+/* The hero says plainly what the studio takes on. */
+.hero-subhead {max-width:560px;margin:0 0 18px;color:var(--ink);font:400 clamp(20px,1.7vw,25px)/1.42 var(--serif);letter-spacing:-.01em}
+.hero-copy .hero-intro {margin-bottom:30px}
+.hero-takes {margin-top:40px;max-width:560px;padding-top:18px;border-top:1px solid var(--line-soft)}
+.hero-takes-label {margin:0 0 10px;color:var(--gold-bright)}
+.hero-takes ul {list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.hero-takes li {position:relative;padding-left:22px;color:var(--secondary);font-size:15px;line-height:1.55}
+.hero-takes li::before {content:"";position:absolute;left:0;top:.75em;width:10px;height:1px;background:var(--gold)}
+
+/* A contact band right after the work, and the same routes at the close. */
+.contact-band {background:var(--surface);border-top:2px solid var(--gold);border-bottom:1px solid var(--line-soft)}
+.contact-band-inner {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:48px;align-items:center;padding-block:58px}
+.contact-band-kicker {margin:0 0 14px;color:var(--gold-bright)}
+.contact-band h2 {margin:0;font:900 clamp(30px,3.4vw,50px)/1.05 var(--sans);font-stretch:condensed;text-transform:uppercase;letter-spacing:-.02em}
+.contact-band h2 em {font-family:var(--serif);font-weight:400;font-style:italic;text-transform:none;letter-spacing:-.03em;color:var(--gold-bright)}
+.contact-block {display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.contact-mail {display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0}
+.contact-mail-link {gap:22px}
+.contact-block-note {margin:0;color:var(--secondary);font-size:14px;line-height:1.6;max-width:40ch}
+.contact-section .contact-mail {margin-bottom:0}
+.contact-section .copy-mail {color:#17191b;border-color:#17191b8c}
+.contact-section .copy-mail:hover {border-color:#17191b;color:#17191b}
+.first-work-invitation p a {color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px}
+@media (max-width:900px) {
+  .contact-band-inner {grid-template-columns:1fr;gap:26px;padding-block:46px}
+}
+
+/* Footer: the address again, and links large enough to tap. */
+.footer-mail {display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:26px 0 0}
+.footer-mail a {font-size:clamp(17px,1.8vw,22px);color:#eae5d9;border-bottom:1px solid #a9936f;padding-bottom:2px;overflow-wrap:anywhere}
+.site-footer .copy-mail {color:#eae5d9;border-color:#6b665e}
+.site-footer .copy-mail:hover {border-color:#dfc195;color:#fff}
+.footer-links a,.footer-end a {display:inline-flex;align-items:center;min-height:24px}
+.journey-footer .footer-mail {margin:0}
+.journey-footer .footer-mail a {font-size:15px;color:var(--ink);border-bottom-color:var(--gold)}
+.journey-footer .copy-mail {color:var(--secondary);border-color:var(--line)}
