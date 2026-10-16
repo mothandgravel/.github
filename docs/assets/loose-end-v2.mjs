@@ -12,6 +12,17 @@ function announce(message, source = document.activeElement) {
 }
 function storage() { try { return sessionStorage; } catch { return null; } }
 function clearSaved() { const saved = storage(); try { saved?.removeItem(draftKey); saved?.removeItem(roomKey); } catch {} }
+// An email link carries a bounded brief; the page keeps the full text for Copy and Download.
+const mailAddress = 'hello@mothandgravel.com';
+const mailBodyLimit = 1800;
+export function briefMail(text, making) {
+  const excerpt = (making || '').replace(/\s+/g, ' ').trim();
+  const subject = 'A brief for Moth & Gravel' + (excerpt ? ': ' + (excerpt.length > 60 ? excerpt.slice(0, 59).trimEnd() + '…' : excerpt) : '');
+  const shortened = text.length > mailBodyLimit;
+  const body = shortened ? text.slice(0, mailBodyLimit).trimEnd() + '\n\n[Shortened for email at 1,800 characters. The full brief is still on the question sheet; copy and paste the rest here.]\n' : text;
+  const encode = value => encodeURIComponent(value.replace(/\r?\n/g, '\r\n'));
+  return { href: 'mailto:' + mailAddress + '?subject=' + encode(subject) + '&body=' + encode(body), shortened };
+}
 function download(text, name) {
   const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
   const link = document.createElement('a'); link.href = url; link.download = name; link.click();
@@ -28,7 +39,19 @@ if (intake) {
   let step = 0;
   let generatedBrief = '';
   let copyGeneration = 0;
-  brief.addEventListener('input', () => { copyGeneration++; });
+  const send = document.getElementById('send-brief');
+  const sendLimit = document.getElementById('send-limit');
+  function updateSend() {
+    const mail = briefMail(brief.value, document.getElementById('making').value);
+    send.href = mail.href;
+    sendLimit.hidden = !mail.shortened;
+  }
+  brief.addEventListener('input', () => { copyGeneration++; updateSend(); });
+  send.addEventListener('click', () => {
+    updateSend();
+    announce(sendLimit.hidden ? 'Your mail app should open with the brief written in. Send it from there when it reads right.'
+      : 'Your mail app should open with the first part of the brief. Copy the brief to paste the rest.', send);
+  });
   let guidedHistory = true;
   try { history.replaceState({ mgLooseEnd: true, step: 0 }, ''); } catch { guidedHistory = false; }
   const answers = () => normalizeDraft(Object.fromEntries(fields.map(key => [key, key === 'intent' ?
@@ -82,6 +105,7 @@ if (intake) {
       if (!generatedBrief || brief.value === generatedBrief) brief.value = generated;
       else if (generated !== generatedBrief) announce('Your brief has edits. They were kept. Use Rebuild from answers if you want to replace them with your updated answers.', brief);
       generatedBrief = generated;
+      updateSend();
     }
     if (focus) panels[step].querySelector('legend, h2').focus();
   }
@@ -102,7 +126,7 @@ if (intake) {
   document.getElementById('edit-answers').addEventListener('click', () => { if (guidedHistory) history.go(1 - step); else show(1); });
   document.getElementById('rebuild-brief').addEventListener('click', event => {
     copyGeneration++;
-    generatedBrief = briefText(answers()); brief.value = generatedBrief;
+    generatedBrief = briefText(answers()); brief.value = generatedBrief; updateSend();
     announce('Brief rebuilt from your answers, replacing the edits in the brief.', event.currentTarget);
   });
   document.getElementById('download-brief').addEventListener('click', event => { copyGeneration++; download(brief.value, 'moth-and-gravel-loose-end.txt'); announce('Your edited brief was prepared for download. Nothing was sent to the studio.', event.currentTarget); });

@@ -47,3 +47,10 @@ html:is(:not(.has-js),.site-script-unavailable) .question-room .header-actions {
   .question-room textarea { color:#202222;background:#fff; }
   .question-room summary { color:#202222; }
 }
+/* Sending is the first action on the kept brief; Copy and Download stay beside it as quieter routes. */
+.question-room .brief-send { margin-top:22px; }
+.question-room #send-brief { font-size:14px;min-height:54px;gap:22px; }
+.question-room #send-help,.question-room .send-limit { margin:12px 0 0;max-width:62ch; }
+.question-room .send-limit { color:var(--ink);border-left:2px solid var(--gold-bright);padding-left:12px; }
+.question-room .brief-keep-actions { margin-top:18px; }
+@media print { .question-room .brief-send,.question-room #send-help,.question-room .send-limit { display:none!important; } }
