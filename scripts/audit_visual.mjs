@@ -109,9 +109,12 @@ async function assertLandingStyleParity(viewport, label) {
         values: properties.map(property => getComputedStyle(el).getPropertyValue(property)) }));
   });
   const before = await measure();
+  // The authored landing styles are the shared stylesheet followed by the home-only rooms.
   const full = await page.addStyleTag({ url: origin + '/assets/site.css' });
+  const home = await page.addStyleTag({ url: origin + '/assets/home.css' });
   const after = await measure();
   await full.evaluate(el => el.remove());
+  await home.evaluate(el => el.remove());
   const changed = before.filter((entry, index) => JSON.stringify(entry.values) !== JSON.stringify(after[index]?.values));
   assert(changed.length === 0, label + ': generated landing styles differ from authored styles on ' + changed.map(e => e.name).join(', '));
   } finally { await page.close(); }

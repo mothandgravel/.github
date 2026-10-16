@@ -29,7 +29,7 @@ records listening review and prepares finished website/RSS editions through `pro
 Finished editions default to 1× alongside originals at 1.15×. Local production makes
 no Cloud requests; pushing a publication PR and uploading to YouTube remain separate steps.
 
-The site ships readable HTML, local artwork and small progressive enhancements. The homepage includes its relevant styles in the initial response, generated from the authored `docs/assets/site.css`; article-only styles remain in the external stylesheet. Its studio and Field Notes identities are generated from the published catalog; unpublished research stays out of that catalog. Publication stamps are absent from the reading surfaces, while RSS retains publication metadata.
+The site ships readable HTML, local artwork and small progressive enhancements. The homepage includes its relevant styles in the initial response, generated from the authored `docs/assets/site.css` plus the home-only `docs/assets/home.css`, which no page links; article-only styles remain in the external stylesheet. Its studio and Field Notes identities are generated from the published catalog; unpublished research stays out of that catalog. Publication stamps are absent from the reading surfaces, while RSS retains publication metadata.
 
 Run `python3 scripts/build_notes.py` after changing the catalog or discovery generator, then `python3 scripts/build_notes.py --check`, `python3 scripts/reading_output.test.py`, `python3 scripts/check_site.py` and `node --test scripts/notes_model.test.mjs`. Browser CI checks both appearances, narrow layouts, navigation and no-JavaScript access.
 

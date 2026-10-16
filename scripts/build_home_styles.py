@@ -82,7 +82,9 @@ def build(check=False):
     invitations = '/* Invitations to follow the work,' + invitations
     answers = source.split('/* Useful answers and an early invitation,')[1]
     answers = '/* Useful answers and an early invitation,' + answers
-    css = '\n'.join([core, editorial, covers, invitations, answers])
+    # Home-only rooms live in their own file so the shared stylesheet stays small for other pages.
+    home = (ROOT / 'docs/assets/home.css').read_text()
+    css = '\n'.join([core, editorial, covers, invitations, answers, home])
     # Preserve CSS tokens and quoted content; only comments/line indentation leave.
     css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
     elements = LandingElements()
