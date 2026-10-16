@@ -8,6 +8,7 @@ from urllib.parse import urlsplit
 import re
 import json
 import hashlib
+import os
 import struct
 import sys
 import xml.etree.ElementTree as ET
@@ -176,16 +177,17 @@ def main() -> int:
     for specimen in ('ajo', 'skystack', 'kitronik'):
         check(f'id="specimen-{specimen}"' in html, f'Missing {specimen} specimen')
     check(html.count('class="specimen-record"') == 3, 'Each specimen needs a native working record')
-    provenance = json.loads((ROOT / 'design/working-specimens-provenance.json').read_text())
+    provenance = json.loads((ROOT.parent / 'design/working-specimens-provenance.json').read_text())
     check([item['id'] for item in provenance['artifacts']] == ['coastal-watch', 'liveconnect', 'ajo', 'skystack', 'kitronik'],
           'Specimen provenance must match the visible selection')
     for item in provenance['artifacts']:
         if 'asset' in item:
-            asset = ROOT / 'design' / item['asset']
+            # Recorded asset paths stay relative to the published docs/design folder they were written in.
+            asset = Path(os.path.normpath(ROOT / 'design' / item['asset']))
             check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['assetSha256'],
                   f"Specimen asset differs from recorded output: {item['id']}")
     check((ROOT / 'assets/specimens/sky-stamp-footprints.svg').is_file(), 'Missing native footprint replay')
-    connection_provenance = json.loads((ROOT / 'design/connection-study-provenance.json').read_text())
+    connection_provenance = json.loads((ROOT.parent / 'design/connection-study-provenance.json').read_text())
     for illustration in connection_provenance['illustrations']:
         if 'sha256' in illustration:
             asset = ROOT.parent / illustration['path']
@@ -240,7 +242,7 @@ def main() -> int:
               'Coastal watch missing from sitemap')
     mapping_page = ROOT / 'specimens/whose-map/index.html'
     check(mapping_page.is_file(), 'Missing camera and mapping capture study')
-    captures = json.loads((ROOT / 'design/buggy-captures-provenance.json').read_text())
+    captures = json.loads((ROOT.parent / 'design/buggy-captures-provenance.json').read_text())
     for item in captures['assets'] + captures.get('deliveryPreviews', []):
         asset = ROOT.parent / item['file']
         check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['sha256'],

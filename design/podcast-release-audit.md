@@ -49,4 +49,4 @@ scenario. Human pronunciation/listening review and actual YouTube publication
 remain separate from these automated checks.
 
 References: [YouTube video metadata limits](https://developers.google.com/youtube/v3/docs/videos),
-[release workflow](../../audio/production/PUBLISHING.md).
+[release workflow](../audio/production/PUBLISHING.md).

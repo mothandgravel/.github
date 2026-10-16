@@ -39,7 +39,7 @@ browse. Choose an episode, read its corresponding note, or open its timed
 transcript. Closing the player pauses playback. Metadata loads when the player
 opens; the archive transcript loads when requested and retains a readable
 download if its timed version cannot load. Downloads are grouped beside the
-article player. See the [audio design sprint](../docs/design/field-notes-audio-sprint.md)
+article player. See the [audio design sprint](../design/field-notes-audio-sprint.md)
 for the critique, before/after captures and validation.
 
 **“Subscribe to the podcast”** links to a distinct feed at

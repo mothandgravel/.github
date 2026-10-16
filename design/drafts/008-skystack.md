@@ -1,6 +1,6 @@
 # 008 / A whole staircase. One undo.
 
-**Archived field study draft — SkyStack Builder.** Source inspection of a Windows game proof of concept. The illustrations are authored explanations, not game screenshots. The reading edition is [Field Note 008](../../notes/008-one-undo.html); this archived draft stays outside the catalog and sitemap.
+**Archived field study draft — SkyStack Builder.** Source inspection of a Windows game proof of concept. The illustrations are authored explanations, not game screenshots. The reading edition is [Field Note 008](../../docs/notes/008-one-undo.html); this archived draft stays outside the catalog and sitemap.
 
 ![Three isometric tiles gathered inside one brass outline, with a single returning arrow around the group.](008-skystack-assets/one-gesture.svg)
 
