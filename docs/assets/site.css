@@ -772,7 +772,9 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
   contain-intrinsic-block-size:auto 900px;
 }
 @media (max-width:760px) {
-  .hero~.field-notes-section,.hero~.work-section { contain-intrinsic-block-size:auto 1600px; }
+  .hero~.work-section { contain-intrinsic-block-size:auto 1600px; }
+  /* The services section now sits above, so Field Notes is skipped on arrival; estimate its real phone height. */
+  .hero~.field-notes-section { contain-intrinsic-block-size:auto 1572px; }
   .hero~.contact-section { contain-intrinsic-block-size:auto 1250px; }
 }
 .section-kicker a { color:var(--gold-bright);text-underline-offset:4px; }
@@ -1319,11 +1321,36 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 /* The hero says plainly what the studio takes on. */
 .hero-subhead {max-width:560px;margin:0 0 18px;color:var(--ink);font:400 clamp(20px,1.7vw,25px)/1.42 var(--serif);letter-spacing:-.01em}
 .hero-copy .hero-intro {margin-bottom:30px}
-.hero-takes {margin-top:40px;max-width:560px;padding-top:18px;border-top:1px solid var(--line-soft)}
-.hero-takes-label {margin:0 0 10px;color:var(--gold-bright)}
-.hero-takes ul {list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.hero-takes li {position:relative;padding-left:22px;color:var(--secondary);font-size:15px;line-height:1.55}
-.hero-takes li::before {content:"";position:absolute;left:0;top:.75em;width:10px;height:1px;background:var(--gold)}
+/* What we take on: three plain lines of work, each with the questions it starts from. */
+.services-section {border-top:1px solid var(--line-soft)}
+.services-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);background:var(--surface)}
+.service {min-width:0;padding:30px 28px 34px}
+.service+.service {border-left:1px solid var(--line)}
+.service h3 {margin:0 0 14px;font:900 clamp(24px,2.2vw,32px)/1.08 var(--sans);font-stretch:condensed;text-transform:uppercase;letter-spacing:-.02em;color:var(--ink)}
+.service>p:not(.service-ask) {margin:0 0 24px;color:var(--secondary);font-size:16px;line-height:1.7}
+.service-ask {margin:0 0 10px;color:var(--gold-bright)}
+.service ul {list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.service li {position:relative;padding-left:22px;color:var(--ink);font:400 17px/1.5 var(--serif)}
+.service li::before {content:"";position:absolute;left:0;top:.75em;width:10px;height:1px;background:var(--gold)}
+@media (max-width:1000px) {
+  .services-grid {grid-template-columns:1fr}
+  .service+.service {border-left:0;border-top:1px solid var(--line)}
+}
+@media (max-width:660px) {
+  .service {padding:24px 20px 28px}
+}
+
+/* A first piece of work, written as one card: name, who it is for, what it leaves. */
+.first-work-card-head {display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px;padding:28px;border-bottom:1px solid var(--line)}
+.first-work-name {margin:0;font:400 clamp(28px,2.6vw,38px)/1.15 var(--serif);color:var(--ink)}
+.first-work-terms {margin:0;display:grid;gap:16px}
+.first-work-terms dt {margin:0 0 6px;color:var(--gold-bright)}
+.first-work-terms dd {margin:0;color:var(--secondary);font-size:16px;line-height:1.7}
+.first-work-parts h4 {font:400 29px/1.2 var(--serif);color:var(--ink);margin:22px 0 16px}
+@media (max-width:900px) {
+  .first-work-card-head {grid-template-columns:1fr;gap:18px;padding:24px 20px}
+  .first-work-parts h4 {margin-top:16px}
+}
 
 /* A contact band right after the work, and the same routes at the close. */
 .contact-band {background:var(--surface);border-top:2px solid var(--gold);border-bottom:1px solid var(--line-soft)}

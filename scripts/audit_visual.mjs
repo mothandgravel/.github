@@ -57,14 +57,12 @@ async function inspectFirstWork(page, label, theme, width) {
     return targets.every(n => n.scrollWidth <= n.clientWidth + 2) && el.getBoundingClientRect().right <= innerWidth + 1;
   });
   assert(geometry, label + ': first-engagement heading, material or action is clipped');
-  assert(await sheet.locator('a.button[href="./questions/"]').count() === 1, label + ': first engagement does not reach the brief');
+  assert(await sheet.locator('a.button[href="#contact"]').count() === 1, label + ': first engagement does not start a conversation');
+  assert(await sheet.locator('a[href="./questions/"]').count() >= 1, label + ': first engagement does not reach the brief');
   await sheet.locator('.first-work-foot').scrollIntoViewIfNeeded();
   assert(/Before any paid work/.test(await sheet.locator('.first-work-foot').innerText()), label + ': paid-work boundary missing');
-  const example = sheet.locator('.first-work-example');
-  await example.locator('summary').focus();
-  await page.keyboard.press('Enter');
-  assert(await example.getAttribute('open') !== null, label + ': example cannot be opened with keyboard');
-  assert(/fictional workbench study, not a client result/.test(await example.innerText()), label + ': example masquerades as delivered work');
+  assert(/Who it’s for/i.test(await sheet.locator('.first-work-terms').innerText()), label + ': first piece of work does not say who it is for');
+  assert(await sheet.locator('.first-work-parts li').count() === 3, label + ': first piece of work does not list what the client receives');
 }
 
 async function inspectSpecimens(page, label, theme, width) {
@@ -643,12 +641,11 @@ try {
   await enquiry.goto(origin, { waitUntil: 'load' });
   await enquiry.locator('.hero-actions a[href="#contact"]').click();
   assert(enquiry.url().endsWith('#contact'), 'Hero enquiry does not reach contact');
-  assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Enquiry route is hidden');
+  assert(await enquiry.locator('#contact a[href^="mailto:hello@mothandgravel.com"]').first().isVisible(), 'Email route is hidden');
+  assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Public enquiry route is hidden');
   await enquiry.locator('#contact a[href="#first-work"]').click();
   assert(enquiry.url().endsWith('#first-work'), 'Contact does not explain the first engagement');
-  await enquiry.locator('.first-work-example summary').click();
-  assert(await enquiry.locator('.first-work-example').getAttribute('open') !== null, 'First engagement example fails without JavaScript');
-  await enquiry.locator('#first-work a.button').click();
+  await enquiry.locator('#first-work a[href="./questions/"]').first().click();
   assert(enquiry.url().endsWith('/questions/'), 'First engagement does not reach the actual question sheet');
   assert(await enquiry.locator('#making').isVisible(), 'First engagement depends on script-only intake');
   await enquiry.goto(origin + '/#studio', { waitUntil: 'load' });

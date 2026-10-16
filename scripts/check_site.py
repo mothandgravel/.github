@@ -414,7 +414,7 @@ def main() -> int:
                       'Machine-readable collection differs from the published archive')
         except (ValueError, KeyError, StopIteration, AttributeError) as error:
             check(False, f'{file.name}: invalid discovery graph ({error})')
-    check('studio-answers' in html and 'based in Finland' in html,
+    check('studio-answers' in html and 'based in finland' in html.lower(),
           'Machine identity must be backed by visible useful answers and location')
     for route in ('questions', 'workbench', 'workbench/return'):
         path = ROOT / route / 'index.html'
