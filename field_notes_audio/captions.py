@@ -627,7 +627,7 @@ def export_result(
     )
 
 
-def run(args: argparse.Namespace) -> Path | None:
+def recording_plan(args: argparse.Namespace) -> tuple[Path, dict, bytes, dict, str]:
     if not re.fullmatch(r"[a-z][a-z0-9-]{4,28}[a-z0-9]", args.project):
         raise ValueError("Provide the Google Cloud project ID")
     if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{1,61}[a-z0-9]", args.bucket):
@@ -689,6 +689,14 @@ def run(args: argparse.Namespace) -> Path | None:
         "request": payload,
         "fingerprint": fingerprint,
     }
+    return directory, plan, content, metadata, script
+
+
+def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> Path | None:
+    directory, plan, content, metadata, script = recording_plan(args)
+    duration = plan["duration_seconds"]
+    audio_hash, uri, payload = plan["audio_sha256"], plan["audio_uri"], plan["request"]
+    object_name = f"field-notes-input/{audio_hash}.mp3"
     report(
         f"Caption existing recording: {duration / 60:.2f} minutes; {args.model}; location {args.location}"
     )
@@ -704,6 +712,14 @@ def run(args: argparse.Namespace) -> Path | None:
     with run_lock(directory):
         state_path = directory / "state.json"
         state = read_object(state_path) if state_path.exists() else {}
+        if expected_operation is not None and (
+            state.get("operation") != expected_operation
+            or state.get("status") not in {"running", "complete"}
+            or state.get("audio_sha256") != audio_hash
+        ):
+            raise ValueError(
+                "The saved caption receipt changed or disappeared. Resume will not create a new submission."
+            )
         write_json(directory / "plan.json", plan)
         if state.get("status") in {"requesting", "uncertain"} and not args.retry_uncertain:
             raise ValueError(

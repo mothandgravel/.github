@@ -9,8 +9,10 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from field_notes_studio.health import restart, tool_status, worker_status
+from field_notes_studio.job_history import resolved_failures
 from field_notes_studio.models import ReviewSnapshot
 from field_notes_studio.pipeline import Pipeline
+from field_notes_studio.preparation_jobs import PreparationJobs
 from field_notes_studio.processes import launch_worker, open_path, open_publisher, upload_path
 from field_notes_studio.repository import Repository
 
@@ -61,9 +63,67 @@ class Studio:
         speed: float | None,
         outro: float | None,
         sound: dict | None = None,
+        recipe: dict | None = None,
     ) -> tuple[dict, str]:
-        request = self.pipeline.request(episode, action, speed, outro, sound)
+        request = self.pipeline.request(episode, action, speed, outro, sound, recipe)
         return request, self.pipeline.plan(episode, action, request)
+
+    def checked_plan(self, episode, action, speed, outro, sound=None, recipe=None):
+        request, summary = self.plan(episode, action, speed, outro, sound, recipe)
+        self.pipeline.preflight(episode, action, request)
+        return request, "Preflight passed for this action.\n\n" + summary
+
+    def readiness(self, episode, settings):
+        from field_notes_studio.readiness_models import Readiness, ReadinessBusy
+
+        def active():
+            return next(
+                (
+                    j
+                    for j in self.repository.jobs()
+                    if j.episode == episode and j.status in {"queued", "running", "waiting"}
+                ),
+                None,
+            )
+
+        job = active()
+        if job is None:
+            value = self.pipeline.readiness(episode, settings)
+            job = active()
+            if job is None:
+                if value.action in {"produce", "export"}:
+                    action = "video" if value.action == "produce" else "export"
+                    try:
+                        request = self.pipeline.request(
+                            episode,
+                            action,
+                            settings.get("speed"),
+                            settings.get("outro_seconds"),
+                            recipe=settings,
+                        )
+                        self.pipeline.preflight(episode, action, request)
+                    except ReadinessBusy as exc:
+                        value = replace(
+                            value, action="check", title="Files are in use", detail=str(exc)
+                        )
+                    except (OSError, ValueError, KeyError) as exc:
+                        value = replace(
+                            value,
+                            action="health",
+                            title="Preflight needs attention",
+                            detail=str(exc),
+                        )
+                # A different window may have queued this episode during preflight.
+                job = active()
+                if job is None:
+                    return value
+        return Readiness(
+            episode,
+            "job",
+            "Episode work is " + job.status,
+            "Follow the existing job; do not queue another copy. Saved media and review are checked when the job finishes.",
+            job=job.identifier,
+        )
 
     def settings(self, episode: str) -> dict:
         settings = self.pipeline.settings(episode)
@@ -74,9 +134,23 @@ class Studio:
 
     def retry(self, identifier: str) -> str:
         job = self.repository.get(identifier)
-        if job.status not in {"failed", "interrupted", "cancelled"}:
+        if job.status not in {"failed", "interrupted", "cancelled", "waiting"}:
             raise ValueError("Only failed, interrupted or stopped jobs can be retried")
-        return self.submit(job.episode, job.action, json.loads(job.request))
+        if identifier in resolved_failures(self.repository.jobs()):
+            raise ValueError(
+                "A later attempt completed. Use the ready episode instead of retrying this historical failure."
+            )
+        request = json.loads(job.request)
+        if job.action == "prepare":
+            if request.get("uncertain_chunks"):
+                raise ValueError(
+                    "Inspect preparation recovery again. A previous resend authorization cannot authorize another attempt."
+                )
+            PreparationJobs(self.root).validate(request)
+            if job.status == "waiting":
+                launch_worker(self.root)
+                return self.repository.resume_preparation(identifier)
+        return self.submit(job.episode, job.action, request)
 
     def submit(self, episode: str, action: str, request: dict) -> str:
         # Spawn before persisting; if process creation fails no orphan request is queued.
@@ -129,7 +203,9 @@ class Studio:
                     sound[key] = float(sound[key])
                 if sound["music_mode"] != "file":
                     sound["music_file"] = None
-            request, summary = self.plan(identifier, action, speed, outro, sound)
+            request, summary = self.checked_plan(
+                identifier, action, speed, outro, sound, draft.get("production_base")
+            )
             plans.append((identifier, action, request))
             summaries.append(f"{identifier} · {action}\n{summary}")
         return plans, "\n\n".join(summaries)
@@ -189,7 +265,17 @@ class Studio:
         if job.status != "succeeded" or not job.result:
             raise ValueError("Choose a completed job with saved output")
         directory = Path(job.result).resolve()
-        expected = self.root / "artifacts" / ("uploads" if job.action == "export" else "production")
+        expected = (
+            self.root
+            / "artifacts"
+            / (
+                "studio/prepared"
+                if job.action == "prepare"
+                else "uploads"
+                if job.action == "export"
+                else "production"
+            )
+        )
         if not directory.is_relative_to(expected.resolve()):
             raise ValueError("Saved job output is outside the production directory")
         filename = {
@@ -197,6 +283,7 @@ class Studio:
             "preview": "episode.mp4",
             "video": "episode.mp4",
             "export": "",
+            "prepare": "",
         }[job.action]
         open_path(directory / filename if filename else directory)
 

@@ -25,6 +25,7 @@ def inspect_audio_toolchain() -> AudioToolchain:
             "sound.py",
             "timeline.py",
             "editions.py",
+            "sources.py",
             "toolchain.py",
         )
     )

@@ -111,3 +111,47 @@ class PreparationWindowTests(unittest.TestCase):
                 widget.winfo_rootx() + widget.winfo_width(),
                 self.view.window.winfo_rootx() + self.view.window.winfo_width(),
             )
+
+    def test_service_authorization_resets_on_selection_refresh_and_new_inspection(self):
+        from dataclasses import replace
+
+        self.select("104")
+        snapshot = replace(self.snapshot(), request_json='{"captured":"plan"}')
+        self.view.show_snapshot(snapshot)
+        self.assertFalse(self.view.authorization.instate(["disabled"]))
+        self.assertTrue(self.view.queue_button.instate(["disabled"]))
+        self.view.authorization.invoke()
+        self.assertFalse(self.view.queue_button.instate(["disabled"]))
+        self.view.show_snapshot(snapshot)
+        self.assertFalse(self.view.authorized.get())
+        self.view.authorization.invoke()
+        self.select("105")
+        self.assertFalse(self.view.authorized.get())
+        self.assertTrue(self.view.queue_button.instate(["disabled"]))
+
+    def test_service_authorization_and_queue_controls_fit_compact_height(self):
+        from dataclasses import replace
+
+        self.root.deiconify()
+        self.view.window.geometry("760x580")
+        self.select("104")
+        self.view.show_snapshot(replace(self.snapshot(), request_json='{"captured":"plan"}'))
+        self.root.update()
+        for widget in (self.view.authorization, self.view.queue_button, self.view.message):
+            self.assertTrue(widget.winfo_ismapped())
+            self.assertLessEqual(
+                widget.winfo_rootx() + widget.winfo_width(),
+                self.view.window.winfo_rootx() + self.view.window.winfo_width(),
+            )
+            self.assertLessEqual(
+                widget.winfo_rooty() + widget.winfo_height(),
+                self.view.window.winfo_rooty() + self.view.window.winfo_height(),
+            )
+
+    def test_unconfigured_preparation_cannot_enable_service_authorization(self):
+        self.select("104")
+        self.view.show_snapshot(self.snapshot())
+        self.view.authorized.set(True)
+        self.view.busy(False)
+        self.assertTrue(self.view.authorization.instate(["disabled"]))
+        self.assertTrue(self.view.queue_button.instate(["disabled"]))

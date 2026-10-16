@@ -7,11 +7,12 @@ from pathlib import Path
 from tkinter import ttk
 
 from field_notes_studio.controller import Controller
-from field_notes_studio.preparation import Preparation
 from field_notes_studio.preparation_controller import PreparationController
+from field_notes_studio.preparation_service import PreparationService
 from field_notes_studio.presentation import theme
 from field_notes_studio.presentation.preparation import PreparationWindow
 from field_notes_studio.presentation.queue import ProductionQueue
+from field_notes_studio.presentation.readiness import ReadinessCard
 from field_notes_studio.presentation.shelf import Shelf
 from field_notes_studio.presentation.workspace import Workspace
 from field_notes_studio.service import Studio
@@ -29,7 +30,7 @@ class Application:
         root.title("Moth & Gravel · Production studio")
         root.geometry("1280x920")
         root.minsize(1050, 760)
-        main = ttk.Frame(root, padding=(24, 18))
+        main = ttk.Frame(root, padding=(24, 12))
         main.pack(fill="both", expand=True)
         main.columnconfigure(0, weight=1)
         main.rowconfigure(2, weight=1)
@@ -37,19 +38,30 @@ class Application:
             row=0, column=0, sticky="w"
         )
         ttk.Label(main, text="Production studio", style="Studio.TLabel").grid(
-            row=1, column=0, sticky="w", pady=(4, 16)
+            row=1, column=0, sticky="w", pady=(4, 8)
         )
         self.prepare_button = ttk.Button(
             main, text="Prepare new notes…", command=self.open_preparation
         )
-        self.prepare_button.grid(row=1, column=0, sticky="e", pady=(4, 16))
+        self.prepare_button.grid(row=1, column=0, sticky="e", pady=(4, 8))
         self.controller = Controller(Studio(directory), self)
         body = ttk.Panedwindow(main, orient="horizontal")
         body.grid(row=2, column=0, sticky="nsew")
-        self.shelf = Shelf(body, self.controller.select)
+        self.shelf = Shelf(
+            body,
+            self.controller.select,
+            lambda: self.open_preparation(query=self.shelf.query.get()),
+        )
+        self.readiness = ReadinessCard(
+            self.shelf,
+            self.controller.episode_controls.act,
+            self.controller.episode_controls.refresh,
+        )
+        self.readiness.grid(row=6, column=0, sticky="ew")
         self.workspace = Workspace(
             body,
             {
+                "recipes": self.controller.episode_controls.open_recipes,
                 "changed": self.controller.changed,
                 "draft": self.controller.draft_changed,
                 "metadata_save": self.controller.save_metadata,
@@ -64,6 +76,7 @@ class Application:
                 "draft_recovery": self.controller.open_draft_recovery,
                 "plan": self.controller.inspect,
                 "submit": self.controller.submit,
+                "produce_episode": self.controller.production.start,
                 "publication": self.controller.publication,
                 "open": self.controller.open_output,
                 "refresh": self.controller.refresh_review,
@@ -108,13 +121,46 @@ class Application:
         self.tick()
         self.poll()
 
-    def open_preparation(self):
+    def open_preparation(self, *, note="", query=""):
         if self.preparation is not None and not self.preparation.closed:
             self.preparation.view.window.lift()
+            if not self.preparation.busy:
+                # Apply navigation after the fresh catalog arrives. Revealing a
+                # row first schedules selection events that can stale the read.
+                self.preparation.target_note = note
+                self.preparation.target_query = query
+                self.preparation.refresh()
+            elif note:
+                self.preparation.view.reveal(note)
+            elif query:
+                self.preparation.view.query.set(query)
             return
-        self.preparation = PreparationController(
-            Preparation(self.directory), PreparationWindow(self.root)
+        view = PreparationWindow(self.root)
+        view.setup_directory = str(
+            self.directory.parent.parent
+            if self.directory.name == ".github"
+            else self.directory.parent
         )
+        view.context.configure(text=f"Working checkout: {self.directory}")
+        view.connect_navigation(self.open_prepared, self.show_preparation_job)
+        self.preparation = PreparationController(
+            PreparationService(self.directory), view, note=note, query=query
+        )
+
+    def open_prepared(self, episode):
+        self.controller.open_prepared(episode)
+
+    def show_preparation_job(self, identifier):
+        self.preparation.close()
+
+        def loaded(jobs):
+            self.jobs.render(jobs)
+            if self.jobs.tree.exists(identifier):
+                self.jobs.tree.selection_set(identifier)
+                self.jobs.tree.see(identifier)
+                self.controller.job_detail()
+
+        self.controller.task(self.controller.studio.repository.jobs, loaded)
 
     def status(self, message):
         self.message.configure(text=message)

@@ -16,6 +16,7 @@ import re
 import shutil
 import subprocess
 import time
+import uuid
 import wave
 from datetime import datetime, timezone
 from html.parser import HTMLParser
@@ -23,11 +24,24 @@ from pathlib import Path
 from urllib import error, request
 
 from field_notes_audio import auth as google_auth
+from field_notes_audio.diagnostics import provider_text
 from field_notes_audio.locks import run_lock
-from field_notes_audio.progress import raise_if_stopped, report, timed
+from field_notes_audio.progress import raise_if_stopped, report, stage, timed
 from field_notes_audio.storage import digest_file, read_object, write_json
 
 ROOT = Path(__file__).resolve().parents[1]
+# Transport policy is not narration content: never include it in cache fingerprints.
+# urllib applies this to blocking socket operations, not a total request deadline.
+TTS_TIMEOUT_SECONDS = 600
+LEGACY_TTS_TIMEOUT_SECONDS = 180
+
+
+def validate_tts_timeout(value: object) -> int:
+    if type(value) is not int or not 60 <= value <= 900:
+        raise ValueError("Narration socket timeout must be an integer from 60 to 900 seconds")
+    return value
+
+
 MODELS = {"gemini-2.5-flash-tts": 10, "gemini-2.5-pro-tts": 20}
 ENDPOINTS = {
     "eu": "eu-texttospeech.googleapis.com",
@@ -277,7 +291,15 @@ def access_token(auth: str) -> str:
     return google_auth.access_token(auth)
 
 
-def synthesize(data: dict, project: str, endpoint: str, token: str) -> bytes:
+def synthesize(
+    data: dict,
+    project: str,
+    endpoint: str,
+    token: str,
+    *,
+    timeout_seconds: int = TTS_TIMEOUT_SECONDS,
+) -> bytes:
+    timeout_seconds = validate_tts_timeout(timeout_seconds)
     req = request.Request(
         f"https://{ENDPOINTS[endpoint]}/v1/text:synthesize",
         data=json.dumps(data).encode("utf-8"),
@@ -289,7 +311,7 @@ def synthesize(data: dict, project: str, endpoint: str, token: str) -> bytes:
         },
     )
     try:
-        with timed("tts_request"), request.urlopen(req, timeout=180) as response:
+        with timed("tts_request"), request.urlopen(req, timeout=timeout_seconds) as response:
             result = json.load(response)
     except error.HTTPError as exc:
         if exc.code == 401:
@@ -361,16 +383,11 @@ def http_diagnostic(exc: error.HTTPError, token: str) -> dict:
         message = provider.get("message", "")
     except ValueError:
         # Gateways can return HTML or plain text rather than Google's JSON error.
-        message = re.sub(r"<[^>]*>", " ", raw)
+        message = raw
     if isinstance(message, str) and message:
-        message = message.replace(token, "[redacted]") if token else message
-        message = re.sub(r"(?i)Bearer\s+\S+", "Bearer [redacted]", message)
-        message = re.sub(
-            r"(?i)(access_token|refresh_token|api_key|authorization)\s*[:=]\s*\S+",
-            r"\1=[redacted]",
-            message,
-        )
-        result["provider_message"] = re.sub(r"\s+", " ", message).strip()[:500]
+        cleaned = provider_text(message, token)
+        if cleaned:
+            result["provider_message"] = cleaned
     return result
 
 
@@ -412,7 +429,13 @@ def generate(args: argparse.Namespace) -> Path:
         return generate_locked(args, plan, directory)
 
 
-def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Path:
+def generate_locked(
+    args: argparse.Namespace, plan: dict, directory: Path, *, root: Path | None = None
+) -> Path:
+    root = ROOT if root is None else root
+    timeout_seconds = validate_tts_timeout(
+        getattr(args, "tts_timeout_seconds", TTS_TIMEOUT_SECONDS)
+    )
     write_json(directory / "plan.json", plan)
     paths = []
     for index, data in enumerate(plan["requests"], start=1):
@@ -420,7 +443,20 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
         wav_path = directory / f"chunk-{index:03d}.wav"
         state_path = directory / f"chunk-{index:03d}.json"
         expected = digest(json.dumps(data, sort_keys=True).encode("utf-8"))
-        state = read_object(state_path) if state_path.exists() else {}
+        raw = state_path.read_bytes() if state_path.exists() else b""
+        state = json.loads(raw) if raw else {}
+        receipt = getattr(args, "retry_receipts", {}).get(str(index))
+        if receipt and not (
+            state.get("request_sha256") == expected and state.get("status") == "complete"
+        ):
+            if (
+                digest(raw) != receipt
+                or state.get("request_sha256") != expected
+                or state.get("status") not in {"requesting", "uncertain"}
+            ):
+                raise ValueError(
+                    f"Chunk {index} recovery receipt changed or disappeared. Inspect recovery again; no replacement was sent."
+                )
         if state.get("request_sha256") == expected and state.get("status") == "complete":
             if not wav_path.exists() or digest_file(wav_path) != state["audio_sha256"]:
                 raise ValueError(
@@ -429,17 +465,46 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
             validate_wav(wav_path.read_bytes())
             report(f"Chunk {index}/{len(plan['requests'])}: reuse saved audio")
         else:
-            if state.get("status") in {"requesting", "uncertain"} and not args.retry_uncertain:
+            if (
+                state.get("status") in {"requesting", "uncertain"}
+                and not args.retry_uncertain
+                and not receipt
+            ):
                 raise ValueError(
                     f"Chunk {index} has an uncertain prior attempt. --retry-uncertain can incur another charge."
                 )
+            stage(
+                f"narration-{index}-of-{len(plan['requests'])}",
+                f"Narration chunk {index}/{len(plan['requests'])}: contacting the service; "
+                f"client socket timeout {timeout_seconds}s. No automatic resend; earlier completed chunks are retained.",
+            )
             token = access_token(args.auth)
             raise_if_stopped(args)
-            write_json(state_path, {"status": "requesting", "request_sha256": expected})
+            if receipt:
+                # Preserve the diagnostic that was authorized before replacing its state.
+                archive = directory / f"recovery-{index:03d}-{receipt}.json"
+                if not archive.exists():
+                    write_json(archive, state)
+                elif read_object(archive) != state:
+                    raise ValueError("Saved recovery evidence changed; inspect before retrying")
+            attempt_id = uuid.uuid4().hex
+            write_json(
+                state_path,
+                {
+                    "status": "requesting",
+                    "request_sha256": expected,
+                    "attempt_id": attempt_id,
+                    "timeout_seconds": timeout_seconds,
+                },
+            )
             report(f"Chunk {index}/{len(plan['requests'])}: generate", flush=True)
             attempt_start = time.perf_counter()
+            failure_phase = "narration_request"
             try:
-                audio = synthesize(data, args.project, args.endpoint, token)
+                audio = synthesize(
+                    data, args.project, args.endpoint, token, timeout_seconds=timeout_seconds
+                )
+                failure_phase = "local_save"
                 wav_path.write_bytes(audio)
                 write_json(
                     state_path,
@@ -448,6 +513,9 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
                         "request_sha256": expected,
                         "audio_sha256": digest(audio),
                         "duration_seconds": validate_wav(audio),
+                        "attempt_id": attempt_id,
+                        "timeout_seconds": timeout_seconds,
+                        "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
                     },
                 )
             except error.HTTPError as exc:
@@ -460,27 +528,63 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
                     diagnostic = http_diagnostic(exc, token)
                 except (OSError, ValueError, TypeError):
                     diagnostic = {"http_status": exc.code}
-                write_json(state_path, {"status": status, "request_sha256": expected, **diagnostic})
+                write_json(
+                    state_path,
+                    {
+                        "status": status,
+                        "request_sha256": expected,
+                        "attempt_id": attempt_id,
+                        "timeout_seconds": timeout_seconds,
+                        "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
+                        **diagnostic,
+                    },
+                )
                 detail = diagnostic.get("provider_status") or diagnostic.get("provider_message")
                 label = f" ({detail})" if detail else ""
+                elapsed = time.perf_counter() - attempt_start
                 raise RuntimeError(
-                    f"Google returned HTTP {exc.code}{label}. {http_guidance(exc.code, args.episode)} "
-                    f"Diagnostic: {state_path.relative_to(ROOT)}"
+                    f"Narration chunk {index}/{len(plan['requests'])}: Google returned HTTP {exc.code}{label} "
+                    f"after {elapsed:.1f}s (client socket timeout {timeout_seconds}s). "
+                    f"{http_guidance(exc.code, args.episode)} "
+                    f"Diagnostic: {state_path.relative_to(root)}"
                 ) from None
             except Exception as exc:
+                elapsed = time.perf_counter() - attempt_start
+                timed_out = failure_phase == "narration_request" and (
+                    isinstance(exc, TimeoutError)
+                    or (isinstance(exc, error.URLError) and isinstance(exc.reason, TimeoutError))
+                )
+                kind = "TimeoutError" if timed_out else type(exc).__name__
                 write_json(
                     state_path,
                     {
                         "status": "uncertain",
                         "request_sha256": expected,
-                        "failure_kind": type(exc).__name__,
-                        "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
+                        "attempt_id": attempt_id,
+                        "failure_kind": kind,
+                        "failure_phase": failure_phase,
+                        "timeout_seconds": timeout_seconds,
+                        "attempt_seconds": round(elapsed, 4),
                     },
                 )
+                timing = (
+                    f"Client wait for narration timed out (socket timeout {timeout_seconds}s); "
+                    "remote processing and billing are unknown. "
+                    if timed_out
+                    else ""
+                )
                 raise RuntimeError(
-                    "No completed audio was saved. Re-run to inspect state; an uncertain retry can incur another charge."
+                    f"Narration chunk {index}/{len(plan['requests'])}: {kind} after {elapsed:.1f}s. "
+                    + timing
+                    + "No completed audio was confirmed locally. Inspect recovery; resending this chunk can incur another charge. "
+                    f"Diagnostic: {state_path.relative_to(root)}"
                 ) from None
         paths.append(wav_path)
+        # Outside the request exception handler: a late stop must not turn saved audio uncertain.
+        stage(
+            f"narration-{index}-of-{len(plan['requests'])}-complete",
+            f"Narration chunk {index}/{len(plan['requests'])}: verified audio saved.",
+        )
     metadata_path = directory / "episode.json"
     mp3_path = directory / "episode.mp3"
     if metadata_path.exists() and mp3_path.exists():
@@ -497,7 +601,7 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
             raise ValueError(
                 "Cached input script is missing or changed; move this run aside to regenerate"
             )
-        report(f"Reuse completed recording: {mp3_path.relative_to(ROOT)}")
+        report(f"Reuse completed recording: {mp3_path.relative_to(root)}")
         return mp3_path
     with timed("audio_assembly"):
         duration = combine_wavs(paths, directory / "master.wav")
@@ -579,7 +683,7 @@ def generate_locked(args: argparse.Namespace, plan: dict, directory: Path) -> Pa
             "listening_review": "pending",
         },
     )
-    report(f"Ready to listen: {directory.relative_to(ROOT)}/episode.mp3")
+    report(f"Ready to listen: {directory.relative_to(root)}/episode.mp3")
     report(
         f"Generated duration: {int(mp3_duration // 60)}:{int(mp3_duration % 60):02d}; "
         f"average {plan['word_count'] * 60 / mp3_duration:.0f} script words per minute, including pauses"

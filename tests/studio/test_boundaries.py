@@ -14,12 +14,19 @@ class BoundaryTests(unittest.TestCase):
                 package / name
                 for name in (
                     "controller.py",
+                    "episode_controls.py",
+                    "readiness_models.py",
+                    "recipes.py",
+                    "production_flow.py",
+                    "job_history.py",
+                    "job_progress.py",
                     "service.py",
                     "models.py",
                     "repository.py",
                     "processes.py",
                     "preparation_controller.py",
                     "preparation_models.py",
+                    "preparation_service.py",
                 )
             ],
         ]
@@ -37,7 +44,13 @@ class BoundaryTests(unittest.TestCase):
                         any(
                             name in {"sqlite3", "subprocess", "socket", "threading"}
                             or name.startswith("field_notes_studio.pipeline")
-                            or name == "field_notes_studio.preparation"
+                            or name
+                            in {
+                                "field_notes_studio.preparation",
+                                "field_notes_studio.preparation_jobs",
+                                "field_notes_studio.preparation_service",
+                                "field_notes_studio.preparation_setup",
+                            }
                             for name in modules
                         )
                     )

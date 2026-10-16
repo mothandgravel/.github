@@ -14,8 +14,8 @@ from datetime import datetime
 from pathlib import Path
 
 from field_notes_audio import site
-from field_notes_audio.locks import run_lock
-from field_notes_audio.production import packages, runner
+from field_notes_audio.locks import RecordingBusy, run_lock
+from field_notes_audio.production import packages, runner, sources
 from field_notes_audio.production.config import load_settings, number, validate_settings
 from field_notes_audio.production.editions import AUDIO_FILES, cache_valid, fingerprint
 from field_notes_audio.production.metadata import load_metadata, publishing_copy
@@ -45,7 +45,7 @@ class Pipeline:
         self.output = root / "artifacts/production"
 
     def entries(self) -> list[dict]:
-        return site.load_entries(self.root)
+        return sources.load_entries(self.root)
 
     def catalog(self) -> list[Episode]:
         episodes = []
@@ -56,18 +56,28 @@ class Pipeline:
                     entry["id"],
                     entry["title"],
                     entry["duration_seconds"],
-                    site.media_path(self.root, entry["transcript"]).read_text(encoding="utf-8"),
+                    sources.media_path(self.root, entry["transcript"]).read_text(encoding="utf-8"),
                     link,
                     published,
-                    "Podcast catalog in this checkout; external platforms have not been checked.",
+                    (
+                        "Private prepared recording; not published or human-reviewed."
+                        if entry.get("local_prepared")
+                        else "Podcast catalog in this checkout; external platforms have not been checked."
+                    ),
                     podcast_url=link,
                     podcast_date=published,
+                    written_url=site.DOMAIN
+                    + (
+                        "/notes/" + entry["slug"] if entry.get("slug") else "/notes/#listen-archive"
+                    ),
                 )
             )
         return episodes
 
     @staticmethod
     def publication_defaults(entry: dict) -> tuple[str, str]:
+        if entry.get("local_prepared"):
+            return "", ""
         # Match the existing podcast feed's article/archive destinations.
         link = site.DOMAIN + (
             "/notes/" + entry["slug"] if entry.get("slug") else "/notes/#listen-archive"
@@ -272,6 +282,8 @@ class Pipeline:
                 edition = stack.enter_context(
                     packages.locked_editions([entry], self.output, full_video=True)
                 )[0]
+            except RecordingBusy:
+                raise  # Temporary ownership is not an unverifiable portable edition.
             except (ValueError, OSError) as exc:
                 problem = str(exc)
             # Same lock order as export: production first, then upload files.
@@ -365,6 +377,20 @@ class Pipeline:
                 "Package files are unavailable. Check the files again before opening or copying a path."
             ) from exc
 
+    def preflight(self, identifier, action, request):
+        from field_notes_studio.readiness import preflight
+        from field_notes_studio.readiness_models import ReadinessBusy
+
+        try:
+            preflight(self, identifier, action, request)
+        except RecordingBusy as exc:
+            raise ReadinessBusy(str(exc)) from exc
+
+    def readiness(self, identifier, settings):
+        from field_notes_studio.readiness import inspect
+
+        return inspect(self, identifier, settings)
+
     def settings(self, identifier: str) -> dict:
         return load_settings(self.root / "audio/production/settings.json", identifier)
 
@@ -398,7 +424,8 @@ class Pipeline:
     def review_snapshot(self, identifier: str, full_video: bool = False) -> ReviewSnapshot:
         if not (self.output / identifier / "latest.json").exists():
             return ReviewSnapshot(
-                "", "No local edition yet. Select audio, inspect changes, then queue production."
+                "",
+                "No local edition yet. Choose Produce episode for audio, captions, full video and thumbnail together.",
             )
         try:
             with packages.locked_editions(
@@ -420,7 +447,11 @@ class Pipeline:
                         else "Review recorded. For a YouTube package, produce and review the full video, then export."
                     )
                 else:
-                    detail += "Open the saved assets below, check them, then record your review."
+                    detail += (
+                        "Watch and listen to the full episode, check its subtitles, then record one approval for all three."
+                        if full_video
+                        else "Listen to the audio, check its subtitles, then record approval."
+                    )
                 return ReviewSnapshot(
                     self.review_identity(edition),
                     detail,
@@ -428,6 +459,7 @@ class Pipeline:
                     str(edition.audio / "captions.srt"),
                     str(edition.video / "episode.mp4") if edition.video else "",
                     full_video,
+                    approved=status == "approved",
                 )
         except (ValueError, OSError) as exc:
             return ReviewSnapshot("", f"Review unavailable: {exc}")
@@ -446,6 +478,10 @@ class Pipeline:
                 raise ValueError(
                     "Edition changed while you were reviewing. Refresh and check the new assets."
                 )
+            if not expected.full_video and packages.review_status(edition) == "approved":
+                # An optional audio-only recheck must not erase the existing fuller
+                # approval for these exact audio bytes. The identity is checked above.
+                return
             packages.record_review(edition, reviewer)
 
     def request(
@@ -455,10 +491,15 @@ class Pipeline:
         speed: float | None,
         outro: float | None,
         sound: dict | None = None,
+        recipe: dict | None = None,
     ) -> dict:
         if action not in ACTIONS:
             raise ValueError("Unknown studio action")
-        settings = self.settings(identifier)
+        settings = (
+            copy.deepcopy(recipe)
+            if recipe is not None and action != "export"
+            else self.settings(identifier)
+        )
         if action != "export":
             if sound is not None:
                 allowed = {

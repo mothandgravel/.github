@@ -7,14 +7,14 @@ from field_notes_studio.presentation.icons import icon
 
 
 class Shelf(ttk.Frame):
-    def __init__(self, parent, select):
+    def __init__(self, parent, select, prepare=None):
         super().__init__(parent, padding=(0, 0, 16, 0))
         self.columnconfigure(0, weight=1)
         self.rowconfigure(3, weight=1)
         self.episodes = []
         self.current = None
         self.select = select
-        ttk.Label(self, text="EPISODES", style="Heading.TLabel").grid(
+        ttk.Label(self, text="PREPARED RECORDINGS", style="Heading.TLabel").grid(
             row=0, column=0, sticky="w", pady=(0, 8)
         )
         ttk.Label(
@@ -48,10 +48,13 @@ class Shelf(ttk.Frame):
         self.count.grid(row=4, column=0, sticky="w", pady=(8, 0))
         self.help = ttk.Label(
             self,
-            text="Catalog links fill automatically.\nSaved records take precedence.",
+            text="Recordings with captions only.\nNew written note? Prepare it first.",
             style="Muted.TLabel",
+            wraplength=260,
         )
         self.help.grid(row=5, column=0, sticky="w", pady=(4, 0))
+        self.prepare = ttk.Button(self, text="Find / prepare a written note…", command=prepare)
+        self.prepare.grid(row=6, column=0, sticky="ew", pady=(8, 0))
 
     def load(self, episodes):
         self.episodes = episodes
@@ -76,7 +79,7 @@ class Shelf(ttk.Frame):
                     "",
                     "end",
                     iid=episode.identifier,
-                    text=episode.title,
+                    text=f"{episode.identifier} · {episode.title}",
                     values=(
                         ("Saved" if episode.publication_saved else "Feed")
                         if episode.publication_url
@@ -90,7 +93,7 @@ class Shelf(ttk.Frame):
             text=(
                 f"{count} of {len(self.episodes)} episodes"
                 if count
-                else "No matches. Try another title or note number."
+                else "No matches among prepared recordings. Use Find / prepare a written note below."
                 if query
                 else "No prepared episodes yet."
             ),

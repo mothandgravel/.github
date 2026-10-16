@@ -1,5 +1,6 @@
 """Episode controls and review surfaces; callbacks express user intent."""
 
+import copy
 import tkinter as tk
 from tkinter import ttk
 
@@ -35,7 +36,11 @@ class Workspace(ttk.Frame):
         controls.grid(row=2, column=0, sticky="ew")
         self.speed = tk.StringVar(value="1.15")
         self.outro = tk.StringVar(value="5")
-        self.action = tk.StringVar(value="audio")
+        self.action = tk.StringVar(value="video")
+        self.production_base = {}
+        self.show_recipe = {}
+        self.production_busy = False
+        self.has_episode = False
         for column, (label, variable, values) in enumerate(
             [
                 ("Pace ×", self.speed, ("0.75", "1", "1.15", "1.25", "1.5")),
@@ -45,7 +50,9 @@ class Workspace(ttk.Frame):
         ):
             box = ttk.Frame(controls)
             box.grid(row=0, column=column, sticky="w", padx=(0, 18))
-            ttk.Label(box, text=label, style="Muted.TLabel").pack(anchor="w")
+            ttk.Label(
+                box, text="Optional output" if label == "Output" else label, style="Muted.TLabel"
+            ).pack(anchor="w")
             combo = ttk.Combobox(
                 box,
                 textvariable=variable,
@@ -62,12 +69,21 @@ class Workspace(ttk.Frame):
         ActionButton(
             buttons, pictogram="search", text="Inspect changes", command=callbacks["plan"]
         ).pack(side="left")
+        self.full_episode = ActionButton(
+            buttons,
+            pictogram="produce",
+            text="Produce episode",
+            command=callbacks["produce_episode"],
+            style="Compact.TButton",
+            state="disabled",
+        )
+        self.full_episode.pack(side="left", before=buttons.winfo_children()[0], padx=(0, 8))
         self.produce = ActionButton(
             buttons,
             pictogram="produce",
-            text="Queue production",
+            text="Queue inspected output",
             command=callbacks["submit"],
-            style="Accent.TButton",
+            style="Compact.TButton",
             state="disabled",
         )
         self.produce.pack(side="left", padx=8)
@@ -75,7 +91,7 @@ class Workspace(ttk.Frame):
         self.guidance.grid(row=4, column=0, sticky="w", pady=(0, 10))
         self.action.trace_add("write", lambda *_: self.output_guidance())
         self.output_guidance()
-        tabs = self.tabs = ttk.Notebook(self)
+        tabs = self.tabs = ttk.Notebook(self, style="Workspace.TNotebook")
         tabs.grid(row=5, column=0, sticky="nsew")
         self.plan = self._text_tab(tabs, "Produce")
         self.review = Review(tabs, callbacks)
@@ -89,7 +105,24 @@ class Workspace(ttk.Frame):
             callbacks["changed"],
             "Pace and outro are in Produce. Inspect changes before queueing. Custom music needs a file and license credit.",
         )
-        tabs.add(self.sound, text="Sound")
+        self.recipe_info = ttk.Label(
+            self.sound.form.content,
+            text="Configured defaults",
+            style="Muted.TLabel",
+            wraplength=520,
+        )
+        first = self.sound.form.content.winfo_children()[0]
+        self.recipe_info.pack(anchor="w", fill="x", before=first, pady=(0, 4))
+        self.recipe_button = ttk.Button(
+            self.sound.form.content, text="Show recipes / overrides…", command=callbacks["recipes"]
+        )
+        self.recipe_button.pack(anchor="w", before=first, pady=(0, 8))
+        self.sound.bind(
+            "<Configure>",
+            lambda e: self.recipe_info.configure(wraplength=max(200, e.width - 35)),
+            add=True,
+        )
+        tabs.add(self.sound, text="Audio")
         self.batch = Batch(
             tabs, callbacks["batch_inspect"], callbacks["batch_submit"], callbacks["batch_changed"]
         )
@@ -106,6 +139,9 @@ class Workspace(ttk.Frame):
             (self.review, "review"),
             (self.publication, "package"),
             (self.transcript.master, "transcript"),
+            (self.sound, "audio"),
+            (self.batch, "batch"),
+            (self.health.master, "health"),
         ):
             tabs.tab(
                 tab,
@@ -167,6 +203,19 @@ class Workspace(ttk.Frame):
                 command=callbacks[callback],
             ).pack(side="left", padx=(0, 6))
 
+    def preflight_status(self, message, action="video"):
+        short = message if len(message) <= 78 else message[:75] + "…"
+        if action != "export":
+            self.guidance.configure(text="Preflight · " + short)
+        if action in {"export", "both"}:
+            self.publication.preflight.configure(text="Export · " + short)
+
+    def effective_recipe(self):
+        values = copy.deepcopy(self.production_base)
+        values.update(self.sound.sound())
+        values.update(speed=float(self.speed.get()), outro_seconds=float(self.outro.get()))
+        return values
+
     def draft_conflict(self, visible):
         if visible:
             self.conflict.grid(row=7, column=0, sticky="ew")
@@ -187,6 +236,8 @@ class Workspace(ttk.Frame):
         return text
 
     def load(self, episode, settings):
+        self.production_base = copy.deepcopy(settings)
+        self.show_recipe = {}
         self.title.configure(text=episode.title)
         self.subtitle.configure(
             text=f"{episode.identifier} · {episode.duration / 60:.1f} min · AI-narrated"
@@ -200,7 +251,20 @@ class Workspace(ttk.Frame):
 
     def show_plan(self, text, ready=False):
         set_text(self.plan, text)
-        self.produce.configure(state="normal" if ready else "disabled")
+        self.produce.configure(state="normal" if ready and not self.production_busy else "disabled")
+
+    def episode_available(self, value):
+        self.has_episode = value
+        self.production_working(self.production_busy)
+
+    def production_working(self, value):
+        self.production_busy = value
+        self.full_episode.configure(
+            state="normal" if self.has_episode and not value else "disabled",
+            text="Checking episode…" if value else "Produce episode",
+        )
+        if value:
+            self.produce.configure(state="disabled")
 
     def show_health(self, message):
         set_text(self.health, message)
@@ -208,6 +272,8 @@ class Workspace(ttk.Frame):
     def draft(self):
         publication = self.publication
         return {
+            "production_base": copy.deepcopy(self.production_base),
+            "show_recipe": copy.deepcopy(self.show_recipe),
             "recipe": {
                 "speed": self.speed.get(),
                 "outro": self.outro.get(),
@@ -219,6 +285,9 @@ class Workspace(ttk.Frame):
         }
 
     def restore(self, draft):
+        if isinstance(draft.get("production_base"), dict) and draft["production_base"]:
+            self.production_base = copy.deepcopy(draft["production_base"])
+        self.show_recipe = copy.deepcopy(draft.get("show_recipe", {}))
         if draft.get("sound"):
             self.sound.fill(draft["sound"])
         self.publication.metadata_draft = draft.get("metadata", {})
@@ -235,12 +304,19 @@ class Workspace(ttk.Frame):
         if hasattr(self, "batch"):
             self.batch.output(self.action.get())
         messages = {
-            "audio": "Audio → finish an MP3 and subtitles. Then open Review to listen and approve.",
+            "audio": "Audio only → MP3 and subtitles; no video. This is an alternative, not a prerequisite.",
             "preview": "Preview → render the first 10 seconds to check the video style.",
-            "video": "Video → render the full episode and thumbnail. Then review the full video.",
+            "video": "Full episode → audio, retimed captions, full video and thumbnail, in one job.",
             "export": "Export → package the saved full edition with title, description, tags and subtitles.",
         }
-        self.guidance.configure(text=messages[self.action.get()])
+        self.guidance.configure(
+            text=(
+                "Full episode: audio, subtitles, full video and thumbnail. Review once before export."
+                if self.action.get() == "video"
+                else "Produce episode includes audio + video. Optional output: "
+                + messages[self.action.get()]
+            )
+        )
         state = "disabled" if self.action.get() == "export" else "normal"
         self.speed_control.configure(state=state)
         self.outro_control.configure(state=state)
@@ -260,8 +336,10 @@ class Workspace(ttk.Frame):
             self.publication
         ) and self.publication.tabs.select() == str(self.publication.editor)
         if (
-            health
+            producing
+            or health
             or release_editor
+            or self.tabs.select() == str(self.review)
             or self.tabs.select() in {str(self.sound), str(self.batch)}
             or (self.tabs.select() == str(self.publication) and self.publication.files_visible())
         ):

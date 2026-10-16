@@ -20,6 +20,7 @@ from field_notes_audio.production.editions import (
     fingerprint,
     produce_audio,
 )
+from field_notes_audio.production.sources import load_entries
 from field_notes_audio.production.toolchain import inspect_audio_toolchain
 from field_notes_audio.progress import stage
 from field_notes_audio.storage import digest_file, read_object, write_json
@@ -127,7 +128,7 @@ def produce(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
         for name in ("docs", "audio", "field_notes_audio", "video", ".git")
     ):
         raise ValueError("Production output must be separate from source and published assets")
-    entries = [site.source_entry(entry) for entry in site.load_entries(root)]
+    entries = [site.source_entry(entry) for entry in load_entries(root)]
     selected = entries if args.episode == "all" else [e for e in entries if e["id"] == args.episode]
     if not selected:
         raise ValueError(

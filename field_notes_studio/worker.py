@@ -12,6 +12,8 @@ from field_notes_audio.progress import observe
 from field_notes_studio.health import process_id, revision
 from field_notes_studio.models import StopRequested
 from field_notes_studio.pipeline import Pipeline
+from field_notes_studio.preparation_jobs import PreparationJobs
+from field_notes_studio.preparation_models import CaptionsPending
 from field_notes_studio.processes import launch_worker
 from field_notes_studio.repository import Repository
 
@@ -31,9 +33,18 @@ def execute(repository: Repository, pipeline: Pipeline, job) -> None:
         directory = repository.path.parent / "jobs" / job.identifier
         directory.mkdir(parents=True, exist_ok=True)
         with observe(emit):
-            result = pipeline.run(job.episode, job.action, json.loads(job.request), directory, emit)
+            if job.action == "prepare":
+                result = PreparationJobs(pipeline.root).run(
+                    json.loads(job.request), emit, lambda: repository.stopped(job.identifier)
+                )
+            else:
+                result = pipeline.run(
+                    job.episode, job.action, json.loads(job.request), directory, emit
+                )
         # A completed transactional operation wins over a late stop request.
         repository.finish(job.identifier, "succeeded", result=result)
+    except CaptionsPending as exc:
+        repository.pause(job.identifier, str(exc), exc.receipt)
     except StopRequested:
         repository.finish(
             job.identifier,

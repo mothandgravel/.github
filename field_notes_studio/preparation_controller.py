@@ -7,8 +7,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 
 class PreparationController:
-    def __init__(self, service, view):
+    def __init__(self, service, view, *, note="", query=""):
         self.service, self.view = service, view
+        self.target_note, self.target_query = note, query
         self.closed = False
         self.busy = False
         self.epoch = 0
@@ -16,24 +17,58 @@ class PreparationController:
         self.pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="studio-preparation")
         self.handle = None
         view.connect(self.refresh, self.select, self.inspect, self.close)
+        if hasattr(view, "connect_execution"):
+            view.connect_execution(self.submit)
+        if hasattr(view, "connect_setup"):
+            view.connect_setup(self.choose_setup)
         self.refresh()
         self.pump()
 
-    def _read(self, operation, callback):
+    def _read(self, operation, callback, *, effect=False):
         if self.closed or self.busy:
             return
         self.busy = True
         self.view.busy(True)
         epoch = self.epoch
         future = self.pool.submit(operation)
-        future.add_done_callback(lambda done: self.mailbox.put((epoch, callback, done)))
+        future.add_done_callback(lambda done: self.mailbox.put((epoch, callback, done, effect)))
 
     def refresh(self):
         if self.closed or self.busy:
             return
         self.epoch += 1
         self.view.clear("Reading written notes and episode registrations…")
-        self._read(self.service.catalog, self.view.show_catalog)
+        self._read(self.service.catalog, self.catalog_loaded)
+
+    def catalog_loaded(self, items):
+        self.view.show_catalog(items)
+        if hasattr(self.view, "reveal"):
+            if self.target_note:
+                self.view.reveal(self.target_note)
+            elif self.target_query:
+                self.view.query.set(self.target_query)
+            self.target_note, self.target_query = "", ""
+
+    def choose_setup(self):
+        if self.closed or self.busy:
+            return
+        path = self.view.choose_setup()
+        if not path:
+            return
+        self.epoch += 1
+        self.view.clear("Checking the chosen setup locally; no service request…")
+
+        def previewed(preview):
+            if self.view.confirm_setup(preview.summary):
+                self._read(
+                    lambda: self.service.import_setup(preview),
+                    lambda _: self.view.clear(
+                        "Setup imported locally. Select your note and inspect again before authorizing."
+                    ),
+                    effect=True,
+                )
+
+        self._read(lambda: self.service.preview_setup(path), previewed)
 
     def select(self):
         if self.closed:
@@ -49,17 +84,36 @@ class PreparationController:
             self.view.clear("Inspecting the script offline…")
             self._read(lambda: self.service.inspect(note), self.view.show_snapshot)
 
+    def submit(self):
+        if self.closed or self.busy:
+            return
+        snapshot = self.view.snapshot
+        authorized = self.view.authorized.get()
+        recovery = getattr(self.view, "recover_uncertain", None)
+        recover = recovery.get() if recovery is not None else False
+        if not snapshot or snapshot.note != self.view.selected() or not authorized:
+            return
+        self.epoch += 1
+        self.view.clear("Queueing the captured preparation request…")
+        self._read(
+            lambda: self.service.submit(snapshot, authorized, recover_uncertain=True)
+            if recover
+            else self.service.submit(snapshot, authorized),
+            lambda identifier: self.view.queued(snapshot.episode, identifier),
+            effect=True,
+        )
+
     def pump(self):
         if self.closed:
             return
         while True:
             try:
-                epoch, callback, future = self.mailbox.get_nowait()
+                epoch, callback, future, effect = self.mailbox.get_nowait()
             except queue.Empty:
                 break
             self.busy = False
             self.view.busy(False)
-            if epoch != self.epoch:
+            if epoch != self.epoch and not effect:
                 continue
             try:
                 callback(future.result())

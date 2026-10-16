@@ -5,10 +5,50 @@
 Real desktop screenshot from the automated UI fixture; media and publication states
 in these checks are controlled examples.
 
-A Tkinter/ttk workspace for the existing local production engine. Choose a prepared
-episode, inspect the consequences of pace/outro changes, queue an edition, listen
+A Tkinter/ttk workspace for the existing local production engine. Use
+[**Prepare new notes…**](preparation.md) to inspect and explicitly authorize durable
+narration/caption preparation. Its verified recording joins the shelf privately,
+without publishing or human approval. Choose a prepared episode, inspect the consequences of pace/outro changes, queue an edition, listen
 and check subtitles, then prepare the upload package. Record URLs and publication
 dates for episodes you have already published separately from their production jobs.
+
+## One production job, one full-episode review
+
+**Produce episode** is the primary action for a prepared recording. It validates
+and captures the selected episode's current recipe, then queues **one full `video`
+job**: audio finishing, retimed captions, full video and thumbnail. It does not
+merely open a tab. Narration/captions are reused, not requested from Cloud again.
+The button is available both in Produce and on a completed preparation job.
+
+The optional output selector and **Inspect changes → Queue inspected output** are
+for deliberate audio-only, preview or export work. Audio-only is not a prerequisite
+for a full episode. See [the production-flow observation record](episode-production-flow.md).
+
+**Review** defaults to the full episode. Watch with sound, confirm that combined
+check, check subtitles, enter the reviewer name and record **one approval**. A
+separate MP3 listen or audio-only approval is not required. Existing full approval
+is not downgraded by an optional recheck of the same audio; changed media still
+invalidates approval.
+
+**Upload details** generates title, description, tags, hashtags and the written-note
+link. **Published destination** records the actual external release URL/date after
+publishing. Known feed data still prefills; new private recordings do not invent a
+YouTube URL or publication date. **Use today** fills the date only when selected;
+existing drafts and explicitly blank saved records are preserved.
+
+## Episode readiness and show recipes
+
+The sidebar's **Episode readiness** card verifies the current recording, full edition,
+review and package, then offers one next action. A changed upload title requires
+export, not another review; a changed production recipe is shown as a draft difference.
+Preflight blockers appear beside Produce/Export. Use **Audio → Show recipes / overrides…**
+to save and explicitly apply a named local recipe to one episode, with visible differences
+and one-level undo. Existing saved media, approvals and other episode drafts remain intact.
+
+See [readiness, inline preflight and show recipes](episode-readiness-recipes.md) for scope,
+stale-check behavior and recovery. These checks run locally; no Cloud call, automatic
+installation or publication occurs. The combined player/timecoded corrections,
+notifications and grouped batch outcomes remain later work.
 
 ## Get an episode out
 
@@ -17,14 +57,14 @@ Open **Release** for the guided handoff:
 **Produce → Review → Release** keeps each stage focused. Pace, outro and production
 buttons appear in Produce; Review and Release use the space for their own controls.
 
-1. **Review full video** opens the saved-edition review with the correct scope.
-2. **Inspect package** selects export and shows the plan. Use **Queue production**
+1. **Review video** opens the saved-edition review with full audio/video scope.
+2. **Inspect package** selects export and shows the plan. Use **Queue inspected output**
    to create the package after checking it.
 3. **YouTube Studio** opens the upload destination in your system browser. Open
    **Release → Package files**, check the saved package, and select its video,
    thumbnail or subtitles. **Copy upload path** gives you a path to paste into the
    browser's file picker. Copy the title, description and tags from **Upload details**.
-4. In **Publication record**, record the published link and its actual date.
+4. In **Published destination**, record the published link and its actual date.
 
 Episode links and dates now fill from the existing podcast catalog. This is data
 from the checkout, not a live check of YouTube or another platform. Dates preserve
@@ -32,7 +72,7 @@ the catalog timestamp's timezone. Saved user records always take precedence,
 including intentionally blank dates/links; automatic defaults do not write records.
 **Use podcast details** restores those defaults explicitly. Changing a link clears
 an untouched suggested date, so a podcast date is not silently assigned to YouTube.
-An explicitly edited date is preserved. **Today** fills the local system date only
+An explicitly edited date is preserved. **Use today** fills the local system date only
 when clicked. Save remains an explicit action.
 Unfinished publication fields stay with their episode when you switch away and back
 and across closing Studio. Draft checkpoints preserve unfinished text; **Save publication
@@ -100,7 +140,9 @@ sudo apt-get install -y python3-tk ffmpeg xdg-utils
 python3 -m field_notes_studio
 ```
 
-The checkout must already contain prepared episodes and their original media.
+Existing episodes need their original media. Newly written notes can enter through
+**Prepare new notes…** with a saved narration script and explicit Cloud setup; see
+the [preparation and recovery guide](preparation.md).
 There are no additional pip dependencies for the studio. Video/thumbnail rendering
 uses the existing Node 22+ / Remotion toolchain:
 
@@ -112,10 +154,13 @@ The studio launches the worker itself; no terminal production command is needed.
 The selected episode shows its verified saved-edition status. Output guidance explains
 the next step for audio, preview, full video or export.
 
-Use **Inspect changes**, then **Queue production**. Editing a control invalidates the
-inspected plan. `audio` finishes an MP3 and retimed captions; `preview` also renders
+Use **Produce episode** for the complete edition, or deliberately choose an optional
+output, **Inspect changes**, then **Queue inspected output**. Editing a control
+invalidates the inspected plan. `audio` finishes an MP3 and retimed captions; `preview` also renders
 the first ten seconds of video; `video` produces the full video and thumbnail;
-`export` packages the selected completed full edition. Export ignores pace/outro
+`export` packages the selected completed full edition. Narration/caption `prepare`
+jobs are queued only through the separate authorized preparation window, not this
+output selector. Export ignores pace/outro
 controls and refuses a changed edition pointer. Export does not upload anything.
 The worker repeats the pointer check under the production lock before packaging.
 Pace and outro controls are disabled while export is selected.
@@ -142,9 +187,11 @@ The transcript tab shows the published transcript. Production always uses the pr
 source narration, including when the feed already contains finished audio. New editions
 retain pending human review state. In the **Review** tab:
 
-1. Choose **Audio and captions**, or **Full video and audio** for a YouTube edition.
-2. Open the saved assets with **Listen**, **Check subtitles** and **Watch video**.
-3. Check the corresponding confirmations, enter your name, then **Record approval**.
+1. Keep the default **Full video and audio** for a complete episode. **Audio and
+   captions** is an explicit audio-only alternative, not a preceding review step.
+2. **Watch video** with sound and **Check subtitles**. **Listen separately** is optional.
+3. Confirm watching/listening and subtitle checks, enter your name, then
+   **Record approval** once for the full episode.
 4. For a full edition, choose **export**, inspect changes and queue the upload package.
 
 Review is attached to the exact verified media, independently of your draft pace/outro
@@ -212,6 +259,8 @@ Its diagnostic log is `artifacts/studio/worker.log`.
 | `processes.py` | Detached worker launch and system file opening |
 | `pipeline.py` | Existing engine adaptation and rebuild explanations |
 | `worker.py` | Exclusive queue ownership, execution and reconciliation |
+| `preparation_service.py` / `preparation_jobs.py` | Explicit authorization and captured narration/caption engine adaptation |
+| `field_notes_audio/production/sources.py` | Verified private recording adoption and production-source resolution |
 | `app.py` | Composition and Tk event-loop lifecycle |
 
 The engine gains an optional structured stage observer. Existing CLI behavior is preserved; production implementation changes correctly
@@ -241,7 +290,7 @@ paths in your browser. External players and the browser handoff depend on the de
 
 ## Sound and publishing editors
 
-**Sound** exposes intro, music overlap, music level, loudness, peak ceiling, music
+**Audio** exposes intro, music overlap, music level, loudness, peak ceiling, music
 mode, custom file selection and music credit/license. Pace and outro stay in Produce.
 Inspection uses the production engine's shared validation, including numeric ranges
 and custom-music requirements. Jobs capture the complete recipe; later edits cannot
@@ -303,10 +352,13 @@ no narration request or new podcast publication was made for the written release
 
 The next useful passes, in order:
 
-1. **A new note into the shelf:** surface notes whose narration/captions are still
-   missing, show the script and prerequisites, and inspect generation before any
-   service request. Studio currently lists prepared recordings.
-2. **A human release rehearsal:** take note-013 through narration, caption checks,
+1. **A new note into the shelf:** [durable preparation](preparation.md) now connects
+   saved-script inspection, explicit authorization, narration/caption cache recovery
+   and private recording adoption. Missing-script authoring and guided resolution
+   of uncertain caption operations remain future work. Receipt-bound uncertain
+   narration recovery now requires separate duplicate-charge consent.
+2. **A human release rehearsal:** resolve *The work outlives the window* from the
+   current catalog, then take it through narration, caption checks,
    production, media review and the actual browser handoff. Record decisions and
    interruptions; automated layout checks do not establish everyday usability.
 3. **Collection readiness:** show which episodes need audio, full video, review or
@@ -318,3 +370,24 @@ The next useful passes, in order:
    SQLite durability still depends on preserving the checkout's artifacts directory.
 
 Embedded playback and direct authenticated uploads remain later integration choices.
+
+## First-run navigation and recovery
+
+The main shelf is **Prepared recordings**; new written notes are reached through
+**Find / prepare a written note…** beside its search, or the header action. The
+written-note window supports title/number search and a deliberate **Import existing
+setup…** from an earlier checkout. Failed preparation offers **Inspect recovery**,
+not a blind resend. On a completed preparation job, **Produce episode** validates
+and queues one full audio/video edition. It never approves or publishes media.
+The preparation window's **Open in production** is navigation only. See [preparation and recovery](preparation.md)
+and the [operator-observation record](usability-rehearsal.md), including the explicit
+consent required to resend a receipt-bound uncertain narration request.
+
+
+## Job progress and tab navigation
+
+[Progress design and podcast-tool comparison](progress-ux-research.md) documents the
+new Saved / Working / Waiting / Next milestones, evidence boundaries and next ideas.
+Select a queue job to see its audio/video or narration/caption stages. A saved job
+is not a fresh artifact check or a publication confirmation. Audio (previously Sound),
+Batch and Health now have labelled, desktop-scaled pictograms like the other tabs.

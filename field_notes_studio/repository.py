@@ -79,12 +79,12 @@ class Repository:
 
     @staticmethod
     def _insert(db, episode: str, action: str, request: dict) -> str:
-        if action not in ACTIONS:
+        if action not in (*ACTIONS, "prepare"):
             raise ValueError("Unknown studio action")
         identifier = uuid.uuid4().hex
         # The caller owns the transaction; a late conflict rolls back the whole batch.
         if db.execute(
-            "SELECT 1 FROM jobs WHERE episode=? AND status IN ('queued', 'running')",
+            "SELECT 1 FROM jobs WHERE episode=? AND status IN ('queued', 'running', 'waiting')",
             (episode,),
         ).fetchone():
             raise ValueError(f"This episode already has a queued or running job: {episode}")
@@ -99,7 +99,7 @@ class Repository:
         with self.connection() as db:
             rows = db.execute(
                 "SELECT identifier,episode,action,status,stage,created,error,result,request,cancel_requested "
-                "FROM jobs WHERE status IN ('queued','running') OR rowid IN "
+                "FROM jobs WHERE status IN ('queued','running','waiting') OR rowid IN "
                 "(SELECT rowid FROM jobs ORDER BY rowid DESC LIMIT 100) ORDER BY rowid DESC"
             ).fetchall()
         return [Job(**dict(row)) for row in rows]
@@ -119,7 +119,7 @@ class Repository:
         """Recipe recall is independent of the bounded queue display."""
         with self.connection() as db:
             row = db.execute(
-                "SELECT request FROM jobs WHERE episode=? AND action!='export' "
+                "SELECT request FROM jobs WHERE episode=? AND action IN ('audio','video','preview') "
                 "ORDER BY rowid DESC LIMIT 1",
                 (episode,),
             ).fetchone()
@@ -140,7 +140,7 @@ class Repository:
         """Call only while holding the exclusive worker lock; never infer success."""
         with self.connection() as db:
             db.execute(
-                "UPDATE jobs SET status='interrupted', stage='interrupted', "
+                "UPDATE jobs SET status='interrupted', "
                 "error='Worker stopped before recording a result. Inspect outputs or retry.' "
                 "WHERE status='running'"
             )
@@ -181,8 +181,8 @@ class Repository:
             raise ValueError("A job must finish in a terminal state")
         with self.connection() as db:
             db.execute(
-                "UPDATE jobs SET status=?,stage=?,error=?,result=? WHERE identifier=?",
-                (status, status, error, result, identifier),
+                "UPDATE jobs SET status=?,stage=CASE WHEN ?='succeeded' THEN ? ELSE stage END,error=?,result=? WHERE identifier=?",
+                (status, status, status, error, result, identifier),
             )
             db.execute(
                 "INSERT INTO events(job,time,stage,message) VALUES(?,?,?,?)",
@@ -264,3 +264,67 @@ class Repository:
             if temporary is not None:
                 temporary.unlink(missing_ok=True)
         return path
+
+    def pause(self, identifier: str, message: str, receipt: dict | None = None) -> None:
+        """Persist a recovery receipt without changing the captured source/Cloud plan."""
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT request FROM jobs WHERE identifier=? AND action='prepare' AND status='running'",
+                (identifier,),
+            ).fetchone()
+            if row is None:
+                raise ValueError("Only running preparation work can await captions")
+            request = json.loads(row[0])
+            if receipt is not None:
+                used = request.pop("uncertain_chunks", None)
+                if used:
+                    db.execute(
+                        "INSERT INTO events(job,time,stage,message) VALUES(?,?,?,?)",
+                        (
+                            identifier,
+                            timestamp(),
+                            "recovery-consumed",
+                            "Narration recovery authorizations consumed: "
+                            + json.dumps(used, sort_keys=True),
+                        ),
+                    )
+                request["resume"] = receipt
+            db.execute(
+                "UPDATE jobs SET status='waiting',stage='captions-waiting',error=?,request=? WHERE identifier=?",
+                (message, json.dumps(request, sort_keys=True), identifier),
+            )
+            db.execute(
+                "INSERT INTO events(job,time,stage,message) VALUES(?,?,?,?)",
+                (identifier, timestamp(), "captions-waiting", message),
+            )
+
+    def resume_preparation(self, identifier: str) -> str:
+        """Resume one saved remote operation; do not enqueue another preparation job."""
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT episode,status,action FROM jobs WHERE identifier=?", (identifier,)
+            ).fetchone()
+            if row is None or row[1] != "waiting" or row[2] != "prepare":
+                raise ValueError("Only waiting preparation jobs can be resumed")
+            if db.execute("SELECT COUNT(*) FROM jobs WHERE status='queued'").fetchone()[0] >= 32:
+                raise ValueError("The queue is full; waiting caption work is unchanged")
+            if db.execute(
+                "SELECT 1 FROM jobs WHERE episode=? AND status IN ('queued','running')", (row[0],)
+            ).fetchone():
+                raise ValueError("This episode already has active work")
+            db.execute(
+                "UPDATE jobs SET status='queued',stage='resume',cancel_requested=0,error='' WHERE identifier=?",
+                (identifier,),
+            )
+            db.execute(
+                "INSERT INTO events(job,time,stage,message) VALUES(?,?,?,?)",
+                (
+                    identifier,
+                    timestamp(),
+                    "resume",
+                    "Resume saved caption work; no uncertain retry or failed-operation restart",
+                ),
+            )
+        return identifier

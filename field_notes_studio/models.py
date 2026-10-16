@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
-Action = Literal["audio", "video", "preview", "export"]
+Action = Literal["audio", "video", "preview", "export", "prepare"]
 ACTIONS = ("audio", "video", "preview", "export")
 TERMINAL = frozenset({"succeeded", "failed", "cancelled", "interrupted"})
 
@@ -26,6 +26,7 @@ class Episode:
     publication_saved: bool = False
     podcast_url: str = ""
     podcast_date: str = ""
+    written_url: str = ""
 
 
 @dataclass(frozen=True)
@@ -65,6 +66,7 @@ class ReviewSnapshot:
     captions: str = ""
     video: str = ""
     full_video: bool = False
+    approved: bool = False
 
 
 @dataclass(frozen=True)

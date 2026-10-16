@@ -149,3 +149,29 @@ class PreparationControllerTests(unittest.TestCase):
         self.drain(controller)
         self.assertEqual(view.snapshots, [])
         self.assertIn("Source changed", view.messages[-1])
+
+    def test_queue_acknowledgement_survives_switching_notes_without_redirecting_selection(self):
+        entered, finish = threading.Event(), threading.Event()
+        self.addCleanup(finish.set)
+        controller, view = self.controller(lambda note: note)
+        view.snapshot = SimpleNamespace(note="104", episode="studio-essay")
+        view.authorized = SimpleNamespace(get=lambda: True)
+        acknowledgements = []
+        view.queued = lambda *value: acknowledgements.append(value)
+
+        def submit(snapshot, authorized):
+            self.assertTrue(authorized)
+            self.assertEqual(snapshot.note, "104")
+            entered.set()
+            finish.wait(2)
+            return "saved-job"
+
+        controller.service.submit = submit
+        controller.submit()
+        self.assertTrue(entered.wait(1))
+        view.note = "105"
+        controller.select()
+        finish.set()
+        self.drain(controller)
+        self.assertEqual(acknowledgements, [("studio-essay", "saved-job")])
+        self.assertEqual(view.note, "105")

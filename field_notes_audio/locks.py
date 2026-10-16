@@ -7,6 +7,10 @@ from contextlib import contextmanager
 from pathlib import Path
 
 
+class RecordingBusy(ValueError):
+    """An owner holds the recording lock; this is not damaged or missing media."""
+
+
 @contextmanager
 def run_lock(directory: Path, label: str = "caption") -> Iterator[None]:
     import fcntl  # Cloud Shell and WSL; OS releases the lock even after interruption.
@@ -15,7 +19,7 @@ def run_lock(directory: Path, label: str = "caption") -> Iterator[None]:
         try:
             fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
-            raise ValueError(
+            raise RecordingBusy(
                 f"Another {label} command is using this recording; wait for it to finish"
             ) from None
         try:

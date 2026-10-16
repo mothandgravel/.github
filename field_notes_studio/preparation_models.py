@@ -11,6 +11,7 @@ class PreparationItem:
     episode: str
     state: str
     detail: str
+    job_id: str = ""
 
 
 @dataclass(frozen=True)
@@ -21,3 +22,15 @@ class PreparationSnapshot:
     script: str
     summary: str
     identity: str
+    request_json: str = ""
+    recovery_json: str = ""
+    recovery_summary: str = ""
+    scope_summary: str = ""
+
+
+class CaptionsPending(Exception):
+    """Remote captions have a saved operation; explicit resume is safe polling."""
+
+    def __init__(self, message: str, receipt: dict):
+        super().__init__(message)
+        self.receipt = receipt

@@ -75,3 +75,8 @@ simulated progress. Timers cancel when a button is destroyed or its context chan
 These are design hypotheses backed by desktop layout and behavior checks. A human
 episode-through-publication session is still needed to judge whether the handoff is
 easier in practice. A screenshot or a green test does not establish that outcome.
+
+
+The [progress and navigation follow-up](progress-ux-research.md) compares Riverside,
+Descript, Auphonic, Spotify, Buzzsprout and Audition and records the implemented
+job milestones and Audio/Batch/Health icons separately from future design ideas.

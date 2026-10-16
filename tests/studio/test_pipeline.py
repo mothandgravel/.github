@@ -306,6 +306,11 @@ class PipelineTests(unittest.TestCase):
         self.assertIn("approved", self.pipeline.review_snapshot("fixture", True).summary)
         verified = packages.snapshot(self.entry, self.pipeline.output, True)
         self.assertEqual(packages.review_status(verified, True), "approved")
+        self.assertEqual(packages.review_status(verified, False), "approved")
+        recorded = (audio / "review.json").read_bytes()
+        self.pipeline.approve("fixture", audio_review, "Another listener")
+        self.assertEqual((audio / "review.json").read_bytes(), recorded)
+        self.assertTrue(self.pipeline.review_snapshot("fixture", True).approved)
         (video / "episode.mp4").write_bytes(b"changed")
         self.assertFalse(self.pipeline.review_snapshot("fixture", True).identity)
         with self.assertRaises(ValueError):
