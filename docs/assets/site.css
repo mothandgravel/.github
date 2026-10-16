@@ -1300,8 +1300,12 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
   .brand-sub {display:none}
   .header-mail .header-mail-short {position:static;width:auto;height:auto;margin:0;overflow:visible;clip-path:none}
   .header-mail .header-mail-address,.switch-label {display:block;position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-  .header-mail-link {padding:0 10px;border:1px solid var(--line);font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.07em}
+  .header-mail-link {padding:0 8px;border:1px solid var(--line);font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.03em}
+  .header-inner {gap:6px}
+  .header-actions {gap:5px}
+  .brand-type {letter-spacing:.02em}
 }
+@media (min-width:366px) and (max-width:380px) {.brand {gap:6px}.brand-type {font-size:11px}}
 @media (max-width:365px) {.header-mail-link {padding:0 7px}}
 .nav-sheet-mail {display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;white-space:normal}
 .has-nav-sheet .main-nav.is-open .nav-sheet-mail a {display:inline-flex;align-items:center;min-height:44px;padding:0;border:0;color:#202222;font-size:14px;font-weight:600}
