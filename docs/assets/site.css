@@ -767,14 +767,14 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .field-notes-section { border-top:1px solid var(--line); }
 /* Keep the first paint focused on the masthead and studio introduction.
    Offscreen editions remain searchable and accessible; remember rendered sizes. */
-.hero~.field-notes-section,.hero~.work-section,.hero~.first-work-section,.hero~.ethos-section,.hero~.studio-section,.hero~.contact-section {
+/* Field Notes renders with the page: the services section now sits above it, and a deferred
+   estimate would shift the specimens below once it renders. */
+.hero~.work-section,.hero~.first-work-section,.hero~.ethos-section,.hero~.studio-section,.hero~.contact-section {
   content-visibility:auto;
   contain-intrinsic-block-size:auto 900px;
 }
 @media (max-width:760px) {
   .hero~.work-section { contain-intrinsic-block-size:auto 1600px; }
-  /* The services section now sits above, so Field Notes is skipped on arrival; estimate its real phone height. */
-  .hero~.field-notes-section { contain-intrinsic-block-size:auto 1572px; }
   .hero~.contact-section { contain-intrinsic-block-size:auto 1250px; }
 }
 .section-kicker a { color:var(--gold-bright);text-underline-offset:4px; }
@@ -1277,56 +1277,35 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 
 .connection-teaser .work-specimen img{display:block;width:100%;height:auto;object-fit:contain;}
 
-/* Contact first: a plain address on every page, a copy aid, and one conversation route. */
-.visually-hidden {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+/* Contact first: the address on every page, a copy aid, a three-way theme. */
+.visually-hidden,.header-mail .header-mail-short,.nav-sheet-mail .header-mail-short {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 :root[data-theme="afterlight"] .skip-link {color:#f1eee6}
 .header-mail {display:flex;align-items:center;gap:6px;margin:0 0 0 auto;white-space:nowrap}
-.header-mail-link {display:inline-flex;align-items:center;min-height:44px;padding:0 6px;color:var(--ink);font-size:13px;font-weight:600;letter-spacing:.01em}
+.header-mail-link {display:inline-flex;align-items:center;min-height:44px;padding:0 6px;color:var(--ink);font-size:13px;font-weight:600}
 .header-mail-link:hover {color:var(--gold-bright)}
-.header-mail .header-mail-short {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.copy-mail {min-height:32px;padding:0 10px;border:1px solid var(--line);background:none;color:var(--secondary);font-family:var(--mono);font-size:12px;letter-spacing:.06em;cursor:pointer;white-space:nowrap}
+.copy-mail {min-height:32px;padding:0 10px;border:1px solid var(--line);background:none;color:var(--secondary);font:12px var(--mono);letter-spacing:.06em;cursor:pointer;white-space:nowrap}
 .copy-mail:hover {border-color:var(--gold-bright);color:var(--ink)}
 .has-nav-sheet .header-actions {margin-left:0}
 :root[data-theme-choice="system"] .switch-orb {border-style:dashed}
-@media (min-width:1101px) {
-  .has-nav-sheet .menu-toggle {display:none}
-}
-@media (min-width:1101px) and (max-width:1320px) {
-  .main-nav {gap:22px;padding-left:12px}
-  .header-inner {gap:20px}
-}
-@media (min-width:661px) and (max-width:900px) {
-  .header-mail .copy-mail {display:none}
-}
-@media (max-width:660px) {
-  .header-mail .copy-mail {display:none}
-  .header-mail .header-mail-short {position:static;width:auto;height:auto;margin:0;overflow:visible;clip-path:none}
-  .header-mail .header-mail-address {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-  .header-mail-link {min-height:44px;padding:0 10px;border:1px solid var(--line);font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.07em}
-  .switch-label {display:block;position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-}
-@media (max-width:660px) {
-  /* The 12px label floor leaves no room for the masthead subtitle beside three controls. */
-  .brand-sub {display:none}
-}
-@media (max-width:365px) {
-  .header-mail-link {padding:0 7px}
-}
-/* Before the menu enhancement (or without it), rooms that wrap the masthead keep the
-   address on the brand's row, so the wrapped header is no taller than before. */
+@media (min-width:1101px) {.has-nav-sheet .menu-toggle {display:none}}
+@media (min-width:1101px) and (max-width:1320px) {.main-nav {gap:22px;padding-left:12px}.header-inner {gap:20px}}
 @media (max-width:900px) {
+  .header-mail .copy-mail {display:none}
   html:not(.has-nav-sheet) .header-inner>.header-mail {order:1}
   html:not(.has-nav-sheet) .header-mail-link {min-height:36px}
   html:not(.has-nav-sheet) .header-inner>.main-nav {order:2}
   html:not(.has-nav-sheet) .header-inner>.header-actions {order:3}
 }
+@media (max-width:660px) {
+  .brand-sub {display:none}
+  .header-mail .header-mail-short {position:static;width:auto;height:auto;margin:0;overflow:visible;clip-path:none}
+  .header-mail .header-mail-address,.switch-label {display:block;position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .header-mail-link {padding:0 10px;border:1px solid var(--line);font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.07em}
+}
+@media (max-width:365px) {.header-mail-link {padding:0 7px}}
 .nav-sheet-mail {display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;white-space:normal}
 .has-nav-sheet .main-nav.is-open .nav-sheet-mail a {display:inline-flex;align-items:center;min-height:44px;padding:0;border:0;color:#202222;font-size:14px;font-weight:600}
-.nav-sheet-mail .header-mail-short,.nav-sheet-mail .header-mail-address {position:static}
-.nav-sheet-mail .header-mail-short {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .nav-sheet-mail .copy-mail {color:#4a4a46;border-color:#1c1f1f4d}
-
-/* Footer: the address again, and links large enough to tap. */
 .footer-mail {display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:26px 0 0}
 .footer-mail a {font-size:clamp(17px,1.8vw,22px);color:#eae5d9;border-bottom:1px solid #a9936f;padding-bottom:2px;overflow-wrap:anywhere}
 .site-footer .copy-mail {color:#eae5d9;border-color:#6b665e}
