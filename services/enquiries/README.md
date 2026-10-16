@@ -21,7 +21,7 @@ browser ── POST /enquiries ──> origin + JSON + 32 KiB cap ──> valida
 | Variable | Default | Notes |
 | --- | --- | --- |
 | `ENQUIRIES_ENABLED` | unset | Anything other than `true` makes `POST` return 503. The service also stays disabled if either secret is missing. |
-| `RESEND_API_KEY` | — | Secret Manager `mothandgravel-resend-api-key`. The existing Resend key. In Cloud Run it is referenced in place from `navivra-docket` (see the infra runbook). |
+| `RESEND_API_KEY` | — | Secret Manager `mothandgravel-resend-api-key` (project `navivra`): a dedicated Resend key with Sending access restricted to `mail.mothandgravel.com`. |
 | `TURNSTILE_SECRET` | — | Secret Manager `mothandgravel-turnstile-secret`. |
 | `ALLOWED_ORIGINS` | `https://mothandgravel.com` | Comma-separated list of exact origins. |
 | `TURNSTILE_HOSTNAMES` | `mothandgravel.com` | Comma-separated list of approved frontend hostnames. Never include `localhost` in production. |
