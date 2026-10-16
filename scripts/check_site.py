@@ -432,7 +432,8 @@ def main() -> int:
     check('noindex, follow' in preview, 'Example workbench must be labelled outside search indexing')
     check('https://mothandgravel.com/workbench/' not in (ROOT / 'sitemap.xml').read_text(),
           'Example workbench must stay out of the published-content sitemap')
-    check('href="#contact">Bring us a question' in html, 'Missing early enquiry invitation')
+    check('href="#contact">Start a conversation' in html, 'Missing early enquiry invitation')
+    check(html.count('mailto:hello@mothandgravel.com') >= 4, 'Missing private email route in header, band, contact and footer')
     robots = (ROOT / 'robots.txt').read_text()
     check('Allow: /' in robots and 'Disallow: /' not in robots,
           'Published text must be crawlable')

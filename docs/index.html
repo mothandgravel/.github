@@ -66,12 +66,21 @@
 <div class="hero-copy">
 <p class="eyebrow"><span class="line-mark" aria-hidden="true"></span> MADE FOR INTERESTING QUESTIONS</p>
 <h1 id="hero-title">Drawn to <em>light.</em><br>Built for <span class="terrain-phrase"><span class="rough-word">rough</span> ground.</span></h1>
-<p class="hero-intro">An independent software and design studio, based in Finland. Useful tools and thoughtful interfaces, from cloud and mobile software to things with wires. Bring us a question from anywhere.</p>
+<!-- DRAFT COPY for owner review: the subhead and the "What we take on" list restate claims the site already makes (studio copy, first piece of work, studio answers). -->
+<p class="hero-subhead">Interface design and software engineering for cloud, mobile and connected-device products.</p>
+<p class="hero-intro">An independent software and design studio, based in Finland. Useful tools and thoughtful interfaces. Bring us a question from anywhere.</p>
 <div class="hero-actions">
-<a class="button button-brass" href="#contact">Bring us a question <span class="button-arrow" aria-hidden="true">↗</span></a>
-<a class="under-link" href="#field-notes">Follow the questions <span aria-hidden="true">↗</span></a>
+<a class="button button-brass" href="#contact">Start a conversation <span class="button-arrow" aria-hidden="true">↗</span></a>
+<a class="under-link" href="#field-notes">Read the field notes <span aria-hidden="true">↗</span></a>
 </div>
-<p class="hero-side-note mono">CURIOSITY <span aria-hidden="true">↔</span> ENDURANCE<br>SOFT WINGS / HARD ROADS</p>
+<div class="hero-takes">
+<p class="mono hero-takes-label" id="hero-takes-title">WHAT WE TAKE ON</p>
+<ul aria-labelledby="hero-takes-title">
+<li>An early idea, shaped into a working prototype or a technical experiment.</li>
+<li>An interface review, where people hesitate, misread a signal or lose their place.</li>
+<li>Software that meets hardware: telemetry, relays, microcontrollers and physical terminals.</li>
+</ul>
+</div>
 </div>
 
 <div class="hero-visual" role="img" aria-label="Moth and Gravel emblem: a nocturnal moth with one wing formed from rugged stone fragments, illuminated beneath a small moon.">
@@ -199,12 +208,26 @@
 </div>
 </section>
 
+<section class="contact-band" id="contact-band" aria-labelledby="contact-band-title">
+<div class="shell contact-band-inner">
+<div>
+<p class="mono contact-band-kicker">A QUESTION LIKE THESE?</p>
+<h2 id="contact-band-title">Something similar <em>on your bench?</em></h2>
+</div>
+<div class="contact-block">
+<p class="contact-mail"><a class="button button-brass contact-mail-link" href="mailto:hello@mothandgravel.com?subject=Something%20on%20my%20bench">Email hello@mothandgravel.com <span class="button-arrow" aria-hidden="true">↗</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
+<p class="contact-block-note">Opens your mail app. Tell us what you are trying to make and where it gets difficult.</p>
+<a class="under-link" href="./questions/">Shape a brief first <span aria-hidden="true">↗</span></a>
+</div>
+</div>
+</section>
+
 <section id="moth-interlude" class="moth-interlude shell" aria-labelledby="moth-question">
 <div class="moth-stage">
 <span class="moth-stage-label mono">M+G / IN PASSING</span>
 <div class="moth-source" aria-hidden="true"><img src="./assets/moth-mark.svg" width="1000" height="1000" alt="" loading="lazy" decoding="async"><span class="moth-source-moon"></span></div>
 <span class="moth-perch" aria-hidden="true"></span>
-<div class="moth-question"><h2 id="moth-question">What keeps<br><em>you curious?</em></h2><a href="./questions/">Put it on the bench <span aria-hidden="true">↗</span></a></div>
+<div class="moth-question"><h2 id="moth-question">What keeps<br><em>you curious?</em></h2><a href="#contact">Start a conversation <span aria-hidden="true">↗</span></a></div>
 </div>
 <div class="moth-caption"><p>A brief interruption.<br><span data-moth-status aria-live="polite"></span></p><div class="moth-controls"><button type="button" data-moth-play hidden>Watch the moth</button><button type="button" data-moth-pause hidden disabled>Pause</button><button type="button" data-moth-finish hidden disabled>Finish</button></div></div>
 </section>
@@ -229,7 +252,8 @@
 </div>
 <div class="first-work-foot">
 <div><h3>First, a conversation.</h3><p>Before any paid work, we agree the question, what you’ll receive, the fee, the timing and where this piece ends. Further work is a separate choice.</p></div>
-<div class="first-work-invitation"><a class="button button-brass" href="./questions/">Put one question on the bench <span class="button-arrow" aria-hidden="true">↗</span></a><p>A few words become an editable brief. Nothing is sent automatically.</p></div>
+<!-- TODO(owner): a price anchor for the first piece of work (for example a duration and a "from" price) belongs here once decided. -->
+<div class="first-work-invitation"><a class="button button-brass" href="#contact">Start a conversation <span class="button-arrow" aria-hidden="true">↗</span></a><p>Email us, or <a href="./questions/">shape a brief first</a> and send it when it reads right.</p></div>
 </div>
 </section>
 
@@ -250,6 +274,7 @@
 </div>
 </section>
 
+<!-- TODO(owner): the founder's real name, a photo, the city and a LinkedIn link belong in this section; the JSON-LD founder in scripts/build_discovery.py should match. -->
 <section class="studio-section shell section-space" id="studio" aria-labelledby="studio-title">
 <div class="section-kicker mono"><span>04 — THE PERSON AT THE BENCH</span><span>SLIDEEP / FINLAND</span></div>
 <div class="section-lead">
@@ -261,7 +286,7 @@
 <div class="studio-answers" aria-label="A few useful answers">
 <details><summary>What does the studio make?</summary><p>Independent software and useful tools. The work crosses cloud services, mobile interfaces, microcontrollers and physical devices. Field Notes show the design questions inside that work.</p></details>
 <details><summary>Where is Moth &amp; Gravel based?</summary><p>Based in Finland. Open to questions from anywhere. The studio’s public record lives here: source, materials and studies from across the workbench.</p></details>
-<details><summary>How can I get in touch?</summary><p><a href="#contact">Bring us a question.</a> Tell us what you are trying to make and where it gets difficult. <a href="./questions/">Give your question a little shape</a> and keep an editable brief, or write to us through a public GitHub issue. The GitHub route requires an account; keep private details out of it.</p></details>
+<details><summary>How can I get in touch?</summary><p>Email <a href="mailto:hello@mothandgravel.com?subject=Getting%20in%20touch">hello@mothandgravel.com</a>. Tell us what you are trying to make and where it gets difficult. Prefer to think first? <a href="./questions/">Shape a brief</a>, then send it by email or keep it. A public GitHub issue also works; it requires an account, so keep private details out of it.</p></details>
 </div>
 <a class="editorial-link" href="./notes/001-curiosity-with-calluses.html">The story of two unlikely words <span aria-hidden="true">↗</span></a>
 </div>
@@ -276,11 +301,14 @@
 </div>
 <div class="contact-right">
 <p>A software idea, an awkward interface, or something with wires. Tell us what you are trying to make, where it gets difficult, and what a useful outcome would look like.</p>
+<!-- TODO(owner): a booking link (a short intro call) and a reply-time promise belong beside the email route once they are real. -->
+<p class="contact-mail"><a class="button button-light contact-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20loose%20end%20for%20Moth%20%26%20Gravel">Email hello@mothandgravel.com <span class="button-arrow" aria-hidden="true">↗</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
+<p class="contact-route-note">Opens your mail app. Copy the address if you would rather write from somewhere else.</p>
+<a class="contact-feed" href="./questions/">Shape a brief first <span aria-hidden="true">↗</span></a>
+<p class="contact-route-note">A few questions become an editable brief. Send it by email when it reads right, or keep it.</p>
+<a class="contact-feed" href="https://github.com/mothandgravel/.github/issues/new?template=signal.yml" target="_blank" rel="noopener noreferrer">Or start a public conversation <span aria-hidden="true">↗</span></a>
+<p class="contact-route-note">That opens a public GitHub issue. An account is required; leave private details out.</p>
 <p class="contact-route-note"><a href="#first-work">See how a first piece of work takes shape ↑</a></p>
-<a class="button button-light" href="./questions/">Give it a little shape <span class="button-arrow" aria-hidden="true">↗</span></a>
-<p class="contact-route-note">A few questions. An editable brief to keep. No account, and nothing sent automatically.</p>
-<a class="contact-feed" href="https://github.com/mothandgravel/.github/issues/new?template=signal.yml" target="_blank" rel="noopener noreferrer">Or just write to us <span aria-hidden="true">↗</span></a>
-<p class="contact-route-note">That conversation opens a public GitHub issue. An account is required; leave private details out.</p>
 <a class="contact-feed" href="./notes/feed.xml">Or follow Field Notes by RSS <span aria-hidden="true">↗</span></a>
 <p class="contact-foot mono">NO NEWSLETTER. NO NOISE. JUST THE WORK.</p>
 </div>
@@ -292,6 +320,7 @@
 <div class="shell footer-inner">
 <a class="footer-brand" href="#top">MOTH <span>&amp;</span> GRAVEL <small>INDEPENDENT WORKS</small></a><p class="footer-mail"><a href="mailto:hello@mothandgravel.com?subject=Hello%2C%20Moth%20%26%20Gravel">hello@mothandgravel.com</a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
 <div class="footer-links mono"><a href="./notes/">FIELD NOTES ↗</a><a href="./notes/feed.xml">RSS ↗</a><a href="#studio">THE STUDIO ↑</a><a href="https://github.com/mothandgravel" target="_blank" rel="noopener noreferrer">GITHUB ↗</a><a href="#ethos">OUR THINKING ↑</a><a href="#top">BACK TO TOP ↑</a></div>
+<!-- TODO(owner): the city and the Finnish business ID (Y-tunnus) belong in this line once confirmed. -->
 <div class="footer-end mono"><span>© <span id="year">2026</span> MOTH &amp; GRAVEL</span><span>DRAWN TO LIGHT. BUILT FOR ROUGH GROUND.</span></div>
 </div>
 </footer>
