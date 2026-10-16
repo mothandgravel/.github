@@ -13,7 +13,7 @@ const valid = () => ({ id: ID, name: 'Aino Example', email: 'aino@example.fi', b
 let calls; let turnstile; let resend;
 beforeEach(() => {
   calls = { turnstile: [], resend: [] };
-  turnstile = () => Response.json({ success: true, hostname: 'mothandgravel.com' });
+  turnstile = () => Response.json({ success: true, hostname: 'mothandgravel.com', action: 'enquiry' });
   resend = () => Response.json({ id: 'email_1' });
 });
 globalThis.fetch = async (url, init = {}) => {
@@ -46,7 +46,7 @@ test('sends one email with the visitor as reply-to and the client id as idempote
   assert.equal(calls.resend.length, 1);
   const [{ headers, body }] = calls.resend;
   assert.equal(headers.get('idempotency-key'), `enquiry/${ID}`);
-  assert.equal(body.from, 'Moth & Gravel <enquiries@send.mothandgravel.com>');
+  assert.equal(body.from, 'Moth & Gravel <enquiries@mail.mothandgravel.com>');
   assert.deepEqual(body.to, ['hello@mothandgravel.com']);
   assert.equal(body.reply_to, 'aino@example.fi');
   assert.equal(body.subject, 'Enquiry — Aino Example: A repair note nobody reads.');
@@ -54,10 +54,11 @@ test('sends one email with the visitor as reply-to and the client id as idempote
   assert.equal(body.html, undefined);
 });
 
-test('the same id produces the same idempotency key on retry, and Turnstile gets it too', async () => {
-  await post(valid()); await post(valid());
+test('a retry with the same id and a fresh token keeps the same idempotency key', async () => {
+  await post(valid()); await post({ ...valid(), turnstileToken: 'tok2' });
   assert.deepEqual(calls.resend.map(c => c.headers.get('idempotency-key')), [`enquiry/${ID}`, `enquiry/${ID}`]);
-  assert.deepEqual(calls.turnstile[0], { secret: 'ts_secret', response: 'tok', idempotency_key: ID });
+  assert.deepEqual(calls.turnstile.map(c => c.response), ['tok', 'tok2']);
+  assert.deepEqual(calls.turnstile[0], { secret: 'ts_secret', response: 'tok' });
 });
 
 test('sender and inbox are configurable', async () => {
@@ -144,10 +145,16 @@ test('subject uses the first non-empty brief line, without control characters, w
   assert.ok(!/[\r\n]/.test(subject('Aino', 'a\r\nBcc: x@example.com')));
 });
 
-test('Turnstile failures and hostname mismatches are refused', async () => {
+test('Turnstile failures, hostname or action mismatches and siteverify errors are refused', async () => {
   turnstile = () => Response.json({ success: false, 'error-codes': ['invalid-input-response'] });
   assert.deepEqual((await post(valid())).json, { ok: false, error: 'challenge' });
-  turnstile = () => Response.json({ success: true, hostname: 'evil.example' });
+  turnstile = () => Response.json({ success: true, hostname: 'evil.example', action: 'enquiry' });
+  assert.equal((await post(valid())).status, 403);
+  turnstile = () => Response.json({ success: true, hostname: 'localhost', action: 'enquiry' });
+  assert.equal((await post(valid())).status, 403);
+  turnstile = () => Response.json({ success: true, hostname: 'mothandgravel.com', action: 'signup' });
+  assert.equal((await post(valid())).status, 403);
+  turnstile = () => Response.json({ success: true, hostname: 'mothandgravel.com', action: 'enquiry' }, { status: 500 });
   assert.equal((await post(valid())).status, 403);
   turnstile = () => { throw new TypeError('network'); };
   assert.equal((await post(valid())).status, 403);

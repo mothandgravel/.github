@@ -143,11 +143,13 @@ async function start() {
       const response = await fetch(config.endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body, mode: 'cors', credentials: 'omit' });
       result = await response.json().catch(() => ({ ok: false }));
     } catch {
-      sending = false; button.disabled = false;
-      say('We could not reach the studio. Your words are still here; check your connection and press Send again.');
-      return;
+      result = null;
     }
     sending = false; button.disabled = false;
+    // Turnstile tokens are single-use: every completed attempt resets this widget before a retry.
+    // The id stays the same for unchanged words, so Resend still sends at most once.
+    if (result?.ok !== true) { token = ''; turnstile.reset(widget); }
+    if (result === null) { say('We could not reach the studio. Your words are still here; check your connection, let the check finish, then press Send again.'); return; }
     if (result?.ok === true) {
       const done = document.createElement('p');
       done.className = 'enquiry-sent'; done.tabIndex = -1;
@@ -158,8 +160,7 @@ async function start() {
       done.focus();
       return;
     }
-    if (result?.error === 'in_progress') { say('Still sending. Wait a moment, then press Send again.'); return; }
-    token = ''; turnstile.reset(widget);
+    if (result?.error === 'in_progress') { say('Still sending. Wait a moment, let the check finish, then press Send again.'); return; }
     say('This did not go through. You can', true);
   });
 }

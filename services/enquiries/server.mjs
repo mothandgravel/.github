@@ -6,13 +6,15 @@ const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f
 const EMAIL = /^[^\s@<>()[\]\\,;:"]{1,64}@[^\s@<>()[\]\\,;:"]+\.[^\s@<>()[\]\\,;:"]+$/;
 const CONTROL = /[\p{Cc}\p{Zl}\p{Zp}]/u;
 const SITEVERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+export const TURNSTILE_ACTION = 'enquiry';
 
 export function settings(env = process.env) {
   return {
     enabled: env.ENQUIRIES_ENABLED === 'true' && Boolean(env.RESEND_API_KEY && env.TURNSTILE_SECRET),
     origins: new Set((env.ALLOWED_ORIGINS || 'https://mothandgravel.com').split(',').map(s => s.trim()).filter(Boolean)),
-    hostname: env.TURNSTILE_HOSTNAME || 'mothandgravel.com',
-    from: env.ENQUIRY_FROM || 'Moth & Gravel <enquiries@send.mothandgravel.com>',
+    // Production must never list localhost here.
+    hostnames: new Set((env.TURNSTILE_HOSTNAMES || 'mothandgravel.com').split(',').map(s => s.trim()).filter(Boolean)),
+    from: env.ENQUIRY_FROM || 'Moth & Gravel <enquiries@mail.mothandgravel.com>',
     to: env.ENQUIRY_TO || 'hello@mothandgravel.com',
     maxBytes: Number(env.MAX_BODY_BYTES) || 32 * 1024,
     resendKey: env.RESEND_API_KEY, turnstileSecret: env.TURNSTILE_SECRET,
@@ -37,12 +39,16 @@ export function subject(name, brief) {
   return `Enquiry — ${name}: ${topic}`;
 }
 
-async function verifyTurnstile(config, token, id) {
-  const form = new URLSearchParams({ secret: config.turnstileSecret, response: token, idempotency_key: id });
+// Canonical siteverify: success, the expected action and an approved frontend hostname.
+// Tokens are single-use; the browser resets its widget after every attempt.
+// remoteip is optional and is omitted: X-Forwarded-For can be spoofed, and the visitor's IP is not shared.
+async function verifyTurnstile(config, token) {
+  const form = new URLSearchParams({ secret: config.turnstileSecret, response: token });
   try {
     const response = await fetch(SITEVERIFY, { method: 'POST', body: form, signal: AbortSignal.timeout(8000) });
+    if (!response.ok) return false;
     const result = await response.json();
-    return result.success === true && result.hostname === config.hostname;
+    return result.success === true && result.action === TURNSTILE_ACTION && config.hostnames.has(result.hostname);
   } catch { return false; }
 }
 
@@ -89,7 +95,7 @@ export function createHandler(env = process.env) {
     if (typeof body?.website === 'string' && body.website.trim()) return reply(200, { ok: true });
     const { value, error } = validate(body);
     if (error) return reply(400, { ok: false, error });
-    if (!(await verifyTurnstile(config, value.turnstileToken, value.id))) return reply(403, { ok: false, error: 'challenge' });
+    if (!(await verifyTurnstile(config, value.turnstileToken))) return reply(403, { ok: false, error: 'challenge' });
     try {
       const { error: failure } = await mailer.emails.send({
         from: config.from, to: [config.to], replyTo: value.email, subject: subject(value.name, value.brief),
