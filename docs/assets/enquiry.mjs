@@ -1,24 +1,23 @@
-// Optional private sending for the question sheet. Without a live config, the page keeps its own routes.
+// Private sending for the question sheet, loaded only when enquiry-config.json is enabled and the
+// visitor reaches the brief. Without it the page keeps its email route exactly as it is.
 const INBOX = 'hello@mothandgravel.com';
 const BRIEF_LIMIT = 20000;
 const BODY_LIMIT = 32 * 1024;
 const TURNSTILE = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
-async function readConfig() {
-  try {
-    const response = await fetch(new URL('./enquiry-config.json', import.meta.url), { cache: 'no-cache' });
-    const config = response.ok ? await response.json() : null;
-    const live = config?.enabled === true && /^https:\/\//.test(config.endpoint) && typeof config.turnstileSiteKey === 'string' && config.turnstileSiteKey;
-    return live ? config : null;
-  } catch { return null; }
-}
+export const isLive = config => config?.enabled === true && /^https:\/\//.test(config.endpoint) &&
+  typeof config.turnstileSiteKey === 'string' && Boolean(config.turnstileSiteKey);
 
-function mailto(brief) {
-  const subject = 'A loose end for Moth & Gravel';
-  let body = brief;
-  // Long mail links fail silently in some clients; point to the full copy instead.
-  if (encodeURIComponent(body).length > 6000) body = brief.slice(0, 1200).trimEnd() + '\n\n[Shortened. The full brief is in the question sheet: copy or download it and paste it here.]';
-  return `mailto:${INBOX}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+// With the form on, the page must not promise that nothing leaves it on its own.
+function honestCopy() {
+  const boundary = document.querySelector('.question-boundary');
+  if (boundary) boundary.innerHTML = '<strong>A brief to send or keep.</strong> Send delivers it to the studio inbox with your name and email, or you can email it from your own mail app. Only your starting question needs an answer. The rest can stay open.';
+  const aside = [...document.querySelectorAll('.journey-aside p')].find(p => p.textContent.includes('nothing leaves this page'));
+  if (aside) aside.textContent = 'Your answers stay in this page until you press Send, which delivers the brief, your name and your email to the studio inbox. You can email it from your own mail app instead. Carrying it to the preview keeps a draft in this browser tab.';
+  const help = document.getElementById('send-help');
+  if (help) help.textContent = `Opens your mail app, addressed to ${INBOX}, with the brief written in.`;
+  const next = [...document.querySelectorAll('#first-work-next p')].find(p => p.textContent.includes('Send to Moth'));
+  if (next) next.textContent = 'This page prepares your words. To start a conversation, press Send, or email the brief to hello@mothandgravel.com. The example workbench is a separate fictional study.';
 }
 
 function loadTurnstile() {
@@ -34,32 +33,35 @@ function loadTurnstile() {
 
 function build() {
   const form = document.createElement('form');
-  form.className = 'enquiry-send'; form.noValidate = true; form.setAttribute('aria-labelledby', 'enquiry-heading');
-  form.innerHTML = `<p class="mono">IF YOU’RE READY / SEND IT PRIVATELY</p><h3 id="enquiry-heading" tabindex="-1">Send the brief to Moth &amp; Gravel.</h3>
-    <p class="question-help">The brief above goes to the studio inbox with your name and email, and we reply by email. Nothing is published.</p>
+  form.className = 'enquiry-send'; form.noValidate = true; form.setAttribute('aria-label', 'Send the brief to Moth & Gravel');
+  form.innerHTML = `<p class="question-help" id="enquiry-help">Send delivers the brief above to ${INBOX} with your name and email, so we can reply. Nothing is published.</p>
     <label for="enquiry-name">Your name</label><input id="enquiry-name" name="name" type="text" autocomplete="name" maxlength="120" required aria-describedby="enquiry-name-error">
     <p id="enquiry-name-error" class="question-error" hidden>Add the name we should use when we reply.</p>
     <label for="enquiry-email">Your email</label><input id="enquiry-email" name="email" type="email" autocomplete="email" maxlength="254" required spellcheck="false" aria-describedby="enquiry-email-error">
     <p id="enquiry-email-error" class="question-error" hidden>Add an email address we can reply to, like name@example.com.</p>
     <div class="enquiry-trap" aria-hidden="true"><label for="enquiry-website">Leave this empty</label><input id="enquiry-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
     <div class="enquiry-challenge" id="enquiry-challenge"></div>
-    <div class="journey-actions"><button class="button button-brass" type="submit">Send</button></div>
+    <div class="journey-actions brief-send"><button class="button button-brass" type="submit" aria-describedby="enquiry-help">Send</button></div>
     <p class="question-feedback" id="enquiry-status" role="status"></p>`;
   return form;
 }
 
-async function start() {
+export function start(config) {
   const brief = document.getElementById('brief-text');
-  const keep = brief?.closest('.brief-keep');
-  if (!keep || !globalThis.crypto?.randomUUID) return;
-  const config = await readConfig();
-  if (!config) return;
+  const mail = document.getElementById('send-brief');
+  const mailRow = mail?.closest('.brief-send');
+  if (!brief || !mailRow || !isLive(config) || !globalThis.crypto?.randomUUID || document.querySelector('.enquiry-send')) return;
 
-  const form = build();
-  keep.after(form);
   const link = document.createElement('link');
-  link.rel = 'stylesheet'; link.href = new URL('./enquiry.css?v=1', import.meta.url).href;
+  link.rel = 'stylesheet'; link.href = new URL('./enquiry.css?v=2', import.meta.url).href;
   document.head.append(link);
+  const form = build();
+  mailRow.before(form);
+  // The mail route stays, demoted to a quiet fallback; the existing module keeps its href current.
+  mailRow.classList.add('enquiry-fallback');
+  mail.className = 'enquiry-mail-link';
+  mail.textContent = 'Or email us instead ↗';
+  honestCopy();
 
   const name = form.querySelector('#enquiry-name');
   const email = form.querySelector('#enquiry-email');
@@ -75,8 +77,9 @@ async function start() {
   const say = (text, fallback = false) => {
     status.replaceChildren(text);
     if (fallback) {
+      // Offer the page's own mail route, with the brief already written in.
       const anchor = document.createElement('a');
-      anchor.href = mailto(brief.value); anchor.textContent = `email the brief to ${INBOX} instead`;
+      anchor.href = mail.href; anchor.textContent = `email the brief to ${INBOX} instead`;
       status.append(' ', anchor, '.');
     }
   };
@@ -101,12 +104,8 @@ async function start() {
     }).catch(() => { say('The privacy check could not load. You can', true); return null; });
     return turnstileReady;
   }
-  // Load the third-party check only once the visitor reaches the brief.
-  const step = form.closest('[data-step]');
-  if (step && step.hidden) {
-    const watch = new MutationObserver(() => { if (!step.hidden) { watch.disconnect(); prepare(); } });
-    watch.observe(step, { attributes: true, attributeFilter: ['hidden'] });
-  } else prepare();
+  // start() runs when the visitor reaches the brief, so the third-party check loads now and not before.
+  prepare();
 
   function check(field, error, valid) {
     form.querySelector(`#${error}`).hidden = valid;
@@ -156,6 +155,7 @@ async function start() {
       // TODO(owner): add the reply-time promise here once it is decided, e.g. "…usually within two working days."
       done.textContent = `Sent. We’ll reply to ${email.value.trim()} from ${INBOX}.`;
       themeWatch?.disconnect(); turnstile.remove(widget);
+      for (const el of [mailRow, document.getElementById('send-help'), document.getElementById('send-limit')]) if (el) el.hidden = true;
       form.replaceChildren(done);
       done.focus();
       return;
@@ -165,4 +165,3 @@ async function start() {
   });
 }
 
-start();

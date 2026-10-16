@@ -23,6 +23,15 @@ export function briefMail(text, making) {
   const encode = value => encodeURIComponent(value.replace(/\r?\n/g, '\r\n'));
   return { href: 'mailto:' + mailAddress + '?subject=' + encode(subject) + '&body=' + encode(body), shortened };
 }
+// Private sending is optional. Its config, module and Turnstile load only once the visitor reaches
+// the brief, and only when enabled, so the cold load of this page never pays for them.
+let enquiry = null;
+function loadEnquiry() {
+  enquiry ??= fetch(new URL('./enquiry-config.json', import.meta.url), { cache: 'no-cache' })
+    .then(response => response.ok ? response.json() : null)
+    .then(config => config?.enabled === true ? import('./enquiry.mjs?v=2').then(module => module.start(config)) : null)
+    .catch(() => null);
+}
 function download(text, name) {
   const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
   const link = document.createElement('a'); link.href = url; link.download = name; link.click();
@@ -106,6 +115,7 @@ if (intake) {
       else if (generated !== generatedBrief) announce('Your brief has edits. They were kept. Use Rebuild from answers if you want to replace them with your updated answers.', brief);
       generatedBrief = generated;
       updateSend();
+      loadEnquiry();
     }
     if (focus) panels[step].querySelector('legend, h2').focus();
   }
