@@ -384,11 +384,16 @@ def main() -> int:
             data = json.loads(blocks[0])
             graph = data['@graph']
             check(data['@context'] == 'https://schema.org', f'{file.name}: unknown schema context')
-            studio = next(n for n in graph if n['@type'] == 'Organization')
+            types = lambda n: n['@type'] if isinstance(n['@type'], list) else [n['@type']]
+            studio = next(n for n in graph if 'Organization' in types(n))
+            check(studio.get('email') == 'hello@mothandgravel.com' and studio['contactPoint']['email'] == studio['email'],
+                  f'{file.name}: studio enquiry address missing')
             check(studio['name'] == 'Moth & Gravel' and studio['founder']['name'] == 'slideep',
                   f'{file.name}: public studio identity disagrees with visible copy')
             check(studio['location']['name'] == 'Finland', f'{file.name}: public location differs')
-            check(all(n['@type'] != 'LocalBusiness' for n in graph), f'{file.name}: unverified local business claim')
+            # ProfessionalService is allowed; a street address or a plain LocalBusiness needs verification first.
+            check(all('LocalBusiness' not in types(n) for n in graph) and 'address' not in studio,
+                  f'{file.name}: unverified local business claim')
             page = next(n for n in graph if n['@type'] in ('WebPage', 'CollectionPage'))
             canonical = re.search(r'<link rel="canonical" href="([^"]+)"', source).group(1)
             check(page['url'] == canonical, f'{file.name}: schema and canonical URL differ')
