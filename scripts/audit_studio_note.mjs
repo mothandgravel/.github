@@ -1,11 +1,11 @@
 /** Field Note 013: readable real evidence, responsive layout and no-script access. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 const origin=process.env.SITE_URL||'http://127.0.0.1:8793';
 const output=process.env.AUDIT_OUTPUT||'artifacts/design-review';
 await mkdir(output,{recursive:true});
 const options=process.env.BROWSER_EXECUTABLE ? {executablePath:process.env.BROWSER_EXECUTABLE} : {};
-const browser=await chromium.launch(options);
+const browser=await launchAuditBrowser(options);
 const results=[];
 try {
   for(const width of [320,390,1050,1440]) for(const theme of ['night','afterlight']) {

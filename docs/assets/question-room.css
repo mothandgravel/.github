@@ -53,4 +53,6 @@ html:is(:not(.has-js),.site-script-unavailable) .question-room .header-actions {
 .question-room #send-help,.question-room .send-limit { margin:12px 0 0;max-width:62ch; }
 .question-room .send-limit { color:var(--ink);border-left:2px solid var(--gold-bright);padding-left:12px; }
 .question-room .brief-keep-actions { margin-top:18px; }
+/* Feedback scrolled into view clears the sticky masthead and the viewport edge. */
+.question-room .question-feedback { scroll-margin:96px 0 16px; }
 @media print { .question-room .brief-send,.question-room #send-help,.question-room .send-limit { display:none!important; } }

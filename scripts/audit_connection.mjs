@@ -1,5 +1,5 @@
 /** Interaction and reading checks for the source-based connection specimen. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -7,7 +7,7 @@ const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 const route = '/specimens/connected-to-what/';
 await mkdir(output, { recursive: true });
-const browser = await chromium.launch();
+const browser = await launchAuditBrowser();
 const failures = [], results = [];
 let checks = 0;
 const assert = (value, label) => { checks++; if (!value) failures.push(label); };
@@ -85,7 +85,7 @@ try {
     await page.locator('.connection-record summary').click();
     assert(await page.locator('.connection-record tbody tr').count() === 3, label + ': fixed record missing');
     await audit(page, label + ' stale record');
-    assert(await page.getByRole('button', { name: 'Menu', exact: true }).count() === 1, label + ': navigation control name');
+    assert(await page.getByRole('button', { name: 'Menu', exact: true }).count() === (width <= 1100 ? 1 : 0), label + ': navigation control name');
     assert(!(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)), label + ': horizontal overflow');
     assert(await page.locator('[data-connection-study]').evaluate(el => el.getAnimations({ subtree: true }).length === 0), label + ': inspection animates');
     // Capture only after accessibility checks: temporary header hiding can race name calculation.

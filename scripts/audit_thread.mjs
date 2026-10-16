@@ -1,5 +1,5 @@
 /** Follow the editorial route with native navigation; never submit an enquiry. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -7,7 +7,7 @@ const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 const route = '/threads/something-happened/';
 await mkdir(output, { recursive:true });
-const browser = await chromium.launch({headless:true});
+const browser = await launchAuditBrowser({headless:true});
 const results = [], failures = [];
 let checks = 0;
 function assert(value, label) { checks++; if (!value) failures.push(label); }
@@ -142,6 +142,7 @@ try {
   await moving.waitForFunction(()=>document.querySelector('.thread-wire').getAnimations().some(a=>a.playState==='running'));
   await moving.waitForFunction(()=>document.querySelector('.thread-wire').getAnimations().every(a=>a.playState==='finished'));
   assert(JSON.stringify(before)===JSON.stringify(await label.boundingBox()),'Optional glint never moves the question or its hit area');
+  await moving.setViewportSize({width:1100,height:900});
   await moving.locator('#menu-toggle').click();
   assert(await moving.locator('.nav-sheet-invitation').getAttribute('href')===origin+'/questions/','Nested thread masthead resolves the correct question route');
   await moving.keyboard.press('Escape');

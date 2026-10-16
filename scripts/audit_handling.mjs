@@ -1,12 +1,12 @@
 /** Light/handling browser review; never shipped to readers. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 await mkdir(output, {recursive:true});
-const browser = await chromium.launch();
+const browser = await launchAuditBrowser();
 const failures = [], results = [];
 let checks = 0;
 const assert = (value, message) => { checks++; if (!value) failures.push(message); };
@@ -39,7 +39,8 @@ try {
     await inspect(page); await playing(page); await quiet(page);
     const samples = await page.evaluate(() => { clearInterval(window.handlingProbe); return window.handlingFrames; });
     assert(samples.some(s=>s.arriving && s.transform!=='none'),label+': marker never arrived');
-    assert(samples.every(s=>JSON.stringify(s.boxes)===JSON.stringify(samples[0].boxes)),label+': arrival moved reading/controls');
+    // Sub-pixel settling of deferred sections above is not movement a reader can see.
+    assert(samples.every(s=>s.boxes.every((box,i)=>box.every((v,j)=>Math.abs(v-samples[0].boxes[i][j])<1))),label+': arrival moved reading/controls');
     const plane=page.locator('#specimen-ajo .specimen-plane');
     assert(await plane.evaluate(el=>el.getAnimations({subtree:true}).length===0),label+': arrival did not settle');
     assert(await plane.getAttribute('data-arrival-seen')!==null,label+': opportunity not consumed');

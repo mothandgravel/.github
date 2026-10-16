@@ -1,5 +1,5 @@
 /** A written note must lead somewhere deliberately, with ordinary navigation. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -8,7 +8,7 @@ import { execFileSync } from 'node:child_process';
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 const notes = JSON.parse(await readFile('docs/assets/notes.json', 'utf8'));
-const browser = await chromium.launch({ headless: true });
+const browser = await launchAuditBrowser({ headless: true });
 const results = [], failures = [];
 let assertions = 0;
 const assert = (value, label) => { assertions++; if (!value) failures.push(label); };

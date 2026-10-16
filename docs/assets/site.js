@@ -14,12 +14,19 @@
   const prefersLight = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
   const themeLabel = themeButton?.querySelector("[data-theme-label]");
 
-  // One polite voice for small confirmations, shared by every page.
-  const voice = document.createElement("p");
-  voice.className = "visually-hidden";
-  voice.setAttribute("role", "status");
-  document.body.append(voice);
+  // One polite voice for small confirmations: the page's own status region when it has
+  // one, otherwise a visually hidden region created on first use.
+  let voice = null;
   function say(message) {
+    if (!voice) {
+      voice = document.querySelector('[role="status"]');
+      if (!voice) {
+        voice = document.createElement("p");
+        voice.className = "visually-hidden";
+        voice.setAttribute("role", "status");
+        document.body.append(voice);
+      }
+    }
     voice.textContent = "";
     setTimeout(() => { voice.textContent = message; }, 40);
   }
@@ -117,8 +124,8 @@
     invitation.className = "nav-sheet-invitation";
     // Every shared masthead already points its brand at the studio's home.
     const home = new URL(document.querySelector(".brand").getAttribute("href"), location.href);
-    invitation.href = location.pathname === home.pathname ? "#contact" : new URL("#contact", home).href;
-    invitation.textContent = "Start a conversation ↗";
+    invitation.href = new URL("questions/", home).href;
+    invitation.textContent = "Shape a brief first ↗";
     const mail = document.querySelector(".header-mail")?.cloneNode(true);
     if (mail) {
       mail.className = "nav-sheet-mail";

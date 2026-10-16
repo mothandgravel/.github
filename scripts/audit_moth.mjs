@@ -1,5 +1,5 @@
 /** Browser review of the finite moth scene. Runs in development/CI only. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -7,7 +7,7 @@ import { join } from 'node:path';
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 await mkdir(output,{recursive:true});
-const browser = await chromium.launch();
+const browser = await launchAuditBrowser();
 const failures = [], results = [];
 let checks = 0;
 const assert = (value,message) => { checks++;if(!value) failures.push(message); };

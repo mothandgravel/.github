@@ -3,7 +3,7 @@
  * Runs only in CI / local development, never in production.
  * Setup: npm install --no-save playwright@1.55.1; npx playwright install chromium
  */
-import { chromium } from "playwright";
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from "axe-core";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -21,7 +21,7 @@ const widths = [
   { name: "small-phone", width: 320, height: 740 },
 ];
 await mkdir(output, { recursive: true });
-const browser = await chromium.launch({ headless: true });
+const browser = await launchAuditBrowser({ headless: true });
 const failures = [];
 const results = [];
 
@@ -286,9 +286,9 @@ try {
     await captureLandingSections(page, 'night', viewport.width);
     await snap(page, `${viewport.name}-night`);
     const theme = page.locator("#light-switch");
-    assert(await theme.getAttribute("aria-label") === "Afterlight theme", "Theme toggle has an unstable label");
+    assert(/^Theme: System$/.test((await theme.textContent()).trim()), "Theme control must state the current setting");
     await theme.click();
-    assert(await theme.getAttribute("aria-pressed") === "true", `${viewport.name}: theme not activated`);
+    assert((await theme.textContent()).trim() === "Theme: Light", `${viewport.name}: theme not activated`);
     assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
       `${viewport.name}: afterlight data-theme missing`);
 
@@ -299,8 +299,8 @@ try {
     await page.reload({ waitUntil: "networkidle", timeout: 30000 });
     assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
       `${viewport.name}: afterlight preference did not persist on reload`);
-    assert(await theme.getAttribute("aria-pressed") === "true",
-      `${viewport.name}: reloaded theme control is not pressed`);
+    assert((await theme.textContent()).trim() === "Theme: Light",
+      `${viewport.name}: reloaded theme control does not state the saved setting`);
     await inspectFirstWork(page, viewport.name + " afterlight", "afterlight", viewport.width);
     await inspectSpecimens(page, viewport.name + " afterlight", "afterlight", viewport.width);
     report.afterlightCardContrast = await sampleCardContrast(page, `${viewport.name} afterlight`);

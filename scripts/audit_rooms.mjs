@@ -1,12 +1,12 @@
 /** Reading planes, navigation sheet and material feedback; development only. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 const origin=process.env.SITE_URL||'http://127.0.0.1:8793';
 const output=process.env.AUDIT_OUTPUT||'artifacts/design-review';
 await mkdir(output,{recursive:true});
-const browser=await chromium.launch();
+const browser=await launchAuditBrowser();
 const failures=[],results=[];let checks=0;
 const assert=(v,label)=>{checks++;if(!v)failures.push(label);};
 const boxes=locator=>locator.evaluateAll(els=>els.map(el=>{const b=el.getBoundingClientRect();return[b.x+scrollX,b.y+scrollY,b.width,b.height];}));
@@ -31,8 +31,10 @@ try{
     await page.addInitScript(t=>localStorage.setItem('moth-and-gravel-theme',t),theme);
     await page.goto(origin,{waitUntil:'networkidle'});
     const menu=page.locator('#menu-toggle'),nav=page.locator('#primary-nav');
-    assert(await menu.isVisible(),label+': no desktop/mobile sheet control');
+    // Above 1100px the full navigation is visible, so the sheet control is not shown.
+    assert(await menu.isVisible()===(width<=1100),label+': sheet control only where navigation is compact');
     assert(await nav.isVisible()===(width>1100),label+': compact navigation boundary');
+    if(width<=1100){
     const before=await menu.boundingBox();await menu.click();await opened(page);
     await page.waitForTimeout(280);
     assert(await page.evaluate(()=>document.activeElement===document.querySelector('#primary-nav>a')),label+': opening focus does not reach first route');
@@ -56,6 +58,7 @@ try{
     await menu.click();await page.mouse.click(3,200);await closed(page,label+' outside');
     await menu.click();await page.setViewportSize({width:width+1,height:760});await closed(page,label+' resize');
     await page.setViewportSize({width,height:900});
+    }
     await page.locator('#field-notes').scrollIntoViewIfNeeded();
     assert(await page.locator('#field-notes').evaluate(el=>getComputedStyle(el).color==='rgb(32, 34, 34)'),label+': reading room not on paper');
     await page.locator('#work').scrollIntoViewIfNeeded();
