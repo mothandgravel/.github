@@ -538,7 +538,7 @@ class CaptionRecoveryTests(unittest.TestCase):
             patch.object(captions, "cloud_json", side_effect=TimeoutError) as cloud,
             redirect_stdout(io.StringIO()),
         ):
-            with self.assertRaisesRegex(RuntimeError, "No valid transcription operation"):
+            with self.assertRaisesRegex(RuntimeError, "no valid transcription operation"):
                 captions.run(self.args())
             with self.assertRaisesRegex(ValueError, "no saved acknowledgement"):
                 captions.run(self.args())

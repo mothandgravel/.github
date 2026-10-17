@@ -52,9 +52,10 @@ estimated listen labels are added while the collection is empty.
 `make-all` without `--publish` prepares the collection locally for review.
 `publish` pushes a completed preparation later. Existing unrelated Git changes
 are excluded: save or commit them before using `--publish`. Partial Cloud failures
-preserve progress and prevent a partial collection from being pushed. Repeat the
-same command to resume; uncertain paid submissions still require an explicit
-`--retry-uncertain`.
+preserve progress and prevent a partial collection from being pushed. Saved work
+is reused on the next run. If any issue says **billing unknown**, stop and wait
+before running it again; an uncertain paid submission still requires an explicit
+`--retry-uncertain`, and the [spend guard](#uncertain-spend-guard) applies.
 
 As new notes enter the published catalog, `make-all` prepares their complete prose
 scripts automatically. `sync` performs that step offline. Existing source changes
@@ -120,8 +121,9 @@ If interrupted or still running after the wait limit, repeat the same command.
 Completed speech chunks and MP3s are reused; saved transcription operations are
 polled, rather than submitted again. Transient polling errors retry safely.
 An uncertain **paid submission** still requires `--retry-uncertain`, since another
-submission can incur another charge. Confirmed failed transcription jobs require
-`--restart-failed` after repairing the cause.
+submission can incur another charge. Never run it in a loop or from a script.
+Confirmed failed transcription jobs require `--restart-failed` after repairing the
+cause.
 
 ## Episodes and listening review
 
@@ -258,8 +260,9 @@ Repeating a completed run verifies and reuses its MP3 without reencoding it.
 | Authentication / 401 | Authorize Cloud Shell or run `gcloud auth login` locally. |
 | 403 | Inspect the saved diagnostic; check selected project, API and IAM permissions. |
 | 400 | Inspect `plan EPISODE --json` and model/language/voice support. |
-| TTS 429 or 5xx | Wait, then repeat with `--retry-uncertain`; another charge is possible. Global is now the default. |
-| Interrupted paid submission | Inspect saved state, then use `--retry-uncertain` if repeating is appropriate. |
+| TTS 5xx, 408, 429, 499 or a timeout | **Billing unknown.** Stop; do not repeat the command in a loop. Wait at least 30 minutes, check the Google Cloud status page and billing report, then try that part once by hand with `--retry-uncertain` if you accept another possible charge. For 429 check quota first. 499 is CANCELLED; Google advises never retrying it automatically. |
+| Interrupted paid submission | Inspect saved state and the attempt count in the message, then decide whether one `--retry-uncertain` run is appropriate. |
+| Spend guard refused | The part or episode reached its uncertain-attempt limit. Wait for the 24 h window, or run once with `--allow-spend-over-limit "reason"`. |
 | Transcription still running | Repeat the same command; the existing operation resumes. Increase `--wait` if desired. |
 | Confirmed failed transcription | Repair the cause, then repeat with `--restart-failed`; a new job is billable. |
 | Source note changed | Review/revise the script before updating its article fingerprint. |
@@ -268,6 +271,30 @@ Repeating a completed run verifies and reuses its MP3 without reencoding it.
 Provider diagnostics are bounded and stripped of credentials. Server errors do
 not establish a billing or IAM problem. Automatic retries apply only to operation
 reads, never uncertain speech synthesis or transcription submissions.
+
+### Uncertain-spend guard
+
+Every paid narration request and caption submission gets an attempt ID. Before
+the request is sent, a line with the time, episode, part and attempt ID is
+appended to `artifacts/audio/attempts.jsonl`; its outcome and any provider request
+ID follow afterwards. The log is never rewritten, so it can be reconciled against
+the Cloud billing report. Failure messages show the attempt ID.
+
+An attempt is **uncertain** when it may have been billed but no result was saved
+(5xx, 408, 429, 499/CANCELLED, client timeouts, lost connections, crashes). Older
+receipts are imported once from the cache, dated by their file time. By default
+`generate`, `make`, `make-all`, `captions` and Studio refuse another paid request
+once a part has **2** uncertain attempts, or an episode has **4**, in a rolling
+**24 h**. The refusal gives the counts and the possible spend (an upper-bound
+speech-output estimate; caption submissions have no local estimate).
+
+To spend anyway, run once by hand with `--allow-spend-over-limit "reason"` (at
+least 8 characters). Studio asks for the same override and reason. Each override
+is logged. Change the limits in `artifacts/audio/spend-guard.json`
+(`{"part_limit": 2, "episode_limit": 4, "window_hours": 24}`) or with
+`FIELD_AUDIO_UNCERTAIN_PART_LIMIT`, `FIELD_AUDIO_UNCERTAIN_EPISODE_LIMIT` and
+`FIELD_AUDIO_UNCERTAIN_WINDOW_HOURS`. The narration client timeout is 360 s per
+chunk; change it with `--tts-timeout-seconds` or `FIELD_AUDIO_TTS_TIMEOUT_SECONDS`.
 
 Completed captions are re-exported locally from the saved Google response.
 Repeating replaces generated caption files; keep editorial corrections in a

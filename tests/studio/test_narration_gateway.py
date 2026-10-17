@@ -151,7 +151,7 @@ class GatewayRecoveryTests(unittest.TestCase):
             )
             execute(self.f.repository, self.f.pipeline, self.f.repository.claim())
             calls[1].assert_called_once()
-            self.assertEqual(calls[1].call_args.kwargs["timeout_seconds"], 600)
+            self.assertEqual(calls[1].call_args.kwargs["timeout_seconds"], 360)
             self.assertEqual(calls[1].call_args.args[0], self.h.request["plan"]["requests"][2])
 
     def test_502_is_current_evidence_while_old_job_result_stays_historical(self):
@@ -161,7 +161,7 @@ class GatewayRecoveryTests(unittest.TestCase):
         self.assertEqual(job.stage, "narration-3-of-3")
         self.assertIn("HTTP 502", job.error)
         self.assertIn("240.2s", job.error)
-        self.assertIn("600s", job.error)
+        self.assertIn("360s", job.error)
         self.assertNotIn("TimeoutError", job.error)
         self.assertNotIn("margin", job.error)
         self.assertEqual(self.f.repository.get(self.previous_id).error, self.previous_error)
@@ -187,7 +187,7 @@ class GatewayRecoveryTests(unittest.TestCase):
         receipt = read_object(path)
         self.assertEqual(receipt["status"], "uncertain")
         self.assertEqual(receipt["http_status"], 502)
-        self.assertEqual(receipt["timeout_seconds"], 600)
+        self.assertEqual(receipt["timeout_seconds"], 360)
         self.assertAlmostEqual(receipt["attempt_seconds"], 240.2283)
         with self.assertRaisesRegex(ValueError, "receipt changed"):
             self.service.submit(self.snapshot, True, recover_uncertain=True)

@@ -8,7 +8,7 @@ import subprocess
 import sys
 import wave
 
-from field_notes_audio import audio, captions, release, workflow
+from field_notes_audio import audio, captions, release, spend_guard, workflow
 from field_notes_audio.production import packages, promotion
 from field_notes_audio.production import runner as production
 
@@ -39,6 +39,8 @@ def main(argv: list[str] | None = None) -> int:
             sub.add_argument("--project")
             sub.add_argument("--auth", choices=("gcloud", "adc"))
             sub.add_argument("--retry-uncertain", action="store_true")
+            spend_guard.add_override_argument(sub)
+            audio.add_timeout_argument(sub)
     args = parser.parse_args(argv)
     try:
         if args.command in {"setup", "make", "generate", "captions", "make-all"}:

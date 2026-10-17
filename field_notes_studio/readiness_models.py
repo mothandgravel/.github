@@ -17,6 +17,8 @@ class Readiness:
     identity: str = ""
     job: str = ""
     checked_at: str = ""
+    # Exception text for a Details disclosure; never the headline or the next step.
+    technical: str = ""
 
 
 LABELS = {
@@ -29,3 +31,42 @@ LABELS = {
     "health": "Inspect blockers",
     "repair": "Inspect blockers",
 }
+
+
+# One plain sentence per place a check can fail: what is wrong, then what to do.
+PLAIN = {
+    "inputs": "Recording details are incomplete. Prepare the note again.",
+    "inputs-file": "A recording file can't be read. Check the artifacts folder.",
+    "copy": "Upload title, description or tags are invalid. Fix them in Release.",
+    "busy": "Another job is using these files. Wait for it, then Check.",
+    "edition": "The saved episode can't be verified. Produce it again.",
+    "package": "The upload package can't be verified. Export it again.",
+    "preflight": "A production check failed; nothing was queued. See Health.",
+}
+
+
+def technical(exc: BaseException) -> str:
+    return f"{type(exc).__name__}: {exc}"[:600]
+
+
+def plain(exc: BaseException, context: str) -> str:
+    """A readable sentence for the card, never a bare exception such as 'audio_sha256'.
+
+    Messages this codebase raises on purpose (plain ValueError sentences) are already
+    written for people and are kept. Everything else gets the context's sentence.
+    """
+    text = str(exc).strip()
+    authored = type(exc) in {ValueError, ReadinessBusy} or type(exc).__name__ == "RecordingBusy"
+    if authored and " " in text and text[:1].isupper() and len(text) >= 20:
+        return text
+    if context == "inputs" and isinstance(exc, OSError):
+        return PLAIN["inputs-file"]
+    return PLAIN[context]
+
+
+def readable(message: str, context: str = "preflight") -> tuple[str, str]:
+    """(sentence, technical) for an error that only arrived as text."""
+    text = (message or "").strip()
+    if " " in text and text[:1].isupper() and len(text) >= 20:
+        return text, ""
+    return PLAIN[context], text[:600]

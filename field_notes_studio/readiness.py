@@ -18,7 +18,7 @@ from field_notes_audio.production.editions import fingerprint
 from field_notes_audio.production.metadata import load_metadata, publishing_copy
 from field_notes_audio.production.toolchain import inspect_audio_toolchain
 from field_notes_audio.storage import digest_file, read_object
-from field_notes_studio.readiness_models import Readiness
+from field_notes_studio.readiness_models import Readiness, plain, technical
 
 
 def recipe(pipeline, values: dict) -> dict:
@@ -155,15 +155,16 @@ def inspect(pipeline, episode: str, settings: dict) -> Readiness:
     ]
     stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
-    def result(action, title, detail, evidence=None):
+    def result(action, title, detail, evidence=None, error=None, context=""):
         return Readiness(
             episode,
             action,
             title,
-            detail,
+            plain(error, context) if error is not None else detail,
             tuple(stages),
             fingerprint(evidence) if evidence else "",
             checked_at=stamp,
+            technical=technical(error) if error is not None else "",
         )
 
     try:
@@ -171,7 +172,7 @@ def inspect(pipeline, episode: str, settings: dict) -> Readiness:
         entry = source_check(pipeline, episode)
         stages[0] = "Recording: verified"
     except (OSError, ValueError, KeyError, TypeError) as exc:
-        return result("repair", "Inputs need attention", str(exc))
+        return result("repair", "Inputs need attention", "", error=exc, context="inputs")
 
     evidence = {"source": fingerprint(entry), "recipe": desired}
     pointer = pipeline.output / episode / "latest.json"
@@ -235,13 +236,15 @@ def inspect(pipeline, episode: str, settings: dict) -> Readiness:
             try:
                 expected_copy = copy_content(pipeline.root, edition)
             except (OSError, ValueError) as exc:
-                return result("repair", "Publishing copy needs attention", str(exc), evidence)
+                return result(
+                    "repair", "Publishing copy needs attention", "", evidence, exc, "copy"
+                )
             evidence["copy"] = expected_copy
     except RecordingBusy as exc:
-        return result("check", "Saved files are in use", str(exc), evidence)
+        return result("check", "Saved files are in use", "", evidence, exc, "busy")
     except (OSError, ValueError, KeyError, TypeError) as exc:
         stages[1] = "Full episode: unavailable"
-        return result("produce", "Full edition needs production", str(exc), evidence)
+        return result("produce", "Full edition needs production", "", evidence, exc, "edition")
 
     try:
         package = pipeline.package_snapshot(episode)
@@ -281,7 +284,7 @@ def inspect(pipeline, episode: str, settings: dict) -> Readiness:
             evidence,
         )
     except RecordingBusy as exc:
-        return result("check", "Package check is waiting", str(exc), evidence)
+        return result("check", "Package check is waiting", "", evidence, exc, "busy")
     except (OSError, ValueError, KeyError, TypeError) as exc:
         stages[3] = "Package: needs attention"
-        return result("export", "Refresh the upload package", str(exc), evidence)
+        return result("export", "Refresh the upload package", "", evidence, exc, "package")

@@ -26,6 +26,10 @@ class PreparationSnapshot:
     recovery_json: str = ""
     recovery_summary: str = ""
     scope_summary: str = ""
+    # Uncertain-spend ledger as shown; blocked means queueing needs a reasoned override.
+    spend_summary: str = ""
+    spend_blocked: bool = False
+    spend_count: int = 0
 
 
 class CaptionsPending(Exception):

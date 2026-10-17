@@ -734,7 +734,7 @@ class Controller:
         def shown(value):
             if self.view.jobs.selection() != identifier:
                 return
-            job, events = value
+            job, events, spend = value
             last = events[-1]["message"] if events else "Waiting for the worker."
             result = job.result
             if result:
@@ -753,7 +753,7 @@ class Controller:
             }.get(job.status, "")
             if job.action == "prepare":
                 guidance = {
-                    "failed": "Preparation stopped. Use Inspect recovery; do not delete caches or blindly resend.",
+                    "failed": "Preparation stopped. Inspect recovery shows the attempts; keep the caches.",
                     "interrupted": "Outcome unknown. Inspect recovery before another request.",
                     "succeeded": "Recording ready. Produce episode finishes audio, captions, full video and thumbnail in one job. Review follows; nothing is published.",
                     "waiting": "Use Resume to check the same caption operation. No new narration is generated.",
@@ -840,17 +840,23 @@ class Controller:
             if job.status in {"failed", "interrupted", "cancelled"}:
                 # Keep the exact diagnostic stage accessible beside the readable milestones.
                 reason = f"{at}: {reason}"
-            if len(reason) > 260:
-                reason = reason[:257].rsplit(" ", 1)[0] + "… Full details in History."
+            limit = 150 if spend else 260
+            if len(reason) > limit:
+                reason = reason[: limit - 3].rsplit(" ", 1)[0] + "… Full details in History."
+            if spend and job.status in {"failed", "interrupted", "cancelled"}:
+                # Always visible beside a paid failure, even when the reason is truncated.
+                reason = spend + "\n" + reason
             self.view.jobs.detail.configure(text=f"{context} · {guidance}\n{reason}")
 
-        self.task(
-            lambda: (
-                self.studio.repository.get(identifier),
-                self.studio.repository.events(identifier),
-            ),
-            shown,
-        )
+        def read():
+            job = self.studio.repository.get(identifier)
+            spend = ""
+            if job.action == "prepare" and job.status in {"failed", "interrupted", "cancelled"}:
+                summary = getattr(self.studio, "spend_summary", None)
+                spend = summary(job.episode) if summary else ""
+            return job, self.studio.repository.events(identifier), spend
+
+        self.task(read, shown)
 
     def history(self):
         identifier = self.view.jobs.selection()

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import copy
 
-from field_notes_studio.readiness_models import Readiness
+from field_notes_studio.readiness_models import Readiness, readable
 from field_notes_studio.recipes import Recipes, differences
 
 
@@ -115,10 +115,17 @@ class EpisodeControls:
 
     def failed(self, message):
         if self.enabled and not self.c.closed:
+            sentence, detail = readable(message)
             self.c.view.readiness.show(
-                Readiness(self.c.selected or "", "repair", "Check the blockers", message)
+                Readiness(
+                    self.c.selected or "",
+                    "repair",
+                    "Check the blockers",
+                    sentence,
+                    technical=detail,
+                )
             )
-            self.c.view.workspace.preflight_status("Blocked: " + message)
+            self.c.view.workspace.preflight_status("Blocked: " + sentence)
 
     def jobs_changed(self, jobs):
         if not self.enabled:
@@ -161,10 +168,14 @@ class EpisodeControls:
                 "Preflight blocker:\n\n"
                 + snapshot.detail
                 + "\n\nCheck health for installed tools. No installation or repair is automatic."
+                + ("\n\nTechnical detail: " + snapshot.technical if snapshot.technical else "")
             )
         else:
             c.view.workspace.show_plan_tab()
-            c.view.workspace.show_plan(snapshot.detail)
+            c.view.workspace.show_plan(
+                snapshot.detail
+                + ("\n\nTechnical detail: " + snapshot.technical if snapshot.technical else "")
+            )
             c.view.workspace.preflight_status("Blocked: " + snapshot.detail)
 
     def export(self):

@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib import request
 
-from field_notes_audio import audio, captions, workflow
+from field_notes_audio import audio, captions, spend_guard, workflow
 from field_notes_audio import site as build_audio
 from field_notes_audio.locks import run_lock
 from field_notes_audio.progress import Timings
@@ -563,6 +563,11 @@ def make_all(args: argparse.Namespace) -> None:
     print(
         f"Estimated synthesis output if all audio is new: ${sum(p['estimated_output_cost_usd'] for p in plans):.4f} USD; text input, transcription and retries extra. Not a spending cap."
     )
+    limits = spend_guard.load_limits(audio.ROOT / "artifacts/audio")
+    print(
+        f"Spend guard: stops at {limits.part} uncertain attempts per part or {limits.episode} "
+        f"per episode in {limits.window_hours:g} h; --allow-spend-over-limit needs a reason."
+    )
     if args.dry_run:
         for plan in plans:
             audio.summarize(plan)
@@ -604,7 +609,9 @@ def make_all(args: argparse.Namespace) -> None:
         for issue in issues:
             print(issue)
         raise RuntimeError(
-            "The collection is incomplete. Repeat make-all to resume. No partial collection was published."
+            "The collection is incomplete. No partial collection was published. Saved work is "
+            "reused on the next run, but if any issue above says billing unknown, stop and wait "
+            "before running make-all again; never rerun it in a loop."
         )
     prepare_publication(completed)
     if args.publish:
@@ -631,6 +638,8 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
     )
     sub.add_argument("--retry-uncertain", action="store_true")
     sub.add_argument("--restart-failed", action="store_true")
+    spend_guard.add_override_argument(sub)
+    audio.add_timeout_argument(sub)
     sub.add_argument(
         "--dry-run",
         action="store_true",

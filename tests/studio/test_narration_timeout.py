@@ -56,9 +56,9 @@ class NarrationTimeoutTests(unittest.TestCase):
             json.dumps({"audioContent": base64.b64encode(self.f.wav).decode()}).encode()
         )
 
-    def test_new_inspection_captures_600_second_socket_policy_without_changing_the_plan(self):
-        self.assertEqual(self.request["tts_timeout_seconds"], 600)
-        self.assertIn("socket timeout: 600s", self.snapshot.summary)
+    def test_new_inspection_captures_360_second_socket_policy_without_changing_the_plan(self):
+        self.assertEqual(self.request["tts_timeout_seconds"], 360)
+        self.assertIn("socket timeout: 360s", self.snapshot.summary)
         with patch.object(audio, "TTS_TIMEOUT_SECONDS", 180):
             previous = json.loads(self.service.inspect("104").request_json)
         self.assertEqual(previous["tts_timeout_seconds"], 180)
@@ -73,7 +73,7 @@ class NarrationTimeoutTests(unittest.TestCase):
                 audio.synthesize(data, "fixture-project", "global", "token"), self.f.wav
             )
         opened.assert_called_once()
-        self.assertEqual(opened.call_args.kwargs["timeout"], 600)
+        self.assertEqual(opened.call_args.kwargs["timeout"], 360)
         self.assertEqual(json.loads(opened.call_args.args[0].data), data)
 
     def test_wrapped_socket_timeout_remains_uncertain_and_never_retries_automatically(self):
@@ -93,7 +93,7 @@ class NarrationTimeoutTests(unittest.TestCase):
                     self.request["plan"]["requests"][0], "fixture-project", "global", "token"
                 )
         opened.assert_called_once()
-        self.assertEqual(opened.call_args.kwargs["timeout"], 600)
+        self.assertEqual(opened.call_args.kwargs["timeout"], 360)
 
     def test_legacy_third_chunk_recovers_only_that_chunk_with_a_longer_wait(self):
         self.fail_third()
@@ -105,7 +105,7 @@ class NarrationTimeoutTests(unittest.TestCase):
         snapshot = self.service.inspect("104")
         captured = json.loads(snapshot.recovery_json)
         self.assertEqual(captured["uncertain_chunks"], {"3": receipt_hash})
-        self.assertEqual(captured["tts_timeout_seconds"], 600)
+        self.assertEqual(captured["tts_timeout_seconds"], 360)
         self.assertEqual(captured["plan"], self.request["plan"])
         self.assertIn("2/3 narration cache records", snapshot.summary)
         with patch("field_notes_studio.preparation_service.launch_worker"):
@@ -130,14 +130,14 @@ class NarrationTimeoutTests(unittest.TestCase):
             execute(self.f.repository, self.f.pipeline, self.f.repository.claim())
             calls[1].assert_called_once()
             opened.assert_called_once()
-            self.assertEqual(opened.call_args.kwargs["timeout"], 600)
+            self.assertEqual(opened.call_args.kwargs["timeout"], 360)
         job = self.f.repository.get(identifier)
         self.assertEqual(job.status, "succeeded", job.error)
         self.assertEqual(original, {name: digest_file(self.directory / name) for name in original})
         self.assertTrue((self.directory / f"recovery-003-{receipt_hash}.json").is_file())
         complete = read_object(receipt_path)
         self.assertEqual(complete["status"], "complete")
-        self.assertEqual(complete["timeout_seconds"], 600)
+        self.assertEqual(complete["timeout_seconds"], 360)
         self.assertIn("attempt_seconds", complete)
         self.assertEqual(self.f.repository.publications(), {})
 
@@ -145,7 +145,7 @@ class NarrationTimeoutTests(unittest.TestCase):
         with self.f.cloud() as calls, patch.object(audio, "TTS_TIMEOUT_SECONDS", 900):
             self.f.adapter.run(self.request, lambda *_: None, lambda: False)
             for call in calls[1].call_args_list:
-                self.assertEqual(call.kwargs["timeout_seconds"], 600)
+                self.assertEqual(call.kwargs["timeout_seconds"], 360)
 
     def test_invalid_timeout_is_rejected_before_cache_write_or_cloud_call(self):
         for value in (
@@ -197,10 +197,10 @@ class NarrationTimeoutTests(unittest.TestCase):
             calls[1].side_effect = TimeoutError()
             execute(self.f.repository, self.f.pipeline, self.f.repository.claim())
             calls[1].assert_called_once()
-            self.assertEqual(calls[1].call_args.kwargs["timeout_seconds"], 600)
+            self.assertEqual(calls[1].call_args.kwargs["timeout_seconds"], 360)
         job = self.f.repository.get(identifier)
         self.assertEqual(job.status, "failed")
-        self.assertIn("socket timeout 600s", job.error)
+        self.assertIn("socket timeout 360s", job.error)
         with self.assertRaisesRegex(ValueError, "receipt changed"):
             self.service.submit(snapshot, True, recover_uncertain=True)
 
