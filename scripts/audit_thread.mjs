@@ -142,7 +142,6 @@ try {
   await moving.waitForFunction(()=>document.querySelector('.thread-wire').getAnimations().some(a=>a.playState==='running'));
   await moving.waitForFunction(()=>document.querySelector('.thread-wire').getAnimations().every(a=>a.playState==='finished'));
   assert(JSON.stringify(before)===JSON.stringify(await label.boundingBox()),'Optional glint never moves the question or its hit area');
-  await moving.setViewportSize({width:1100,height:900});
   await moving.locator('#menu-toggle').click();
   assert(await moving.locator('.nav-sheet-invitation').getAttribute('href')===origin+'/questions/','Nested thread masthead resolves the correct question route');
   await moving.keyboard.press('Escape');
@@ -167,6 +166,8 @@ try {
     await review(p,'thread-'+mode,true,mode!=='no-javascript');
     await p.locator('.thread-map a').nth(1).click();await atFragment(p,'reply',mode+' Ajo');
     await p.getByRole('link',{name:'Bring your version'}).click();
+    // Let the question sheet's navigation finish before checking; isVisible does not wait.
+    await p.locator('#signals-context').waitFor({state:'visible',timeout:5000}).catch(()=>{});
     assert(await p.locator('#signals-context').isVisible(),mode+': contextual prompt visible');
     assert(await p.locator('#making').isVisible(),mode+': native question sheet visible');
     await review(p,'thread-prompt-'+mode,true,mode!=='no-javascript');

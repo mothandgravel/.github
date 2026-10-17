@@ -35,7 +35,7 @@
 <link rel="stylesheet" href="../assets/field-audio.css">
 <script type="module" src="../assets/field-listen.mjs"></script>
 <!-- audio-head:end -->
-<script>(()=>{let t;try{t=localStorage.getItem("moth-and-gravel-theme")}catch(_){}const d=document.documentElement,c=t==="afterlight"?"light":t==="night"?"dark":"system";d.dataset.themeChoice=c;d.dataset.theme=c==="light"?"afterlight":c==="dark"?"night":matchMedia("(prefers-color-scheme: light)").matches?"afterlight":"night"})()</script>
+<script>(()=>{let t;try{t=localStorage.getItem("moth-and-gravel-theme")}catch(_){}const d=document.documentElement,c=t==="afterlight"||t==="night"?t:"system";d.dataset.themeChoice=c;d.dataset.theme=c!=="system"?c:matchMedia("(prefers-color-scheme: light)").matches?"afterlight":"night"})()</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to Field Notes</a>
@@ -50,7 +50,7 @@
       </nav>
       <p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
       <div class="header-actions">
-        <button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label">Theme: <span data-theme-label>System</span></span></button>
+        <button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
         <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></button>
       </div>
     </div>
