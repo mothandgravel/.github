@@ -10,7 +10,7 @@ from datetime import date
 from tkinter import font as tkfont
 from tkinter import ttk
 
-from field_notes_studio.presentation.controls import ActionButton
+from field_notes_studio.presentation.controls import ActionButton, Tooltip
 from field_notes_studio.presentation.editors import PUBLISHING, Editor
 from field_notes_studio.presentation.package_files import PackageFiles
 from field_notes_studio.presentation.scroll import ScrollArea
@@ -40,6 +40,9 @@ def measure(field, value):
     return f"{len(value):,} characters"
 
 
+NO_LINK = "No note link for this episode."
+
+
 class Publication(ttk.Frame):
     def __init__(self, parent, callbacks):
         super().__init__(parent)
@@ -56,18 +59,11 @@ class Publication(ttk.Frame):
         self.metadata_draft = {}
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
-        self.page = ScrollArea(self, padding=(14, 12, 14, 14))
+        self.page = ScrollArea(self, padding=(12, 8, 12, 8))
         self.page.grid(row=0, column=0, sticky="nsew")
         content = self.page.content
         content.columnconfigure(0, weight=1)
-        self.preflight = ttk.Label(
-            content,
-            text="Upload folder checks run here before anything is queued.",
-            style="Muted.TLabel",
-            wraplength=540,
-        )
-        self.preflight.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 8))
-        self.upload = ttk.Frame(content, style="Card.TFrame", padding=14)
+        self.upload = ttk.Frame(content, style="Card.TFrame", padding=(14, 12))
         self.upload.columnconfigure(0, weight=1)
         self.side = ttk.Frame(content)
         self.side.columnconfigure(0, weight=1)
@@ -96,6 +92,7 @@ class Publication(ttk.Frame):
         ttk.Button(self.editor_window, text="Close", command=self.close_editor).pack(
             anchor="e", padx=10, pady=(0, 10)
         )
+        self._website_dialog()
         self.page.bind_navigation()
 
     # Layout -----------------------------------------------------------------------
@@ -111,17 +108,29 @@ class Publication(ttk.Frame):
         content.columnconfigure(0, weight=2 if wide else 1, uniform="release" if wide else "")
         content.columnconfigure(1, weight=1 if wide else 0, uniform="release" if wide else "")
         if wide:
-            self.upload.grid(row=1, column=0, sticky="nsew", padx=(0, 12))
-            self.side.grid(row=1, column=1, sticky="nsew")
+            self.upload.grid(row=0, column=0, sticky="nsew", padx=(0, 12))
+            self.side.grid(row=0, column=1, sticky="nsew")
         else:
-            self.upload.grid(row=1, column=0, columnspan=2, sticky="ew")
-            self.side.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(12, 0))
+            self.upload.grid(row=0, column=0, columnspan=2, sticky="ew")
+            self.side.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(12, 0))
 
     def _resize(self, event):
         self._layout(event.width >= 760)
-        self.preflight.configure(wraplength=max(220, event.width - 30))
+        # Wrap from the page width, never from a card's own size: that fed back.
+        left = (event.width - 12) * 2 // 3 if self.wide else event.width
+        right = (event.width - 12) // 3 if self.wide else event.width
+        for label in (self.basis, self.preflight, self.files.summary):
+            label.configure(wraplength=max(200, left - 40))
+        for label in (self.source, self.record_help, self.website_help):
+            label.configure(wraplength=max(160, right - 40))
         if event.width != getattr(self, "fitted_width", None):
             self.fitted_width = event.width
+            self.after_idle(self._fit_values)
+
+    def _value_column_resized(self, event):
+        # Refit only for a new width; restyling the labels must not refit again.
+        if event.width != getattr(self, "value_width", None):
+            self.value_width = event.width
             self.after_idle(self._fit_values)
 
     def _fit_values(self):
@@ -134,24 +143,52 @@ class Publication(ttk.Frame):
         )
         for field, label in self.values.items():
             text = (self._value(field) if self.details else "").split("\n", 1)[0]
+            if self.details and not text and field == "Written note link":
+                label.configure(text=NO_LINK, style="CardMuted.TLabel")
+                continue
             if width > 20 and typeface.measure(text) > width:
-                while text and typeface.measure(text + "…") > width:
-                    text = text[:-1]
-                text = text.rstrip() + "…"
-            label.configure(text=text)
+                # Binary search keeps long descriptions cheap to fit.
+                low, high = 0, len(text)
+                while low < high:
+                    middle = (low + high + 1) // 2
+                    if typeface.measure(text[:middle] + "…") <= width:
+                        low = middle
+                    else:
+                        high = middle - 1
+                text = text[:low].rstrip() + "…"
+            label.configure(text=text, style="Card.TLabel")
 
     def _upload_card(self, callbacks):
         card = self.upload
-        ttk.Label(card, text="1  Upload to YouTube", style="CardHeading.TLabel").grid(
-            row=0, column=0, sticky="w"
+        heading = ttk.Frame(card, style="CardRow.TFrame")
+        heading.grid(row=0, column=0, sticky="ew")
+        ttk.Label(heading, text="1  Upload to YouTube", style="CardHeading.TLabel").pack(
+            side="left"
         )
-        self.basis = ttk.Label(
+        self.refresh = ActionButton(
+            heading,
+            pictogram="refresh",
+            text="Refresh",
+            command=callbacks["release_refresh"],
+            style="Small.TButton",
+        )
+        self.refresh.pack(side="right")
+        self.edit_button = ActionButton(
+            heading,
+            pictogram="transcript",
+            text="Edit title and description…",
+            command=self.open_editor,
+            style="Small.TButton",
+        )
+        self.edit_button.pack(side="right", padx=(0, 6))
+        instruction = ttk.Label(
             card,
-            text="Loading upload copy…",
+            text="Copy each field into the matching box in YouTube Studio.",
             style="CardMuted.TLabel",
-            wraplength=520,
         )
-        self.basis.grid(row=1, column=0, sticky="ew", pady=(2, 10))
+        instruction.grid(row=1, column=0, sticky="w", pady=(2, 6))
+        # Where the copy comes from: a hover detail once loaded, visible while it is not.
+        Tooltip(instruction, lambda: self.details.basis if self.details else "")
         fields = ttk.Frame(card, style="CardRow.TFrame")
         fields.grid(row=2, column=0, sticky="ew")
         fields.columnconfigure(1, weight=1)
@@ -160,129 +197,165 @@ class Publication(ttk.Frame):
         self.values, self.measures, self.copy_buttons = {}, {}, {}
         for row, field in enumerate(FIELDS):
             ttk.Label(fields, text=field, style="CardNow.TLabel").grid(
-                row=row, column=0, sticky="w", padx=(0, 12), pady=4
+                row=row, column=0, sticky="w", padx=(0, 12), pady=1
             )
             # A fixed one-character request keeps the column from following its text.
             value = ttk.Label(fields, text="", style="Card.TLabel", width=1)
-            value.grid(row=row, column=1, sticky="ew", pady=4)
+            value.grid(row=row, column=1, sticky="ew", pady=1)
             meta = ttk.Label(fields, text="", style="CardMuted.TLabel")
-            meta.grid(row=row, column=2, sticky="e", padx=12, pady=4)
+            meta.grid(row=row, column=2, sticky="e", padx=12, pady=1)
             copy = ActionButton(
                 fields,
                 pictogram="copy",
                 text="Copy",
                 command=lambda f=field: self.copy(f),
                 state="disabled",
-                style="Compact.TButton",
+                style="Small.TButton",
             )
-            copy.grid(row=row, column=3, sticky="e", pady=2)
+            copy.grid(row=row, column=3, sticky="e", pady=1)
             self.values[field], self.measures[field], self.copy_buttons[field] = value, meta, copy
         self.value_column.lower()
-        self.value_column.bind("<Configure>", lambda _: self.after_idle(self._fit_values))
-        card.bind(
-            "<Configure>",
-            lambda e: self.basis.configure(wraplength=max(200, e.width - 30)),
-            add=True,
-        )
-        edit = ttk.Frame(card, style="CardRow.TFrame")
-        edit.grid(row=3, column=0, sticky="ew", pady=(6, 0))
-        self.edit_button = ActionButton(
-            edit,
-            pictogram="transcript",
-            text="Edit title and description…",
-            command=self.open_editor,
-            style="Compact.TButton",
-        )
-        self.edit_button.pack(side="left")
-        self.refresh = ActionButton(
-            edit,
-            pictogram="refresh",
-            text="Refresh",
-            command=callbacks["release_refresh"],
-            style="Compact.TButton",
-        )
-        self.refresh.pack(side="right")
-        ttk.Separator(card).grid(row=4, column=0, sticky="ew", pady=12)
-        self.files = PackageFiles(card, callbacks)
-        self.files.grid(row=5, column=0, sticky="ew")
+        self.value_column.bind("<Configure>", self._value_column_resized)
+        self.files = PackageFiles(card, callbacks, summary_master=card)
+        self.files.grid(row=3, column=0, sticky="ew", pady=(10, 0))
         bar = ttk.Frame(card, style="CardRow.TFrame")
-        bar.grid(row=6, column=0, sticky="ew", pady=(12, 0))
+        bar.grid(row=4, column=0, sticky="ew", pady=(10, 0))
         self.actions = {}
-        for key, label, pictogram, command in (
-            ("upload", "Open YouTube Studio", "external", callbacks["youtube"]),
-            ("folder", "Open upload folder", "folder", lambda: callbacks["open"]("uploads")),
-            ("package", "Make upload folder", "package", callbacks["release_package"]),
+        for key, label, pictogram, command, style in (
+            ("upload", "Open YouTube Studio", "external", callbacks["youtube"], "Accent.TButton"),
+            (
+                "folder",
+                "Open upload folder",
+                "folder",
+                lambda: callbacks["open"]("uploads"),
+                "TButton",
+            ),
         ):
-            button = ActionButton(bar, pictogram=pictogram, text=label, command=command)
+            button = ActionButton(
+                bar, pictogram=pictogram, text=label, command=command, style=style
+            )
             button.pack(side="left", padx=(0, 6))
             self.actions[key] = button
         self.files.folder = self.actions["folder"]
+        # Remaking the folder belongs with its files, beside Check files.
+        self.actions["package"] = ActionButton(
+            self.files.heading,
+            pictogram="package",
+            text="Make upload folder",
+            command=callbacks["release_package"],
+            style="Small.TButton",
+        )
+        self.actions["package"].pack(side="right", padx=(0, 6))
+        self.files.summary.grid(row=5, column=0, sticky="ew", pady=(8, 0))
+        self.basis = ttk.Label(card, text="Loading upload copy…", style="CardSmall.TLabel")
+        self.basis.grid(row=6, column=0, sticky="ew", pady=(2, 0))
+        self.preflight = ttk.Label(
+            card,
+            text="Upload folder checks run here before anything is queued.",
+            style="CardSmall.TLabel",
+        )
+        self.preflight.grid(row=7, column=0, sticky="ew")
 
     def _website_card(self):
-        card = ttk.Frame(self.side, style="Card.TFrame", padding=14)
+        card = ttk.Frame(self.side, style="Card.TFrame", padding=(14, 12))
         card.grid(row=0, column=0, sticky="ew")
         ttk.Label(card, text="2  Website and podcast feed", style="CardHeading.TLabel").pack(
             anchor="w"
         )
         self.website_help = ttk.Label(
             card,
-            text="Adds the finished audio to the note page and the RSS feed, as a pull "
-            "request you merge. For now this step runs in a terminal:",
+            text="Adds the finished audio to the note page and RSS, as a pull request.",
             style="CardMuted.TLabel",
             wraplength=300,
         )
-        self.website_help.pack(anchor="w", pady=(2, 6))
-        self.commands = ttk.Label(card, text="", style="CardMono.TLabel", wraplength=300)
-        self.commands.pack(anchor="w")
-        self.copy_commands = ActionButton(
+        self.website_help.pack(anchor="w", pady=(2, 8))
+        self.website_button = ActionButton(
             card,
+            pictogram="package",
+            text="Prepare website update…",
+            command=self.open_website,
+            style="Compact.TButton",
+        )
+        self.website_button.pack(anchor="w")
+        ttk.Label(
+            card, text="Today: terminal only (promote, publish)", style="CardWarn.TLabel"
+        ).pack(anchor="w", pady=(8, 0))
+
+    def _website_dialog(self):
+        """The commands behind Prepare website update…; Studio runs neither of them."""
+        window = self.website_window = tk.Toplevel(self)
+        window.withdraw()
+        window.title("Website and podcast feed")
+        window.protocol("WM_DELETE_WINDOW", window.withdraw)
+        window.bind("<Escape>", lambda _: window.withdraw())
+        body = ttk.Frame(window, padding=18)
+        body.pack(fill="both", expand=True)
+        ttk.Label(body, text="Prepare website update", style="Heading.TLabel").pack(anchor="w")
+        ttk.Label(
+            body,
+            text="Run these in a terminal in this checkout. promote adds the finished audio "
+            "to the note page and RSS; publish pushes a pull request branch for you to merge. "
+            "Studio does not run them yet.",
+            style="Muted.TLabel",
+            wraplength=460,
+        ).pack(anchor="w", pady=(4, 10))
+        self.commands = ttk.Label(body, text="", style="Mono.TLabel")
+        self.commands.pack(anchor="w")
+        actions = ttk.Frame(body)
+        actions.pack(fill="x", pady=(14, 0))
+        self.copy_commands = ActionButton(
+            actions,
             pictogram="copy",
             text="Copy commands",
             command=self.copy_website_commands,
-            style="Compact.TButton",
         )
-        self.copy_commands.pack(anchor="w", pady=(8, 0))
+        self.copy_commands.pack(side="left")
+        ttk.Button(actions, text="Close", command=window.withdraw).pack(side="right")
+
+    def open_website(self):
+        self.website_window.transient(self.winfo_toplevel())
+        self.website_window.deiconify()
+        self.website_window.lift()
+        self.copy_commands.focus_set()
 
     def _record_card(self, callbacks):
-        card = ttk.Frame(self.side, style="Card.TFrame", padding=14)
+        card = ttk.Frame(self.side, style="Card.TFrame", padding=(14, 12))
         card.grid(row=1, column=0, sticky="ew", pady=(12, 0))
-        card.columnconfigure(2, weight=1)
+        card.columnconfigure(1, weight=1)
         self.record = card
         ttk.Label(card, text="3  Record where it went live", style="CardHeading.TLabel").grid(
             row=0, column=0, columnspan=3, sticky="w"
         )
-        self.source = ttk.Label(card, text="", style="CardMuted.TLabel", wraplength=300)
-        self.source.grid(row=1, column=0, columnspan=3, sticky="ew", pady=(2, 8))
         self.url, self.date = tk.StringVar(), tk.StringVar()
         self.url.trace_add("write", lambda *_: self.link_changed())
         self.date.trace_add("write", lambda *_: self.date_changed())
-        ttk.Label(card, text="Published link", style="Card.TLabel").grid(
-            row=2, column=0, columnspan=3, sticky="w"
+        ttk.Label(card, text="YouTube link", style="Card.TLabel").grid(
+            row=1, column=0, sticky="w", padx=(0, 8), pady=(8, 3)
         )
-        self.url_entry = ttk.Entry(card, textvariable=self.url, width=24)
-        self.url_entry.grid(row=3, column=0, columnspan=3, sticky="ew", pady=(2, 6))
+        self.url_entry = ttk.Entry(card, textvariable=self.url, width=18)
+        self.url_entry.grid(row=1, column=1, columnspan=2, sticky="ew", pady=(8, 3))
         ttk.Label(card, text="Published on", style="Card.TLabel").grid(
-            row=4, column=0, columnspan=3, sticky="w"
+            row=2, column=0, sticky="w", padx=(0, 8), pady=3
         )
-        self.date_entry = ttk.Entry(card, textvariable=self.date, width=12)
-        self.date_entry.grid(row=5, column=0, sticky="w", pady=(2, 6))
+        self.date_entry = ttk.Entry(card, textvariable=self.date, width=11)
+        self.date_entry.grid(row=2, column=1, sticky="w", pady=3)
         self.today = ttk.Button(
             card,
             text="Use today",
             command=lambda: self.date.set(date.today().isoformat()),
-            style="Compact.TButton",
+            style="Small.TButton",
         )
-        self.today.grid(row=5, column=1, sticky="w", padx=(6, 0), pady=(2, 6))
+        self.today.grid(row=2, column=2, sticky="e", padx=(6, 0), pady=3)
         self.defaults_button = ttk.Button(
             card,
             text="Use podcast details",
             command=self.use_defaults,
             state="disabled",
-            style="Compact.TButton",
+            style="Small.TButton",
         )
-        self.defaults_button.grid(row=6, column=0, columnspan=3, sticky="w", pady=(0, 10))
+        self.defaults_button.grid(row=3, column=1, columnspan=2, sticky="w", pady=(3, 8))
         footer = ttk.Frame(card, style="CardRow.TFrame")
-        footer.grid(row=7, column=0, columnspan=3, sticky="ew")
+        footer.grid(row=4, column=0, columnspan=3, sticky="ew")
         self.save = ActionButton(
             footer,
             pictogram="save",
@@ -293,22 +366,15 @@ class Publication(ttk.Frame):
         self.save.pack(anchor="w")
         self.record_status = ttk.Label(footer, text="", style="CardMuted.TLabel")
         self.record_status.pack(anchor="w", pady=(4, 0))
+        self.source = ttk.Label(card, text="", style="CardSmall.TLabel", wraplength=300)
+        self.source.grid(row=5, column=0, columnspan=3, sticky="ew", pady=(8, 0))
         self.record_help = ttk.Label(
             card,
-            text="Studio never checks YouTube; this is your record of what you did. Use "
-            "today only for a release published today.",
+            text="Studio never checks YouTube; this is your record of what you did.",
             style="CardMuted.TLabel",
             wraplength=300,
         )
-        self.record_help.grid(row=8, column=0, columnspan=3, sticky="ew", pady=(8, 0))
-        card.bind(
-            "<Configure>",
-            lambda e: [
-                label.configure(wraplength=max(200, e.width - 30))
-                for label in (self.source, self.record_help, self.website_help, self.commands)
-            ],
-            add=True,
-        )
+        self.record_help.grid(row=6, column=0, columnspan=3, sticky="ew", pady=(4, 0))
 
     # Editor window ------------------------------------------------------------------
 
@@ -411,6 +477,7 @@ class Publication(ttk.Frame):
     def clear(self, message="Loading upload copy…", *, loading=True):
         self.details = None
         self.basis.configure(text=message)
+        self.basis.grid()
         for field in FIELDS:
             self.copy_buttons[field].reset_feedback()
             self.copy_buttons[field].configure(state="disabled")
@@ -423,9 +490,8 @@ class Publication(ttk.Frame):
 
     def load_details(self, details):
         self.details = details
-        self.basis.configure(
-            text=details.basis + " Copy each field into the matching box in YouTube Studio."
-        )
+        self.basis.configure(text=details.basis)
+        self.basis.grid_remove()
         self.refresh.configure(text="Refresh", state="normal")
         self.render_copy()
 
@@ -440,8 +506,14 @@ class Publication(ttk.Frame):
             button.reset_feedback()
             available = bool(self.details) and bool(self._value(field))
             button.configure(state="normal" if available else "disabled")
+            hint = bool(self.details) and not available and field == "Written note link"
+            # An empty link gets a plain hint instead of "0 characters" and a dead Copy.
+            if hint:
+                button.grid_remove()
+            else:
+                button.grid()
             self.measures[field].configure(
-                text=measure(field, self._value(field)) if self.details else ""
+                text=measure(field, self._value(field)) if self.details and not hint else ""
             )
         self._fit_values()
 

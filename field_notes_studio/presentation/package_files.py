@@ -24,13 +24,13 @@ def size_text(value):
 
 
 class PackageFiles(ttk.Frame):
-    def __init__(self, parent, callbacks):
+    def __init__(self, parent, callbacks, summary_master=None):
         super().__init__(parent, style="CardRow.TFrame")
         self.callbacks = callbacks
         self.snapshot = None
         self.copy_buttons = {}
         self.columnconfigure(0, weight=1)
-        heading = ttk.Frame(self, style="CardRow.TFrame")
+        heading = self.heading = ttk.Frame(self, style="CardRow.TFrame")
         heading.grid(row=0, column=0, sticky="ew")
         ttk.Label(heading, text="Files", style="CardHeading.TLabel").pack(side="left")
         self.refresh = ActionButton(
@@ -38,21 +38,26 @@ class PackageFiles(ttk.Frame):
             pictogram="refresh",
             text="Check files",
             command=callbacks["package_refresh"],
-            style="Compact.TButton",
+            style="Small.TButton",
         )
         self.refresh.pack(side="right")
         self.rows = ttk.Frame(self, style="CardRow.TFrame")
         self.rows.grid(row=1, column=0, sticky="ew", pady=(4, 0))
         for column, weight in ((0, 0), (1, 0), (2, 1), (3, 0), (4, 0)):
             self.rows.columnconfigure(column, weight=weight)
-        self.summary = ttk.Label(self, text="", style="CardMuted.TLabel", wraplength=520)
-        self.summary.grid(row=2, column=0, sticky="ew", pady=(6, 0))
-        self.path = tk.StringVar()
-        self.bind(
-            "<Configure>",
-            lambda e: self.summary.configure(wraplength=max(200, e.width - 10)),
-            add=True,
+        # The checked-status line can sit elsewhere in the card, below its actions.
+        self.summary = ttk.Label(
+            summary_master or self, text="", style="CardMuted.TLabel", wraplength=520
         )
+        if summary_master is None:
+            self.summary.grid(row=2, column=0, sticky="ew", pady=(6, 0))
+        self.path = tk.StringVar()
+        if summary_master is None:
+            self.bind(
+                "<Configure>",
+                lambda e: self.summary.configure(wraplength=max(200, e.width - 10)),
+                add=True,
+            )
 
     def error(self, message):
         self.summary.configure(text=message, style="CardWarn.TLabel")
@@ -65,23 +70,24 @@ class PackageFiles(ttk.Frame):
         for row, asset in enumerate(files):
             ttk.Label(
                 self.rows, image=icon(self, GLYPHS.get(asset.name, "folder")), style="Card.TLabel"
-            ).grid(row=row, column=0, padx=(0, 8), pady=3)
+            ).grid(row=row, column=0, padx=(0, 8), pady=1)
             ttk.Label(self.rows, text=asset.purpose, style="Card.TLabel").grid(
                 row=row, column=1, sticky="w", padx=(0, 12)
             )
-            ttk.Label(
-                self.rows,
-                text=f"{asset.name}  ·  {size_text(asset.size)}",
-                style="CardMono.TLabel",
-            ).grid(row=row, column=2, sticky="w")
+            ttk.Label(self.rows, text=asset.name, style="CardMono.TLabel").grid(
+                row=row, column=2, sticky="w"
+            )
+            ttk.Label(self.rows, text=size_text(asset.size), style="CardMuted.TLabel").grid(
+                row=row, column=3, sticky="e", padx=12
+            )
             button = ActionButton(
                 self.rows,
                 pictogram="copy",
                 text="Copy path",
                 command=lambda n=asset.name: self.callbacks["package_copy"](n),
-                style="Compact.TButton",
+                style="Small.TButton",
             )
-            button.grid(row=row, column=4, sticky="e", pady=2)
+            button.grid(row=row, column=4, sticky="e", pady=1)
             self.copy_buttons[asset.name] = button
 
     def working(self, name):

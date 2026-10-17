@@ -9,6 +9,7 @@ import re
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.presentation.controls import Tooltip
 from field_notes_studio.presentation.theme import px
 
 FILTERS = ("All", "Needs me", "Working", "Done")
@@ -87,8 +88,9 @@ class Shelf(ttk.Frame):
         )
         self.tree.heading("episode", text="Episode", anchor="w")
         self.tree.heading("next", text="Next", anchor="w")
-        self.tree.column("episode", width=px(self, 200), minwidth=px(self, 140))
-        self.tree.column("next", width=px(self, 84), minwidth=px(self, 76), stretch=False)
+        self.tree.column("episode", width=px(self, 222), minwidth=px(self, 140))
+        self.tree.column("next", width=px(self, 66), minwidth=px(self, 60), stretch=False)
+        Tooltip(self.tree, self._hovered)
         scrollbar = ttk.Scrollbar(region, command=self.tree.yview)
         self.tree.configure(yscrollcommand=scrollbar.set)
         self.tree.pack(side="left", fill="both", expand=True)
@@ -102,6 +104,12 @@ class Shelf(ttk.Frame):
             add=True,
         )
         self._placeholder()
+
+    def _hovered(self):
+        """The full title of the row under the pointer, for titles the column cuts."""
+        y = self.tree.winfo_pointery() - self.tree.winfo_rooty()
+        row = self.tree.identify_row(y)
+        return self.tree.set(row, "episode") if row else ""
 
     def _placeholder(self):
         if self.query.get() or self.focus_get() is self.search:

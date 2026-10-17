@@ -18,6 +18,11 @@ from field_notes_studio.models import (
 )
 
 
+def shown(buttons):
+    """Buttons laid out on the page; an empty field shows a hint instead of its Copy."""
+    return [button for button in buttons.values() if button.winfo_manager()]
+
+
 @unittest.skipUnless(os.environ.get("DISPLAY"), "Tk integration requires DISPLAY or xvfb-run")
 class UITests(unittest.TestCase):
     def setUp(self):
@@ -506,7 +511,7 @@ class UITests(unittest.TestCase):
         self.root.update()
         self.assertFalse(self.app.workspace.controls.winfo_ismapped())
         self.capture("release-upload-details")
-        for widget in (*publication.copy_buttons.values(), *publication.actions.values()):
+        for widget in (*shown(publication.copy_buttons), *publication.actions.values()):
             publication.page.reveal(widget)
             self.root.update()
             self.assert_visible(widget)
@@ -519,6 +524,28 @@ class UITests(unittest.TestCase):
             y = widget.winfo_rooty() + widget.winfo_height() // 2
             self.assertIs(self.root.winfo_containing(x, y), widget)
         self.capture("release-publication-record")
+
+    def test_release_takes_the_full_width_and_the_shelf_returns_elsewhere(self):
+        workspace, panes = self.app.workspace, lambda: [str(p) for p in self.app.body.panes()]
+        workspace.tabs.select(workspace.publication)
+        self.root.update()
+        self.assertNotIn(str(self.app.shelf), panes())
+        self.assertTrue(self.app.episodes_button.winfo_ismapped())
+        self.app.episodes_button.invoke()
+        self.root.update()
+        self.assertIn(str(self.app.shelf), panes())
+        self.assertEqual(self.app.episodes_button["text"], "Hide episodes")
+        workspace.tabs.select(workspace.review)
+        self.root.update()
+        self.assertIn(str(self.app.shelf), panes())
+        self.assertFalse(self.app.episodes_button.winfo_ismapped())
+        # The empty note link shows a plain hint, not "0 characters" and a dead Copy.
+        publication = workspace.publication
+        self.assertEqual(
+            publication.values["Written note link"]["text"], "No note link for this episode."
+        )
+        self.assertFalse(publication.copy_buttons["Written note link"].winfo_manager())
+        self.assertEqual(publication.measures["Written note link"]["text"], "")
 
     def test_shelf_rows_and_status_remain_visible_at_minimum_window_size(self):
         self.root.geometry("1050x760")
@@ -703,7 +730,7 @@ class UITests(unittest.TestCase):
         publication.copy_buttons["Title"].invoke()
         self.root.update()
         self.capture("release-copy-feedback")
-        for widget in (*publication.copy_buttons.values(), *publication.actions.values()):
+        for widget in (*shown(publication.copy_buttons), *publication.actions.values()):
             publication.page.reveal(widget)
             self.root.update()
             self.assert_visible(widget)

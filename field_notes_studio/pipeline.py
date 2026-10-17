@@ -468,10 +468,15 @@ class Pipeline:
                 status = packages.review_status(edition, full_video)
                 scope = "Audio, captions and full video" if full_video else "Audio and captions"
                 settings = edition.state["settings"]
+                # People see when the version was made; its content id stays a detail.
+                made = datetime.fromtimestamp((edition.audio / "production.json").stat().st_mtime)
+                when = made.strftime(
+                    "%H:%M" if made.date() == datetime.now().date() else "%d %b %H:%M"
+                )
                 detail = (
                     f"{scope}: {status} · {edition.state['duration_seconds'] / 60:.1f} min\n"
-                    f"Saved version: {edition.audio.name} · {settings['speed']:g}× pace · "
-                    f"{settings['outro_seconds']:g}s outro\n"
+                    f"Saved version: made {when} · {settings['speed']:g}× pace · "
+                    f"{settings['outro_seconds']:g} s outro\n"
                 )
                 if status == "approved":
                     detail += (
@@ -493,6 +498,8 @@ class Pipeline:
                     str(edition.video / "episode.mp4") if edition.video else "",
                     full_video,
                     approved=status == "approved",
+                    version=edition.audio.name,
+                    duration=float(edition.state["duration_seconds"]),
                 )
         except (ValueError, OSError) as exc:
             return ReviewSnapshot("", f"Review unavailable: {exc}")

@@ -64,7 +64,7 @@ class Application:
         root.title("Moth & Gravel · Production studio")
         root.geometry("1280x920")
         root.minsize(1050, 760)
-        main = self.main = ttk.Frame(root, padding=(24, 12, 24, 0))
+        main = self.main = ttk.Frame(root, padding=(24, 8, 24, 0))
         main.pack(fill="both", expand=True)
         main.columnconfigure(0, weight=1)
         main.rowconfigure(2, weight=1)
@@ -72,7 +72,7 @@ class Application:
             row=0, column=0, sticky="w"
         )
         ttk.Label(main, text="Production studio", style="Studio.TLabel").grid(
-            row=1, column=0, sticky="w", pady=(2, 6)
+            row=1, column=0, sticky="w", pady=(0, 4)
         )
         header = ttk.Frame(main)
         header.grid(row=0, column=0, rowspan=2, sticky="e")
@@ -82,6 +82,15 @@ class Application:
             text="New episode from a note…",
             command=self.open_preparation,
         )
+        self.episodes_button = ActionButton(
+            header,
+            pictogram="menu",
+            text="Show episodes",
+            command=self.toggle_episodes,
+            style="Compact.TButton",
+        )
+        self.release_focused = False
+        self.episodes_shown = False
         self.prepare_button.pack(side="left")
         self.menu_button = ttk.Menubutton(
             header, text="Menu", image=icon(header, "menu"), compound="left"
@@ -132,6 +141,7 @@ class Application:
                 "youtube": self.controller.open_publisher,
                 "status": self.status,
                 "prepare": self.prepare_selected,
+                "stage": self.release_focus,
             },
         )
         # The shelf keeps its width; the stages take any extra space.
@@ -150,6 +160,7 @@ class Application:
             self.controller.review_job,
         )
         self.jobs.on_render = self.jobs_rendered
+        self.release_focus(self.workspace.tabs.select() == str(self.workspace.publication))
         ttk.Separator(main).grid(row=4, column=0, sticky="ew", pady=(8, 0))
         bar = self.status_bar = ttk.Frame(main, padding=(0, 6, 0, 8))
         bar.grid(row=5, column=0, sticky="ew")
@@ -284,6 +295,34 @@ class Application:
     def focus_search(self):
         self.shelf.search.focus_set()
         self.shelf.search.select_range(0, "end")
+
+    def release_focus(self, release):
+        """Release gets the full width; the shelf and card return on the other stages."""
+        if not hasattr(self, "jobs"):
+            return  # Construction: the panes are added afterwards.
+        self.release_focused = release
+        if not release:
+            self.episodes_shown = False
+        self._shelf_visible(not release or self.episodes_shown)
+        if release:
+            self.episodes_button.reset_feedback(
+                "Hide episodes" if self.episodes_shown else "Show episodes"
+            )
+            self.episodes_button.pack(side="left", padx=(0, 8), before=self.prepare_button)
+        else:
+            self.episodes_button.pack_forget()
+
+    def toggle_episodes(self):
+        self.episodes_shown = not self.episodes_shown
+        self.release_focus(self.release_focused)
+
+    def _shelf_visible(self, visible):
+        panes = [str(pane) for pane in self.body.panes()]
+        if visible and str(self.shelf) not in panes:
+            self.body.insert(0, self.shelf, weight=0)
+            self.root.after_idle(lambda: self.body.sashpos(0, theme.px(self.root, 316)))
+        elif not visible and str(self.shelf) in panes:
+            self.body.forget(self.shelf)
 
     def _place_sash(self, event):
         """Give the shelf room for its filters and Next column on first layout."""

@@ -177,7 +177,7 @@ class Workspace(ttk.Frame):
             self.empty_text.configure(wraplength=max(250, event.width - 80))
 
     def _produce_tab(self, tabs, callbacks):
-        frame = ttk.Frame(tabs, padding=(16, 14, 16, 0))
+        frame = ttk.Frame(tabs, padding=(16, 12, 16, 0))
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(5, weight=1)
         tabs.add(frame, text="Produce")
@@ -335,6 +335,11 @@ class Workspace(ttk.Frame):
             self.guidance.configure(text="Checks · " + short)
         if action in {"export", "both"}:
             self.publication.preflight.configure(text="Upload folder · " + short)
+            # The idle "not checked" note is noise on Release; blockers and results show.
+            if message.startswith("Not checked"):
+                self.publication.preflight.grid_remove()
+            else:
+                self.publication.preflight.grid()
 
     def effective_recipe(self):
         values = copy.deepcopy(self.production_base)
@@ -517,9 +522,17 @@ class Workspace(ttk.Frame):
         for index, stage in enumerate(self.stages):
             if str(stage) == selected:
                 self.last_stage = index
-        if selected == str(self.publication):
+        release = selected == str(self.publication)
+        if release:
             # Release checks its upload folder lazily, only once it is on screen.
             self.callbacks["package_refresh"]()
+        # Release takes the whole width and height, as in the approved one-page design.
+        for widget in (self.subtitle, self.tools_row):
+            if release or (widget is self.tools_row and self.empty_state.winfo_manager()):
+                widget.grid_remove()
+            else:
+                widget.grid()
+        self.callbacks.get("stage", lambda _release: None)(release)
 
     def show_plan_tab(self):
         self.tabs.select(self.plan.master)

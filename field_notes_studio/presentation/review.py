@@ -3,7 +3,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from field_notes_studio.presentation.controls import ActionButton, Fieldset
+from field_notes_studio.presentation.controls import ActionButton, Fieldset, Tooltip
 from field_notes_studio.presentation.scroll import ScrollArea
 
 FULL = "Full video and audio"
@@ -34,14 +34,10 @@ class Review(ttk.Frame):
             wraplength=540,
         )
         self.review_help.pack(side="left", anchor="w")
+        # The episode card holds the one "Check again"; this one is kept for state only.
         self.refresh = ActionButton(
-            header,
-            pictogram="refresh",
-            text="Check again",
-            command=callbacks["refresh"],
-            style="Compact.TButton",
+            header, pictogram="refresh", text="Check again", command=callbacks["refresh"]
         )
-        self.refresh.pack(side="right")
         assets = ttk.Frame(content)
         assets.pack(fill="x", pady=(10, 4))
         self.asset_buttons = {}
@@ -58,10 +54,18 @@ class Review(ttk.Frame):
             )
             button.pack(side="left", padx=(0, 6))
             self.asset_buttons[kind] = button
+        self.media = ttk.Label(assets, text="", style="Small.TLabel")
+        self.media.pack(side="left", padx=(6, 0))
         self.summary = ttk.Label(
             content, text="Loading version…", style="Muted.TLabel", wraplength=590
         )
         self.summary.pack(anchor="w", pady=(6, 12))
+        Tooltip(
+            self.summary,
+            lambda: f"Version id {self.snapshot.version}"
+            if self.snapshot and self.snapshot.version
+            else "",
+        )
         self.checks = Fieldset(content, "Before you approve")
         self.checks.pack(fill="x")
         self.audio_check = ttk.Checkbutton(
@@ -81,8 +85,24 @@ class Review(ttk.Frame):
             variable=self.captions_checked,
         )
         self.captions_check.pack(anchor="w")
+        footer = ttk.Frame(content)
+        footer.pack(fill="x", pady=(12, 0))
+        footer.columnconfigure(3, weight=1)
+        ttk.Label(footer, text="Reviewer").grid(row=0, column=0, padx=(0, 8))
+        self.reviewer_entry = ttk.Entry(footer, textvariable=self.reviewer, width=20)
+        self.reviewer_entry.grid(row=0, column=1)
+        self.remembered = ttk.Label(footer, text="", style="Small.TLabel")
+        self.remembered.grid(row=0, column=2, padx=8, sticky="w")
+        self.approve = ActionButton(
+            footer,
+            pictogram="check",
+            text="Approve this episode",
+            command=callbacks["approve"],
+            style="Accent.TButton",
+        )
+        self.approve.grid(row=0, column=4, sticky="e")
         scope = ttk.Frame(content)
-        scope.pack(fill="x", pady=(14, 0))
+        scope.pack(fill="x", pady=(18, 0))
         ttk.Label(scope, text="What you are approving", style="Muted.TLabel").pack(side="left")
         combo = self.scope_control = ttk.Combobox(
             scope, textvariable=self.scope, values=(FULL, AUDIO), state="readonly", width=22
@@ -98,22 +118,6 @@ class Review(ttk.Frame):
         )
         self.note.pack(anchor="w", pady=(12, 0))
         content.bind("<Configure>", self._resize, add=True)
-        footer = ttk.Frame(self, padding=(16, 10))
-        footer.grid(row=1, column=0, sticky="ew")
-        footer.columnconfigure(3, weight=1)
-        ttk.Label(footer, text="Reviewer").grid(row=0, column=0, padx=(0, 8))
-        self.reviewer_entry = ttk.Entry(footer, textvariable=self.reviewer, width=20)
-        self.reviewer_entry.grid(row=0, column=1)
-        self.remembered = ttk.Label(footer, text="", style="Small.TLabel")
-        self.remembered.grid(row=0, column=2, padx=8, sticky="w")
-        self.approve = ActionButton(
-            footer,
-            pictogram="check",
-            text="Approve this episode",
-            command=callbacks["approve"],
-            style="Accent.TButton",
-        )
-        self.approve.grid(row=0, column=4, sticky="e")
         for variable in (
             self.reviewer,
             self.audio_checked,
@@ -166,7 +170,11 @@ class Review(ttk.Frame):
         self.update_controls()
 
     def load(self, snapshot):
-        self.clear(snapshot.summary)
+        lines = snapshot.summary.splitlines()
+        # The status line is the subtitle's job; here the version line is what matters.
+        self.clear(
+            "\n".join(lines[1:2]) if snapshot.identity and len(lines) > 1 else snapshot.summary
+        )
         if snapshot.identity:
             self.scope.set(FULL if snapshot.full_video else AUDIO)
         self.snapshot = snapshot
@@ -174,6 +182,15 @@ class Review(ttk.Frame):
 
     def update_controls(self):
         available = self.snapshot is not None and bool(self.snapshot.identity) and not self.busy
+        duration = int(self.snapshot.duration) if self.snapshot and self.snapshot.duration else 0
+        player = "video" if self.full_video() else "audio"
+        self.media.configure(
+            text=f"Opens your {player} player · {duration // 60}:{duration % 60:02d}"
+            if available and duration
+            else f"Opens your {player} player"
+            if available
+            else ""
+        )
         for kind, button in self.asset_buttons.items():
             button.configure(
                 state="normal" if available and getattr(self.snapshot, kind) else "disabled"

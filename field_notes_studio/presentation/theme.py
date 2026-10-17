@@ -236,6 +236,15 @@ def apply(root, name: str | None = None) -> None:
     style.configure("ToolOn.TButton", padding=(8, 5), bordercolor=BRASS)
     style.map("ToolOn.TButton", bordercolor=[("focus", BRASS), ("!focus", BRASS)])
     style.configure("Placeholder.TLabel", background=SURFACE, foreground=MUTED)
+    style.configure(
+        "Tooltip.TLabel",
+        background=SURFACE,
+        foreground=INK,
+        bordercolor=EDGE,
+        relief="solid",
+        borderwidth=1,
+        font=("DejaVu Sans", 9),
+    )
     # A segmented filter: the chosen segment is raised by an edge, not a flat fill alone.
     style.layout("Filter.TRadiobutton", style.layout("Toolbutton"))
     style.configure(

@@ -66,3 +66,45 @@ class Fieldset(ttk.Frame):
         self.legend.pack(anchor="w")
         self.body = ttk.Frame(self, style=style, padding=(2, 2, 0, 0))
         self.body.pack(fill="x")
+
+
+class Tooltip:
+    """A small hover note for detail that should not crowd the page (ids, full titles).
+
+    ``text`` is a callable so the note always shows current content; an empty
+    string shows nothing.
+    """
+
+    def __init__(self, widget, text):
+        self.widget, self.text, self.window, self.handle = widget, text, None, None
+        widget.bind("<Enter>", self._schedule, add=True)
+        widget.bind("<Motion>", self._schedule, add=True)
+        widget.bind("<Leave>", self.hide, add=True)
+        widget.bind("<ButtonPress>", self.hide, add=True)
+
+    def _schedule(self, event):
+        self.hide()
+        self.position = event.x_root + 12, event.y_root + 16
+        self.handle = self.widget.after(450, self.show)
+
+    def show(self):
+        import tkinter as tk
+
+        self.handle = None
+        text = self.text()
+        if not text or not self.widget.winfo_exists():
+            return
+        self.window = tk.Toplevel(self.widget)
+        self.window.wm_overrideredirect(True)
+        self.window.wm_geometry("+{}+{}".format(*self.position))
+        ttk.Label(
+            self.window, text=text, style="Tooltip.TLabel", padding=(8, 4), wraplength=420
+        ).pack()
+
+    def hide(self, _event=None):
+        if self.handle is not None:
+            self.widget.after_cancel(self.handle)
+            self.handle = None
+        if self.window is not None:
+            self.window.destroy()
+            self.window = None
