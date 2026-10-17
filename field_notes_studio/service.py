@@ -438,6 +438,16 @@ class Studio:
 
         return make_plan.spend_state(self.root, episode, [])
 
+    def cost_line(self, episode: str) -> str:
+        """What this episode has cost so far, by local estimate (not a bill)."""
+        from field_notes_studio import make_plan
+
+        try:
+            minutes = float(self.pipeline.source(episode)["duration_seconds"]) / 60
+        except (OSError, ValueError, KeyError, TypeError):
+            minutes = None
+        return make_plan.cost_line(self.root, episode, minutes)
+
     def run_views(self):
         return self.runs().views()
 

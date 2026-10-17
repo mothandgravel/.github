@@ -286,6 +286,15 @@ def build(studio, *, note: str = "", episode: str = "") -> MakePlan:
     return replace(plan, token=token(plan))
 
 
+def cost_line(root, episode: str, caption_minutes: float | None = None) -> str:
+    """This episode's paid work so far, from the attempts log; never an exact bill."""
+    try:
+        cost = spend_guard.episode_cost(root / "artifacts/audio", episode)
+    except (OSError, ValueError):
+        return "The attempts log could not be read; check the Cloud billing report."
+    return cost.sentence(caption_minutes)
+
+
 def consent_record(plan: MakePlan) -> dict:
     """What the run keeps as evidence of the one confirm."""
     return {
