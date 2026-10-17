@@ -7,6 +7,8 @@ dependencies = []
 
 [dependency-groups]
 dev = ["ruff==0.12.12"]
+# Optional AI judge for script and transcript checks; the rules work without it.
+judge = ["anthropic>=1.15,<2"]
 
 [tool.uv]
 package = false

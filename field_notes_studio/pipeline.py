@@ -13,7 +13,7 @@ from contextlib import ExitStack
 from datetime import datetime
 from pathlib import Path
 
-from field_notes_audio import site
+from field_notes_audio import judge, site
 from field_notes_audio.locks import RecordingBusy, run_lock
 from field_notes_audio.production import packages, runner, sources
 from field_notes_audio.production.config import load_settings, number, validate_settings
@@ -496,6 +496,7 @@ class Pipeline:
                         if full_video
                         else "Listen to the audio, check its subtitles, then approve."
                     )
+                checked = judge.edition_transcript_check(self.root, edition)
                 return ReviewSnapshot(
                     self.review_identity(edition),
                     detail,
@@ -506,11 +507,15 @@ class Pipeline:
                     approved=status == "approved",
                     version=edition.audio.name,
                     duration=float(edition.state["duration_seconds"]),
+                    checks=checked.text(),
+                    check_blocking=bool(checked.blocking),
                 )
         except (ValueError, OSError) as exc:
             return ReviewSnapshot("", f"Review unavailable: {exc}")
 
-    def approve(self, identifier: str, expected: ReviewSnapshot, reviewer: str) -> None:
+    def approve(
+        self, identifier: str, expected: ReviewSnapshot, reviewer: str, override: str = ""
+    ) -> None:
         if not expected.identity:
             raise ValueError("Load a finished version before reviewing it")
         with packages.locked_editions(
@@ -528,7 +533,9 @@ class Pipeline:
                 # An optional audio-only recheck must not erase the existing fuller
                 # approval for these exact audio bytes. The identity is checked above.
                 return
-            packages.record_review(edition, reviewer)
+            checked = judge.edition_transcript_check(self.root, edition)
+            accepted = judge.check_override(checked, override, "Approval")
+            packages.record_review(edition, reviewer, accepted or checked.evidence())
 
     def request(
         self,

@@ -79,6 +79,9 @@ class MakePlan:
     recipe: tuple[tuple[str, object], ...] = ()
     # Earlier runs for this episode, so every new summary has a new digest.
     history: tuple[str, ...] = ()
+    # Script check before paid narration; blocking needs an explicit reason to start.
+    script_check: tuple[str, ...] = ()
+    script_blocking: bool = False
     token: str = ""
 
     @property

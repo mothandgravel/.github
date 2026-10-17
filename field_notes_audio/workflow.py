@@ -12,7 +12,7 @@ import webbrowser
 import zipfile
 from pathlib import Path
 
-from field_notes_audio import audio, captions, spend_guard
+from field_notes_audio import audio, captions, judge, spend_guard
 from field_notes_audio.progress import raise_if_stopped, report, timed
 from field_notes_audio.storage import read_object
 
@@ -325,9 +325,23 @@ def finish(directory: Path | None, no_open: bool) -> None:
         open_listening(directory / "listen.html")
 
 
+def script_gate(args: argparse.Namespace, plan: dict) -> None:
+    """Show the script check; a blocking finding stops paid narration unless accepted."""
+    result = judge.episode_script_check(
+        audio.ROOT, plan["episode"]["id"], plan["script"], getattr(args, "judge", "standard")
+    )
+    report(result.text(), flush=True)
+    recording = audio.ROOT / "artifacts/audio" / plan["episode"]["id"] / plan["fingerprint"][:16]
+    if (recording / "episode.mp3").is_file():
+        return  # Narration is already saved; nothing paid is decided here.
+    accepted = judge.check_override(result, getattr(args, "accept_script", None), "Paid narration")
+    if accepted:
+        report(f"Script findings accepted: {accepted['override_reason']}", flush=True)
+
+
 def make(args: argparse.Namespace) -> Path | None:
     # Validate the reviewed source before preparing Cloud resources.
-    audio.make_plan(args.episode, args.model, args.endpoint)
+    script_gate(args, audio.make_plan(args.episode, args.model, args.endpoint))
     caption_model(args)
     ensure_setup(args)
     raise_if_stopped(args)
@@ -392,6 +406,11 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
             sub.add_argument("--restart-failed", action="store_true")
             spend_guard.add_override_argument(sub)
             audio.add_timeout_argument(sub)
+            judge.add_arguments(
+                sub,
+                override="--accept-script",
+                help_text="Narrate a script with a blocking script-check finding anyway",
+            )
         sub.add_argument("--project")
         sub.add_argument("--bucket")
         sub.add_argument("--endpoint", choices=audio.ENDPOINTS)

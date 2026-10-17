@@ -582,7 +582,7 @@ class UITests(unittest.TestCase):
             review.approve.invoke()
             self.wait(lambda: approve.called)
             self.wait(lambda: not review.busy)
-            approve.assert_called_once_with("note-001", snapshot, "Test listener")
+            approve.assert_called_once_with("note-001", snapshot, "Test listener", "")
         self.assertFalse(review.audio_checked.get())
         self.assertEqual(str(review.approve["state"]), "disabled")
         self.assertEqual(str(review.asset_buttons["video"]["state"]), "disabled")

@@ -8,7 +8,7 @@ import subprocess
 import sys
 import wave
 
-from field_notes_audio import audio, captions, release, spend_guard, workflow
+from field_notes_audio import audio, captions, judge, release, spend_guard, workflow
 from field_notes_audio.production import packages, promotion
 from field_notes_audio.production import runner as production
 
@@ -35,6 +35,7 @@ def main(argv: list[str] | None = None) -> int:
                 action="store_true",
                 help="Print the bounded requests; contains no credentials",
             )
+            judge.add_arguments(sub)
         else:
             sub.add_argument("--project")
             sub.add_argument("--auth", choices=("gcloud", "adc"))
@@ -69,7 +70,15 @@ def main(argv: list[str] | None = None) -> int:
                 print(json.dumps(plan, ensure_ascii=False, indent=2))
             else:
                 audio.summarize(plan)
-                print("Dry run only; no Google requests made.")
+                print(
+                    judge.episode_script_check(
+                        audio.ROOT, args.episode, plan["script"], args.judge
+                    ).text()
+                )
+                print(
+                    "Dry run only; no Google requests made; an Anthropic check may run if "
+                    f"{judge.KEY_ENV} is set (cached)."
+                )
         elif args.command == "captions":
             workflow.prepare_captions(args)
             # Check request support before preparing resources.

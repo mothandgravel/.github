@@ -179,7 +179,7 @@ class EpisodeFlowUiTests(unittest.TestCase):
             self.assertFalse(review.approve.instate(["disabled"]))
             review.approve.invoke()
             self.h.wait(lambda: approve.called and not review.busy)
-            approve.assert_called_once_with("note-001", snapshot, "Test reviewer")
+            approve.assert_called_once_with("note-001", snapshot, "Test reviewer", "")
         self.assertFalse(review.video_checked.get())
         self.assertFalse(review.audio_checked.get())
         self.assertEqual(self.repo.publications(), {})

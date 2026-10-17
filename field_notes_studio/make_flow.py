@@ -139,7 +139,7 @@ class MakeFlow:
         )
         return f"{span} minutes of waiting on this computer before; you can close Studio meanwhile."
 
-    def confirm(self, plan, allowed):
+    def confirm(self, plan, allowed, accept_script=""):
         dialog = self.preflight
 
         def started(run_id):
@@ -160,7 +160,9 @@ class MakeFlow:
                 dialog.failed,
             )
 
-        self.controller.task(lambda: self.studio.make_episode(plan, allowed), started, failed)
+        self.controller.task(
+            lambda: self.studio.make_episode(plan, allowed, accept_script), started, failed
+        )
 
     def expert(self, note, episode):
         if self.preflight is not None and self.preflight.window.winfo_exists():

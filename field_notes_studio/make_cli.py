@@ -62,6 +62,12 @@ def summary(plan) -> str:
         for a in plan.spend.attempts
     ]
     lines.append("  Failed attempts may still be billed; nothing retries a paid step on its own.")
+    if plan.script_check:
+        lines += ["", *plan.script_check]
+    if plan.script_blocking:
+        lines.append(
+            "  Paid narration needs the script fixed, or --accept-script REASON to read it anyway."
+        )
     if plan.blockers:
         lines += ["", "Can't start yet:"] + [f"  - {blocker}" for blocker in plan.blockers]
     lines += ["", f"Digest: {plan.token}"]
@@ -78,7 +84,15 @@ def timeline(view, cost: str) -> str:
     return "\n".join(lines)
 
 
-def run(studio, identifier: str, *, confirm: str | None, status: bool, out=None) -> int:
+def run(
+    studio,
+    identifier: str,
+    *,
+    confirm: str | None,
+    status: bool,
+    out=None,
+    accept_script: str = "",
+) -> int:
     out = out or sys.stdout
     chosen = target(identifier)
     if status:
@@ -114,7 +128,7 @@ def run(studio, identifier: str, *, confirm: str | None, status: bool, out=None)
         raise ValueError(plan.blockers[0])
     # The digest covers the paid steps shown, so it is the consent to them; it never
     # covers an uncertain resend or an override (those block the summary above).
-    run_id = studio.make_episode(plan, plan.paid)
+    run_id = studio.make_episode(plan, plan.paid, accept_script or "")
     print(
         f"Started Make episode run {run_id} for {plan.episode}. Nothing is published; you "
         f"review first. Follow it with: python3 -m field_notes_studio make-episode "

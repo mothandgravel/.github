@@ -269,7 +269,7 @@ class MakeEpisodeUITests(unittest.TestCase):
         ) as start:
             dialog.make_button.invoke()
             self.wait(lambda: self.app.view_name == "run")
-        start.assert_called_once_with(PLAN, True)
+        start.assert_called_once_with(PLAN, True, "")
 
     def test_blocked_summary_offers_no_confirm(self):
         blocked = PLAN.__class__(

@@ -2,12 +2,20 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Literal
 
 Action = Literal["audio", "video", "preview", "export", "prepare"]
 ACTIONS = ("audio", "video", "preview", "export")
 TERMINAL = frozenset({"succeeded", "failed", "cancelled", "interrupted"})
+# The engine's rule for written override reasons (spend_guard.validate_reason), so
+# views can enable a button; the engine validates again before anything is recorded.
+_REASON = re.compile(r"[^\x00-\x1f\x7f]{8,300}")
+
+
+def valid_reason(text: object) -> bool:
+    return isinstance(text, str) and bool(_REASON.fullmatch(text.strip()))
 
 
 class DraftConflict(ValueError):
@@ -69,6 +77,9 @@ class ReviewSnapshot:
     approved: bool = False
     version: str = ""
     duration: float = 0.0
+    # Transcript check shown before approval; a blocking finding needs a reason.
+    checks: str = ""
+    check_blocking: bool = False
 
 
 @dataclass(frozen=True)

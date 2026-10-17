@@ -9,6 +9,7 @@ Make episode; it is never offered while the summary has a blocker.
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.models import valid_reason
 from field_notes_studio.presentation import theme
 from field_notes_studio.presentation.controls import ActionButton
 from field_notes_studio.presentation.icons import icon
@@ -247,6 +248,8 @@ class PreflightDialog:
         self.money_card = ttk.Frame(cols, style="Card.TFrame", padding=14)
         self.money_card.grid(row=0, column=1, sticky="ns")
         self.allowed = tk.BooleanVar(value=False)
+        self.accept_script = tk.StringVar(value="")
+        self.accept_script.trace_add("write", lambda *_: self.update_button())
         foot = ttk.Frame(wrap)
         foot.grid(row=4, column=0, sticky="ew", pady=(16, 0))
         foot.columnconfigure(1, weight=1)
@@ -296,6 +299,7 @@ class PreflightDialog:
     def show(self, plan):
         self.plan = plan
         self.allowed.set(False)
+        self.accept_script.set("")
         name = f"Field Note {plan.note}" if plan.note else plan.title or plan.episode
         self.title.configure(text=f"Make {name} into an episode")
         details = [plan.title] if plan.note and plan.title else []
@@ -346,6 +350,32 @@ class PreflightDialog:
         Link(links, "Change show settings…", self.callbacks["settings"]).pack(side="left")
         ttk.Label(links, text="   ·   ", style="CardMuted.TLabel").pack(side="left")
         Link(links, "See request details…", self.callbacks["expert"]).pack(side="left")
+        if plan.script_check:
+            box = ttk.Frame(
+                card,
+                style="Attention.TFrame" if plan.script_blocking else "CardRow.TFrame",
+                padding=12 if plan.script_blocking else 0,
+            )
+            box.grid(row=row + 4, column=0, columnspan=4, sticky="ew", pady=(12, 0))
+            text_style = "Attention.TLabel" if plan.script_blocking else "CardMuted.TLabel"
+            ttk.Label(
+                box,
+                text=plan.script_check[0],
+                style="AttentionHeading.TLabel" if plan.script_blocking else "CardHeading.TLabel",
+            ).pack(anchor="w")
+            for line in plan.script_check[1:]:
+                ttk.Label(
+                    box, text=line.strip(), style=text_style, wraplength=theme.px(card, 620)
+                ).pack(anchor="w", pady=(2, 0))
+            if plan.script_blocking:
+                ttk.Label(
+                    box,
+                    text="Fix the script, or give a reason to narrate it anyway:",
+                    style=text_style,
+                ).pack(anchor="w", pady=(8, 0))
+                ttk.Entry(box, textvariable=self.accept_script, width=60).pack(
+                    anchor="w", fill="x", pady=(2, 0)
+                )
         if plan.blockers:
             alert = ttk.Frame(card, style="Attention.TFrame", padding=12)
             alert.grid(row=row + 3, column=0, columnspan=4, sticky="ew", pady=(12, 0))
@@ -422,14 +452,23 @@ class PreflightDialog:
 
     def update_button(self):
         plan = self.plan
-        ready = plan is not None and not plan.blockers and (not plan.paid or self.allowed.get())
+        ready = (
+            plan is not None
+            and not plan.blockers
+            and (not plan.paid or self.allowed.get())
+            and (not plan.script_blocking or valid_reason(self.accept_script.get()))
+        )
         self.make_button.configure(state="normal" if ready else "disabled")
 
     def confirm(self):
         if str(self.make_button["state"]) != "normal" or self.plan is None:
             return
         self.make_button.configure(state="disabled")
-        self.callbacks["confirm"](self.plan, self.allowed.get() if self.plan.paid else False)
+        self.callbacks["confirm"](
+            self.plan,
+            self.allowed.get() if self.plan.paid else False,
+            self.accept_script.get().strip(),
+        )
 
     def cancel(self):
         if self.window.winfo_exists():
