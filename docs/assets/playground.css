@@ -160,3 +160,9 @@
 .status[data-status="playable"]::before {background:currentColor;border-radius:1px}
 .status[data-status="study"]::before {border-style:dashed}
 .status[data-status="internal"]::before {border-radius:1px}
+.made-list {margin-top:60px;padding-top:26px;border-top:1px solid var(--line)}
+.made-list h2 {margin:0 0 8px;font-size:12px;letter-spacing:.12em;color:var(--gold-bright)}
+.made-list p {color:var(--secondary);margin:0 0 10px}
+.made-list ul {margin:0 0 22px;padding:0;list-style:none;columns:3 260px;column-gap:36px}
+.made-list li {break-inside:avoid;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+@media (max-width:660px) {.made-list li {display:grid;gap:4px}}

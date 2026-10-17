@@ -75,6 +75,7 @@ jobs:
           node --check docs/assets/maritime-study.mjs
           node --check scripts/audit_maritime.mjs
           node --check docs/assets/playground.mjs
+          node --check docs/assets/made-here.mjs
           node --check docs/assets/playground/stamp.mjs
           node --check docs/assets/playground/grid.mjs
           node --check docs/assets/playground/week.mjs

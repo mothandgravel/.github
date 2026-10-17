@@ -490,10 +490,19 @@ def main() -> int:
     # Standing investigations and the playground: three questions on the home page, one open
     # question page, a light index, and room 02 with three lazy toys. Nothing links a page that
     # does not exist yet, the live game is not linked, and no organisation names appear.
-    check(html.count('class="question-card"') == 3 and 'href="./investigations/green-light/"' in html,
+    check(len(re.findall(r'<p class="service-ask mono">0[123] / (?:PAGE COMING|OPEN NOW)</p>', html)) == 3 and 'href="./investigations/green-light/"' in html,
           'Home must show three standing questions, with the green-light page linked')
     check('href="./workbench/">Workbench</a>' in html, 'Menu Workbench must lead to the two-room workbench')
-    check(html.count('class="status"') == 12 and 'id="made-here"' in html, 'Made here must list twelve things with a status each')
+    # Made here: the homepage renders it after load from assets/made-here.mjs; the static list on
+    # /investigations/ is the no-script route. Both must say the same thing.
+    module_items = re.findall(r"\['([^']+)', '(pr|pl|sd|in|)', '([^']+)'\]", (ROOT / 'assets/made-here.mjs').read_text())
+    index_items = re.findall(r'<li><strong>([^<]+)</strong><span class="status" data-status="(\w+)">([^<]+)</span></li>',
+                             (ROOT / 'investigations/index.html').read_text())
+    kinds = {'pr': 'production', 'pl': 'playable', 'sd': 'study', 'in': 'internal', '': 'prototype'}
+    check(len(module_items) == 12 and [(n, kinds[k], t) for n, k, t in module_items] == index_items,
+          'Made here must list the same twelve things and statuses on the homepage and the questions index')
+    check('id="made-here" data-made-here' in html and 'href="./investigations/#made-here"' in html
+          and "addEventListener('load',()=>{import('./assets/made-here.mjs')" in html, 'Made here must load after the page, with a no-script link')
     check('run.app' not in html, 'The live Cyber Grid is not linked yet')
     for page_path, needles in {
         'investigations/index.html': ['href="./green-light/"', 'PAGE COMING'],

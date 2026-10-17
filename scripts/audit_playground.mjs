@@ -39,6 +39,12 @@ try {
       await page.locator('#questions').scrollIntoViewIfNeeded();
       await page.waitForTimeout(200);
       if (toyRequests.length) fail(label, { toysOnHomeAfterScroll: toyRequests });
+      // Made here arrives after load into a box that already has its height.
+      await page.locator('#made-here').scrollIntoViewIfNeeded();
+      await page.locator('#made-here ul').waitFor({ timeout: 5000 });
+      const made = await page.evaluate(() => { const box = document.querySelector('#made-here');
+        return { items: box.querySelectorAll('li').length, height: box.getBoundingClientRect().height, reserve: parseFloat(getComputedStyle(box).minHeight) }; });
+      if (made.items !== 12 || made.height > made.reserve + 0.5) fail(label + ' made here', made);
     } else if (target.toys.length && width === 1440 && toyRequests.some(url => /playground\/(stamp|week)\.mjs/.test(url)))
       fail(label, { eagerToys: toyRequests });
     for (const toy of target.toys) {
@@ -111,7 +117,11 @@ try {
   const still = await quiet.newPage();
   await still.goto(origin + '/workbench/playground/');
   if (await still.locator('.toy-mount p').count() !== 3) fail('no-script', 'bench fallbacks missing');
+  await still.goto(origin + '/');
+  if (!(await still.locator('#made-here a[href="./investigations/#made-here"]').isVisible())) fail('no-script', 'Made here link missing on home');
+  await still.goto(origin + '/investigations/');
+  if (await still.locator('#made-here li').count() !== 12) fail('no-script', 'Made here list missing on the index');
   await quiet.close();
   await writeFile(`${output}/playground-audit.json`, JSON.stringify({ results, verdicts }, null, 2));
-  console.log(`Playground: ${results.length} page/width/theme checks, zero axe violations, no toys on home, lazy toys, keyboard play, reduced motion and no-script fallbacks pass.`);
+  console.log(`Playground: ${results.length} page/width/theme checks, zero axe violations, no toys on home, Made here in its reserved box, lazy toys, keyboard play, reduced motion and no-script fallbacks pass.`);
 } finally { await browser.close(); }
