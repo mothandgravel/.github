@@ -305,9 +305,9 @@ the inspected batch. **Queue inspected batch** commits all requests in one SQLit
 transaction: any active episode conflict or insufficient capacity leaves the whole
 batch unqueued. Each job keeps its inspected recipe and source identity.
 
-## Health and worker upgrades
+## Setup check and background producer upgrades
 
-**Health** checks the actual worker lock, heartbeat, loaded/checkout code identities,
+**Tools → Setup check** checks the actual background producer (`worker`) lock, heartbeat, loaded/checkout code identities,
 audio/video preflight, settings, FFmpeg/FFprobe/Node versions and video dependencies.
 Missing or stale video dependencies include the existing install command. No tools are
 installed automatically. The log path is shown for diagnosis.
@@ -363,12 +363,12 @@ Embedded playback and direct authenticated uploads remain later integration choi
 
 ## First-run navigation and recovery
 
-The main shelf is **Prepared recordings**; new written notes are reached through
-**Find / prepare a written note…** beside its search, or the header action. The
-written-note window supports title/number search and a deliberate **Import existing
-setup…** from an earlier checkout. Failed preparation offers **Inspect recovery**,
-not a blind resend. On a completed preparation job, **Produce episode** validates
-and queues one full audio/video edition. It never approves or publishes media.
+The shelf lists every written note; a note that is not narrated yet offers **Prepare
+this note…**, and the header has **New episode from a note…**. The narration window
+supports title/number search and a deliberate **Import existing setup…** from an
+earlier checkout. Failed narration offers **Check recovery**, not a blind resend. On a
+completed narration job, **Produce episode** validates and queues one full audio/video
+version. It never approves or publishes media.
 The preparation window's **Open in production** is navigation only. See [preparation and recovery](preparation.md)
 and the [operator-observation record](usability-rehearsal.md), including the explicit
 consent required to resend a receipt-bound uncertain narration request.
@@ -402,5 +402,5 @@ text such as `KeyError: 'audio_sha256'` is kept behind **Details** on the card.
 [Progress design and podcast-tool comparison](progress-ux-research.md) documents the
 new Saved / Working / Waiting / Next milestones, evidence boundaries and next ideas.
 Select a queue job to see its audio/video or narration/caption stages. A saved job
-is not a fresh artifact check or a publication confirmation. Audio (previously Sound),
-Batch and Health now have labelled, desktop-scaled pictograms like the other tabs.
+is not a fresh artifact check or a publication confirmation. Sound, Several episodes
+and Setup check have labelled, desktop-scaled pictograms like the stages.

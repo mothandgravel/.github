@@ -211,7 +211,7 @@ class ReadinessCardUiTests(unittest.TestCase):
         self.assertEqual(card.snapshot.detail, PLAIN["inputs"])
         self.assertNotIn("audio_sha256", card.detail.cget("text"))
         guidance = self.app.workspace.guidance.cget("text")
-        self.assertEqual(guidance, "Preflight · " + PLAIN["inputs"])
+        self.assertEqual(guidance, "Checks · " + PLAIN["inputs"])
         self.assertFalse(card.details.winfo_ismapped())
         self.assertTrue(card.details_button.winfo_ismapped())
         self.h.capture("readiness-plain-error-fixture")
