@@ -62,7 +62,8 @@ try {
     const check = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth > innerWidth + 1,
       headings: document.querySelectorAll('h1').length,
-      animating: document.getAnimations().filter(a => a.playState === 'running').length,
+      // Reduced motion shortens every transition to a hundredth of a millisecond (site.css); only real motion counts.
+      animating: document.getAnimations().filter(a => a.playState === 'running' && (a.effect?.getComputedTiming().duration ?? 0) > 50).length,
       leaks: /navivra|kistradegoods|digablesolutions|vesuno|run\.app/i.test(document.documentElement.outerHTML),
     }));
     if (check.overflow || check.headings !== 1 || check.animating || check.leaks || errors.length) fail(label, { check, errors });

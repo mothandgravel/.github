@@ -1,6 +1,7 @@
 // Made here, on the homepage: everything made under the one studio, with one plain status each.
-// The homepage imports this after its load event, so its first paint carries none of these bytes,
-// and the list is in place (inside a box the homepage already reserves) before anyone scrolls to it.
+// The homepage imports this only when the questions section comes into view, so neither its first
+// paint nor its opening requests carry these bytes. The list lands inside a box the homepage has
+// already reserved, so nothing below it moves.
 // Its styles are set on the elements themselves: adding a stylesheet after load restyles the whole
 // page, and the moth interlude's timing is sensitive to that. Without scripts, the section links to
 // the same list on the standing-investigations page; check_site.py keeps the two lists in step.

@@ -28,7 +28,7 @@
 <!-- home-style:end -->
 <script>document.documentElement.classList.add("has-js")</script>
 <script src="./assets/site.js" defer></script>
-<script>window.addEventListener('load',()=>{import('./assets/made-here.mjs').catch(()=>{});if(!('IntersectionObserver' in window))return;for(const [selector,url] of [['.work-grid','./assets/specimens.mjs'],['#moth-interlude','./assets/moth-interlude.mjs']]){const target=document.querySelector(selector);if(!target)continue;const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();import(url).catch(()=>{});}});observer.observe(target);}});</script>
+<script>window.addEventListener('load',()=>{if(!('IntersectionObserver' in window))return;for(const [selector,url] of [['.work-grid','./assets/specimens.mjs'],['#moth-interlude','./assets/moth-interlude.mjs'],['#questions','./assets/made-here.mjs']]){const target=document.querySelector(selector);if(!target)continue;const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();import(url).catch(()=>{});}});observer.observe(target);}});</script>
 <title>Moth & Gravel — Independent Software &amp; Design Studio</title>
 <script>(()=>{let t;try{t=localStorage.getItem("moth-and-gravel-theme")}catch(_){}const d=document.documentElement,c=t==="afterlight"||t==="night"?t:"system";d.dataset.themeChoice=c;d.dataset.theme=c!=="system"?c:matchMedia("(prefers-color-scheme: light)").matches?"afterlight":"night"})()</script>
 </head>

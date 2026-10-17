@@ -502,7 +502,7 @@ def main() -> int:
     check(len(module_items) == 12 and [(n, kinds[k], t) for n, k, t in module_items] == index_items,
           'Made here must list the same twelve things and statuses on the homepage and the questions index')
     check('id="made-here" data-made-here' in html and 'href="./investigations/#made-here"' in html
-          and "addEventListener('load',()=>{import('./assets/made-here.mjs')" in html, 'Made here must load after the page, with a no-script link')
+          and "['#questions','./assets/made-here.mjs']" in html, 'Made here must load when its section nears view, with a no-script link')
     check('run.app' not in html, 'The live Cyber Grid is not linked yet')
     for page_path, needles in {
         'investigations/index.html': ['href="./green-light/"', 'PAGE COMING'],
