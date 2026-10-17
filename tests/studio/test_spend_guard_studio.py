@@ -139,7 +139,7 @@ class StudioSpendTests(unittest.TestCase):
         self.assertEqual(job.status, "failed")
         self.assertIn("Billing unknown", job.error)
         self.assertIn("narration part 1 has 3", job.error)
-        self.assertIn("Inspect recovery in Studio", job.error)
+        self.assertIn("Check recovery in Studio", job.error)
         self.assertNotIn("--retry-uncertain", job.error)
         logged = spend_guard.overrides(self.f.root / "artifacts/audio", "studio-essay")
         self.assertEqual(logged[0]["reason"], "Incident resolved on the status page")

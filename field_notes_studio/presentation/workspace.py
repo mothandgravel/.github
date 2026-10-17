@@ -101,7 +101,7 @@ class Workspace(ttk.Frame):
         self.tools = {
             str(self.transcript.master): ("transcript", "Transcript"),
             str(self.sound): ("audio", "Sound"),
-            str(self.batch): ("batch", "Several episodes"),
+            str(self.batch): ("episodes", "Several episodes"),
             str(self.health.master): ("health", "Setup check"),
         }
         for tab, glyph in (
@@ -110,7 +110,7 @@ class Workspace(ttk.Frame):
             (self.publication, "package"),
             (self.transcript.master, "transcript"),
             (self.sound, "audio"),
-            (self.batch, "batch"),
+            (self.batch, "episodes"),
             (self.health.master, "health"),
         ):
             tabs.tab(

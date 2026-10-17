@@ -71,7 +71,7 @@ class PreparationService:
                             else ""
                         )
                         + "This is a saved job result, not a fresh read of the narration receipts. "
-                        "Refresh notes for current job state, or inspect script / recovery for current receipts. "
+                        "Refresh notes for current job state, or check the script or recovery for current receipts. "
                         "Do not delete receipts or restart the whole episode; stop and wait before any paid retry."
                     ),
                 )
@@ -115,7 +115,7 @@ class PreparationService:
         captured = snapshot.recovery_json if recover_uncertain is True else snapshot.request_json
         if type(recover_uncertain) is not bool or authorized is not True or not captured:
             raise ValueError(
-                "Inspect preparation and explicitly authorize the captured service requests first"
+                "Check the narration plan and explicitly allow the captured service requests first"
             )
         request = json.loads(captured)
         if bool(request.get("uncertain_chunks")) != recover_uncertain:

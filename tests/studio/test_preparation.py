@@ -63,7 +63,7 @@ class PreparationTests(unittest.TestCase):
         items = self.service.catalog()
         self.assertEqual([item.note for item in items], ["104", "105"])
         self.assertEqual(items[0].episode, "studio-essay")
-        self.assertEqual(items[0].state, "Inspect script")
+        self.assertEqual(items[0].state, "Check script")
 
     def test_aggregate_episode_does_not_hide_missing_dedicated_script(self):
         item = self.service.catalog()[1]
@@ -149,7 +149,7 @@ class PreparationTests(unittest.TestCase):
                     self.text(relative, content)
                     return result
 
-                with self.assertRaisesRegex(ValueError, "changed during inspection"):
+                with self.assertRaisesRegex(ValueError, "changed during the check"):
                     Preparation(self.root, changed).inspect("104")
                 if original is None:
                     path.unlink()

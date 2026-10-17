@@ -315,7 +315,7 @@ class Controller:
         self.ready = None
         workspace = self.view.workspace
         workspace.draft_conflict(False)
-        state = item.state if item.state != "Inspect script" else "Not narrated yet"
+        state = item.state if item.state != "Check script" else "Not narrated yet"
         workspace.show_empty(
             "Not narrated yet" if item.state != "Needs script" else "No narration script yet",
             item.detail

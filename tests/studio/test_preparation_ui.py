@@ -26,7 +26,7 @@ class PreparationWindowTests(unittest.TestCase):
                 "Window",
                 "104-window.html",
                 "studio-essay",
-                "Inspect script",
+                "Check script",
                 "Inspect first.",
             ),
             PreparationItem("105", "Newer", "105-newer.html", "", "Needs script", "No script yet."),

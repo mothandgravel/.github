@@ -81,7 +81,7 @@ class PreparationController:
         note = self.view.selected()
         if note and not self.closed and not self.busy:
             self.epoch += 1
-            self.view.clear("Inspecting the script offline…")
+            self.view.clear("Checking the script on this computer…")
             self._read(lambda: self.service.inspect(note), self.view.show_snapshot)
 
     def submit(self):

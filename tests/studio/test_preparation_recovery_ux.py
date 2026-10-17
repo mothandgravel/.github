@@ -57,7 +57,7 @@ class RecoveryTests(unittest.TestCase):
         snapshot = self.service.inspect("104")
         self.assertFalse(snapshot.request_json)
         self.assertTrue(snapshot.recovery_json)
-        self.assertIn("Chunk 2: TimeoutError", snapshot.summary)
+        self.assertIn("Part 2: TimeoutError", snapshot.summary)
         self.assertIn("charge twice", snapshot.summary)
         with patch("field_notes_studio.preparation_service.launch_worker"):
             for authorized, recovery in ((False, True), (True, False), (True, 1)):
@@ -96,7 +96,7 @@ class RecoveryTests(unittest.TestCase):
                 self.f.adapter.run(request, lambda *_: None, lambda: False)
             calls[0].assert_not_called()
             calls[1].assert_not_called()
-        with self.assertRaisesRegex(ValueError, "previous resend authorization"):
+        with self.assertRaisesRegex(ValueError, "previous resend consent"):
             Studio(self.f.root).retry(identifier)
 
     def test_deleted_receipt_or_changed_script_cannot_authorize_a_replacement(self):

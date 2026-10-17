@@ -193,7 +193,7 @@ class Studio:
         if job.action == "prepare":
             if request.get("uncertain_chunks"):
                 raise ValueError(
-                    "Inspect preparation recovery again. A previous resend authorization cannot authorize another attempt."
+                    "Check recovery again. A previous resend consent cannot allow another attempt."
                 )
             PreparationJobs(self.root).validate(request)
             if job.status == "waiting":

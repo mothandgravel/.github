@@ -107,7 +107,7 @@ class NarrationTimeoutTests(unittest.TestCase):
         self.assertEqual(captured["uncertain_chunks"], {"3": receipt_hash})
         self.assertEqual(captured["tts_timeout_seconds"], 360)
         self.assertEqual(captured["plan"], self.request["plan"])
-        self.assertIn("2/3 narration cache records", snapshot.summary)
+        self.assertIn("2/3 narration parts report completion", snapshot.summary)
         with patch("field_notes_studio.preparation_service.launch_worker"):
             for general, recovery in ((False, True), (True, False)):
                 with self.assertRaises(ValueError):

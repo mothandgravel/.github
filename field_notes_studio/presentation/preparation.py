@@ -123,7 +123,7 @@ class PreparationWindow:
         self.recover_uncertain = tk.BooleanVar(value=False)
         self.recovery_consent = ttk.Checkbutton(
             self.consent.body,
-            text="Also resend the uncertain chunk(s); I accept possible duplicate charges.",
+            text="Also resend the uncertain part(s); I accept possible duplicate charges.",
             variable=self.recover_uncertain,
             command=lambda: self.busy(self.loading),
         )
@@ -242,7 +242,7 @@ class PreparationWindow:
         self.queued_id = identifier
         self.job_button.configure(state="normal")
         self.message.configure(
-            text=f"{episode} queued · {identifier[:8]}. Show job follows narration → captions → recording ready. Do not queue again."
+            text=f"{episode} queued · {identifier[:8]}. Show job follows narration → captions → ready to produce. Do not queue again."
         )
 
     def selected(self):
