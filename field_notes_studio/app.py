@@ -126,6 +126,7 @@ class Application:
                 "recover": self.flow.recover,
                 "billing": self.flow.billing,
                 "notify": self.flow.set_notify,
+                "close": self.flow.close,
             },
         )
         self.shelf = Shelf(body, self.controller.select, self.controller.select_note)

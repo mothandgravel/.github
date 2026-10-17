@@ -69,7 +69,8 @@ class WebsiteDialog:
         )
         self.confirm_button.pack(side="right", padx=(0, 8))
 
-    def open(self, root):
+    def open(self, root, episode=""):
+        self.requested = episode
         self.window.transient(root)
         self.window.deiconify()
         self.window.lift()
@@ -83,6 +84,8 @@ class WebsiteDialog:
 
     def show(self, plan):
         """The dry run: the exact commands, the branch, the remote and every refusal."""
+        if self.running or plan.episode != getattr(self, "requested", plan.episode):
+            return  # A plan for an earlier request; the dialog now shows another episode.
         self.plan = plan
         theme.set_text(self.output, plan.describe() if plan.commands else "")
         if plan.refusals:
@@ -93,7 +96,8 @@ class WebsiteDialog:
             self.close_button.focus_set()
         else:
             self.summary.configure(
-                text=f"This pushes the branch {plan.branch} to {plan.remote}. It never merges: "
+                text=f"This pushes the branch {plan.branch} to "
+                f"{', '.join(plan.push_urls) or plan.remote}. It never merges: "
                 "you merge the pull request on GitHub."
             )
             self.refusals.grid_remove()

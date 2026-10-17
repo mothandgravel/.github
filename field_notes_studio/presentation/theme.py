@@ -176,6 +176,7 @@ def apply(root, name: str | None = None) -> None:
     style.configure(
         "CardBrass.TLabel", background=SURFACE, foreground=BRASS, font=("DejaVu Sans", 9, "bold")
     )
+    style.configure("Brass.TLabel", foreground=BRASS, font=("DejaVu Sans", 9, "bold"))
     # Timeline states: the same size as their row text, brass for working and "you".
     style.configure(
         "CardState.TLabel", background=SURFACE, foreground=BRASS, font=("DejaVu Sans", 10, "bold")

@@ -368,7 +368,7 @@ class PreflightDialog:
         spend = plan.spend
         rows = [
             ("Project", plan.project or "none needed"),
-            ("Estimate", money(plan.estimate_usd) if plan.paid else "nothing paid"),
+            ("Estimate", plan.estimate_text),
             ("Spend guard", f"stop after {spend.part_limit} failed attempts"),
             ("", f"on any part, {spend.episode_limit} per episode,"),
             ("", f"in {spend.window_hours:g} h, then ask me"),
@@ -508,7 +508,17 @@ class RunPanel(ttk.Frame):
             command=self.copy_diagnostics,
         )
         self.copy_button.pack(side="right")
-        self.alert_hint = ttk.Label(self, style="Muted.TLabel")
+        self.hint_row = ttk.Frame(self)
+        self.hint_row.columnconfigure(0, weight=1)
+        self.alert_hint = ttk.Label(self.hint_row, style="Muted.TLabel")
+        self.alert_hint.grid(row=0, column=0, sticky="w")
+        self.close_link = Link(
+            self.hint_row,
+            "Close this run",
+            lambda: self.callbacks["close"](self.view),
+            style="Brass.TLabel",
+        )
+        self.close_link.grid(row=0, column=1, sticky="e")
         self.box = ttk.Frame(self, style="Card.TFrame", padding=18)
         self.box.grid(row=4, column=0, sticky="ew")
         self.box.columnconfigure(3, weight=1)
@@ -568,7 +578,7 @@ class RunPanel(ttk.Frame):
             self.foot.grid_remove()
         else:
             self.alert.grid_remove()
-            self.alert_hint.grid_remove()
+            self.hint_row.grid_remove()
             self.foot.grid()
         for (glyph, name, state_label, detail), row in zip(self.cells, view.rows, strict=False):
             mark = {"ok": "check", "todo": "pending", "warn": "health"}.get(
@@ -630,12 +640,16 @@ class RunPanel(ttk.Frame):
         else:
             self.ledger.grid_remove()
             self.ledger_note.grid_remove()
-            self.retry_button.reset_feedback("Check recovery…")
+            self.retry_button.reset_feedback(
+                "Run this step again (free)" if view.retry_free else "Check recovery…"
+            )
         self.alert_hint.configure(
-            text="Try once more asks for duplicate-charge consent for that part only, and "
+            text="This step is local: running it again costs nothing."
+            if view.retry_free
+            else "Try once more asks for duplicate-charge consent for that part only, and "
             "counts against the same spend guard as the terminal command."
         )
-        self.alert_hint.grid(row=3, column=0, sticky="w", pady=(8, 8))
+        self.hint_row.grid(row=3, column=0, sticky="ew", pady=(8, 8))
 
     def copy_diagnostics(self):
         self.clipboard_clear()

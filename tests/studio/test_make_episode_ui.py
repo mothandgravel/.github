@@ -250,6 +250,7 @@ class MakeEpisodeUITests(unittest.TestCase):
             self.assertIn(expected, texts)
         money = [w.cget("text") for w in dialog.money_card.winfo_children() if "text" in w.keys()]
         self.assertIn("about $0.12", money)
+        self.assertEqual(PLAN.estimate_text, "about $0.12")
         self.assertIn("0 uncertain attempts recorded", money)
         self.assertIn("mothandgravel-audio", money)
         dialog.window.geometry("1180x640")
@@ -322,6 +323,33 @@ class MakeEpisodeUITests(unittest.TestCase):
         self.settle()
         self.assertEqual(self.app.view_name, "home")
 
+    def test_a_failed_local_step_runs_again_and_a_run_can_be_closed(self):
+        failed = RunView(
+            **{
+                **PAUSED.__dict__,
+                "identifier": "run-012",
+                "detail": "Renderer crashed.",
+                "retry_free": True,
+            }
+        )
+        views = {"run-012": failed}
+        with (
+            patch("field_notes_studio.service.Studio.runs", return_value=Runs(views)),
+            patch("field_notes_studio.service.Studio.continue_run") as again,
+            patch("field_notes_studio.service.Studio.close_run") as close,
+        ):
+            self.app.flow.show_run("run-012")
+            panel = self.app.run_panel
+            self.wait(lambda: panel.view is failed)
+            self.settle()
+            self.assertEqual(panel.retry_button.cget("text"), "Run this step again (free)")
+            panel.retry_button.invoke()
+            self.wait(lambda: again.called)
+            again.assert_called_once_with("run-012")
+            panel.close_link.command()
+            self.wait(lambda: self.app.view_name == "home")
+            close.assert_called_once_with("run-012")
+
     def test_website_confirm_shows_the_dry_run_and_refusals(self):
         plan = WebsitePlan(
             "note-001",
@@ -330,6 +358,7 @@ class MakeEpisodeUITests(unittest.TestCase):
             "git@github.com:mothandgravel/.github.git",
             "0123456789abcdef",
             "studio/field-notes-listening-20261017-120000",
+            ("git@github.com:mothandgravel/.github.git",),
             (
                 ("python3", "-m", "field_notes_audio", "promote", "note-001"),
                 (
@@ -372,6 +401,9 @@ class MakeEpisodeUITests(unittest.TestCase):
             self.wait(lambda: dialog.plan is refused)
         self.assertEqual(str(dialog.confirm_button["state"]), "disabled")
         self.assertTrue(dialog.refusals.winfo_ismapped())
+        # A late plan for another episode never replaces the one asked for last.
+        dialog.show(WebsitePlan(**{**plan.__dict__, "episode": "other-episode"}))
+        self.assertIs(dialog.plan, refused)
 
     def capture_window(self, window, name):
         destination = os.environ.get("STUDIO_SCREENSHOT_DIR")

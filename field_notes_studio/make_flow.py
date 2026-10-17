@@ -248,9 +248,27 @@ class MakeFlow:
             self.app.show_episode(view.episode, stage=2)
 
     def recover(self, view):
-        """Try once more…: the expert recovery with its own duplicate-charge consent."""
+        """Try once more…: the expert recovery with its own duplicate-charge consent.
+
+        A failed local step (video, upload folder) is free, so it simply runs again.
+        """
+        if view.retry_free:
+            self.controller.task(
+                lambda: self.studio.continue_run(view.identifier), lambda _: self.reload_run()
+            )
+            return
         run = self.studio.repository.run(view.identifier)
         self.app.open_preparation(note=run.get("note", ""))
+
+    def close(self, view):
+        """Closing a run keeps its jobs and saved work; Make episode can start again."""
+
+        def closed(_):
+            self.app.status("Run closed. Its jobs and saved files stay; nothing was deleted.")
+            self.run_id = None
+            self.app.show_home()
+
+        self.controller.task(lambda: self.studio.close_run(view.identifier), closed)
 
     def billing(self):
         open_url(BILLING_CONSOLE)
@@ -266,7 +284,7 @@ class MakeFlow:
 
         if getattr(self, "website", None) is None or not self.website.window.winfo_exists():
             self.website = WebsiteDialog(self.app.root, {"run": self.run_website})
-        self.website.open(self.app.root)
+        self.website.open(self.app.root, episode)
         self.controller.task(lambda: self.studio.website_plan(episode), self.website.show)
 
     def run_website(self, plan):
