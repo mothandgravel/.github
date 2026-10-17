@@ -178,6 +178,7 @@ class Publication(ttk.Frame):
             copy.grid(row=row, column=3, sticky="e", pady=2)
             self.values[field], self.measures[field], self.copy_buttons[field] = value, meta, copy
         self.value_column.lower()
+        self.value_column.bind("<Configure>", lambda _: self.after_idle(self._fit_values))
         card.bind(
             "<Configure>",
             lambda e: self.basis.configure(wraplength=max(200, e.width - 30)),
