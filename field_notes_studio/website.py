@@ -61,7 +61,8 @@ class WebsitePlan:
     def describe(self) -> str:
         """The dry-run text the confirm dialog shows, word for word what will run."""
         lines = [f"In {self.root}:"]
-        lines += ["  " + " ".join(command[1:]) for command in self.commands]
+        # The interpreter is this Studio's own Python; shown by its usual name.
+        lines += ["  python3 " + " ".join(command[1:]) for command in self.commands]
         lines += [
             "",
             f"1. promote prepares the reviewed {self.episode} files for the website and "

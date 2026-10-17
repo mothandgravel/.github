@@ -117,7 +117,12 @@ def build(studio, *, check: bool = True) -> WorkList:
             )
         )
     not_started = 0
-    for item in PreparationService(studio.root).catalog():
+    try:
+        notes = PreparationService(studio.root).catalog()
+    except (OSError, ValueError):
+        # A checkout without the written-note catalog still lists its episodes.
+        notes = []
+    for item in notes:
         if item.episode and (item.episode in catalog or item.episode in runs):
             continue
         if item.state in {"Needs script"}:
