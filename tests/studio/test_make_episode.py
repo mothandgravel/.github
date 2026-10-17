@@ -214,7 +214,7 @@ class UncertainResendTests(unittest.TestCase):
         service = PreparationService(self.m.root)
         snapshot = service.inspect("104")
         with patch("field_notes_studio.preparation_service.launch_worker"):
-            with self.assertRaisesRegex(ValueError, "separate explicit consent|authorize"):
+            with self.assertRaisesRegex(ValueError, "separate explicit consent|authorize|explicitly allow"):
                 service.submit(snapshot, True)
             identifier = service.submit(snapshot, True, recover_uncertain=True)
         request = json.loads(self.m.studio.repository.get(identifier).request)
