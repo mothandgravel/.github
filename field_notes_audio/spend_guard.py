@@ -921,11 +921,33 @@ class Cost:
 
 
 def episode_cost(audio_root: Path, episode: str) -> Cost:
-    """Sum the attempts log for one episode (read-only; imports no receipts)."""
+    """Sum the attempts log for one episode, plus complete legacy narration receipts.
+
+    Read-only: nothing is imported into the log.
+    """
     narration_usd = uncertain_usd = 0.0
     narration_parts = narration_unestimated = captions = 0
     uncertain = uncertain_unestimated = 0
-    for attempt in attempts(audio_root, episode):
+    logged = attempts(audio_root, episode)
+    known = {attempt.attempt_id for attempt in logged}
+    # Complete narration receipts from before the attempts log existed have no logged
+    # start; they were paid for, so they count, at plan.json's estimate when known.
+    directory = audio_root / episode
+    for path in sorted(directory.glob("*/chunk-*.json")) if directory.is_dir() else ():
+        match = re.fullmatch(r"chunk-(\d{3})\.json", path.name)
+        try:
+            state = read_object(path)
+        except (OSError, ValueError):
+            continue
+        if not match or state.get("status") != "complete" or state.get("attempt_id") in known:
+            continue
+        estimate = _chunk_estimate(path.parent / "plan.json", int(match.group(1)))
+        narration_parts += 1
+        if estimate is None:
+            narration_unestimated += 1
+        else:
+            narration_usd += estimate
+    for attempt in logged:
         narration = attempt.part.startswith("narration-")
         if attempt.outcome == UNCERTAIN:
             uncertain += 1

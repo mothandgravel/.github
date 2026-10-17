@@ -102,6 +102,8 @@ def run(studio, identifier: str, *, confirm: str | None, status: bool, out=None)
         return 0
     if not DIGEST.fullmatch(confirm):
         raise ValueError("--confirm needs the full 64-character digest printed by the summary")
+    if studio.consent_used(plan.episode, confirm):
+        raise ValueError("This digest was already used; run without --confirm for a new summary.")
     if confirm != plan.token:
         raise ValueError(
             "The digest does not match the summary as it is now: something changed since it "

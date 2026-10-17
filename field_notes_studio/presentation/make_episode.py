@@ -535,14 +535,14 @@ class RunPanel(ttk.Frame):
             self.cells.append((glyph, name, state, detail))
         # What this episode has cost so far: a local estimate, never shown as a bill.
         self.cost = ttk.Label(self, style="Muted.TLabel")
-        self.cost.grid(row=6, column=0, sticky="ew", pady=(10, 0))
+        self.cost.grid(row=5, column=0, sticky="ew", pady=(8, 0))
         self.bind(
             "<Configure>",
             lambda e: self.cost.configure(wraplength=max(200, e.width - 8)),
             add=True,
         )
         foot = self.foot = ttk.Frame(self)
-        foot.grid(row=5, column=0, sticky="ew", pady=(14, 0))
+        foot.grid(row=6, column=0, sticky="ew", pady=(14, 0))
         self.notify = tk.BooleanVar(value=False)
         self.notify_box = ttk.Checkbutton(
             foot,

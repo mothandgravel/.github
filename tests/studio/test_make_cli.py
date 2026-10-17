@@ -116,6 +116,31 @@ class MakeCliTests(unittest.TestCase):
             self.assertIn(expected, out)
         self.assertIn("Nothing paid is recorded for this episode yet.", out)
 
+    def test_a_digest_starts_at_most_one_run_even_after_that_run_closes(self):
+        _, out, _ = self.cli("104")
+        digest = self.digest(out)
+        plan = self.m.studio.make_plan(note="104")
+        self.assertEqual(self.cli("104", "--confirm", digest)[0], 0)
+        # The first paid job fails before any request is sent, and the run is closed.
+        repository = self.m.studio.repository
+        job = repository.claim()
+        repository.finish(job.identifier, "failed", error="Preparation tools are missing")
+        self.m.studio.close_run(repository.runs()[0]["identifier"])
+        code, _, err = self.cli("104", "--confirm", digest)
+        self.assertEqual(code, 1)
+        self.assertIn("This digest was already used; run without --confirm", err)
+        from field_notes_studio.service import ConsentUsed
+
+        with self.assertRaises(ConsentUsed):
+            self.m.studio.make_episode(plan, True)  # The Studio path refuses it too.
+        self.assertEqual(len(repository.jobs()), 1)
+        # A fresh summary has a new digest, which starts exactly one new run.
+        _, out, _ = self.cli("104")
+        fresh = self.digest(out)
+        self.assertNotEqual(fresh, digest)
+        self.assertEqual(self.cli("104", "--confirm", fresh)[0], 0)
+        self.assertEqual(len(repository.jobs()), 2)
+
     def test_ids_are_a_note_number_or_an_episode_id(self):
         self.assertEqual(make_cli.target("014"), {"note": "014"})
         self.assertEqual(make_cli.target("maritime-study"), {"episode": "maritime-study"})
@@ -162,6 +187,35 @@ class EpisodeCostTests(unittest.TestCase):
             "billed: 2 uncertain attempts, up to about $0.08. Check the Cloud billing report "
             "for actual charges.",
         )
+
+    def test_legacy_complete_receipts_count_as_narration(self):
+        """Receipts from before the attempts log: paid, so counted, never 'nothing'."""
+        recording = self.root / "ep" / "0123456789abcdef"
+        write_json(
+            recording / "plan.json",
+            {
+                "estimated_output_cost_usd": 0.06,
+                "requests": [{"input": {"text": "a" * 10}}, {"input": {"text": "b" * 20}}],
+            },
+        )
+        write_json(recording / "chunk-001.json", {"status": "complete"})
+        write_json(recording / "chunk-002.json", {"status": "complete"})
+        bare = self.root / "ep" / "fedcba9876543210"
+        write_json(bare / "chunk-001.json", {"status": "complete"})  # no plan.json
+        logged_id = spend_guard.new_attempt_id()
+        write_json(bare / "chunk-002.json", {"status": "complete", "attempt_id": logged_id})
+        spend_guard.record_start(
+            self.root, episode="ep", part="narration-2", attempt_id=logged_id, estimate_usd=0.01
+        )
+        spend_guard.record_outcome(
+            self.root, episode="ep", part="narration-2", attempt_id=logged_id, outcome="complete"
+        )
+        cost = spend_guard.episode_cost(self.root, "ep")
+        self.assertEqual(cost.narration_parts, 4)
+        self.assertEqual(cost.narration_unestimated, 1)
+        self.assertEqual(cost.narration_usd, 0.07)
+        self.assertIn("1 without a local estimate", cost.sentence())
+        self.assertNotIn("Nothing paid", cost.sentence())
 
     def test_only_uncertain_attempts_never_read_as_spent(self):
         self.attempt("captions", None, None)

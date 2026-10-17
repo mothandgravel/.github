@@ -119,6 +119,7 @@ def token(plan: MakePlan) -> str:
         "reused": list(plan.reused),
         "recipe": [list(item) for item in plan.recipe],
         "blockers": list(plan.blockers),
+        "history": list(plan.history),
     }
     return hashlib.sha256(json.dumps(facts, sort_keys=True).encode()).hexdigest()
 
@@ -279,6 +280,7 @@ def build(studio, *, note: str = "", episode: str = "") -> MakePlan:
         estimate_usd=estimate if paid else None,
         captions_minutes=captions_minutes,
         request_json=request_json,
+        history=tuple(run for run, _token in studio.repository.consents(episode)),
         recipe=tuple(
             sorted((key, json.dumps(value, sort_keys=True)) for key, value in inputs.items())
         ),
