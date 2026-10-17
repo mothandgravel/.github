@@ -115,9 +115,18 @@
 .bench-head p {margin:0 0 10px;color:var(--secondary)}
 .bench-head .mono {color:var(--gold-bright)}
 .bench-scope {margin:14px 0 0;font-size:14px;color:var(--muted);max-width:80ch}
-.toy-mount {min-height:320px}
-.toy-mount:not([data-loaded="ready"]) {display:grid;place-items:center;border:1px dashed var(--line);color:var(--muted);padding:20px}
-.toy-mount:not([data-loaded="ready"]) p {max-width:46ch;margin:0}
+/* Each bench reserves the height its toy will take, measured per width band, so mounting it
+   moves nothing below. The toy's panel fills the reserved box. */
+.toy-mount {--reserve:575px;min-height:var(--reserve)}
+.toy-mount[data-toy="week"] {--reserve:max(545px,calc(min(100vw - 108px,1500px) * .24 + 290px))}
+.toy-mount > .toy {min-height:var(--reserve);align-content:start}
+@media (max-width:900px) {.toy-mount {--reserve:975px}.toy-mount[data-toy="grid"] {--reserve:960px}.toy-mount[data-toy="week"] {--reserve:1005px}}
+@media (max-width:660px) {.toy-mount[data-toy="week"] {--reserve:960px}}
+@media (max-width:429px) {.toy-mount {--reserve:920px}.toy-mount[data-toy="grid"] {--reserve:920px}.toy-mount[data-toy="week"] {--reserve:1100px}}
+@media (max-width:359px) {.toy-mount {--reserve:950px}.toy-mount[data-toy="grid"] {--reserve:890px}.toy-mount[data-toy="week"] {--reserve:1160px}}
+/* The waiting bench changes no box metric when its toy arrives: an outline, not a border or padding. */
+.toy-mount:not([data-loaded="ready"]) {display:grid;place-items:center;outline:1px dashed var(--line);outline-offset:-1px;color:var(--muted)}
+.toy-mount:not([data-loaded="ready"]) p {max-width:46ch;margin:0;padding:20px}
 .room-exits {display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:50px;padding-top:26px;border-top:1px solid var(--line)}
 .question-index {list-style:none;margin:10px 0 0;padding:0;border-top:1px solid var(--line)}
 .question-index li {display:grid;grid-template-columns:90px 1fr 1fr;gap:24px;padding:28px 0;border-bottom:1px solid var(--line-soft);align-items:baseline}
@@ -142,3 +151,12 @@
 }
 @media (max-width:660px) {.room-head {padding:30px 0 20px;gap:12px}}
 .question-shelf + .thread-scope {margin-top:30px}
+/* Made here: one plain status per thing, in a fixed vocabulary. Shape, not only colour, separates them. */
+.status {display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:600;line-height:1.4;letter-spacing:.1em;text-transform:uppercase;color:var(--secondary)}
+.status::before {content:"";width:8px;height:8px;border:1px solid currentColor;border-radius:50%;flex:none}
+.status[data-status="production"] {color:var(--gold-bright)}
+.status[data-status="production"]::before {background:currentColor}
+.status[data-status="playable"] {color:var(--ink)}
+.status[data-status="playable"]::before {background:currentColor;border-radius:1px}
+.status[data-status="study"]::before {border-style:dashed}
+.status[data-status="internal"]::before {border-radius:1px}

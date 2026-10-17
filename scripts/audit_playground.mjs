@@ -45,6 +45,11 @@ try {
       await page.locator(`#toy-${toy}`).scrollIntoViewIfNeeded();
       await page.locator(`#toy-${toy}[data-loaded="ready"]`).waitFor({ timeout: 5000 });
     }
+    // Each bench reserved its toy's height before loading, so mounting moved nothing below it.
+    const grown = await page.evaluate(() => [...document.querySelectorAll('[data-toy]')]
+      .filter(el => el.getBoundingClientRect().height > parseFloat(getComputedStyle(el).minHeight) + 0.5)
+      .map(el => `${el.dataset.toy} ${Math.round(el.getBoundingClientRect().height)} > ${getComputedStyle(el).minHeight}`));
+    if (grown.length) fail(label + ' reserved height', grown);
     if (target.toys.includes('grid')) await page.locator('#toy-grid [data-ask]').click();
     if (target.toys.includes('stamp')) await page.locator('#toy-stamp .stamp-cell').nth(26).click();
     if (target.toys.includes('week')) await page.locator('#toy-week input[value="ring"]').check();
