@@ -1,0 +1,510 @@
+1
+00:00:04,209 --> 00:00:10,817
+Moth and Gravel Field Note 3. A
+metaphor has to earn its place.
+
+2
+00:00:11,583 --> 00:00:14,574
+An AI narrated edition of the
+published note.
+
+3
+00:00:15,513 --> 00:00:19,791
+A river is an interesting way to
+show a week. You come back to a
+
+4
+00:00:19,791 --> 00:00:24,835
+project after a day away. Some
+work has landed. A decision has
+
+5
+00:00:24,835 --> 00:00:29,183
+changed. Someone needs an
+answer. Before doing anything
+
+6
+00:00:29,183 --> 00:00:33,530
+else, you need to recover the
+shape of what happened. Decision
+
+7
+00:00:33,530 --> 00:00:38,087
+Docket is our own tool in
+production for our own work. It
+
+8
+00:00:38,087 --> 00:00:41,948
+is concerned with that return,
+finding the reason behind a
+
+9
+00:00:41,948 --> 00:00:46,539
+decision and continuing with the
+relevant context. This note
+
+10
+00:00:46,539 --> 00:00:50,435
+follows one part of its design
+work. The attempt to give that
+
+11
+00:00:50,435 --> 00:00:55,548
+experience a distinctive form on
+Android. A river offers a useful
+
+12
+00:00:55,548 --> 00:01:00,348
+starting point. Time gives it
+direction. Changes give each
+
+13
+00:01:00,348 --> 00:01:04,730
+stretch something to inspect.
+Decisions and handoffs can
+
+14
+00:01:04,730 --> 00:01:09,600
+become recognizable marks. Touch
+a day and the corresponding work
+
+15
+00:01:09,635 --> 00:01:14,365
+comes into view. The attraction
+is easy to understand. The
+
+16
+00:01:14,365 --> 00:01:21,635
+responsibility takes longer. O1
+River A period to inspect. Find
+
+17
+00:01:21,635 --> 00:01:28,278
+a stretch of time. Read the work
+that belongs to it. O2 Circle A
+
+18
+00:01:28,278 --> 00:01:33,565
+perspective to choose. Bring one
+view forward. Keep its context
+
+19
+00:01:33,565 --> 00:01:41,391
+close. O3 Focus One thing to
+read. Stay with a change. Leave
+
+20
+00:01:41,391 --> 00:01:47,513
+a place to continue. Reading
+models, conceptual diagrams, not
+
+21
+00:01:47,548 --> 00:01:51,583
+application screenshots. The
+picture has to explain
+
+22
+00:01:51,583 --> 00:01:56,452
+something. In Docket's web
+recap, the river is wider where
+
+23
+00:01:56,452 --> 00:02:00,104
+more work landed or changed.
+That is a way of showing
+
+24
+00:02:00,104 --> 00:02:04,730
+observed activity. The reader
+still needs titles, dates, and
+
+25
+00:02:04,730 --> 00:02:09,078
+source context to understand
+what it means. One distinction
+
+26
+00:02:09,113 --> 00:02:13,009
+matters especially. The past and
+the present need different
+
+27
+00:02:13,009 --> 00:02:16,974
+places. Selecting Friday's
+history should never make
+
+28
+00:02:16,974 --> 00:02:21,461
+today's unanswered question
+disappear. A beautiful filter
+
+29
+00:02:21,704 --> 00:02:25,496
+would be a poor one if it taught
+a person that the work no longer
+
+30
+00:02:25,496 --> 00:02:29,948
+needed them. This is where a
+visual metaphor earns its place.
+
+31
+00:02:30,539 --> 00:02:33,565
+It helps someone orient
+themselves, then makes the
+
+32
+00:02:33,565 --> 00:02:38,957
+relevant detail easier to reach.
+Shape carries meaning. Words
+
+33
+00:02:38,957 --> 00:02:43,443
+keep that meaning accountable. A
+circle gives a perspective a
+
+34
+00:02:43,443 --> 00:02:47,443
+place. Circle approaches the
+same material from another
+
+35
+00:02:47,443 --> 00:02:52,383
+direction. Six familiar roles
+sit around a table. Choose a
+
+36
+00:02:52,383 --> 00:02:55,548
+perspective and bring it
+forward, then read the work
+
+37
+00:02:55,583 --> 00:02:59,757
+associated with it. The web
+recap uses those roles to
+
+38
+00:02:59,757 --> 00:03:03,722
+present existing categories of
+work. Their character should
+
+39
+00:03:03,722 --> 00:03:08,313
+never suggest a conversation
+authorship or live presence that
+
+40
+00:03:08,313 --> 00:03:12,661
+the underlying information does
+not establish. For the Android
+
+41
+00:03:12,661 --> 00:03:16,035
+experiment, the selected
+question appears beneath the
+
+42
+00:03:16,035 --> 00:03:20,035
+scene in a speech bubble
+connected to the front seat. The
+
+43
+00:03:20,035 --> 00:03:23,687
+question should be close enough
+to act on without covering
+
+44
+00:03:23,687 --> 00:03:27,339
+another perspective or turning
+the page into a diagram that
+
+45
+00:03:27,339 --> 00:03:31,687
+must be decoded. The turn can
+help connect a choice to its
+
+46
+00:03:31,687 --> 00:03:37,426
+result. The ordinary list has to
+carry the same work. Both belong
+
+47
+00:03:37,426 --> 00:03:42,991
+to the design. More realism did
+not settle the problem. An early
+
+48
+00:03:42,991 --> 00:03:47,304
+revision pursued depth through
+photographic material. A more
+
+49
+00:03:47,304 --> 00:03:51,930
+literal table for circle and a
+pebble riverbed for river. That
+
+50
+00:03:51,930 --> 00:03:55,583
+artwork was rejected. The
+literal furniture and river
+
+51
+00:03:55,583 --> 00:03:58,957
+scenery pulled away from the
+product's a established persona
+
+52
+00:03:58,957 --> 00:04:02,574
+illustrations. Adding material
+detail had not made the
+
+53
+00:04:02,574 --> 00:04:06,539
+interface more coherent. The
+following study removed those
+
+54
+00:04:06,539 --> 00:04:10,713
+photographs and tried a shared
+vocabulary of thin ceramic
+
+55
+00:04:10,713 --> 00:04:16,313
+surfaces, soft water, restrained
+edges, and contact shadows. The
+
+56
+00:04:16,313 --> 00:04:20,383
+personas and the questions
+remained. The execution changed.
+
+57
+00:04:20,835 --> 00:04:24,800
+That is an iteration, not a
+verdict. A new drawing can
+
+58
+00:04:24,800 --> 00:04:28,383
+resolve a visible mismatch while
+leaving the more important
+
+59
+00:04:28,383 --> 00:04:32,626
+question open. Does a person
+find the right context and
+
+60
+00:04:32,626 --> 00:04:38,122
+understand what to do next?
+River slash the period in view.
+
+61
+00:04:38,643 --> 00:04:43,722
+Actual Android emulator capture,
+Docket light. Synthetic demo
+
+62
+00:04:43,722 --> 00:04:52,383
+work, revision 86B6A90A. Circle
+slash a question close at hand.
+
+63
+00:04:52,835 --> 00:04:57,878
+Actual Android emulator capture,
+Docket light. Synthetic demo
+
+64
+00:04:57,878 --> 00:05:05,009
+work, revision A505C66F.
+Captured on the 12th of October
+
+65
+00:05:05,009 --> 00:05:10,609
+2026 in incomplete validation
+runs. These images show the
+
+66
+00:05:10,609 --> 00:05:13,948
+native rendering. The
+interaction and physical device
+
+67
+00:05:13,948 --> 00:05:18,122
+checks remain open. Open either
+image to inspect the full
+
+68
+00:05:18,122 --> 00:05:23,339
+capture. A phone changes the
+contract. The native experiment
+
+69
+00:05:23,339 --> 00:05:27,583
+compares river, circle, and
+focus using the same synthetic
+
+70
+00:05:27,583 --> 00:05:32,557
+changes and questions. Focus
+offers one change at a time with
+
+71
+00:05:32,557 --> 00:05:36,730
+explicit previous and next
+controls alongside its pager.
+
+72
+00:05:37,322 --> 00:05:41,009
+Giving each direction the same
+work makes the comparison more
+
+73
+00:05:41,009 --> 00:05:45,948
+useful. On a phone, a gesture
+has neighbors. A drag through
+
+74
+00:05:45,948 --> 00:05:49,600
+the river lives beside vertical
+scrolling and the system's back
+
+75
+00:05:49,600 --> 00:05:54,365
+gesture. A question sheet lives
+beside the keyboard, rotation,
+
+76
+00:05:54,400 --> 00:05:58,191
+and the possibility that the app
+goes into the background. Those
+
+77
+00:05:58,191 --> 00:06:02,574
+are design materials too. The
+prototype therefore separates
+
+78
+00:06:02,574 --> 00:06:06,922
+looking, choosing, and
+committing. Swiping changes the
+
+79
+00:06:06,922 --> 00:06:11,443
+visible item. Selecting an
+answer prepares a choice. An
+
+80
+00:06:11,443 --> 00:06:16,313
+explicit action commits it.
+Pending, unknown, and recorded
+
+81
+00:06:16,313 --> 00:06:19,791
+results have distinct
+presentations because they
+
+82
+00:06:19,791 --> 00:06:24,070
+describe different things the
+person needs to understand. This
+
+83
+00:06:24,070 --> 00:06:28,035
+is a native experiment, not a
+silent replacement of the web
+
+84
+00:06:28,035 --> 00:06:32,661
+reply behavior. The phone needs
+its own account of interruption
+
+85
+00:06:32,696 --> 00:06:36,591
+and return. The useful part has
+to survive the spectacle.
+
+86
+00:06:37,983 --> 00:06:41,913
+A reduced motion setting should
+keep every selection and every
+
+87
+00:06:41,913 --> 00:06:47,061
+question. Large text should have
+room to breathe. A list or a
+
+88
+00:06:47,061 --> 00:06:51,061
+labeled day control should let
+someone complete the same task
+
+89
+00:06:51,096 --> 00:06:54,887
+without learning the drawing's
+gestures. There is still work to
+
+90
+00:06:54,887 --> 00:06:59,304
+do. The Android build and lint
+checks have passed, but the full
+
+91
+00:06:59,304 --> 00:07:03,443
+native interaction and physical
+phone accessibility walk are
+
+92
+00:07:03,443 --> 00:07:08,104
+incomplete. Emulator failures
+have interrupted capture. The
+
+93
+00:07:08,104 --> 00:07:11,443
+newer forms have not earned a
+claim of measured phone
+
+94
+00:07:11,443 --> 00:07:16,243
+performance or final usability.
+The next meaningful comparison
+
+95
+00:07:16,243 --> 00:07:21,391
+is concrete. Find why a decision
+was made, inspect a change,
+
+96
+00:07:21,600 --> 00:07:26,052
+prepare an answer, and back
+away. Return to finish, then
+
+97
+00:07:26,052 --> 00:07:31,270
+save a place and reopen it.
+Watch the wrong turns. Ask what
+
+98
+00:07:31,270 --> 00:07:35,513
+the person believes happened
+when an outcome is uncertain. A
+
+99
+00:07:35,513 --> 00:07:39,443
+memorable river or circle might
+make the work feel more
+
+100
+00:07:39,443 --> 00:07:44,383
+approachable. It earns its place
+when someone comes back, finds
+
+101
+00:07:44,383 --> 00:07:48,800
+their footing, and continues.
+You have been listening to Moth
+
+102
+00:07:48,800 --> 00:07:53,630
+and Gravel Field Notes. The
+written edition is at
+mothandgravel.com.

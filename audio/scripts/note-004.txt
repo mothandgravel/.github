@@ -8,7 +8,7 @@ You have found the next action. Your eyes leave the text and your hand starts to
 
 Nothing dramatic has happened. The page has not failed. Yet it has asked you to find your place again.
 
-Decision Docket, our upcoming product being developed under Navivra, had a small version of this problem in its teammate card. A decorative portrait appeared only after its local image had loaded. Until that moment, the grid contained no portrait row.
+Decision Docket, the tool we use for our own work, had a small version of this problem in its teammate card. A decorative portrait appeared only after its local image had loaded. Until that moment, the grid contained no portrait row.
 
 The loaded card looked right. The journey to that appearance needed attention.
 

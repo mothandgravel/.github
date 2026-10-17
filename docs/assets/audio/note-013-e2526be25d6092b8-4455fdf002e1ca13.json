@@ -1,0 +1,692 @@
+[
+  {
+    "start": 4.209,
+    "end": 10.574,
+    "text": "Moth and Gravel, Field Note 13.\nThe work outlives the window. An",
+    "speakers": []
+  },
+  {
+    "start": 10.574,
+    "end": 14.504,
+    "text": "AI narrated edition of the\npublished note. An episode is",
+    "speakers": []
+  },
+  {
+    "start": 14.504,
+    "end": 18.47,
+    "text": "rendering. You close its window.\nWhat should happen when you open",
+    "speakers": []
+  },
+  {
+    "start": 18.47,
+    "end": 22.783,
+    "text": "it again? That question became a\nuseful test for our podcast",
+    "speakers": []
+  },
+  {
+    "start": 22.783,
+    "end": 26.748,
+    "text": "experiment. We already had the\npieces, written field notes,",
+    "speakers": []
+  },
+  {
+    "start": 26.991,
+    "end": 31.513,
+    "text": "narration, music, retimed\ncaptions, and a video renderer.",
+    "speakers": []
+  },
+  {
+    "start": 32.104,
+    "end": 35.861,
+    "text": "They could produce an episode. A\nperson still had to remember",
+    "speakers": []
+  },
+  {
+    "start": 36.0,
+    "end": 39.896,
+    "text": "which command came next, which\nfolder held the result, and",
+    "speakers": []
+  },
+  {
+    "start": 39.896,
+    "end": 43.304,
+    "text": "which version they had actually\nchecked. We wanted a small",
+    "speakers": []
+  },
+  {
+    "start": 43.304,
+    "end": 47.235,
+    "text": "workbench for that journey.\nSomewhere to change the sound,",
+    "speakers": []
+  },
+  {
+    "start": 47.617,
+    "end": 51.478,
+    "text": "inspect the consequences, let\nthe machine work, and come back",
+    "speakers": []
+  },
+  {
+    "start": 51.478,
+    "end": 55.826,
+    "text": "with enough context to continue.\nA familiar material.",
+    "speakers": []
+  },
+  {
+    "start": 56.73,
+    "end": 61.53,
+    "text": "We used Tkinter. The production\nengine was already Python, and",
+    "speakers": []
+  },
+  {
+    "start": 61.53,
+    "end": 65.009,
+    "text": "an earlier robot workbench had\ngiven us useful experience with",
+    "speakers": []
+  },
+  {
+    "start": 65.009,
+    "end": 70.157,
+    "text": "Tk. Themed sections, background\nwork, and a queue that hands",
+    "speakers": []
+  },
+  {
+    "start": 70.157,
+    "end": 73.496,
+    "text": "results back to the interface.\nThat made it a reasonable",
+    "speakers": []
+  },
+  {
+    "start": 73.496,
+    "end": 77.322,
+    "text": "material for this experiment.\nThe studio could live beside the",
+    "speakers": []
+  },
+  {
+    "start": 77.322,
+    "end": 83.409,
+    "text": "existing engine in Ubuntu or WSL\nwith ordinary desktop controls",
+    "speakers": []
+  },
+  {
+    "start": 83.757,
+    "end": 87.652,
+    "text": "and no separate web service to\noperate. We kept the production",
+    "speakers": []
+  },
+  {
+    "start": 87.652,
+    "end": 91.339,
+    "text": "engine behind an adapter, so\nthat the interface could change",
+    "speakers": []
+  },
+  {
+    "start": 91.374,
+    "end": 94.922,
+    "text": "without taking ownership of\neverything underneath it. The",
+    "speakers": []
+  },
+  {
+    "start": 94.922,
+    "end": 99.791,
+    "text": "first useful shape was three\nstages, produce, review, and",
+    "speakers": []
+  },
+  {
+    "start": 99.791,
+    "end": 103.478,
+    "text": "release. Each stage needed a\nclear answer to a different",
+    "speakers": []
+  },
+  {
+    "start": 103.478,
+    "end": 108.522,
+    "text": "question. What will change? What\nhave I checked? What is ready to",
+    "speakers": []
+  },
+  {
+    "start": 108.522,
+    "end": 112.661,
+    "text": "take to the publisher? Give the\njob a life of its own.",
+    "speakers": []
+  },
+  {
+    "start": 113.635,
+    "end": 117.843,
+    "text": "The important decision was where\nthe work should live. The window",
+    "speakers": []
+  },
+  {
+    "start": 117.843,
+    "end": 122.609,
+    "text": "holds an editable view. A local\njournal keeps drafts, queued",
+    "speakers": []
+  },
+  {
+    "start": 122.609,
+    "end": 127.409,
+    "text": "recipes, and job results. A\nseparate worker owns production.",
+    "speakers": []
+  },
+  {
+    "start": 127.965,
+    "end": 131.722,
+    "text": "Closing the window leaves that\nworker and its queue in place.",
+    "speakers": []
+  },
+  {
+    "start": 132.417,
+    "end": 135.443,
+    "text": "The diagram in the written\nedition separates four",
+    "speakers": []
+  },
+  {
+    "start": 135.443,
+    "end": 136.104,
+    "text": "responsibilities, with the\nwindow allowed to disappear. It",
+    "speakers": []
+  },
+  {
+    "start": 136.104,
+    "end": 136.626,
+    "text": "work was",
+    "speakers": []
+  },
+  {
+    "start": 136.626,
+    "end": 139.652,
+    "text": "making",
+    "speakers": []
+  },
+  {
+    "start": 139.652,
+    "end": 143.443,
+    "text": "describes the implemented\nownership boundary. Suppose an",
+    "speakers": []
+  },
+  {
+    "start": 143.443,
+    "end": 148.939,
+    "text": "episode is queued at 1.15 times\nthe original pace. Changing the",
+    "speakers": []
+  },
+  {
+    "start": 148.939,
+    "end": 153.565,
+    "text": "control afterwards should affect\nthe next plan. The job already",
+    "speakers": []
+  },
+  {
+    "start": 153.565,
+    "end": 157.983,
+    "text": "in the queue keeps the recipe\nthat was inspected. Unfinished",
+    "speakers": []
+  },
+  {
+    "start": 157.983,
+    "end": 162.017,
+    "text": "edits have a different need.\nHalf a date or an empty numeric",
+    "speakers": []
+  },
+  {
+    "start": 162.017,
+    "end": 165.878,
+    "text": "field is perfectly ordinary\nwhile someone is typing. We",
+    "speakers": []
+  },
+  {
+    "start": 165.878,
+    "end": 169.6,
+    "text": "preserve that raw text as a\ndraft and validate it when the",
+    "speakers": []
+  },
+  {
+    "start": 169.6,
+    "end": 173.704,
+    "text": "person asks to use it. Returning\nto the work should not require",
+    "speakers": []
+  },
+  {
+    "start": 173.704,
+    "end": 177.53,
+    "text": "reconstructing a thought that\nhappened to be incomplete. A",
+    "speakers": []
+  },
+  {
+    "start": 177.53,
+    "end": 181.357,
+    "text": "restart can also leave an\nuncertain result. In that case,",
+    "speakers": []
+  },
+  {
+    "start": 181.496,
+    "end": 185.357,
+    "text": "the journal says interrupted.\nThere is a saved record to",
+    "speakers": []
+  },
+  {
+    "start": 185.357,
+    "end": 190.157,
+    "text": "inspect and an explicit retry.\nGuessing that a job succeeded",
+    "speakers": []
+  },
+  {
+    "start": 190.33,
+    "end": 193.913,
+    "text": "would make the interface easier\nto color green and harder to",
+    "speakers": []
+  },
+  {
+    "start": 193.913,
+    "end": 199.617,
+    "text": "trust. Let the labels earn their\nconfidence. A saved video, a",
+    "speakers": []
+  },
+  {
+    "start": 199.617,
+    "end": 203.722,
+    "text": "checked video, and a published\nvideo are different events.",
+    "speakers": []
+  },
+  {
+    "start": 204.035,
+    "end": 208.557,
+    "text": "Review therefore belongs to the\nsaved edition. Listen to it,",
+    "speakers": []
+  },
+  {
+    "start": 208.765,
+    "end": 212.383,
+    "text": "check its captions, watch the\nfull video where appropriate,",
+    "speakers": []
+  },
+  {
+    "start": 212.626,
+    "end": 217.113,
+    "text": "and record the confirmations. If\nthe media changes, the earlier",
+    "speakers": []
+  },
+  {
+    "start": 217.113,
+    "end": 221.113,
+    "text": "approval cannot quietly move\nacross to it. Reopening the",
+    "speakers": []
+  },
+  {
+    "start": 221.113,
+    "end": 225.043,
+    "text": "window restores the workspace.\nThe review checkboxes need",
+    "speakers": []
+  },
+  {
+    "start": 225.043,
+    "end": 230.435,
+    "text": "attention again. Release makes\nthe handoff tangible. It lists",
+    "speakers": []
+  },
+  {
+    "start": 230.435,
+    "end": 235.27,
+    "text": "the actual video, thumbnail,\nsubtitle files, audio, and",
+    "speakers": []
+  },
+  {
+    "start": 235.27,
+    "end": 239.443,
+    "text": "transcript with their sizes. A\nupload copy comes from the",
+    "speakers": []
+  },
+  {
+    "start": 239.443,
+    "end": 244.0,
+    "text": "checked package when one exists.\nThere is a route to open a file,",
+    "speakers": []
+  },
+  {
+    "start": 244.243,
+    "end": 249.148,
+    "text": "a folder, or YouTube Studio, and\na Windows-compatible upload path",
+    "speakers": []
+  },
+  {
+    "start": 249.183,
+    "end": 254.157,
+    "text": "when the tool is running in WSL.\nReady for manual upload",
+    "speakers": []
+  },
+  {
+    "start": 254.191,
+    "end": 257.948,
+    "text": "describes those local checks.\nThe person still uploads the",
+    "speakers": []
+  },
+  {
+    "start": 257.948,
+    "end": 262.226,
+    "text": "package and records the real\npublication details. A local",
+    "speakers": []
+  },
+  {
+    "start": 262.226,
+    "end": 265.565,
+    "text": "success message cannot establish\nwhat happened in another",
+    "speakers": []
+  },
+  {
+    "start": 265.565,
+    "end": 270.713,
+    "text": "service. A small window exposes\na large assumption. The design",
+    "speakers": []
+  },
+  {
+    "start": 270.713,
+    "end": 274.678,
+    "text": "acquired the studio's paper,\nink, and brass, labeled",
+    "speakers": []
+  },
+  {
+    "start": 274.678,
+    "end": 276.383,
+    "text": "pictograms, and visible\nfeedback. The more revealing",
+    "speakers": []
+  },
+  {
+    "start": 279.409,
+    "end": 284.07,
+    "text": "it fit. One desktop test run\npast while its screenshots",
+    "speakers": []
+  },
+  {
+    "start": 284.07,
+    "end": 287.826,
+    "text": "showed an awkward result. The\npublishing buttons were visible,",
+    "speakers": []
+  },
+  {
+    "start": 288.035,
+    "end": 291.409,
+    "text": "but the editable fields had been\nsqueezed away at the minimum",
+    "speakers": []
+  },
+  {
+    "start": 291.409,
+    "end": 296.035,
+    "text": "window size. The batch checklist\nhad the same problem. We had",
+    "speakers": []
+  },
+  {
+    "start": 296.035,
+    "end": 299.096,
+    "text": "checked that the actions existed\nwithout checking that the",
+    "speakers": []
+  },
+  {
+    "start": 299.096,
+    "end": 303.339,
+    "text": "material they acted on remained\nusable. We shortened the",
+    "speakers": []
+  },
+  {
+    "start": 303.339,
+    "end": 306.817,
+    "text": "guidance, removed competing\nfolder actions from those",
+    "speakers": []
+  },
+  {
+    "start": 306.817,
+    "end": 310.504,
+    "text": "focused panels, and made the\nchecks cover the fields and",
+    "speakers": []
+  },
+  {
+    "start": 310.504,
+    "end": 314.261,
+    "text": "choices themselves. The\nscreenshot was evidence about a",
+    "speakers": []
+  },
+  {
+    "start": 314.261,
+    "end": 318.33,
+    "text": "question the earlier assertions\nhad missed. A second window",
+    "speakers": []
+  },
+  {
+    "start": 318.33,
+    "end": 322.539,
+    "text": "exposes another boundary worth\nmaking explicit. Two copies of",
+    "speakers": []
+  },
+  {
+    "start": 322.539,
+    "end": 326.504,
+    "text": "the interface can hold different\ndrafts of one episode. A newer",
+    "speakers": []
+  },
+  {
+    "start": 326.504,
+    "end": 329.67,
+    "text": "checkpoint needs an identity,\nand the other window needs a",
+    "speakers": []
+  },
+  {
+    "start": 329.67,
+    "end": 334.365,
+    "text": "chance to resolve that conflict\nwhile keeping its edits. Saved",
+    "speakers": []
+  },
+  {
+    "start": 334.365,
+    "end": 338.574,
+    "text": "should mean that this version\nwas saved, enough to use with a",
+    "speakers": []
+  },
+  {
+    "start": 338.574,
+    "end": 339.583,
+    "text": "next question.",
+    "speakers": []
+  },
+  {
+    "start": 341.67,
+    "end": 345.113,
+    "text": "By the end of the first complete\npass, the studio had durable",
+    "speakers": []
+  },
+  {
+    "start": 345.113,
+    "end": 349.6,
+    "text": "drafts, sound controls, editable\npublishing copy, batch",
+    "speakers": []
+  },
+  {
+    "start": 349.6,
+    "end": 354.296,
+    "text": "inspection, and worker health.\nIts verification included 86",
+    "speakers": []
+  },
+  {
+    "start": 354.296,
+    "end": 359.965,
+    "text": "tests with 31 exercising real Tk\ncontrols. A separate production",
+    "speakers": []
+  },
+  {
+    "start": 359.965,
+    "end": 363.478,
+    "text": "run finished all 13 existing\nrecordings, checked their",
+    "speakers": []
+  },
+  {
+    "start": 363.478,
+    "end": 367.13,
+    "text": "retimed captions, and rendered\nshort video previews and",
+    "speakers": []
+  },
+  {
+    "start": 367.13,
+    "end": 372.139,
+    "text": "thumbnails. A repeat run checked\ncache reuse. Those are useful",
+    "speakers": []
+  },
+  {
+    "start": 372.139,
+    "end": 375.757,
+    "text": "boundaries for the result. They\nestablish considerably more than",
+    "speakers": []
+  },
+  {
+    "start": 375.757,
+    "end": 379.096,
+    "text": "a promising mock-up. They do not\nreplace listening to the",
+    "speakers": []
+  },
+  {
+    "start": 379.096,
+    "end": 383.2,
+    "text": "finished episodes or completing\nthe browser upload. The next",
+    "speakers": []
+  },
+  {
+    "start": 383.2,
+    "end": 387.304,
+    "text": "question is close at hand. Can\nthis workbench help us release",
+    "speakers": []
+  },
+  {
+    "start": 387.304,
+    "end": 390.365,
+    "text": "its own field note without\nsomeone keeping the terminal",
+    "speakers": []
+  },
+  {
+    "start": 390.365,
+    "end": 393.565,
+    "text": "sequence in their head? There is\nstill a gap at the beginning.",
+    "speakers": []
+  },
+  {
+    "start": 393.948,
+    "end": 397.287,
+    "text": "Studio starts from prepared\nrecordings. A new written note",
+    "speakers": []
+  },
+  {
+    "start": 397.287,
+    "end": 400.487,
+    "text": "needs a narration script, a\ndeliberate generation step, and",
+    "speakers": []
+  },
+  {
+    "start": 400.487,
+    "end": 404.417,
+    "text": "captions before it reaches that\nshelf. That handoff deserves the",
+    "speakers": []
+  },
+  {
+    "start": 404.417,
+    "end": 408.139,
+    "text": "same care as the final upload,\nvisible prerequisites, an",
+    "speakers": []
+  },
+  {
+    "start": 408.139,
+    "end": 411.443,
+    "text": "inspectable plan, and a clear\naccount of any service being",
+    "speakers": []
+  },
+  {
+    "start": 411.443,
+    "end": 415.722,
+    "text": "used. For now, the experiment\nhas become a usable local tool",
+    "speakers": []
+  },
+  {
+    "start": 415.757,
+    "end": 419.304,
+    "text": "for the episodes we already\nhave. The next specimen is this",
+    "speakers": []
+  },
+  {
+    "start": 419.304,
+    "end": 423.757,
+    "text": "note. Experiment record, working\nsoftware. What this pass",
+    "speakers": []
+  },
+  {
+    "start": 423.791,
+    "end": 427.791,
+    "text": "establishes. The first pass\ncounts and desktop capture refer",
+    "speakers": []
+  },
+  {
+    "start": 427.791,
+    "end": 430.991,
+    "text": "to the implementation linked in\nthe written edition. Its native",
+    "speakers": []
+  },
+  {
+    "start": 430.991,
+    "end": 434.296,
+    "text": "desktop checks and real media\nproduction run passed. The",
+    "speakers": []
+  },
+  {
+    "start": 434.296,
+    "end": 437.426,
+    "text": "capture is a controlled fixture,\nand the ownership graphic is a",
+    "speakers": []
+  },
+  {
+    "start": 437.426,
+    "end": 441.078,
+    "text": "schematic. The production run\nrendered short previews rather",
+    "speakers": []
+  },
+  {
+    "start": 441.078,
+    "end": 444.243,
+    "text": "than full-length videos of the\nentire collection. The",
+    "speakers": []
+  },
+  {
+    "start": 444.243,
+    "end": 447.409,
+    "text": "continuing implementation and\nstudio guide contain the current",
+    "speakers": []
+  },
+  {
+    "start": 447.409,
+    "end": 451.478,
+    "text": "behavior and validation. Native\nWindows packaging, embedded",
+    "speakers": []
+  },
+  {
+    "start": 451.478,
+    "end": 454.957,
+    "text": "playback, and authenticated\npublishing remain outside this",
+    "speakers": []
+  },
+  {
+    "start": 454.957,
+    "end": 459.791,
+    "text": "local Linux/WSL experiment.\nNarration and publication of",
+    "speakers": []
+  },
+  {
+    "start": 459.791,
+    "end": 462.783,
+    "text": "this note are separate steps\nfrom the verification described",
+    "speakers": []
+  },
+  {
+    "start": 462.783,
+    "end": 466.852,
+    "text": "here. You have been listening to\nMoth and Gravel Field Notes. The",
+    "speakers": []
+  },
+  {
+    "start": 466.852,
+    "end": 469.496,
+    "text": "written edition is at\nmothandgravel.com.",
+    "speakers": []
+  }
+]
