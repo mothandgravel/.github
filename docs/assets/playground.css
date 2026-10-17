@@ -1,0 +1,170 @@
+/* Playground toys and the question pages. Never linked from the homepage. */
+.toy {display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.4fr);gap:28px;align-items:start;padding:24px;border:1px solid var(--line);background:var(--surface)}
+.toy-controls {display:grid;gap:16px;min-width:0}
+.toy-fieldset {margin:0;padding:12px 14px 14px;border:1px solid var(--line-soft);display:grid;gap:6px}
+.toy-fieldset legend {padding:0 6px;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-bright)}
+.toy-fieldset-row {grid-auto-flow:column;justify-content:start;gap:8px}
+.toy-choice {display:flex;align-items:center;gap:10px;min-height:44px;padding:0 10px;border:1px solid var(--line-soft);cursor:pointer}
+.toy-choice:has(input:checked) {border-color:var(--gold-bright);box-shadow:inset 3px 0 var(--gold-bright);background:var(--surface-2)}
+.toy-choice input {accent-color:var(--gold-bright);width:18px;height:18px;margin:0}
+.toy-choice:has(input:focus-visible) {outline:2px solid var(--gold-bright);outline-offset:2px}
+.toy-select {display:grid;gap:6px;font-size:14px;color:var(--secondary)}
+.toy-select select {width:100%;min-width:0;min-height:44px;padding:0 10px;background:var(--bg);color:var(--ink);border:1px solid var(--line);font:inherit}
+.toy-select select:focus-visible {outline:2px solid var(--gold-bright);outline-offset:2px}
+.toy-actions {display:flex;flex-wrap:wrap;gap:8px}
+.toy-button {min-height:44px;padding:0 14px;background:transparent;color:var(--ink);border:1px solid var(--line);cursor:pointer;text-align:left}
+.toy-button:hover:not(:disabled) {border-color:var(--gold-bright)}
+.toy-button:disabled {opacity:.45;cursor:not-allowed}
+.toy-button-strong {background:var(--gold-bright);color:var(--accent-ink);border-color:var(--gold-bright);font-weight:600}
+.toy-ledger {display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;color:var(--muted)}
+.toy-ledger b {color:var(--ink)}
+.toy-stage {display:grid;gap:14px;min-width:0}
+.toy-readout {margin:0;min-height:3.1em;color:var(--secondary)}
+.toy-status {margin:0;min-height:1.6em;font-weight:600}
+
+/* Stamp */
+.stamp-grid {display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:4px;max-width:560px}
+.stamp-cell {aspect-ratio:1;min-width:0;min-height:36px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;cursor:pointer;position:relative;
+  background-image:linear-gradient(to top,color-mix(in srgb,var(--gold) 70%,transparent) calc(var(--fill,0)*100%),transparent 0)}
+.stamp-cell[data-h="1"] {--fill:.33}.stamp-cell[data-h="2"] {--fill:.66}.stamp-cell[data-h="3"] {--fill:1}
+.stamp-cell.is-water {background:repeating-linear-gradient(135deg,transparent 0 6px,var(--line-soft) 6px 7px);border-style:dashed;cursor:default}
+.stamp-cell.is-standing::after {content:"";position:absolute;inset:28%;border-radius:50% 50% 4px 4px;border:2px solid var(--secondary)}
+.stamp-cell.is-proposed {outline:2px solid var(--gold-bright);outline-offset:-4px}
+.stamp-cell.is-refused {outline:2px dashed #d0705d;outline-offset:-4px}
+:root[data-theme="afterlight"] .stamp-cell.is-refused {outline-color:#9a3b28}
+.stamp-cell.is-last {box-shadow:inset 0 0 0 1px var(--gold-bright)}
+.stamp-cell:focus-visible {outline:3px solid var(--ink);outline-offset:1px;z-index:1}
+
+/* Grid */
+.grid-board {display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:6px;max-width:420px}
+.grid-cell {aspect-ratio:1;min-height:44px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:15px;font-weight:600;cursor:pointer}
+.grid-cell.is-blocked {background:repeating-linear-gradient(45deg,var(--surface-2) 0 5px,var(--line-soft) 5px 7px);border-color:var(--line-soft)}
+.grid-cell.is-visited {background:color-mix(in srgb,var(--gold) 28%,var(--bg));border-color:var(--gold)}
+.grid-cell.is-head {background:var(--gold-bright);color:var(--accent-ink)}
+.grid-cell.is-reachable {box-shadow:inset 0 0 0 2px var(--gold-bright)}
+.grid-cell:focus-visible {outline:3px solid var(--ink);outline-offset:1px}
+.grid-verdict {padding:14px 16px;border-left:3px solid var(--gold-bright);background:var(--surface-2)}
+.grid-verdict p {margin:0}
+.grid-verdict p + p {margin-top:6px}
+.grid-verdict .mono {color:var(--gold-bright)}
+.grid-verdict[data-kind="NO ANSWER YET"] {border-left-style:dashed}
+
+/* Week */
+.week-list {list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.week-item {width:100%;display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:center;min-height:44px;padding:6px 10px;background:transparent;border:1px solid var(--line-soft);color:var(--ink);text-align:left;cursor:pointer}
+.week-item .mono {font-size:11px;color:var(--muted)}
+.week-item strong {font-weight:600;font-size:15px}
+.week-item[aria-pressed="true"] {border-color:var(--gold-bright);box-shadow:inset 3px 0 var(--gold-bright);background:var(--surface-2)}
+/* The week's river: a band with banks, gradient water, drifting flow and a crisp edge.
+   Contrast comes from the edge line and mark outlines, never from darkening the water. */
+.week-figure {margin:0;min-width:0}
+.week-figure figcaption {font-size:13px;color:var(--muted)}
+.week-svg {width:100%;height:auto;display:block}
+.week-scroll {overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.week-scroll:focus-visible {outline:2px solid var(--gold-bright);outline-offset:2px}
+@media (max-width:660px) {.week-svg {min-width:540px}}
+.river-visual {--water:#6f8796;--river-bank:color-mix(in srgb,var(--gold) 18%,var(--surface-2));--river-edge-fill:color-mix(in srgb,var(--water) 34%,var(--surface));--river-core:color-mix(in srgb,var(--water) 62%,var(--surface));--river-outline:color-mix(in srgb,var(--water) 45%,var(--ink));--river-flow:color-mix(in srgb,var(--ink) 38%,transparent);--stone:color-mix(in srgb,var(--ink) 86%,var(--water));--stone-shade:color-mix(in srgb,var(--ink) 40%,var(--bg))}
+.river-bank {fill:var(--river-bank)}
+.river-stop-edge {stop-color:var(--river-edge-fill)}
+.river-stop-core {stop-color:var(--river-core)}
+.river-edge {fill:none;stroke:var(--river-outline);stroke-width:1.5}
+.river-flow {fill:none;stroke:var(--river-flow);stroke-width:1.2;stroke-dasharray:46 70;stroke-linecap:round;animation:river-flow 9s linear infinite}
+.river-flow:nth-of-type(2n) {animation-duration:12s}
+@keyframes river-flow {to {stroke-dashoffset:-580}}
+.river-lit {fill:color-mix(in srgb,var(--gold-bright) 32%,transparent);stroke:var(--gold-bright);stroke-width:1.5}
+.river-frame {fill:none;stroke:var(--gold-bright);stroke-width:1.5}
+.river-mouth {fill:var(--surface);stroke:var(--river-outline);stroke-width:1.5;stroke-dasharray:3 4}
+.week-label {fill:var(--muted);font:600 11px var(--mono);letter-spacing:.1em}
+.week-mark {cursor:pointer}
+.week-mark .stone {fill:var(--stone);stroke:var(--surface);stroke-width:1}
+.week-mark .stone-shade {fill:var(--stone-shade)}
+.week-mark .float {fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.week-mark .float.is-check {fill:var(--ink)}
+.week-mark .float.is-unverified {stroke-dasharray:3 2.5}
+.week-mark .float.is-now {fill:var(--gold-bright);stroke:var(--surface)}
+.week-ring {fill:none;stroke:var(--gold-bright);stroke-width:2.5}
+.week-detail {padding:14px 16px;border:1px solid var(--line-soft)}
+.week-detail h3 {margin:4px 0 6px;font-size:20px}
+.week-detail p {margin:0 0 6px}
+.week-kind,.week-rev {color:var(--gold-bright)}
+.week-rev {color:var(--muted)}
+.week-meaning {color:var(--secondary)}
+
+@media (max-width:900px) {.toy {grid-template-columns:minmax(0,1fr);padding:16px}}
+@media (prefers-reduced-motion: reduce) {.toy *,.river-flow {transition:none!important;animation:none!important}}
+/* The verdict box carries the answer visually; the status line still announces it. */
+.grid-verdict:not([hidden]) ~ .toy-status {position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Pages: the playground room and the question pages */
+.room-main {padding:38px 0 90px}
+.room-top {display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;padding-bottom:18px;border-bottom:1px solid var(--line);color:var(--gold-bright)}
+.room-top a {color:var(--gold-bright);border-bottom:1px solid var(--line)}
+.room-tabs {display:flex;flex-wrap:wrap;gap:6px 30px;margin:0;padding:0;list-style:none;border-bottom:1px solid var(--line)}
+.room-tabs a {display:flex;gap:12px;align-items:baseline;min-height:48px;padding:12px 0;font-size:14px;color:var(--secondary)}
+.room-tabs .mono {color:var(--gold-bright);font-size:12px}
+.room-tabs a[aria-current="page"] {color:var(--ink);border-bottom:2px solid var(--gold-bright)}
+.room-tabs a:hover {color:var(--ink)}
+.room-head {display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:end;padding:50px 0 34px}
+.room-head h1 {margin:0;font-family:var(--sans);font-stretch:condensed;font-weight:900;font-size:clamp(46px,6vw,92px);line-height:.95;text-transform:uppercase;letter-spacing:-.03em}
+.room-head h1 em {font-family:var(--serif);text-transform:none;font-weight:400;font-style:italic;color:var(--gold-bright);letter-spacing:-.05em}
+.room-head p {color:var(--secondary);font-size:18px;margin:0 0 12px;max-width:52ch}
+.room-note {font-size:14px;color:var(--muted)}
+.bench {margin-top:42px;padding-top:26px;border-top:1px solid var(--line);scroll-margin-top:100px}
+.bench-head {display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:22px}
+.bench-head h2 {margin:6px 0 0;font-family:var(--serif);font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.05}
+.bench-head p {margin:0 0 10px;color:var(--secondary)}
+.bench-head .mono {color:var(--gold-bright)}
+.bench-scope {margin:14px 0 0;font-size:14px;color:var(--muted);max-width:80ch}
+/* Each bench reserves the height its toy will take, measured per width band, so mounting it
+   moves nothing below. The toy's panel fills the reserved box. */
+.toy-mount {--reserve:575px;min-height:var(--reserve)}
+.toy-mount[data-toy="week"] {--reserve:max(545px,calc(min(100vw - 108px,1500px) * .24 + 290px))}
+.toy-mount > .toy {min-height:var(--reserve);align-content:start}
+@media (max-width:900px) {.toy-mount {--reserve:975px}.toy-mount[data-toy="grid"] {--reserve:960px}.toy-mount[data-toy="week"] {--reserve:1005px}}
+@media (max-width:660px) {.toy-mount[data-toy="week"] {--reserve:960px}}
+@media (max-width:429px) {.toy-mount {--reserve:920px}.toy-mount[data-toy="grid"] {--reserve:920px}.toy-mount[data-toy="week"] {--reserve:1100px}}
+@media (max-width:359px) {.toy-mount {--reserve:950px}.toy-mount[data-toy="grid"] {--reserve:890px}.toy-mount[data-toy="week"] {--reserve:1160px}}
+/* The waiting bench changes no box metric when its toy arrives: an outline, not a border or padding. */
+.toy-mount:not([data-loaded="ready"]) {display:grid;place-items:center;outline:1px dashed var(--line);outline-offset:-1px;color:var(--muted)}
+.toy-mount:not([data-loaded="ready"]) p {max-width:46ch;margin:0;padding:20px}
+.room-exits {display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:50px;padding-top:26px;border-top:1px solid var(--line)}
+.question-index {list-style:none;margin:10px 0 0;padding:0;border-top:1px solid var(--line)}
+.question-index li {display:grid;grid-template-columns:90px 1fr 1fr;gap:24px;padding:28px 0;border-bottom:1px solid var(--line-soft);align-items:baseline}
+.question-index h2 {margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(28px,3vw,42px);line-height:1.06}
+.question-index h2 a:hover {color:var(--gold-bright)}
+.question-index p {margin:0 0 8px;color:var(--secondary)}
+.question-index .mono {color:var(--gold-bright)}
+.question-coming {color:var(--muted)!important;font-family:var(--mono);font-size:12px;letter-spacing:.1em}
+.question-made {list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.question-made li {font-size:13px;padding:3px 9px;border:1px solid var(--line-soft)}
+.made-stop .status {margin-top:8px}
+.question-shelf {display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:56px;padding-top:26px;border-top:1px solid var(--line)}
+.question-shelf h2 {font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--gold-bright);margin:0 0 12px}
+.question-shelf ul {list-style:none;margin:0;padding:0}
+.question-shelf li {padding:12px 0;border-bottom:1px solid var(--line-soft)}
+.question-shelf li a {font-weight:600}
+.question-shelf li a:hover {color:var(--gold-bright)}
+.question-shelf li p {margin:4px 0 0;font-size:14px;color:var(--muted)}
+@media (max-width:900px) {
+  .room-head,.bench-head,.question-shelf {grid-template-columns:1fr}
+  .question-index li {grid-template-columns:1fr;gap:8px}
+}
+@media (max-width:660px) {.room-head {padding:30px 0 20px;gap:12px}}
+.question-shelf + .thread-scope {margin-top:30px}
+/* Made here: one plain status per thing, in a fixed vocabulary. Shape, not only colour, separates them. */
+.status {display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:600;line-height:1.4;letter-spacing:.1em;text-transform:uppercase;color:var(--secondary)}
+.status::before {content:"";width:8px;height:8px;border:1px solid currentColor;border-radius:50%;flex:none}
+.status[data-status="production"] {color:var(--gold-bright)}
+.status[data-status="production"]::before {background:currentColor}
+.status[data-status="playable"] {color:var(--ink)}
+.status[data-status="playable"]::before {background:currentColor;border-radius:1px}
+.status[data-status="study"]::before {border-style:dashed}
+.status[data-status="internal"]::before {border-radius:1px}
+.made-list {margin-top:60px;padding-top:26px;border-top:1px solid var(--line)}
+.made-list h2 {margin:0 0 8px;font-size:12px;letter-spacing:.12em;color:var(--gold-bright)}
+.made-list p {color:var(--secondary);margin:0 0 10px}
+.made-list ul {margin:0 0 22px;padding:0;list-style:none;columns:3 260px;column-gap:36px}
+.made-list li {break-inside:avoid;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.made-list li strong {white-space:nowrap}
+.made-list li .status {min-width:0;text-align:right}
+@media (max-width:660px) {.made-list li {display:grid;gap:4px}}

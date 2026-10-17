@@ -41,7 +41,10 @@ def build(check=False):
              (ROOT / 'docs/specimens/connected-to-what/index.html', DOMAIN + 'specimens/connected-to-what/', 'The connection came back. Did the picture?', None),
              (ROOT / 'docs/specimens/whose-map/index.html', DOMAIN + 'specimens/whose-map/', 'Where are we, according to whom?', None),
              (ROOT / 'docs/specimens/coastal-watch/index.html', DOMAIN + 'specimens/coastal-watch/', 'The water between updates.', None),
-             (ROOT / 'docs/specimens/maritime-study/index.html', DOMAIN + 'specimens/maritime-study/', 'The crossing, held still.', None)]
+             (ROOT / 'docs/specimens/maritime-study/index.html', DOMAIN + 'specimens/maritime-study/', 'The crossing, held still.', None),
+             (ROOT / 'docs/investigations/index.html', DOMAIN + 'investigations/', 'Three questions. Still open.', None),
+             (ROOT / 'docs/investigations/green-light/index.html', DOMAIN + 'investigations/green-light/', 'What does a green light promise?', None),
+             (ROOT / 'docs/workbench/playground/index.html', DOMAIN + 'workbench/playground/', 'The playground', None)]
     pages += [(ROOT / 'docs/notes' / n['slug'], DOMAIN + 'notes/' + n['slug'], n['title'], n) for n in notes]
     for path, url, title, note in pages:
         page = {'@type': 'CollectionPage' if url.endswith('notes/') else 'WebPage',
@@ -71,6 +74,12 @@ def build(check=False):
             elif url.endswith('questions/'):
                 crumbs.append(('Leave a loose end', url))
             elif '/threads/' in url:
+                crumbs.append((title, url))
+            elif '/investigations/' in url:
+                crumbs.append(('Standing investigations', DOMAIN + 'investigations/'))
+                if not url.endswith('investigations/'):
+                    crumbs.append((title, url))
+            elif url.endswith('workbench/playground/'):
                 crumbs.append((title, url))
             elif '/specimens/' in url:
                 crumbs += [('Working specimens', DOMAIN + '#work'), (title, url)]
