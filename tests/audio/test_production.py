@@ -296,6 +296,57 @@ class FinishedAudioTests(unittest.TestCase):
         self.settings = copy.deepcopy(DEFAULTS)
         self.settings.update(intro_seconds=0.5, outro_seconds=0.5, music_overlap_seconds=0.2)
 
+    def test_retry_after_a_render_failure_reuses_cached_audio_and_calls_nothing_paid(self):
+        from field_notes_audio.production.renderer_process import RenderFailed
+
+        config = self.root / "settings.json"
+        write_json(config, DEFAULTS)
+        args = argparse.Namespace(
+            episode="fixture",
+            config=config,
+            output_dir=self.root / "artifacts/production",
+            audio_only=False,
+            preview_seconds=None,
+            browser_executable=None,
+        )
+        directory = args.output_dir / "fixture"
+        rendered = []
+
+        def render(entry, root, edition, settings, args):
+            if not rendered:
+                rendered.append(edition)
+                raise RenderFailed("The video renderer stopped.")
+            self.assertEqual(edition, rendered[0])
+            video = edition / "video/abc"
+            video.mkdir(parents=True)
+            for name in ("episode.mp4", "thumbnail.png"):
+                (video / name).write_bytes(b"x")
+            return video
+
+        def paid(*_args, **_kwargs):
+            raise AssertionError("A video retry must not narrate or caption")
+
+        with (
+            patch.object(runner, "load_entries", return_value=[self.entry]),
+            patch.object(runner.site, "source_entry", side_effect=lambda entry: entry),
+            patch.object(runner, "preflight"),
+            patch.object(runner, "produce_video", side_effect=render),
+        ):
+            with self.assertRaises(RenderFailed):
+                runner.produce(args, self.root)
+            first = read_object(directory / "latest.json")
+            self.assertIsNone(first["video"])
+            with (
+                patch.object(editions, "finish_audio", side_effect=paid),
+                patch.object(audio, "synthesize", side_effect=paid),
+                patch.object(audio, "generate", side_effect=paid),
+                patch.object(captions, "run", side_effect=paid),
+            ):
+                runner.produce(args, self.root)
+        second = read_object(directory / "latest.json")
+        self.assertEqual(second["audio"], first["audio"])
+        self.assertEqual(second["video"], f"{first['audio']}/video/abc")
+
     def test_real_finishing_retimes_exports_reuses_audio_on_video_change_and_repairs_corrupt_cache(
         self,
     ):

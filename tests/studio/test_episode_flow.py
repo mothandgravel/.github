@@ -246,6 +246,27 @@ class EpisodeFlowUiTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "later attempt completed"):
             self.c.studio.retry(old)
 
+    def test_failed_video_job_detail_shows_the_sentence_and_hides_renderer_output(self):
+        self.h.wait(lambda: not self.c.polling)
+        job = self.repo.submit("note-001", "video", {"settings": {}})
+        self.repo.claim()
+        sentence = (
+            "The video renderer stopped: a frame took longer than 2 minutes, usually because "
+            "the computer is busy. Your audio and captions are saved; choose Make it again to "
+            "retry the video only."
+        )
+        self.repo.finish(job, "failed", error=sentence + "\n\nDetails:\nTimeout (120000ms) frame 9")
+        self.app.jobs.render(self.repo.jobs())
+        self.app.jobs.tree.selection_set(job)
+        self.root.update()
+        self.c.job_detail()
+        self.h.wait(lambda: "Make it again" in self.app.jobs.detail.cget("text"))
+        text = self.app.jobs.detail.cget("text")
+        self.assertNotIn("Details:", text)
+        self.assertNotIn("frame 9", text)
+        self.assertIn("Full renderer output is in Job history.", text)
+        self.assertIn("frame 9", self.repo.get(job).error)
+
     def test_compact_full_episode_controls_and_unified_review_are_not_clipped(self):
         self.root.geometry("1050x760+0+0")
         self.w.show_plan_tab()

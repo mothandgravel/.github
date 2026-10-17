@@ -12,19 +12,19 @@
   },
   "sources": [
     {
-      "repository": "navivra/geaidnu",
+      "repository": "geaidnu (private repository)",
       "path": "docs/runtime-and-evidence-contracts.md",
       "blob_sha": "e647dae1d13df66b30d3b727b1c8352b66aaf147",
       "scope": "documented pre-release runtime/evidence boundaries"
     },
     {
-      "repository": "navivra/ajo",
+      "repository": "ajo (private repository)",
       "path": "docs/integration-v0.1-results.md",
       "blob_sha": "39420416ae6d0b896236057b61064dc6be1e334d",
       "scope": "dated bounded local integration run; cases/subprobes and delivery verdicts stay distinct; not a success-rate sample"
     },
     {
-      "repository": "navivra/paja",
+      "repository": "paja (private repository)",
       "path": "docs/book/src/usage/exit-codes.md",
       "blob_sha": "7c944b80caa0518ffb0e984e5bb7cd5ec935a767",
       "scope": "documented typed job status and recorded verdict semantics"
