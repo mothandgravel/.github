@@ -417,6 +417,119 @@ class SpendGuardTests(unittest.TestCase):
             audio._log_outcome(Mock(side_effect=OSError("disk full")), "complete", "", 1.0)
         self.assertIn("could not record outcome 'complete'", output.getvalue())
 
+    # --- follow-ups: ghost attempts, env vs file, override write -------------
+
+    def test_local_failure_after_reserve_is_settled_as_not_sent(self):
+        real = audio.write_json
+
+        def failing(path, value):
+            if isinstance(value, dict) and value.get("status") == "requesting":
+                raise OSError("disk full")
+            return real(path, value)
+
+        with (
+            patch.object(audio, "write_json", side_effect=failing),
+            self.assertRaisesRegex(OSError, "disk full"),
+        ):
+            self.run_once(AssertionError("synthesize must not be entered"))
+        outcome = self.log()[-1]
+        self.assertEqual((outcome["type"], outcome["outcome"]), ("outcome", "failed"))
+        self.assertEqual(outcome["detail"], spend_guard.NOT_SENT)
+        self.assertEqual(self.log()[-2]["attempt_id"], outcome["attempt_id"])
+        seen = spend_guard.tally(self.audio_root, "note-001", "narration-1")
+        self.assertEqual(seen.episode_total, 0)
+
+    def test_env_and_file_combine_to_the_stricter_value(self):
+        write_json(
+            self.audio_root / "spend-guard.json",
+            {"part_limit": 1, "episode_limit": 4, "window_hours": 48},
+        )
+        environment = {
+            "FIELD_AUDIO_UNCERTAIN_PART_LIMIT": "2",
+            "FIELD_AUDIO_UNCERTAIN_EPISODE_LIMIT": "3",
+            "FIELD_AUDIO_UNCERTAIN_WINDOW_HOURS": "24",
+        }
+        with patch.dict(os.environ, environment):
+            self.assertEqual(spend_guard.load_limits(self.audio_root), spend_guard.Limits(1, 3, 48))
+        with patch.dict(os.environ, {"FIELD_AUDIO_UNCERTAIN_WINDOW_HOURS": "72"}):
+            self.assertEqual(spend_guard.load_limits(self.audio_root).window_hours, 72)
+        # A looser value in either source is still refused, not silently outvoted.
+        with (
+            patch.dict(os.environ, {"FIELD_AUDIO_UNCERTAIN_PART_LIMIT": "9"}),
+            self.assertRaises(ValueError),
+        ):
+            spend_guard.load_limits(self.audio_root)
+
+    def test_token_is_the_same_for_equal_windows_from_different_sources(self):
+        self.run_once(TimeoutError())
+        whole = spend_guard.tally(
+            self.audio_root, "note-001", "narration-1", limits=spend_guard.Limits(2, 4, 24)
+        )
+        decimal = spend_guard.tally(
+            self.audio_root, "note-001", "narration-1", limits=spend_guard.Limits(2, 4, 24.0)
+        )
+        self.assertEqual(whole.token, decimal.token)
+
+    def test_override_and_start_are_one_write(self):
+        self.run_once(TimeoutError())
+        self.run_once(TimeoutError(), retry_uncertain=True)
+        token = spend_guard.tally(self.audio_root, "note-001", "narration-1").token
+        reason = "Checked the billing report first"
+        real = spend_guard._append
+        calls = []
+
+        def recording(root, *entries):
+            calls.append([e["type"] for e in entries])
+            return real(root, *entries)
+
+        with patch.object(spend_guard, "_append", side_effect=recording):
+            self.reserve(override=reason, token=token)
+        self.assertIn(["override", "start"], calls)
+
+        # If that single write fails, neither the override nor the start is recorded.
+        self.setUp()
+        self.run_once(TimeoutError())
+        self.run_once(TimeoutError(), retry_uncertain=True)
+        token = spend_guard.tally(self.audio_root, "note-001", "narration-1").token
+
+        def failing(root, *entries):
+            if any(e["type"] == "override" for e in entries):
+                raise OSError("disk full")
+            return real(root, *entries)
+
+        with (
+            patch.object(spend_guard, "_append", side_effect=failing),
+            self.assertRaises(OSError),
+        ):
+            self.reserve(override=reason, token=token)
+        self.assertEqual(spend_guard.overrides(self.audio_root, "note-001"), [])
+        self.reserve(override=reason, token=token)  # the override was not burned
+        self.assertEqual(len(spend_guard.overrides(self.audio_root, "note-001")), 1)
+
+    def test_refusal_names_counted_damaged_lines(self):
+        stamp = spend_guard.now().isoformat()
+        damaged = [
+            '{"at": "' + stamp + '", "episode": "note-001", "part": "narration-1", "type": "st',
+            '{"at": "' + stamp + '", "attempt_id": "' + "e" * 32 + '", "episode": "note-001", '
+            '"part": "narration-1"',
+        ]
+        (self.audio_root / "attempts.jsonl").write_text("\n".join(damaged) + "\n")
+        exc, calls, _ = self.run_once(TimeoutError())
+        self.assertIsInstance(exc, spend_guard.SpendLimitReached)
+        self.assertEqual(calls, 0)
+        self.assertIn("damaged attempts.jsonl line(s) 1, 2", str(exc))
+        self.assertIn("Repairing the log", str(exc))
+
+    def test_creating_the_log_fsyncs_its_directory(self):
+        synced = []
+        real = os.fsync
+        with patch.object(
+            spend_guard.os, "fsync", side_effect=lambda fd: synced.append(fd) or real(fd)
+        ):
+            self.reserve()
+            self.reserve()
+        self.assertEqual(len(synced), 3)  # two appends, one directory on creation
+
     def test_identical_legacy_receipts_in_two_folders_are_two_attempts(self):
         for folder in ("aaaa", "bbbb"):
             path = self.audio_root / "note-001" / "rec" / "captions" / folder / "state.json"
@@ -543,6 +656,56 @@ class CaptionSpendTests(unittest.TestCase):
         exc, (_, _, upload, cloud) = self.run_captions(mp3, AssertionError("sent"))
         self.assertIsInstance(exc, spend_guard.SpendLimitReached)
         self.assertIn("captions has reached 2 uncertain attempts", str(exc))
+        upload.assert_not_called()
+        cloud.assert_not_called()
+
+    def caption_recording(self):
+        recording = self.root / "artifacts/audio/note-001/abc"
+        recording.mkdir(parents=True)
+        mp3 = recording / "episode.mp3"
+        mp3.write_bytes(b"ID3" + b"\0" * 2000)
+        return mp3, "recording-" + audio.digest(mp3.read_bytes())[:12]
+
+    def test_caption_local_failure_before_submit_is_not_sent(self):
+        mp3, episode = self.caption_recording()
+        real = captions.write_json
+
+        def failing(path, value):
+            if isinstance(value, dict) and value.get("status") == "requesting":
+                raise OSError("disk full")
+            return real(path, value)
+
+        with patch.object(captions, "write_json", side_effect=failing):
+            stack, patches = self.cloud(AssertionError("submit must not be entered"))
+            with stack, contextlib.redirect_stdout(io.StringIO()):
+                mocks = [stack.enter_context(p) for p in patches]
+                with self.assertRaisesRegex(OSError, "disk full"):
+                    captions.run(caption_args(mp3))
+        mocks[3].assert_not_called()
+        seen = spend_guard.tally(self.root / "artifacts/audio", episode, "captions")
+        self.assertEqual(seen.episode_total, 0)
+        self.assertEqual(seen.attempts[-1].detail, spend_guard.NOT_SENT)
+
+    def test_caption_override_token_is_checked_before_upload(self):
+        mp3, episode = self.caption_recording()
+        for _ in range(2):
+            spend_guard.record_start(
+                self.root / "artifacts/audio",
+                episode=episode,
+                part="captions",
+                attempt_id=spend_guard.new_attempt_id(),
+                estimate_usd=None,
+            )
+        args = caption_args(mp3)
+        args.allow_spend_over_limit = "Checked the billing report first"
+        args.spend_token = "000000000000"
+        stack, patches = self.cloud(AssertionError("sent"))
+        with stack, contextlib.redirect_stdout(io.StringIO()):
+            _, _, upload, cloud = [stack.enter_context(p) for p in patches]
+            with self.assertRaisesRegex(
+                spend_guard.SpendLimitReached, "old or missing spend token"
+            ):
+                captions.run(args)
         upload.assert_not_called()
         cloud.assert_not_called()
 

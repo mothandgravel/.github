@@ -766,11 +766,13 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
                 override = getattr(args, "allow_spend_over_limit", None)
                 report(spend_guard.limits_text(spend_guard.load_limits(audio_root)))
                 # Refuse before any upload; the binding check comes just before submission.
-                preview = spend_guard.tally(audio_root, episode, "captions")
-                if preview.blocked and override is None:
-                    raise spend_guard.SpendLimitReached(
-                        spend_guard.refusal(preview, "captions"), preview
-                    )
+                spend_guard.preview_override(
+                    spend_guard.tally(audio_root, episode, "captions"),
+                    "captions",
+                    override,
+                    getattr(args, "spend_token", None),
+                    audio_root,
+                )
                 report(f"Upload or reuse private input: {uri}", flush=True)
                 generation = ensure_upload(
                     content, args.bucket, object_name, args.project, args.auth
@@ -789,22 +791,30 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
                     token=getattr(args, "spend_token", None),
                     command="captions",
                 )
-                if guard.blocked:
-                    report(
-                        "Spend guard override logged: "
-                        + guard.sentence()
-                        + f" Reason: {spend_guard.validate_reason(override)}",
-                        flush=True,
+                try:
+                    # Local steps between the reservation and the submission. A failure
+                    # here means cloud_json() was never entered: nothing was submitted.
+                    if guard.blocked:
+                        report(
+                            "Spend guard override logged: "
+                            + guard.sentence()
+                            + f" Reason: {spend_guard.validate_reason(override)}",
+                            flush=True,
+                        )
+                    write_json(
+                        state_path,
+                        {
+                            "status": "requesting",
+                            "audio_sha256": audio_hash,
+                            "storage_generation": generation,
+                            "attempt_id": attempt_id,
+                        },
                     )
-                write_json(
-                    state_path,
-                    {
-                        "status": "requesting",
-                        "audio_sha256": audio_hash,
-                        "storage_generation": generation,
-                        "attempt_id": attempt_id,
-                    },
-                )
+                except BaseException:
+                    spend_guard.record_not_sent(
+                        audio_root, episode=episode, part="captions", attempt_id=attempt_id
+                    )
+                    raise
 
                 def settle(outcome, detail="", ids=None):
                     try:

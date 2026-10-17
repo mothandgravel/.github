@@ -111,9 +111,9 @@ class Tally:
         seen = sorted(
             a.attempt_id for a in self.attempts if a.outcome == UNCERTAIN and a.at >= since
         )
-        material = json.dumps(
-            [self.episode, seen, [self.limits.part, self.limits.episode, self.limits.window_hours]]
-        )
+        # 24, 24.0 and "24" from different sources must give the same token.
+        window = f"{float(self.limits.window_hours):g}"
+        material = json.dumps([self.episode, seen, [self.limits.part, self.limits.episode, window]])
         return hashlib.sha256(material.encode()).hexdigest()[:12]
 
     def spend_text(self) -> str:
@@ -176,11 +176,13 @@ def log_root(path: Path, default: Path | None = None) -> Path:
 
 
 def load_limits(audio_root: Path) -> Limits:
-    """Read ``artifacts/audio/spend-guard.json``; environment variables win.
+    """Read ``artifacts/audio/spend-guard.json`` and the environment; the stricter wins.
 
-    Settings may only make the guard stricter: fewer attempts, or a window of 24 h
+    Each source may only make the guard stricter: fewer attempts, or a window of 24 h
     or longer. Looser values are refused; spending past the limit takes the logged
-    override instead.
+    override instead. When both the file and an environment variable set a value,
+    the stricter one applies (the lower count, the longer window), so neither source
+    can relax the other.
     """
     values: dict = {}
     config = audio_root / CONFIG_NAME
@@ -197,27 +199,34 @@ def load_limits(audio_root: Path) -> Limits:
         "episode": (1, DEFAULT_EPISODE_LIMIT),
         "window_hours": (DEFAULT_WINDOW_HOURS, 24 * 30),
     }
-    result = {}
-    for name, environment in names.items():
-        raw = os.environ.get(environment, values.get(keys[name]))
-        if raw is None:
-            continue
+
+    def number(name: str, raw: object, source: str) -> float:
         try:
             if isinstance(raw, bool):
                 raise TypeError
-            number = float(raw) if name == "window_hours" else int(raw)
+            value = float(raw) if name == "window_hours" else int(raw)
         except (TypeError, ValueError):
             raise ValueError(
-                f"Spend guard setting {keys[name]} must be a number; check {CONFIG_NAME} or {environment}"
+                f"Spend guard setting {keys[name]} must be a number; check {source}"
             ) from None
         low, high = allowed[name]
-        if not low <= number <= high:
+        if not low <= value <= high:
             raise ValueError(
                 f"Spend guard setting {keys[name]}={raw} would loosen or break the guard. "
                 f"Settings can only make it stricter ({low}–{high:g}); spending past the "
-                f"limit needs --allow-spend-over-limit. Check {CONFIG_NAME} or {environment}."
+                f"limit needs --allow-spend-over-limit. Check {source}."
             )
-        result[name] = number
+        return value
+
+    result = {}
+    for name, environment in names.items():
+        found = []
+        if values.get(keys[name]) is not None:
+            found.append(number(name, values[keys[name]], CONFIG_NAME))
+        if os.environ.get(environment) is not None:
+            found.append(number(name, os.environ[environment], environment))
+        if found:
+            result[name] = max(found) if name == "window_hours" else min(found)
     return Limits(**result)
 
 
@@ -274,10 +283,16 @@ def provider_ids(headers) -> dict:
     return found
 
 
-def _append(audio_root: Path, entry: dict) -> None:
+def _append(audio_root: Path, *entries: dict) -> None:
+    """Append entries as one write under one lock; all of them land, or none are counted."""
     audio_root.mkdir(parents=True, exist_ok=True)
-    line = json.dumps({"v": 1, **entry}, ensure_ascii=False, sort_keys=True) + "\n"
-    with (audio_root / LOG_NAME).open("a+b") as handle:
+    data = "".join(
+        json.dumps({"v": 1, **entry}, ensure_ascii=False, sort_keys=True) + "\n"
+        for entry in entries
+    ).encode("utf-8")
+    path = audio_root / LOG_NAME
+    created = not path.exists()
+    with path.open("a+b") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)
         try:
             # A crash mid-append leaves an unterminated line. Close it so it stays one
@@ -289,11 +304,18 @@ def _append(audio_root: Path, entry: dict) -> None:
                 handle.seek(0, os.SEEK_END)
                 if torn:
                     handle.write(b"\n")
-            handle.write(line.encode("utf-8"))
+            handle.write(data)
             handle.flush()
             os.fsync(handle.fileno())
         finally:
             fcntl.flock(handle, fcntl.LOCK_UN)
+    if created:
+        # Make the new log's directory entry durable too, not only its contents.
+        directory = os.open(audio_root, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
 
 
 _FIELD = r'"{}"\s*:\s*"([^"\\]{{1,200}})"'
@@ -346,6 +368,27 @@ def _entries(audio_root: Path) -> list[dict]:
     return entries
 
 
+def _start_entry(
+    *,
+    episode: str,
+    part: str,
+    attempt_id: str,
+    estimate_usd: float | None,
+    request_sha256: str = "",
+    receipt: str = "",
+) -> dict:
+    return {
+        "type": "start",
+        "at": now().isoformat(timespec="seconds"),
+        "attempt_id": attempt_id,
+        "episode": episode,
+        "part": part,
+        "estimate_usd": estimate_usd,
+        "request_sha256": request_sha256,
+        "receipt": receipt,
+    }
+
+
 def record_start(
     audio_root: Path,
     *,
@@ -358,17 +401,37 @@ def record_start(
 ) -> None:
     _append(
         audio_root,
-        {
-            "type": "start",
-            "at": now().isoformat(timespec="seconds"),
-            "attempt_id": attempt_id,
-            "episode": episode,
-            "part": part,
-            "estimate_usd": estimate_usd,
-            "request_sha256": request_sha256,
-            "receipt": receipt,
-        },
+        _start_entry(
+            episode=episode,
+            part=part,
+            attempt_id=attempt_id,
+            estimate_usd=estimate_usd,
+            request_sha256=request_sha256,
+            receipt=receipt,
+        ),
     )
+
+
+NOT_SENT = "not sent: local error before request"
+
+
+def record_not_sent(audio_root: Path, *, episode: str, part: str, attempt_id: str) -> None:
+    """Settle a reserved attempt that failed locally before the request was made.
+
+    The request function was never entered, so nothing can have been billed. If even
+    this write fails, the attempt stays uncertain: the guard errs towards stopping.
+    """
+    try:
+        record_outcome(
+            audio_root,
+            episode=episode,
+            part=part,
+            attempt_id=attempt_id,
+            outcome="failed",
+            detail=NOT_SENT,
+        )
+    except OSError:
+        pass
 
 
 def record_outcome(
@@ -586,6 +649,51 @@ def tally(
     )
 
 
+def _damaged_note(current: Tally) -> str:
+    since = now() - timedelta(hours=current.limits.window_hours)
+    lines = sorted(
+        a.detail.removeprefix("damaged log line ")
+        for a in current.attempts
+        if a.outcome == UNCERTAIN and a.at >= since and a.detail.startswith("damaged log line ")
+    )
+    if not lines:
+        return ""
+    return (
+        f" Counted among them: damaged {LOG_NAME} line(s) {', '.join(lines)}; see "
+        "audio/README.md, Repairing the log."
+    )
+
+
+def preview_override(
+    current: Tally, part: str, override: str | None, token: str | None, audio_root: Path
+) -> None:
+    """Advisory, unlocked check before slow local work such as an upload.
+
+    ``reserve`` repeats the binding check under the lock just before sending.
+    """
+    if not current.blocked:
+        return
+    if override is None:
+        raise SpendLimitReached(refusal(current, part), current)
+    validate_reason(override)
+    if token != current.token:
+        raise SpendLimitReached(
+            refusal(current, part, "The override names an old or missing spend token. "),
+            current,
+        )
+    if overridden_recently(audio_root, current.episode, part, current.limits):
+        raise SpendLimitReached(_overridden_text(current, part), current)
+
+
+def _overridden_text(current: Tally, part: str) -> str:
+    return (
+        f"Spend guard: no request was sent. {part_label(part)} of episode "
+        f"{current.episode} was already overridden once in the last "
+        f"{current.limits.window_hours:g} h; a second override is not "
+        f"accepted. {current.sentence()} Stop and wait for the window to pass."
+    )
+
+
 def refusal(current: Tally, part: str, lead: str = "") -> str:
     which = (
         f"{part_label(part)} has reached {current.part_window} uncertain attempts"
@@ -594,7 +702,8 @@ def refusal(current: Tally, part: str, lead: str = "") -> str:
     )
     return (
         f"Spend guard: no request was sent. {lead}{which} in the last "
-        f"{current.limits.window_hours:g} h, each possibly billed. {current.sentence()} "
+        f"{current.limits.window_hours:g} h, each possibly billed. {current.sentence()}"
+        f"{_damaged_note(current)} "
         "Stop and wait: check the Google Cloud status page and the billing report before "
         "spending more. The limit lifts as attempts age out of the window. To spend anyway, "
         "run one command by hand with "
@@ -667,32 +776,22 @@ def reserve(
                         current,
                     )
                 if overridden_recently(audio_root, episode, part, current.limits):
-                    raise SpendLimitReached(
-                        f"Spend guard: no request was sent. {part_label(part)} of episode "
-                        f"{episode} was already overridden once in the last "
-                        f"{current.limits.window_hours:g} h; a second override is not "
-                        f"accepted. {current.sentence()} Stop and wait for the window to pass.",
-                        current,
-                    )
-                _append(
-                    audio_root,
-                    {
-                        "type": "override",
-                        "at": now().isoformat(timespec="seconds"),
-                        "attempt_id": attempt_id,
-                        "episode": episode,
-                        "part": part,
-                        "reason": reason,
-                        "token": current.token,
-                        "part_window": current.part_window,
-                        "episode_window": current.episode_window,
-                        "estimate_usd": current.estimate_usd,
-                        "limits": [current.limits.part, current.limits.episode],
-                        "command": command[:40],
-                    },
-                )
-            record_start(
-                audio_root,
+                    raise SpendLimitReached(_overridden_text(current, part), current)
+                override_entry = {
+                    "type": "override",
+                    "at": now().isoformat(timespec="seconds"),
+                    "attempt_id": attempt_id,
+                    "episode": episode,
+                    "part": part,
+                    "reason": reason,
+                    "token": current.token,
+                    "part_window": current.part_window,
+                    "episode_window": current.episode_window,
+                    "estimate_usd": current.estimate_usd,
+                    "limits": [current.limits.part, current.limits.episode],
+                    "command": command[:40],
+                }
+            start = _start_entry(
                 episode=episode,
                 part=part,
                 attempt_id=attempt_id,
@@ -700,6 +799,11 @@ def reserve(
                 request_sha256=request_sha256,
                 receipt=receipt,
             )
+            # One write: a failed start never leaves a used-up override behind.
+            if current.blocked:
+                _append(audio_root, override_entry, start)
+            else:
+                _append(audio_root, start)
             return current
         finally:
             fcntl.flock(lock, fcntl.LOCK_UN)
