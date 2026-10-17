@@ -107,8 +107,17 @@ try {
   await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight'); await page.keyboard.press('Enter');
   await page.waitForTimeout(80);
   if (!/Jumped to D1/.test(await page.locator('#toy-grid [data-status]').textContent())) fail('grid keyboard play', 'jump not taken');
+  await page.locator('#toy-grid [data-clear]').focus(); await page.keyboard.press('Enter');
+  if (await page.locator('#toy-grid .grid-cell.is-visited').count() !== 0) fail('grid clear', 'route not cleared');
+  // Browser shortcuts stay the browser's: Ctrl/Cmd/Alt+R must not turn the stamp.
+  const hijacked = await page.evaluate(() => ['ctrlKey', 'metaKey', 'altKey'].some(mod => {
+    const event = new KeyboardEvent('keydown', { key: 'r', [mod]: true, bubbles: true, cancelable: true });
+    document.querySelector('#toy-stamp .stamp-cell').dispatchEvent(event);
+    return event.defaultPrevented;
+  }));
+  if (hijacked) fail('stamp shortcuts', 'a modified R was intercepted');
   await page.locator('#toy-week .week-item').nth(5).focus(); await page.keyboard.press('Enter');
-  if ((await page.locator('#toy-week .week-detail h4').textContent()) !== 'One conversation still needs you.') fail('week keyboard', 'item not chosen');
+  if ((await page.locator('#toy-week .week-detail h3').textContent()) !== 'One conversation still needs you.') fail('week keyboard', 'item not chosen');
   // Normal motion: the river flows. Reduced motion (above) was checked to have no running animation.
   if (!(await page.evaluate(() => document.getAnimations().some(a => a.animationName === 'river-flow' && a.playState === 'running')))) fail('river flow', 'no flow with normal motion');
   await page.close();

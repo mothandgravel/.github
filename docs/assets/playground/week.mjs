@@ -142,7 +142,7 @@ export function mount(root) {
     selected = i;
     const it = ITEMS[i];
     list.querySelectorAll(".week-item").forEach((b, j) => b.setAttribute("aria-pressed", String(j === i)));
-    const k = document.createElement("p"), h = document.createElement("h4"), p = document.createElement("p"), m = document.createElement("p"), r = document.createElement("p");
+    const k = document.createElement("p"), h = document.createElement("h3"), p = document.createElement("p"), m = document.createElement("p"), r = document.createElement("p");
     k.className = "mono week-kind"; k.textContent = it.kind.toUpperCase();
     h.textContent = it.title; p.textContent = it.text;
     m.className = "week-meaning"; m.textContent = it.meaning;

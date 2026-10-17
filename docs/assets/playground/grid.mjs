@@ -91,7 +91,7 @@ export function mount(root) {
       </fieldset>
       <label class="toy-select">Start from <select data-preset>${Object.entries(PRESETS).map(([k, p]) => `<option value="${k}" ${k === "three" ? "selected" : ""}>${p.label}</option>`).join("")}</select></label>
       <label class="toy-select">Search budget <select data-budget><option value="25000" selected>25,000 steps (a budget the game uses)</option><option value="40">40 steps</option></select></label>
-      <div class="toy-actions"><button type="button" class="toy-button toy-button-strong" data-ask>Ask: can this board be finished?</button></div>
+      <div class="toy-actions"><button type="button" class="toy-button toy-button-strong" data-ask>Ask: can this board be finished?</button><button type="button" class="toy-button" data-clear>Clear route</button></div>
     </div>
     <div class="toy-stage">
       <div class="grid-board" role="group" aria-label="Board, five by five. Arrow keys move between cells." style="--cols:${N}"></div>
@@ -161,7 +161,7 @@ export function mount(root) {
     $("[data-verdict-kind]").textContent = kind;
     $("[data-verdict-text]").textContent = text;
     render();
-    say(`${kind.toLowerCase()}. ${text}`);
+    say(`${kind.charAt(0)}${kind.slice(1).toLowerCase()}. ${text}`);
   };
 
   board.addEventListener("click", (e) => { const c = e.target.closest(".grid-cell"); if (c) tap(Number(c.dataset.i)); });
@@ -178,5 +178,6 @@ export function mount(root) {
   $("[data-preset]").addEventListener("change", (e) => { blocked.fill(0); PRESETS[e.target.value].blocked.forEach((i) => (blocked[i] = 1)); path = []; clearVerdict(); render(); say(`${PRESETS[e.target.value].label}.`); });
   $("[data-budget]").addEventListener("change", clearVerdict);
   $("[data-ask]").addEventListener("click", ask);
+  $("[data-clear]").addEventListener("click", () => { path = []; clearVerdict(); render(); say("Route cleared. The obstacles stay."); });
   render();
 }

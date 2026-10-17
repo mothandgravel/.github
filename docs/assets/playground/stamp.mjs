@@ -44,7 +44,7 @@ export function mount(root) {
       <p class="toy-ledger mono"><span>BLOCKS IN HAND / <b data-blocks>${START_BLOCKS}</b></span><span>HISTORY / <b data-history>0</b></span><span>HEIGHT LIMIT / ${LIMIT}</span></p>
     </div>
     <div class="toy-stage">
-      <div class="stamp-grid" role="group" aria-label="Island, ${W} columns by ${H} rows. Arrow keys move; Enter places the stamp." style="--cols:${W}"></div>
+      <div class="stamp-grid" role="group" aria-label="Island, ${W} columns by ${H} rows. Arrow keys move; Enter places the stamp; R turns it." style="--cols:${W}"></div>
       <p class="toy-readout" data-readout>Point at the island to preview a stamp.</p>
       <p class="toy-status" role="status" aria-live="polite" data-status></p>
     </div>
@@ -156,6 +156,7 @@ export function mount(root) {
   grid.addEventListener("focusin", (e) => { const c = e.target.closest(".stamp-cell"); if (c) propose(Number(c.dataset.i)); });
   grid.addEventListener("click", (e) => { const c = e.target.closest(".stamp-cell"); if (c) place(Number(c.dataset.i)); });
   grid.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return; // leave browser shortcuts such as Ctrl+R alone
     const moves = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: W, ArrowUp: -W };
     if (e.key in moves) {
       e.preventDefault();

@@ -13,7 +13,7 @@ export const MADE_HERE = [
   ['SkyStack Builder', '', 'Prototype'],
   ['Geaidnu', '', 'Prototype'],
   ['LiveConnect', 'sd', 'Study, parked'],
-  ['Kitronik buggy', 'sd', 'Study'],
+  ['Mapping buggy', 'sd', 'Study'],
   ['raivari-rpc', 'sd', 'Study'],
   ['flutter-test-rs', '', 'Prototype'],
   ['paja', 'in', 'Internal tool'],
@@ -39,7 +39,11 @@ if (roll && !roll.querySelector('ul')) {
     label.style.cssText = 'display:flex;align-items:center;gap:8px;font:600 11px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:'
       + (kind === 'pr' ? 'var(--gold-bright)' : kind === 'pl' ? 'var(--ink)' : 'var(--secondary)');
     label.append(mark, status);
-    item.append(name + ' ', label);
+    const named = document.createElement('span');
+    named.style.whiteSpace = 'nowrap';
+    named.textContent = name;
+    label.style.minWidth = '0';
+    item.append(named, ' ', label);
     list.append(item);
     return item;
   });

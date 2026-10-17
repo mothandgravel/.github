@@ -84,7 +84,7 @@
 .week-mark .float.is-now {fill:var(--gold-bright);stroke:var(--surface)}
 .week-ring {fill:none;stroke:var(--gold-bright);stroke-width:2.5}
 .week-detail {padding:14px 16px;border:1px solid var(--line-soft)}
-.week-detail h4 {margin:4px 0 6px;font-size:20px}
+.week-detail h3 {margin:4px 0 6px;font-size:20px}
 .week-detail p {margin:0 0 6px}
 .week-kind,.week-rev {color:var(--gold-bright)}
 .week-rev {color:var(--muted)}
@@ -165,4 +165,6 @@
 .made-list p {color:var(--secondary);margin:0 0 10px}
 .made-list ul {margin:0 0 22px;padding:0;list-style:none;columns:3 260px;column-gap:36px}
 .made-list li {break-inside:avoid;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.made-list li strong {white-space:nowrap}
+.made-list li .status {min-width:0;text-align:right}
 @media (max-width:660px) {.made-list li {display:grid;gap:4px}}
