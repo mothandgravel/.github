@@ -166,6 +166,8 @@ try {
     await review(p,'thread-'+mode,true,mode!=='no-javascript');
     await p.locator('.thread-map a').nth(1).click();await atFragment(p,'reply',mode+' Ajo');
     await p.getByRole('link',{name:'Bring your version'}).click();
+    // Let the question sheet's navigation finish before checking; isVisible does not wait.
+    await p.locator('#signals-context').waitFor({state:'visible',timeout:5000}).catch(()=>{});
     assert(await p.locator('#signals-context').isVisible(),mode+': contextual prompt visible');
     assert(await p.locator('#making').isVisible(),mode+': native question sheet visible');
     await review(p,'thread-prompt-'+mode,true,mode!=='no-javascript');
