@@ -31,6 +31,8 @@ from datetime import datetime, timezone
 from difflib import SequenceMatcher
 from pathlib import Path
 
+from field_notes_audio import spend_guard
+
 KEY_ENV = "FIELD_AUDIO_ANTHROPIC_API_KEY"
 MODEL_ENV = "FIELD_AUDIO_JUDGE_MODEL"
 DEEP_MODEL_ENV = "FIELD_AUDIO_JUDGE_DEEP_MODEL"
@@ -288,6 +290,15 @@ TRANSCRIPT_TASK = (
     "stops before the script's final sentences or outro."
 )
 
+SCRIPT_KINDS = (
+    "code_read_aloud",
+    "markup_read_aloud",
+    "url_read_aloud",
+    "intro_outro",
+    "article_drift",
+)
+TRANSCRIPT_KINDS = ("harmless", "mishearing", "missing_content", "extra_content")
+
 SCRIPT_SCHEMA = {
     "type": "object",
     "properties": {
@@ -298,13 +309,7 @@ SCRIPT_SCHEMA = {
                 "properties": {
                     "kind": {
                         "type": "string",
-                        "enum": [
-                            "code_read_aloud",
-                            "markup_read_aloud",
-                            "url_read_aloud",
-                            "intro_outro",
-                            "article_drift",
-                        ],
+                        "enum": list(SCRIPT_KINDS),
                     },
                     "excerpt": {"type": "string"},
                     "note": {"type": "string"},
@@ -329,7 +334,7 @@ TRANSCRIPT_SCHEMA = {
                     "index": {"type": "integer"},
                     "kind": {
                         "type": "string",
-                        "enum": ["harmless", "mishearing", "missing_content", "extra_content"],
+                        "enum": list(TRANSCRIPT_KINDS),
                     },
                     "note": {"type": "string"},
                 },
@@ -393,9 +398,10 @@ def ask(
     if not key:
         return None, "AI check skipped (no key).", 0.0, 0.0
     model = judge_model(depth)
+    effort = "medium" if depth == "deep" else "low"
     content = "\n\n".join([task, *(_data(tag, value) for tag, value in data)])
     cache_key = hashlib.sha256(
-        json.dumps([PROMPT_VERSION, model, check, SYSTEM, content, schema]).encode()
+        json.dumps([PROMPT_VERSION, model, effort, check, SYSTEM, content, schema]).encode()
     ).hexdigest()
     cached = _cache_path(root, cache_key)
     try:
@@ -422,7 +428,7 @@ def ask(
             system=SYSTEM,
             messages=[{"role": "user", "content": content}],
             output_config={
-                "effort": "low" if depth != "deep" else "medium",
+                "effort": effort,
                 "format": {"type": "json_schema", "schema": schema},
             },
         )
@@ -492,7 +498,9 @@ def check_script(
     )
     ai = []
     for item in (answer or {}).get("findings", [])[:20]:
-        kind = item.get("kind")
+        kind = item.get("kind") if isinstance(item, dict) else None
+        if kind not in SCRIPT_KINDS:
+            continue  # Not in the schema's enum: ignore rather than crash.
         blocking = kind in {"code_read_aloud", "markup_read_aloud"}
         ai.append(
             Finding(
@@ -555,8 +563,10 @@ def check_transcript(
     ai = []
     counts: dict[str, int] = {}
     for item in (answer or {}).get("items", []):
+        if not isinstance(item, dict):
+            continue
         index, kind = item.get("index"), item.get("kind")
-        if type(index) is not int or not 0 <= index < len(numbered):
+        if type(index) is not int or not 0 <= index < len(numbered) or kind not in TRANSCRIPT_KINDS:
             continue
         counts[kind] = counts.get(kind, 0) + 1
         if kind == "harmless":
@@ -585,15 +595,22 @@ def check_override(report: Report, reason: str | None, what: str) -> dict | None
     """Evidence of an explicit override, or a refusal while a finding blocks."""
     if not report.blocking:
         return None
-    reason = (reason or "").strip()
-    if not reason:
+    if not (reason or "").strip():
         raise ValueError(
             f"{report.text()}\n{what} is blocked by the finding above. Fix it, or give an "
             "explicit reason to accept it."
         )
-    if len(reason) > 300:
-        raise ValueError("Keep the override reason under 300 characters")
-    return {**report.evidence(), "override_reason": reason}
+    return {**report.evidence(), "override_reason": spend_guard.validate_reason(reason)}
+
+
+def reason_type(value: str) -> str:
+    """argparse ``type`` for override reasons: 8–300 characters on one line."""
+    import argparse
+
+    try:
+        return spend_guard.validate_reason(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from None
 
 
 # -- Episode adapters ----------------------------------------------------------------
@@ -656,4 +673,4 @@ def add_arguments(parser, *, override: str | None = None, help_text: str = "") -
         f"needs {KEY_ENV}",
     )
     if override:
-        parser.add_argument(override, metavar="REASON", help=help_text)
+        parser.add_argument(override, metavar="REASON", type=reason_type, help=help_text)

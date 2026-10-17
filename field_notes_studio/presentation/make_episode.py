@@ -9,6 +9,7 @@ Make episode; it is never offered while the summary has a blocker.
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.models import valid_reason
 from field_notes_studio.presentation import theme
 from field_notes_studio.presentation.controls import ActionButton
 from field_notes_studio.presentation.icons import icon
@@ -455,7 +456,7 @@ class PreflightDialog:
             plan is not None
             and not plan.blockers
             and (not plan.paid or self.allowed.get())
-            and (not plan.script_blocking or self.accept_script.get().strip())
+            and (not plan.script_blocking or valid_reason(self.accept_script.get()))
         )
         self.make_button.configure(state="normal" if ready else "disabled")
 

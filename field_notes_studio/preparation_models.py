@@ -45,6 +45,9 @@ class PreparationSnapshot:
     project: str = ""
     blockers: tuple[str, ...] = ()
     uncertain_parts: tuple[str, ...] = ()
+    # Script check before paid narration; blocking is captured in the request.
+    script_check: tuple[str, ...] = ()
+    script_blocking: bool = False
 
 
 class CaptionsPending(Exception):

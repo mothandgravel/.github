@@ -411,11 +411,13 @@ class Studio:
             raise ValueError(
                 "Tick Allow paid narration and captions for this episode first; nothing was queued."
             )
-        if plan.script_blocking and not accept_script.strip():
-            raise ValueError(
-                "The script check found text that should not be read aloud. Fix the script, "
-                "or give a reason to narrate it anyway; nothing was queued."
-            )
+        if plan.script_blocking:
+            if not accept_script.strip():
+                raise ValueError(
+                    "The script check found text that should not be read aloud. Fix the script, "
+                    "or give a reason to narrate it anyway; nothing was queued."
+                )
+            accept_script = make_plan.accept_reason(accept_script)
         fresh = make_plan.build(self, note=plan.note, episode=plan.episode)
         if self.consent_used(plan.episode, plan.token):
             raise ConsentUsed(
@@ -430,6 +432,9 @@ class Studio:
         inputs = self.recipe_inputs(fresh.episode)
         if fresh.paid:
             request = make_plan.captured_request(fresh)
+            if "script_check" in request:
+                # The written reason travels with the request; validate() requires it.
+                request["script_accepted"] = make_plan.accept_reason(accept_script)
             PreparationJobs(self.root).validate_recovery(request)
             first = ("prepare", "prepare", request)
         else:

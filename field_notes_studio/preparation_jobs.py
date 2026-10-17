@@ -9,7 +9,7 @@ import shutil
 from dataclasses import replace
 from pathlib import Path
 
-from field_notes_audio import audio, captions, spend_guard
+from field_notes_audio import audio, captions, judge, spend_guard
 from field_notes_audio.locks import run_lock
 from field_notes_audio.production import sources
 from field_notes_audio.storage import digest_file, read_object
@@ -110,6 +110,12 @@ class PreparationJobs:
         directory = self._recording(plan)
         self._check_cache_paths(directory)
         saved_recording = self._saved_recording(plan, directory)
+        # The script check runs before any paid narration, on every path that narrates.
+        checked = judge.episode_script_check(self.root, snapshot.episode, plan["script"])
+        script_blocking = bool(checked.blocking) and saved_recording is None
+        if script_blocking:
+            # Captured, so validate() refuses the request without an accepted reason.
+            request["script_check"] = {"blocking": [f.message for f in checked.blocking]}
         complete, blockers, uncertain, missing = 0, [], {}, []
         diagnostics = []
         for index in range(1, len(plan["requests"]) + 1):
@@ -187,7 +193,15 @@ class PreparationJobs:
             "These services can incur charges; this is not a price quote or live billing check.\n"
             "Completed work is reused. Uncertain requests and failed caption operations are never silently restarted.\n"
             "Successful narration adds a private narrated note to the shelf; no public files, approvals or release records are changed.\n"
-            "This check sent no service request.\n\n" + intro
+            "This check sent no Google request.\n\n"
+            + checked.text()
+            + (
+                "\nPaid narration is refused until the script is fixed, or accepted with a "
+                "written reason in Make episode.\n\n"
+                if script_blocking
+                else "\n\n"
+            )
+            + intro
         )
         if saved_recording:
             summary += "\nVerified saved narration is available; no synthesis is needed.\n"
@@ -220,6 +234,8 @@ class PreparationJobs:
             project=config["project"],
             blockers=tuple(blockers),
             uncertain_parts=tuple(uncertain),
+            script_check=tuple(checked.lines()),
+            script_blocking=script_blocking,
         )
 
     @staticmethod
@@ -306,7 +322,14 @@ class PreparationJobs:
             not isinstance(request, dict)
             or (
                 set(request)
-                - {"resume", "uncertain_chunks", "tts_timeout_seconds", "spend_override"}
+                - {
+                    "resume",
+                    "uncertain_chunks",
+                    "tts_timeout_seconds",
+                    "spend_override",
+                    "script_check",
+                    "script_accepted",
+                }
             )
             != {"version", "note", "episode", "source_identity", "configuration", "plan"}
             or type(request["version"]) is not int
@@ -340,6 +363,27 @@ class PreparationJobs:
             raise ValueError("Invalid spend-limit override")
         if override is not None:
             spend_guard.validate_reason(override["reason"])
+        check = request.get("script_check")
+        if check is not None and (
+            not isinstance(check, dict)
+            or set(check) != {"blocking"}
+            or not isinstance(check["blocking"], list)
+            or not check["blocking"]
+        ):
+            raise ValueError("Invalid script-check record")
+        # Rules are re-run here too, so a request stripped of its record still needs a reason.
+        needs_reason = check is not None or (
+            any(f.severity == judge.BLOCK for f in judge.code_findings(plan["script"]))
+            and self._saved_recording(plan, self._recording(plan)) is None
+        )
+        if needs_reason or "script_accepted" in request:
+            try:
+                spend_guard.validate_reason(request.get("script_accepted"))
+            except ValueError:
+                raise ValueError(
+                    "The script check blocks paid narration: fix the script, or accept it "
+                    "with a written reason (8–300 characters, one line) in Make episode."
+                ) from None
         receipts = request.get("uncertain_chunks", {})
         if (
             not isinstance(receipts, dict)

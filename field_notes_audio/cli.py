@@ -75,7 +75,10 @@ def main(argv: list[str] | None = None) -> int:
                         audio.ROOT, args.episode, plan["script"], args.judge
                     ).text()
                 )
-                print("Dry run only; no Google requests made.")
+                print(
+                    "Dry run only; no Google requests made; an Anthropic check may run if "
+                    f"{judge.KEY_ENV} is set (cached)."
+                )
         elif args.command == "captions":
             workflow.prepare_captions(args)
             # Check request support before preparing resources.

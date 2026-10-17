@@ -82,6 +82,9 @@ class JudgeTest(unittest.TestCase):
         self.assertEqual(self.log(), [])
         with self.assertRaisesRegex(ValueError, "explicit reason"):
             judge.check_override(report, "", "Paid narration")
+        for bad in ("too few", "two\nlines of reason", "x" * 301):
+            with self.subTest(bad=bad), self.assertRaisesRegex(ValueError, "8–300"):
+                judge.check_override(report, bad, "Paid narration")
         accepted = judge.check_override(report, "Reading the settings is the point", "x")
         self.assertEqual(accepted["override_reason"], "Reading the settings is the point")
 
@@ -200,6 +203,31 @@ class JudgeTest(unittest.TestCase):
         self.assertEqual([f.source for f in report.blocking], ["ai"])
         content = client.calls[0]["messages"][0]["content"]
         self.assertEqual(content.count("</narration_script>"), 1)
+
+    def test_unknown_model_kinds_are_skipped(self):
+        self.with_model(
+            {
+                "items": [
+                    {"index": 0, "kind": "invented", "note": ""},
+                    "not an object",
+                    {"index": 0, "kind": "mishearing", "note": ""},
+                ],
+                "truncated_ending": False,
+            }
+        )
+        heard = NOTE_004.replace("button", "mutton")
+        report = judge.check_transcript(NOTE_004, heard, root=self.root, episode="n")
+        self.assertEqual([f.kind for f in report.findings], ["mishearing"])
+        self.with_model({"findings": [{"kind": "invented", "excerpt": "", "note": ""}, 3]})
+        script = judge.check_script(NOTE_004, root=self.root, episode="n")
+        self.assertEqual(script.findings, ())
+
+    def test_effort_is_part_of_the_cache_key(self):
+        client = self.with_model({"findings": []})
+        with mock.patch.dict(os.environ, {judge.DEEP_MODEL_ENV: judge.DEFAULT_MODEL}):
+            judge.check_script(NOTE_004, root=self.root, episode="n")
+            judge.check_script(NOTE_004, root=self.root, episode="n", depth="deep")
+        self.assertEqual([c["output_config"]["effort"] for c in client.calls], ["low", "medium"])
 
     def test_model_failure_never_fails_the_check(self):
         self.with_model({})

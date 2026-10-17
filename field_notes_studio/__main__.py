@@ -9,6 +9,12 @@ from dataclasses import asdict
 from pathlib import Path
 
 
+def _reason(value: str) -> str:
+    from field_notes_audio.judge import reason_type
+
+    return reason_type(value)
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
@@ -32,7 +38,7 @@ def main(argv=None) -> int:
     make.add_argument(
         "--accept-script",
         metavar="REASON",
-        default="",
+        type=_reason,
         help="With --confirm: narrate a script with a blocking script-check finding anyway",
     )
     args = parser.parse_args(argv)
@@ -54,7 +60,7 @@ def main(argv=None) -> int:
                 args.id,
                 confirm=args.confirm,
                 status=args.status,
-                accept_script=args.accept_script,
+                accept_script=args.accept_script or "",
             )
         elif args.command == "worker":
             from field_notes_studio.worker import work

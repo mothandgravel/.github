@@ -13,7 +13,7 @@ from pathlib import Path
 
 from field_notes_studio.episode_controls import EpisodeControls
 from field_notes_studio.job_progress import progress_for
-from field_notes_studio.models import DraftConflict
+from field_notes_studio.models import DraftConflict, valid_reason
 from field_notes_studio.processes import launch_worker
 from field_notes_studio.production_flow import ProductionFlow
 from field_notes_studio.readiness_models import split_details
@@ -781,9 +781,10 @@ class Controller:
             self.view.status("Tick both checks and enter your name before approving.")
             return
         override = review.override.get().strip()
-        if snapshot.check_blocking and not override:
+        if snapshot.check_blocking and not valid_reason(override):
             self.view.status(
-                "The transcript check blocks approval: give a reason to approve anyway."
+                "The transcript check blocks approval: give a reason of 8–300 characters "
+                "on one line to approve anyway."
             )
             return
         identifier, reviewer = self.selected, review.reviewer.get().strip()

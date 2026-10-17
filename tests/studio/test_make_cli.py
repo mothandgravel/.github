@@ -12,6 +12,7 @@ from field_notes_audio import audio, judge, spend_guard
 from field_notes_audio.storage import write_json
 from field_notes_studio import make_cli
 from field_notes_studio.__main__ import main
+from field_notes_studio.preparation_jobs import PreparationJobs
 from tests.studio.test_make_episode import Media
 from tests.studio.test_spend_guard_studio import uncertain
 
@@ -74,7 +75,7 @@ class MakeCliTests(unittest.TestCase):
                 else "AI check: model (saved result, no new cost).",
             )
 
-        with patch("field_notes_studio.make_plan.judge.episode_script_check", blocking):
+        with patch("field_notes_studio.preparation_jobs.judge.episode_script_check", blocking):
             code, out, _ = self.cli("104")
             self.assertEqual(code, 0)
             self.assertIn("Script check: 1 blocking", out)
@@ -85,9 +86,24 @@ class MakeCliTests(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertIn("Fix the script", err)
             self.assertEqual(self.m.studio.repository.jobs(), [])
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), self.assertRaises(SystemExit):
+                main(["--root", str(self.m.root), "make-episode", "104", "--accept-script", "x"])
+            self.assertIn("8–300 characters", err.getvalue())
+            # The expert path queues the captured request directly: it is refused too.
+            request = json.loads(self.m.studio.make_plan(note="104").request_json)
+            self.assertIn("script_check", request)
+            jobs = PreparationJobs(self.m.root)
+            with self.assertRaisesRegex(ValueError, "script check blocks paid narration"):
+                jobs.validate(request)
+            with self.assertRaisesRegex(ValueError, "script check blocks paid narration"):
+                jobs.validate({**request, "script_accepted": "too short"[:5]})
             reason = "The settings are read on purpose"
+            jobs.validate({**request, "script_accepted": reason})
             code, started, _ = self.cli("104", "--confirm", digest, "--accept-script", reason)
             self.assertEqual(code, 0, started)
+            queued = json.loads(self.m.studio.repository.jobs()[0].request)
+            self.assertEqual(queued["script_accepted"], reason)
         consent = self.m.studio.repository.runs()[0]["consent"]
         self.assertEqual(consent["script_accepted"], reason)
         self.assertIn("Script check: 1 blocking, 0 other", consent["script_check"])

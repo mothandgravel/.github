@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+from field_notes_studio.models import valid_reason
 from field_notes_studio.presentation.controls import ActionButton, Fieldset, Tooltip
 from field_notes_studio.presentation.scroll import ScrollArea
 
@@ -230,7 +231,7 @@ class Review(ttk.Frame):
         ready = (
             available
             and not self.snapshot.approved
-            and (not blocking or self.override.get().strip())
+            and (not blocking or valid_reason(self.override.get()))
             and self.reviewer.get().strip()
             and self.audio_checked.get()
             and self.captions_checked.get()

@@ -212,6 +212,11 @@ well under a cent per episode. Script and transcript text is passed to the model
 as untrusted data, never as instructions. The judge is not a paid speech step, so
 the spend guard does not apply to it.
 
+`plan` is still a dry run for Google: it sends no Google requests, but when the
+key is set it may run the Anthropic script check (cached, so a repeat costs
+nothing). Use `plan ID --judge off` to send nothing at all. Override and accept
+reasons must be 8–300 characters on one line.
+
 ## Requirements and saved settings
 
 Python 3.10+, Google Cloud CLI, FFmpeg and ffprobe are required. No Python packages,

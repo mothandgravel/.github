@@ -22,7 +22,7 @@ import json
 from dataclasses import replace
 from datetime import datetime
 
-from field_notes_audio import judge, spend_guard
+from field_notes_audio import spend_guard
 from field_notes_studio.make_models import Attempt, MakePlan, PlanStep, SpendState
 from field_notes_studio.preparation_jobs import PreparationJobs
 from field_notes_studio.readiness_models import plain
@@ -238,11 +238,11 @@ def build(studio, *, note: str = "", episode: str = "") -> MakePlan:
         request_json = ""
     script_check: tuple[str, ...] = ()
     script_blocking = False
-    if snapshot is not None and snapshot.script:
-        checked = judge.episode_script_check(root, episode, snapshot.script)
-        script_check = tuple(checked.lines())
+    if snapshot is not None:
+        # The same check the preparation inspection captured in its request.
+        script_check = snapshot.script_check
         narrated = any(s.key == "narrate" and s.kind == "paid" for s in steps)
-        script_blocking = narrated and bool(checked.blocking)
+        script_blocking = narrated and snapshot.script_blocking
     steps += [
         PlanStep("sound", "Finish sound", recipe_label(inputs), "local"),
         PlanStep("video", "Make video", "Full video and thumbnail", "local"),
@@ -309,6 +309,11 @@ def cost_line(root, episode: str, caption_minutes: float | None = None) -> str:
     except (OSError, ValueError):
         return "The attempts log could not be read; check the Cloud billing report."
     return cost.sentence(caption_minutes)
+
+
+def accept_reason(reason: str) -> str:
+    """The spend guard's rule for written reasons: 8–300 characters on one line."""
+    return spend_guard.validate_reason(reason)
 
 
 def consent_record(plan: MakePlan, accept_script: str = "") -> dict:
