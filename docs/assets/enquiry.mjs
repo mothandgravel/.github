@@ -11,13 +11,12 @@ export const isLive = config => config?.enabled === true && /^https:\/\//.test(c
 // With the form on, the page must not promise that nothing leaves it on its own.
 function honestCopy() {
   const boundary = document.querySelector('.question-boundary');
-  if (boundary) boundary.innerHTML = '<strong>A brief to send or keep.</strong> Send delivers it to the studio inbox with your name and email, or you can email it from your own mail app. Only your starting question needs an answer. The rest can stay open.';
+  if (boundary) boundary.innerHTML = '<strong>A brief to send or keep.</strong> Send to Moth &amp; Gravel delivers it to the studio inbox with your name and email, or you can email it from your own mail app. Only your starting question needs an answer. The rest can stay open.';
   const aside = [...document.querySelectorAll('.journey-aside p')].find(p => p.textContent.includes('nothing leaves this page'));
-  if (aside) aside.textContent = 'Your answers stay in this page until you press Send, which delivers the brief, your name and your email to the studio inbox. You can email it from your own mail app instead. Carrying it to the preview keeps a draft in this browser tab.';
+  if (aside) aside.textContent = 'Your answers stay in this page until you press Send to Moth & Gravel, which delivers the brief, your name and your email to the studio inbox. You can email it from your own mail app instead. Carrying it to the preview keeps a draft in this browser tab.';
   const help = document.getElementById('send-help');
   if (help) help.textContent = `Opens your mail app, addressed to ${INBOX}, with the brief written in.`;
-  const next = [...document.querySelectorAll('#first-work-next p')].find(p => p.textContent.includes('Send to Moth'));
-  if (next) next.textContent = 'This page prepares your words. To start a conversation, press Send, or email the brief to hello@mothandgravel.com. The example workbench is a separate fictional study.';
+  // #first-work-next already names "Send to Moth & Gravel" or copying into an email, which stays true.
 }
 
 function loadTurnstile() {
@@ -31,19 +30,24 @@ function loadTurnstile() {
   });
 }
 
+// Who is writing comes before the brief, like any message; the check and Send follow it. Keeping
+// these blocks apart keeps the brief close to its Copy/Download feedback on a small screen.
 function build() {
-  const form = document.createElement('form');
-  form.className = 'enquiry-send'; form.noValidate = true; form.setAttribute('aria-label', 'Send the brief to Moth & Gravel');
-  form.innerHTML = `<p class="question-help" id="enquiry-help">Send delivers the brief above to ${INBOX} with your name and email, so we can reply. Nothing is published.</p>
-    <label for="enquiry-name">Your name</label><input id="enquiry-name" name="name" type="text" autocomplete="name" maxlength="120" required aria-describedby="enquiry-name-error">
+  const identity = document.createElement('div');
+  identity.className = 'enquiry-identity';
+  identity.innerHTML = `<p class="question-help" id="enquiry-help">Send to Moth &amp; Gravel delivers your brief below to ${INBOX} with your name and email, so we can reply. Nothing is published.</p>
+    <label for="enquiry-name">Your name</label><input id="enquiry-name" name="name" type="text" form="enquiry-form" autocomplete="name" maxlength="120" required aria-describedby="enquiry-name-error">
     <p id="enquiry-name-error" class="question-error" hidden>Add the name we should use when we reply.</p>
-    <label for="enquiry-email">Your email</label><input id="enquiry-email" name="email" type="email" autocomplete="email" maxlength="254" required spellcheck="false" aria-describedby="enquiry-email-error">
+    <label for="enquiry-email">Your email</label><input id="enquiry-email" name="email" type="email" form="enquiry-form" autocomplete="email" maxlength="254" required spellcheck="false" aria-describedby="enquiry-email-error">
     <p id="enquiry-email-error" class="question-error" hidden>Add an email address we can reply to, like name@example.com.</p>
-    <div class="enquiry-trap" aria-hidden="true"><label for="enquiry-website">Leave this empty</label><input id="enquiry-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
-    <div class="enquiry-challenge" id="enquiry-challenge"></div>
-    <div class="journey-actions brief-send"><button class="button button-brass" type="submit" aria-describedby="enquiry-help">Send</button></div>
-    <p class="question-feedback" id="enquiry-status" role="status"></p>`;
-  return form;
+    <div class="enquiry-trap" aria-hidden="true"><label for="enquiry-website">Leave this empty</label><input id="enquiry-website" name="website" type="text" form="enquiry-form" tabindex="-1" autocomplete="off"></div>`;
+  const form = document.createElement('form');
+  form.id = 'enquiry-form'; form.className = 'enquiry-send'; form.noValidate = true; form.setAttribute('aria-label', 'Send the brief to Moth & Gravel');
+  // Visible feedback only; announcements go through the page's single live region.
+  form.innerHTML = `<div class="enquiry-challenge" id="enquiry-challenge"></div>
+    <div class="journey-actions brief-send"><button class="button button-brass" type="submit" aria-describedby="enquiry-help">Send to Moth &amp; Gravel</button></div>
+    <p class="question-feedback" id="enquiry-status"></p>`;
+  return { identity, form };
 }
 
 export function start(config) {
@@ -55,7 +59,8 @@ export function start(config) {
   const link = document.createElement('link');
   link.rel = 'stylesheet'; link.href = new URL('./enquiry.css?v=2', import.meta.url).href;
   document.head.append(link);
-  const form = build();
+  const { identity, form } = build();
+  (document.querySelector('label[for="brief-text"]') || brief).before(identity);
   mailRow.before(form);
   // The mail route stays, demoted to a quiet fallback; the existing module keeps its href current.
   mailRow.classList.add('enquiry-fallback');
@@ -63,8 +68,9 @@ export function start(config) {
   mail.textContent = 'Or email us instead ↗';
   honestCopy();
 
-  const name = form.querySelector('#enquiry-name');
-  const email = form.querySelector('#enquiry-email');
+  const name = document.getElementById('enquiry-name');
+  const email = document.getElementById('enquiry-email');
+  const live = document.getElementById('draft-status');
   const status = form.querySelector('#enquiry-status');
   const button = form.querySelector('button[type="submit"]');
   const holder = form.querySelector('#enquiry-challenge');
@@ -76,6 +82,7 @@ export function start(config) {
 
   const say = (text, fallback = false) => {
     status.replaceChildren(text);
+    if (live) live.textContent = fallback ? `${text} email the brief to ${INBOX} instead.` : text;
     if (fallback) {
       // Offer the page's own mail route, with the brief already written in.
       const anchor = document.createElement('a');
@@ -88,6 +95,8 @@ export function start(config) {
     if (widget !== null) turnstile.remove(widget);
     widget = turnstile.render(holder, {
       sitekey: config.turnstileSiteKey, action: 'enquiry', theme: theme(),
+      // The standard widget is 300px wide; a narrow sheet gets the compact one rather than overflowing.
+      size: holder.clientWidth < 300 ? 'compact' : 'normal',
       callback: value => { token = value; },
       'expired-callback': () => { token = ''; },
       'error-callback': () => { token = ''; say('The privacy check could not load. You can', true); },
@@ -104,11 +113,12 @@ export function start(config) {
     }).catch(() => { say('The privacy check could not load. You can', true); return null; });
     return turnstileReady;
   }
-  // start() runs when the visitor reaches the brief, so the third-party check loads now and not before.
-  prepare();
+  // Cloudflare is contacted only once the visitor starts the form, not merely by reaching the brief.
+  // Filling in a name and email gives the check time to finish before Send.
+  for (const el of [identity, form]) el.addEventListener('focusin', prepare, { once: true });
 
   function check(field, error, valid) {
-    form.querySelector(`#${error}`).hidden = valid;
+    document.getElementById(error).hidden = valid;
     if (valid) field.removeAttribute('aria-invalid'); else field.setAttribute('aria-invalid', 'true');
     return valid;
   }
@@ -133,7 +143,7 @@ export function start(config) {
     // The same words keep the same id, so a retry can never send the enquiry twice.
     const key = JSON.stringify([name.value.trim(), email.value.trim(), words]);
     if (attempt.key !== key) attempt = { key, id: crypto.randomUUID() };
-    const body = JSON.stringify({ id: attempt.id, name: name.value.trim(), email: email.value.trim(), brief: words, turnstileToken: token, website: form.querySelector('#enquiry-website').value });
+    const body = JSON.stringify({ id: attempt.id, name: name.value.trim(), email: email.value.trim(), brief: words, turnstileToken: token, website: document.getElementById('enquiry-website').value });
     if (new TextEncoder().encode(body).length > BODY_LIMIT) { say('The brief is too long to send here. Shorten it, or', true); return; }
 
     sending = true; button.disabled = true; say('Sending…');
@@ -148,7 +158,7 @@ export function start(config) {
     // Turnstile tokens are single-use: every completed attempt resets this widget before a retry.
     // The id stays the same for unchanged words, so Resend still sends at most once.
     if (result?.ok !== true) { token = ''; turnstile.reset(widget); }
-    if (result === null) { say('We could not reach the studio. Your words are still here; check your connection, let the check finish, then press Send again.'); return; }
+    if (result === null) { say('We could not reach the studio. Your words are still here; check your connection, let the check finish, then press Send to Moth & Gravel again.'); return; }
     if (result?.ok === true) {
       const done = document.createElement('p');
       done.className = 'enquiry-sent'; done.tabIndex = -1;
@@ -156,11 +166,13 @@ export function start(config) {
       done.textContent = `Sent. We’ll reply to ${email.value.trim()} from ${INBOX}.`;
       themeWatch?.disconnect(); turnstile.remove(widget);
       for (const el of [mailRow, document.getElementById('send-help'), document.getElementById('send-limit')]) if (el) el.hidden = true;
+      identity.hidden = true;
       form.replaceChildren(done);
+      if (live) live.textContent = done.textContent;
       done.focus();
       return;
     }
-    if (result?.error === 'in_progress') { say('Still sending. Wait a moment, let the check finish, then press Send again.'); return; }
+    if (result?.error === 'in_progress') { say('Still sending. Wait a moment, let the check finish, then press Send to Moth & Gravel again.'); return; }
     say('This did not go through. You can', true);
   });
 }

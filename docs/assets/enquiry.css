@@ -1,12 +1,14 @@
 /* With private sending on, Send is the one primary action on the kept brief; email becomes a quiet text route. */
-.question-room .enquiry-send { margin-top:22px; }
-.question-room .enquiry-send>.question-help { margin:0 0 4px;max-width:62ch; }
-.question-sheet .enquiry-send input { display:block;width:100%;min-height:48px;border:1px solid var(--gold);border-radius:0;background:var(--bg);color:var(--ink);padding:11px 15px;font:400 16px/1.5 var(--body);box-shadow:inset 1px 2px 4px #0000000a; }
-.question-sheet .enquiry-send input:focus-visible { outline:2px solid var(--gold-bright);outline-offset:4px; }
-.question-sheet .enquiry-send input[aria-invalid="true"] { border-color:var(--gold-bright);box-shadow:inset 3px 0 var(--gold-bright); }
-.question-room .enquiry-send .question-error { margin:10px 0 0;font-size:14px;line-height:1.7; }
+.question-room .enquiry-identity { margin-bottom:8px; }
+.question-room .enquiry-identity>.question-help { margin:0;max-width:62ch; }
+.question-room .enquiry-send { margin-top:0; }
+.question-sheet .enquiry-identity input { display:block;width:100%;min-height:48px;border:1px solid var(--gold);border-radius:0;background:var(--bg);color:var(--ink);padding:11px 15px;font:400 16px/1.5 var(--body);box-shadow:inset 1px 2px 4px #0000000a; }
+.question-sheet .enquiry-identity input:focus-visible { outline:2px solid var(--gold-bright);outline-offset:4px; }
+.question-sheet .enquiry-identity input[aria-invalid="true"] { border-color:var(--gold-bright);box-shadow:inset 3px 0 var(--gold-bright); }
+.question-room .enquiry-identity .question-error { margin:10px 0 0;font-size:14px;line-height:1.7; }
 .enquiry-trap { position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden; }
-.enquiry-challenge { margin-top:24px;min-height:65px; }
+.enquiry-challenge { max-width:100%; }
+.enquiry-challenge:not(:empty) { margin-top:22px;min-height:65px; }
 .question-room .enquiry-send button[type="submit"] { font-size:14px;min-height:54px;min-width:9em;justify-content:flex-start; }
 .question-room .enquiry-send button[disabled] { opacity:.65;cursor:progress; }
 .question-room .enquiry-send .question-feedback a { color:var(--ink); }
@@ -17,4 +19,4 @@
 .enquiry-sent { font:400 24px/1.4 var(--serif);color:var(--ink);margin:0;padding:4px 0; }
 .enquiry-sent:focus { outline:2px solid var(--gold-bright);outline-offset:6px; }
 @media(max-width:660px) { .question-room .enquiry-send button[type="submit"] { width:100%; } }
-@media print { .enquiry-send { display:none!important; } }
+@media print { .enquiry-identity,.enquiry-send { display:none!important; } }
