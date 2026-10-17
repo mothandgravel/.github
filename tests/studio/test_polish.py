@@ -1,5 +1,6 @@
 """Plain-language mappings, the shelf's Next filter, release limits and appearance choice."""
 
+import os
 import unittest
 from unittest.mock import patch
 
@@ -112,3 +113,64 @@ class AppearanceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipUnless(os.environ.get("DISPLAY"), "Tk integration requires DISPLAY or xvfb-run")
+class KeyboardAndNightUiTests(unittest.TestCase):
+    def start(self, appearance_value):
+        from tests.studio import test_ui
+
+        with patch.dict(os.environ, {"STUDIO_APPEARANCE": appearance_value}):
+            self.h = test_ui.UITests()
+            self.h.setUp()
+        self.addCleanup(self.h.doCleanups)
+        self.app, self.root = self.h.app, self.h.root
+
+    def test_ctrl_enter_in_an_editable_text_types_a_newline_only(self):
+        self.start("light")
+        workspace = self.app.workspace
+        workspace.tool_buttons[str(workspace.sound)].invoke()
+        credit = workspace.sound.widgets["music_credit"]
+        workspace.sound.form.reveal(credit)
+        self.root.update()
+        credit.focus_force()
+        credit.mark_set("insert", "end-1c")
+        self.root.update()
+        self.h.wait(lambda: self.app.readiness.primary.instate(["!disabled"]))
+        with patch.object(self.app.readiness, "act") as primary:
+            before = credit.get("1.0", "end-1c")
+            credit.event_generate("<Control-Return>")
+            self.root.update()
+            primary.assert_not_called()
+            self.assertEqual(credit.get("1.0", "end-1c"), before + "\n")
+            # Outside a text box the shortcut still runs the card's next step.
+            self.app.shelf.tree.focus_force()
+            self.root.update()
+            self.app.shelf.tree.event_generate("<Control-Return>")
+            self.root.update()
+            primary.assert_called_once()
+
+    def test_night_and_paper_switch_live(self):
+        from field_notes_studio.presentation import theme
+
+        self.start("night")
+        self.assertEqual(theme.NAME, "night")
+        plan = self.app.workspace.plan
+        self.assertEqual(str(plan["background"]), theme.SURFACE)
+        self.assertIn("Studio.Checkbutton.indicator", ttk_elements(self.root))
+        with patch.dict(os.environ, {"STUDIO_APPEARANCE": ""}):
+            for name in ("light", "night"):
+                self.app.appearance.set(name)
+                self.app.appearance_chosen()
+                self.root.update()
+                self.assertEqual(theme.NAME, name)
+                self.assertEqual(str(plan["background"]), theme.SURFACE)
+                self.assertIn("Studio.Checkbutton.indicator", ttk_elements(self.root))
+        self.app.appearance.set("light")
+        self.app.apply_appearance()
+
+
+def ttk_elements(root):
+    from tkinter import ttk
+
+    return ttk.Style(root).element_names()

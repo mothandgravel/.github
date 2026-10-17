@@ -138,6 +138,7 @@ def apply(root, name: str | None = None) -> None:
     style.configure("Legend.TLabel", font=("DejaVu Sans", 10, "bold"), foreground=INK)
     style.configure("Success.TLabel", foreground=SUCCESS)
     style.configure("Draft.TLabel", foreground=WARNING)
+    style.configure("Mono.TLabel", font=("DejaVu Sans Mono", 9), foreground=MUTED)
     style.configure("Step.TLabel", foreground=MUTED, font=("DejaVu Sans", 10))
     style.configure("StepOn.TLabel", foreground=INK, font=("DejaVu Sans", 10, "bold"))
     # Cards and groups take their contrast from a drawn edge, never a flat fill alone.

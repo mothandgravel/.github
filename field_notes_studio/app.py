@@ -209,7 +209,7 @@ class Application:
             if index in {1, 3, 6}:
                 menu.add_separator()
             menu.add_command(label=label, accelerator=accelerator, command=commands[sequence])
-            self.root.bind(sequence, lambda _e, c=commands[sequence]: (c(), "break")[1])
+            self.root.bind(sequence, lambda event, c=commands[sequence]: self.shortcut(event, c))
         menu.add_separator()
         self.appearance_menu = tk.Menu(menu, tearoff=False)
         for value, label in (
@@ -320,15 +320,31 @@ class Application:
         panes = [str(pane) for pane in self.body.panes()]
         if visible and str(self.shelf) not in panes:
             self.body.insert(0, self.shelf, weight=0)
-            self.root.after_idle(lambda: self.body.sashpos(0, theme.px(self.root, 316)))
+            self.root.after_idle(self._set_sash)
         elif not visible and str(self.shelf) in panes:
             self.body.forget(self.shelf)
+
+    def _set_sash(self):
+        # The shelf pane may be gone again (Release restored or a quick toggle).
+        if len(self.body.panes()) > 1:
+            self.body.sashpos(0, theme.px(self.root, 316))
+
+    def shortcut(self, event, command):
+        """Run a menu shortcut, except Ctrl+Enter while typing in an editable text box."""
+        if (
+            event.keysym == "Return"
+            and isinstance(event.widget, tk.Text)
+            and str(event.widget.cget("state")) == "normal"
+        ):
+            return None
+        command()
+        return "break"
 
     def _place_sash(self, event):
         """Give the shelf room for its filters and Next column on first layout."""
         if not self.sash_placed and event.width > 1:
             self.sash_placed = True
-            self.root.after_idle(lambda: self.body.sashpos(0, theme.px(self.root, 316)))
+            self.root.after_idle(self._set_sash)
 
     # Jobs panel and status bar --------------------------------------------------------
 

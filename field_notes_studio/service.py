@@ -202,7 +202,7 @@ class Studio:
                 return self.repository.resume_preparation(identifier)
             if request.get("spend_override"):
                 raise ValueError(
-                    "A spend-limit override covers one run only. Inspect preparation again and "
+                    "A spend-limit override covers one run only. Check the narration again and "
                     "confirm a new override if you still accept the possible charge."
                 )
         return self.submit(job.episode, job.action, request)

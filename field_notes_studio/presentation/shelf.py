@@ -13,7 +13,8 @@ from field_notes_studio.presentation.controls import Tooltip
 from field_notes_studio.presentation.theme import px
 
 FILTERS = ("All", "Needs me", "Working", "Done")
-NEEDS_ME = {"Prepare", "Produce", "Review", "Release", "Recover", "Resume", "Repair"}
+# "Check" is a version whose saved pointer could not be read: someone should look.
+NEEDS_ME = {"Prepare", "Produce", "Review", "Release", "Recover", "Resume", "Repair", "Check"}
 WORKING = {"Working"}
 DONE = {"Done", "In feed"}
 # Preparation states for written notes that are not narrated yet.

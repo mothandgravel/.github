@@ -205,6 +205,7 @@ class Controller:
     def select(
         self, identifier, review_scope=None, *, reload=False, after_load=None, on_error=None
     ):
+        self.selected_note = None
         if identifier == self.selected and not reload:
             if review_scope is not None:
                 self.show_review(review_scope)
@@ -297,12 +298,15 @@ class Controller:
         """A written note that is not narrated yet: show its one next step, nothing else."""
         if self.loading:
             return
+        if self.selected is None and getattr(self, "selected_note", None) == item:
+            return  # Re-selected by a shelf refresh; nothing changed.
         try:
             self.checkpoint()
         except Exception as exc:
             self.view.status(f"Keep this draft open: checkpoint failed: {exc}")
             return
         self.selected = None
+        self.selected_note = item
         for name in (
             "generation",
             "selection_generation",
