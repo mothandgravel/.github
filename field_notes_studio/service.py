@@ -387,6 +387,12 @@ class Studio:
             fresh.episode, fresh.note, make_plan.consent_record(fresh), inputs, first
         )
 
+    def spend_state(self, episode: str):
+        """The spend guard and uncertain attempts for one episode (read-only)."""
+        from field_notes_studio import make_plan
+
+        return make_plan.spend_state(self.root, episode, [])
+
     def run_views(self):
         return self.runs().views()
 
