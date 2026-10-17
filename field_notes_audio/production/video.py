@@ -5,13 +5,83 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
+import re
 import shutil
 import subprocess
+import sys
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 from field_notes_audio.storage import read_object, write_json
+
+FRAME_TIMEOUT_MS = 120_000
+# Studio splits job errors on this exact text (field_notes_studio.readiness_models).
+DETAILS_MARK = "\n\nDetails:\n"
+
+
+class RenderFailed(ValueError):
+    """The renderer stopped. The sentence is for people; the stderr tail follows DETAILS_MARK."""
+
+
+def explain_render_failure(returncode: int | None, stderr: str) -> str:
+    saved = "Your audio and captions are saved; choose Make it again to retry the video only."
+    text = stderr.lower()
+    if returncode is None:
+        why = "it ran for over an hour, usually because the computer is busy"
+    elif "timeoutinmilliseconds" in text or "timeout (" in text:
+        why = "a frame took longer than 2 minutes, usually because the computer is busy"
+    elif (
+        "out of memory" in text
+        or "enomem" in text
+        or ("heap" in text and "limit" in text)
+        or returncode in {-9, 137}
+    ):
+        why = "the computer ran out of memory; close other programs first"
+    elif "enoent" in text or "cannot find module" in text or "command not found" in text:
+        why = "a video tool is missing or damaged; run npm ci --prefix video and check Setup"
+    else:
+        return f"The video renderer stopped unexpectedly. {saved}"
+    return f"The video renderer stopped: {why}. {saved}"
+
+
+def renderer_concurrency(configured: int) -> int:
+    """Never ask for more frame workers than the machine has idle cores right now."""
+    try:
+        idle = (os.cpu_count() or 1) - os.getloadavg()[0]
+    except (OSError, AttributeError):
+        return configured
+    return max(1, min(configured, int(idle)))
+
+
+def run_renderer(command: list[str], cwd: Path) -> None:
+    try:
+        done = subprocess.run(
+            command, cwd=cwd, stderr=subprocess.PIPE, text=True, errors="replace", timeout=3600
+        )
+    except subprocess.TimeoutExpired as exc:
+        tail = exc.stderr or b""
+        tail = tail.decode(errors="replace") if isinstance(tail, bytes) else tail
+        raise RenderFailed(
+            explain_render_failure(None, tail) + DETAILS_MARK + tail[-1500:]
+        ) from None
+    except FileNotFoundError as exc:
+        raise RenderFailed(
+            "The video renderer stopped: Node is missing; install Node 22 or newer and check Setup. "
+            "Your audio and captions are saved; choose Make it again to retry the video only."
+            + DETAILS_MARK
+            + f"{type(exc).__name__}: {exc}"
+        ) from None
+    if done.stderr:
+        print(done.stderr, end="", file=sys.stderr, flush=True)
+    if done.returncode:
+        tail = re.sub(r"\x1b\[[0-9;]*m", "", done.stderr)[-1500:].strip()
+        raise RenderFailed(
+            explain_render_failure(done.returncode, done.stderr)
+            + DETAILS_MARK
+            + (tail or f"Renderer exited with status {done.returncode} and printed nothing.")
+        )
 
 
 def visual_assets(root: Path, entry: dict) -> dict[str, Path]:
@@ -77,7 +147,10 @@ def render_video(
         "artworkLabel": "FROM THE WRITTEN NOTE"
         if any(path.parent.name == "notes" for path in assets.values())
         else "STUDIO ARTWORK",
-        "video": settings["video"],
+        "video": {
+            **settings["video"],
+            "concurrency": renderer_concurrency(settings["video"]["concurrency"]),
+        },
         "previewSeconds": args.preview_seconds,
     }
     write_json(stage / "props.json", props)
@@ -91,7 +164,7 @@ def render_video(
     command.append(str(args.browser_executable.resolve()) if args.browser_executable else "")
     if bundle is not None:
         command.append(str(bundle))
-    subprocess.run(command, cwd=root / "video", check=True, timeout=3600)
+    run_renderer(command, root / "video")
     result = subprocess.run(
         [
             "ffprobe",

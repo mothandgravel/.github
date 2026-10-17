@@ -16,6 +16,7 @@ from field_notes_studio.job_progress import progress_for
 from field_notes_studio.models import DraftConflict
 from field_notes_studio.processes import launch_worker
 from field_notes_studio.production_flow import ProductionFlow
+from field_notes_studio.readiness_models import split_details
 
 
 class Controller:
@@ -897,7 +898,9 @@ class Controller:
                     and Path(review.video).parent == Path(job.result)
                 ):
                     guidance = "This full episode is already approved. Next: make its upload folder. This job published nothing."
-            reason = job.error or result or last
+            reason, hidden = split_details(job.error or result or last)
+            if hidden:
+                reason += " Renderer output: Job history, Details."
             if job.status in {"failed", "interrupted", "cancelled"} and not re.fullmatch(
                 r"narration-\d+-of-\d+", at
             ):

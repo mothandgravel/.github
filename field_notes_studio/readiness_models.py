@@ -93,3 +93,9 @@ def readable(message: str, context: str = "preflight") -> tuple[str, str]:
     if _authored(text):
         return text, ""
     return PLAIN[context], text[:600]
+
+
+def split_details(message: str) -> tuple[str, str]:
+    """(sentence, technical) for a job error whose engine put its output after 'Details:'."""
+    sentence, _, details = message.partition("\n\nDetails:\n")
+    return sentence, details.strip()
