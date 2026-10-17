@@ -119,9 +119,10 @@ receipt-bound consent in Studio or `--retry-uncertain` on the CLI. Three gaps re
    says, for any 5xx: *"After a short pause, repeat the same generate command with
    --retry-uncertain."* An unattended driver, whether a shell loop, a script or an agent,
    follows that literally. Nothing counts attempts across runs, so nothing stops it.
-2. **499 is not classified.** It falls through to generic text. In Google's error model
-   it maps to `CANCELLED`, and [AIP-194](https://google.aip.dev/194) says not to
-   auto-retry it.
+2. **499 is not classified.** It falls through to generic text. Google's
+   [`google.rpc.Code`](https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto)
+   maps `CANCELLED` to "HTTP Mapping: 499 Client Closed Request", and
+   [AIP-194](https://google.aip.dev/194) says not to auto-retry it.
 3. **Uncertain spending is invisible in aggregate.** Each receipt records one attempt, but
    no surface sums them as "3 uncertain attempts on part 3, each possibly billed, at most
    about $X".
@@ -147,11 +148,17 @@ receipt-bound consent in Studio or `--retry-uncertain` on the CLI. Three gaps re
 - **Resume stays explicit.** *Try part 3 once more…* reuses the existing duplicate-charge
   consent. *Pause until I come back* keeps the job parked. *Copy diagnostics* produces the
   bounded, redacted text for a bug report.
-- **Engine option to investigate.** Google's
+- **Engine option investigated, and rejected.** Google's
   [Long Audio Synthesis](https://docs.cloud.google.com/text-to-speech/docs/create-audio-text-long-audio-synthesis)
-  is asynchronous and polls an operation. That would turn "uncertain" into a resumable
-  wait, the way captions already work. It is unverified whether it supports the Gemini
-  voices in use. This is an owner question.
+  is asynchronous and polls an operation. The follow-up research found three problems:
+  - it documents no Gemini voice support;
+  - it would change the voice and drop prompted style;
+  - it costs about twice as much per minute.
+
+  The decision is **don't migrate**. The Gemini Batch API, at 50 % of the interactive
+  price with a 24 h target, is a later option for non-urgent bulk renders, after a
+  one-chunk pilot. See [the Long Audio research](studio-sprint/long-audio-research.md) and
+  the decisions below.
 
 Cloud budgets [alert but do not cap](https://docs.cloud.google.com/billing/docs/how-to/budgets).
 The local guard is the only hard stop.
@@ -159,21 +166,24 @@ The local guard is the only hard stop.
 ## 2. What professional tools do
 
 This extends the comparisons in `progress-ux-research.md` and `publishing-ux.md`. Sources
-are official help pages unless marked. Lines marked *(unverified)* could not be confirmed
-on a fetched official page.
+are official help pages unless marked. Every row was re-checked on 17 October. The
+Descript, Frame.io, Apple, Auphonic, Hindenburg and 499-mapping claims are now quoted from
+official pages. Parts still marked *(still unverified)* could not be reached on an
+official page: Premiere and Adobe helpx returned 403, and no official Spotify podcast
+loudness page was found.
 
 | Job | Documented pattern | What it suggests here |
 |---|---|---|
 | TTS narration | [ElevenLabs Studio](https://elevenlabs.io/docs/creative-platform/products/studio) labels the button **Regenerate** when free and **Generate** when it costs credits. It shows the credit cost before export and keeps a per-paragraph generation history with *Restore*. | Put the paid/free state on the button. Keep per-part versions, so re-narrating one part never discards the approved take. |
-| TTS narration (async) | [Google Long Audio Synthesis](https://docs.cloud.google.com/text-to-speech/docs/create-audio-text-long-audio-synthesis) runs as a long-running operation with `progressPercentage`, written to `gs://`. | Use a pollable operation instead of an uncertain synchronous call (see the incident). |
+| TTS narration (async) | [Google Long Audio Synthesis](https://docs.cloud.google.com/text-to-speech/docs/create-audio-text-long-audio-synthesis) runs as a long-running operation with `progressPercentage`, written to `gs://`. | Investigated and rejected for now: there is no documented Gemini voice support and it costs about twice as much (see the decisions below). |
 | Retry policy | [Google retry strategy](https://docs.cloud.google.com/storage/docs/retry-strategy) retries only idempotent or precondition-protected requests, with backoff and jitter. [AIP-194](https://google.aip.dev/194) says not to retry CANCELLED. | Paid synthesis is not idempotent, so a person decides each retry and the budget is enforced. |
-| Transcript-first editing | Descript and Premiere text-based editing put transcript edits on the media *(unverified on fetched official pages)*. | For review rather than editing: a timecoded transcript to play from, flag and fix captions (Concept C). |
-| Loudness presets | Auphonic defaults to −16 LUFS for podcasts. Apple is about −16 LUFS / −1 dBTP, and Spotify normalises to about −14 *(secondary sources)*. Hindenburg ships export loudness targets *(third-party)*. | Show the measured LUFS/peak as a saved milestone ("−16.1 LUFS · peak −1.2 dBTP"). It is evidence, not approval. |
+| Transcript-first editing | [Descript: edit like a doc](https://help.descript.com/getting-started/edit-like-a-doc.md): "Delete a word from the transcript, and that word disappears from your audio or video". Correcting the transcript, by contrast, ["changes the text on screen without altering the audio or video underneath"](https://help.descript.com/hc/en-us/articles/10119613609229-Editing-in-Descript). Premiere's text-based editing page refused our fetch with a 403 *(still unverified)*. | For review rather than editing: a timecoded transcript to play from, flag and fix captions (Concept C). |
+| Loudness presets | [Apple Podcasts audio requirements](https://podcasters.apple.com/support/893-audio-requirements): "around -16 dB LKFS, with a +/- 1 dB tolerance" and a true peak not above −1 dBFS. [Auphonic](https://auphonic.com/help/algorithms/singletrack.html) offers targets by destination (TV, −16 LUFS mobile/podcast, −14 streaming); the page names no podcast default, which corrects the earlier claim. [Hindenburg PRO](https://hindenburg.com/hindenburg-pro-features/sharing/): "Whether -23, -24 or -16 … export to any LUFS standard or even multiple standards at once." Spotify's podcast target of about −14 LUFS still has only secondary sources *(still unverified)*. | Show the measured LUFS/peak as a saved milestone ("−16.1 LUFS · peak −1.2 dBTP"). It is evidence, not approval. |
 | Chapters | [YouTube chapters](https://support.google.com/youtube/answer/9884579) need 00:00 first, at least 3 chapters, each at least 10 s. [Podcasting 2.0 chapters](https://podcasting2.org/docs/podcast-namespace/tags/chapters) are JSON, editable after publishing. [Auphonic](https://auphonic.com/blog/2013/07/08/howto-chapter-marks-auphonic/) offsets chapters by the intro automatically. | Later: derive chapters from note headings plus intro offset, write them into the description and a JSON chapters file. Out of scope for the concepts. |
-| Review/approval | Frame.io: timecoded comments and an *Approved* status *(third-party)*. | Notes are attached to timecodes. Approval is blocked until notes are resolved or dismissed (Concept C). |
+| Review/approval | [Frame.io: commenting](https://help.frame.io/en/articles/9105251-commenting-on-your-media): pause at the frame and comment, and "clicking on the comment card will bring you to the timecode position". [Frame.io review page](https://help.frame.io/en/articles/1161479-review-links-explained-for-clients-legacy): "Choose from Approved, In Progress, or Needs Review", and project users are notified. | Notes are attached to timecodes. Approval is blocked until notes are resolved or dismissed (Concept C). |
 | Publish hand-off | [YouTube upload](https://support.google.com/youtube/answer/57407): Checks continue in the background, SD publishes before HD, and closing early saves as private. The [resumable upload protocol](https://developers.google.com/youtube/v3/guides/using_resumable_upload_protocol) resumes by byte range. | Keep the manual browser hand-off, but put everything to copy on one page. A future authenticated upload would be resumable, not restarted. |
 | Show templates | [Auphonic batch](https://auphonic.com/help/web/batch.html) applies a preset to many inputs, with per-production overrides. | Already built (named recipes). Name the recipe in the episode header, with an override count. |
-| Batch queue | Media Encoder watch folders and queue *(unverified)*. A known complaint is that one stalled item blocks the queue. | Group the queue by "needs you / working / ready", not by job row (Concept B home). |
+| Batch queue | Adobe Media Encoder: watch folders auto-encode into one queue, per a [developer reference](https://developer.adobe.com/media-encoder/uxp/media-encoder-api/watch-folder/). helpx refused our fetches with a 403, so the queue status and retry behaviour remain *(still unverified)*. | Group the queue by "needs you / working / ready", not by job row (Concept B home). |
 | Progress | [NN/g progress indicators](https://www.nngroup.com/articles/progress-indicators/): show a step count for series jobs and give an estimate for long jobs. | Use step counts ("3 of 3 parts"). Base estimates only on durations measured on this computer. Notify when the user is needed. |
 
 Guidelines applied: [NN/g error messages](https://www.nngroup.com/articles/error-message-guidelines/)
@@ -355,7 +365,20 @@ Suggested order:
 
 Each step ships on its own. The existing screens stay available as the expert path.
 
+### Build lanes (17 Oct)
+
+| Lane | Branch | Scope |
+|---|---|---|
+| 1 | `fix/studio-incident-guard` | Subtle changes 1–3: plain-language error mapping, retry guidance without loops plus 499 classification, and the engine spend guard. |
+| 2 | `feat/studio-polish` | Subtle changes 4–10 plus Night appearance. |
+| 3 | next | Concept B: pre-flight with one confirm, chained make plan, work-list home, export on approval, and a "Website and podcast feed" button. |
+
+Concept C follows B. This document is the design record. Each lane carries its own
+implementation evidence.
+
 ## 5. Decisions only the owner can make
+
+These were the open questions. The owner's answers are in §6.
 
 1. **Spend guard default.** How many uncertain paid attempts per part, and per episode per
    day, before Studio and the CLI refuse? (Proposed: 2 per part, 4 per episode, per 24 h.)
@@ -370,3 +393,27 @@ Each step ships on its own. The existing screens stay available as the expert pa
    version*.
 7. **Night appearance.** Follow the system setting where it can be detected, or offer only
    a manual toggle?
+
+## 6. Decisions (17 Oct)
+
+The owner accepted the recommendation and answered every question:
+
+1. **Spend guard: 2 uncertain attempts per part and 4 per episode, per 24 h.** Studio and
+   the CLI both refuse past the budget without a deliberate override.
+2. **Make episode: one confirm, provided the summary shows the cost.** The pre-flight must
+   display the estimate and the paid steps before the single consent. That consent never
+   covers an uncertain resend, which keeps its own duplicate-charge consent.
+3. **Upload package: made automatically after approval.** This is local and free.
+4. **Promote and publish: yes, behind a labelled button, never merging.** Studio may run
+   `promote` and push the publication branch with `publish`. Merging stays on GitHub.
+5. **Long Audio: research only, and the result is don't migrate.**
+   - There is no documented Gemini voice support.
+   - It would use a different voice and drop prompted style.
+   - It costs about twice as much per output minute (Chirp 3 HD vs Gemini Flash TTS).
+
+   The Gemini Batch API, at 50 % of the interactive price, is a later option for bulk
+   renders after a one-chunk pilot. Billing for failed or cancelled requests is not
+   documented either way. Reconcile it against the Cloud billing usage report. Details:
+   [long-audio-research.md](studio-sprint/long-audio-research.md).
+6. **Renames approved**, including **"edition" becomes "version"**, as in subtle change 7.
+7. **Night appearance follows the system, with a manual override.**
