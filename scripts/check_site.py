@@ -256,7 +256,7 @@ def main() -> int:
         maritime_parser.feed(maritime_html)
         for anchor in maritime_parser.anchors:
             check(anchor in maritime_parser.ids, f'Maritime study broken anchor #{anchor}')
-        sources = re.findall(r'(?:href|src|poster)="(\.\.?/[^\"]+)"', maritime_html)
+        sources = re.findall(r'(?:href|src|data-poster)="(\.\.?/[^\"]+)"', maritime_html)
         sources += [part.split()[0] for srcset in re.findall(r'srcset="([^"]+)"', maritime_html) for part in srcset.split(',')]
         for relative in sources:
             target = (maritime_page.parent / urlsplit(relative).path).resolve()
@@ -271,7 +271,7 @@ def main() -> int:
         videos = re.findall(r'<video\b([^>]*)>', maritime_html)
         check(len(videos) == 3, 'Maritime study needs its three films')
         for attributes in videos:
-            check(all(token in attributes for token in ('controls', 'preload="none"', 'muted', 'playsinline', 'poster=', 'aria-describedby'))
+            check(all(token in attributes for token in ('controls', 'preload="none"', 'muted', 'playsinline', 'data-poster=', 'aria-describedby'))
                   and 'autoplay' not in attributes, 'Maritime films must be silent, user-initiated and described')
         for ident in ('motion', 'inspection', 'night'):
             check(f'id="{ident}-description"' in maritime_html, f'Maritime film {ident} needs a readable sequence')

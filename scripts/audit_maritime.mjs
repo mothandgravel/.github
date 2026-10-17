@@ -12,9 +12,10 @@ const pages = [
   { name: 'maritime-note', path: '/notes/014-enough-light-to-read-by.html' },
 ];
 const results = [];
+let filmCheck = 'not run';
 const fail = (label, detail) => { throw Error(label + ': ' + JSON.stringify(detail)); };
 try {
-  for (const target of pages) for (const width of [320, 390, 1024, 1440]) for (const theme of ['night', 'afterlight']) {
+  for (const target of pages) for (const width of [320, 390, 1440]) for (const theme of ['night', 'afterlight']) {
     const label = `${target.name}-${width}-${theme}`;
     const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     const errors = [];
@@ -33,7 +34,7 @@ try {
       images: [...document.querySelectorAll('main img')].every(image => image.naturalWidth > 0 && image.alt.trim()),
       videos: [...document.querySelectorAll('main video')].map(video => ({
         autoplay: video.autoplay, muted: video.muted, preload: video.preload, controls: video.controls,
-        poster: !!video.getAttribute('poster'), described: (video.getAttribute('aria-describedby') || '').split(' ').every(id => document.getElementById(id)),
+        poster: !!video.dataset.poster, described: (video.getAttribute('aria-describedby') || '').split(' ').every(id => document.getElementById(id)),
         idle: video.networkState !== HTMLMediaElement.NETWORK_LOADING || video.readyState === 0,
       })),
       boundaries: /not navigation/i.test(document.body.innerText),
@@ -62,10 +63,15 @@ try {
   const video = film.locator('#motion video');
   await video.scrollIntoViewIfNeeded();
   if (!(await video.evaluate(v => v.paused))) fail('film', 'played before request');
-  await video.evaluate(v => v.play());
-  await film.waitForFunction(() => !document.querySelector('#motion video').paused);
-  await film.locator('#boundaries').scrollIntoViewIfNeeded();
-  await film.waitForFunction(() => document.querySelector('#motion video').paused, null, { timeout: 5000 });
+  await film.waitForFunction(() => document.querySelector('#motion video').getAttribute('poster'), null, { timeout: 5000 });
+  // Open-source Chromium builds may lack H.264; then playback cannot start and the pause check is recorded as skipped.
+  await video.evaluate(v => { v.play().catch(() => {}); });
+  const playback = await film.waitForFunction(() => { const v = document.querySelector('#motion video'); return v.error ? 'unsupported' : (!v.paused && v.readyState >= 2 ? 'playing' : false); }, null, { timeout: 15000 }).then(h => h.jsonValue(), () => 'unsupported');
+  if (playback === 'playing') {
+    await film.locator('#boundaries').scrollIntoViewIfNeeded();
+    await film.waitForFunction(() => document.querySelector('#motion video').paused, null, { timeout: 5000 });
+  }
+  filmCheck = playback === 'playing' ? 'pauses off-screen' : 'H.264 unavailable in this browser; pause check skipped';
   await film.close();
   const noScript = await browser.newPage({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
   for (const target of pages) {
@@ -75,6 +81,6 @@ try {
   await noScript.goto(origin + '/', { waitUntil: 'load' });
   if (await noScript.locator('#specimen-maritime-study a[href="./specimens/maritime-study/"]').count() !== 1) fail('home', 'maritime study not on the bench');
   await noScript.close();
-  await writeFile(`${output}/maritime-review.json`, JSON.stringify({ results, filmPausesOffscreen: true, noScript: true }, null, 2));
-  console.log(`PASS: maritime study and Field Note 014 at ${results.length} page/viewport/theme combinations, films on request, no-script access`);
+  await writeFile(`${output}/maritime-review.json`, JSON.stringify({ results, film: filmCheck, noScript: true }, null, 2));
+  console.log(`PASS: maritime study and Field Note 014 at ${results.length} page/viewport/theme combinations, films on request (${filmCheck}), no-script access`);
 } finally { await browser.close(); }

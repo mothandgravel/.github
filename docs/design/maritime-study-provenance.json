@@ -65,7 +65,7 @@
       "caption": "MyStar exterior, sea motion and a short orbit. Fixed Tallinn study position; nearby FMI weather observed at 06:40 UTC. Captured 17 October 2026.",
       "capturedOn": "2026-10-17",
       "libraryChecksumMatches": true,
-      "poster": "assets/specimens/maritime-study/01-mystar-motion-poster.jpg"
+      "poster": "assets/specimens/maritime-study/01-mystar-motion-poster.webp"
     },
     {
       "file": "assets/specimens/maritime-study/02-bridge-chart-current.jpg",
@@ -86,7 +86,7 @@
       "caption": "The camera moves into the physical console. Instruments show a fixed study position, not a live voyage. Captured 17 October 2026.",
       "capturedOn": "2026-10-17",
       "libraryChecksumMatches": true,
-      "poster": "assets/specimens/maritime-study/02-bridge-inspection-poster.jpg"
+      "poster": "assets/specimens/maritime-study/02-bridge-inspection-poster.webp"
     },
     {
       "file": "assets/specimens/maritime-study/03-helsinki-t2-current.jpg",
@@ -107,7 +107,7 @@
       "caption": "Navigation instrument and console lights. Depicted time: 17 October, 19:00 UTC / 22:00 EEST. Morning weather observations are retained for this light study.",
       "capturedOn": "2026-10-17",
       "libraryChecksumMatches": true,
-      "poster": "assets/specimens/maritime-study/04-bridge-night-poster.jpg"
+      "poster": "assets/specimens/maritime-study/04-bridge-night-poster.webp"
     },
     {
       "file": "assets/specimens/maritime-study/04-tallinn-terminal-current.jpg",
@@ -162,6 +162,13 @@
   ],
   "derivatives": [
     {
+      "file": "assets/specimens/maritime-study/01-mystar-exterior-640.webp",
+      "sha256": "46d44c2413a0928528e31194ec5b042be33ef8f403323a83950909928a9b7930",
+      "bytes": 14786,
+      "derivedFrom": "assets/specimens/maritime-study/01-mystar-exterior.jpg",
+      "derivation": "cwebp -q 76 -m 6 -resize 640 0"
+    },
+    {
       "file": "assets/specimens/maritime-study/01-mystar-exterior-800.webp",
       "sha256": "9746653ec0db5c5c4428909a39208a2eddab3c8d52826e39dfab2047dcbf1e6c",
       "bytes": 22056,
@@ -176,10 +183,11 @@
       "derivation": "cwebp -q 80 -m 6, original dimensions"
     },
     {
-      "file": "assets/specimens/maritime-study/01-mystar-motion-poster.jpg",
-      "sha256": "a4e92026fb0e7262ffec20deddf8bf7a58e2d1f6ee6442645cbaefdd380ddb80",
-      "bytes": 23756,
-      "derivation": "Poster frame copied unchanged from the 17 October capture library."
+      "file": "assets/specimens/maritime-study/01-mystar-motion-poster.webp",
+      "sha256": "98474cabcba05647780c2afaa621f2e5633ea028ed1cf9a8515bd6f429f80795",
+      "bytes": 13970,
+      "derivedFrom": "design/concept-captures/2026-10-17/01-mystar-motion-poster.jpg",
+      "derivation": "cwebp -q 70 -m 6, original dimensions"
     },
     {
       "file": "assets/specimens/maritime-study/02-bridge-chart-current-800.webp",
@@ -196,10 +204,11 @@
       "derivation": "cwebp -q 80 -m 6, original dimensions"
     },
     {
-      "file": "assets/specimens/maritime-study/02-bridge-inspection-poster.jpg",
-      "sha256": "d32e321dc77d4f4d894d1c3dfb0287ce1dda41325eae09e6ea276a39c617de0c",
-      "bytes": 33879,
-      "derivation": "Poster frame copied unchanged from the 17 October capture library."
+      "file": "assets/specimens/maritime-study/02-bridge-inspection-poster.webp",
+      "sha256": "7762a041325727df06d84fb98ec5d8ccab2c8a22e67b3b68294a2c3a5f48b373",
+      "bytes": 14562,
+      "derivedFrom": "design/concept-captures/2026-10-17/02-bridge-inspection-poster.jpg",
+      "derivation": "cwebp -q 70 -m 6, original dimensions"
     },
     {
       "file": "assets/specimens/maritime-study/03-helsinki-t2-current-800.webp",
@@ -216,10 +225,11 @@
       "derivation": "cwebp -q 80 -m 6, original dimensions"
     },
     {
-      "file": "assets/specimens/maritime-study/04-bridge-night-poster.jpg",
-      "sha256": "bd11aa53e9f537072fdca444a4001f04ae4d59a2bfc479c905f4e4c3c6cd1e23",
-      "bytes": 35637,
-      "derivation": "Poster frame copied unchanged from the 17 October capture library."
+      "file": "assets/specimens/maritime-study/04-bridge-night-poster.webp",
+      "sha256": "8d2390e223df563819baced9646ac91faccf6ca7ea41fff0dd78b1efe1af2eab",
+      "bytes": 15928,
+      "derivedFrom": "design/concept-captures/2026-10-17/04-bridge-night-poster.jpg",
+      "derivation": "cwebp -q 70 -m 6, original dimensions"
     },
     {
       "file": "assets/specimens/maritime-study/04-tallinn-terminal-current-800.webp",
@@ -234,6 +244,13 @@
       "bytes": 54134,
       "derivedFrom": "assets/specimens/maritime-study/04-tallinn-terminal-current.jpg",
       "derivation": "cwebp -q 80 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15-640.webp",
+      "sha256": "66c492105d18a2158d44f1c7bc9a7cd8b87eda2a039f844f85becfb1933a37e8",
+      "bytes": 12128,
+      "derivedFrom": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15.jpg",
+      "derivation": "cwebp -q 76 -m 6 -resize 640 0"
     },
     {
       "file": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15-800.webp",
