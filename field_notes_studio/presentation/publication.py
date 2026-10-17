@@ -71,6 +71,7 @@ class Publication(ttk.Frame):
         self._upload_card(callbacks)
         self._website_card()
         self._record_card(callbacks)
+        self._cost_card()
         content.bind("<Configure>", self._resize, add=True)
         self._layout(True)
         self.editor_window = tk.Toplevel(self)
@@ -120,7 +121,7 @@ class Publication(ttk.Frame):
         right = (event.width - 12) // 3 if self.wide else event.width
         for label in (self.basis, self.preflight, self.files.summary):
             label.configure(wraplength=max(200, left - 40))
-        for label in (self.source, self.record_help, self.website_help):
+        for label in (self.source, self.record_help, self.website_help, self.cost):
             label.configure(wraplength=max(160, right - 40))
         if event.width != getattr(self, "fitted_width", None):
             self.fitted_width = event.width
@@ -288,6 +289,17 @@ class Publication(ttk.Frame):
         """Prepare website update…: the confirm dialog shows exactly what will run."""
         if self.episode is not None:
             self.callbacks["website"](self.episode)
+
+    def _cost_card(self):
+        """This episode's paid work so far: a local estimate, never shown as a bill."""
+        card = ttk.Frame(self.side, style="Card.TFrame", padding=(14, 12))
+        card.grid(row=2, column=0, sticky="ew", pady=(12, 0))
+        ttk.Label(card, text="Cost so far", style="CardHeading.TLabel").pack(anchor="w")
+        self.cost = ttk.Label(card, text="Reading the attempts log…", style="CardMuted.TLabel")
+        self.cost.pack(anchor="w", fill="x", pady=(2, 0))
+
+    def show_cost(self, text):
+        self.cost.configure(text=text)
 
     def _record_card(self, callbacks):
         card = ttk.Frame(self.side, style="Card.TFrame", padding=(14, 12))

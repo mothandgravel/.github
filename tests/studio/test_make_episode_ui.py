@@ -60,6 +60,11 @@ PLAN = MakePlan(
     request_json='{"note": "014"}',
     token="t" * 64,
 )
+COST = (
+    "So far, by local estimate (not a bill): narration about $0.12 (3 saved parts); captions: "
+    "no local estimate (1 submission, about 14 min of audio). Check the Cloud billing report "
+    "for actual charges."
+)
 ATTEMPTS = (
     Attempt("17 Oct 10:07", "narration part 3", "HTTP 502", "about $0.04"),
     Attempt("17 Oct 11:02", "narration part 3", "HTTP 499", "about $0.04"),
@@ -195,6 +200,7 @@ class MakeEpisodeUITests(unittest.TestCase):
             patch("field_notes_studio.service.Studio.make_plan", return_value=PLAN),
             patch("field_notes_studio.service.Studio.runs", return_value=Runs(views)),
             patch("field_notes_studio.service.Studio.spend_state", return_value=SPEND),
+            patch("field_notes_studio.service.Studio.cost_line", return_value=COST),
             patch(
                 "field_notes_studio.repository.Repository.run",
                 side_effect=lambda run_id: {"note": run_id.split("-")[1], "episode": "x"},
@@ -297,6 +303,7 @@ class MakeEpisodeUITests(unittest.TestCase):
             self.app.activity.cget("text").strip(), "Making the video for Field Note 012 · 4 min"
         )
         self.assertNotIn("left", self.app.message_text)
+        self.assertEqual(panel.cost.cget("text"), COST)
         self.assertEqual(panel.cells[3][2].cget("text"), "Working")
         self.assertIn("6–9 min on this computer before", panel.cells[3][3].cget("text"))
         self.assertEqual(str(panel.stop_button["state"]), "normal")
@@ -349,6 +356,15 @@ class MakeEpisodeUITests(unittest.TestCase):
             panel.close_link.command()
             self.wait(lambda: self.app.view_name == "home")
             close.assert_called_once_with("run-012")
+
+    def test_release_shows_the_cost_so_far(self):
+        self.app.show_episode("note-001", stage=2)
+        publication = self.app.workspace.publication
+        self.wait(lambda: publication.cost.cget("text") == COST)
+        self.assertIn("not a bill", publication.cost.cget("text"))
+        self.root.geometry("1280x860")
+        self.settle()
+        self.capture("release-cost-so-far")
 
     def test_website_confirm_shows_the_dry_run_and_refusals(self):
         plan = WebsitePlan(

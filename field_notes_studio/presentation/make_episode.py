@@ -533,6 +533,14 @@ class RunPanel(ttk.Frame):
             detail = ttk.Label(self.box, style="CardMuted.TLabel")
             detail.grid(row=index, column=3, sticky="w")
             self.cells.append((glyph, name, state, detail))
+        # What this episode has cost so far: a local estimate, never shown as a bill.
+        self.cost = ttk.Label(self, style="Muted.TLabel")
+        self.cost.grid(row=6, column=0, sticky="ew", pady=(10, 0))
+        self.bind(
+            "<Configure>",
+            lambda e: self.cost.configure(wraplength=max(200, e.width - 8)),
+            add=True,
+        )
         foot = self.foot = ttk.Frame(self)
         foot.grid(row=5, column=0, sticky="ew", pady=(14, 0))
         self.notify = tk.BooleanVar(value=False)
@@ -558,8 +566,9 @@ class RunPanel(ttk.Frame):
         )
         self.stop_button.pack(side="right")
 
-    def show(self, view, title, attempts=(), diagnostics=""):
+    def show(self, view, title, attempts=(), diagnostics="", cost=""):
         self.view = view
+        self.cost.configure(text=cost)
         self.diagnostics = diagnostics
         self.title.configure(text=title)
         if view.group == "working":
