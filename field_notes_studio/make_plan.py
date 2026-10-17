@@ -198,8 +198,7 @@ def build(studio, *, note: str = "", episode: str = "") -> MakePlan:
                 PlanStep(
                     "caption",
                     "Caption",
-                    f"Timed subtitles from the narration, about {snapshot.minutes:.0f} min "
-                    "of audio; no local price",
+                    f"Timed subtitles from the narration, about {snapshot.minutes:.0f} min",
                     "paid",
                 )
             )
@@ -278,6 +277,7 @@ def consent_record(plan: MakePlan) -> dict:
     """What the run keeps as evidence of the one confirm."""
     return {
         "token": plan.token,
+        "title": plan.title,
         "at": datetime.now().astimezone().isoformat(timespec="seconds"),
         "paid_steps": [s.name + ": " + s.detail for s in plan.steps if s.kind == "paid"],
         "local_steps": [s.name for s in plan.steps if s.kind == "local"],

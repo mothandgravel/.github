@@ -124,7 +124,7 @@ class RefusalTests(unittest.TestCase):
             ),
         )
         text = plan.describe()
-        self.assertIn("-m field_notes_audio promote ep", text)
+        self.assertIn("python3 -m field_notes_audio promote ep", text)
         self.assertIn("-m field_notes_audio publish --branch " + BRANCH, text)
         self.assertIn(f"pushes that branch to origin ({GITHUB})", text)
         self.assertIn("Nothing is merged or deployed", text)

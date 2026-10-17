@@ -95,7 +95,7 @@ class SummaryTests(unittest.TestCase):
         )
         narrate = next(s for s in plan.steps if s.key == "narrate")
         self.assertEqual(narrate.detail, "1 of 1 parts with the cloud voice")
-        self.assertIn("no local price", next(s for s in plan.steps if s.key == "caption").detail)
+        self.assertIn("Timed subtitles", next(s for s in plan.steps if s.key == "caption").detail)
         self.assertTrue(plan.paid)
         self.assertIsNotNone(plan.estimate_usd)
         self.assertEqual(plan.project, "fixture-project")
