@@ -89,7 +89,7 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError("--wait must be between 0 and 3600 seconds")
             release.make_all(args)
         elif args.command == "publish":
-            release.publish()
+            release.publish(args.branch)
         elif args.command == "sync":
             added = release.sync_catalog()
             if not added:

@@ -368,23 +368,44 @@ def _prepare_publication(
     return entries
 
 
-def publish() -> None:
+BRANCH_PATTERN = r"studio/field-notes-listening-\d{8}-\d{6}"
+
+
+def publication_branch(value: str) -> str:
+    """A new publication branch name; never main and never an arbitrary ref."""
+    if not isinstance(value, str) or not re.fullmatch(BRANCH_PATTERN, value):
+        raise argparse.ArgumentTypeError(
+            "--branch must look like studio/field-notes-listening-YYYYMMDD-HHMMSS"
+        )
+    return value
+
+
+def new_branch_name() -> str:
+    return "studio/field-notes-listening-" + datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+
+
+def publish(branch: str | None = None) -> None:
+    """Commit the prepared files on a new branch and push it; never merges."""
     with collection_lock():
-        _publish()
+        _publish(branch)
 
 
-def _publish() -> None:
+def _publish(requested: str | None = None) -> None:
     state = release_state()
     if not state.get("files") or state.get("phase") != "complete":
         raise ValueError("No prepared release. Run make-all or reviewed promote first")
     assert_clean_or_prepared()
     build_audio.build(check=True, root=audio.ROOT)
     remote, branch = publication_remote()
+    if requested is not None:
+        publication_branch(requested)
+        if branch not in {"main", "master"}:
+            raise ValueError(
+                "--branch starts a new publication branch from main; switch to main first"
+            )
     # Never push directly to the deployed main branch.
     if branch in {"main", "master"}:
-        branch = "studio/field-notes-listening-" + datetime.now(timezone.utc).strftime(
-            "%Y%m%d-%H%M%S"
-        )
+        branch = requested or new_branch_name()
         git(["switch", "-c", branch])
     paths = dirty_paths()
     if paths:
@@ -659,8 +680,14 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
         action="store_true",
         help="Commit/push the completed site assets to a PR branch",
     )
-    commands.add_parser(
+    publish_command = commands.add_parser(
         "publish", help="Commit/push a previously prepared complete listening collection"
+    )
+    publish_command.add_argument(
+        "--branch",
+        type=publication_branch,
+        help="New branch name to push from main (studio/field-notes-listening-YYYYMMDD-HHMMSS); "
+        "lets a caller show the exact branch before confirming",
     )
     commands.add_parser(
         "sync", help="Prepare source-preserving scripts for newly published notes, offline"
