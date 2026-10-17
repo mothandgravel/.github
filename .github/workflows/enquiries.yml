@@ -1,0 +1,52 @@
+name: Private enquiry relay
+
+on:
+  push:
+    paths:
+      - "services/enquiries/**"
+      - "docs/assets/enquiry*"
+      - ".github/workflows/enquiries.yml"
+  pull_request:
+    paths:
+      - "services/enquiries/**"
+      - "docs/assets/enquiry*"
+      - ".github/workflows/enquiries.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.20.0
+          cache: npm
+          cache-dependency-path: services/enquiries/package-lock.json
+      - name: Install the pinned Resend SDK
+        run: npm ci --ignore-scripts --prefix services/enquiries
+      - name: Test validation, origin, honeypot, idempotency and disabled mode
+        run: npm test --prefix services/enquiries
+      - name: Syntax-check the browser module and its published config
+        run: |
+          node --check docs/assets/enquiry.mjs
+          node -e 'const c=require("./docs/assets/enquiry-config.json");if(c.enabled!==false&&!/^https:\/\//.test(c.endpoint))process.exit(1)'
+      - name: Build and smoke-test the disabled container
+        run: |
+          docker build -t mg-enquiries-test services/enquiries
+          docker run --detach --name mg-enquiries-test -p 127.0.0.1:8080:8080 mg-enquiries-test
+          for attempt in $(seq 1 30); do
+            curl --fail --silent http://127.0.0.1:8080/health && break
+            sleep 1
+          done
+          status=$(curl --silent --output /dev/null --write-out '%{http_code}' -X POST \
+            -H 'origin: https://mothandgravel.com' -H 'content-type: application/json' --data '{}' \
+            http://127.0.0.1:8080/enquiries)
+          test "$status" = 503
+          test "$(docker exec mg-enquiries-test id -u)" != 0
+      - name: Remove smoke-test container
+        if: always()
+        run: docker rm --force mg-enquiries-test || true

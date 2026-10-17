@@ -1,0 +1,9 @@
+FROM node:24.20.0-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e
+ENV NODE_ENV=production ENQUIRIES_ENABLED=false PORT=8080
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts && rm -rf /root/.npm
+COPY server.mjs ./
+USER node
+EXPOSE 8080
+CMD ["node", "server.mjs"]
