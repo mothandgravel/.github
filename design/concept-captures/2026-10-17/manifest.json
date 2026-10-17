@@ -1,0 +1,236 @@
+{
+  "title": "Moth & Gravel / concept capture library",
+  "assembledOn": "2026-10-17",
+  "sources": {
+    "maritime": {
+      "repository": "https://github.com/navivra/raivari",
+      "capturedCommit": "a7ba282d5a96b9b0cb7680ab89c39992212438a2",
+      "mergedMainCommit": "abe8b9153caa2d92fb93fc5f7566b33428924e99",
+      "pullRequest": 125
+    },
+    "coastalWatch": {
+      "repository": "https://github.com/navivra/raivari",
+      "capturedCommit": "397a91e875aa942bdefb31dacb9c49099b0dc7fe",
+      "pullRequest": 126
+    }
+  },
+  "recording": {
+    "maritime": "Direct MediaRecorder capture of the rendered canvas; silent WebM transcoded to H.264 MP4, variable frame timing retained, padded by at most one pixel to even dimensions. No interpolated motion. Browser capture has uneven frame cadence; encoded duration is reported per file. The recorder requests twenty seconds; frames can begin late under load.",
+    "coastalWatch": "Existing 15 October recording: 634 screenshots encoded with capture intervals at 30 output fps. 10.85 seconds of uncaptured gaps removed with direct cuts; UI clocks may jump. Silent. No fabricated observations.",
+    "screenshots": "JPEG browser screenshots. Earlier captures were copied without image changes; their incorrect .png suffixes were corrected to .jpg. Current proxy captures include the local recording controls."
+  },
+  "boundaries": [
+    "Maritime study positions are fixed. Weather and sea use nearby FMI observations where available; defaults remain for missing fields. This is not live voyage footage.",
+    "Night footage depicts 19:00 UTC while retaining the current morning weather observations. It is a lighting study, not a weather forecast.",
+    "Architecture is reference-informed, with simplified facade spacing, roof profiles and illustrative background heights and finishes.",
+    "Coastal watch tracks and alerts are synthetic. It does not run the track-fusion pipeline.",
+    "Earlier maritime screenshots predate this capture session; their precise commits are not asserted."
+  ],
+  "attribution": [
+    "FMI weather observations: CC BY 4.0, https://en.ilmatieteenlaitos.fi/open-data",
+    "OpenStreetMap contributors: ODbL, https://www.openstreetmap.org/copyright",
+    "Natural Earth basemap: public domain, https://www.naturalearthdata.com/about/terms-of-use/"
+  ],
+  "media": [
+    {
+      "file": "01-mystar-motion.mp4",
+      "type": "video",
+      "title": "The water keeps moving.",
+      "caption": "MyStar exterior, sea motion and a short orbit. Fixed Tallinn study position; nearby FMI weather observed at 06:40 UTC. Captured 17 October 2026.",
+      "capturedOn": "2026-10-17",
+      "poster": "01-mystar-motion-poster.jpg",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1266,
+            "height": 400,
+            "avg_frame_rate": "10300/937",
+            "nb_read_frames": "206"
+          }
+        ],
+        "format": {
+          "duration": "18.740000",
+          "size": "1310853"
+        }
+      },
+      "sha256": "867183e34e50e8cf5a2425bb71e2b21f083454251e0873a96da5e67be8b7f036"
+    },
+    {
+      "file": "02-bridge-inspection.mp4",
+      "type": "video",
+      "title": "A closer look at the chart.",
+      "caption": "The camera moves into the physical console. Instruments show a fixed study position, not a live voyage. Captured 17 October 2026.",
+      "capturedOn": "2026-10-17",
+      "poster": "02-bridge-inspection-poster.jpg",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1264,
+            "height": 658,
+            "avg_frame_rate": "89000/15991",
+            "nb_read_frames": "89"
+          }
+        ],
+        "format": {
+          "duration": "15.991000",
+          "size": "336521"
+        }
+      },
+      "sha256": "3b6a691d346d671b6e641d1b178c3d0c48674fbe857192fb0ba67faff775ed2c"
+    },
+    {
+      "file": "04-bridge-night.mp4",
+      "type": "video",
+      "title": "Enough light to read by.",
+      "caption": "Navigation instrument and console lights. Depicted time: 17 October, 19:00 UTC / 22:00 EEST. Morning weather observations are retained for this light study.",
+      "capturedOn": "2026-10-17",
+      "poster": "04-bridge-night-poster.jpg",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1264,
+            "height": 658,
+            "avg_frame_rate": "5000/869",
+            "nb_read_frames": "105"
+          }
+        ],
+        "format": {
+          "duration": "18.249000",
+          "size": "432956"
+        }
+      },
+      "sha256": "5b79e1688d73460ed507e31dcccb4c6869249db6d7cc1c5017eb4f61f17d040f"
+    },
+    {
+      "file": "03-coastal-watch-2026-10-15.mp4",
+      "type": "video",
+      "title": "The picture stays.",
+      "caption": "Coastal watch: real coastline, synthetic tracks. Selection, a closer coastline view, then an interrupted stream. Recorded 15 October 2026.",
+      "capturedOn": "2026-10-15",
+      "poster": "10-coastal-overview-2026-10-15.jpg",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1276,
+            "height": 884,
+            "avg_frame_rate": "30/1",
+            "nb_read_frames": "823"
+          }
+        ],
+        "format": {
+          "duration": "27.433333",
+          "size": "747687"
+        }
+      },
+      "sha256": "a75cdd96eb4815157cad6ca21d96276c99f0dd07ce0bf91f2819cafdc2062c6b"
+    },
+    {
+      "file": "01-mystar-exterior.jpg",
+      "type": "image",
+      "title": "MyStar / exterior",
+      "caption": "Fresh capture, 17 October. Morning sky with observed overcast conditions.",
+      "capturedOn": "2026-10-17",
+      "sha256": "611eb26846efef579070672027d79056a37b789d5884bbaa0cf5013b5ac31f0f"
+    },
+    {
+      "file": "02-bridge-chart-current.jpg",
+      "type": "image",
+      "title": "Bridge / chart inspection",
+      "caption": "Fresh capture, 17 October. Physical instrument, surrounding controls and the inspection UI.",
+      "capturedOn": "2026-10-17",
+      "sha256": "8b408dd761cf60caf20a32c0bd73119affa4c5c2d945b288cbcfa2ffb1a71c89"
+    },
+    {
+      "file": "03-helsinki-t2-current.jpg",
+      "type": "image",
+      "title": "Helsinki / West Terminal 2",
+      "caption": "Fresh capture, 17 October. Reference-informed terminal, mapped footprints and illustrative background buildings.",
+      "capturedOn": "2026-10-17",
+      "sha256": "44fec71119cbc98fe7c3077b0c30aaf8c3d0eb1dc6a7def303faa10bdb22b949"
+    },
+    {
+      "file": "04-tallinn-terminal-current.jpg",
+      "type": "image",
+      "title": "Tallinn / D-terminal",
+      "caption": "Fresh capture, 17 October. Reference-informed terminal and harbour geometry, with nearby observed weather.",
+      "capturedOn": "2026-10-17",
+      "sha256": "774a31e3cd2485e877724ceca9fd68f1e12dfad0616486577bd6f770c58d0520"
+    },
+    {
+      "file": "12-bridge-night-current.jpg",
+      "type": "image",
+      "title": "Bridge / navigation at night",
+      "caption": "Fresh capture, 17 October. Depicted night lighting; current morning weather retained.",
+      "capturedOn": "2026-10-17",
+      "sha256": "98e54799cacc28817e9b0ae77c8aa58dca8e6b8033dc3ae0105c0eba05bbba40"
+    },
+    {
+      "file": "05-bridge-night-2026-10-16.jpg",
+      "type": "image",
+      "title": "Bridge / earlier night inspection",
+      "caption": "Earlier screenshot, 16 October. Retained as visual development evidence.",
+      "capturedOn": "2026-10-16",
+      "sha256": "b87aa9d8854813695080143ddf8fcfac9abd1ca5beea86e72a932e65f410cb79"
+    },
+    {
+      "file": "06-live-bridge-2026-10-16.jpg",
+      "type": "image",
+      "title": "Modbus simulator / bridge",
+      "caption": "Earlier screenshot, 16 October. Simulator UI with instrument inspection; freshness and input availability remain visible.",
+      "capturedOn": "2026-10-16",
+      "sha256": "bcf1a24e9fab7d7cc2bf44e236381e98ec9de7588354454bb69f0d221054f0d1"
+    },
+    {
+      "file": "07-mystar-lights-2026-10-15.jpg",
+      "type": "image",
+      "title": "MyStar / working lights",
+      "caption": "Earlier screenshot, 15 October. Exterior lighting study.",
+      "capturedOn": "2026-10-15",
+      "sha256": "a6278bab2305ae3c9b799b24f23a7bf03fd1f8073f4544d98f24a7ff4a419755"
+    },
+    {
+      "file": "08-helsinki-lights-2026-10-15.jpg",
+      "type": "image",
+      "title": "Helsinki / harbour lights",
+      "caption": "Earlier screenshot, 15 October. Harbour lighting study.",
+      "capturedOn": "2026-10-15",
+      "sha256": "eda9d44f98e40f97fba94f461a50bb5c03d12e2a08c4faf8f1c551bd40c6807a"
+    },
+    {
+      "file": "09-tallinn-lights-2026-10-15.jpg",
+      "type": "image",
+      "title": "Tallinn / harbour lights",
+      "caption": "Earlier screenshot, 15 October. Harbour lighting study.",
+      "capturedOn": "2026-10-15",
+      "sha256": "65ecd900fa2a82f11ec3f880a00f0050fbf617a15d932c1bfb0e48d598d55008"
+    },
+    {
+      "file": "10-coastal-overview-2026-10-15.jpg",
+      "type": "image",
+      "title": "Coastal watch / the regional picture",
+      "caption": "Recorded 15 October. Gulf of Finland basemap and synthetic vessel observations.",
+      "capturedOn": "2026-10-15",
+      "sha256": "3979d6ecb499c3487844ea50f745cf977a5c392d4f7bd4e03c6bec6dba7b4e62"
+    },
+    {
+      "file": "11-coastal-record-2026-10-15.jpg",
+      "type": "image",
+      "title": "Coastal watch / one mark, opened",
+      "caption": "Recorded 15 October. Source, age, position and bounded observation history.",
+      "capturedOn": "2026-10-15",
+      "sha256": "9e7d59846fd95d4b6c14185f1069e49c2753b3219ad3460b0c4949312b5e075d"
+    }
+  ]
+}
