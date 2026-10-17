@@ -11,6 +11,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
+from field_notes_audio.production.renderer_process import renderer_concurrency, run_renderer
 from field_notes_audio.storage import read_object, write_json
 
 
@@ -77,7 +78,10 @@ def render_video(
         "artworkLabel": "FROM THE WRITTEN NOTE"
         if any(path.parent.name == "notes" for path in assets.values())
         else "STUDIO ARTWORK",
-        "video": settings["video"],
+        "video": {
+            **settings["video"],
+            "concurrency": renderer_concurrency(settings["video"]["concurrency"]),
+        },
         "previewSeconds": args.preview_seconds,
     }
     write_json(stage / "props.json", props)
@@ -91,7 +95,7 @@ def render_video(
     command.append(str(args.browser_executable.resolve()) if args.browser_executable else "")
     if bundle is not None:
         command.append(str(bundle))
-    subprocess.run(command, cwd=root / "video", check=True, timeout=3600)
+    run_renderer(command, root / "video")
     result = subprocess.run(
         [
             "ffprobe",

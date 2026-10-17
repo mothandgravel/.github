@@ -113,7 +113,8 @@ def expected_video_identity(root, entry, edition, settings):
                 name: digest_file(path) for name, path in checked_assets(root, entry).items()
             },
             "renderer": code,
-            "video": settings["video"],
+            # Keep aligned with runner.produce_video: worker count does not change the bytes.
+            "video": {k: v for k, v in settings["video"].items() if k != "concurrency"},
             "preview_seconds": None,
         }
     )
