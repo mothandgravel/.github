@@ -1,0 +1,112 @@
+/** Standing investigations, the green-light question and the playground: both appearances, narrow layouts,
+ * zero axe violations with every toy mounted and exercised, keyboard play, reduced motion, lazy loading and
+ * a homepage that never fetches a toy. */
+import { launchAuditBrowser } from './audit_browser.mjs';
+import axe from 'axe-core';
+import { mkdir, writeFile } from 'node:fs/promises';
+const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
+const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
+await mkdir(output, { recursive: true });
+const options = process.env.BROWSER_EXECUTABLE ? { executablePath: process.env.BROWSER_EXECUTABLE } : {};
+const browser = await launchAuditBrowser(options);
+const fail = (label, detail) => { throw Error(label + ': ' + JSON.stringify(detail)); };
+const axeRun = async (page) => {
+  await page.addScriptTag({ content: axe.source });
+  return page.evaluate(async () => (await axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'] } }))
+    .violations.map(v => ({ id: v.id, targets: v.nodes.map(n => n.target) })));
+};
+const pages = [
+  { name: 'home-questions', path: '/', toys: [] },
+  { name: 'investigations', path: '/investigations/', toys: [] },
+  { name: 'green-light', path: '/investigations/green-light/', toys: ['grid'] },
+  { name: 'playground', path: '/workbench/playground/', toys: ['grid', 'stamp', 'week'] },
+];
+const results = [];
+try {
+  for (const target of pages) for (const width of [320, 390, 1440]) for (const theme of ['night', 'afterlight']) {
+    const label = `${target.name}-${width}-${theme}`;
+    const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+    const errors = [], toyRequests = [];
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+    page.on('request', request => { if (/assets\/playground/.test(request.url())) toyRequests.push(request.url()); });
+    page.on('response', response => { if (response.status() >= 400 && response.url().startsWith(origin)) errors.push(`HTTP ${response.status()} ${response.url()}`); });
+    await page.addInitScript(value => localStorage.setItem('moth-and-gravel-theme', value), theme);
+    await page.goto(origin + target.path, { waitUntil: 'networkidle' });
+    if (await page.locator('html').getAttribute('data-theme') !== theme) fail(label, 'theme not applied');
+    if (target.name === 'home-questions') {
+      if (toyRequests.length) fail(label, { toysOnHome: toyRequests });
+      await page.locator('#questions').scrollIntoViewIfNeeded();
+      await page.waitForTimeout(200);
+      if (toyRequests.length) fail(label, { toysOnHomeAfterScroll: toyRequests });
+    } else if (target.toys.length && width === 1440 && toyRequests.some(url => /playground\/(stamp|week)\.mjs/.test(url)))
+      fail(label, { eagerToys: toyRequests });
+    for (const toy of target.toys) {
+      await page.locator(`#toy-${toy}`).scrollIntoViewIfNeeded();
+      await page.locator(`#toy-${toy}[data-loaded="ready"]`).waitFor({ timeout: 5000 });
+    }
+    if (target.toys.includes('grid')) await page.locator('#toy-grid [data-ask]').click();
+    if (target.toys.includes('stamp')) await page.locator('#toy-stamp .stamp-cell').nth(26).click();
+    if (target.toys.includes('week')) await page.locator('#toy-week input[value="ring"]').check();
+    const check = await page.evaluate(() => ({
+      overflow: document.documentElement.scrollWidth > innerWidth + 1,
+      headings: document.querySelectorAll('h1').length,
+      animating: document.getAnimations().filter(a => a.playState === 'running').length,
+      leaks: /navivra|kistradegoods|digablesolutions|vesuno|run\.app/i.test(document.documentElement.outerHTML),
+    }));
+    if (check.overflow || check.headings !== 1 || check.animating || check.leaks || errors.length) fail(label, { check, errors });
+    if (width !== 320) {
+      const violations = await axeRun(page);
+      if (violations.length) fail(label + ' axe', violations);
+      await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
+      await page.screenshot({ path: `${output}/${label}.png`, fullPage: true });
+    }
+    results.push({ label, ...check });
+    await page.close();
+  }
+
+  // Keyboard: every toy is played without a pointer.
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(origin + '/workbench/playground/', { waitUntil: 'networkidle' });
+  for (const toy of ['grid', 'stamp', 'week']) {
+    await page.locator(`#toy-${toy}`).scrollIntoViewIfNeeded();
+    await page.locator(`#toy-${toy}[data-loaded="ready"]`).waitFor();
+  }
+  await page.locator('#toy-stamp .stamp-cell[tabindex="0"]').focus();
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(80);
+  if (!/^Placed\./.test(await page.locator('#toy-stamp [data-status]').textContent())) fail('stamp keyboard', 'not placed');
+  await page.locator('#toy-stamp [data-wind]').focus(); await page.keyboard.press('Enter');
+  await page.locator('#toy-stamp [data-undo]').focus(); await page.keyboard.press('Enter');
+  await page.waitForTimeout(80);
+  if (!/^Undo failed\..*history entry stays/.test(await page.locator('#toy-stamp [data-status]').textContent())) fail('stamp undo', 'undo did not refuse after the wind');
+  const verdicts = {};
+  for (const [preset, budget, expected] of [['open', '25000', 'A ROUTE EXISTS'], ['none', '25000', 'NO ROUTE'], ['corner', '25000', 'RULED OUT BEFORE SEARCHING'], ['three', '40', 'NO ANSWER YET']]) {
+    await page.selectOption('#toy-grid [data-preset]', preset);
+    await page.selectOption('#toy-grid [data-budget]', budget);
+    await page.locator('#toy-grid [data-ask]').focus(); await page.keyboard.press('Enter');
+    verdicts[preset + '/' + budget] = await page.locator('#toy-grid [data-verdict-kind]').textContent();
+    if (verdicts[preset + '/' + budget] !== expected) fail('grid verdict', verdicts);
+  }
+  await page.selectOption('#toy-grid [data-preset]', 'open');
+  await page.locator('#toy-grid input[value="play"]').check();
+  await page.locator('#toy-grid .grid-cell').nth(0).focus(); await page.keyboard.press('Enter');
+  await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight'); await page.keyboard.press('Enter');
+  await page.waitForTimeout(80);
+  if (!/Jumped to D1/.test(await page.locator('#toy-grid [data-status]').textContent())) fail('grid keyboard play', 'jump not taken');
+  await page.locator('#toy-week .week-item').nth(5).focus(); await page.keyboard.press('Enter');
+  if ((await page.locator('#toy-week .week-detail h4').textContent()) !== 'One conversation still needs you.') fail('week keyboard', 'item not chosen');
+  // Normal motion: the river flows. Reduced motion (above) was checked to have no running animation.
+  if (!(await page.evaluate(() => document.getAnimations().some(a => a.animationName === 'river-flow' && a.playState === 'running')))) fail('river flow', 'no flow with normal motion');
+  await page.close();
+
+  // Without JavaScript, every bench still says what its toy shows.
+  const quiet = await browser.newContext({ javaScriptEnabled: false });
+  const still = await quiet.newPage();
+  await still.goto(origin + '/workbench/playground/');
+  if (await still.locator('.toy-mount p').count() !== 3) fail('no-script', 'bench fallbacks missing');
+  await quiet.close();
+  await writeFile(`${output}/playground-audit.json`, JSON.stringify({ results, verdicts }, null, 2));
+  console.log(`Playground: ${results.length} page/width/theme checks, zero axe violations, no toys on home, lazy toys, keyboard play, reduced motion and no-script fallbacks pass.`);
+} finally { await browser.close(); }
