@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -22,10 +23,24 @@ from field_notes_audio.progress import Timings
 from field_notes_audio.storage import read_object
 from field_notes_audio.transactions import FileTransaction
 
+PUBLICATION_REMOTE = r"(?:https://github\.com/|git@github\.com:)mothandgravel/\.github(?:\.git)?"
+
+
+def git_environment() -> dict:
+    """This checkout's Git only: an inherited GIT_DIR/GIT_WORK_TREE would redirect it."""
+    return {
+        key: value for key, value in os.environ.items() if key not in {"GIT_DIR", "GIT_WORK_TREE"}
+    }
+
 
 def git(arguments: list[str], optional: bool = False) -> str | None:
     result = subprocess.run(
-        ["git", *arguments], cwd=audio.ROOT, capture_output=True, text=True, timeout=180
+        ["git", *arguments],
+        cwd=audio.ROOT,
+        capture_output=True,
+        text=True,
+        timeout=180,
+        env=git_environment(),
     )
     if result.returncode and not optional:
         raise RuntimeError(
@@ -78,11 +93,22 @@ def publication_remote() -> tuple[str, str]:
         upstream.split("/", 1) if upstream else ("origin", git(["branch", "--show-current"]))
     )
     url = git(["remote", "get-url", remote])
-    if not re.fullmatch(
-        r"(?:https://github\.com/|git@github\.com:)mothandgravel/\.github(?:\.git)?", url or ""
+    # git push uses the push URLs (remote.<name>.pushurl, after any rewrite), not the
+    # fetch URL, so every one of them must be the publication repository.
+    pushes = (git(["remote", "get-url", "--push", "--all", remote], optional=True) or "").split()
+    if (
+        not re.fullmatch(PUBLICATION_REMOTE, url or "")
+        or not pushes
+        or not all(re.fullmatch(PUBLICATION_REMOTE, push) for push in pushes)
     ):
         raise ValueError(
-            "Publication requires this checkout's GitHub remote to be mothandgravel/.github"
+            "Publication requires this checkout's GitHub remote to be mothandgravel/.github "
+            "for fetch and push"
+        )
+    if git(["config", "--get-regexp", r"^url\..*\.pushinsteadof$"], optional=True):
+        raise ValueError(
+            "A Git url.*.pushInsteadOf rule rewrites push addresses; publication refuses "
+            "until it is removed"
         )
     if not branch:
         raise ValueError("Check out a branch before publishing; detached HEAD cannot be published")
@@ -368,23 +394,44 @@ def _prepare_publication(
     return entries
 
 
-def publish() -> None:
+BRANCH_PATTERN = r"studio/field-notes-listening-\d{8}-\d{6}"
+
+
+def publication_branch(value: str) -> str:
+    """A new publication branch name; never main and never an arbitrary ref."""
+    if not isinstance(value, str) or not re.fullmatch(BRANCH_PATTERN, value):
+        raise argparse.ArgumentTypeError(
+            "--branch must look like studio/field-notes-listening-YYYYMMDD-HHMMSS"
+        )
+    return value
+
+
+def new_branch_name() -> str:
+    return "studio/field-notes-listening-" + datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+
+
+def publish(branch: str | None = None) -> None:
+    """Commit the prepared files on a new branch and push it; never merges."""
     with collection_lock():
-        _publish()
+        _publish(branch)
 
 
-def _publish() -> None:
+def _publish(requested: str | None = None) -> None:
     state = release_state()
     if not state.get("files") or state.get("phase") != "complete":
         raise ValueError("No prepared release. Run make-all or reviewed promote first")
     assert_clean_or_prepared()
     build_audio.build(check=True, root=audio.ROOT)
     remote, branch = publication_remote()
+    if requested is not None:
+        publication_branch(requested)
+        if branch not in {"main", "master"}:
+            raise ValueError(
+                "--branch starts a new publication branch from main; switch to main first"
+            )
     # Never push directly to the deployed main branch.
     if branch in {"main", "master"}:
-        branch = "studio/field-notes-listening-" + datetime.now(timezone.utc).strftime(
-            "%Y%m%d-%H%M%S"
-        )
+        branch = requested or new_branch_name()
         git(["switch", "-c", branch])
     paths = dirty_paths()
     if paths:
@@ -659,8 +706,14 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
         action="store_true",
         help="Commit/push the completed site assets to a PR branch",
     )
-    commands.add_parser(
+    publish_command = commands.add_parser(
         "publish", help="Commit/push a previously prepared complete listening collection"
+    )
+    publish_command.add_argument(
+        "--branch",
+        type=publication_branch,
+        help="New branch name to push from main (studio/field-notes-listening-YYYYMMDD-HHMMSS); "
+        "lets a caller show the exact branch before confirming",
     )
     commands.add_parser(
         "sync", help="Prepare source-preserving scripts for newly published notes, offline"

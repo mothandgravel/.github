@@ -212,55 +212,62 @@ class Studio:
         launch_worker(self.root)
         return self.repository.submit(episode, action, request)
 
+    def recipe_inputs(self, identifier: str) -> dict:
+        """Pace, outro and sound from the episode's checkpointed draft, else its settings."""
+        settings = self.settings(identifier)
+        draft = self.repository.state("draft:" + identifier)
+        recipe = draft.get("recipe", {})
+        sound = dict(
+            draft.get(
+                "sound",
+                {
+                    key: settings[key]
+                    for key in (
+                        "intro_seconds",
+                        "music_overlap_seconds",
+                        "music_gain_db",
+                        "target_lufs",
+                        "true_peak_db",
+                        "music_mode",
+                        "music_file",
+                        "music_credit",
+                    )
+                },
+            )
+        )
+        for key in (
+            "intro_seconds",
+            "music_overlap_seconds",
+            "music_gain_db",
+            "target_lufs",
+            "true_peak_db",
+        ):
+            sound[key] = float(sound[key])
+        if sound["music_mode"] != "file":
+            sound["music_file"] = None
+        return {
+            "speed": float(recipe.get("speed", settings["speed"])),
+            "outro": float(recipe.get("outro", settings["outro_seconds"])),
+            "sound": sound,
+            "base": draft.get("production_base"),
+        }
+
     def batch_plan(self, identifiers: list[str], action: str):
         if not identifiers or len(identifiers) > 32:
             raise ValueError("Choose 1–32 episodes to inspect")
         plans, summaries = [], []
         for identifier in identifiers:
-            settings = self.settings(identifier)
-            draft = self.repository.state("draft:" + identifier)
-            recipe = draft.get("recipe", {})
-            speed = float(recipe.get("speed", settings["speed"])) if action != "export" else None
-            outro = (
-                float(recipe.get("outro", settings["outro_seconds"]))
-                if action != "export"
-                else None
-            )
-            sound = (
-                draft.get(
-                    "sound",
-                    {
-                        key: settings[key]
-                        for key in (
-                            "intro_seconds",
-                            "music_overlap_seconds",
-                            "music_gain_db",
-                            "target_lufs",
-                            "true_peak_db",
-                            "music_mode",
-                            "music_file",
-                            "music_credit",
-                        )
-                    },
+            if action == "export":
+                speed = outro = sound = base = None
+            else:
+                inputs = self.recipe_inputs(identifier)
+                speed, outro, sound, base = (
+                    inputs["speed"],
+                    inputs["outro"],
+                    inputs["sound"],
+                    inputs["base"],
                 )
-                if action != "export"
-                else None
-            )
-            if sound:
-                sound = dict(sound)
-                for key in (
-                    "intro_seconds",
-                    "music_overlap_seconds",
-                    "music_gain_db",
-                    "target_lufs",
-                    "true_peak_db",
-                ):
-                    sound[key] = float(sound[key])
-                if sound["music_mode"] != "file":
-                    sound["music_file"] = None
-            request, summary = self.checked_plan(
-                identifier, action, speed, outro, sound, draft.get("production_base")
-            )
+            request, summary = self.checked_plan(identifier, action, speed, outro, sound, base)
             plans.append((identifier, action, request))
             summaries.append(f"{identifier} · {action}\n{summary}")
         return plans, "\n\n".join(summaries)
@@ -347,6 +354,119 @@ class Studio:
 
     def approve(self, episode: str, snapshot: ReviewSnapshot, reviewer: str) -> None:
         self.pipeline.approve(episode, snapshot, reviewer)
+        if snapshot.full_video:
+            # Make episode: the upload package is local and free, so it follows approval.
+            run = self.runs().run_for(episode)
+            if run is not None:
+                self.runs().queue_package(run.identifier)
+
+    # -- Make episode ----------------------------------------------------------------
+
+    def runs(self):
+        from field_notes_studio.make_runs import Runs
+
+        return Runs(self, launch=lambda: launch_worker(self.root))
+
+    def make_plan(self, *, note: str = "", episode: str = ""):
+        """The pre-flight summary; reads only, sends and queues nothing."""
+        from field_notes_studio import make_plan
+
+        return make_plan.build(self, note=note, episode=episode)
+
+    def make_episode(self, plan, allow_paid: bool) -> str:
+        """The single consent: queue the displayed plan as one resumable run.
+
+        Accepted only when a fresh inspection yields the same summary token, so
+        the consent covers exactly what was on screen. The first job is either the
+        captured preparation request (paid) or, for a narrated episode, the full
+        video (local). Later steps are queued by the run, local work only.
+        """
+        from field_notes_studio import make_plan
+        from field_notes_studio.preparation_jobs import PreparationJobs
+
+        if type(allow_paid) is not bool:
+            raise ValueError("Consent must be an explicit yes or no")
+        if plan.blockers:
+            raise ValueError(plan.blockers[0])
+        if plan.paid and allow_paid is not True:
+            raise ValueError(
+                "Tick Allow paid narration and captions for this episode first; nothing was queued."
+            )
+        fresh = make_plan.build(self, note=plan.note, episode=plan.episode)
+        if fresh.token != plan.token or fresh.blockers:
+            raise ValueError(
+                "Something changed since this summary was made: files, saved work or the "
+                "spend guard. Nothing was queued; check the new summary."
+            )
+        inputs = self.recipe_inputs(fresh.episode)
+        if fresh.paid:
+            request = make_plan.captured_request(fresh)
+            PreparationJobs(self.root).validate_recovery(request)
+            first = ("prepare", "prepare", request)
+        else:
+            request = self.pipeline.request(
+                fresh.episode,
+                "video",
+                inputs["speed"],
+                inputs["outro"],
+                inputs["sound"],
+                inputs["base"],
+            )
+            self.pipeline.preflight(fresh.episode, "video", request)
+            first = ("video", "video", request)
+        runs = self.runs()
+        for run in self.repository.runs():
+            if run["episode"] == fresh.episode:
+                runs.close(run["identifier"])
+        launch_worker(self.root)
+        return self.repository.start_run(
+            fresh.episode, fresh.note, make_plan.consent_record(fresh), inputs, first
+        )
+
+    def spend_state(self, episode: str):
+        """The spend guard and uncertain attempts for one episode (read-only)."""
+        from field_notes_studio import make_plan
+
+        return make_plan.spend_state(self.root, episode, [])
+
+    def run_views(self):
+        return self.runs().views()
+
+    def stop_after_step(self, run: str) -> None:
+        self.runs().stop_after_step(run)
+
+    def continue_run(self, run: str):
+        return self.runs().continue_run(run)
+
+    def close_run(self, run: str) -> None:
+        self.runs().close(run)
+
+    def work_list(self, *, check: bool = True):
+        """Home: episodes and notes grouped by who acts next (verified Next, cached)."""
+        from field_notes_studio import work_list
+
+        return work_list.build(self, check=check)
+
+    def verified_next(self, episodes: list[str], *, check: bool = True) -> dict:
+        from field_notes_studio.readiness_cache import verified_next
+
+        return verified_next(self, episodes, check=check)
+
+    def website_plan(self, episode: str):
+        """What Prepare website update would run, with every refusal; runs nothing."""
+        from field_notes_studio import website
+
+        return website.plan(self.root, episode)
+
+    def website_update(self, shown, *, confirmed: bool, emit):
+        """Run promote then publish after an explicit confirm; never merges."""
+        from field_notes_studio import website
+
+        return website.run(shown, confirmed=confirmed, emit=emit)
+
+    def check_runs(self) -> None:
+        """Advance every open run, including a verified review check (hashes media)."""
+        self.runs().advance_all(verify_review=True)
 
     def open_review(self, snapshot: ReviewSnapshot, kind: str) -> None:
         path = {"audio": snapshot.audio, "captions": snapshot.captions, "video": snapshot.video}[

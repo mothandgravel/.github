@@ -110,7 +110,7 @@ class PreparationJobs:
         directory = self._recording(plan)
         self._check_cache_paths(directory)
         saved_recording = self._saved_recording(plan, directory)
-        complete, blockers, uncertain = 0, [], {}
+        complete, blockers, uncertain, missing = 0, [], {}, []
         diagnostics = []
         for index in range(1, len(plan["requests"]) + 1):
             path = sources.private_path(
@@ -118,6 +118,8 @@ class PreparationJobs:
             )
             state = read_object(path) if path.exists() else {}
             complete += state.get("status") == "complete"
+            if state.get("status") != "complete":
+                missing.append(index)
             if not saved_recording and state.get("status") in {"requesting", "uncertain"}:
                 expected = audio.digest(
                     json.dumps(plan["requests"][index - 1], sort_keys=True).encode()
@@ -135,6 +137,7 @@ class PreparationJobs:
                         + str(path.relative_to(self.root))
                     )
         caption_state = "No matching local caption state checked yet."
+        captions_status = ""
         if (directory / "episode.mp3").exists():
             args = self._caption_args(plan, config, directory / "episode.mp3")
             directory2 = captions.recording_plan(args)[0]
@@ -142,7 +145,8 @@ class PreparationJobs:
                 self.root, str((directory2 / "state.json").relative_to(self.root))
             )
             state = read_object(state_path) if state_path.exists() else {}
-            caption_state = "Matching caption state: " + state.get("status", "not submitted") + "."
+            captions_status = state.get("status", "not submitted")
+            caption_state = "Matching caption state: " + captions_status + "."
             if state.get("status") in {"requesting", "uncertain", "failed"}:
                 blockers.append(
                     "Caption work needs explicit recovery; a new submission is not authorized by Resume."
@@ -205,7 +209,24 @@ class PreparationJobs:
             spend_token=spend["token"],
             spend_label=spend["label"],
             spend_overridable=spend["overridable"],
+            parts_total=len(plan["requests"]),
+            parts_saved=len(plan["requests"]) if saved_recording else complete,
+            missing_parts=() if saved_recording else tuple(missing),
+            narration_estimate_usd=0.0 if saved_recording else self._estimate(plan, missing),
+            recording_saved=saved_recording is not None,
+            captions_status=captions_status,
+            word_count=plan["word_count"],
+            minutes=plan["estimated_minutes"],
+            project=config["project"],
+            blockers=tuple(blockers),
+            uncertain_parts=tuple(uncertain),
         )
+
+    @staticmethod
+    def _estimate(plan: dict, missing: list[int]) -> float | None:
+        """Speech-output estimate for the parts without a complete saved receipt."""
+        shares = [audio.chunk_estimate(plan, index) for index in missing]
+        return None if None in shares else round(sum(shares), 4)
 
     def _spend(self, episode, plan, directory, saved_recording) -> dict:
         """Read-only ledger view for the inspection and the override control."""

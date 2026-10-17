@@ -45,6 +45,28 @@ class Repository:
                 );
                 CREATE UNIQUE INDEX IF NOT EXISTS active_episode
                     ON jobs(episode) WHERE status IN ('queued', 'running');
+                -- Make episode: one consented, resumable chain of ordinary jobs.
+                CREATE TABLE IF NOT EXISTS runs (
+                    identifier TEXT PRIMARY KEY, episode TEXT NOT NULL,
+                    note TEXT NOT NULL DEFAULT '', created TEXT NOT NULL,
+                    consent TEXT NOT NULL, recipe TEXT NOT NULL,
+                    stop_after INTEGER NOT NULL DEFAULT 0,
+                    blocked TEXT NOT NULL DEFAULT '', closed TEXT NOT NULL DEFAULT ''
+                );
+                CREATE UNIQUE INDEX IF NOT EXISTS open_run ON runs(episode) WHERE closed='';
+                CREATE TABLE IF NOT EXISTS run_steps (
+                    sequence INTEGER PRIMARY KEY AUTOINCREMENT, run TEXT NOT NULL,
+                    step TEXT NOT NULL, job TEXT NOT NULL UNIQUE, added TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS durations (
+                    sequence INTEGER PRIMARY KEY AUTOINCREMENT, stage TEXT NOT NULL,
+                    seconds REAL NOT NULL, job TEXT NOT NULL, at TEXT NOT NULL,
+                    UNIQUE(stage, job)
+                );
+                CREATE TABLE IF NOT EXISTS readiness_cache (
+                    episode TEXT PRIMARY KEY, key TEXT NOT NULL, value TEXT NOT NULL,
+                    checked TEXT NOT NULL
+                );
             """)
 
     @contextmanager
@@ -67,15 +89,15 @@ class Repository:
         identifiers = []
         with self.connection() as db:
             db.execute("BEGIN IMMEDIATE")
-            if (
-                db.execute("SELECT COUNT(*) FROM jobs WHERE status='queued'").fetchone()[0]
-                + len(items)
-                > 32
-            ):
-                raise ValueError("The queue is full; wait for pending work to finish")
+            self._capacity(db, len(items))
             for episode, action, request in items:
                 identifiers.append(self._insert(db, episode, action, request))
         return identifiers
+
+    @staticmethod
+    def _capacity(db, count: int) -> None:
+        if db.execute("SELECT COUNT(*) FROM jobs WHERE status='queued'").fetchone()[0] + count > 32:
+            raise ValueError("The queue is full; wait for pending work to finish")
 
     @staticmethod
     def _insert(db, episode: str, action: str, request: dict) -> str:
@@ -114,6 +136,16 @@ class Repository:
         if row is None:
             raise ValueError("Unknown job")
         return Job(**dict(row))
+
+    def newer_jobs(self, episode: str, after: str) -> list[Job]:
+        """Jobs for the episode queued after ``after``, oldest first."""
+        with self.connection() as db:
+            rows = db.execute(
+                "SELECT identifier FROM jobs WHERE episode=? AND rowid > "
+                "(SELECT rowid FROM jobs WHERE identifier=?) ORDER BY rowid",
+                (episode, after),
+            ).fetchall()
+        return [self.get(row[0]) for row in rows]
 
     def latest_recipe(self, episode: str) -> dict | None:
         """Recipe recall is independent of the bounded queue display."""
@@ -331,3 +363,200 @@ class Repository:
                 ),
             )
         return identifier
+
+    # -- Make episode runs -------------------------------------------------------------
+    # A run is a consent record plus an ordered list of ordinary jobs. It never holds
+    # its own media state: what happened is always read back from the jobs.
+
+    def start_run(
+        self,
+        episode: str,
+        note: str,
+        consent: dict,
+        recipe: dict,
+        first: tuple[str, str, dict],
+    ) -> str:
+        """Record the consent and queue the first job in one transaction."""
+        step, action, request = first
+        identifier = uuid.uuid4().hex
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            if db.execute(
+                "SELECT 1 FROM runs WHERE episode=? AND closed=''", (episode,)
+            ).fetchone():
+                raise ValueError(
+                    "This episode already has a Make episode run. Open it from the work list."
+                )
+            self._capacity(db, 1)
+            db.execute(
+                "INSERT INTO runs(identifier,episode,note,created,consent,recipe) "
+                "VALUES(?,?,?,?,?,?)",
+                (
+                    identifier,
+                    episode,
+                    note,
+                    timestamp(),
+                    json.dumps(consent, sort_keys=True),
+                    json.dumps(recipe, sort_keys=True),
+                ),
+            )
+            job = self._insert(db, episode, action, request)
+            db.execute(
+                "INSERT INTO run_steps(run,step,job,added) VALUES(?,?,?,?)",
+                (identifier, step, job, timestamp()),
+            )
+        return identifier
+
+    def add_step(
+        self, run: str, step: str, action: str, request: dict, *, after: str
+    ) -> str | None:
+        """Queue the run's next job, only if ``after`` is still its latest job.
+
+        Returns None, queueing nothing, when another process advanced the run first
+        or the run was closed or stopped. This makes advancing idempotent.
+        """
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT closed, stop_after, episode FROM runs WHERE identifier=?", (run,)
+            ).fetchone()
+            latest = db.execute(
+                "SELECT job FROM run_steps WHERE run=? ORDER BY sequence DESC LIMIT 1", (run,)
+            ).fetchone()
+            if row is None or row[0] or row[1] or latest is None or latest[0] != after:
+                return None
+            self._capacity(db, 1)
+            job = self._insert(db, row[2], action, request)
+            db.execute(
+                "INSERT INTO run_steps(run,step,job,added) VALUES(?,?,?,?)",
+                (run, step, job, timestamp()),
+            )
+        return job
+
+    def adopt_step(self, run: str, step: str, job: str, *, after: str) -> bool:
+        """Follow a job someone queued for this episode on the expert path."""
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            latest = db.execute(
+                "SELECT job FROM run_steps WHERE run=? ORDER BY sequence DESC LIMIT 1", (run,)
+            ).fetchone()
+            if latest is None or latest[0] != after:
+                return False
+            db.execute(
+                "INSERT OR IGNORE INTO run_steps(run,step,job,added) VALUES(?,?,?,?)",
+                (run, step, job, timestamp()),
+            )
+        return True
+
+    def run(self, identifier: str) -> dict:
+        with self.connection() as db:
+            row = db.execute("SELECT * FROM runs WHERE identifier=?", (identifier,)).fetchone()
+        if row is None:
+            raise ValueError("Unknown Make episode run")
+        value = dict(row)
+        value["consent"] = json.loads(value["consent"])
+        value["recipe"] = json.loads(value["recipe"])
+        return value
+
+    def runs(self, *, include_closed: bool = False) -> list[dict]:
+        with self.connection() as db:
+            rows = db.execute(
+                "SELECT identifier FROM runs "
+                + ("" if include_closed else "WHERE closed='' ")
+                + "ORDER BY rowid DESC LIMIT 200"
+            ).fetchall()
+        return [self.run(row[0]) for row in rows]
+
+    def run_steps(self, run: str) -> list[dict]:
+        with self.connection() as db:
+            rows = db.execute(
+                "SELECT step, job, added FROM run_steps WHERE run=? ORDER BY sequence", (run,)
+            ).fetchall()
+        return [dict(row) for row in rows]
+
+    def update_run(
+        self, identifier: str, *, stop_after: bool | None = None, blocked: str | None = None
+    ) -> None:
+        with self.connection() as db:
+            if stop_after is not None:
+                db.execute(
+                    "UPDATE runs SET stop_after=? WHERE identifier=?",
+                    (int(stop_after), identifier),
+                )
+            if blocked is not None:
+                db.execute(
+                    "UPDATE runs SET blocked=? WHERE identifier=?", (blocked[:600], identifier)
+                )
+
+    def note_run(self, identifier: str, note: str) -> None:
+        """Append a dated line to the run's consent record; earlier lines stay."""
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT consent FROM runs WHERE identifier=?", (identifier,)
+            ).fetchone()
+            if row is None:
+                return
+            consent = json.loads(row[0])
+            consent.setdefault("notes", []).append(f"{timestamp()} {note}"[:300])
+            db.execute(
+                "UPDATE runs SET consent=? WHERE identifier=?",
+                (json.dumps(consent, sort_keys=True), identifier),
+            )
+
+    def close_run(self, identifier: str) -> None:
+        """Close a run whose latest job is not queued or running, in one transaction."""
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            if db.execute(
+                "SELECT 1 FROM run_steps JOIN jobs ON jobs.identifier=run_steps.job "
+                "WHERE run_steps.run=? AND jobs.status IN ('queued','running') "
+                "AND run_steps.sequence=(SELECT MAX(sequence) FROM run_steps WHERE run=?)",
+                (identifier, identifier),
+            ).fetchone():
+                raise ValueError("Stop the running step first, or let it finish.")
+            db.execute(
+                "UPDATE runs SET closed=? WHERE identifier=? AND closed=''",
+                (timestamp(), identifier),
+            )
+
+    def record_duration(self, stage: str, seconds: float, job: str) -> None:
+        if not 0 <= seconds <= 7 * 86400:
+            return
+        with self.connection() as db:
+            db.execute(
+                "INSERT OR IGNORE INTO durations(stage,seconds,job,at) VALUES(?,?,?,?)",
+                (stage, round(seconds, 1), job, timestamp()),
+            )
+
+    def durations(self, stage: str, limit: int = 5) -> list[float]:
+        with self.connection() as db:
+            rows = db.execute(
+                "SELECT seconds FROM durations WHERE stage=? ORDER BY sequence DESC LIMIT ?",
+                (stage, limit),
+            ).fetchall()
+        return [row[0] for row in rows]
+
+    # -- Verified readiness cache ------------------------------------------------------
+
+    def cached_readiness(self, episode: str) -> tuple[str, dict, str] | None:
+        with self.connection() as db:
+            row = db.execute(
+                "SELECT key, value, checked FROM readiness_cache WHERE episode=?", (episode,)
+            ).fetchone()
+        return (row[0], json.loads(row[1]), row[2]) if row else None
+
+    def cache_readiness(self, episode: str, key: str, value: dict) -> None:
+        with self.connection() as db:
+            db.execute(
+                "INSERT INTO readiness_cache VALUES(?,?,?,?) ON CONFLICT(episode) DO UPDATE "
+                "SET key=excluded.key, value=excluded.value, checked=excluded.checked",
+                (episode, key, json.dumps(value, sort_keys=True), timestamp()),
+            )
+
+    def forget_readiness(self, episode: str | None = None) -> None:
+        with self.connection() as db:
+            if episode is None:
+                db.execute("DELETE FROM readiness_cache")
+            else:
+                db.execute("DELETE FROM readiness_cache WHERE episode=?", (episode,))
