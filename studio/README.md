@@ -38,6 +38,26 @@ free). Release then has the upload copy, files and **Prepare website update…**
 The expert path is unchanged: **Menu → Episodes and stages (expert)** and **Menu →
 Prepare a note step by step…** open today's screens; **Work list** (Ctrl+H) returns.
 
+**Cost so far.** Release and the run timeline show what the episode has cost, read from
+the spend guard's attempts log (`artifacts/audio/attempts.jsonl`): narration at the local
+estimate of each completed request, captions as "no local estimate" with their length,
+and uncertain attempts apart, as "possibly billed, up to $X". It is an estimate, never a
+bill; the Cloud billing report has the actual charges.
+
+**Without a window.** The same flow runs from a terminal or an agent:
+
+```bash
+python3 -m field_notes_studio make-episode 014              # summary and digest; sends nothing
+python3 -m field_notes_studio make-episode 014 --confirm <digest>   # start exactly that
+python3 -m field_notes_studio make-episode maritime-study --status  # run timeline and cost
+```
+
+`--confirm` starts the run only when the digest equals a summary built afresh at that
+moment, as Studio's confirm does. There is no override or resend option: an uncertain
+part or a reached spend-guard limit blocks the summary, and those keep their own consent
+in Studio's expert path. Every paid request still goes through the engine's spend guard,
+and a run never retries a paid step.
+
 A Tkinter/ttk workspace for the existing local production engine. The **Episodes**
 shelf lists every written note with its **Next** step; **Needs me** filters it to the
 notes waiting for you. A note that is not narrated yet opens one step: **Prepare this
