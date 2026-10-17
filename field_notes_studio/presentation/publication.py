@@ -92,7 +92,6 @@ class Publication(ttk.Frame):
         ttk.Button(self.editor_window, text="Close", command=self.close_editor).pack(
             anchor="e", padx=10, pady=(0, 10)
         )
-        self._website_dialog()
         self.page.bind_navigation()
 
     # Layout -----------------------------------------------------------------------
@@ -278,45 +277,17 @@ class Publication(ttk.Frame):
         )
         self.website_button.pack(anchor="w")
         ttk.Label(
-            card, text="Today: terminal only (promote, publish)", style="CardWarn.TLabel"
+            card,
+            text="Runs promote and publish after you confirm. It pushes a branch for "
+            "review and never merges.",
+            style="CardSmall.TLabel",
+            wraplength=300,
         ).pack(anchor="w", pady=(8, 0))
 
-    def _website_dialog(self):
-        """The commands behind Prepare website update…; Studio runs neither of them."""
-        window = self.website_window = tk.Toplevel(self)
-        window.withdraw()
-        window.title("Website and podcast feed")
-        window.protocol("WM_DELETE_WINDOW", window.withdraw)
-        window.bind("<Escape>", lambda _: window.withdraw())
-        body = ttk.Frame(window, padding=18)
-        body.pack(fill="both", expand=True)
-        ttk.Label(body, text="Prepare website update", style="Heading.TLabel").pack(anchor="w")
-        ttk.Label(
-            body,
-            text="Run these in a terminal in this checkout. promote adds the finished audio "
-            "to the note page and RSS; publish pushes a pull request branch for you to merge. "
-            "Studio does not run them yet.",
-            style="Muted.TLabel",
-            wraplength=460,
-        ).pack(anchor="w", pady=(4, 10))
-        self.commands = ttk.Label(body, text="", style="Mono.TLabel")
-        self.commands.pack(anchor="w")
-        actions = ttk.Frame(body)
-        actions.pack(fill="x", pady=(14, 0))
-        self.copy_commands = ActionButton(
-            actions,
-            pictogram="copy",
-            text="Copy commands",
-            command=self.copy_website_commands,
-        )
-        self.copy_commands.pack(side="left")
-        ttk.Button(actions, text="Close", command=window.withdraw).pack(side="right")
-
     def open_website(self):
-        self.website_window.transient(self.winfo_toplevel())
-        self.website_window.deiconify()
-        self.website_window.lift()
-        self.copy_commands.focus_set()
+        """Prepare website update…: the confirm dialog shows exactly what will run."""
+        if self.episode is not None:
+            self.callbacks["website"](self.episode)
 
     def _record_card(self, callbacks):
         card = ttk.Frame(self.side, style="Card.TFrame", padding=(14, 12))
@@ -397,10 +368,6 @@ class Publication(ttk.Frame):
         self.episode = episode.identifier
         self.written_url = episode.written_url
         self.defaults = (episode.podcast_url, episode.podcast_date)
-        self.commands.configure(
-            text=f"python3 -m field_notes_audio promote {episode.identifier}\n"
-            "python3 -m field_notes_audio publish"
-        )
         self.filling = True
         draft = self.drafts.get(self.episode)
         if draft is None:
@@ -527,14 +494,6 @@ class Publication(ttk.Frame):
                     button.reset_feedback()
             self.copy_buttons[field].complete()
             self.callbacks["status"](field + " copied. Paste it into the upload form.")
-
-    def copy_website_commands(self):
-        self.clipboard_clear()
-        self.clipboard_append(self.commands.cget("text"))
-        self.copy_commands.complete()
-        self.callbacks["status"](
-            "Website commands copied. Run them in a terminal in this checkout; Studio ran nothing."
-        )
 
     def use_defaults(self):
         if self.episode is not None and any(self.defaults):

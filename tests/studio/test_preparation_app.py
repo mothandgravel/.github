@@ -35,7 +35,7 @@ class PreparationApplicationTests(unittest.TestCase):
         self.root = tk.Tk()
         self.app = Application(self.root, self.fixture.root)
         self.addCleanup(lambda: self.app.close() if not self.app.closed else None)
-        self.app.prepare_button.invoke()
+        self.app.open_preparation()  # Menu → Prepare a note step by step…
         self.wait(lambda: self.app.preparation.view.tree.exists("104"))
         self.view = self.app.preparation.view
         self.view.tree.selection_set("104")
@@ -94,7 +94,7 @@ class PreparationApplicationTests(unittest.TestCase):
 
     def test_real_header_inspection_consent_and_queue_handoff(self):
         original = self.app.preparation
-        self.app.prepare_button.invoke()
+        self.app.open_preparation()  # Menu → Prepare a note step by step…
         self.assertIs(self.app.preparation, original)
         self.wait(lambda: not self.app.preparation.busy)
         self.inspect()

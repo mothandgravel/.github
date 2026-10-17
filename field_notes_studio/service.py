@@ -45,19 +45,24 @@ class Studio:
         ]
 
     def shelf_hints(self) -> dict[str, str]:
-        """Next step per narrated episode for the shelf: a quick hint, never evidence.
+        """Next step per narrated episode for the shelf, from the verified readiness cache.
 
-        Read from jobs, release records and the saved-version pointers only; the
-        episode card's readiness check verifies files before anything is offered.
+        Only a cached readiness result whose inputs are unchanged gives a step; an
+        episode whose files, settings, job or release record changed since its
+        last check reads "Check" until the work list verifies it again.
         """
         jobs = self.repository.jobs()
-        publications = self.repository.publications()
         resolved = resolved_failures(jobs)
         latest = {}
         for job in jobs:
             latest.setdefault(job.episode, job)
+        entries = {entry["id"]: entry for entry in self.pipeline.entries()}
+        episodes = list(entries)
+        publications = self.repository.publications()
         hints = {}
-        for episode, stage in self.pipeline.stage_hints().items():
+        for episode, (label, _verified, _value) in self.verified_next(
+            episodes, check=False
+        ).items():
             job = latest.get(episode)
             if job and job.status in {"queued", "running"}:
                 hints[episode] = "Working"
@@ -65,10 +70,14 @@ class Studio:
                 hints[episode] = "Resume"
             elif job and job.status in {"failed", "interrupted"} and job.identifier not in resolved:
                 hints[episode] = "Recover"
-            elif episode in publications:
-                hints[episode] = "Done"
+            elif (
+                label == "Produce"
+                and episode not in publications
+                and self.pipeline.publication_defaults(entries[episode])[0]
+            ):
+                hints[episode] = "In feed"
             else:
-                hints[episode] = stage
+                hints[episode] = label
         return hints
 
     def preferences(self) -> dict:

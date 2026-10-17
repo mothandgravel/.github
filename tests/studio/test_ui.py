@@ -71,6 +71,8 @@ class UITests(unittest.TestCase):
         self.root = tk.Tk()
         self.app = Application(self.root, self.directory)
         self.addCleanup(lambda: self.app.close() if not self.app.closed else None)
+        # These tests exercise the expert episodes view; Studio opens on the work list.
+        self.app.show_view("episodes")
         self.wait(lambda: self.app.controller.selected and not self.app.controller.loading)
         self.wait(lambda: self.app.workspace.publication.details is not None)
 

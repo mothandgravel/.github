@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import platform
+import shutil
 import subprocess
 import sys
 import webbrowser
@@ -31,6 +32,28 @@ def upload_path(path: Path) -> str:
 def open_publisher() -> None:
     if not webbrowser.open("https://studio.youtube.com"):
         raise ValueError("Open https://studio.youtube.com in your browser to upload these files")
+
+
+def open_url(url: str) -> None:
+    if not url.startswith("https://") or not webbrowser.open(url):
+        raise ValueError(f"Open {url} in your browser")
+
+
+def notify(title: str, body: str) -> bool:
+    """A desktop notification where notify-send exists; silently nothing elsewhere."""
+    command = shutil.which("notify-send")
+    if not command:
+        return False
+    try:
+        subprocess.Popen(
+            [command, "--app-name=Moth & Gravel studio", title, body[:200]],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except OSError:
+        return False
+    return True
 
 
 def launch_worker(root: Path) -> subprocess.Popen:
