@@ -620,7 +620,7 @@ class UITests(unittest.TestCase):
         repository.finish(identifier, "interrupted", error="Unknown outcome")
         self.app.jobs.render(repository.jobs())
         self.assertFalse(buttons["retry"].instate(["disabled"]))
-        self.assertIn("1 need attention", self.app.jobs.summary["text"])
+        self.assertIn("1 needs attention", self.app.jobs.summary["text"])
         self.assertTrue(buttons["open"].instate(["disabled"]))
         repository.submit("note-001", "audio", {"settings": {}})
         self.app.jobs.render(repository.jobs())

@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from datetime import timedelta
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from urllib import error
 
 from field_notes_audio import audio, captions, cli, spend_guard
@@ -225,41 +225,87 @@ class SpendGuardTests(unittest.TestCase):
             spend_guard.tally(self.audio_root, "note-001", "narration-1").episode_total, 0
         )
 
-    def test_override_is_deliberate_and_logged(self):
+    def reserve(self, part="narration-1", **extra):
+        return spend_guard.reserve(
+            self.audio_root,
+            "note-001",
+            part,
+            attempt_id=spend_guard.new_attempt_id(),
+            estimate_usd=0.01,
+            **extra,
+        )
+
+    def test_start_is_logged_durably_before_the_request_is_sent(self):
+        def synthesize(*_args, **_kwargs):
+            attempt = read_object(self.directory / "chunk-001.json")["attempt_id"]
+            starts = [e for e in self.log() if e["type"] == "start"]
+            self.assertEqual([e["attempt_id"] for e in starts], [attempt])
+            self.assertFalse([e for e in self.log() if e["type"] == "outcome"])
+            raise TimeoutError
+
+        _, calls, _ = self.run_once(synthesize)
+        self.assertEqual(calls, 1)
+        self.assertEqual(self.log()[-1]["outcome"], "uncertain")
+
+    def test_override_needs_reason_and_the_refusal_token_and_is_logged(self):
         self.run_once(TimeoutError())
         self.run_once(TimeoutError(), retry_uncertain=True)
+        refused, calls, _ = self.run_once(TimeoutError(), retry_uncertain=True)
+        self.assertEqual(calls, 0)
+        token = refused.tally.token
+        self.assertIn(f"--spend-token {token}", str(refused))
         with self.assertRaisesRegex(ValueError, "written reason"):
-            spend_guard.check(self.audio_root, "note-001", "narration-1", override="go")
+            self.reserve(override="go", token=token)
+        reason = "Status page shows the TTS incident resolved"
+        exc, calls, _ = self.run_once(
+            TimeoutError(), retry_uncertain=True, allow_spend_over_limit=reason
+        )
+        self.assertIn("old or missing spend token", str(exc))
+        self.assertEqual(calls, 0)
         exc, calls, output = self.run_once(
             TimeoutError(),
             retry_uncertain=True,
-            allow_spend_over_limit="Status page shows the TTS incident resolved",
+            allow_spend_over_limit=reason,
+            spend_token=token,
         )
         self.assertEqual(calls, 1)  # the one deliberate attempt was sent
         self.assertIn("Spend guard override logged", output)
-        overrides = spend_guard.overrides(self.audio_root, "note-001")
-        self.assertEqual(len(overrides), 1)
-        self.assertEqual(overrides[0]["reason"], "Status page shows the TTS incident resolved")
-        self.assertEqual(overrides[0]["part_window"], 2)
+        logged = spend_guard.overrides(self.audio_root, "note-001")
+        self.assertEqual(len(logged), 1)
+        self.assertEqual(logged[0]["reason"], reason)
+        self.assertEqual((logged[0]["part_window"], logged[0]["token"]), (2, token))
         self.assertIn("has 3 (limit 2", str(exc))
 
-    def test_studio_override_is_bound_to_the_count_that_was_shown(self):
+    def test_a_repeated_override_is_refused_even_with_a_fresh_token(self):
+        reason = "Checked the billing report first"
         self.run_once(TimeoutError())
         self.run_once(TimeoutError(), retry_uncertain=True)
-        with self.assertRaisesRegex(spend_guard.SpendLimitReached, "fewer uncertain attempts"):
-            spend_guard.check(
-                self.audio_root,
-                "note-001",
-                "narration-1",
-                override="Checked the billing report first",
-                acknowledged=1,
-            )
-        spend_guard.check(
-            self.audio_root,
-            "note-001",
-            "narration-1",
-            override="Checked the billing report first",
-            acknowledged=2,
+        token = spend_guard.tally(self.audio_root, "note-001", "narration-1").token
+        override = {"allow_spend_over_limit": reason, "spend_token": token}
+        self.run_once(TimeoutError(), retry_uncertain=True, **override)
+        # The same command again, as a shell loop would repeat it.
+        exc, calls, _ = self.run_once(TimeoutError(), retry_uncertain=True, **override)
+        self.assertIn("old or missing spend token", str(exc))
+        self.assertEqual(calls, 0)
+        fresh = spend_guard.tally(self.audio_root, "note-001", "narration-1").token
+        self.assertNotEqual(fresh, token)
+        exc, calls, _ = self.run_once(
+            TimeoutError(), retry_uncertain=True, allow_spend_over_limit=reason, spend_token=fresh
+        )
+        self.assertIn("already overridden once", str(exc))
+        self.assertEqual(calls, 0)
+        self.assertEqual(len(spend_guard.overrides(self.audio_root, "note-001")), 1)
+
+    def test_check_and_start_are_atomic_across_processes(self):
+        import multiprocessing
+
+        context = multiprocessing.get_context("fork")
+        with context.Pool(8) as pool:
+            results = pool.map(_reserve_in_process, [str(self.audio_root)] * 8)
+        self.assertEqual(results.count("sent"), 2)
+        self.assertEqual(results.count("refused"), 6)
+        self.assertEqual(
+            spend_guard.tally(self.audio_root, "note-001", "narration-1").part_window, 2
         )
 
     def test_window_expiry_lifts_the_limit_but_keeps_totals(self):
@@ -274,34 +320,108 @@ class SpendGuardTests(unittest.TestCase):
             seen = spend_guard.tally(self.audio_root, "note-001", "narration-1")
             self.assertFalse(seen.blocked)
             self.assertEqual((seen.part_window, seen.part_total), (0, 2))
-            spend_guard.check(self.audio_root, "note-001", "narration-1")
+            self.reserve()
 
-    def test_limits_are_configurable_by_file_and_environment(self):
+    def test_limits_can_only_be_made_stricter_and_are_logged(self):
         self.assertEqual(spend_guard.load_limits(self.audio_root), spend_guard.Limits(2, 4, 24))
         write_json(
             self.audio_root / "spend-guard.json",
-            {"part_limit": 1, "episode_limit": 3, "window_hours": 12},
+            {"part_limit": 1, "episode_limit": 3, "window_hours": 48},
         )
-        self.assertEqual(spend_guard.load_limits(self.audio_root), spend_guard.Limits(1, 3, 12))
-        with patch.dict(os.environ, {"FIELD_AUDIO_UNCERTAIN_PART_LIMIT": "5"}):
-            self.assertEqual(spend_guard.load_limits(self.audio_root).part, 5)
-        for bad in ("0", "x", "500"):
-            with (
-                self.subTest(bad=bad),
-                patch.dict(os.environ, {"FIELD_AUDIO_UNCERTAIN_EPISODE_LIMIT": bad}),
-                self.assertRaises(ValueError),
-            ):
-                spend_guard.load_limits(self.audio_root)
-        self.run_once(TimeoutError())
+        self.assertEqual(spend_guard.load_limits(self.audio_root), spend_guard.Limits(1, 3, 48))
+        loosening = {
+            "FIELD_AUDIO_UNCERTAIN_PART_LIMIT": ("3", "50", "0", "x", "true"),
+            "FIELD_AUDIO_UNCERTAIN_EPISODE_LIMIT": ("5", "50", "0"),
+            "FIELD_AUDIO_UNCERTAIN_WINDOW_HOURS": ("0.0001", "23", "1000"),
+        }
+        for name, values in loosening.items():
+            for value in values:
+                with (
+                    self.subTest(name=name, value=value),
+                    patch.dict(os.environ, {name: value}),
+                    self.assertRaises(ValueError),
+                ):
+                    spend_guard.load_limits(self.audio_root)
+        with patch.dict(os.environ, {"FIELD_AUDIO_UNCERTAIN_PART_LIMIT": "50"}):
+            exc, calls, _ = self.run_once(TimeoutError())
+            self.assertIn("would loosen", str(exc))
+            self.assertEqual(calls, 0)
+        _, _, output = self.run_once(TimeoutError())
+        self.assertIn(
+            "at most 1 uncertain paid attempts per part and 3 per episode in 48 h", output
+        )
+        self.assertEqual([e["limits"] for e in self.log() if e["type"] == "limits"], [[1, 3, 48.0]])
         exc, calls, _ = self.run_once(TimeoutError(), retry_uncertain=True)
         self.assertIsInstance(exc, spend_guard.SpendLimitReached)
         self.assertEqual(calls, 0)
 
-    def test_damaged_log_fails_closed(self):
-        (self.audio_root / "attempts.jsonl").write_text('{"v": 1}\nnot json\n')
-        exc, calls, _ = self.run_once(TimeoutError())
-        self.assertIn("damaged", str(exc))
-        self.assertEqual(calls, 0)
+    def test_malformed_lines_count_as_uncertain_instead_of_vanishing(self):
+        (self.audio_root / "attempts.jsonl").write_text(
+            'not json\n[]\n{"type": "start", "attempt_id": "x", "episode": "note-001", '
+            '"part": "narration-1", "at": "garbage"}\n'
+        )
+        seen = spend_guard.tally(self.audio_root, "note-001", "narration-1")
+        self.assertEqual((seen.episode_window, seen.part_window), (3, 1))
+        self.assertIn("damaged log line", seen.attempts[0].detail)
+
+    def test_torn_final_line_counts_and_is_terminated_before_appending(self):
+        torn = (
+            '{"at": "2026-10-17T00:00:00+00:00", "attempt_id": "' + "d" * 32 + '", '
+            '"episode": "note-001", "estimate_usd": 0.01, "part": "narr'
+        )
+        (self.audio_root / "attempts.jsonl").write_text(torn)
+        with patch.object(
+            spend_guard, "now", return_value=spend_guard._parse_time("2026-10-17T01:00:00+00:00")
+        ):
+            seen = spend_guard.tally(self.audio_root, "note-001", "narration-1")
+            self.assertEqual(seen.episode_window, 1)
+            self.reserve()
+            lines = (self.audio_root / "attempts.jsonl").read_text().splitlines()
+        self.assertEqual(lines[0], torn)  # kept as evidence, now on its own line
+        self.assertEqual(json.loads(lines[1])["type"], "start")
+        self.assertEqual(
+            spend_guard.tally(self.audio_root, "note-001", "narration-1").episode_total, 2
+        )
+
+    def test_failure_text_survives_an_unreadable_log(self):
+        gateway = error.HTTPError("https://x", 502, "Bad Gateway", {}, None)
+        real = spend_guard.tally
+
+        def flaky(*args, **kwargs):
+            if kwargs.get("import_receipts"):
+                return real(*args, **kwargs)
+            raise ValueError("disk vanished")
+
+        with patch.object(spend_guard, "tally", side_effect=flaky):
+            exc, calls, _ = self.run_once(gateway)
+        self.assertEqual(calls, 1)
+        self.assertIn("a Google gateway got no valid answer", str(exc))
+        self.assertIn("could not be read (disk vanished)", str(exc))
+
+    def test_complete_receipt_settles_a_start_whose_outcome_line_was_lost(self):
+        identifier = spend_guard.new_attempt_id()
+        receipt = self.directory / "chunk-001.json"
+        spend_guard.record_start(
+            self.audio_root,
+            episode="note-001",
+            part="narration-1",
+            attempt_id=identifier,
+            estimate_usd=0.01,
+            receipt=str(receipt.relative_to(self.audio_root)),
+        )
+        write_json(receipt, {"status": "complete", "attempt_id": identifier})
+        self.assertEqual(
+            spend_guard.tally(self.audio_root, "note-001", "narration-1").episode_total, 0
+        )
+        with contextlib.redirect_stdout(io.StringIO()) as output:
+            audio._log_outcome(Mock(side_effect=OSError("disk full")), "complete", "", 1.0)
+        self.assertIn("could not record outcome 'complete'", output.getvalue())
+
+    def test_identical_legacy_receipts_in_two_folders_are_two_attempts(self):
+        for folder in ("aaaa", "bbbb"):
+            path = self.audio_root / "note-001" / "rec" / "captions" / folder / "state.json"
+            write_json(path, {"status": "uncertain", "audio_sha256": "f" * 64})
+        self.assertEqual(spend_guard.tally(self.audio_root, "note-001", "captions").part_window, 2)
 
     # --- timeout --------------------------------------------------------------
 
@@ -334,6 +454,10 @@ class SpendGuardTests(unittest.TestCase):
             ):
                 cli.main([*command, "--allow-spend-over-limit", "why"])
             self.assertIn("8–300 characters", stderr.getvalue())
+        with contextlib.redirect_stderr(io.StringIO()) as stderr:
+            code = cli.main(["make-all", "--allow-spend-over-limit", "One more try for all"])
+        self.assertEqual(code, 1)
+        self.assertIn("make-all never overrides the spend guard", stderr.getvalue())
         for command in (["generate", "note-001"], ["make", "note-001"], ["make-all"]):
             with (
                 self.subTest(timeout=command[0]),
@@ -343,57 +467,144 @@ class SpendGuardTests(unittest.TestCase):
                 cli.main([*command, "--tts-timeout-seconds", "5"])
 
 
+def _reserve_in_process(audio_root: str) -> str:
+    try:
+        spend_guard.reserve(
+            Path(audio_root),
+            "note-001",
+            "narration-1",
+            attempt_id=spend_guard.new_attempt_id(),
+            estimate_usd=0.01,
+        )
+    except spend_guard.SpendLimitReached:
+        return "refused"
+    return "sent"
+
+
+def caption_args(mp3):
+    return argparse.Namespace(
+        audio=mp3,
+        project="audio-pilot-project",
+        bucket="private-bucket",
+        location="us",
+        model="chirp_3",
+        language="en-US",
+        diarize=False,
+        auth="gcloud",
+        script=None,
+        dry_run=False,
+        wait=0,
+        retry_uncertain=False,
+        restart_failed=False,
+    )
+
+
 class CaptionSpendTests(unittest.TestCase):
-    def test_cancelled_caption_submission_is_uncertain_with_stop_text(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            recording = root / "artifacts/audio/note-001/abc"
-            recording.mkdir(parents=True)
-            mp3 = recording / "episode.mp3"
-            mp3.write_bytes(b"ID3" + b"\0" * 2000)
-            args = argparse.Namespace(
-                audio=mp3,
-                project="audio-pilot-project",
-                bucket="private-bucket",
-                location="us",
-                model="chirp_3",
-                language="en-US",
-                diarize=False,
-                auth="gcloud",
-                script=None,
-                dry_run=False,
-                wait=0,
-                retry_uncertain=False,
-                restart_failed=False,
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        patcher = patch.object(audio, "ROOT", self.root)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def cloud(self, failure):
+        return contextlib.ExitStack(), [
+            patch.object(captions, "probe_audio", return_value=60.0),
+            patch.object(captions.shutil, "which", return_value="installed"),
+            patch.object(captions, "ensure_upload", return_value="1"),
+            patch.object(captions, "cloud_json", side_effect=failure),
+        ]
+
+    def run_captions(self, mp3, failure):
+        stack, patches = self.cloud(failure)
+        with stack, contextlib.redirect_stdout(io.StringIO()):
+            mocks = [stack.enter_context(p) for p in patches]
+            try:
+                captions.run(caption_args(mp3))
+            except (RuntimeError, ValueError) as exc:
+                return exc, mocks
+        return None, mocks
+
+    def test_caption_guard_refuses_at_the_limit_before_upload(self):
+        recording = self.root / "artifacts/audio/note-001/abc"
+        recording.mkdir(parents=True)
+        mp3 = recording / "episode.mp3"
+        mp3.write_bytes(b"ID3" + b"\0" * 2000)
+        episode = "recording-" + audio.digest(mp3.read_bytes())[:12]
+        for _ in range(2):
+            spend_guard.record_start(
+                self.root / "artifacts/audio",
+                episode=episode,
+                part="captions",
+                attempt_id=spend_guard.new_attempt_id(),
+                estimate_usd=None,
             )
-            with (
-                patch.object(captions, "probe_audio", return_value=60.0),
-                patch.object(captions.shutil, "which", return_value="installed"),
-                patch.object(captions, "ensure_upload", return_value="1"),
-                patch.object(
-                    captions,
-                    "cloud_json",
-                    side_effect=captions.CloudError(
-                        {"http_status": 499, "provider_status": "CANCELLED"}
-                    ),
+        exc, (_, _, upload, cloud) = self.run_captions(mp3, AssertionError("sent"))
+        self.assertIsInstance(exc, spend_guard.SpendLimitReached)
+        self.assertIn("captions has reached 2 uncertain attempts", str(exc))
+        upload.assert_not_called()
+        cloud.assert_not_called()
+
+    def test_caption_mp3_outside_artifacts_logs_to_the_checkout(self):
+        elsewhere = tempfile.TemporaryDirectory()
+        self.addCleanup(elsewhere.cleanup)
+        mp3 = Path(elsewhere.name) / "episode.mp3"
+        mp3.write_bytes(b"ID3" + b"\0" * 2000)
+        exc, _ = self.run_captions(mp3, TimeoutError())
+        self.assertIn("Billing unknown", str(exc))
+        self.assertTrue((self.root / "artifacts/audio/attempts.jsonl").exists())
+        self.assertFalse(list(Path(elsewhere.name).rglob("attempts.jsonl")))
+
+    def test_cancelled_caption_submission_is_uncertain_with_stop_text(self):
+        root = self.root
+        recording = root / "artifacts/audio/note-001/abc"
+        recording.mkdir(parents=True)
+        mp3 = recording / "episode.mp3"
+        mp3.write_bytes(b"ID3" + b"\0" * 2000)
+        args = argparse.Namespace(
+            audio=mp3,
+            project="audio-pilot-project",
+            bucket="private-bucket",
+            location="us",
+            model="chirp_3",
+            language="en-US",
+            diarize=False,
+            auth="gcloud",
+            script=None,
+            dry_run=False,
+            wait=0,
+            retry_uncertain=False,
+            restart_failed=False,
+        )
+        with (
+            patch.object(captions, "probe_audio", return_value=60.0),
+            patch.object(captions.shutil, "which", return_value="installed"),
+            patch.object(captions, "ensure_upload", return_value="1"),
+            patch.object(
+                captions,
+                "cloud_json",
+                side_effect=captions.CloudError(
+                    {"http_status": 499, "provider_status": "CANCELLED"}
                 ),
-                contextlib.redirect_stdout(io.StringIO()),
-                self.assertRaises(captions.CloudError) as caught,
-            ):
-                captions.run(args)
-            text = str(caught.exception)
-            self.assertIn("cancelled before a result came back", text)
-            self.assertIn("Billing unknown", text)
-            self.assertIn("captions has 1 (limit 2", text)
-            state = next(recording.glob("captions/*/state.json"))
-            self.assertEqual(read_object(state)["status"], "uncertain")
-            entries = [
-                json.loads(line)
-                for line in (root / "artifacts/audio/attempts.jsonl").read_text().splitlines()
-            ]
-            self.assertEqual([e["type"] for e in entries], ["start", "outcome"])
-            self.assertEqual(entries[1]["outcome"], "uncertain")
-            self.assertEqual(entries[0]["attempt_id"], read_object(state)["attempt_id"])
+            ),
+            contextlib.redirect_stdout(io.StringIO()),
+            self.assertRaises(captions.CloudError) as caught,
+        ):
+            captions.run(args)
+        text = str(caught.exception)
+        self.assertIn("cancelled before a result came back", text)
+        self.assertIn("Billing unknown", text)
+        self.assertIn("captions has 1 (limit 2", text)
+        state = next(recording.glob("captions/*/state.json"))
+        self.assertEqual(read_object(state)["status"], "uncertain")
+        entries = [
+            json.loads(line)
+            for line in (root / "artifacts/audio/attempts.jsonl").read_text().splitlines()
+        ]
+        self.assertEqual([e["type"] for e in entries], ["start", "outcome"])
+        self.assertEqual(entries[1]["outcome"], "uncertain")
+        self.assertEqual(entries[0]["attempt_id"], read_object(state)["attempt_id"])
 
 
 if __name__ == "__main__":

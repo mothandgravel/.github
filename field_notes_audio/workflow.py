@@ -356,6 +356,7 @@ def caption_recording(path: Path, args: argparse.Namespace) -> Path | None:
         retry_uncertain=args.retry_uncertain,
         restart_failed=args.restart_failed,
         allow_spend_over_limit=getattr(args, "allow_spend_over_limit", None),
+        spend_token=getattr(args, "spend_token", None),
     )
     prepare_captions(caption_args)
     caption_args._cancel_event = getattr(args, "_cancel_event", None)

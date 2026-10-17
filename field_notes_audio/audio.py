@@ -476,6 +476,27 @@ def _settle(
     )
 
 
+def _log_outcome(settle, outcome: str, detail: str, seconds: float) -> None:
+    """Retry the outcome line; a failed write never aborts saved audio or hides a failure.
+
+    A complete attempt without its outcome line is still reconciled from its own
+    receipt, so it does not become a ghost uncertain attempt.
+    """
+    for attempt in range(3):
+        try:
+            settle(outcome, detail, seconds)
+            return
+        except OSError as exc:  # noqa: PERF203 - bounded local retry of a log write
+            if attempt == 2:
+                report(
+                    f"Warning: the attempt log could not record outcome {outcome!r} ({exc}). "
+                    "The saved receipt remains the evidence.",
+                    flush=True,
+                )
+            else:
+                time.sleep(0.2)
+
+
 def chunk_estimate(plan: dict, index: int) -> float | None:
     """Speech-output estimate for one part, by its share of the plan's text."""
     try:
@@ -508,6 +529,7 @@ def generate_locked(
         getattr(args, "tts_timeout_seconds", None) or tts_timeout_seconds()
     )
     write_json(directory / "plan.json", plan)
+    report(spend_guard.limits_text(spend_guard.load_limits(spend_guard.log_root(directory))))
     paths = []
     for index, data in enumerate(plan["requests"], start=1):
         raise_if_stopped(args)
@@ -546,29 +568,12 @@ def generate_locked(
                 and not args.retry_uncertain
                 and not receipt
             ):
-                seen = spend_guard.tally(audio_root, episode_id, part)
                 raise ValueError(
                     f"Narration part {index} of {total} has an uncertain earlier attempt: no audio "
                     "was saved and billing is unknown. "
-                    + seen.sentence()
+                    + spend_guard.describe(audio_root, episode_id, part)
                     + " Stop and wait before another paid try; see audio/README.md. "
                     f"Only if you accept another possible charge, {retry} once by hand."
-                )
-            override = getattr(args, "allow_spend_over_limit", None)
-            guard = spend_guard.check(
-                audio_root,
-                episode_id,
-                part,
-                override=override,
-                acknowledged=getattr(args, "spend_acknowledged", None),
-                command="narration",
-            )
-            if guard.blocked:
-                report(
-                    "Spend guard override logged: "
-                    + guard.sentence()
-                    + f" Reason: {spend_guard.validate_reason(override)}",
-                    flush=True,
                 )
             stage(
                 f"narration-{index}-of-{total}",
@@ -585,15 +590,27 @@ def generate_locked(
                 elif read_object(archive) != state:
                     raise ValueError("Saved recovery evidence changed; inspect before retrying")
             attempt_id = spend_guard.new_attempt_id()
-            spend_guard.record_start(
+            override = getattr(args, "allow_spend_over_limit", None)
+            # One atomic step: check the limit, then durably log the start before sending.
+            guard = spend_guard.reserve(
                 audio_root,
-                episode=episode_id,
-                part=part,
+                episode_id,
+                part,
                 attempt_id=attempt_id,
                 estimate_usd=chunk_estimate(plan, index),
                 request_sha256=expected,
                 receipt=str(state_path.relative_to(audio_root)),
+                override=override,
+                token=getattr(args, "spend_token", None),
+                command="narration",
             )
+            if guard.blocked:
+                report(
+                    "Spend guard override logged: "
+                    + guard.sentence()
+                    + f" Reason: {spend_guard.validate_reason(override)}",
+                    flush=True,
+                )
             write_json(
                 state_path,
                 {
@@ -659,10 +676,9 @@ def generate_locked(
                         **diagnostic,
                     },
                 )
-                settle(status, f"HTTP {exc.code} {provider_status}".strip(), elapsed)
+                _log_outcome(settle, status, f"HTTP {exc.code} {provider_status}".strip(), elapsed)
                 detail = provider_status or diagnostic.get("provider_message")
                 label = f" ({detail})" if detail else ""
-                now_seen = spend_guard.tally(audio_root, episode_id, part)
                 raise RuntimeError(
                     f"Narration part {index} of {total} failed: "
                     f"{http_meaning(exc.code, provider_status)} (HTTP {exc.code}). "
@@ -671,7 +687,7 @@ def generate_locked(
                         if uncertain
                         else "The request was refused, so it was not processed. "
                     )
-                    + now_seen.sentence()
+                    + spend_guard.describe(audio_root, episode_id, part)
                     + " "
                     + http_guidance(exc.code, args.episode, provider_status, retry=retry)
                     + f" Technical detail: Google returned HTTP {exc.code}{label} after "
@@ -699,8 +715,7 @@ def generate_locked(
                         "attempt_seconds": round(elapsed, 4),
                     },
                 )
-                settle("uncertain", kind, elapsed)
-                now_seen = spend_guard.tally(audio_root, episode_id, part)
+                _log_outcome(settle, "uncertain", kind, elapsed)
                 what = (
                     f"no answer arrived within the {timeout_seconds}s client wait"
                     if timed_out
@@ -711,7 +726,7 @@ def generate_locked(
                 raise RuntimeError(
                     f"Narration part {index} of {total} failed: {what}. "
                     "No completed audio was confirmed locally. "
-                    + now_seen.sentence()
+                    + spend_guard.describe(audio_root, episode_id, part)
                     + " "
                     + stop_and_wait(None, retry=retry)
                     + f" Technical detail: {kind} after {elapsed:.1f}s"
@@ -724,7 +739,7 @@ def generate_locked(
                 ) from None
             else:
                 # Outside the handlers: a failed log write never turns saved audio uncertain.
-                settle("complete", "", saved_seconds)
+                _log_outcome(settle, "complete", "", saved_seconds)
         paths.append(wav_path)
         # Outside the request exception handler: a late stop must not turn saved audio uncertain.
         stage(

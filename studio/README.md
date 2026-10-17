@@ -394,12 +394,13 @@ CANCELLED and treated as uncertain.
 
 The engine refuses another paid request at **2 uncertain attempts per part or 4 per
 episode in a rolling 24 h**, counted from the append-only `artifacts/audio/attempts.jsonl`
-and older receipts. The CLI and Studio hit the same limit. In **Prepare a written
-note**, inspection lists the uncertain attempts with time, status, attempt ID and
-estimate. Past the limit, queueing needs **Override the spend guard for one run** and a
-logged reason, bound to the count shown. A failed preparation row in the main queue shows
-the uncertain total and possible spend. A queued override covers one run; Retry does not
-reuse it. Limits, the log and the 360-second narration timeout are described in
+and older receipts. The CLI and Studio hit the same limit, and settings can only make it
+stricter. In **Prepare a written note**, inspection lists the uncertain attempts with time,
+status, attempt ID and estimate. Past the limit, queueing needs **Override once (N
+uncertain attempts…, billing unknown)** and a logged reason. The override is bound to the
+attempts shown and works once per part per window. A failed preparation row in the main
+queue shows the uncertain total, the limits and possible spend. A queued override covers
+one run; Retry does not reuse it, although a waiting caption job can still resume. Limits, the log and the 360-second narration timeout are described in
 [audio/README.md](../audio/README.md#uncertain-spend-guard).
 
 The readiness card and Preflight line show one plain sentence with the next step, such as

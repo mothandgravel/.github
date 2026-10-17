@@ -12,14 +12,24 @@ imported once from the cache files (timestamped by file modification time), so
 earlier evidence is not lost when a retry overwrites a receipt.
 
 The guard refuses another paid request when uncertain attempts in the rolling
-window reach the per-part or per-episode limit. Only a deliberate override with a
-written reason passes it, and the override itself is logged. There is no automatic
-retry anywhere in this module.
+window reach the per-part or per-episode limit. Configuration can only make the
+limits stricter. Only a deliberate override passes it: a written reason plus the
+spend token printed by the refusal, which any newer uncertain attempt invalidates,
+and at most one override per part per window. Overrides are logged. Checking the
+limit and logging the start happen under one exclusive lock, so concurrent runs
+cannot both pass. There is no automatic retry anywhere in this module.
+
+Repairing the log: a torn or unreadable line counts as one uncertain attempt (at
+its recorded time when readable, otherwise now), so the guard errs towards
+stopping. Copy the file aside for the record, check the Cloud billing report, then
+correct or remove only that line. Dates come from this computer's clock; imported
+receipts are dated by file modification time.
 """
 
 from __future__ import annotations
 
 import fcntl
+import hashlib
 import json
 import os
 import re
@@ -34,6 +44,7 @@ DEFAULT_PART_LIMIT = 2
 DEFAULT_EPISODE_LIMIT = 4
 DEFAULT_WINDOW_HOURS = 24
 LOG_NAME = "attempts.jsonl"
+LOCK_NAME = "attempts.lock"
 CONFIG_NAME = "spend-guard.json"
 UNCERTAIN = "uncertain"
 SETTLED = {"complete", "failed", "acknowledged"}
@@ -93,6 +104,18 @@ class Tally:
     def blocked(self) -> bool:
         return self.over_part or self.over_episode
 
+    @property
+    def token(self) -> str:
+        """Names exactly the uncertain attempts seen; any newer one changes it."""
+        since = now() - timedelta(hours=self.limits.window_hours)
+        seen = sorted(
+            a.attempt_id for a in self.attempts if a.outcome == UNCERTAIN and a.at >= since
+        )
+        material = json.dumps(
+            [self.episode, seen, [self.limits.part, self.limits.episode, self.limits.window_hours]]
+        )
+        return hashlib.sha256(material.encode()).hexdigest()[:12]
+
     def spend_text(self) -> str:
         if not self.episode_window:
             return "no uncertain spend recorded in this window"
@@ -112,6 +135,15 @@ class Tally:
             f"episode {self.episode} has {self.episode_window} (limit {self.limits.episode}; "
             f"{self.episode_total} across all runs). Possible spend: {self.spend_text()}."
         )
+
+
+def limits_text(limits: Limits) -> str:
+    return (
+        f"Spend guard: at most {limits.part} uncertain paid attempts per part and "
+        f"{limits.episode} per episode in {limits.window_hours:g} h"
+        + ("" if limits == Limits() else " (stricter than the defaults)")
+        + "."
+    )
 
 
 def part_label(part: str) -> str:
@@ -144,7 +176,12 @@ def log_root(path: Path, default: Path | None = None) -> Path:
 
 
 def load_limits(audio_root: Path) -> Limits:
-    """Read ``artifacts/audio/spend-guard.json``; environment variables win."""
+    """Read ``artifacts/audio/spend-guard.json``; environment variables win.
+
+    Settings may only make the guard stricter: fewer attempts, or a window of 24 h
+    or longer. Looser values are refused; spending past the limit takes the logged
+    override instead.
+    """
     values: dict = {}
     config = audio_root / CONFIG_NAME
     if config.exists():
@@ -155,22 +192,30 @@ def load_limits(audio_root: Path) -> Limits:
         "window_hours": "FIELD_AUDIO_UNCERTAIN_WINDOW_HOURS",
     }
     keys = {"part": "part_limit", "episode": "episode_limit", "window_hours": "window_hours"}
+    allowed = {
+        "part": (1, DEFAULT_PART_LIMIT),
+        "episode": (1, DEFAULT_EPISODE_LIMIT),
+        "window_hours": (DEFAULT_WINDOW_HOURS, 24 * 30),
+    }
     result = {}
     for name, environment in names.items():
         raw = os.environ.get(environment, values.get(keys[name]))
         if raw is None:
             continue
         try:
+            if isinstance(raw, bool):
+                raise TypeError
             number = float(raw) if name == "window_hours" else int(raw)
         except (TypeError, ValueError):
             raise ValueError(
                 f"Spend guard setting {keys[name]} must be a number; check {CONFIG_NAME} or {environment}"
             ) from None
-        if isinstance(raw, bool) or not (
-            0 < number <= 24 * 30 if name == "window_hours" else 1 <= number <= 50
-        ):
+        low, high = allowed[name]
+        if not low <= number <= high:
             raise ValueError(
-                f"Spend guard setting {keys[name]} is out of range; check {CONFIG_NAME} or {environment}"
+                f"Spend guard setting {keys[name]}={raw} would loosen or break the guard. "
+                f"Settings can only make it stricter ({low}–{high:g}); spending past the "
+                f"limit needs --allow-spend-over-limit. Check {CONFIG_NAME} or {environment}."
             )
         result[name] = number
     return Limits(**result)
@@ -200,7 +245,12 @@ def add_override_argument(parser) -> None:
         "--allow-spend-over-limit",
         metavar="REASON",
         type=reason,
-        help="Deliberately pass the uncertain-spend guard for this run; the reason is logged",
+        help="Deliberately pass the uncertain-spend guard once; needs --spend-token; logged",
+    )
+    parser.add_argument(
+        "--spend-token",
+        metavar="TOKEN",
+        help="The token printed by the spend-guard refusal; a newer uncertain attempt voids it",
     )
 
 
@@ -227,14 +277,43 @@ def provider_ids(headers) -> dict:
 def _append(audio_root: Path, entry: dict) -> None:
     audio_root.mkdir(parents=True, exist_ok=True)
     line = json.dumps({"v": 1, **entry}, ensure_ascii=False, sort_keys=True) + "\n"
-    with (audio_root / LOG_NAME).open("a", encoding="utf-8") as handle:
+    with (audio_root / LOG_NAME).open("a+b") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)
         try:
-            handle.write(line)
+            # A crash mid-append leaves an unterminated line. Close it so it stays one
+            # (counted, damaged) line instead of merging with this entry.
+            size = handle.seek(0, os.SEEK_END)
+            if size:
+                handle.seek(size - 1)
+                torn = handle.read(1) != b"\n"
+                handle.seek(0, os.SEEK_END)
+                if torn:
+                    handle.write(b"\n")
+            handle.write(line.encode("utf-8"))
             handle.flush()
             os.fsync(handle.fileno())
         finally:
             fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+_FIELD = r'"{}"\s*:\s*"([^"\\]{{1,200}})"'
+
+
+def _damaged(line: str, number: int) -> dict:
+    """A torn or malformed line becomes one uncertain attempt, never a silent skip."""
+
+    def field_value(name):
+        match = re.search(_FIELD.format(name), line)
+        return match.group(1) if match else None
+
+    return {
+        "type": "damaged",
+        "line": number,
+        "attempt_id": field_value("attempt_id") or f"damaged-line-{number}",
+        "episode": field_value("episode"),
+        "part": field_value("part") or "unknown",
+        "at": field_value("at"),
+    }
 
 
 def _entries(audio_root: Path) -> list[dict]:
@@ -242,7 +321,7 @@ def _entries(audio_root: Path) -> list[dict]:
     if not path.exists():
         return []
     entries = []
-    with path.open(encoding="utf-8") as handle:
+    with path.open(encoding="utf-8", errors="replace") as handle:
         fcntl.flock(handle, fcntl.LOCK_SH)
         try:
             lines = handle.read().splitlines()
@@ -254,12 +333,16 @@ def _entries(audio_root: Path) -> list[dict]:
         try:
             entry = json.loads(line)
         except ValueError:
-            raise ValueError(
-                f"The paid-attempt log {path} is damaged at line {number}. Inspect it before any "
-                "further paid request; nothing was sent."
-            ) from None
-        if isinstance(entry, dict):
-            entries.append(entry)
+            entries.append(_damaged(line, number))
+            continue
+        if (
+            not isinstance(entry, dict)
+            or not isinstance(entry.get("attempt_id", ""), str)
+            or (entry.get("type") in {"start", "imported"} and _parse_time(entry.get("at")) is None)
+        ):
+            entries.append(_damaged(line, number))
+            continue
+        entries.append(entry)
     return entries
 
 
@@ -369,18 +452,37 @@ def _receipts(audio_root: Path, episode: str) -> list[tuple[Path, dict, str]]:
     return result
 
 
-def _receipt_id(path: Path, state: dict) -> str:
+def _receipt_id(path: Path, state: dict, audio_root: Path) -> str:
     attempt = state.get("attempt_id")
     if isinstance(attempt, str) and re.fullmatch(r"[0-9a-f]{32}", attempt):
         return attempt
-    return "receipt-" + digest_file(path)[:32]
+    # Identical legacy receipts in different folders are different attempts.
+    where = str(path.relative_to(audio_root)).encode()
+    return "receipt-" + hashlib.sha256(where + digest_file(path).encode()).hexdigest()[:32]
 
 
 def attempts(audio_root: Path, episode: str, *, import_receipts: bool = False) -> list[Attempt]:
     """Every recorded paid attempt for the episode, newest last, with its settled outcome."""
-    entries = [e for e in _entries(audio_root) if e.get("episode") == episode]
+    every_entry = _entries(audio_root)
+    entries = [e for e in every_entry if e.get("episode") == episode]
     starts: dict[str, dict] = {}
     outcomes: dict[str, dict] = {}
+    known = {e.get("attempt_id") for e in every_entry if e.get("type") in {"start", "imported"}}
+    for entry in every_entry:
+        if entry.get("type") != "damaged" or entry["attempt_id"] in known:
+            continue  # A torn outcome of a logged start leaves that start unsettled anyway.
+        if entry["episode"] not in {None, episode}:
+            continue
+        # Unattributable damage counts against every episode until repaired.
+        starts[entry["attempt_id"]] = {
+            "at": entry["at"] if _parse_time(entry["at"]) else now().isoformat(),
+            "part": entry["part"],
+            "estimate_usd": None,
+        }
+        outcomes[entry["attempt_id"]] = {
+            "outcome": UNCERTAIN,
+            "detail": f"damaged log line {entry['line']}",
+        }
     for entry in entries:
         identifier = entry.get("attempt_id")
         if not isinstance(identifier, str):
@@ -392,7 +494,7 @@ def attempts(audio_root: Path, episode: str, *, import_receipts: bool = False) -
         if entry.get("type") == "imported":
             outcomes.setdefault(identifier, {"outcome": UNCERTAIN, "detail": entry.get("detail")})
     for path, state, part in _receipts(audio_root, episode):
-        identifier = _receipt_id(path, state)
+        identifier = _receipt_id(path, state, audio_root)
         if identifier in starts:
             continue
         index = int(part.split("-")[1]) if part.startswith("narration-") else 0
@@ -418,6 +520,8 @@ def attempts(audio_root: Path, episode: str, *, import_receipts: bool = False) -
         if at is None:
             continue
         settled = outcomes.get(identifier, {})
+        if not settled and start.get("type") == "start":
+            settled = _receipt_outcome(audio_root, start, identifier)
         outcome = settled.get("outcome")
         if outcome not in SETTLED and outcome != UNCERTAIN:
             # Started but never settled: a crash or a request still in flight elsewhere.
@@ -436,6 +540,23 @@ def attempts(audio_root: Path, episode: str, *, import_receipts: bool = False) -
             )
         )
     return sorted(result, key=lambda a: a.at)
+
+
+def _receipt_outcome(audio_root: Path, start: dict, identifier: str) -> dict:
+    """A start whose outcome line failed to write: trust its own saved receipt."""
+    receipt = start.get("receipt")
+    if not isinstance(receipt, str) or not receipt:
+        return {}
+    path = audio_root / receipt
+    try:
+        if not path.resolve().is_relative_to(audio_root.resolve()):
+            return {}
+        state = read_object(path)
+    except (OSError, ValueError):
+        return {}
+    if state.get("attempt_id") == identifier and state.get("status") == "complete":
+        return {"outcome": "complete", "detail": "complete receipt; outcome line missing"}
+    return {}
 
 
 def tally(
@@ -465,61 +586,131 @@ def tally(
     )
 
 
-def check(
+def refusal(current: Tally, part: str, lead: str = "") -> str:
+    which = (
+        f"{part_label(part)} has reached {current.part_window} uncertain attempts"
+        if current.over_part
+        else f"episode {current.episode} has reached {current.episode_window} uncertain attempts"
+    )
+    return (
+        f"Spend guard: no request was sent. {lead}{which} in the last "
+        f"{current.limits.window_hours:g} h, each possibly billed. {current.sentence()} "
+        "Stop and wait: check the Google Cloud status page and the billing report before "
+        "spending more. The limit lifts as attempts age out of the window. To spend anyway, "
+        "run one command by hand with "
+        f'--allow-spend-over-limit "your reason" --spend-token {current.token} '
+        "(Studio: tick the override and give a reason). The override is logged, works "
+        "once per part per window, and any newer uncertain attempt invalidates the token."
+    )
+
+
+def _limits_changed(entries: list[dict], limits: Limits) -> bool:
+    if limits == Limits():
+        return False
+    logged = [e for e in entries if e.get("type") == "limits"]
+    return not logged or logged[-1].get("limits") != [
+        limits.part,
+        limits.episode,
+        limits.window_hours,
+    ]
+
+
+def reserve(
     audio_root: Path,
     episode: str,
     part: str,
     *,
+    attempt_id: str,
+    estimate_usd: float | None,
+    request_sha256: str = "",
+    receipt: str = "",
     override: str | None = None,
-    acknowledged: int | None = None,
+    token: str | None = None,
     command: str = "",
 ) -> Tally:
-    """Refuse a paid attempt past the limit unless a reasoned override was supplied.
+    """Check the limit and log the attempt's start as one atomic step.
 
-    ``acknowledged`` is the episode's uncertain count that a Studio user saw when
-    confirming an override; a later uncertain attempt invalidates that confirmation.
+    Raises ``SpendLimitReached`` and logs nothing when the attempt may not be sent.
+    On return the start is durably logged (fsync) and the request may be sent.
     """
-    current = tally(audio_root, episode, part, import_receipts=True)
-    if not current.blocked:
-        return current
-    if override is not None:
-        reason = validate_reason(override)
-        if acknowledged is not None and current.episode_window > acknowledged:
-            raise SpendLimitReached(
-                "The override was confirmed for fewer uncertain attempts than are now recorded. "
-                "Inspect the attempt ledger again; nothing was sent.",
-                current,
+    audio_root.mkdir(parents=True, exist_ok=True)
+    with (audio_root / LOCK_NAME).open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            current = tally(audio_root, episode, part, import_receipts=True)
+            if _limits_changed(_entries(audio_root), current.limits):
+                limits = current.limits
+                _append(
+                    audio_root,
+                    {
+                        "type": "limits",
+                        "at": now().isoformat(timespec="seconds"),
+                        "limits": [limits.part, limits.episode, limits.window_hours],
+                        "defaults": [
+                            DEFAULT_PART_LIMIT,
+                            DEFAULT_EPISODE_LIMIT,
+                            DEFAULT_WINDOW_HOURS,
+                        ],
+                    },
+                )
+            if current.blocked:
+                if override is None:
+                    raise SpendLimitReached(refusal(current, part), current)
+                reason = validate_reason(override)
+                if token != current.token:
+                    raise SpendLimitReached(
+                        refusal(
+                            current,
+                            part,
+                            "The override names an old or missing spend token. ",
+                        ),
+                        current,
+                    )
+                if overridden_recently(audio_root, episode, part, current.limits):
+                    raise SpendLimitReached(
+                        f"Spend guard: no request was sent. {part_label(part)} of episode "
+                        f"{episode} was already overridden once in the last "
+                        f"{current.limits.window_hours:g} h; a second override is not "
+                        f"accepted. {current.sentence()} Stop and wait for the window to pass.",
+                        current,
+                    )
+                _append(
+                    audio_root,
+                    {
+                        "type": "override",
+                        "at": now().isoformat(timespec="seconds"),
+                        "attempt_id": attempt_id,
+                        "episode": episode,
+                        "part": part,
+                        "reason": reason,
+                        "token": current.token,
+                        "part_window": current.part_window,
+                        "episode_window": current.episode_window,
+                        "estimate_usd": current.estimate_usd,
+                        "limits": [current.limits.part, current.limits.episode],
+                        "command": command[:40],
+                    },
+                )
+            record_start(
+                audio_root,
+                episode=episode,
+                part=part,
+                attempt_id=attempt_id,
+                estimate_usd=estimate_usd,
+                request_sha256=request_sha256,
+                receipt=receipt,
             )
-        _append(
-            audio_root,
-            {
-                "type": "override",
-                "at": now().isoformat(timespec="seconds"),
-                "episode": episode,
-                "part": part,
-                "reason": reason,
-                "part_window": current.part_window,
-                "episode_window": current.episode_window,
-                "estimate_usd": current.estimate_usd,
-                "limits": [current.limits.part, current.limits.episode],
-                "command": command[:40],
-            },
-        )
-        return current
-    which = (
-        f"{part_label(part)} has reached {current.part_window} uncertain attempts"
-        if current.over_part
-        else f"episode {episode} has reached {current.episode_window} uncertain attempts"
-    )
-    raise SpendLimitReached(
-        f"Spend guard: no request was sent. {which} in the last "
-        f"{current.limits.window_hours:g} h, each possibly billed. {current.sentence()} "
-        "Stop and wait: check the Google Cloud status page and the billing report before "
-        "spending more. The limit lifts as attempts age out of the window. To spend anyway, "
-        'run once by hand with --allow-spend-over-limit "your reason" (Studio: tick the '
-        "override and give a reason). The override is logged.",
-        current,
-    )
+            return current
+        finally:
+            fcntl.flock(lock, fcntl.LOCK_UN)
+
+
+def describe(audio_root: Path, episode: str, part: str) -> str:
+    """The tally sentence for a failure message; never hides the original failure."""
+    try:
+        return tally(audio_root, episode, part).sentence()
+    except (OSError, ValueError) as exc:
+        return f"The attempt log could not be read ({exc}); assume the attempt may be billed."
 
 
 def overrides(audio_root: Path, episode: str) -> list[dict]:
@@ -528,6 +719,15 @@ def overrides(audio_root: Path, episode: str) -> list[dict]:
         for e in _entries(audio_root)
         if e.get("type") == "override" and e.get("episode") == episode
     ]
+
+
+def overridden_recently(audio_root: Path, episode: str, part: str, limits: Limits) -> bool:
+    """At most one override per part per window, however the token changes."""
+    since = now() - timedelta(hours=limits.window_hours)
+    return any(
+        entry.get("part") == part and (_parse_time(entry.get("at")) or now()) >= since
+        for entry in overrides(audio_root, episode)
+    )
 
 
 def summary_line(audio_root: Path, episode: str) -> str:
@@ -541,8 +741,9 @@ def summary_line(audio_root: Path, episode: str) -> str:
     money = seen.spend_text().removesuffix("; billing unknown")
     return (
         f"Billing unknown · {seen.episode_window} uncertain paid attempt(s) in "
-        f"{seen.limits.window_hours:g} h, limit {seen.limits.episode} "
-        f"({seen.episode_total} across runs) · {money.replace(' in speech output', '')}"
+        f"{seen.limits.window_hours:g} h ({seen.episode_total} across runs; limits "
+        f"{seen.limits.part}/part, {seen.limits.episode}/episode) · "
+        f"{money.replace(' in speech output', '')}"
         + (" · spend guard reached" if seen.over_episode else "")
         + " · stop and wait."
     )

@@ -837,12 +837,13 @@ class Controller:
                 ):
                     guidance = "This full episode already has saved approval. Next: inspect/export its package. Nothing was published by this job."
             reason = job.error or result or last
-            if job.status in {"failed", "interrupted", "cancelled"}:
-                # Keep the exact diagnostic stage accessible beside the readable milestones.
+            if job.status in {"failed", "interrupted", "cancelled"} and not re.fullmatch(
+                r"narration-\d+-of-\d+", at
+            ):
+                # Keep the exact diagnostic stage beside the milestones, unless the
+                # milestone title already names it ("Narration 2/3").
                 reason = f"{at}: {reason}"
-            limit = 150 if spend else 260
-            if len(reason) > limit:
-                reason = reason[: limit - 3].rsplit(" ", 1)[0] + "… Full details in History."
+            reason = shorten(reason, 200 if spend else 260)
             if spend and job.status in {"failed", "interrupted", "cancelled"}:
                 # Always visible beside a paid failure, even when the reason is truncated.
                 reason = spend + "\n" + reason
@@ -946,3 +947,13 @@ class Controller:
             self.view.root.after_cancel(self.draft_timer)
         self.closed = True
         self.executor.shutdown(wait=False, cancel_futures=True)
+
+
+def shorten(text: str, limit: int) -> str:
+    """Cut at a sentence end where possible, never mid-label; History keeps the rest."""
+    if len(text) <= limit:
+        return text
+    head = text[:limit]
+    end = head.rfind(". ")
+    head = head[: end + 1] if end >= limit // 3 else head.rsplit(" ", 1)[0] + "…"
+    return head + " Full details in History."

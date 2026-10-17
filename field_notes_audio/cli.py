@@ -43,6 +43,8 @@ def main(argv: list[str] | None = None) -> int:
             audio.add_timeout_argument(sub)
     args = parser.parse_args(argv)
     try:
+        if args.command == "make-all":
+            release.refuse_override(args)
         if args.command in {"setup", "make", "generate", "captions", "make-all"}:
             if args.command == "make-all" and args.dry_run and not args.project:
                 args.project = "offline-plan-project"

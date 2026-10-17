@@ -289,6 +289,9 @@ class Repository:
                             + json.dumps(used, sort_keys=True),
                         ),
                     )
+                # A spend override covered the paid submission that just happened; resuming
+                # only polls, so the override is not carried forward.
+                request.pop("spend_override", None)
                 request["resume"] = receipt
             db.execute(
                 "UPDATE jobs SET status='waiting',stage='captions-waiting',error=?,request=? WHERE identifier=?",

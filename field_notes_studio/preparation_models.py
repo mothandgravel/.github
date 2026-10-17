@@ -30,6 +30,9 @@ class PreparationSnapshot:
     spend_summary: str = ""
     spend_blocked: bool = False
     spend_count: int = 0
+    spend_token: str = ""
+    spend_label: str = ""
+    spend_overridable: bool = False
 
 
 class CaptionsPending(Exception):

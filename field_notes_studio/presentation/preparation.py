@@ -291,9 +291,10 @@ class PreparationWindow:
         self.authorization.configure(state="normal" if ready else "disabled")
         self.recovery_consent.configure(state="normal" if ready and recovering else "disabled")
         guarded = bool(self.snapshot and getattr(self.snapshot, "spend_blocked", False))
-        self.spend_override.configure(state="normal" if ready and guarded else "disabled")
+        overridable = guarded and getattr(self.snapshot, "spend_overridable", False)
+        self.spend_override.configure(state="normal" if ready and overridable else "disabled")
         self.spend_reason_entry.configure(
-            state="normal" if ready and guarded and self.spend_allowed.get() else "disabled"
+            state="normal" if ready and overridable and self.spend_allowed.get() else "disabled"
         )
         permitted = (
             ready
@@ -301,7 +302,11 @@ class PreparationWindow:
             and (not recovering or self.recover_uncertain.get())
             and (
                 not guarded
-                or (self.spend_allowed.get() and len(self.spend_reason.get().strip()) >= 8)
+                or (
+                    overridable
+                    and self.spend_allowed.get()
+                    and len(self.spend_reason.get().strip()) >= 8
+                )
             )
         )
         self.queue_button.configure(
@@ -359,15 +364,22 @@ class PreparationWindow:
         else:
             self.recovery_consent.grid_remove()
         if getattr(snapshot, "spend_blocked", False):
+            # The count and possible spend sit in the label itself, read before ticking.
+            self.spend_override.configure(
+                text=f"Override once ({snapshot.spend_label})."
+                if snapshot.spend_overridable
+                else f"Already overridden once in this window ({snapshot.spend_label})."
+            )
             self.spend.grid()
         else:
             self.spend.grid_remove()
         self.busy(False)
         self.message.configure(
             text=(
-                f"Spend guard reached: {snapshot.spend_count} uncertain paid attempts, billing "
-                "unknown. Stop and wait. Queueing now needs the override and a reason (at least "
-                "8 characters); the reason is logged."
+                "Spend guard reached: this part was already overridden once in this window. "
+                "Stop and wait; nothing can be queued for it now."
+                if getattr(snapshot, "spend_blocked", False) and not snapshot.spend_overridable
+                else "Spend guard reached: stop and wait. An override needs a logged reason."
                 if getattr(snapshot, "spend_blocked", False)
                 and (snapshot.request_json or snapshot.recovery_json)
                 else "Recovery needs two confirmations. Completed audio is retained; uncertain resends can charge twice."

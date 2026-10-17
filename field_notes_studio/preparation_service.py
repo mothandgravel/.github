@@ -130,10 +130,11 @@ class PreparationService:
         if spend_override is not None:
             if not snapshot.spend_blocked:
                 raise ValueError("No spend-limit override is needed for this preparation")
-            request["spend_override"] = {
-                "reason": spend_override,
-                "acknowledged": snapshot.spend_count,
-            }
+            if not snapshot.spend_overridable:
+                raise ValueError(
+                    "This part was already overridden once in the window. Stop and wait."
+                )
+            request["spend_override"] = {"reason": spend_override, "token": snapshot.spend_token}
         self.adapter.validate_recovery(request)
         launch_worker(self.root)
         return self.repository.submit(snapshot.episode, "prepare", request)

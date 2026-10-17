@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 from dataclasses import replace
 from pathlib import Path
@@ -150,9 +151,8 @@ class PreparationJobs:
             blockers.append(
                 "This episode is already on the public catalog. This new-note path does not replace it."
             )
-        spend_summary, spend_blocked, spend_count = self._spend(
-            snapshot.episode, plan, directory, saved_recording
-        )
+        spend = self._spend(snapshot.episode, plan, directory, saved_recording)
+        spend_summary = spend["summary"]
         recovery = ""
         recovery_summary = ""
         if uncertain:
@@ -166,7 +166,7 @@ class PreparationJobs:
                 recovery = json.dumps({**request, "uncertain_chunks": uncertain}, sort_keys=True)
         summary = (
             (
-                "RECOVERY NEEDED — " + recovery_summary + "\n" + "\n".join(diagnostics) + "\n\n"
+                "Recovery needed: " + recovery_summary + "\n" + "\n".join(diagnostics) + "\n\n"
                 if uncertain
                 else ""
             )
@@ -200,12 +200,15 @@ class PreparationJobs:
                 f"Private bucket: {config['bucket']}"
             ),
             spend_summary=spend_summary,
-            spend_blocked=spend_blocked and not blockers,
-            spend_count=spend_count,
+            spend_blocked=spend["blocked"] and not blockers,
+            spend_count=spend["count"],
+            spend_token=spend["token"],
+            spend_label=spend["label"],
+            spend_overridable=spend["overridable"],
         )
 
-    def _spend(self, episode, plan, directory, saved_recording) -> tuple[str, bool, int]:
-        """Read-only ledger view: (summary, blocked, episode uncertain count)."""
+    def _spend(self, episode, plan, directory, saved_recording) -> dict:
+        """Read-only ledger view for the inspection and the override control."""
         audio_root = self.root / "artifacts/audio"
         parts = (
             []
@@ -220,11 +223,17 @@ class PreparationJobs:
         tallies = [spend_guard.tally(audio_root, episode, part) for part in parts or ["captions"]]
         blocked = [t for t in tallies if t.blocked]
         first = blocked[0] if blocked else max(tallies, key=lambda t: t.part_window)
+        empty = {
+            "summary": "",
+            "blocked": False,
+            "count": 0,
+            "token": "",
+            "label": "",
+            "overridable": False,
+        }
         if not first.episode_total:
-            return "", False, 0
-        lines = [
-            "UNCERTAIN SPEND — " + first.sentence(),
-        ]
+            return empty
+        lines = ["Uncertain spend: " + first.sentence()]
         for attempt in first.attempts:
             if attempt.outcome != "uncertain":
                 continue
@@ -238,18 +247,38 @@ class PreparationJobs:
                 f"{spend_guard.part_label(attempt.part)} · {attempt.detail or 'no outcome'} · "
                 f"billing unknown · {money} · attempt {attempt.attempt_id[:12]}"
             )
-        if blocked:
+        overridden = spend_guard.overridden_recently(audio_root, episode, first.part, first.limits)
+        lines.append(spend_guard.limits_text(first.limits))
+        if blocked and overridden:
+            lines.append(
+                f"Spend guard: {spend_guard.part_label(first.part)} was already overridden "
+                "once in this window. Studio will not queue more paid work for it. Stop and "
+                "wait for the window to pass."
+            )
+        elif blocked:
             lines.append(
                 "Spend guard: Studio will not queue more paid work for this episode now. "
                 "Stop and wait; the limit lifts as attempts age out of the window. To spend "
-                "anyway, tick the override below and give a reason. It is logged."
+                "anyway, tick the override below and give a reason. It is logged and works "
+                "once per part per window."
             )
         else:
             lines.append(
                 "Stop and wait before another paid try: check the Google Cloud status page "
                 "and the billing report first."
             )
-        return "\n".join(lines), bool(blocked), first.episode_window
+        money = first.spend_text().removesuffix("; billing unknown")
+        return {
+            "summary": "\n".join(lines),
+            "blocked": bool(blocked),
+            "count": first.episode_window,
+            "token": first.token,
+            "label": (
+                f"{first.episode_window} uncertain attempts in {first.limits.window_hours:g} h, "
+                f"{money.replace(' in speech output', '')}, billing unknown"
+            ),
+            "overridable": bool(blocked) and not overridden,
+        }
 
     def validate(self, request: dict) -> dict:
         if (
@@ -283,9 +312,9 @@ class PreparationJobs:
         override = request.get("spend_override")
         if override is not None and (
             not isinstance(override, dict)
-            or set(override) != {"reason", "acknowledged"}
-            or type(override["acknowledged"]) is not int
-            or override["acknowledged"] < 0
+            or set(override) != {"reason", "token"}
+            or not isinstance(override["token"], str)
+            or not re.fullmatch(r"[0-9a-f]{12}", override["token"])
         ):
             raise ValueError("Invalid spend-limit override")
         if override is not None:
@@ -360,7 +389,7 @@ class PreparationJobs:
             _cancel_event=Guard(),
             retry_hint="use Inspect recovery in Studio to try this part",
             allow_spend_over_limit=(request.get("spend_override") or {}).get("reason"),
-            spend_acknowledged=(request.get("spend_override") or {}).get("acknowledged"),
+            spend_token=(request.get("spend_override") or {}).get("token"),
         )
         emit(
             "narration",
@@ -382,6 +411,7 @@ class PreparationJobs:
             caption_args = self._caption_args(plan, config, recording)
             caption_args._cancel_event = Guard()
             caption_args.allow_spend_over_limit = args.allow_spend_over_limit
+            caption_args.spend_token = args.spend_token
             caption_args.retry_hint = "use Inspect recovery in Studio"
             # Validate containment of all existing cache files before the engine opens them.
             cap_directory, caption_plan, *_ = captions.recording_plan(caption_args)

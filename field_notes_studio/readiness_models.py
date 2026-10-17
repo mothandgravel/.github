@@ -1,5 +1,6 @@
 """Episode-level evidence, not an inference from the last job's exit status."""
 
+import re
 from dataclasses import dataclass
 
 
@@ -49,15 +50,37 @@ def technical(exc: BaseException) -> str:
     return f"{type(exc).__name__}: {exc}"[:600]
 
 
+_STDLIB_MARKS = re.compile(
+    r"""['"`<>{}\[\]/\\]|Errno|line \d+ column|Traceback|\bis not\b|\bobject\b|\bargument\b"""
+)
+
+
+def _authored(text: str) -> bool:
+    """A sentence this codebase wrote for people, not stdlib exception text.
+
+    Authored messages are capitalised sentences without the quotes, brackets, paths
+    and phrases that stdlib errors carry (stdlib messages also tend to start lower case).
+    """
+    return (
+        20 <= len(text) <= 300
+        and text[:1].isupper()
+        and len(text.split()) >= 4
+        and not _STDLIB_MARKS.search(text)
+    )
+
+
 def plain(exc: BaseException, context: str) -> str:
     """A readable sentence for the card, never a bare exception such as 'audio_sha256'.
 
-    Messages this codebase raises on purpose (plain ValueError sentences) are already
-    written for people and are kept. Everything else gets the context's sentence.
+    Messages this codebase raises on purpose are kept. Everything else, including
+    stdlib ValueError text, gets the context's sentence; the technical text stays
+    behind Details.
     """
     text = str(exc).strip()
-    authored = type(exc) in {ValueError, ReadinessBusy} or type(exc).__name__ == "RecordingBusy"
-    if authored and " " in text and text[:1].isupper() and len(text) >= 20:
+    authored_type = (
+        type(exc) in {ValueError, ReadinessBusy} or type(exc).__name__ == "RecordingBusy"
+    )
+    if authored_type and _authored(text):
         return text
     if context == "inputs" and isinstance(exc, OSError):
         return PLAIN["inputs-file"]
@@ -67,6 +90,6 @@ def plain(exc: BaseException, context: str) -> str:
 def readable(message: str, context: str = "preflight") -> tuple[str, str]:
     """(sentence, technical) for an error that only arrived as text."""
     text = (message or "").strip()
-    if " " in text and text[:1].isupper() and len(text) >= 20:
+    if _authored(text):
         return text, ""
     return PLAIN[context], text[:600]

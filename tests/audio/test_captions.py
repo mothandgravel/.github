@@ -14,6 +14,7 @@ from contextlib import redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
 
+from field_notes_audio import audio
 from field_notes_audio import captions as captions
 from field_notes_audio.audio import digest
 
@@ -382,6 +383,10 @@ class CaptionRecoveryTests(unittest.TestCase):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
+        # The paid-attempt log belongs to the checkout; keep it inside this test.
+        log_root = patch.object(audio, "ROOT", self.root)
+        log_root.start()
+        self.addCleanup(log_root.stop)
         self.audio = self.root / "episode.mp3"
         self.audio.write_bytes(self.fixture.read_bytes())
         self.script = "Explore: Hello world.\nQuestion: Another question.\n"

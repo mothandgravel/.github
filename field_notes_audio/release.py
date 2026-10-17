@@ -516,7 +516,16 @@ def verify_live() -> None:
     print("Podcast ready: https://mothandgravel.com/notes/podcast.xml")
 
 
+def refuse_override(args: argparse.Namespace) -> None:
+    if getattr(args, "allow_spend_over_limit", None) or getattr(args, "spend_token", None):
+        raise ValueError(
+            "make-all never overrides the spend guard: one override would reach every "
+            "episode. Override the one part by hand with generate, make or captions."
+        )
+
+
 def make_all(args: argparse.Namespace) -> None:
+    refuse_override(args)
     jobs = getattr(args, "jobs", 3)
     if type(jobs) is not int or not 1 <= jobs <= 8:
         raise ValueError("--jobs must be between 1 and 8")

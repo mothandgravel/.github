@@ -155,19 +155,20 @@ class Studio:
             )
         request = json.loads(job.request)
         if job.action == "prepare":
-            if request.get("spend_override"):
-                raise ValueError(
-                    "A spend-limit override covers one run only. Inspect preparation again and "
-                    "confirm a new override if you still accept the possible charge."
-                )
             if request.get("uncertain_chunks"):
                 raise ValueError(
                     "Inspect preparation recovery again. A previous resend authorization cannot authorize another attempt."
                 )
             PreparationJobs(self.root).validate(request)
             if job.status == "waiting":
+                # Resume polls the saved caption operation; it sends no new paid request.
                 launch_worker(self.root)
                 return self.repository.resume_preparation(identifier)
+            if request.get("spend_override"):
+                raise ValueError(
+                    "A spend-limit override covers one run only. Inspect preparation again and "
+                    "confirm a new override if you still accept the possible charge."
+                )
         return self.submit(job.episode, job.action, request)
 
     def submit(self, episode: str, action: str, request: dict) -> str:

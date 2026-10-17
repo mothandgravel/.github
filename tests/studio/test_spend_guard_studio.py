@@ -39,6 +39,24 @@ class PlainErrorTests(unittest.TestCase):
         authored = ValueError("Preserved audio is missing or changed. Inspect preparation.")
         self.assertEqual(plain(authored, "inputs"), str(authored))
         self.assertEqual(readable("'audio_sha256'"), (PLAIN["preflight"], "'audio_sha256'"))
+        for stdlib in (
+            "Expecting value: line 1 column 1 (char 0)",
+            "KeyError: 'audio_sha256'",
+            "Invalid isoformat string: 'x'",
+            "[Errno 2] No such file or directory",
+            "I/O operation on closed file.",
+            "invalid literal for int() with base 10: 'x'",
+        ):
+            with self.subTest(stdlib=stdlib):
+                self.assertEqual(readable(stdlib)[0], PLAIN["preflight"])
+        try:
+            json.loads("")
+        except ValueError as exc:
+            self.assertEqual(plain(exc, "inputs"), PLAIN["inputs"])
+        try:
+            __import__("datetime").datetime.fromisoformat("not a date at all")
+        except ValueError as exc:
+            self.assertEqual(plain(exc, "edition"), PLAIN["edition"])
 
     def test_readiness_inspect_never_returns_a_bare_key(self):
         from field_notes_studio import readiness
@@ -69,11 +87,19 @@ class StudioSpendTests(unittest.TestCase):
         snapshot = self.service.inspect("104")
         self.assertTrue(snapshot.spend_blocked)
         self.assertEqual(snapshot.spend_count, 2)
+        self.assertTrue(snapshot.spend_overridable)
+        self.assertRegex(snapshot.spend_token, r"^[0-9a-f]{12}$")
         return snapshot
 
     def test_inspection_shows_ledger_counts_spend_and_guard(self):
         snapshot = self.blocked_snapshot()
-        self.assertIn("UNCERTAIN SPEND", snapshot.summary)
+        self.assertIn("Uncertain spend: ", snapshot.summary)
+        self.assertNotIn("UNCERTAIN", snapshot.summary)
+        self.assertIn("Spend guard: at most 2 uncertain paid attempts per part", snapshot.summary)
+        self.assertEqual(
+            snapshot.spend_label,
+            "2 uncertain attempts in 24 h, up to about $0.0400, billing unknown",
+        )
         self.assertIn("narration part 1 has 2 (limit 2", snapshot.summary)
         self.assertIn("up to about $0.0400", snapshot.summary)
         self.assertIn("billing unknown", snapshot.summary)
@@ -103,7 +129,7 @@ class StudioSpendTests(unittest.TestCase):
         request = json.loads(self.f.repository.get(identifier).request)
         self.assertEqual(
             request["spend_override"],
-            {"reason": "Incident resolved on the status page", "acknowledged": 2},
+            {"reason": "Incident resolved on the status page", "token": snapshot.spend_token},
         )
         with self.f.cloud() as calls:
             calls[1].side_effect = TimeoutError()
@@ -119,6 +145,44 @@ class StudioSpendTests(unittest.TestCase):
         self.assertEqual(logged[0]["reason"], "Incident resolved on the status page")
         with self.assertRaisesRegex(ValueError, "one run only"):
             Studio(self.f.root).retry(identifier)
+
+    def test_a_part_is_overridden_at_most_once_per_window(self):
+        snapshot = self.blocked_snapshot()
+        with patch("field_notes_studio.preparation_service.launch_worker"):
+            self.service.submit(
+                snapshot, True, spend_override="Incident resolved on the status page"
+            )
+        with self.f.cloud() as calls:
+            calls[1].side_effect = TimeoutError()
+            execute(self.f.repository, self.f.pipeline, self.f.repository.claim())
+        again = self.service.inspect("104")
+        self.assertTrue(again.spend_blocked)
+        self.assertFalse(again.spend_overridable)
+        self.assertIn("already overridden once", again.summary)
+        with (
+            patch("field_notes_studio.preparation_service.launch_worker"),
+            self.assertRaisesRegex(ValueError, "already overridden once"),
+        ):
+            self.service.submit(
+                again, True, recover_uncertain=True, spend_override="Trying once more after a pause"
+            )
+
+    def test_waiting_captions_resume_after_an_override_without_spending(self):
+        snapshot = self.blocked_snapshot()
+        with patch("field_notes_studio.preparation_service.launch_worker"):
+            identifier = self.service.submit(
+                snapshot, True, spend_override="Incident resolved on the status page"
+            )
+        with self.f.cloud(pending=True):
+            execute(self.f.repository, self.f.pipeline, self.f.repository.claim())
+        job = self.f.repository.get(identifier)
+        self.assertEqual(job.status, "waiting", job.error)
+        self.assertNotIn("spend_override", json.loads(job.request))
+        with patch("field_notes_studio.service.launch_worker"):
+            self.assertEqual(Studio(self.f.root).retry(identifier), identifier)
+        self.assertEqual(
+            len(spend_guard.overrides(self.f.root / "artifacts/audio", "studio-essay")), 1
+        )
 
     def test_catalog_failure_detail_shows_the_attempt_total(self):
         identifier = self.f.repository.submit("studio-essay", "prepare", self.f.request)
@@ -176,7 +240,12 @@ class PreparationSpendUiTests(unittest.TestCase):
         self.view.inspect_button.invoke()
         self.h.wait(lambda: self.view.snapshot is not None)
         self.assertTrue(self.view.snapshot.spend_blocked)
-        self.assertIn("UNCERTAIN SPEND", self.view.plan.get("1.0", "end"))
+        token = self.view.snapshot.spend_token
+        self.assertIn("Uncertain spend: ", self.view.plan.get("1.0", "end"))
+        self.assertEqual(
+            self.view.spend_override.cget("text"),
+            "Override once (2 uncertain attempts in 24 h, up to about $0.0400, billing unknown).",
+        )
         self.assertTrue(self.view.spend.winfo_ismapped())
         self.assertIn("Spend guard reached", self.view.message.cget("text"))
         self.view.authorization.invoke()
@@ -191,7 +260,7 @@ class PreparationSpendUiTests(unittest.TestCase):
         self.view.queue_button.invoke()
         self.h.wait(lambda: len(self.f.repository.jobs()) == 1)
         request = json.loads(self.f.repository.jobs()[0].request)
-        self.assertEqual(request["spend_override"]["acknowledged"], 2)
+        self.assertEqual(request["spend_override"]["token"], token)
         self.assertFalse(self.view.spend_allowed.get())
         self.assertEqual(self.view.spend_reason.get(), "")
 
@@ -220,7 +289,11 @@ class PreparationSpendUiTests(unittest.TestCase):
         self.app.controller.job_detail()
         self.h.wait(lambda: "Billing unknown" in self.app.jobs.detail.cget("text"))
         text = self.app.jobs.detail.cget("text")
-        self.assertIn("3 uncertain paid attempt(s) in 24 h, limit 4 (3 across runs)", text)
+        self.assertIn(
+            "3 uncertain paid attempt(s) in 24 h (3 across runs; limits 2/part, 4/episode)", text
+        )
+        self.assertNotIn("narration-2-of-3:", text)
+        self.assertIn("(HTTP 502). Full details in History.", text)
         self.assertIn("up to about $0.0213", text)
         self.assertIn("stop and wait", text)
         self.assertNotIn("blindly resend", text)

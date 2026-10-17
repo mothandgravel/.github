@@ -695,6 +695,13 @@ def recording_plan(args: argparse.Namespace) -> tuple[Path, dict, bytes, dict, s
     return directory, plan, content, metadata, script
 
 
+def caption_log_root(directory: Path) -> Path:
+    """The checkout's ``artifacts/audio`` log, also for an MP3 kept elsewhere."""
+    from field_notes_audio import audio as audio_module
+
+    return spend_guard.log_root(directory, audio_module.ROOT / "artifacts/audio")
+
+
 def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> Path | None:
     directory, plan, content, metadata, script = recording_plan(args)
     duration = plan["duration_seconds"]
@@ -725,15 +732,14 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
             )
         write_json(directory / "plan.json", plan)
         if state.get("status") in {"requesting", "uncertain"} and not args.retry_uncertain:
-            seen = spend_guard.tally(
-                spend_guard.log_root(directory, directory.parent.parent),
-                metadata.get("id") or "recording-" + audio_hash[:12],
-                "captions",
-            )
             raise ValueError(
                 "A previous transcription submission has no saved acknowledgement, so billing "
                 "is unknown. "
-                + seen.sentence()
+                + spend_guard.describe(
+                    caption_log_root(directory),
+                    metadata.get("id") or "recording-" + audio_hash[:12],
+                    "captions",
+                )
                 + " Stop and wait before another paid try. Only if you accept another "
                 "possible charge, run the same command with --retry-uncertain once by hand."
             )
@@ -753,20 +759,17 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
         else:
             if not state.get("operation"):
                 episode = metadata.get("id") or "recording-" + audio_hash[:12]
-                audio_root = spend_guard.log_root(directory, directory.parent.parent)
+                audio_root = caption_log_root(directory)
                 retry = (
                     getattr(args, "retry_hint", "") or "run the same command with --retry-uncertain"
                 )
                 override = getattr(args, "allow_spend_over_limit", None)
-                guard = spend_guard.check(
-                    audio_root, episode, "captions", override=override, command="captions"
-                )
-                if guard.blocked:
-                    report(
-                        "Spend guard override logged: "
-                        + guard.sentence()
-                        + f" Reason: {spend_guard.validate_reason(override)}",
-                        flush=True,
+                report(spend_guard.limits_text(spend_guard.load_limits(audio_root)))
+                # Refuse before any upload; the binding check comes just before submission.
+                preview = spend_guard.tally(audio_root, episode, "captions")
+                if preview.blocked and override is None:
+                    raise spend_guard.SpendLimitReached(
+                        spend_guard.refusal(preview, "captions"), preview
                     )
                 report(f"Upload or reuse private input: {uri}", flush=True)
                 generation = ensure_upload(
@@ -775,14 +778,24 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
                 raise_if_stopped(args)
                 (directory / "audio.mp3").write_bytes(content)
                 attempt_id = spend_guard.new_attempt_id()
-                spend_guard.record_start(
+                guard = spend_guard.reserve(
                     audio_root,
-                    episode=episode,
-                    part="captions",
+                    episode,
+                    "captions",
                     attempt_id=attempt_id,
                     estimate_usd=None,
                     request_sha256=plan["fingerprint"],
+                    override=override,
+                    token=getattr(args, "spend_token", None),
+                    command="captions",
                 )
+                if guard.blocked:
+                    report(
+                        "Spend guard override logged: "
+                        + guard.sentence()
+                        + f" Reason: {spend_guard.validate_reason(override)}",
+                        flush=True,
+                    )
                 write_json(
                     state_path,
                     {
@@ -794,15 +807,19 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
                 )
 
                 def settle(outcome, detail="", ids=None):
-                    spend_guard.record_outcome(
-                        audio_root,
-                        episode=episode,
-                        part="captions",
-                        attempt_id=attempt_id,
-                        outcome=outcome,
-                        detail=detail,
-                        ids=ids,
-                    )
+                    try:
+                        spend_guard.record_outcome(
+                            audio_root,
+                            episode=episode,
+                            part="captions",
+                            attempt_id=attempt_id,
+                            outcome=outcome,
+                            detail=detail,
+                            ids=ids,
+                        )
+                    except OSError as exc:
+                        # Never hide the provider's result behind a local log failure.
+                        report(f"Warning: the attempt log could not record {outcome!r}: {exc}")
 
                 host = (
                     "speech.googleapis.com"
@@ -831,12 +848,11 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
                     )
                     if not uncertain:
                         raise
-                    seen = spend_guard.tally(audio_root, episode, "captions")
                     raise CloudError(
                         exc.diagnostic,
                         f"Caption submission failed: {http_meaning(exc.code, provider_status)} "
                         f"(HTTP {exc.code}). No transcription operation ID was saved. "
-                        + seen.sentence()
+                        + spend_guard.describe(audio_root, episode, "captions")
                         + " "
                         + stop_and_wait(exc.code, provider_status, retry=retry)
                         + f" Technical detail: {exc}; attempt {attempt_id}. "
@@ -852,10 +868,9 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
                         },
                     )
                     settle("uncertain", type(exc).__name__)
-                    seen = spend_guard.tally(audio_root, episode, "captions")
                     raise RuntimeError(
                         "Caption submission failed: no valid transcription operation ID was saved. "
-                        + seen.sentence()
+                        + spend_guard.describe(audio_root, episode, "captions")
                         + " "
                         + stop_and_wait(None, retry=retry)
                         + f" Technical detail: {type(exc).__name__}; attempt {attempt_id}. "

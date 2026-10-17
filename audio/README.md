@@ -262,7 +262,7 @@ Repeating a completed run verifies and reuses its MP3 without reencoding it.
 | 400 | Inspect `plan EPISODE --json` and model/language/voice support. |
 | TTS 5xx, 408, 429, 499 or a timeout | **Billing unknown.** Stop; do not repeat the command in a loop. Wait at least 30 minutes, check the Google Cloud status page and billing report, then try that part once by hand with `--retry-uncertain` if you accept another possible charge. For 429 check quota first. 499 is CANCELLED; Google advises never retrying it automatically. |
 | Interrupted paid submission | Inspect saved state and the attempt count in the message, then decide whether one `--retry-uncertain` run is appropriate. |
-| Spend guard refused | The part or episode reached its uncertain-attempt limit. Wait for the 24 h window, or run once with `--allow-spend-over-limit "reason"`. |
+| Spend guard refused | The part or episode reached its uncertain-attempt limit. Wait for the 24 h window, or run one command with `--allow-spend-over-limit "reason" --spend-token TOKEN` from the refusal. |
 | Transcription still running | Repeat the same command; the existing operation resumes. Increase `--wait` if desired. |
 | Confirmed failed transcription | Repair the cause, then repeat with `--restart-failed`; a new job is billable. |
 | Source note changed | Review/revise the script before updating its article fingerprint. |
@@ -276,25 +276,48 @@ reads, never uncertain speech synthesis or transcription submissions.
 
 Every paid narration request and caption submission gets an attempt ID. Before
 the request is sent, a line with the time, episode, part and attempt ID is
-appended to `artifacts/audio/attempts.jsonl`; its outcome and any provider request
-ID follow afterwards. The log is never rewritten, so it can be reconciled against
-the Cloud billing report. Failure messages show the attempt ID.
+appended to `artifacts/audio/attempts.jsonl` and flushed to disk; its outcome and
+any provider request ID follow afterwards. The log belongs to the checkout, also
+when you caption an MP3 kept elsewhere. It is never rewritten, so it can be
+reconciled against the Cloud billing report. Failure messages show the attempt ID.
 
-An attempt is **uncertain** when it may have been billed but no result was saved
-(5xx, 408, 429, 499/CANCELLED, client timeouts, lost connections, crashes). Older
-receipts are imported once from the cache, dated by their file time. By default
-`generate`, `make`, `make-all`, `captions` and Studio refuse another paid request
-once a part has **2** uncertain attempts, or an episode has **4**, in a rolling
-**24 h**. The refusal gives the counts and the possible spend (an upper-bound
-speech-output estimate; caption submissions have no local estimate).
+An attempt is **uncertain** when it may have been billed but no result was saved:
+5xx, 408, 429, 499/CANCELLED, client timeouts, lost connections and crashes. This
+is deliberately conservative. A request that failed offline before reaching Google,
+or a response that arrived but could not be decoded or saved, is also counted and
+labelled *billing unknown*, because the client cannot tell. Older receipts are
+imported once from the cache. Times come from this computer's clock; imported
+receipts are dated by their file modification time, which a copy or restore can
+change.
 
-To spend anyway, run once by hand with `--allow-spend-over-limit "reason"` (at
-least 8 characters). Studio asks for the same override and reason. Each override
-is logged. Change the limits in `artifacts/audio/spend-guard.json`
-(`{"part_limit": 2, "episode_limit": 4, "window_hours": 24}`) or with
+By default `generate`, `make`, `make-all`, `captions` and Studio refuse another
+paid request once a part has **2** uncertain attempts, or an episode has **4**, in
+a rolling **24 h**. Checking the limit and logging the start are one locked step,
+so parallel runs cannot both pass it. Every paid command prints the limits in
+force. The refusal gives the counts, the possible spend (an upper-bound
+speech-output estimate; caption submissions have no local estimate) and a spend
+token.
+
+To spend anyway, run **one** command by hand with
+`--allow-spend-over-limit "reason" --spend-token TOKEN`, using the token from the
+refusal. Any newer uncertain attempt changes the token, so repeating the command
+is refused, and a part can be overridden at most once per window. `make-all`
+never accepts an override. Studio asks for the same override and reason and binds
+it to the attempts it showed. Each override is logged with its reason and token.
+
+`artifacts/audio/spend-guard.json`
+(`{"part_limit": 2, "episode_limit": 4, "window_hours": 24}`) and
 `FIELD_AUDIO_UNCERTAIN_PART_LIMIT`, `FIELD_AUDIO_UNCERTAIN_EPISODE_LIMIT` and
-`FIELD_AUDIO_UNCERTAIN_WINDOW_HOURS`. The narration client timeout is 360 s per
-chunk; change it with `--tts-timeout-seconds` or `FIELD_AUDIO_TTS_TIMEOUT_SECONDS`.
+`FIELD_AUDIO_UNCERTAIN_WINDOW_HOURS` can only make the guard stricter: fewer
+attempts, or a window of 24 h or longer. Looser values are refused. Stricter
+limits are logged. The narration client timeout is 360 s per chunk; change it
+with `--tts-timeout-seconds` or `FIELD_AUDIO_TTS_TIMEOUT_SECONDS`.
+
+**Repairing the log.** A crash during a write can leave an unfinished last line.
+The next write starts a new line, and the damaged line counts as one uncertain
+attempt, at its recorded time when readable and otherwise now, so the guard
+errs towards stopping. To repair it, copy `attempts.jsonl` aside for the record,
+check the billing report, then correct or delete only that line.
 
 Completed captions are re-exported locally from the saved Google response.
 Repeating replaces generated caption files; keep editorial corrections in a
