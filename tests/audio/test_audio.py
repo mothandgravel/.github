@@ -284,7 +284,7 @@ class AudioTests(unittest.TestCase):
                 self.assertEqual(
                     json.loads((output / "chunk-001.json").read_text())["status"], "uncertain"
                 )
-                with self.assertRaisesRegex(ValueError, "uncertain prior attempt"):
+                with self.assertRaisesRegex(ValueError, "uncertain earlier attempt"):
                     audio.generate(self.generate_args())
                 self.assertEqual(synth.call_count, 1)
 

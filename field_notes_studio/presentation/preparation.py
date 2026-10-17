@@ -121,8 +121,28 @@ class PreparationWindow:
         )
         self.recovery_consent.grid(row=8, column=0, sticky="w", pady=(4, 0))
         self.recovery_consent.grid_remove()
+        # Past the spend guard: a separate, deliberate override with a logged reason.
+        self.spend = ttk.Frame(main)
+        self.spend.grid(row=9, column=0, sticky="ew", pady=(4, 0))
+        self.spend.columnconfigure(2, weight=1)
+        self.spend_allowed = tk.BooleanVar(value=False)
+        self.spend_override = ttk.Checkbutton(
+            self.spend,
+            text="Override the spend guard for one run; more charges are possible.",
+            variable=self.spend_allowed,
+            command=lambda: self.busy(self.loading),
+        )
+        self.spend_override.grid(row=0, column=0, columnspan=3, sticky="w")
+        ttk.Label(self.spend, text="Reason (logged)", style="Muted.TLabel").grid(
+            row=1, column=0, sticky="w", padx=(22, 8), pady=(4, 0)
+        )
+        self.spend_reason = tk.StringVar()
+        self.spend_reason_entry = ttk.Entry(self.spend, textvariable=self.spend_reason)
+        self.spend_reason_entry.grid(row=1, column=1, columnspan=2, sticky="ew", pady=(4, 0))
+        self.spend_reason.trace_add("write", lambda *_: self.busy(self.loading))
+        self.spend.grid_remove()
         self.message = ttk.Label(main, style="Muted.TLabel", wraplength=700)
-        self.message.grid(row=9, column=0, sticky="ew", pady=(8, 0))
+        self.message.grid(row=10, column=0, sticky="ew", pady=(8, 0))
         self.window.bind("<Configure>", self._resize, add=True)
         self.query.trace_add("write", lambda *_: self._render())
         self.clear("Loading written notes…")
@@ -238,6 +258,9 @@ class PreparationWindow:
         self.authorized.set(False)
         self.recover_uncertain.set(False)
         self.recovery_consent.grid_remove()
+        self.spend_allowed.set(False)
+        self.spend_reason.set("")
+        self.spend.grid_remove()
         self.queued_id = ""
         item = self.items.get(self.selected())
         detail = (
@@ -267,8 +290,24 @@ class PreparationWindow:
         recovering = bool(self.snapshot and self.snapshot.recovery_json)
         self.authorization.configure(state="normal" if ready else "disabled")
         self.recovery_consent.configure(state="normal" if ready and recovering else "disabled")
+        guarded = bool(self.snapshot and getattr(self.snapshot, "spend_blocked", False))
+        overridable = guarded and getattr(self.snapshot, "spend_overridable", False)
+        self.spend_override.configure(state="normal" if ready and overridable else "disabled")
+        self.spend_reason_entry.configure(
+            state="normal" if ready and overridable and self.spend_allowed.get() else "disabled"
+        )
         permitted = (
-            ready and self.authorized.get() and (not recovering or self.recover_uncertain.get())
+            ready
+            and self.authorized.get()
+            and (not recovering or self.recover_uncertain.get())
+            and (
+                not guarded
+                or (
+                    overridable
+                    and self.spend_allowed.get()
+                    and len(self.spend_reason.get().strip()) >= 8
+                )
+            )
         )
         self.queue_button.configure(
             state="normal" if permitted else "disabled",
@@ -318,14 +357,32 @@ class PreparationWindow:
         self._put(self.script, snapshot.script)
         self.authorized.set(False)
         self.recover_uncertain.set(False)
+        self.spend_allowed.set(False)
+        self.spend_reason.set("")
         if snapshot.recovery_json:
             self.recovery_consent.grid()
         else:
             self.recovery_consent.grid_remove()
+        if getattr(snapshot, "spend_blocked", False):
+            # The count and possible spend sit in the label itself, read before ticking.
+            self.spend_override.configure(
+                text=f"Override once ({snapshot.spend_label})."
+                if snapshot.spend_overridable
+                else f"Already overridden once in this window ({snapshot.spend_label})."
+            )
+            self.spend.grid()
+        else:
+            self.spend.grid_remove()
         self.busy(False)
         self.message.configure(
             text=(
-                "Recovery needs two confirmations. Completed audio is retained; uncertain resends can charge twice."
+                "Spend guard reached: this part was already overridden once in this window. "
+                "Stop and wait; nothing can be queued for it now."
+                if getattr(snapshot, "spend_blocked", False) and not snapshot.spend_overridable
+                else "Spend guard reached: stop and wait. An override needs a logged reason."
+                if getattr(snapshot, "spend_blocked", False)
+                and (snapshot.request_json or snapshot.recovery_json)
+                else "Recovery needs two confirmations. Completed audio is retained; uncertain resends can charge twice."
                 if snapshot.recovery_json
                 else "Script checked. Confirm the project and requests, authorize, then queue preparation."
                 if snapshot.request_json

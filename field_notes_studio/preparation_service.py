@@ -65,9 +65,14 @@ class PreparationService:
                     detail=(
                         f"Job history from the last refresh · {job.identifier[:8]} · created {job.created}\n"
                         f"{item.episode}: {job.status} at {job.stage}. {job.error}\n"
-                        "This is a saved job result, not a fresh read of the narration receipts. "
+                        + (
+                            spend + "\n"
+                            if (spend := self.adapter.spend_summary(item.episode))
+                            else ""
+                        )
+                        + "This is a saved job result, not a fresh read of the narration receipts. "
                         "Refresh notes for current job state, or inspect script / recovery for current receipts. "
-                        "Do not delete receipts or restart the whole episode."
+                        "Do not delete receipts or restart the whole episode; stop and wait before any paid retry."
                     ),
                 )
             values.append(item)
@@ -99,7 +104,14 @@ class PreparationService:
             )
         return snapshot
 
-    def submit(self, snapshot, authorized: bool, *, recover_uncertain: bool = False):
+    def submit(
+        self,
+        snapshot,
+        authorized: bool,
+        *,
+        recover_uncertain: bool = False,
+        spend_override: str | None = None,
+    ):
         captured = snapshot.recovery_json if recover_uncertain is True else snapshot.request_json
         if type(recover_uncertain) is not bool or authorized is not True or not captured:
             raise ValueError(
@@ -110,6 +122,19 @@ class PreparationService:
             raise ValueError("Uncertain recovery needs separate explicit consent")
         if snapshot.note != request["note"] or snapshot.episode != request["episode"]:
             raise ValueError("Preparation selection changed")
+        if snapshot.spend_blocked and spend_override is None:
+            raise ValueError(
+                "The spend guard blocks more paid work for this episode. Stop and wait, or "
+                "tick the override and give a reason; nothing was queued."
+            )
+        if spend_override is not None:
+            if not snapshot.spend_blocked:
+                raise ValueError("No spend-limit override is needed for this preparation")
+            if not snapshot.spend_overridable:
+                raise ValueError(
+                    "This part was already overridden once in the window. Stop and wait."
+                )
+            request["spend_override"] = {"reason": spend_override, "token": snapshot.spend_token}
         self.adapter.validate_recovery(request)
         launch_worker(self.root)
         return self.repository.submit(snapshot.episode, "prepare", request)

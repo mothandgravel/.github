@@ -347,7 +347,8 @@ class PreparationUxTests(unittest.TestCase):
         self.app.jobs.render(self.f.repository.jobs())
         self.app.controller.job_detail()
         self.h.wait(lambda: "TimeoutError" in self.app.jobs.detail.cget("text"))
-        self.assertIn("narration-2-of-3", self.app.jobs.detail.cget("text"))
+        self.assertIn("Narration 2/3", self.app.jobs.detail.cget("text"))
+        self.assertNotIn("narration-2-of-3:", self.app.jobs.detail.cget("text"))
         self.assertIn("Inspect recovery", self.app.jobs.detail.cget("text"))
 
     def test_legacy_failed_row_and_long_error_fit_the_main_window(self):

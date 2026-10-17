@@ -73,8 +73,16 @@ class Studio:
         self.pipeline.preflight(episode, action, request)
         return request, "Preflight passed for this action.\n\n" + summary
 
+    def spend_summary(self, episode: str) -> str:
+        return self.pipeline.spend_summary(episode)
+
     def readiness(self, episode, settings):
-        from field_notes_studio.readiness_models import Readiness, ReadinessBusy
+        from field_notes_studio.readiness_models import (
+            Readiness,
+            ReadinessBusy,
+            plain,
+            technical,
+        )
 
         def active():
             return next(
@@ -104,14 +112,19 @@ class Studio:
                         self.pipeline.preflight(episode, action, request)
                     except ReadinessBusy as exc:
                         value = replace(
-                            value, action="check", title="Files are in use", detail=str(exc)
+                            value,
+                            action="check",
+                            title="Files are in use",
+                            detail=plain(exc, "busy"),
+                            technical=technical(exc),
                         )
-                    except (OSError, ValueError, KeyError) as exc:
+                    except (OSError, ValueError, KeyError, TypeError) as exc:
                         value = replace(
                             value,
                             action="health",
                             title="Preflight needs attention",
-                            detail=str(exc),
+                            detail=plain(exc, "preflight"),
+                            technical=technical(exc),
                         )
                 # A different window may have queued this episode during preflight.
                 job = active()
@@ -148,8 +161,14 @@ class Studio:
                 )
             PreparationJobs(self.root).validate(request)
             if job.status == "waiting":
+                # Resume polls the saved caption operation; it sends no new paid request.
                 launch_worker(self.root)
                 return self.repository.resume_preparation(identifier)
+            if request.get("spend_override"):
+                raise ValueError(
+                    "A spend-limit override covers one run only. Inspect preparation again and "
+                    "confirm a new override if you still accept the possible charge."
+                )
         return self.submit(job.episode, job.action, request)
 
     def submit(self, episode: str, action: str, request: dict) -> str:

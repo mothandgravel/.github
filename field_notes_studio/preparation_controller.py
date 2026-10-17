@@ -93,12 +93,19 @@ class PreparationController:
         recover = recovery.get() if recovery is not None else False
         if not snapshot or snapshot.note != self.view.selected() or not authorized:
             return
+        reason = None
+        if getattr(snapshot, "spend_blocked", False):
+            allowed = getattr(self.view, "spend_allowed", None)
+            if allowed is None or not allowed.get():
+                return
+            reason = self.view.spend_reason.get().strip()
+        extra = {"spend_override": reason} if reason is not None else {}
         self.epoch += 1
         self.view.clear("Queueing the captured preparation request…")
         self._read(
-            lambda: self.service.submit(snapshot, authorized, recover_uncertain=True)
+            lambda: self.service.submit(snapshot, authorized, recover_uncertain=True, **extra)
             if recover
-            else self.service.submit(snapshot, authorized),
+            else self.service.submit(snapshot, authorized, **extra),
             lambda identifier: self.view.queued(snapshot.episode, identifier),
             effect=True,
         )

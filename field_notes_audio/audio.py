@@ -9,22 +9,30 @@ from __future__ import annotations
 
 import argparse
 import base64
+import functools
 import hashlib
 import io
 import json
+import os
 import re
 import shutil
 import subprocess
 import time
-import uuid
 import wave
+from contextvars import ContextVar
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib import error, request
 
 from field_notes_audio import auth as google_auth
-from field_notes_audio.diagnostics import provider_text
+from field_notes_audio import spend_guard
+from field_notes_audio.diagnostics import (
+    http_meaning,
+    http_uncertain,
+    provider_text,
+    stop_and_wait,
+)
 from field_notes_audio.locks import run_lock
 from field_notes_audio.progress import raise_if_stopped, report, stage, timed
 from field_notes_audio.storage import digest_file, read_object, write_json
@@ -32,14 +40,46 @@ from field_notes_audio.storage import digest_file, read_object, write_json
 ROOT = Path(__file__).resolve().parents[1]
 # Transport policy is not narration content: never include it in cache fingerprints.
 # urllib applies this to blocking socket operations, not a total request deadline.
-TTS_TIMEOUT_SECONDS = 600
+# 360s is about 2.4x the slowest successful chunk in the owner's receipts (147.6s of
+# eight completed requests, 17 Oct 2026). Waiting 600s on an 8 KB chunk was a hang,
+# not work. FIELD_AUDIO_TTS_TIMEOUT_SECONDS or --tts-timeout-seconds changes it.
+TTS_TIMEOUT_SECONDS = 360
 LEGACY_TTS_TIMEOUT_SECONDS = 180
+# Provider request/trace IDs from the last synthesis response in this context.
+_provider_ids: ContextVar[dict | None] = ContextVar("provider_ids", default=None)
 
 
 def validate_tts_timeout(value: object) -> int:
     if type(value) is not int or not 60 <= value <= 900:
         raise ValueError("Narration socket timeout must be an integer from 60 to 900 seconds")
     return value
+
+
+def tts_timeout_seconds() -> int:
+    """The configured client wait for one narration chunk, validated."""
+    raw = os.environ.get("FIELD_AUDIO_TTS_TIMEOUT_SECONDS")
+    if raw is None:
+        return TTS_TIMEOUT_SECONDS
+    try:
+        return validate_tts_timeout(int(raw))
+    except ValueError:
+        raise ValueError(
+            "FIELD_AUDIO_TTS_TIMEOUT_SECONDS must be an integer from 60 to 900 seconds"
+        ) from None
+
+
+def add_timeout_argument(parser) -> None:
+    def seconds(value: str) -> int:
+        try:
+            return validate_tts_timeout(int(value))
+        except ValueError as exc:
+            raise argparse.ArgumentTypeError(str(exc)) from None
+
+    parser.add_argument(
+        "--tts-timeout-seconds",
+        type=seconds,
+        help=f"Client wait per narration chunk, 60–900 s; default {TTS_TIMEOUT_SECONDS}",
+    )
 
 
 MODELS = {"gemini-2.5-flash-tts": 10, "gemini-2.5-pro-tts": 20}
@@ -310,10 +350,13 @@ def synthesize(
             "Content-Type": "application/json",
         },
     )
+    _provider_ids.set({})
     try:
         with timed("tts_request"), request.urlopen(req, timeout=timeout_seconds) as response:
+            _provider_ids.set(spend_guard.provider_ids(getattr(response, "headers", None)))
             result = json.load(response)
     except error.HTTPError as exc:
+        _provider_ids.set(spend_guard.provider_ids(exc.headers))
         if exc.code == 401:
             google_auth.invalidate_token(token)
         raise
@@ -391,18 +434,15 @@ def http_diagnostic(exc: error.HTTPError, token: str) -> dict:
     return result
 
 
-def http_guidance(code: int, episode: str) -> str:
-    if 500 <= code <= 599:
-        return (
-            "The service or an upstream gateway failed; this response does not establish a billing or IAM problem. "
-            "No completed audio was saved for this chunk. After a short pause, repeat the same generate command "
-            "with --retry-uncertain. A retry can incur another charge."
-        )
-    if code in {408, 429}:
-        return (
-            "The request timed out or capacity/quota was unavailable. Wait before retrying, then repeat the same "
-            "generate command with --retry-uncertain. A retry can incur another charge; inspect quota if 429 persists."
-        )
+CLI_RETRY = "run the same command with --retry-uncertain"
+
+
+def http_guidance(
+    code: int, episode: str, provider_status: str = "", *, retry: str = CLI_RETRY
+) -> str:
+    """Next step for an HTTP failure. Uncertain outcomes get stop-and-wait, never a loop."""
+    if http_uncertain(code, provider_status):
+        return stop_and_wait(code, provider_status, retry=retry)
     if code == 401:
         return (
             "Authorize Cloud Shell or sign into the intended Google account with gcloud auth login."
@@ -412,6 +452,58 @@ def http_guidance(code: int, episode: str) -> str:
     if code == 400:
         return f"Inspect the bounded request with plan {episode} --json; check model, language and voice support."
     return "Inspect the saved provider diagnostic and audio/README.md before repeating the request."
+
+
+def _settle(
+    audio_root: Path,
+    episode: str,
+    part: str,
+    attempt_id: str,
+    started: float,
+    outcome: str,
+    detail: str = "",
+    seconds: float | None = None,
+) -> None:
+    spend_guard.record_outcome(
+        audio_root,
+        episode=episode,
+        part=part,
+        attempt_id=attempt_id,
+        outcome=outcome,
+        detail=detail,
+        ids=(_provider_ids.get() or {}),
+        seconds=round(time.perf_counter() - started if seconds is None else seconds, 4),
+    )
+
+
+def _log_outcome(settle, outcome: str, detail: str, seconds: float) -> None:
+    """Retry the outcome line; a failed write never aborts saved audio or hides a failure.
+
+    A complete attempt without its outcome line is still reconciled from its own
+    receipt, so it does not become a ghost uncertain attempt.
+    """
+    for attempt in range(3):
+        try:
+            settle(outcome, detail, seconds)
+            return
+        except OSError as exc:  # noqa: PERF203 - bounded local retry of a log write
+            if attempt == 2:
+                report(
+                    f"Warning: the attempt log could not record outcome {outcome!r} ({exc}). "
+                    "The saved receipt remains the evidence.",
+                    flush=True,
+                )
+            else:
+                time.sleep(0.2)
+
+
+def chunk_estimate(plan: dict, index: int) -> float | None:
+    """Speech-output estimate for one part, by its share of the plan's text."""
+    try:
+        sizes = [len(r["input"]["text"]) for r in plan["requests"]]
+        return round(plan["estimated_output_cost_usd"] * sizes[index - 1] / sum(sizes), 6)
+    except (KeyError, TypeError, IndexError, ZeroDivisionError):
+        return None
 
 
 def generate(args: argparse.Namespace) -> Path:
@@ -434,9 +526,10 @@ def generate_locked(
 ) -> Path:
     root = ROOT if root is None else root
     timeout_seconds = validate_tts_timeout(
-        getattr(args, "tts_timeout_seconds", TTS_TIMEOUT_SECONDS)
+        getattr(args, "tts_timeout_seconds", None) or tts_timeout_seconds()
     )
     write_json(directory / "plan.json", plan)
+    report(spend_guard.limits_text(spend_guard.load_limits(spend_guard.log_root(directory))))
     paths = []
     for index, data in enumerate(plan["requests"], start=1):
         raise_if_stopped(args)
@@ -465,17 +558,26 @@ def generate_locked(
             validate_wav(wav_path.read_bytes())
             report(f"Chunk {index}/{len(plan['requests'])}: reuse saved audio")
         else:
+            total = len(plan["requests"])
+            episode_id = plan["episode"]["id"]
+            part = f"narration-{index}"
+            audio_root = spend_guard.log_root(directory)
+            retry = getattr(args, "retry_hint", "") or CLI_RETRY
             if (
                 state.get("status") in {"requesting", "uncertain"}
                 and not args.retry_uncertain
                 and not receipt
             ):
                 raise ValueError(
-                    f"Chunk {index} has an uncertain prior attempt. --retry-uncertain can incur another charge."
+                    f"Narration part {index} of {total} has an uncertain earlier attempt: no audio "
+                    "was saved and billing is unknown. "
+                    + spend_guard.describe(audio_root, episode_id, part)
+                    + " Stop and wait before another paid try; see audio/README.md. "
+                    f"Only if you accept another possible charge, {retry} once by hand."
                 )
             stage(
-                f"narration-{index}-of-{len(plan['requests'])}",
-                f"Narration chunk {index}/{len(plan['requests'])}: contacting the service; "
+                f"narration-{index}-of-{total}",
+                f"Narration chunk {index}/{total}: contacting the service; "
                 f"client socket timeout {timeout_seconds}s. No automatic resend; earlier completed chunks are retained.",
             )
             token = access_token(args.auth)
@@ -487,7 +589,28 @@ def generate_locked(
                     write_json(archive, state)
                 elif read_object(archive) != state:
                     raise ValueError("Saved recovery evidence changed; inspect before retrying")
-            attempt_id = uuid.uuid4().hex
+            attempt_id = spend_guard.new_attempt_id()
+            override = getattr(args, "allow_spend_over_limit", None)
+            # One atomic step: check the limit, then durably log the start before sending.
+            guard = spend_guard.reserve(
+                audio_root,
+                episode_id,
+                part,
+                attempt_id=attempt_id,
+                estimate_usd=chunk_estimate(plan, index),
+                request_sha256=expected,
+                receipt=str(state_path.relative_to(audio_root)),
+                override=override,
+                token=getattr(args, "spend_token", None),
+                command="narration",
+            )
+            if guard.blocked:
+                report(
+                    "Spend guard override logged: "
+                    + guard.sentence()
+                    + f" Reason: {spend_guard.validate_reason(override)}",
+                    flush=True,
+                )
             write_json(
                 state_path,
                 {
@@ -497,15 +620,21 @@ def generate_locked(
                     "timeout_seconds": timeout_seconds,
                 },
             )
-            report(f"Chunk {index}/{len(plan['requests'])}: generate", flush=True)
+            report(f"Chunk {index}/{total}: generate · attempt {attempt_id}", flush=True)
             attempt_start = time.perf_counter()
             failure_phase = "narration_request"
+
+            settle = functools.partial(
+                _settle, audio_root, episode_id, part, attempt_id, attempt_start
+            )
+
             try:
                 audio = synthesize(
                     data, args.project, args.endpoint, token, timeout_seconds=timeout_seconds
                 )
                 failure_phase = "local_save"
                 wav_path.write_bytes(audio)
+                saved_seconds = time.perf_counter() - attempt_start
                 write_json(
                     state_path,
                     {
@@ -515,19 +644,26 @@ def generate_locked(
                         "duration_seconds": validate_wav(audio),
                         "attempt_id": attempt_id,
                         "timeout_seconds": timeout_seconds,
-                        "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
+                        "attempt_seconds": round(saved_seconds, 4),
+                        **(
+                            {"provider_ids": (_provider_ids.get() or {})}
+                            if (_provider_ids.get() or {})
+                            else {}
+                        ),
                     },
                 )
             except error.HTTPError as exc:
-                status = (
-                    "failed"
-                    if 400 <= exc.code < 500 and exc.code not in {408, 429}
-                    else "uncertain"
-                )
                 try:
                     diagnostic = http_diagnostic(exc, token)
                 except (OSError, ValueError, TypeError):
                     diagnostic = {"http_status": exc.code}
+                elapsed = time.perf_counter() - attempt_start
+                if not (_provider_ids.get() or {}):
+                    _provider_ids.set(spend_guard.provider_ids(exc.headers))
+                provider_status = diagnostic.get("provider_status", "")
+                uncertain = http_uncertain(exc.code, provider_status)
+                status = "uncertain" if uncertain else "failed"
+                ids = _provider_ids.get() or {}
                 write_json(
                     state_path,
                     {
@@ -535,18 +671,30 @@ def generate_locked(
                         "request_sha256": expected,
                         "attempt_id": attempt_id,
                         "timeout_seconds": timeout_seconds,
-                        "attempt_seconds": round(time.perf_counter() - attempt_start, 4),
+                        "attempt_seconds": round(elapsed, 4),
+                        **({"provider_ids": ids} if ids else {}),
                         **diagnostic,
                     },
                 )
-                detail = diagnostic.get("provider_status") or diagnostic.get("provider_message")
+                _log_outcome(settle, status, f"HTTP {exc.code} {provider_status}".strip(), elapsed)
+                detail = provider_status or diagnostic.get("provider_message")
                 label = f" ({detail})" if detail else ""
-                elapsed = time.perf_counter() - attempt_start
                 raise RuntimeError(
-                    f"Narration chunk {index}/{len(plan['requests'])}: Google returned HTTP {exc.code}{label} "
-                    f"after {elapsed:.1f}s (client socket timeout {timeout_seconds}s). "
-                    f"{http_guidance(exc.code, args.episode)} "
-                    f"Diagnostic: {state_path.relative_to(root)}"
+                    f"Narration part {index} of {total} failed: "
+                    f"{http_meaning(exc.code, provider_status)} (HTTP {exc.code}). "
+                    + (
+                        "No audio was saved for this part. "
+                        if uncertain
+                        else "The request was refused, so it was not processed. "
+                    )
+                    + spend_guard.describe(audio_root, episode_id, part)
+                    + " "
+                    + http_guidance(exc.code, args.episode, provider_status, retry=retry)
+                    + f" Technical detail: Google returned HTTP {exc.code}{label} after "
+                    f"{elapsed:.1f}s (client socket timeout {timeout_seconds}s); attempt "
+                    f"{attempt_id}"
+                    + (f"; provider IDs {ids}" if ids else "")
+                    + f". Diagnostic: {state_path.relative_to(root)}"
                 ) from None
             except Exception as exc:
                 elapsed = time.perf_counter() - attempt_start
@@ -567,18 +715,31 @@ def generate_locked(
                         "attempt_seconds": round(elapsed, 4),
                     },
                 )
-                timing = (
-                    f"Client wait for narration timed out (socket timeout {timeout_seconds}s); "
-                    "remote processing and billing are unknown. "
+                _log_outcome(settle, "uncertain", kind, elapsed)
+                what = (
+                    f"no answer arrived within the {timeout_seconds}s client wait"
                     if timed_out
-                    else ""
+                    else "the audio could not be saved locally"
+                    if failure_phase == "local_save"
+                    else "the connection failed before a result came back"
                 )
                 raise RuntimeError(
-                    f"Narration chunk {index}/{len(plan['requests'])}: {kind} after {elapsed:.1f}s. "
-                    + timing
-                    + "No completed audio was confirmed locally. Inspect recovery; resending this chunk can incur another charge. "
-                    f"Diagnostic: {state_path.relative_to(root)}"
+                    f"Narration part {index} of {total} failed: {what}. "
+                    "No completed audio was confirmed locally. "
+                    + spend_guard.describe(audio_root, episode_id, part)
+                    + " "
+                    + stop_and_wait(None, retry=retry)
+                    + f" Technical detail: {kind} after {elapsed:.1f}s"
+                    + (
+                        f" (client socket timeout {timeout_seconds}s; remote processing and billing are unknown)"
+                        if timed_out
+                        else ""
+                    )
+                    + f"; attempt {attempt_id}. Diagnostic: {state_path.relative_to(root)}"
                 ) from None
+            else:
+                # Outside the handlers: a failed log write never turns saved audio uncertain.
+                _log_outcome(settle, "complete", "", saved_seconds)
         paths.append(wav_path)
         # Outside the request exception handler: a late stop must not turn saved audio uncertain.
         stage(

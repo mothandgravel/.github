@@ -171,8 +171,11 @@ See [the first-run usability observations and regression cases](usability-rehear
 
 ## Narration response timeouts
 
-A narration chunk may take several minutes to return. Newly inspected Studio
-jobs capture a **600-second (10-minute) client socket timeout**. Inspect script
+A narration chunk may take a few minutes to return. Newly inspected Studio
+jobs capture a **360-second (6-minute) client socket timeout**, about 2.4 times the
+slowest successful chunk in the owner's receipts (147.6 s of eight; 17 October).
+`FIELD_AUDIO_TTS_TIMEOUT_SECONDS` (60–900) changes it. A timeout counts as an
+uncertain attempt for the [spend guard](README.md#uncertain-spend-guard-and-plain-errors). Inspect script
 shows this policy before authorization. It is not a completion estimate: Python
 applies the timeout to blocking socket operations, not the whole episode or a
 strict end-to-end deadline. The queue's elapsed waiting display is measured

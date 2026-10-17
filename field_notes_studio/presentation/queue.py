@@ -177,8 +177,14 @@ class ProductionQueue(ttk.Frame):
             and job.identifier not in self.resolved
             for job in jobs
         )
+        # Only non-zero counts, so the summary stays on one line beside the actions.
+        counts = [
+            f"{running} running" if running else "",
+            f"{queued} queued" if queued else "",
+            f"{attention} {'needs' if attention == 1 else 'need'} attention" if attention else "",
+        ]
         self.summary.configure(
-            text=f"Queue · {running} running · {queued} queued · {attention} need attention"
+            text="Queue · " + (" · ".join(c for c in counts if c) or "nothing needs attention")
             if jobs
             else "Queue · no jobs yet"
         )

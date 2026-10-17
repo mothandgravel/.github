@@ -12,7 +12,7 @@ import webbrowser
 import zipfile
 from pathlib import Path
 
-from field_notes_audio import audio, captions
+from field_notes_audio import audio, captions, spend_guard
 from field_notes_audio.progress import raise_if_stopped, report, timed
 from field_notes_audio.storage import read_object
 
@@ -355,6 +355,8 @@ def caption_recording(path: Path, args: argparse.Namespace) -> Path | None:
         wait=args.wait,
         retry_uncertain=args.retry_uncertain,
         restart_failed=args.restart_failed,
+        allow_spend_over_limit=getattr(args, "allow_spend_over_limit", None),
+        spend_token=getattr(args, "spend_token", None),
     )
     prepare_captions(caption_args)
     caption_args._cancel_event = getattr(args, "_cancel_event", None)
@@ -388,6 +390,8 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
             sub.add_argument("--no-open", action="store_true")
             sub.add_argument("--retry-uncertain", action="store_true")
             sub.add_argument("--restart-failed", action="store_true")
+            spend_guard.add_override_argument(sub)
+            audio.add_timeout_argument(sub)
         sub.add_argument("--project")
         sub.add_argument("--bucket")
         sub.add_argument("--endpoint", choices=audio.ENDPOINTS)

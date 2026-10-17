@@ -386,6 +386,12 @@ class Pipeline:
         except RecordingBusy as exc:
             raise ReadinessBusy(str(exc)) from exc
 
+    def spend_summary(self, identifier: str) -> str:
+        """One line about uncertain paid attempts for a failure view; empty when none."""
+        from field_notes_audio import spend_guard
+
+        return spend_guard.summary_line(self.root / "artifacts/audio", identifier)
+
     def readiness(self, identifier, settings):
         from field_notes_studio.readiness import inspect
 

@@ -17,19 +17,21 @@ from html import escape
 from pathlib import Path
 from urllib import error, parse, request
 
+from field_notes_audio import spend_guard
 from field_notes_audio.audio import access_token, digest, http_diagnostic, write_json
 from field_notes_audio.auth import invalidate_token
+from field_notes_audio.diagnostics import http_meaning, http_uncertain, stop_and_wait
 from field_notes_audio.locks import run_lock
 from field_notes_audio.progress import raise_if_stopped, report, timed
 from field_notes_audio.storage import digest_file, read_object
 
 
 class CloudError(RuntimeError):
-    def __init__(self, diagnostic):
+    def __init__(self, diagnostic, message: str | None = None):
         self.diagnostic = diagnostic
         self.code = diagnostic["http_status"]
         detail = diagnostic.get("provider_message") or diagnostic.get("provider_status", "")
-        super().__init__(f"Google HTTP {self.code}: {detail}")
+        super().__init__(message or f"Google HTTP {self.code}: {detail}")
 
 
 def add_arguments(commands: argparse._SubParsersAction) -> None:
@@ -84,6 +86,7 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
         action="store_true",
         help="Start a new job after repairing a confirmed failed job",
     )
+    spend_guard.add_override_argument(sub)
 
 
 def cloud_json(
@@ -692,6 +695,13 @@ def recording_plan(args: argparse.Namespace) -> tuple[Path, dict, bytes, dict, s
     return directory, plan, content, metadata, script
 
 
+def caption_log_root(directory: Path) -> Path:
+    """The checkout's ``artifacts/audio`` log, also for an MP3 kept elsewhere."""
+    from field_notes_audio import audio as audio_module
+
+    return spend_guard.log_root(directory, audio_module.ROOT / "artifacts/audio")
+
+
 def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> Path | None:
     directory, plan, content, metadata, script = recording_plan(args)
     duration = plan["duration_seconds"]
@@ -723,7 +733,15 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
         write_json(directory / "plan.json", plan)
         if state.get("status") in {"requesting", "uncertain"} and not args.retry_uncertain:
             raise ValueError(
-                "A previous transcription submission has no saved acknowledgement. --retry-uncertain may create another billable job."
+                "A previous transcription submission has no saved acknowledgement, so billing "
+                "is unknown. "
+                + spend_guard.describe(
+                    caption_log_root(directory),
+                    metadata.get("id") or "recording-" + audio_hash[:12],
+                    "captions",
+                )
+                + " Stop and wait before another paid try. Only if you accept another "
+                "possible charge, run the same command with --retry-uncertain once by hand."
             )
         if args.restart_failed and state.get("status") not in {"running", "complete"}:
             if state.get("status") != "failed":
@@ -740,20 +758,69 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
             operation = read_object(directory / "operation.json")
         else:
             if not state.get("operation"):
+                episode = metadata.get("id") or "recording-" + audio_hash[:12]
+                audio_root = caption_log_root(directory)
+                retry = (
+                    getattr(args, "retry_hint", "") or "run the same command with --retry-uncertain"
+                )
+                override = getattr(args, "allow_spend_over_limit", None)
+                report(spend_guard.limits_text(spend_guard.load_limits(audio_root)))
+                # Refuse before any upload; the binding check comes just before submission.
+                preview = spend_guard.tally(audio_root, episode, "captions")
+                if preview.blocked and override is None:
+                    raise spend_guard.SpendLimitReached(
+                        spend_guard.refusal(preview, "captions"), preview
+                    )
                 report(f"Upload or reuse private input: {uri}", flush=True)
                 generation = ensure_upload(
                     content, args.bucket, object_name, args.project, args.auth
                 )
                 raise_if_stopped(args)
                 (directory / "audio.mp3").write_bytes(content)
+                attempt_id = spend_guard.new_attempt_id()
+                guard = spend_guard.reserve(
+                    audio_root,
+                    episode,
+                    "captions",
+                    attempt_id=attempt_id,
+                    estimate_usd=None,
+                    request_sha256=plan["fingerprint"],
+                    override=override,
+                    token=getattr(args, "spend_token", None),
+                    command="captions",
+                )
+                if guard.blocked:
+                    report(
+                        "Spend guard override logged: "
+                        + guard.sentence()
+                        + f" Reason: {spend_guard.validate_reason(override)}",
+                        flush=True,
+                    )
                 write_json(
                     state_path,
                     {
                         "status": "requesting",
                         "audio_sha256": audio_hash,
                         "storage_generation": generation,
+                        "attempt_id": attempt_id,
                     },
                 )
+
+                def settle(outcome, detail="", ids=None):
+                    try:
+                        spend_guard.record_outcome(
+                            audio_root,
+                            episode=episode,
+                            part="captions",
+                            attempt_id=attempt_id,
+                            outcome=outcome,
+                            detail=detail,
+                            ids=ids,
+                        )
+                    except OSError as exc:
+                        # Never hide the provider's result behind a local log failure.
+                        report(f"Warning: the attempt log could not record {outcome!r}: {exc}")
+
                 host = (
                     "speech.googleapis.com"
                     if args.location == "global"
@@ -764,22 +831,52 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
                     operation = cloud_json(url, args.project, args.auth, payload)
                     operation_url(operation.get("name"), args.location, args.project)
                 except CloudError as exc:
+                    provider_status = exc.diagnostic.get("provider_status", "")
+                    uncertain = http_uncertain(exc.code, provider_status)
                     write_json(
                         state_path,
                         {
-                            "status": "rejected"
-                            if 400 <= exc.code < 500 and exc.code not in {408, 429}
-                            else "uncertain",
+                            "status": "uncertain" if uncertain else "rejected",
                             "audio_sha256": audio_hash,
+                            "attempt_id": attempt_id,
                             **exc.diagnostic,
                         },
                     )
-                    raise
-                except Exception:
-                    write_json(state_path, {"status": "uncertain", "audio_sha256": audio_hash})
-                    raise RuntimeError(
-                        "No valid transcription operation ID was saved. Inspect state.json before an uncertain retry."
+                    settle(
+                        "uncertain" if uncertain else "failed",
+                        f"HTTP {exc.code} {provider_status}".strip(),
+                    )
+                    if not uncertain:
+                        raise
+                    raise CloudError(
+                        exc.diagnostic,
+                        f"Caption submission failed: {http_meaning(exc.code, provider_status)} "
+                        f"(HTTP {exc.code}). No transcription operation ID was saved. "
+                        + spend_guard.describe(audio_root, episode, "captions")
+                        + " "
+                        + stop_and_wait(exc.code, provider_status, retry=retry)
+                        + f" Technical detail: {exc}; attempt {attempt_id}. "
+                        f"Diagnostic: {state_path}",
                     ) from None
+                except Exception as exc:
+                    write_json(
+                        state_path,
+                        {
+                            "status": "uncertain",
+                            "audio_sha256": audio_hash,
+                            "attempt_id": attempt_id,
+                        },
+                    )
+                    settle("uncertain", type(exc).__name__)
+                    raise RuntimeError(
+                        "Caption submission failed: no valid transcription operation ID was saved. "
+                        + spend_guard.describe(audio_root, episode, "captions")
+                        + " "
+                        + stop_and_wait(None, retry=retry)
+                        + f" Technical detail: {type(exc).__name__}; attempt {attempt_id}. "
+                        f"Diagnostic: {state_path}"
+                    ) from None
+                settle("acknowledged", ids={"operation": str(operation["name"])[:160]})
                 state = {
                     "status": "running",
                     "operation": operation["name"],

@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 from dataclasses import replace
 from pathlib import Path
 
-from field_notes_audio import audio, captions
+from field_notes_audio import audio, captions, spend_guard
 from field_notes_audio.locks import run_lock
 from field_notes_audio.production import sources
 from field_notes_audio.storage import digest_file, read_object
@@ -104,7 +105,7 @@ class PreparationJobs:
             "configuration": config,
             "plan": plan,
             # Captured operational policy, intentionally outside the synthesis plan/hash.
-            "tts_timeout_seconds": audio.TTS_TIMEOUT_SECONDS,
+            "tts_timeout_seconds": audio.tts_timeout_seconds(),
         }
         directory = self._recording(plan)
         self._check_cache_paths(directory)
@@ -150,6 +151,8 @@ class PreparationJobs:
             blockers.append(
                 "This episode is already on the public catalog. This new-note path does not replace it."
             )
+        spend = self._spend(snapshot.episode, plan, directory, saved_recording)
+        spend_summary = spend["summary"]
         recovery = ""
         recovery_summary = ""
         if uncertain:
@@ -163,14 +166,15 @@ class PreparationJobs:
                 recovery = json.dumps({**request, "uncertain_chunks": uncertain}, sort_keys=True)
         summary = (
             (
-                "RECOVERY NEEDED — " + recovery_summary + "\n" + "\n".join(diagnostics) + "\n\n"
+                "Recovery needed: " + recovery_summary + "\n" + "\n".join(diagnostics) + "\n\n"
                 if uncertain
                 else ""
             )
+            + (spend_summary + "\n\n" if spend_summary else "")
             + f"Cloud project: {config['project']}\n"
             f"Private working bucket: {config['bucket']}\n"
             "Charges may apply to missing narration and caption requests.\n"
-            f"Client narration socket timeout: {audio.TTS_TIMEOUT_SECONDS}s ({audio.TTS_TIMEOUT_SECONDS / 60:g} minutes). "
+            f"Client narration socket timeout: {request['tts_timeout_seconds']}s ({request['tts_timeout_seconds'] / 60:g} minutes). "
             "This is a wait policy, not a completion promise or automatic retry.\n"
             f"Captions: {config['caption_model']} · {config['location']}. Authentication: {config['auth']}.\n"
             f"{complete}/{len(plan['requests'])} narration cache records report completion; the worker verifies their bytes.\n"
@@ -195,12 +199,94 @@ class PreparationJobs:
                 f"Project: {config['project']} · Captions: {config['location']} · Narration: {config['endpoint']}\n"
                 f"Private bucket: {config['bucket']}"
             ),
+            spend_summary=spend_summary,
+            spend_blocked=spend["blocked"] and not blockers,
+            spend_count=spend["count"],
+            spend_token=spend["token"],
+            spend_label=spend["label"],
+            spend_overridable=spend["overridable"],
         )
+
+    def _spend(self, episode, plan, directory, saved_recording) -> dict:
+        """Read-only ledger view for the inspection and the override control."""
+        audio_root = self.root / "artifacts/audio"
+        parts = (
+            []
+            if saved_recording
+            else [
+                f"narration-{index}"
+                for index in range(1, len(plan["requests"]) + 1)
+                if not (directory / f"chunk-{index:03d}.json").exists()
+                or read_object(directory / f"chunk-{index:03d}.json").get("status") != "complete"
+            ]
+        )
+        tallies = [spend_guard.tally(audio_root, episode, part) for part in parts or ["captions"]]
+        blocked = [t for t in tallies if t.blocked]
+        first = blocked[0] if blocked else max(tallies, key=lambda t: t.part_window)
+        empty = {
+            "summary": "",
+            "blocked": False,
+            "count": 0,
+            "token": "",
+            "label": "",
+            "overridable": False,
+        }
+        if not first.episode_total:
+            return empty
+        lines = ["Uncertain spend: " + first.sentence()]
+        for attempt in first.attempts:
+            if attempt.outcome != "uncertain":
+                continue
+            money = (
+                f"up to about ${attempt.estimate_usd:.4f}"
+                if attempt.estimate_usd is not None
+                else "no local estimate"
+            )
+            lines.append(
+                f"  {attempt.at.strftime('%Y-%m-%d %H:%M UTC')} · "
+                f"{spend_guard.part_label(attempt.part)} · {attempt.detail or 'no outcome'} · "
+                f"billing unknown · {money} · attempt {attempt.attempt_id[:12]}"
+            )
+        overridden = spend_guard.overridden_recently(audio_root, episode, first.part, first.limits)
+        lines.append(spend_guard.limits_text(first.limits))
+        if blocked and overridden:
+            lines.append(
+                f"Spend guard: {spend_guard.part_label(first.part)} was already overridden "
+                "once in this window. Studio will not queue more paid work for it. Stop and "
+                "wait for the window to pass."
+            )
+        elif blocked:
+            lines.append(
+                "Spend guard: Studio will not queue more paid work for this episode now. "
+                "Stop and wait; the limit lifts as attempts age out of the window. To spend "
+                "anyway, tick the override below and give a reason. It is logged and works "
+                "once per part per window."
+            )
+        else:
+            lines.append(
+                "Stop and wait before another paid try: check the Google Cloud status page "
+                "and the billing report first."
+            )
+        money = first.spend_text().removesuffix("; billing unknown")
+        return {
+            "summary": "\n".join(lines),
+            "blocked": bool(blocked),
+            "count": first.episode_window,
+            "token": first.token,
+            "label": (
+                f"{first.episode_window} uncertain attempts in {first.limits.window_hours:g} h, "
+                f"{money.replace(' in speech output', '')}, billing unknown"
+            ),
+            "overridable": bool(blocked) and not overridden,
+        }
 
     def validate(self, request: dict) -> dict:
         if (
             not isinstance(request, dict)
-            or (set(request) - {"resume", "uncertain_chunks", "tts_timeout_seconds"})
+            or (
+                set(request)
+                - {"resume", "uncertain_chunks", "tts_timeout_seconds", "spend_override"}
+            )
             != {"version", "note", "episode", "source_identity", "configuration", "plan"}
             or type(request["version"]) is not int
             or request["version"] != 1
@@ -223,6 +309,16 @@ class PreparationJobs:
             request["plan"]
         ):
             raise ValueError("The captured narration plan or configuration changed")
+        override = request.get("spend_override")
+        if override is not None and (
+            not isinstance(override, dict)
+            or set(override) != {"reason", "token"}
+            or not isinstance(override["token"], str)
+            or not re.fullmatch(r"[0-9a-f]{12}", override["token"])
+        ):
+            raise ValueError("Invalid spend-limit override")
+        if override is not None:
+            spend_guard.validate_reason(override["reason"])
         receipts = request.get("uncertain_chunks", {})
         if (
             not isinstance(receipts, dict)
@@ -291,6 +387,9 @@ class PreparationJobs:
             ),
             retry_receipts=request.get("uncertain_chunks", {}),
             _cancel_event=Guard(),
+            retry_hint="use Inspect recovery in Studio to try this part",
+            allow_spend_over_limit=(request.get("spend_override") or {}).get("reason"),
+            spend_token=(request.get("spend_override") or {}).get("token"),
         )
         emit(
             "narration",
@@ -311,6 +410,9 @@ class PreparationJobs:
             check()
             caption_args = self._caption_args(plan, config, recording)
             caption_args._cancel_event = Guard()
+            caption_args.allow_spend_over_limit = args.allow_spend_over_limit
+            caption_args.spend_token = args.spend_token
+            caption_args.retry_hint = "use Inspect recovery in Studio"
             # Validate containment of all existing cache files before the engine opens them.
             cap_directory, caption_plan, *_ = captions.recording_plan(caption_args)
             self._check_cache_paths(directory)
@@ -357,6 +459,9 @@ class PreparationJobs:
         # A successful atomic adoption wins over a stop arriving afterwards.
         return str(result)
 
+    def spend_summary(self, episode: str) -> str:
+        return spend_guard.summary_line(self.root / "artifacts/audio", episode)
+
     def _check_cache_paths(self, directory: Path) -> None:
         for path in directory.rglob("*"):
             sources.private_path(self.root, str(path.relative_to(self.root)))
@@ -371,6 +476,8 @@ def narration_diagnostic(state: dict) -> str:
         parts.append(f"HTTP {state['http_status']}")
         if state["http_status"] == 502:
             parts.append("Bad Gateway: server/gateway error, not a client socket timeout")
+        elif state["http_status"] == 499:
+            parts.append("CANCELLED: the request was cancelled; never retry it automatically")
     for key in ("provider_status", "failure_kind"):
         value = state.get(key)
         if isinstance(value, str) and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,63}", value):
@@ -381,7 +488,7 @@ def narration_diagnostic(state: dict) -> str:
     timeout = state.get("timeout_seconds")
     if type(timeout) is int and 60 <= timeout <= 900:
         parts.append(f"client socket timeout {timeout}s")
-    if state.get("failure_kind") == "TimeoutError" or state.get("http_status") == 502:
+    if state.get("status") in {"requesting", "uncertain"}:
         parts.append("response not confirmed; remote processing/billing unknown")
     attempt = state.get("attempt_id")
     if isinstance(attempt, str) and re.fullmatch(r"[a-f0-9]{32}", attempt):

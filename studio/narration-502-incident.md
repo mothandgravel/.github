@@ -75,3 +75,20 @@ selection controls, and cache validation are real. These tests do not fix the
 upstream 502 or demonstrate a successful live retry, voice quality, or release.
 
 Reference: https://www.rfc-editor.org/rfc/rfc9110.html#section-15.6.3
+
+## Follow-up: guidance that invited retries (17 October)
+
+The correction above still told the reader, for any 5xx, to *repeat the same generate
+command with --retry-uncertain after a short pause*. On 17 October an unattended loop
+followed that text through 502, 499 and 600-second timeouts. That guidance is replaced:
+
+- 5xx, 408, 429, 499 and timeouts now say **billing unknown**, show the attempt count for
+  the part across runs and the possible spend, and recommend stopping and waiting before
+  one deliberate, manual try. 499 is classified as CANCELLED and stays uncertain.
+- An engine spend guard refuses further paid requests past 2 uncertain attempts per part
+  or 4 per episode in 24 h, with a logged `--allow-spend-over-limit "reason"` override.
+- Each paid request is logged with an attempt ID in `artifacts/audio/attempts.jsonl`.
+- New jobs use a 360 s client timeout instead of the 600 s policy described above; the
+  600 s receipts in this record remain accurate history.
+
+See the [studio README](README.md#uncertain-spend-guard-and-plain-errors).

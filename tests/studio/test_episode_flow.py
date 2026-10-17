@@ -239,7 +239,7 @@ class EpisodeFlowUiTests(unittest.TestCase):
         self.root.update()
         self.c.job_detail()
         self.h.wait(lambda: "Historical attempt" in self.app.jobs.detail.cget("text"))
-        self.assertIn("0 need attention", self.app.jobs.summary.cget("text"))
+        self.assertIn("nothing needs attention", self.app.jobs.summary.cget("text"))
         self.assertTrue(self.app.jobs.buttons["retry"].instate(["disabled"]))
         self.assertEqual(self.repo.get(old).error, "Earlier TimeoutError")
         with self.assertRaisesRegex(ValueError, "later attempt completed"):

@@ -384,6 +384,29 @@ and the [operator-observation record](usability-rehearsal.md), including the exp
 consent required to resend a receipt-bound uncertain narration request.
 
 
+## Uncertain-spend guard and plain errors
+
+After the 17 October incident (502, then 499, then timeouts across three runs), every
+paid narration or caption failure says **billing unknown**, shows the attempt count for
+that part across runs, the episode's total and the possible spend, and recommends
+stopping and waiting. It never says to repeat the same command. 499 is classified as
+CANCELLED and treated as uncertain.
+
+The engine refuses another paid request at **2 uncertain attempts per part or 4 per
+episode in a rolling 24 h**, counted from the append-only `artifacts/audio/attempts.jsonl`
+and older receipts. The CLI and Studio hit the same limit, and settings can only make it
+stricter. In **Prepare a written note**, inspection lists the uncertain attempts with time,
+status, attempt ID and estimate. Past the limit, queueing needs **Override once (N
+uncertain attempts…, billing unknown)** and a logged reason. The override is bound to the
+attempts shown and works once per part per window. A failed preparation row in the main
+queue shows the uncertain total, the limits and possible spend. A queued override covers
+one run; Retry does not reuse it, although a waiting caption job can still resume. Limits, the log and the 360-second narration timeout are described in
+[audio/README.md](../audio/README.md#uncertain-spend-guard).
+
+The readiness card and Preflight line show one plain sentence with the next step, such as
+"Recording details are incomplete. Prepare the note again." Exception
+text such as `KeyError: 'audio_sha256'` is kept behind **Details** on the card.
+
 ## Job progress and tab navigation
 
 [Progress design and podcast-tool comparison](progress-ux-research.md) documents the
