@@ -33,6 +33,18 @@ class PreparationSnapshot:
     spend_token: str = ""
     spend_label: str = ""
     spend_overridable: bool = False
+    # Structured facts for the Make episode summary; the same inspection as above.
+    parts_total: int = 0
+    parts_saved: int = 0
+    missing_parts: tuple[int, ...] = ()
+    narration_estimate_usd: float | None = None
+    recording_saved: bool = False
+    captions_status: str = ""
+    word_count: int = 0
+    minutes: float = 0.0
+    project: str = ""
+    blockers: tuple[str, ...] = ()
+    uncertain_parts: tuple[str, ...] = ()
 
 
 class CaptionsPending(Exception):

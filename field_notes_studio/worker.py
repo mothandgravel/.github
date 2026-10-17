@@ -55,6 +55,20 @@ def execute(repository: Repository, pipeline: Pipeline, job) -> None:
         repository.finish(job.identifier, "failed", error=str(exc))
 
 
+def advance_runs(root: Path, job=None, *, verify_review: bool = False) -> None:
+    """Chain Make episode runs; a failure here never stops the worker or a job."""
+    from field_notes_studio.make_runs import Runs
+    from field_notes_studio.service import Studio
+
+    try:
+        runs = Runs(Studio(root))
+        if job is not None:
+            runs.record_durations(runs.repository.get(job.identifier))
+        runs.advance_all(verify_review=verify_review)
+    except Exception as exc:  # noqa: BLE001 - logged; the queue keeps working
+        print(f"Make episode runs could not advance: {type(exc).__name__}: {exc}", flush=True)
+
+
 def work(root: Path, *, once: bool = False) -> None:
     repository = Repository(root / "artifacts/studio/studio.sqlite3")
     pipeline = Pipeline(root)
@@ -64,6 +78,8 @@ def work(root: Path, *, once: bool = False) -> None:
     try:
         with run_lock(repository.path.parent, "studio worker"):
             repository.recover()
+            # After a restart, pick up runs whose next step was not queued yet.
+            advance_runs(root, verify_review=True)
             control = repository.state("worker_control").get("restart")
             stopped = threading.Event()
             activity = "idle"
@@ -84,6 +100,7 @@ def work(root: Path, *, once: bool = False) -> None:
 
             monitor = threading.Thread(target=heartbeat, daemon=True, name="studio-heartbeat")
             monitor.start()
+            idle = 0
             try:
                 while True:
                     # Never unload code or terminate a media stage to perform an upgrade.
@@ -98,10 +115,16 @@ def work(root: Path, *, once: bool = False) -> None:
                         activity = f"{job.episode} · {job.action}"
                         execute(repository, pipeline, job)
                         activity = "idle"
+                        advance_runs(root, job)
+                        idle = 0
                     elif once:
                         break
                     else:
                         time.sleep(0.5)
+                        idle += 1
+                        if idle % 10 == 0:
+                            # Caption polls and runs advanced by another window.
+                            advance_runs(root)
             finally:
                 stopped.set()
                 monitor.join(timeout=12)
