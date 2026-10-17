@@ -386,6 +386,12 @@ class Pipeline:
         except RecordingBusy as exc:
             raise ReadinessBusy(str(exc)) from exc
 
+    def tools_check(self, full_video: bool = True) -> None:
+        """Installed FFmpeg/Node/renderer for production, before any paid step starts."""
+        runner.preflight(
+            self.root, argparse.Namespace(audio_only=not full_video, browser_executable=None)
+        )
+
     def spend_summary(self, identifier: str) -> str:
         """One line about uncertain paid attempts for a failure view; empty when none."""
         from field_notes_audio import spend_guard
