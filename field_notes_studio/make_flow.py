@@ -218,7 +218,7 @@ class MakeFlow:
                     + [f"{a.when} · {a.part} · {a.detail} · {a.estimate}" for a in attempts]
                     + [f"run {run_id} · job {view.job}"]
                 )
-            return view, title, attempts, diagnostics
+            return view, title, attempts, diagnostics, self.studio.cost_line(view.episode)
 
         def shown(value):
             self.run_loading = False

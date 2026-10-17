@@ -467,6 +467,14 @@ class Repository:
             ).fetchall()
         return [self.run(row[0]) for row in rows]
 
+    def consents(self, episode: str) -> list[tuple[str, str]]:
+        """(run, consent token) for every run of the episode, open or closed, unbounded."""
+        with self.connection() as db:
+            rows = db.execute(
+                "SELECT identifier, consent FROM runs WHERE episode=? ORDER BY rowid", (episode,)
+            ).fetchall()
+        return [(row[0], json.loads(row[1]).get("token", "")) for row in rows]
+
     def run_steps(self, run: str) -> list[dict]:
         with self.connection() as db:
             rows = db.execute(

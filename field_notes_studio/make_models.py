@@ -77,6 +77,8 @@ class MakePlan:
     # The captured preparation request this consent covers; empty without paid steps.
     request_json: str = ""
     recipe: tuple[tuple[str, object], ...] = ()
+    # Earlier runs for this episode, so every new summary has a new digest.
+    history: tuple[str, ...] = ()
     token: str = ""
 
     @property

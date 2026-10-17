@@ -405,13 +405,16 @@ class UITests(unittest.TestCase):
         publication = self.app.workspace.publication
         other = Episode("note-002", "Other episode", 10, "Other transcript")
         controller.episodes[other.identifier] = other
+        self.app.shelf.load(list(controller.episodes.values()))
         publication.url.set("https://youtu.be/unfinished")
         publication.date.set("2026-10-14")
-        controller.select(other.identifier)
-        self.wait(lambda: not controller.loading)
+        # Switch the way a person does, through the shelf, so its highlight follows.
+        self.app.show_episode(other.identifier)
+        self.wait(lambda: not controller.loading and controller.selected == "note-002")
+        self.assertEqual(self.app.shelf.tree.selection(), ("note-002",))
         self.assertEqual(publication.url.get(), "")
-        controller.select("note-001")
-        self.wait(lambda: not controller.loading)
+        self.app.show_episode("note-001")
+        self.wait(lambda: not controller.loading and controller.selected == "note-001")
         self.assertEqual(publication.url.get(), "https://youtu.be/unfinished")
         self.assertEqual(publication.date.get(), "2026-10-14")
         # A save in flight must not consume edits made after clicking Save.

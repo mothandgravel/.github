@@ -51,6 +51,7 @@ class Shelf(ttk.Frame):
         self.notes = []
         self.hints = {}
         self.current = None
+        self.restoring = None
         self.select = select
         self.select_note = select_note or (lambda _item: None)
         ttk.Label(self, text="EPISODES", style="Heading.TLabel").grid(
@@ -190,7 +191,11 @@ class Shelf(ttk.Frame):
             if query in label.casefold() and matches(next_step, choice):
                 self.tree.insert("", "end", iid=iid, values=(label, next_step))
         if selected and self.tree.exists(selected[0]):
+            # Restoring the highlight after a refresh is not a person choosing a row:
+            # its <<TreeviewSelect>> arrives later and must not re-select an episode.
+            self.restoring = selected[0]
             self.tree.selection_set(selected[0])
+            self.after_idle(self._restored)
         count = len(self.tree.get_children())
         waiting = sum(matches(row[2], "Needs me") for row in rows)
         if count:
@@ -203,9 +208,14 @@ class Shelf(ttk.Frame):
             text = ""
         self.count.configure(text=text)
 
+    def _restored(self):
+        self.restoring = None
+
     def _selected(self, _event):
         selection = self.tree.selection()
         if not selection:
+            return
+        if getattr(self, "restoring", None) == selection[0]:
             return
         self.current = selection[0]
         item = self.note(selection[0])

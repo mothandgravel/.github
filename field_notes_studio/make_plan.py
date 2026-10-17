@@ -119,6 +119,7 @@ def token(plan: MakePlan) -> str:
         "reused": list(plan.reused),
         "recipe": [list(item) for item in plan.recipe],
         "blockers": list(plan.blockers),
+        "history": list(plan.history),
     }
     return hashlib.sha256(json.dumps(facts, sort_keys=True).encode()).hexdigest()
 
@@ -279,11 +280,21 @@ def build(studio, *, note: str = "", episode: str = "") -> MakePlan:
         estimate_usd=estimate if paid else None,
         captions_minutes=captions_minutes,
         request_json=request_json,
+        history=tuple(run for run, _token in studio.repository.consents(episode)),
         recipe=tuple(
             sorted((key, json.dumps(value, sort_keys=True)) for key, value in inputs.items())
         ),
     )
     return replace(plan, token=token(plan))
+
+
+def cost_line(root, episode: str, caption_minutes: float | None = None) -> str:
+    """This episode's paid work so far, from the attempts log; never an exact bill."""
+    try:
+        cost = spend_guard.episode_cost(root / "artifacts/audio", episode)
+    except (OSError, ValueError):
+        return "The attempts log could not be read; check the Cloud billing report."
+    return cost.sentence(caption_minutes)
 
 
 def consent_record(plan: MakePlan) -> dict:

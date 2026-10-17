@@ -599,6 +599,12 @@ class Controller:
 
         self.task(lambda: self.studio.release_details(identifier), loaded, failed)
 
+        def cost(text):
+            if generation == self.release_generation and identifier == self.selected:
+                publication.show_cost(text)
+
+        self.task(lambda: self.studio.cost_line(identifier), cost, lambda _message: None)
+
     def prepare_package(self):
         """Release's Make upload folder: the same checked, local export as the card."""
         if not self.selected or self.loading or self.episode_controls.busy:

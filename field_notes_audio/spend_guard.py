@@ -851,3 +851,125 @@ def summary_line(audio_root: Path, episode: str) -> str:
         + (" · spend guard reached" if seen.over_episode else "")
         + " · stop and wait."
     )
+
+
+@dataclass(frozen=True)
+class Cost:
+    """What the attempts log says this episode has cost so far; an estimate, never a bill.
+
+    Narration is priced only from the local estimate of each completed request.
+    Captions have no local price. Uncertain attempts may or may not have been billed,
+    so they are kept apart as an upper bound. Settled failures (refused before any
+    output, or never sent) are not counted.
+    """
+
+    episode: str
+    narration_usd: float = 0.0
+    narration_parts: int = 0
+    narration_unestimated: int = 0
+    caption_submissions: int = 0
+    uncertain: int = 0
+    uncertain_usd: float = 0.0
+    uncertain_unestimated: int = 0
+
+    def sentence(self, caption_minutes: float | None = None) -> str:
+        if not (self.narration_parts or self.caption_submissions or self.uncertain):
+            return "Nothing paid is recorded for this episode yet."
+        parts = []
+        if self.narration_parts:
+            money = (
+                f"about ${self.narration_usd:.2f}"
+                if self.narration_usd >= 0.01
+                else ("under $0.01")
+            )
+            text = f"narration {money} ({self.narration_parts} saved part"
+            text += "s)" if self.narration_parts != 1 else ")"
+            if self.narration_unestimated:
+                text += f", {self.narration_unestimated} without a local estimate"
+            parts.append(text)
+        if self.caption_submissions:
+            length = (
+                f", about {caption_minutes:.0f} min of audio"
+                if caption_minutes is not None and caption_minutes >= 0.5
+                else ""
+            )
+            count = self.caption_submissions
+            parts.append(
+                f"captions: no local estimate ({count} submission{'s' if count != 1 else ''}"
+                f"{length})"
+            )
+        text = (
+            "So far, by local estimate (not a bill): " + "; ".join(parts)
+            if parts
+            else ("No completed paid request is recorded yet")
+        )
+        if self.uncertain:
+            bound = (
+                f"up to about ${self.uncertain_usd:.2f}"
+                if self.uncertain_usd >= 0.01
+                else "up to under $0.01"
+                if self.uncertain_usd
+                else "no local estimate"
+            )
+            if self.uncertain_unestimated and self.uncertain_usd:
+                bound += f" plus {self.uncertain_unestimated} without an estimate"
+            text += (
+                f". Possibly billed: {self.uncertain} uncertain attempt"
+                f"{'s' if self.uncertain != 1 else ''}, {bound}"
+            )
+        return text + ". Check the Cloud billing report for actual charges."
+
+
+def episode_cost(audio_root: Path, episode: str) -> Cost:
+    """Sum the attempts log for one episode, plus complete legacy narration receipts.
+
+    Read-only: nothing is imported into the log.
+    """
+    narration_usd = uncertain_usd = 0.0
+    narration_parts = narration_unestimated = captions = 0
+    uncertain = uncertain_unestimated = 0
+    logged = attempts(audio_root, episode)
+    known = {attempt.attempt_id for attempt in logged}
+    # Complete narration receipts from before the attempts log existed have no logged
+    # start; they were paid for, so they count, at plan.json's estimate when known.
+    directory = audio_root / episode
+    for path in sorted(directory.glob("*/chunk-*.json")) if directory.is_dir() else ():
+        match = re.fullmatch(r"chunk-(\d{3})\.json", path.name)
+        try:
+            state = read_object(path)
+        except (OSError, ValueError):
+            continue
+        if not match or state.get("status") != "complete" or state.get("attempt_id") in known:
+            continue
+        estimate = _chunk_estimate(path.parent / "plan.json", int(match.group(1)))
+        narration_parts += 1
+        if estimate is None:
+            narration_unestimated += 1
+        else:
+            narration_usd += estimate
+    for attempt in logged:
+        narration = attempt.part.startswith("narration-")
+        if attempt.outcome == UNCERTAIN:
+            uncertain += 1
+            if attempt.estimate_usd is None:
+                uncertain_unestimated += 1
+            else:
+                uncertain_usd += attempt.estimate_usd
+        elif narration and attempt.outcome == "complete":
+            narration_parts += 1
+            if attempt.estimate_usd is None:
+                narration_unestimated += 1
+            else:
+                narration_usd += attempt.estimate_usd
+        elif attempt.part == "captions" and attempt.outcome in {"complete", "acknowledged"}:
+            captions += 1
+    return Cost(
+        episode,
+        round(narration_usd, 4),
+        narration_parts,
+        narration_unestimated,
+        captions,
+        uncertain,
+        round(uncertain_usd, 4),
+        uncertain_unestimated,
+    )

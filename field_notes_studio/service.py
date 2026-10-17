@@ -17,6 +17,10 @@ from field_notes_studio.processes import launch_worker, open_path, open_publishe
 from field_notes_studio.repository import Repository
 
 
+class ConsentUsed(ValueError):
+    """The consent digest already started a run; a new summary is needed."""
+
+
 class Studio:
     def __init__(self, root: Path):
         self.root = root
@@ -376,6 +380,10 @@ class Studio:
 
         return Runs(self, launch=lambda: launch_worker(self.root))
 
+    def consent_used(self, episode: str, token: str) -> bool:
+        """A digest starts at most one run, even after that run is closed."""
+        return any(used == token for _run, used in self.repository.consents(episode))
+
     def make_plan(self, *, note: str = "", episode: str = ""):
         """The pre-flight summary; reads only, sends and queues nothing."""
         from field_notes_studio import make_plan
@@ -402,6 +410,11 @@ class Studio:
                 "Tick Allow paid narration and captions for this episode first; nothing was queued."
             )
         fresh = make_plan.build(self, note=plan.note, episode=plan.episode)
+        if self.consent_used(plan.episode, plan.token):
+            raise ConsentUsed(
+                "This summary was already used to start a run. Check the new summary; "
+                "nothing was queued."
+            )
         if fresh.token != plan.token or fresh.blockers:
             raise ValueError(
                 "Something changed since this summary was made: files, saved work or the "
@@ -437,6 +450,16 @@ class Studio:
         from field_notes_studio import make_plan
 
         return make_plan.spend_state(self.root, episode, [])
+
+    def cost_line(self, episode: str) -> str:
+        """What this episode has cost so far, by local estimate (not a bill)."""
+        from field_notes_studio import make_plan
+
+        try:
+            minutes = float(self.pipeline.source(episode)["duration_seconds"]) / 60
+        except (OSError, ValueError, KeyError, TypeError):
+            minutes = None
+        return make_plan.cost_line(self.root, episode, minutes)
 
     def run_views(self):
         return self.runs().views()
