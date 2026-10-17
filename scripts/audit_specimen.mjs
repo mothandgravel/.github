@@ -1,9 +1,9 @@
-import {chromium} from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 const url=process.env.SITE_URL||'http://127.0.0.1:8793',output=process.env.AUDIT_OUTPUT||'artifacts/design-review';
-await mkdir(output,{recursive:true});const b=await chromium.launch();const results=[];
+await mkdir(output,{recursive:true});const b=await launchAuditBrowser();const results=[];
 try{
 for(const theme of ['night','afterlight'])for(const width of [320,390,768,1024,1440]){
  const c=await b.newContext({viewport:{width,height:900},acceptDownloads:true});const p=await c.newPage();let transmitted=false;

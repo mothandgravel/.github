@@ -4,7 +4,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 const sourceURL = new URL('./source/quality-measurement-status.ts', import.meta.url);
 const outputURL = new URL('../../docs/assets/specimens/measurement-status.mjs', import.meta.url);
-const provenanceURL = new URL('../../docs/design/connection-study-provenance.json', import.meta.url);
+const provenanceURL = new URL('../../design/connection-study-provenance.json', import.meta.url);
 const source = await readFile(sourceURL, 'utf8');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const provenance = JSON.parse(await readFile(provenanceURL, 'utf8'));

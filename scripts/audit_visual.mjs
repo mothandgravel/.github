@@ -3,7 +3,7 @@
  * Runs only in CI / local development, never in production.
  * Setup: npm install --no-save playwright@1.55.1; npx playwright install chromium
  */
-import { chromium } from "playwright";
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from "axe-core";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -21,7 +21,7 @@ const widths = [
   { name: "small-phone", width: 320, height: 740 },
 ];
 await mkdir(output, { recursive: true });
-const browser = await chromium.launch({ headless: true });
+const browser = await launchAuditBrowser({ headless: true });
 const failures = [];
 const results = [];
 
@@ -57,14 +57,12 @@ async function inspectFirstWork(page, label, theme, width) {
     return targets.every(n => n.scrollWidth <= n.clientWidth + 2) && el.getBoundingClientRect().right <= innerWidth + 1;
   });
   assert(geometry, label + ': first-engagement heading, material or action is clipped');
-  assert(await sheet.locator('a.button[href="./questions/"]').count() === 1, label + ': first engagement does not reach the brief');
+  assert(await sheet.locator('a.button[href="#contact"]').count() === 1, label + ': first engagement does not start a conversation');
+  assert(await sheet.locator('a[href="./questions/"]').count() >= 1, label + ': first engagement does not reach the brief');
   await sheet.locator('.first-work-foot').scrollIntoViewIfNeeded();
   assert(/Before any paid work/.test(await sheet.locator('.first-work-foot').innerText()), label + ': paid-work boundary missing');
-  const example = sheet.locator('.first-work-example');
-  await example.locator('summary').focus();
-  await page.keyboard.press('Enter');
-  assert(await example.getAttribute('open') !== null, label + ': example cannot be opened with keyboard');
-  assert(/fictional workbench study, not a client result/.test(await example.innerText()), label + ': example masquerades as delivered work');
+  assert(/Who it’s for/i.test(await sheet.locator('.first-work-terms').innerText()), label + ': first piece of work does not say who it is for');
+  assert(await sheet.locator('.first-work-parts li').count() === 3, label + ': first piece of work does not list what the client receives');
 }
 
 async function inspectSpecimens(page, label, theme, width) {
@@ -111,9 +109,12 @@ async function assertLandingStyleParity(viewport, label) {
         values: properties.map(property => getComputedStyle(el).getPropertyValue(property)) }));
   });
   const before = await measure();
+  // The authored landing styles are the shared stylesheet followed by the home-only rooms.
   const full = await page.addStyleTag({ url: origin + '/assets/site.css' });
+  const home = await page.addStyleTag({ url: origin + '/assets/home.css' });
   const after = await measure();
   await full.evaluate(el => el.remove());
+  await home.evaluate(el => el.remove());
   const changed = before.filter((entry, index) => JSON.stringify(entry.values) !== JSON.stringify(after[index]?.values));
   assert(changed.length === 0, label + ': generated landing styles differ from authored styles on ' + changed.map(e => e.name).join(', '));
   } finally { await page.close(); }
@@ -288,9 +289,9 @@ try {
     await captureLandingSections(page, 'night', viewport.width);
     await snap(page, `${viewport.name}-night`);
     const theme = page.locator("#light-switch");
-    assert(await theme.getAttribute("aria-label") === "Afterlight theme", "Theme toggle has an unstable label");
+    assert(/^Theme: System$/.test((await theme.textContent()).trim()), "Theme control must state the current setting");
     await theme.click();
-    assert(await theme.getAttribute("aria-pressed") === "true", `${viewport.name}: theme not activated`);
+    assert((await theme.textContent()).trim() === "Theme: Light", `${viewport.name}: theme not activated`);
     assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
       `${viewport.name}: afterlight data-theme missing`);
 
@@ -301,8 +302,8 @@ try {
     await page.reload({ waitUntil: "networkidle", timeout: 30000 });
     assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
       `${viewport.name}: afterlight preference did not persist on reload`);
-    assert(await theme.getAttribute("aria-pressed") === "true",
-      `${viewport.name}: reloaded theme control is not pressed`);
+    assert((await theme.textContent()).trim() === "Theme: Light",
+      `${viewport.name}: reloaded theme control does not state the saved setting`);
     await inspectFirstWork(page, viewport.name + " afterlight", "afterlight", viewport.width);
     await inspectSpecimens(page, viewport.name + " afterlight", "afterlight", viewport.width);
     report.afterlightCardContrast = await sampleCardContrast(page, `${viewport.name} afterlight`);
@@ -643,12 +644,11 @@ try {
   await enquiry.goto(origin, { waitUntil: 'load' });
   await enquiry.locator('.hero-actions a[href="#contact"]').click();
   assert(enquiry.url().endsWith('#contact'), 'Hero enquiry does not reach contact');
-  assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Enquiry route is hidden');
+  assert(await enquiry.locator('#contact a[href^="mailto:hello@mothandgravel.com"]').first().isVisible(), 'Email route is hidden');
+  assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Public enquiry route is hidden');
   await enquiry.locator('#contact a[href="#first-work"]').click();
   assert(enquiry.url().endsWith('#first-work'), 'Contact does not explain the first engagement');
-  await enquiry.locator('.first-work-example summary').click();
-  assert(await enquiry.locator('.first-work-example').getAttribute('open') !== null, 'First engagement example fails without JavaScript');
-  await enquiry.locator('#first-work a.button').click();
+  await enquiry.locator('#first-work a[href="./questions/"]').first().click();
   assert(enquiry.url().endsWith('/questions/'), 'First engagement does not reach the actual question sheet');
   assert(await enquiry.locator('#making').isVisible(), 'First engagement depends on script-only intake');
   await enquiry.goto(origin + '/#studio', { waitUntil: 'load' });

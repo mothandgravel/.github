@@ -7,36 +7,92 @@
   const navigation = document.getElementById("primary-nav");
   const storageKey = "moth-and-gravel-theme";
 
-  function setTheme(theme) {
-    const isAfterlight = theme === "afterlight";
-    root.dataset.theme = isAfterlight ? "afterlight" : "night";
-    themeButton?.setAttribute("aria-pressed", String(isAfterlight));
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isAfterlight ? "#f1eee6" : "#17191b");
+  // A per-device choice: follow the system, or keep Light (afterlight) or Dark (night).
+  const choices = ["system", "light", "dark"];
+  const names = { system: "System", light: "Light", dark: "Dark" };
+  const stored = { system: "system", light: "afterlight", dark: "night" };
+  const prefersLight = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+  const themeLabel = themeButton?.querySelector("[data-theme-label]");
+
+  // One polite voice for small confirmations: the page's own status region when it has
+  // one, otherwise a visually hidden region created on first use.
+  let voice = null;
+  function say(message) {
+    if (!voice) {
+      voice = document.querySelector('[role="status"]');
+      if (!voice) {
+        voice = document.createElement("p");
+        voice.className = "visually-hidden";
+        voice.setAttribute("role", "status");
+        document.body.append(voice);
+      }
+    }
+    voice.textContent = "";
+    setTimeout(() => { voice.textContent = message; }, 40);
   }
 
-  try {
-    const saved = localStorage.getItem(storageKey);
-    if (saved === "afterlight") setTheme(saved);
-  } catch (_) {
-    // The site works without persistent storage.
+  function applyTheme(choice) {
+    const resolved = choice === "light" ? "afterlight" : choice === "dark" ? "night"
+      : (prefersLight?.matches ? "afterlight" : "night");
+    root.dataset.themeChoice = choice;
+    root.dataset.theme = resolved;
+    if (themeLabel) themeLabel.textContent = names[choice];
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", resolved === "afterlight" ? "#f1eee6" : "#17191b");
   }
+
+  applyTheme(choices.includes(root.dataset.themeChoice) ? root.dataset.themeChoice : "system");
 
   themeButton?.addEventListener("click", () => {
-    const theme = root.dataset.theme === "afterlight" ? "night" : "afterlight";
-    setTheme(theme);
-    try { localStorage.setItem(storageKey, theme); } catch (_) {}
+    const current = choices.indexOf(root.dataset.themeChoice);
+    const choice = choices[(current + 1) % choices.length];
+    applyTheme(choice);
+    try { localStorage.setItem(storageKey, stored[choice]); } catch (_) {}
+    say("Theme: " + names[choice]);
   });
+  prefersLight?.addEventListener?.("change", () => {
+    if (root.dataset.themeChoice === "system") applyTheme("system");
+  });
+
+  // The address is always a plain mailto link; copying is an extra for people without a mail app.
+  const address = "hello@mothandgravel.com";
+  function enableCopy(button) {
+    button.hidden = false;
+    const label = button.firstChild;
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(address);
+        label.textContent = "Copied";
+        say("Email address copied: " + address);
+        setTimeout(() => { label.textContent = "Copy"; }, 2400);
+      } catch (_) {
+        const link = button.parentElement?.querySelector('a[href^="mailto:"]');
+        if (link) {
+          const range = document.createRange();
+          range.selectNodeContents(link);
+          const selection = getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+        say("Copying is unavailable here. The address is " + address + ".");
+      }
+    });
+  }
+  document.querySelectorAll("[data-copy-email]").forEach(enableCopy);
+
   root.classList.add("has-site-controls");
 
   // Keep the authored routes as the source of the index. Without enhancement,
   // these are still ordinary, visible navigation links on every screen size.
   if (navigation && menuButton) {
     const routes = [...navigation.querySelectorAll("a")];
+    // Hints are visual company for each route; the link keeps its plain name.
     const hints = {
-      "Workbench": "Saved traces. Work in progress.",
-      "Field notes": "Questions worth following.",
-      "The thinking": "Soft wings. Hard ground.",
-      "Contact": "Leave a loose end."
+      "workbench": "Saved traces. Work in progress.",
+      "field notes": "Questions worth following.",
+      "the thinking": "Soft wings. Hard ground.",
+      "contact": "Email, or shape a brief first.",
+      "the studio": "Back to the bench.",
+      "bring a question": "Give a question a little shape."
     };
     const heading = document.createElement("div");
     heading.className = "nav-sheet-heading";
@@ -58,7 +114,8 @@
       name.textContent = label;
       const hint = document.createElement("span");
       hint.className = "nav-sheet-hint";
-      hint.textContent = hints[label] || "Follow the work.";
+      hint.setAttribute("aria-hidden", "true");
+      hint.textContent = link.dataset.hint || hints[label.toLowerCase()] || "";
       link.replaceChildren(number, name, hint);
     });
     const foot = document.createElement("div");
@@ -68,11 +125,17 @@
     // Every shared masthead already points its brand at the studio's home.
     const home = new URL(document.querySelector(".brand").getAttribute("href"), location.href);
     invitation.href = new URL("questions/", home).href;
-    invitation.textContent = "Give a question a little shape ↗";
+    invitation.textContent = "Shape a brief first ↗";
+    const mail = document.querySelector(".header-mail")?.cloneNode(true);
+    if (mail) {
+      mail.className = "nav-sheet-mail";
+      mail.querySelector("a")?.classList.remove("header-mail-link");
+      mail.querySelectorAll("[data-copy-email]").forEach(enableCopy);
+    }
     const reach = document.createElement("p");
     reach.className = "mono";
     reach.textContent = "BASED IN FINLAND / QUESTIONS FROM ANYWHERE";
-    foot.append(invitation, reach);
+    foot.append(...[invitation, mail, reach].filter(Boolean));
     navigation.append(foot);
     root.classList.add("has-nav-sheet");
   }

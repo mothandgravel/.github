@@ -24,7 +24,7 @@ test('freshness is independent of the measured rate', () => {
   assert.equal(getQualityMeasurementStatus({ ...complete, frameRate: undefined }, now), 'current');
 });
 test('the published source fixtures replay to their declared outcomes', async () => {
-  const provenance = JSON.parse(await readFile(new URL('../docs/design/connection-study-provenance.json', import.meta.url), 'utf8'));
+  const provenance = JSON.parse(await readFile(new URL('../design/connection-study-provenance.json', import.meta.url), 'utf8'));
   for (const fixture of provenance.fixtures) {
     const result = inspectReading(fixture.kind, fixture.ageSeconds ?? 2);
     assert.equal(result.measurement, fixture.expectedMeasurement);

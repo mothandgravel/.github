@@ -21,7 +21,7 @@ The route reuses published material; it introduces no new replay, telemetry, use
 
 - LiveConnect: [source custody and authored fixtures](connection-study-provenance.json). The source-based helper distinguishes measurement freshness; the connection is an independent fixed fixture. Eighteen seconds is stale under this selected helper’s rule. A current sample does not establish picture usefulness.
 - Ajo: [selected recorded simulator stages](working-specimens-provenance.json), artifact `ajo`. One original-operation attempt and one receiver application remain after the result query; dispatches increase from one to two. This is a saved controlled case, not a fresh agent run or a general recovery guarantee.
-- Wider signals: [Field Note 005](../notes/005-green-light.html). Its narrated article body, catalog identity and audio fingerprints remain unchanged; the new return route sits outside `article.note-prose`.
+- Wider signals: [Field Note 005](../docs/notes/005-green-light.html). Its narrated article body, catalog identity and audio fingerprints remain unchanged; the new return route sits outside `article.note-prose`.
 
 ## Verification
 

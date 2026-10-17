@@ -1,12 +1,12 @@
 /** Inspect the room's finish and the contracts beneath its material treatment. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
 import { mkdir, writeFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 await mkdir(output, {recursive:true});
-const browser = await chromium.launch();
+const browser = await launchAuditBrowser();
 const results = [];
 async function sketchSignature(locator) {
   return locator.evaluate(svg=>({viewBox:svg.getAttribute('viewBox'),drawing:[...svg.querySelectorAll('rect,text')].map(el=>({tag:el.tagName,attributes:[...el.attributes].map(a=>[a.name,a.value]).sort(),text:el.textContent}))}));

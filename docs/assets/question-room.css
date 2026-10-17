@@ -4,7 +4,7 @@
 .question-boundary strong { color:var(--ink);display:block;font-weight:600; }
 .question-room .question-sheet { background:var(--material-grain),linear-gradient(135deg,var(--paper-edge),transparent 65%),var(--surface);box-shadow:inset 1px 1px var(--paper-edge),7px 11px 22px -16px var(--contact-shadow);border-top:2px solid var(--gold);scroll-margin-top:110px; }
 .question-position { margin-bottom:30px; }
-.question-room .question-progress { border:0;padding:0;margin:0 0 14px;font-size:11px;line-height:1.7; }
+.question-room .question-progress { border:0;padding:0;margin:0 0 14px;font-size:12px;line-height:1.7; }
 #question-meter { display:block;width:100%;height:3px;border:0;border-radius:0;appearance:none;background:var(--line);color:var(--gold-bright); }
 #question-meter::-webkit-progress-bar { background:var(--line); }
 #question-meter::-webkit-progress-value { background:var(--gold-bright); }
@@ -16,7 +16,7 @@
 .question-room .brief-revise { gap:10px;margin-top:14px; }
 .question-room .brief-revise .quiet-button { font-size:13px; }
 .brief-preview { margin-top:36px;padding:28px 0 4px;border-top:1px solid var(--gold); }
-.brief-preview>.mono { color:var(--gold-bright);font-size:10px;line-height:1.8; }
+.brief-preview>.mono { color:var(--gold-bright);font-size:12px;line-height:1.8; }
 .brief-preview h3 { font:400 28px/1.3 var(--serif);margin:14px 0; }
 .brief-preview .journey-actions { margin-top:18px; }
 .question-housekeeping { border-top:1px solid var(--line);margin-top:28px;padding-top:4px; }
@@ -24,7 +24,7 @@
 .question-room .question-feedback { color:var(--gold-bright);border-left:1px solid var(--gold);padding-left:12px;margin:20px 0 0;font-size:14px;line-height:1.8; }
 .question-feedback:empty { display:none; }
 .question-room #draft-status { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;min-height:0; }
-@media(max-width:660px) { .question-boundary { margin-bottom:28px;padding-left:14px; }.question-position { margin-bottom:24px; }.question-room .journey-actions { gap:12px; }.question-room .brief-revise { display:grid;grid-template-columns:1fr;gap:10px; }.question-room .brief-revise button { text-align:left; }.question-room .brief-keep>.journey-actions>.quiet-button { width:100%; }.brief-preview { margin-top:28px;padding-top:24px; }.brief-preview #carry-question { width:100%;text-align:left; }.question-room #brief-text { min-height:380px; } }
+@media(max-width:660px) { .question-boundary { margin-bottom:28px;padding-left:14px; }.question-position { margin-bottom:24px; }.question-room .journey-actions { gap:12px; }.question-room .brief-keep>.journey-actions>.quiet-button { width:100%; }.brief-preview { margin-top:28px;padding-top:24px; }.brief-preview #carry-question { width:100%;text-align:left; }.question-room #brief-text { min-height:380px; } }
 @media print { .question-boundary,.question-position,.question-housekeeping,.question-feedback,.brief-preview { display:none!important; }.question-room .question-sheet { background:white;color:black;box-shadow:none; } }
 /* The kept object gets its own paper plane in either room light. */
 .question-room #brief-text { background:var(--material-grain),linear-gradient(135deg,#fffaf0,#eee7d8);color:#202222;border-color:#8d7858;box-shadow:inset 1px 1px #fff9,3px 5px 8px -6px #000a; }
@@ -47,3 +47,18 @@ html:is(:not(.has-js),.site-script-unavailable) .question-room .header-actions {
   .question-room textarea { color:#202222;background:#fff; }
   .question-room summary { color:#202222; }
 }
+/* Sending is the first action on the kept brief; Copy and Download stay beside it as quieter routes. */
+.question-room .brief-send { margin-top:22px; }
+.question-room #send-brief { font-size:14px;min-height:54px;gap:22px; }
+.question-room #send-help,.question-room .send-limit { margin:12px 0 0;max-width:62ch; }
+.question-room .send-limit { color:var(--ink);border-left:2px solid var(--gold-bright);padding-left:12px; }
+.question-room .brief-keep-actions { margin-top:18px; }
+/* Feedback scrolled into view clears the sticky masthead and the viewport edge. */
+.question-room .question-feedback { scroll-margin:96px 0 16px; }
+@media print { .question-room .brief-send,.question-room #send-help,.question-room .send-limit { display:none!important; } }
+/* Secondary actions share one alignment: Copy and Download as quiet boxes, revising as text actions in a row. */
+.question-room .brief-keep-actions .quiet-button { text-align:left; }
+.question-room .brief-revise { gap:4px 22px;margin-top:10px; }
+.question-room .brief-revise .quiet-button { border:0;background:none;padding:10px 0;min-height:44px;font-size:14px;color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px;text-align:left; }
+.question-room .brief-revise .quiet-button:hover { color:var(--ink); }
+.question-room .brief-keep>.brief-revise>.quiet-button { width:auto; }

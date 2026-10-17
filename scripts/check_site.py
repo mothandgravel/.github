@@ -8,6 +8,7 @@ from urllib.parse import urlsplit
 import re
 import json
 import hashlib
+import os
 import struct
 import sys
 import xml.etree.ElementTree as ET
@@ -137,7 +138,7 @@ def main() -> int:
     check("prefers-reduced-motion" in css, "Reduced-motion support missing")
     check("@media (max-width:660px)" in css, "Mobile layout support missing")
     check(".has-nav-sheet .main-nav" in css, "Progressive enhancement for mobile navigation missing")
-    check('aria-label="Afterlight theme"' in html, "Theme toggle needs a stable accessible label")
+    check('data-theme-label' in html, "Theme control needs a visible label stating the current setting")
     check('src="./assets/nav-mark.svg"' in html, "Official brand symbol missing from masthead")
     try:
         light_accent = css_token(css, ':root[data-theme="afterlight"]', "gold-bright")
@@ -158,7 +159,7 @@ def main() -> int:
         check(False, str(error))
 
     js = (ROOT / "assets" / "site.js").read_text(encoding="utf-8")
-    check('aria-expanded' in js and 'aria-pressed' in js, "Accessible interactive controls not wired")
+    check('aria-expanded' in js and 'prefers-color-scheme' in js, "Menu state or system theme handling not wired")
     check("localStorage" in js, "Theme preference handling missing")
 
     check((ROOT / "CNAME").read_text(encoding="utf-8").strip() == "mothandgravel.com", "Wrong custom-domain CNAME")
@@ -176,16 +177,17 @@ def main() -> int:
     for specimen in ('ajo', 'skystack', 'kitronik'):
         check(f'id="specimen-{specimen}"' in html, f'Missing {specimen} specimen')
     check(html.count('class="specimen-record"') == 3, 'Each specimen needs a native working record')
-    provenance = json.loads((ROOT / 'design/working-specimens-provenance.json').read_text())
+    provenance = json.loads((ROOT.parent / 'design/working-specimens-provenance.json').read_text())
     check([item['id'] for item in provenance['artifacts']] == ['coastal-watch', 'liveconnect', 'ajo', 'skystack', 'kitronik'],
           'Specimen provenance must match the visible selection')
     for item in provenance['artifacts']:
         if 'asset' in item:
-            asset = ROOT / 'design' / item['asset']
+            # Recorded asset paths stay relative to the published docs/design folder they were written in.
+            asset = Path(os.path.normpath(ROOT / 'design' / item['asset']))
             check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['assetSha256'],
                   f"Specimen asset differs from recorded output: {item['id']}")
     check((ROOT / 'assets/specimens/sky-stamp-footprints.svg').is_file(), 'Missing native footprint replay')
-    connection_provenance = json.loads((ROOT / 'design/connection-study-provenance.json').read_text())
+    connection_provenance = json.loads((ROOT.parent / 'design/connection-study-provenance.json').read_text())
     for illustration in connection_provenance['illustrations']:
         if 'sha256' in illustration:
             asset = ROOT.parent / illustration['path']
@@ -240,7 +242,7 @@ def main() -> int:
               'Coastal watch missing from sitemap')
     mapping_page = ROOT / 'specimens/whose-map/index.html'
     check(mapping_page.is_file(), 'Missing camera and mapping capture study')
-    captures = json.loads((ROOT / 'design/buggy-captures-provenance.json').read_text())
+    captures = json.loads((ROOT.parent / 'design/buggy-captures-provenance.json').read_text())
     for item in captures['assets'] + captures.get('deliveryPreviews', []):
         asset = ROOT.parent / item['file']
         check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['sha256'],
@@ -384,11 +386,16 @@ def main() -> int:
             data = json.loads(blocks[0])
             graph = data['@graph']
             check(data['@context'] == 'https://schema.org', f'{file.name}: unknown schema context')
-            studio = next(n for n in graph if n['@type'] == 'Organization')
+            types = lambda n: n['@type'] if isinstance(n['@type'], list) else [n['@type']]
+            studio = next(n for n in graph if 'Organization' in types(n))
+            check(studio.get('email') == 'hello@mothandgravel.com' and studio['contactPoint']['email'] == studio['email'],
+                  f'{file.name}: studio enquiry address missing')
             check(studio['name'] == 'Moth & Gravel' and studio['founder']['name'] == 'slideep',
                   f'{file.name}: public studio identity disagrees with visible copy')
             check(studio['location']['name'] == 'Finland', f'{file.name}: public location differs')
-            check(all(n['@type'] != 'LocalBusiness' for n in graph), f'{file.name}: unverified local business claim')
+            # ProfessionalService is allowed; a street address or a plain LocalBusiness needs verification first.
+            check(all('LocalBusiness' not in types(n) for n in graph) and 'address' not in studio,
+                  f'{file.name}: unverified local business claim')
             page = next(n for n in graph if n['@type'] in ('WebPage', 'CollectionPage'))
             canonical = re.search(r'<link rel="canonical" href="([^"]+)"', source).group(1)
             check(page['url'] == canonical, f'{file.name}: schema and canonical URL differ')
@@ -407,7 +414,7 @@ def main() -> int:
                       'Machine-readable collection differs from the published archive')
         except (ValueError, KeyError, StopIteration, AttributeError) as error:
             check(False, f'{file.name}: invalid discovery graph ({error})')
-    check('studio-answers' in html and 'based in Finland' in html,
+    check('studio-answers' in html and 'based in finland' in html.lower(),
           'Machine identity must be backed by visible useful answers and location')
     for route in ('questions', 'workbench', 'workbench/return'):
         path = ROOT / route / 'index.html'
@@ -432,7 +439,8 @@ def main() -> int:
     check('noindex, follow' in preview, 'Example workbench must be labelled outside search indexing')
     check('https://mothandgravel.com/workbench/' not in (ROOT / 'sitemap.xml').read_text(),
           'Example workbench must stay out of the published-content sitemap')
-    check('href="#contact">Bring us a question' in html, 'Missing early enquiry invitation')
+    check('href="#contact">Start a conversation' in html, 'Missing early enquiry invitation')
+    check(html.count('mailto:hello@mothandgravel.com') >= 4, 'Missing private email route in header, band, contact and footer')
     robots = (ROOT / 'robots.txt').read_text()
     check('Allow: /' in robots and 'Disallow: /' not in robots,
           'Published text must be crawlable')

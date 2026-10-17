@@ -1,5 +1,5 @@
 /** Original-capture framing, reading and accessible inspection; never a robot replay. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -7,7 +7,7 @@ const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 const route = '/specimens/whose-map/';
 await mkdir(output, { recursive: true });
-const browser = await chromium.launch();
+const browser = await launchAuditBrowser();
 const failures = [], results = [];
 let checks = 0;
 const check = (value, label) => { checks++; if (!value) failures.push(label); };

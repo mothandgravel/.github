@@ -2,7 +2,7 @@
 .journey-main { padding-block:38px 80px; }
 .journey-top { display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--gold-bright);border-bottom:1px solid var(--line);padding-bottom:22px; }
 .journey-heading { padding:54px 0 40px;max-width:950px; }
-.journey-heading h1 { font:900 clamp(50px,7vw,100px)/1 var(--sans);text-transform:uppercase;letter-spacing:-.055em;margin-bottom:26px; }
+.journey-heading h1 { font:900 clamp(50px,7vw,100px)/1 var(--sans);text-transform:uppercase;letter-spacing:-.03em;margin-bottom:26px; }
 .journey-heading h1 em { font-family:var(--serif);font-weight:400;text-transform:none;color:var(--gold-bright); }
 .journey-heading>p { font:400 clamp(19px,2vw,27px)/1.55 var(--serif);max-width:680px;color:var(--secondary); }
 .journey-layout { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:5vw;align-items:start; }
@@ -69,6 +69,6 @@
 .journey-thread:target { display:block; }
 .journey-thread h2 { font:400 30px/1.3 var(--serif); }
 .journey-thread p { max-width:65ch;color:var(--secondary);font-size:16px;line-height:1.7; }
-.journey-thread .mono { color:var(--gold-bright);font-size:10px; }
+.journey-thread .mono { color:var(--gold-bright);font-size:12px; }
 .journey-thread a { display:inline-block;min-height:44px;padding-block:10px;font-size:14px; }
 .journey-thread:focus { outline:2px solid var(--gold-bright);outline-offset:5px; }

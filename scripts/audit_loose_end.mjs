@@ -1,12 +1,12 @@
 /** Browser audit for the actual intake -> local workbench journey. No enquiries sent. */
-import { chromium } from 'playwright';
+import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 await mkdir(output, { recursive: true });
-const browser = await chromium.launch({ headless: true });
+const browser = await launchAuditBrowser({ headless: true });
 const results = [], failures = [];
 const assert = (value, label) => { if (!value) failures.push(label); };
 const viewports = [{width:1440,height:900},{width:1024,height:768},{width:768,height:1024},{width:390,height:844},{width:320,height:740}];

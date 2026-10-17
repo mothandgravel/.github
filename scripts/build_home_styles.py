@@ -13,7 +13,7 @@ class LandingElements(HTMLParser):
         # Menu/root classes appear only after enhancement, but their styles must ship.
         self.classes = {'has-js', 'is-open', 'has-site-controls', 'has-nav-sheet', 'nav-sheet-heading',
                         'nav-sheet-index', 'nav-sheet-label', 'nav-sheet-hint',
-                        'nav-sheet-foot', 'nav-sheet-invitation'}
+                        'nav-sheet-foot', 'nav-sheet-invitation', 'nav-sheet-mail'}
         self.ids = set()
 
     def handle_starttag(self, tag, attrs):
@@ -82,7 +82,9 @@ def build(check=False):
     invitations = '/* Invitations to follow the work,' + invitations
     answers = source.split('/* Useful answers and an early invitation,')[1]
     answers = '/* Useful answers and an early invitation,' + answers
-    css = '\n'.join([core, editorial, covers, invitations, answers])
+    # Home-only rooms live in their own file so the shared stylesheet stays small for other pages.
+    home = (ROOT / 'docs/assets/home.css').read_text()
+    css = '\n'.join([core, editorial, covers, invitations, answers, home])
     # Preserve CSS tokens and quoted content; only comments/line indentation leave.
     css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
     elements = LandingElements()
