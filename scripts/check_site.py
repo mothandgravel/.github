@@ -240,6 +240,49 @@ def main() -> int:
               'Silent film needs a readable sequence')
         check('https://mothandgravel.com/specimens/coastal-watch/' in (ROOT / 'sitemap.xml').read_text(),
               'Coastal watch missing from sitemap')
+    maritime_page = ROOT / 'specimens/maritime-study/index.html'
+    check(maritime_page.is_file(), 'Missing maritime study specimen')
+    check('id="specimen-maritime-study"' in html and 'href="./specimens/maritime-study/"' in html,
+          'Maritime study must be discoverable from the bench')
+    maritime_record = json.loads((ROOT / 'design/maritime-study-provenance.json').read_text())
+    for item in maritime_record['originals'] + maritime_record['derivatives']:
+        asset = ROOT / item['file']
+        check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == item['sha256'],
+              f"Maritime study media differs from its record: {item['file']}")
+    check('https://github.com/navivra' not in json.dumps(maritime_record), 'Private source repository must not be linked')
+    if maritime_page.is_file():
+        maritime_html = maritime_page.read_text(encoding='utf-8')
+        maritime_parser = SiteParser()
+        maritime_parser.feed(maritime_html)
+        for anchor in maritime_parser.anchors:
+            check(anchor in maritime_parser.ids, f'Maritime study broken anchor #{anchor}')
+        sources = re.findall(r'(?:href|src|poster)="(\.\.?/[^\"]+)"', maritime_html)
+        sources += [part.split()[0] for srcset in re.findall(r'srcset="([^"]+)"', maritime_html) for part in srcset.split(',')]
+        for relative in sources:
+            target = (maritime_page.parent / urlsplit(relative).path).resolve()
+            check(target.is_relative_to(ROOT.resolve()) and (target.is_file() or
+                  (target.is_dir() and (target / 'index.html').is_file())),
+                  f'Maritime study broken destination {relative}')
+        published = {item['file'] for item in maritime_record['originals'] + maritime_record['derivatives']}
+        for relative in sources:
+            path = (maritime_page.parent / urlsplit(relative).path).resolve()
+            if path.is_relative_to((ROOT / 'assets/specimens/maritime-study').resolve()):
+                check(str(path.relative_to(ROOT.resolve())) in published, f'Unrecorded maritime media {relative}')
+        videos = re.findall(r'<video\b([^>]*)>', maritime_html)
+        check(len(videos) == 3, 'Maritime study needs its three films')
+        for attributes in videos:
+            check(all(token in attributes for token in ('controls', 'preload="none"', 'muted', 'playsinline', 'poster=', 'aria-describedby'))
+                  and 'autoplay' not in attributes, 'Maritime films must be silent, user-initiated and described')
+        for ident in ('motion', 'inspection', 'night'):
+            check(f'id="{ident}-description"' in maritime_html, f'Maritime film {ident} needs a readable sequence')
+        for boundary in ('Positions are fixed.', 'nearby FMI observations', 'Night is a lighting study, not a forecast.',
+                         'reference-informed and simplified', 'tracks and alerts are synthetic', 'not navigation',
+                         'CC BY 4.0', 'ODbL', 'public domain'):
+            check(boundary in maritime_html, f'Maritime study boundary missing: {boundary}')
+        check(not re.search(r'certif(ied|ication) (bridge|compliance)|compliance verified|ISM|SOLAS|ISPS', maritime_html),
+              'Maritime study must not imply compliance or certification')
+        check('https://mothandgravel.com/specimens/maritime-study/' in (ROOT / 'sitemap.xml').read_text(),
+              'Maritime study missing from sitemap')
     mapping_page = ROOT / 'specimens/whose-map/index.html'
     check(mapping_page.is_file(), 'Missing camera and mapping capture study')
     captures = json.loads((ROOT.parent / 'design/buggy-captures-provenance.json').read_text())
@@ -376,7 +419,7 @@ def main() -> int:
           'Curated thread missing from sitemap')
 
     # Discovery must survive a text-only request and agree with the public record.
-    for file in [ROOT / 'index.html', note_index, connection_page, mapping_page, thread_page] + [ROOT / 'notes' / n['slug'] for n in catalog]:
+    for file in [ROOT / 'index.html', note_index, connection_page, mapping_page, maritime_page, thread_page] + [ROOT / 'notes' / n['slug'] for n in catalog]:
         source = file.read_text()
         blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', source, re.S)
         check(len(blocks) == 1, f'{file.name}: expected one generated identity graph')

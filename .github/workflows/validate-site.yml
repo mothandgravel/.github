@@ -72,4 +72,6 @@ jobs:
           node --check docs/assets/loose-end-v2.mjs
           node --check docs/assets/loose-end-model-v2.mjs
           node --check scripts/audit_loose_end.mjs
+          node --check docs/assets/maritime-study.mjs
+          node --check scripts/audit_maritime.mjs
 
