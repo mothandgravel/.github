@@ -30,68 +30,6 @@
     }
   },
   {
-    "id": "workbench-001",
-    "title": "What does the interface let you believe?",
-    "kind": "conversation",
-    "description": "A listening edition from the Moth & Gravel workbench.",
-    "note_id": null,
-    "slug": null,
-    "language": "en-US",
-    "audio": "assets/audio/workbench-001-5c5cdda3f0895d22.mp3",
-    "bytes": 6102764,
-    "audio_sha256": "5c5cdda3f0895d22d835b8bb382d78d543ede0deb7dfff2fb43e29ed5141a6c8",
-    "script_sha256": "4d05d083cc1809ebb49f0a658fbe14024efa51d3a51521c3b093aef2e5989a0b",
-    "source_sha256": {
-      "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86",
-      "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2",
-      "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
-    },
-    "duration_seconds": 508.473,
-    "published_at": "2026-10-13T22:04:17.406795+00:00",
-    "review_status": "pending",
-    "narration": "AI-narrated",
-    "srt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.srt",
-    "vtt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.vtt",
-    "transcript": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.txt",
-    "cues": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.json",
-    "files_sha256": {
-      "srt": "84792b10eecb9ab5720cb81656c11f665411960dcf1b294638ca27f4b318c467",
-      "vtt": "c0678968ccf040676e2a8445c9198350241385709877b7158eac7773d2cfa85c",
-      "transcript": "cf3149f0bb49ecd5cfc10dfb12d07dd68fc7082796eb4207859414697a408b76",
-      "cues": "ec50e71051293e788040b553927b6c9b66b30262cda880e227a0b2a59e76922d"
-    }
-  },
-  {
-    "id": "note-001-brisk",
-    "title": "Curiosity with calluses. — brisk narration comparison",
-    "kind": "comparison",
-    "description": "A listening edition from the Moth & Gravel workbench.",
-    "note_id": null,
-    "slug": null,
-    "language": "en-US",
-    "audio": "assets/audio/note-001-brisk-6d6fabd422aafba0.mp3",
-    "bytes": 1950956,
-    "audio_sha256": "6d6fabd422aafba036bdf0678f6e2be3175df636fd8df3d5ff7eaf02898059b5",
-    "script_sha256": "eff44a6f4df4c4b1b3c1a647d0ec2e04b488002f028e298464bf0d7a2f7e1f1c",
-    "source_sha256": {
-      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
-    },
-    "duration_seconds": 162.491,
-    "published_at": "2026-10-13T22:04:17.406795+00:00",
-    "review_status": "pending",
-    "narration": "AI-narrated",
-    "srt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.srt",
-    "vtt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.vtt",
-    "transcript": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.txt",
-    "cues": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.json",
-    "files_sha256": {
-      "srt": "60b3115929b459b97a28842edb6e67155cb9121e1559e82170a9c8327f918c56",
-      "vtt": "e2088543f8fb55faaa5996f70764f8bd08f432b35f4bc264c2da0dc68cae4b57",
-      "transcript": "c329e63f0f0d58a1032dd9d60d6c27d0df77b821e183ed85596a7afc6b5d3766",
-      "cues": "b02a242248f8b2a0cd10d2bdc1cee8a1f4ed3f39cf836efa133c93ff7056da21"
-    }
-  },
-  {
     "id": "note-002",
     "title": "Afterlight / Nightfall.",
     "kind": "note",
@@ -129,26 +67,80 @@
     "note_id": "003",
     "slug": "003-metaphor-earns-its-place.html",
     "language": "en-US",
-    "audio": "assets/audio/note-003-09abd76ea3a952c6.mp3",
-    "bytes": 5782508,
-    "audio_sha256": "09abd76ea3a952c6028a2dee41cf54ad32e80b73b5d0d1903e226cdd9c7026e7",
-    "script_sha256": "bc836011b1ad32e8a9ab091be32dd89c25c36e9b48beee59363546a66e192e84",
+    "audio": "assets/audio/note-003-96c95fc95c61ce28.mp3",
+    "bytes": 7658540,
+    "audio_sha256": "96c95fc95c61ce28eaf2577eb64f4c7dae1783055dcb2e5841393924768234d0",
+    "script_sha256": "7627a79c820ddc9fde5a34d70d04d97514a6e5027265e2a6012b0e052e2b53e2",
     "source_sha256": {
-      "003": "ea69c49fd916319d2c723c3539749d6821fd1f848cefa6b1e9ee983f9042ba5a"
+      "003": "fdcef23d436e54e755923c5346d669c900056aa3769d1ab32d4b1fb276182ea3"
     },
-    "duration_seconds": 481.793,
+    "duration_seconds": 478.656,
     "published_at": "2026-10-13T22:04:17.406795+00:00",
-    "review_status": "pending",
+    "review_status": "approved",
     "narration": "AI-narrated",
-    "srt": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.srt",
-    "vtt": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.vtt",
-    "transcript": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.txt",
-    "cues": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.json",
+    "srt": "assets/audio/note-003-96c95fc95c61ce28-428fe690227bcf2b.srt",
+    "vtt": "assets/audio/note-003-96c95fc95c61ce28-18d3a5bbd7430a05.vtt",
+    "transcript": "assets/audio/note-003-96c95fc95c61ce28-a45afa4073c3caf3.txt",
+    "cues": "assets/audio/note-003-96c95fc95c61ce28-597aa981b4dd0887.json",
     "files_sha256": {
-      "srt": "8fdbb6c6e774895ab8d58ec198c9c2bdbf84a871c574d7cb9e6217453fa3889d",
-      "vtt": "0aab2dbbb2ee76b7d25c3154a226bfc4f1f8ba07b000f96c9359b5e373ed851b",
-      "transcript": "50fa1586d202351fca98594cd548b6a141205563c702358e9f68c8d47f22a18f",
-      "cues": "bfb6016a760f5fd3e953ce89a6e2a0477020106b9a891bdba709ef8a6548fafd"
+      "srt": "428fe690227bcf2ba2958611da45e2a9261f7dadd82d65fdd348cb4b1de33a53",
+      "vtt": "18d3a5bbd7430a059d93e7a26ab98201bf0fbc0b9a3f499d8944f41e068519cd",
+      "transcript": "a45afa4073c3caf3499bb70b3d369a16792124e6ba45711a5026c2e3cc87966d",
+      "cues": "597aa981b4dd088787db4d52e1194924fa16a00125b381bd5eeb719cebee196a"
+    },
+    "default_playback_rate": 1,
+    "production": {
+      "fingerprint": "76693b49f993c65df97182f9538db842244a86b0e3e5c3be7b5f6d3ede43def3",
+      "pace": 1.15,
+      "music_credit": "Procedural opening and closing motif: Moth & Gravel.",
+      "source": {
+        "id": "note-003",
+        "title": "A metaphor has to earn its place.",
+        "kind": "note",
+        "description": "River, Circle and Focus: how an expressive interface helps someone recover context and continue the work. A Decision Docket design study.",
+        "note_id": "003",
+        "slug": "003-metaphor-earns-its-place.html",
+        "language": "en-US",
+        "audio": "assets/audio/note-003-f369fd03a61bebf8.mp3",
+        "bytes": 6482060,
+        "audio_sha256": "f369fd03a61bebf8f609fc796e0ca9f3ccd09af5719265a18c5376e036708f4b",
+        "script_sha256": "7627a79c820ddc9fde5a34d70d04d97514a6e5027265e2a6012b0e052e2b53e2",
+        "source_sha256": {
+          "003": "fdcef23d436e54e755923c5346d669c900056aa3769d1ab32d4b1fb276182ea3"
+        },
+        "duration_seconds": 540.074,
+        "published_at": "2026-10-13T22:04:17.406795+00:00",
+        "review_status": "pending",
+        "narration": "AI-narrated",
+        "srt": "assets/audio/note-003-f369fd03a61bebf8-1112124790cf9a51.srt",
+        "vtt": "assets/audio/note-003-f369fd03a61bebf8-1112124790cf9a51.vtt",
+        "transcript": "assets/audio/note-003-f369fd03a61bebf8-1112124790cf9a51.txt",
+        "cues": "assets/audio/note-003-f369fd03a61bebf8-1112124790cf9a51.json",
+        "files_sha256": {
+          "srt": "ca984992ea98e7b2f47b293cf26f0c80725a2decee4b7d3a9fc0d360db447dbe",
+          "vtt": "17aa50fa7cd62b008ff0a56527e5d14702de141132dacfa36e1254224409cbec",
+          "transcript": "a45afa4073c3caf3499bb70b3d369a16792124e6ba45711a5026c2e3cc87966d",
+          "cues": "f56187677799a015bd7b58a1cd929e71a8f873e080456d126e9ee5a7f7febc93"
+        }
+      },
+      "review": {
+        "schema_version": 1,
+        "status": "approved",
+        "reviewer": "Perttu",
+        "reviewed_at": "2026-10-17T21:37:26.755617+00:00",
+        "audio_fingerprint": "76693b49f993c65df97182f9538db842244a86b0e3e5c3be7b5f6d3ede43def3",
+        "audio_files": {
+          "captions.srt": "428fe690227bcf2ba2958611da45e2a9261f7dadd82d65fdd348cb4b1de33a53",
+          "captions.vtt": "18d3a5bbd7430a059d93e7a26ab98201bf0fbc0b9a3f499d8944f41e068519cd",
+          "cues.json": "7e6ba5a6b1936594c391649b9938b2c871ff6fa45b2093e7e9c24c62eea97d06",
+          "description.txt": "0d8308e1b4313041f82afea192442fe0687871bdcfe231779f37ee6097bfb4c2",
+          "episode.mp3": "96c95fc95c61ce28eaf2577eb64f4c7dae1783055dcb2e5841393924768234d0",
+          "master.wav": "eddf135b2d29a4e95af32a1f76d7f5e117608d712f4bb73666cc9a87a94696e3",
+          "transcript.txt": "a45afa4073c3caf3499bb70b3d369a16792124e6ba45711a5026c2e3cc87966d"
+        },
+        "video_fingerprint": null,
+        "video_files": null
+      }
     }
   },
   {
@@ -159,26 +151,80 @@
     "note_id": "004",
     "slug": "004-controls-stay-put.html",
     "language": "en-US",
-    "audio": "assets/audio/note-004-f913221d86a23608.mp3",
-    "bytes": 4059692,
-    "audio_sha256": "f913221d86a2360832acc245d7217b6841b1068be4d0bc213bdc41b3cd7ba8c8",
-    "script_sha256": "60a94b620b977fb89628cfcf39c2134835215e9642193955d27d0437a8d74eef",
+    "audio": "assets/audio/note-004-f72e74d0f64d9c9d.mp3",
+    "bytes": 4983980,
+    "audio_sha256": "f72e74d0f64d9c9d4f9d4d75827512c234764716146654c4cb198301cd882325",
+    "script_sha256": "181dbb75cad1f191e817eb104cc7bebe4ecaa4b99759da054fcd6064c339b4bf",
     "source_sha256": {
-      "004": "babd8cddfe78219c1b9a7f7f3d8c5f4daf0ceabeddb525035fb3c7f3b41e006a"
+      "004": "03e231e2f36621798c06e3e32f6a40de1545be22081070c4e3a523ded70a1823"
     },
-    "duration_seconds": 338.222,
+    "duration_seconds": 311.496,
     "published_at": "2026-10-13T22:04:17.406795+00:00",
-    "review_status": "pending",
+    "review_status": "approved",
     "narration": "AI-narrated",
-    "srt": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.srt",
-    "vtt": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.vtt",
-    "transcript": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.txt",
-    "cues": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.json",
+    "srt": "assets/audio/note-004-f72e74d0f64d9c9d-7e70dfbc26a72aee.srt",
+    "vtt": "assets/audio/note-004-f72e74d0f64d9c9d-5adaab39abc570f5.vtt",
+    "transcript": "assets/audio/note-004-f72e74d0f64d9c9d-241466d5d105931f.txt",
+    "cues": "assets/audio/note-004-f72e74d0f64d9c9d-c8e61ce9b2c1f7b2.json",
     "files_sha256": {
-      "srt": "2ea46520926a4e2dc4e3303b21764314dffa06d02ff6e3541b47159e420730ba",
-      "vtt": "36138022442aed83efd69726852a5affe779d8126df11f51305b4912668edec4",
-      "transcript": "d3fb1354881ab2cdc1f6932a50446e16cf57405c7f729bd2fc29c1d716024385",
-      "cues": "0a94215b32aefddc2d4f8d800f5437023525e58e64951df329334310625f19af"
+      "srt": "7e70dfbc26a72aee342aec47dbc81bc51e1292422219054b2abc934856b9c0ff",
+      "vtt": "5adaab39abc570f5536c2579ac3b951f1823945d55ddf7f00acd0828b471fc5e",
+      "transcript": "241466d5d105931fa4758ca005012f191c0e719493b6a364eac54cd35319df65",
+      "cues": "c8e61ce9b2c1f7b2e6932fb7ec41dc25e0195cda9be4e5acca7dbd44dc86de8e"
+    },
+    "default_playback_rate": 1,
+    "production": {
+      "fingerprint": "bf907b287a157d72c64e6bbf8b0b5049630665e1971e5b64e1ebdddf950b9af0",
+      "pace": 1.15,
+      "music_credit": "Procedural opening and closing motif: Moth & Gravel.",
+      "source": {
+        "id": "note-004",
+        "title": "A control should stay where you left it.",
+        "kind": "note",
+        "description": "A decorative portrait moved the words and Switch control by 72 pixels. A small Decision Docket fix in keeping the work still.",
+        "note_id": "004",
+        "slug": "004-controls-stay-put.html",
+        "language": "en-US",
+        "audio": "assets/audio/note-004-28fb47295ba98e75.mp3",
+        "bytes": 4174892,
+        "audio_sha256": "28fb47295ba98e75ecab5adf95a2bc9219205b2a7242788dc52e3bd35a4f7762",
+        "script_sha256": "181dbb75cad1f191e817eb104cc7bebe4ecaa4b99759da054fcd6064c339b4bf",
+        "source_sha256": {
+          "004": "03e231e2f36621798c06e3e32f6a40de1545be22081070c4e3a523ded70a1823"
+        },
+        "duration_seconds": 347.822,
+        "published_at": "2026-10-13T22:04:17.406795+00:00",
+        "review_status": "pending",
+        "narration": "AI-narrated",
+        "srt": "assets/audio/note-004-28fb47295ba98e75-a1193e6c140d2bbc.srt",
+        "vtt": "assets/audio/note-004-28fb47295ba98e75-a1193e6c140d2bbc.vtt",
+        "transcript": "assets/audio/note-004-28fb47295ba98e75-a1193e6c140d2bbc.txt",
+        "cues": "assets/audio/note-004-28fb47295ba98e75-a1193e6c140d2bbc.json",
+        "files_sha256": {
+          "srt": "e7f59cff0946401f8fb593b7d376af855ab5b1e3746750c2e5e4867377d9bf29",
+          "vtt": "4bac0d323f43c1f1587377757ad8371c9e2011ff5f8e8bba4f22fa982467ba82",
+          "transcript": "241466d5d105931fa4758ca005012f191c0e719493b6a364eac54cd35319df65",
+          "cues": "9100e9cceb12008894ce861c003ca333e5982c69a712a27cb0ea070eb1ba9353"
+        }
+      },
+      "review": {
+        "schema_version": 1,
+        "status": "approved",
+        "reviewer": "Perttu",
+        "reviewed_at": "2026-10-17T21:42:48.278842+00:00",
+        "audio_fingerprint": "bf907b287a157d72c64e6bbf8b0b5049630665e1971e5b64e1ebdddf950b9af0",
+        "audio_files": {
+          "captions.srt": "7e70dfbc26a72aee342aec47dbc81bc51e1292422219054b2abc934856b9c0ff",
+          "captions.vtt": "5adaab39abc570f5536c2579ac3b951f1823945d55ddf7f00acd0828b471fc5e",
+          "cues.json": "c8f0d263daf223a40e05ad91b86334c9cd522847bf48042c1b141161d571c367",
+          "description.txt": "08ccabe306bf96d82a3fd6cefbab885cdb5299518697f7b5de457aa74788209e",
+          "episode.mp3": "f72e74d0f64d9c9d4f9d4d75827512c234764716146654c4cb198301cd882325",
+          "master.wav": "c591b72a02d536a7a035ca24edf200e0c273ce1dbbf4e82cf087c4b9fb14f6b0",
+          "transcript.txt": "241466d5d105931fa4758ca005012f191c0e719493b6a364eac54cd35319df65"
+        },
+        "video_fingerprint": null,
+        "video_files": null
+      }
     }
   },
   {
@@ -389,6 +435,332 @@
       "vtt": "78504c00bb533b696a5eff5c122a70253e63b1b3893c29292354d0a117ddbdaf",
       "transcript": "c0603fb0da92e6560d656637e74b6c907b2d7ee8f542f4200b379e0c08adbb10",
       "cues": "8180a4410d46f02445e0ed07d085e7831ae164686e41ba4e0ef9a6c384f66062"
+    }
+  },
+  {
+    "id": "note-012",
+    "title": "The picture stays.",
+    "kind": "note",
+    "description": "The stream stops. The last position remains. A Coastal watch study in maps, observation age and the confidence a finished picture can borrow.",
+    "note_id": "012",
+    "slug": "012-the-picture-stays.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-012-66b74d0eb7de7dc6.mp3",
+    "bytes": 5518892,
+    "audio_sha256": "66b74d0eb7de7dc62d3d95036f22c0c49d75685e30e423446543e69e64522d17",
+    "script_sha256": "47fb61c98d789aed6e17eec3b0a57bc7037978aa8ae9af5eb03f34550cb0fa0a",
+    "source_sha256": {
+      "012": "1b747d36662fcf6906cf700c4f211e60d98178915ebe333d681f7c170ec8198d"
+    },
+    "duration_seconds": 344.928,
+    "published_at": "2026-10-17T18:52:56.095500+00:00",
+    "review_status": "approved",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-012-66b74d0eb7de7dc6-87272e8caee1a4ea.srt",
+    "vtt": "assets/audio/note-012-66b74d0eb7de7dc6-4d13442fd53ac51d.vtt",
+    "transcript": "assets/audio/note-012-66b74d0eb7de7dc6-69dd3aed29e77d15.txt",
+    "cues": "assets/audio/note-012-66b74d0eb7de7dc6-8d7b1e5ae5e64a41.json",
+    "files_sha256": {
+      "srt": "87272e8caee1a4eadaa0e146013167c0b3054ca0456933a11a445423d3d9d88f",
+      "vtt": "4d13442fd53ac51dd7a89168a8841c847096fb96c8b59fa4367564fd989cfe2f",
+      "transcript": "69dd3aed29e77d15b7c2f5a21cd43776efdde63d06a357acac41b86f04192507",
+      "cues": "8d7b1e5ae5e64a41a4c9c1eec233c4bc64ecec3eaf0407a10055d25d832f9a06"
+    },
+    "default_playback_rate": 1,
+    "production": {
+      "fingerprint": "88b4c6332e91a682dc7845174853a99d9f3839f7989da76e4ce178ddf911d484",
+      "pace": 1.15,
+      "music_credit": "Procedural opening and closing motif: Moth & Gravel.",
+      "source": {
+        "id": "note-012",
+        "title": "The picture stays.",
+        "kind": "note",
+        "description": "The stream stops. The last position remains. A Coastal watch study in maps, observation age and the confidence a finished picture can borrow.",
+        "note_id": "012",
+        "slug": "012-the-picture-stays.html",
+        "language": "en-US",
+        "audio": "assets/audio/note-012-e7166ca53a599eaf.mp3",
+        "bytes": 4636556,
+        "audio_sha256": "e7166ca53a599eaf889d77d272295857944200c690d46aaf9d3f22d54bf0b48c",
+        "script_sha256": "47fb61c98d789aed6e17eec3b0a57bc7037978aa8ae9af5eb03f34550cb0fa0a",
+        "source_sha256": {
+          "012": "1b747d36662fcf6906cf700c4f211e60d98178915ebe333d681f7c170ec8198d"
+        },
+        "duration_seconds": 386.302,
+        "published_at": "2026-10-17T18:52:56.095500+00:00",
+        "review_status": "pending",
+        "narration": "AI-narrated",
+        "srt": "assets/audio/note-012-e7166ca53a599eaf-62b94eadceb2bc9a.srt",
+        "vtt": "assets/audio/note-012-e7166ca53a599eaf-62b94eadceb2bc9a.vtt",
+        "transcript": "assets/audio/note-012-e7166ca53a599eaf-62b94eadceb2bc9a.txt",
+        "cues": "assets/audio/note-012-e7166ca53a599eaf-62b94eadceb2bc9a.json",
+        "files_sha256": {
+          "srt": "57b9f7e2e545c95237d22478c790d1d26219c5a6b6606550be17cc7a91b7a68a",
+          "vtt": "a52c1c800207bcce6a8ee0c3a090f90cf9a634720b7859fdf375883fafa584cf",
+          "transcript": "69dd3aed29e77d15b7c2f5a21cd43776efdde63d06a357acac41b86f04192507",
+          "cues": "b158a488e64ee66b2a636694774e1e084c1f3826ec27f10563028f366a12ec4e"
+        }
+      },
+      "review": {
+        "schema_version": 1,
+        "status": "approved",
+        "reviewer": "slideep",
+        "reviewed_at": "2026-10-17T11:02:40.653051+00:00",
+        "audio_fingerprint": "88b4c6332e91a682dc7845174853a99d9f3839f7989da76e4ce178ddf911d484",
+        "audio_files": {
+          "captions.srt": "87272e8caee1a4eadaa0e146013167c0b3054ca0456933a11a445423d3d9d88f",
+          "captions.vtt": "4d13442fd53ac51dd7a89168a8841c847096fb96c8b59fa4367564fd989cfe2f",
+          "cues.json": "bd0a60013d1544418e29c37165cbaaedb9dd38f35251e3702c2d5fe59649b9b9",
+          "description.txt": "9d58345f22cd1aa7ee983a9cd0a6b15a11a55d8992b7831db84cc6aa2a707901",
+          "episode.mp3": "66b74d0eb7de7dc62d3d95036f22c0c49d75685e30e423446543e69e64522d17",
+          "master.wav": "7d32b26cba099497f184626fcda783d9ff68fa014a59b116c0264d81ff55128b",
+          "transcript.txt": "69dd3aed29e77d15b7c2f5a21cd43776efdde63d06a357acac41b86f04192507"
+        },
+        "video_fingerprint": "c9422678845420f52104d97473d04055613a6299bd54ee2eca6d9fc2e2875f99",
+        "video_files": {
+          "episode.mp4": "96427b38bacbc5535016384cdbabe882d86774b105cf929a9a83b7f36d61ccc6",
+          "render.json": "faa83750937d539bd5e903a23f8280442226f7c3b42d863a8692065d821f68c8",
+          "thumbnail.png": "f99706e5a05081b6302fda0b8fda557b23604b40919550da5a5ad3e592388c33"
+        }
+      }
+    }
+  },
+  {
+    "id": "note-013",
+    "title": "The work outlives the window.",
+    "kind": "note",
+    "description": "A podcast pipeline becomes a small desktop workbench. What closing its window taught us about drafts, jobs, review and a trustworthy route to release.",
+    "note_id": "013",
+    "slug": "013-work-outlives-the-window.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-013-e2526be25d6092b8.mp3",
+    "bytes": 7592876,
+    "audio_sha256": "e2526be25d6092b8034606af0b164bad4763d02601cfa311c3a947d932eeec9e",
+    "script_sha256": "ac7d2e261526640be6b9c5315f3e68b731765ecd6b114e003d9b432d91830138",
+    "source_sha256": {
+      "013": "87046bb0362c369eeeda702d89dbf8eaa9eded5421b63c5dee73b21dc5079a76"
+    },
+    "duration_seconds": 474.552,
+    "published_at": "2026-10-17T18:52:56.095500+00:00",
+    "review_status": "approved",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-013-e2526be25d6092b8-121bebaf94c7b94b.srt",
+    "vtt": "assets/audio/note-013-e2526be25d6092b8-e4d26ee3da3c439c.vtt",
+    "transcript": "assets/audio/note-013-e2526be25d6092b8-aa8ec26da92a8df7.txt",
+    "cues": "assets/audio/note-013-e2526be25d6092b8-4455fdf002e1ca13.json",
+    "files_sha256": {
+      "srt": "121bebaf94c7b94bd130e7af4ea20de4575e56a804dcabc5f45d604220756259",
+      "vtt": "e4d26ee3da3c439c8363e214e75ed553fb8e13619aac2a530ba1ffc71605ffb9",
+      "transcript": "aa8ec26da92a8df72b8ab1635b76cb23612f26d3d9562d07f8b08b270852ada7",
+      "cues": "4455fdf002e1ca135e96cf4fc398674de79a08ba94035405c488c55afd8be8ac"
+    },
+    "default_playback_rate": 1,
+    "production": {
+      "fingerprint": "8226bdc0dca91dfe58dcc39e61eb4b0d387d03ee390614c640ef228b897e9168",
+      "pace": 1.15,
+      "music_credit": "Procedural opening and closing motif: Moth & Gravel.",
+      "source": {
+        "id": "note-013",
+        "title": "The work outlives the window.",
+        "kind": "note",
+        "description": "A podcast pipeline becomes a small desktop workbench. What closing its window taught us about drafts, jobs, review and a trustworthy route to release.",
+        "note_id": "013",
+        "slug": "013-work-outlives-the-window.html",
+        "language": "en-US",
+        "audio": "assets/audio/note-013-d3e4ddd27ebc4fbb.mp3",
+        "bytes": 6425324,
+        "audio_sha256": "d3e4ddd27ebc4fbbe7dbfd337372672d4352da86bfb82491e3e7af19dfa41729",
+        "script_sha256": "ac7d2e261526640be6b9c5315f3e68b731765ecd6b114e003d9b432d91830138",
+        "source_sha256": {
+          "013": "87046bb0362c369eeeda702d89dbf8eaa9eded5421b63c5dee73b21dc5079a76"
+        },
+        "duration_seconds": 535.353,
+        "published_at": "2026-10-17T18:52:56.095500+00:00",
+        "review_status": "pending",
+        "narration": "AI-narrated",
+        "srt": "assets/audio/note-013-d3e4ddd27ebc4fbb-a78789c93041bd3b.srt",
+        "vtt": "assets/audio/note-013-d3e4ddd27ebc4fbb-a78789c93041bd3b.vtt",
+        "transcript": "assets/audio/note-013-d3e4ddd27ebc4fbb-a78789c93041bd3b.txt",
+        "cues": "assets/audio/note-013-d3e4ddd27ebc4fbb-a78789c93041bd3b.json",
+        "files_sha256": {
+          "srt": "7c36853e5f827117d1bbe0e929c7c610225941bfa112336fbe46ea73454a9a30",
+          "vtt": "551b1303b05c752bc34ba959a4ae1460cce5cc932fa1f212f9665d918703d6d5",
+          "transcript": "aa8ec26da92a8df72b8ab1635b76cb23612f26d3d9562d07f8b08b270852ada7",
+          "cues": "787557ff1bcc1030706a9f62de3f3d5346fb671730287d8f51ecbd73356b9c6a"
+        }
+      },
+      "review": {
+        "schema_version": 1,
+        "status": "approved",
+        "reviewer": "slideep",
+        "reviewed_at": "2026-10-17T12:29:27.628088+00:00",
+        "audio_fingerprint": "8226bdc0dca91dfe58dcc39e61eb4b0d387d03ee390614c640ef228b897e9168",
+        "audio_files": {
+          "captions.srt": "121bebaf94c7b94bd130e7af4ea20de4575e56a804dcabc5f45d604220756259",
+          "captions.vtt": "e4d26ee3da3c439c8363e214e75ed553fb8e13619aac2a530ba1ffc71605ffb9",
+          "cues.json": "206b88057911ed059b591a6fe36052b60efde14afa299e425e2217bd12bde8eb",
+          "description.txt": "6c666e1000a6eea4220f8d6a3e64b299ed8fab99d0406b1f46bd8804ad6217ec",
+          "episode.mp3": "e2526be25d6092b8034606af0b164bad4763d02601cfa311c3a947d932eeec9e",
+          "master.wav": "0dc4c278c4d9372902bd6c3aa1664e35db3e6dcebd3214f5a50b08bca07ae802",
+          "transcript.txt": "aa8ec26da92a8df72b8ab1635b76cb23612f26d3d9562d07f8b08b270852ada7"
+        },
+        "video_fingerprint": "4756069183ed5d0f4acc928cd9ee86299a9316c860df7ecacf7e2b88c8cc5eb7",
+        "video_files": {
+          "episode.mp4": "9100b868b64574c4dc4c2f5a7209e05c3d9d7f2aae9c7ead1739832db42c570f",
+          "render.json": "d1b5acc37aef2a86f93c11c959291e091cb5bb9df3210b835791496327d1cc49",
+          "thumbnail.png": "6a3d85cad528ed9b6dbcce2163028cf547a9f68362fc35644dae7ecef47a9849"
+        }
+      }
+    }
+  },
+  {
+    "id": "note-014",
+    "title": "Enough light to read by.",
+    "kind": "note",
+    "description": "A ferry’s bridge at night, held at a fixed position. A maritime study in dimmed screens, borrowed weather and the labels that keep a study from posing as a voyage.",
+    "note_id": "014",
+    "slug": "014-enough-light-to-read-by.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-014-b4a24ccb583b3178.mp3",
+    "bytes": 7111724,
+    "audio_sha256": "b4a24ccb583b3178a5d22f05f59e6742394b6f237d1e931f50b187998d70c3ac",
+    "script_sha256": "57c573db8bb7dfc36fb11cf0f1abef52395181c033fe6b6f127c2d0077e76ea4",
+    "source_sha256": {
+      "014": "9483b09cd6f72013b70ef24ddf31acbd98e63351ed7300fb6670b7b62d49c4e1"
+    },
+    "duration_seconds": 444.48,
+    "published_at": "2026-10-17T18:52:56.095500+00:00",
+    "review_status": "approved",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-014-b4a24ccb583b3178-e96563376a414081.srt",
+    "vtt": "assets/audio/note-014-b4a24ccb583b3178-110403feb54ab572.vtt",
+    "transcript": "assets/audio/note-014-b4a24ccb583b3178-2a811f3db277f00e.txt",
+    "cues": "assets/audio/note-014-b4a24ccb583b3178-f9b800c3d7419e33.json",
+    "files_sha256": {
+      "srt": "e96563376a414081802e859783e34a126916927f973127f532333895a80ffc81",
+      "vtt": "110403feb54ab5724cf8c2200d426c12364dfa5706514d5b34728cfa942c79ef",
+      "transcript": "2a811f3db277f00e3479ff21c5b027c7efcc2d7988445779632e8fddfa7fffbd",
+      "cues": "f9b800c3d7419e33eef1e5c776fc839f31935078dcf8bd3a3c500c03db75ef68"
+    },
+    "default_playback_rate": 1,
+    "production": {
+      "fingerprint": "39abccfd42038821633f9df57b423a144bf8bf987881a0efa4b35e22946f3d09",
+      "pace": 1.15,
+      "music_credit": "Procedural opening and closing motif: Moth & Gravel.",
+      "source": {
+        "id": "note-014",
+        "title": "Enough light to read by.",
+        "kind": "note",
+        "description": "A ferry’s bridge at night, held at a fixed position. A maritime study in dimmed screens, borrowed weather and the labels that keep a study from posing as a voyage.",
+        "note_id": "014",
+        "slug": "014-enough-light-to-read-by.html",
+        "language": "en-US",
+        "audio": "assets/audio/note-014-95652a1b7a90ea96.mp3",
+        "bytes": 6010028,
+        "audio_sha256": "95652a1b7a90ea96899a93240b359ba4fda08141252a05dcbeabd85765e468d3",
+        "script_sha256": "57c573db8bb7dfc36fb11cf0f1abef52395181c033fe6b6f127c2d0077e76ea4",
+        "source_sha256": {
+          "014": "9483b09cd6f72013b70ef24ddf31acbd98e63351ed7300fb6670b7b62d49c4e1"
+        },
+        "duration_seconds": 500.753,
+        "published_at": "2026-10-17T18:52:56.095500+00:00",
+        "review_status": "pending",
+        "narration": "AI-narrated",
+        "srt": "assets/audio/note-014-95652a1b7a90ea96-4c63e9d15438089b.srt",
+        "vtt": "assets/audio/note-014-95652a1b7a90ea96-4c63e9d15438089b.vtt",
+        "transcript": "assets/audio/note-014-95652a1b7a90ea96-4c63e9d15438089b.txt",
+        "cues": "assets/audio/note-014-95652a1b7a90ea96-4c63e9d15438089b.json",
+        "files_sha256": {
+          "srt": "6a2216b78fcef4bec439822072cef8a5a43cccae6c79083ba48b03048aea6271",
+          "vtt": "58cb3d4b1fabb9f1a154337e714a813a50454217922644cc661a99ca25f13195",
+          "transcript": "2a811f3db277f00e3479ff21c5b027c7efcc2d7988445779632e8fddfa7fffbd",
+          "cues": "804d2fd048bb8295efe678ced7b426c069b694b801f43476f74501191ee894c3"
+        }
+      },
+      "review": {
+        "schema_version": 1,
+        "status": "approved",
+        "reviewer": "slideep",
+        "reviewed_at": "2026-10-17T12:12:13.661722+00:00",
+        "audio_fingerprint": "39abccfd42038821633f9df57b423a144bf8bf987881a0efa4b35e22946f3d09",
+        "audio_files": {
+          "captions.srt": "e96563376a414081802e859783e34a126916927f973127f532333895a80ffc81",
+          "captions.vtt": "110403feb54ab5724cf8c2200d426c12364dfa5706514d5b34728cfa942c79ef",
+          "cues.json": "3ce2cdaa0943c505b76cb320a785b14c44695c5de1bff7ee5b057daf8d378c97",
+          "description.txt": "4bc2d957b9b0038f30f871f6b1671f36d60b843a253834765af9daf52c1024aa",
+          "episode.mp3": "b4a24ccb583b3178a5d22f05f59e6742394b6f237d1e931f50b187998d70c3ac",
+          "master.wav": "4424b8ee8a1befa30be6854be7ffc6ab8bb73c8b324501553d6e5bc413412c52",
+          "transcript.txt": "2a811f3db277f00e3479ff21c5b027c7efcc2d7988445779632e8fddfa7fffbd"
+        },
+        "video_fingerprint": "b833624a6bc9d35594b59fb4f285f464ce451876602c5ac6905bff8f2ad1c7f4",
+        "video_files": {
+          "episode.mp4": "9954ddded7b1cc333442c6649e089dabd8ab1e1047c6565101a8921a38c536bd",
+          "render.json": "969f2d1e5f9a2c706e935a12fa377cf3dfe7427a3e5cab9e9c8b898d14905949",
+          "thumbnail.png": "efb543c14adcc1c8d3322a15d09d502498962704d3e7172f528baf1326fd35bd"
+        }
+      }
+    }
+  },
+  {
+    "id": "workbench-001",
+    "title": "What does the interface let you believe?",
+    "kind": "conversation",
+    "description": "A listening edition from the Moth & Gravel workbench.",
+    "note_id": null,
+    "slug": null,
+    "language": "en-US",
+    "audio": "assets/audio/workbench-001-5c5cdda3f0895d22.mp3",
+    "bytes": 6102764,
+    "audio_sha256": "5c5cdda3f0895d22d835b8bb382d78d543ede0deb7dfff2fb43e29ed5141a6c8",
+    "script_sha256": "4d05d083cc1809ebb49f0a658fbe14024efa51d3a51521c3b093aef2e5989a0b",
+    "source_sha256": {
+      "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86",
+      "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2",
+      "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
+    },
+    "duration_seconds": 508.473,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.srt",
+    "vtt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.vtt",
+    "transcript": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.txt",
+    "cues": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.json",
+    "files_sha256": {
+      "srt": "84792b10eecb9ab5720cb81656c11f665411960dcf1b294638ca27f4b318c467",
+      "vtt": "c0678968ccf040676e2a8445c9198350241385709877b7158eac7773d2cfa85c",
+      "transcript": "cf3149f0bb49ecd5cfc10dfb12d07dd68fc7082796eb4207859414697a408b76",
+      "cues": "ec50e71051293e788040b553927b6c9b66b30262cda880e227a0b2a59e76922d"
+    }
+  },
+  {
+    "id": "note-001-brisk",
+    "title": "Curiosity with calluses. — brisk narration comparison",
+    "kind": "comparison",
+    "description": "A listening edition from the Moth & Gravel workbench.",
+    "note_id": null,
+    "slug": null,
+    "language": "en-US",
+    "audio": "assets/audio/note-001-brisk-6d6fabd422aafba0.mp3",
+    "bytes": 1950956,
+    "audio_sha256": "6d6fabd422aafba036bdf0678f6e2be3175df636fd8df3d5ff7eaf02898059b5",
+    "script_sha256": "eff44a6f4df4c4b1b3c1a647d0ec2e04b488002f028e298464bf0d7a2f7e1f1c",
+    "source_sha256": {
+      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
+    },
+    "duration_seconds": 162.491,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.srt",
+    "vtt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.vtt",
+    "transcript": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.txt",
+    "cues": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.json",
+    "files_sha256": {
+      "srt": "60b3115929b459b97a28842edb6e67155cb9121e1559e82170a9c8327f918c56",
+      "vtt": "e2088543f8fb55faaa5996f70764f8bd08f432b35f4bc264c2da0dc68cae4b57",
+      "transcript": "c329e63f0f0d58a1032dd9d60d6c27d0df77b821e183ed85596a7afc6b5d3766",
+      "cues": "b02a242248f8b2a0cd10d2bdc1cee8a1f4ed3f39cf836efa133c93ff7056da21"
     }
   }
 ]

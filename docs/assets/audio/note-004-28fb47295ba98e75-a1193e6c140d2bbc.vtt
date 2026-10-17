@@ -1,0 +1,378 @@
+WEBVTT
+
+1
+00:00:00.200 --> 00:00:05.920
+Moth and Gravel, Field Note 4. A
+control should stay where you
+
+2
+00:00:05.920 --> 00:00:11.280
+left it. An AI narrated edition
+of the published note. The
+
+3
+00:00:11.280 --> 00:00:15.960
+button was there a moment ago.
+You have found the next action.
+
+4
+00:00:16.440 --> 00:00:19.560
+Your eyes leave the text and
+your hand starts toward the
+
+5
+00:00:19.560 --> 00:00:24.720
+control. Then a picture finishes
+loading. The card grows, the
+
+6
+00:00:24.720 --> 00:00:29.280
+words move down, and the button
+is somewhere else. Nothing
+
+7
+00:00:29.280 --> 00:00:33.840
+dramatic has happened. The page
+has not failed. Yet, it has
+
+8
+00:00:33.840 --> 00:00:38.440
+asked you to find your place
+again. Decision Docket, the tool
+
+9
+00:00:38.440 --> 00:00:42.200
+we use for our own work, had a
+small version of this problem in
+
+10
+00:00:42.200 --> 00:00:46.920
+its teammate card. A decorative
+portrait appeared only after its
+
+11
+00:00:46.920 --> 00:00:51.400
+local image had loaded. Until
+that moment, the grid contained
+
+12
+00:00:51.400 --> 00:00:55.960
+no portrait row. The loaded card
+looked right. The journey to
+
+13
+00:00:55.960 --> 00:01:00.120
+that appearance needed
+attention. Make room before the
+
+14
+00:01:00.120 --> 00:01:05.720
+picture arrives. The approved
+portrait was already 64 by 64
+
+15
+00:01:05.720 --> 00:01:10.720
+pixels. It's arrival added that
+height and the existing 8 pixel
+
+16
+00:01:10.720 --> 00:01:14.920
+gap. In controlled measurements
+of the actual component, the
+
+17
+00:01:14.920 --> 00:01:19.880
+following text and switch
+control moved by 72 pixels. The
+
+18
+00:01:19.880 --> 00:01:23.160
+fix was a permanent decorative
+wrapper in the portrait's
+
+19
+00:01:23.160 --> 00:01:28.440
+existing position. It reserved
+the same 64 by 64 space from the
+
+20
+00:01:28.440 --> 00:01:33.000
+start. The image still appeared
+only after loading. The card
+
+21
+00:01:33.000 --> 00:01:37.040
+simply knew where it would
+belong. No extra artwork was
+
+22
+00:01:37.040 --> 00:01:42.400
+needed. No animation was added.
+The surrounding type, spacing,
+
+23
+00:01:42.400 --> 00:01:44.920
+and control could remain as they
+were.
+
+24
+00:01:46.120 --> 00:01:53.760
+Before, space added on load, 72
+pixels of movement. Adding a 64
+
+25
+00:01:53.760 --> 00:01:58.240
+by 64 portrait row and its 8
+pixel gap moved the following
+
+26
+00:01:58.240 --> 00:02:05.160
+text and control. After, space
+present from the start, 0 pixels
+
+27
+00:02:05.160 --> 00:02:09.120
+of movement. The same role
+pending to loaded positions
+
+28
+00:02:09.280 --> 00:02:14.240
+stayed fixed at both tested
+widths. Explanatory diagrams,
+
+29
+00:02:14.360 --> 00:02:18.760
+not application screenshots. The
+figures summarize recorded
+
+30
+00:02:18.760 --> 00:02:23.320
+component measurements at 390
+and 1440 pixels for product
+
+31
+00:02:23.320 --> 00:02:27.880
+partner and engineering lead.
+Pale dashed marks show the
+
+32
+00:02:27.880 --> 00:02:32.680
+earlier position or reserved
+space. An empty space can be the
+
+33
+00:02:32.680 --> 00:02:37.280
+right answer. While the portrait
+is pending, its place stays
+
+34
+00:02:37.280 --> 00:02:42.600
+blank. If decoding fails, it
+stays blank. The existing error
+
+35
+00:02:42.600 --> 00:02:46.920
+handling prevents a broken image
+from taking its place. That
+
+36
+00:02:46.920 --> 00:02:50.720
+might seem like an invitation to
+add a shimmer, a spinner, or a
+
+37
+00:02:50.720 --> 00:02:55.520
+message. Here, the image is
+decorative. The role and its
+
+38
+00:02:55.520 --> 00:02:59.280
+description are already
+expressed in text. The person
+
+39
+00:02:59.280 --> 00:03:03.080
+can read the card and use its
+control without waiting for the
+
+40
+00:03:03.080 --> 00:03:06.480
+portrait. A loading treatment
+would make the missing
+
+41
+00:03:06.480 --> 00:03:11.240
+decoration more prominent. A
+quiet reserved space gives the
+
+42
+00:03:11.240 --> 00:03:15.720
+rest of the card permission to
+carry on. There is a useful
+
+43
+00:03:15.720 --> 00:03:19.920
+distinction here. A missing
+piece of information may need an
+
+44
+00:03:19.920 --> 00:03:24.600
+explanation. A missing
+decoration may only need room.
+
+45
+00:03:25.600 --> 00:03:30.680
+Keep the same role in view. The
+card let someone switch between
+
+46
+00:03:30.680 --> 00:03:35.400
+product partner and engineering
+lead. An uncached role can need
+
+47
+00:03:35.400 --> 00:03:39.880
+another image load. During that
+transition, the old portrait
+
+48
+00:03:39.920 --> 00:03:44.360
+must not masquerade as the new
+role. The existing cleanup and
+
+49
+00:03:44.360 --> 00:03:48.200
+loading behavior were retained.
+The reserved slot does not
+
+50
+00:03:48.200 --> 00:03:53.040
+introduce a new focus target or
+an announcement. In the bounded
+
+51
+00:03:53.040 --> 00:03:57.400
+keyboard walks, focus stayed on
+the real switch control while
+
+52
+00:03:57.400 --> 00:04:01.760
+the role changed and the
+portrait loaded or failed. The
+
+53
+00:04:01.760 --> 00:04:05.960
+text can still reflow when the
+role changes. Different
+
+54
+00:04:05.960 --> 00:04:09.520
+descriptions may have different
+lengths, especially on a phone.
+
+55
+00:04:10.280 --> 00:04:14.200
+The promise is narrower. Loading
+a decorative portrait for the
+
+56
+00:04:14.200 --> 00:04:18.840
+same role should not rearrange
+the work beneath it. Measure the
+
+57
+00:04:18.840 --> 00:04:23.120
+interruption you meant to
+remove. The comparison mounted
+
+58
+00:04:23.120 --> 00:04:27.960
+the actual card with its real
+local artwork, styles, and fonts
+
+59
+00:04:28.080 --> 00:04:33.040
+in an isolated fixture. Delayed
+image responses reproduced the
+
+60
+00:04:33.040 --> 00:04:37.200
+original movement for both roles
+at desktop and phone widths.
+
+61
+00:04:38.120 --> 00:04:42.160
+After the change, the measured
+displacement was zero in all
+
+62
+00:04:42.160 --> 00:04:46.600
+four comparisons. The loaded
+arrangement also retained the
+
+63
+00:04:46.600 --> 00:04:51.440
+same measured geometry. This
+matters. Making the pending
+
+64
+00:04:51.440 --> 00:04:55.520
+state stable did not require a
+different finished card.
+
+65
+00:04:56.360 --> 00:04:59.080
+Failures and cleanup received
+their own check.
+
+66
+00:05:00.400 --> 00:05:04.440
+The appearance review covered
+pending, loaded, and invalid
+
+67
+00:05:04.440 --> 00:05:08.240
+image states across the two
+product themes and light and
+
+68
+00:05:08.240 --> 00:05:13.400
+dark appearances with a reduced
+motion case. Those observations
+
+69
+00:05:13.400 --> 00:05:17.720
+establish a small component
+behavior. They do not establish
+
+70
+00:05:17.720 --> 00:05:21.840
+whole page layout stability or
+show how a real person
+
+71
+00:05:21.840 --> 00:05:26.960
+experiences the full onboarding
+flow. That is enough to make
+
+72
+00:05:26.960 --> 00:05:31.640
+this change worth recording. An
+interface contains many small
+
+73
+00:05:31.640 --> 00:05:36.320
+invitations to spend attention.
+Keeping a control where someone
+
+74
+00:05:36.320 --> 00:05:41.240
+has already found it is one way
+to ask for less. You have been
+
+75
+00:05:41.240 --> 00:05:47.880
+listening to Moth and Gravel
+Field Notes. The written edition
+is at mothandgravel.com.
+

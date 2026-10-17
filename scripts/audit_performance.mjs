@@ -78,7 +78,10 @@ for (const profile of ['mobile', 'desktop']) for (const name of [...new Set(runs
     // main already measured within one 75 ms step of the old limits (1,000 / 1,800 ms) and has
     // breached the homepage budget on its own. The increase pays for the contact route, the email
     // in the masthead and footer, the preview tags and the structured data. Other budgets are unchanged.
-    const mobileFcp = { 'candidate': 1100, 'question-sheet': 1900, 'notes-archive': 1900 };
+    // A note page with a listening edition carries the player, its stylesheet and module, and the
+    // inline timed transcript (note 013: 18.9 KB -> 45.1 KB of HTML). CI measured 1,877 ms mobile FCP
+    // against 1,729 ms without the player; 2,000 ms leaves about one 120 ms step of headroom.
+    const mobileFcp = { 'candidate': 1100, 'question-sheet': 1900, 'notes-archive': 1900, 'notes-reading': 2000 };
     const fcpBudget = (profile === 'mobile' && mobileFcp[name]) || (name === 'candidate' ? 1000 : 1800);
     for (const [key, maximum] of [['fcp', fcpBudget], ['lcp', 2500], ['tbt', 200], ['cls', 0.1]])
       if (summary[key] > maximum) failures.push(`${name}/${profile}: ${key} ${summary[key]} exceeds ${maximum}`);

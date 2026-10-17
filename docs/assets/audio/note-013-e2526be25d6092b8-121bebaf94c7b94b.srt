@@ -1,0 +1,571 @@
+1
+00:00:04,209 --> 00:00:10,574
+Moth and Gravel, Field Note 13.
+The work outlives the window. An
+
+2
+00:00:10,574 --> 00:00:14,504
+AI narrated edition of the
+published note. An episode is
+
+3
+00:00:14,504 --> 00:00:18,470
+rendering. You close its window.
+What should happen when you open
+
+4
+00:00:18,470 --> 00:00:22,783
+it again? That question became a
+useful test for our podcast
+
+5
+00:00:22,783 --> 00:00:26,748
+experiment. We already had the
+pieces, written field notes,
+
+6
+00:00:26,991 --> 00:00:31,513
+narration, music, retimed
+captions, and a video renderer.
+
+7
+00:00:32,104 --> 00:00:35,861
+They could produce an episode. A
+person still had to remember
+
+8
+00:00:36,000 --> 00:00:39,896
+which command came next, which
+folder held the result, and
+
+9
+00:00:39,896 --> 00:00:43,304
+which version they had actually
+checked. We wanted a small
+
+10
+00:00:43,304 --> 00:00:47,235
+workbench for that journey.
+Somewhere to change the sound,
+
+11
+00:00:47,617 --> 00:00:51,478
+inspect the consequences, let
+the machine work, and come back
+
+12
+00:00:51,478 --> 00:00:55,826
+with enough context to continue.
+A familiar material.
+
+13
+00:00:56,730 --> 00:01:01,530
+We used Tkinter. The production
+engine was already Python, and
+
+14
+00:01:01,530 --> 00:01:05,009
+an earlier robot workbench had
+given us useful experience with
+
+15
+00:01:05,009 --> 00:01:10,157
+Tk. Themed sections, background
+work, and a queue that hands
+
+16
+00:01:10,157 --> 00:01:13,496
+results back to the interface.
+That made it a reasonable
+
+17
+00:01:13,496 --> 00:01:17,322
+material for this experiment.
+The studio could live beside the
+
+18
+00:01:17,322 --> 00:01:23,409
+existing engine in Ubuntu or WSL
+with ordinary desktop controls
+
+19
+00:01:23,757 --> 00:01:27,652
+and no separate web service to
+operate. We kept the production
+
+20
+00:01:27,652 --> 00:01:31,339
+engine behind an adapter, so
+that the interface could change
+
+21
+00:01:31,374 --> 00:01:34,922
+without taking ownership of
+everything underneath it. The
+
+22
+00:01:34,922 --> 00:01:39,791
+first useful shape was three
+stages, produce, review, and
+
+23
+00:01:39,791 --> 00:01:43,478
+release. Each stage needed a
+clear answer to a different
+
+24
+00:01:43,478 --> 00:01:48,522
+question. What will change? What
+have I checked? What is ready to
+
+25
+00:01:48,522 --> 00:01:52,661
+take to the publisher? Give the
+job a life of its own.
+
+26
+00:01:53,635 --> 00:01:57,843
+The important decision was where
+the work should live. The window
+
+27
+00:01:57,843 --> 00:02:02,609
+holds an editable view. A local
+journal keeps drafts, queued
+
+28
+00:02:02,609 --> 00:02:07,409
+recipes, and job results. A
+separate worker owns production.
+
+29
+00:02:07,965 --> 00:02:11,722
+Closing the window leaves that
+worker and its queue in place.
+
+30
+00:02:12,417 --> 00:02:15,443
+The diagram in the written
+edition separates four
+
+31
+00:02:15,443 --> 00:02:16,104
+responsibilities, with the
+window allowed to disappear. It
+
+32
+00:02:16,104 --> 00:02:16,626
+work was
+
+33
+00:02:16,626 --> 00:02:19,652
+making
+
+34
+00:02:19,652 --> 00:02:23,443
+describes the implemented
+ownership boundary. Suppose an
+
+35
+00:02:23,443 --> 00:02:28,939
+episode is queued at 1.15 times
+the original pace. Changing the
+
+36
+00:02:28,939 --> 00:02:33,565
+control afterwards should affect
+the next plan. The job already
+
+37
+00:02:33,565 --> 00:02:37,983
+in the queue keeps the recipe
+that was inspected. Unfinished
+
+38
+00:02:37,983 --> 00:02:42,017
+edits have a different need.
+Half a date or an empty numeric
+
+39
+00:02:42,017 --> 00:02:45,878
+field is perfectly ordinary
+while someone is typing. We
+
+40
+00:02:45,878 --> 00:02:49,600
+preserve that raw text as a
+draft and validate it when the
+
+41
+00:02:49,600 --> 00:02:53,704
+person asks to use it. Returning
+to the work should not require
+
+42
+00:02:53,704 --> 00:02:57,530
+reconstructing a thought that
+happened to be incomplete. A
+
+43
+00:02:57,530 --> 00:03:01,357
+restart can also leave an
+uncertain result. In that case,
+
+44
+00:03:01,496 --> 00:03:05,357
+the journal says interrupted.
+There is a saved record to
+
+45
+00:03:05,357 --> 00:03:10,157
+inspect and an explicit retry.
+Guessing that a job succeeded
+
+46
+00:03:10,330 --> 00:03:13,913
+would make the interface easier
+to color green and harder to
+
+47
+00:03:13,913 --> 00:03:19,617
+trust. Let the labels earn their
+confidence. A saved video, a
+
+48
+00:03:19,617 --> 00:03:23,722
+checked video, and a published
+video are different events.
+
+49
+00:03:24,035 --> 00:03:28,557
+Review therefore belongs to the
+saved edition. Listen to it,
+
+50
+00:03:28,765 --> 00:03:32,383
+check its captions, watch the
+full video where appropriate,
+
+51
+00:03:32,626 --> 00:03:37,113
+and record the confirmations. If
+the media changes, the earlier
+
+52
+00:03:37,113 --> 00:03:41,113
+approval cannot quietly move
+across to it. Reopening the
+
+53
+00:03:41,113 --> 00:03:45,043
+window restores the workspace.
+The review checkboxes need
+
+54
+00:03:45,043 --> 00:03:50,435
+attention again. Release makes
+the handoff tangible. It lists
+
+55
+00:03:50,435 --> 00:03:55,270
+the actual video, thumbnail,
+subtitle files, audio, and
+
+56
+00:03:55,270 --> 00:03:59,443
+transcript with their sizes. A
+upload copy comes from the
+
+57
+00:03:59,443 --> 00:04:04,000
+checked package when one exists.
+There is a route to open a file,
+
+58
+00:04:04,243 --> 00:04:09,148
+a folder, or YouTube Studio, and
+a Windows-compatible upload path
+
+59
+00:04:09,183 --> 00:04:14,157
+when the tool is running in WSL.
+Ready for manual upload
+
+60
+00:04:14,191 --> 00:04:17,948
+describes those local checks.
+The person still uploads the
+
+61
+00:04:17,948 --> 00:04:22,226
+package and records the real
+publication details. A local
+
+62
+00:04:22,226 --> 00:04:25,565
+success message cannot establish
+what happened in another
+
+63
+00:04:25,565 --> 00:04:30,713
+service. A small window exposes
+a large assumption. The design
+
+64
+00:04:30,713 --> 00:04:34,678
+acquired the studio's paper,
+ink, and brass, labeled
+
+65
+00:04:34,678 --> 00:04:36,383
+pictograms, and visible
+feedback. The more revealing
+
+66
+00:04:39,409 --> 00:04:44,070
+it fit. One desktop test run
+past while its screenshots
+
+67
+00:04:44,070 --> 00:04:47,826
+showed an awkward result. The
+publishing buttons were visible,
+
+68
+00:04:48,035 --> 00:04:51,409
+but the editable fields had been
+squeezed away at the minimum
+
+69
+00:04:51,409 --> 00:04:56,035
+window size. The batch checklist
+had the same problem. We had
+
+70
+00:04:56,035 --> 00:04:59,096
+checked that the actions existed
+without checking that the
+
+71
+00:04:59,096 --> 00:05:03,339
+material they acted on remained
+usable. We shortened the
+
+72
+00:05:03,339 --> 00:05:06,817
+guidance, removed competing
+folder actions from those
+
+73
+00:05:06,817 --> 00:05:10,504
+focused panels, and made the
+checks cover the fields and
+
+74
+00:05:10,504 --> 00:05:14,261
+choices themselves. The
+screenshot was evidence about a
+
+75
+00:05:14,261 --> 00:05:18,330
+question the earlier assertions
+had missed. A second window
+
+76
+00:05:18,330 --> 00:05:22,539
+exposes another boundary worth
+making explicit. Two copies of
+
+77
+00:05:22,539 --> 00:05:26,504
+the interface can hold different
+drafts of one episode. A newer
+
+78
+00:05:26,504 --> 00:05:29,670
+checkpoint needs an identity,
+and the other window needs a
+
+79
+00:05:29,670 --> 00:05:34,365
+chance to resolve that conflict
+while keeping its edits. Saved
+
+80
+00:05:34,365 --> 00:05:38,574
+should mean that this version
+was saved, enough to use with a
+
+81
+00:05:38,574 --> 00:05:39,583
+next question.
+
+82
+00:05:41,670 --> 00:05:45,113
+By the end of the first complete
+pass, the studio had durable
+
+83
+00:05:45,113 --> 00:05:49,600
+drafts, sound controls, editable
+publishing copy, batch
+
+84
+00:05:49,600 --> 00:05:54,296
+inspection, and worker health.
+Its verification included 86
+
+85
+00:05:54,296 --> 00:05:59,965
+tests with 31 exercising real Tk
+controls. A separate production
+
+86
+00:05:59,965 --> 00:06:03,478
+run finished all 13 existing
+recordings, checked their
+
+87
+00:06:03,478 --> 00:06:07,130
+retimed captions, and rendered
+short video previews and
+
+88
+00:06:07,130 --> 00:06:12,139
+thumbnails. A repeat run checked
+cache reuse. Those are useful
+
+89
+00:06:12,139 --> 00:06:15,757
+boundaries for the result. They
+establish considerably more than
+
+90
+00:06:15,757 --> 00:06:19,096
+a promising mock-up. They do not
+replace listening to the
+
+91
+00:06:19,096 --> 00:06:23,200
+finished episodes or completing
+the browser upload. The next
+
+92
+00:06:23,200 --> 00:06:27,304
+question is close at hand. Can
+this workbench help us release
+
+93
+00:06:27,304 --> 00:06:30,365
+its own field note without
+someone keeping the terminal
+
+94
+00:06:30,365 --> 00:06:33,565
+sequence in their head? There is
+still a gap at the beginning.
+
+95
+00:06:33,948 --> 00:06:37,287
+Studio starts from prepared
+recordings. A new written note
+
+96
+00:06:37,287 --> 00:06:40,487
+needs a narration script, a
+deliberate generation step, and
+
+97
+00:06:40,487 --> 00:06:44,417
+captions before it reaches that
+shelf. That handoff deserves the
+
+98
+00:06:44,417 --> 00:06:48,139
+same care as the final upload,
+visible prerequisites, an
+
+99
+00:06:48,139 --> 00:06:51,443
+inspectable plan, and a clear
+account of any service being
+
+100
+00:06:51,443 --> 00:06:55,722
+used. For now, the experiment
+has become a usable local tool
+
+101
+00:06:55,757 --> 00:06:59,304
+for the episodes we already
+have. The next specimen is this
+
+102
+00:06:59,304 --> 00:07:03,757
+note. Experiment record, working
+software. What this pass
+
+103
+00:07:03,791 --> 00:07:07,791
+establishes. The first pass
+counts and desktop capture refer
+
+104
+00:07:07,791 --> 00:07:10,991
+to the implementation linked in
+the written edition. Its native
+
+105
+00:07:10,991 --> 00:07:14,296
+desktop checks and real media
+production run passed. The
+
+106
+00:07:14,296 --> 00:07:17,426
+capture is a controlled fixture,
+and the ownership graphic is a
+
+107
+00:07:17,426 --> 00:07:21,078
+schematic. The production run
+rendered short previews rather
+
+108
+00:07:21,078 --> 00:07:24,243
+than full-length videos of the
+entire collection. The
+
+109
+00:07:24,243 --> 00:07:27,409
+continuing implementation and
+studio guide contain the current
+
+110
+00:07:27,409 --> 00:07:31,478
+behavior and validation. Native
+Windows packaging, embedded
+
+111
+00:07:31,478 --> 00:07:34,957
+playback, and authenticated
+publishing remain outside this
+
+112
+00:07:34,957 --> 00:07:39,791
+local Linux/WSL experiment.
+Narration and publication of
+
+113
+00:07:39,791 --> 00:07:42,783
+this note are separate steps
+from the verification described
+
+114
+00:07:42,783 --> 00:07:46,852
+here. You have been listening to
+Moth and Gravel Field Notes. The
+
+115
+00:07:46,852 --> 00:07:49,496
+written edition is at
+mothandgravel.com.
