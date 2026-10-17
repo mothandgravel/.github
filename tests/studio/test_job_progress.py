@@ -44,7 +44,7 @@ class JobProgressTests(unittest.TestCase):
             job("prepare", stage="narration-3-of-3"),
             events("narration-1-of-3-complete", "narration-3-of-3"),
         )
-        self.assertIn("1 chunk saved", value.title)
+        self.assertIn("1 part saved", value.title)
         self.assertEqual(states(value), ["Working", "Next", "Next"])
 
     def test_repeated_receipt_events_are_not_double_counted(self):
@@ -56,7 +56,7 @@ class JobProgressTests(unittest.TestCase):
                 "narration-2-of-3-complete",
             ),
         )
-        self.assertIn("2 chunks saved", value.title)
+        self.assertIn("2 parts saved", value.title)
 
     def test_bounded_caption_wait_is_not_running_or_approved(self):
         value = progress_for(
@@ -92,7 +92,9 @@ class JobProgressTests(unittest.TestCase):
                     job(status="queued", stage="queued", cancel_requested=stopping), []
                 )
                 self.assertEqual(states(value), ["Next", "Next", "Next"])
-                self.assertIn("Stop requested" if stopping else "not started", value.next_step)
+                self.assertIn(
+                    "Stop requested" if stopping else "Waiting for its turn", value.next_step
+                )
 
     def test_last_completed_stage_moves_to_saving_only_after_completion_event(self):
         value = progress_for(
@@ -103,12 +105,12 @@ class JobProgressTests(unittest.TestCase):
     def test_success_says_review_next_not_published(self):
         value = progress_for(job(status="succeeded", stage="succeeded"), [])
         self.assertEqual(states(value), ["Saved", "Saved", "Saved"])
-        self.assertIn("Review full episode once", value.next_step)
-        self.assertIn("Nothing has been published", value.next_step)
+        self.assertIn("review the full episode once", value.next_step)
+        self.assertIn("Nothing is published", value.next_step)
 
     def test_prepare_success_does_not_claim_full_video_exists(self):
         value = progress_for(job("prepare", "succeeded", "succeeded"), [])
-        self.assertIn("not yet a finished video", value.next_step)
+        self.assertIn("there is no video yet", value.next_step)
         self.assertNotIn("Full video", [stage.label for stage in value.milestones])
 
     def test_preview_and_export_keep_their_actual_scope(self):
@@ -116,7 +118,7 @@ class JobProgressTests(unittest.TestCase):
         exported = progress_for(job("export", "succeeded", "succeeded"), [])
         self.assertIn("Video preview", [stage.label for stage in preview.milestones])
         self.assertIn("not a full video", preview.next_step)
-        self.assertIn("Export is not publication", exported.next_step)
+        self.assertIn("Nothing is published yet", exported.next_step)
 
     def test_historical_failure_is_not_a_retry_instruction_or_changed_history(self):
         original = job(status="failed", error="Original diagnostic")
@@ -152,17 +154,40 @@ class JobProgressUiTests(unittest.TestCase):
         self.repo.event(identifier, "audio-complete", "Audio saved")
         self.repo.event(identifier, "video", "Rendering the full video")
         self.app.jobs.render(self.repo.jobs())
+        self.app.toggle_jobs(True)
         self.app.jobs.tree.selection_set(identifier)
         self.app.controller.job_detail()
         self.h.wait(lambda: self.app.jobs.progress.snapshot is not None)
+        self.assertIn("Working · note-001 · Making the video", self.app.activity.cget("text"))
         return identifier
 
-    def test_all_seven_tabs_have_named_icons_and_are_clickable_at_minimum_width(self):
-        tabs = self.app.workspace.tabs
+    def test_stage_tabs_and_tools_have_named_icons_and_are_clickable_at_minimum_width(self):
+        w = self.app.workspace
+        tabs = w.tabs
         names = [tabs.tab(tab, "text") for tab in tabs.tabs()]
         self.assertEqual(
-            names, ["Produce", "Review", "Release", "Transcript", "Audio", "Batch", "Health"]
+            names,
+            [
+                "Produce",
+                "Review",
+                "Release",
+                "Transcript",
+                "Sound",
+                "Several episodes",
+                "Setup check",
+            ],
         )
+        # Tools stay out of the stage strip until opened from the tools row.
+        self.assertEqual([str(tabs.tab(tab, "state")) for tab in tabs.tabs()[3:]], ["hidden"] * 4)
+        for path, button in w.tool_buttons.items():
+            self.h.assert_visible(button)
+            button.invoke()
+            self.root.update()
+            self.assertEqual(tabs.select(), path)
+            self.assertEqual(str(tabs.tab(path, "state")), "normal")
+            button.invoke()
+            self.root.update()
+            self.assertEqual(str(tabs.tab(path, "state")), "hidden")
         for tab in tabs.tabs():
             self.assertTrue(tabs.tab(tab, "image"))
             self.assertEqual(str(tabs.tab(tab, "compound")), "left")
@@ -175,7 +200,7 @@ class JobProgressUiTests(unittest.TestCase):
                 return None
 
         visible = {tab_at(x) for x in range(tabs.winfo_width())} - {None}
-        self.assertEqual(visible, set(range(7)))
+        self.assertEqual(visible, set(range(3)))
 
     def test_real_events_drive_visible_progress_without_network_or_approval(self):
         self.working_video()
@@ -194,7 +219,7 @@ class JobProgressUiTests(unittest.TestCase):
         self.app.jobs.render(self.repo.jobs())
         self.app.controller.job_detail()
         self.h.wait(lambda: states(self.app.jobs.progress.snapshot) == ["Saved", "Saved", "Saved"])
-        self.assertIn("Review full episode once", self.app.jobs.detail.cget("text"))
+        self.assertIn("review the full episode once", self.app.jobs.detail.cget("text"))
         self.assertFalse(self.app.workspace.review.audio_checked.get())
         self.h.capture("progress-finished-fixture")
 
@@ -261,8 +286,8 @@ class JobProgressUiTests(unittest.TestCase):
             )
         )
         self.app.controller.job_detail()
-        self.h.wait(lambda: "already has saved approval" in self.app.jobs.detail.cget("text"))
-        self.assertIn("inspect/export", self.app.jobs.detail.cget("text"))
+        self.h.wait(lambda: "already approved" in self.app.jobs.detail.cget("text"))
+        self.assertIn("make its upload folder", self.app.jobs.detail.cget("text"))
         self.assertFalse(self.app.workspace.review.video_checked.get())
         self.assertTrue(self.app.workspace.review.approve.instate(["disabled"]))
         self.assertEqual(self.repo.publications(), {})

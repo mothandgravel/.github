@@ -25,7 +25,7 @@ class ProductionFlow:
             return
         episode = episode or c.selected
         if not episode:
-            c.view.status("Choose a prepared recording first. No production was queued.")
+            c.view.status("Choose a narrated episode first. Nothing was queued.")
             return
         if c.loading:
             c.view.status("Episode settings are still loading. Wait before starting production.")
@@ -57,7 +57,7 @@ class ProductionFlow:
             for identifier, choice in c.view.workspace.batch.choices.items():
                 choice.set(identifier in choices)
             if episode not in c.episodes:
-                self._failed("The prepared recording is unavailable. Inspect its preparation job.")
+                self._failed("The narration is unavailable. Check its narration job.")
                 return
             # Load that episode's draft before capturing its recipe; never use the
             # controls belonging to the previously selected episode.
@@ -92,7 +92,7 @@ class ProductionFlow:
             return
         generation = c.generation
         c.view.workspace.show_plan(
-            "Checking your saved narration and current recipe. One job will finish audio, "
+            "Checking your saved narration and current settings. One job will finish audio, "
             "retime captions, render the full video and create its thumbnail.\n\n"
             "No new narration, automatic approval or publication."
         )
@@ -100,13 +100,11 @@ class ProductionFlow:
         def planned(value):
             if c.selected != episode or generation != c.generation:
                 self._failed(
-                    "Selection or settings changed during inspection. Click Produce episode again."
+                    "Selection or settings changed during the checks. Click Produce episode again."
                 )
                 return
             request, summary = value
-            c.view.workspace.preflight_status(
-                "Full episode checks passed. Queueing audio + video together."
-            )
+            c.view.workspace.preflight_status("Checks passed. Queueing audio and video together.")
             c.ready = None
             c.view.workspace.show_plan(summary + "\n\nQueueing the full episode…")
 
@@ -129,7 +127,9 @@ class ProductionFlow:
             c.task(lambda: c.studio.submit(episode, "video", request), queued, self._failed)
 
         recipe = c.view.workspace.effective_recipe()
-        c.view.workspace.preflight_status("Checking source, recipe and installed video tools…")
+        c.view.workspace.preflight_status(
+            "Checking the note, its settings and installed video tools…"
+        )
         c.task(
             lambda: c.studio.checked_plan(episode, "video", speed, outro, sound, recipe),
             planned,

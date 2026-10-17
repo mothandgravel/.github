@@ -57,7 +57,7 @@ class RecoveryTests(unittest.TestCase):
         snapshot = self.service.inspect("104")
         self.assertFalse(snapshot.request_json)
         self.assertTrue(snapshot.recovery_json)
-        self.assertIn("Chunk 2: TimeoutError", snapshot.summary)
+        self.assertIn("Part 2: TimeoutError", snapshot.summary)
         self.assertIn("charge twice", snapshot.summary)
         with patch("field_notes_studio.preparation_service.launch_worker"):
             for authorized, recovery in ((False, True), (True, False), (True, 1)):
@@ -96,7 +96,7 @@ class RecoveryTests(unittest.TestCase):
                 self.f.adapter.run(request, lambda *_: None, lambda: False)
             calls[0].assert_not_called()
             calls[1].assert_not_called()
-        with self.assertRaisesRegex(ValueError, "previous resend authorization"):
+        with self.assertRaisesRegex(ValueError, "previous resend consent"):
             Studio(self.f.root).retry(identifier)
 
     def test_deleted_receipt_or_changed_script_cannot_authorize_a_replacement(self):
@@ -232,12 +232,19 @@ class PreparationUxTests(unittest.TestCase):
         )
 
     def test_new_note_is_reachable_from_failed_main_shelf_search(self):
+        # Every written note is on the main shelf, so the new note is its own front door.
+        self.app.preparation.close()
         self.app.shelf.query.set("104")
-        self.assertIn("Find / prepare", self.app.shelf.count.cget("text"))
-        self.app.shelf.prepare.invoke()
-        self.h.wait(lambda: not self.app.preparation.busy and self.view.query.get() == "104")
-        self.assertEqual(self.view.query.get(), "104")
-        self.assertEqual(self.view.tree.get_children(), ("104",))
+        self.h.wait(lambda: self.app.shelf.tree.exists("note:104"))
+        self.app.shelf.tree.selection_set("note:104")
+        self.h.wait(lambda: self.app.readiness.primary.cget("text") == "Prepare this note…")
+        self.assertIsNone(self.app.controller.selected)
+        self.app.readiness.primary.invoke()
+        self.h.wait(
+            lambda: self.app.preparation is not None
+            and not self.app.preparation.busy
+            and self.app.preparation.view.selected() == "104"
+        )
 
     def test_uncertain_recovery_needs_both_checkboxes_and_clears_on_navigation(self):
         self.view.show_snapshot(self.recovery_snapshot())
@@ -292,12 +299,14 @@ class PreparationUxTests(unittest.TestCase):
         self.f.repository.finish(identifier, "failed", error="TimeoutError; receipt retained")
         self.app.jobs.render(self.f.repository.jobs())
         self.app.root.update()
-        self.assertEqual(self.app.jobs.buttons["retry"].cget("text"), "Inspect recovery")
+        self.assertEqual(self.app.jobs.buttons["retry"].cget("text"), "Check recovery")
         self.app.jobs.buttons["retry"].invoke()
         self.app.root.update()
         self.assertEqual(self.app.preparation.view.selected(), "104")
         self.assertEqual(len(self.f.repository.jobs()), 1)
-        self.assertIn("Narration 2/3", self.app.jobs.tree.item(identifier, "values"))
+        self.assertIn(
+            "Stopped: narrating part 2 of 3", self.app.jobs.tree.item(identifier, "values")
+        )
 
     def test_import_cancel_then_confirm_has_no_cloud_effect(self):
         source = self.f.settings.with_name("previous-setup.json")
@@ -347,9 +356,9 @@ class PreparationUxTests(unittest.TestCase):
         self.app.jobs.render(self.f.repository.jobs())
         self.app.controller.job_detail()
         self.h.wait(lambda: "TimeoutError" in self.app.jobs.detail.cget("text"))
-        self.assertIn("Narration 2/3", self.app.jobs.detail.cget("text"))
+        self.assertIn("Narrating part 2 of 3", self.app.jobs.detail.cget("text"))
         self.assertNotIn("narration-2-of-3:", self.app.jobs.detail.cget("text"))
-        self.assertIn("Inspect recovery", self.app.jobs.detail.cget("text"))
+        self.assertIn("Check recovery", self.app.jobs.detail.cget("text"))
 
     def test_legacy_failed_row_and_long_error_fit_the_main_window(self):
         identifier = self.f.repository.submit("studio-essay", "prepare", self.f.request)
@@ -365,13 +374,10 @@ class PreparationUxTests(unittest.TestCase):
         self.app.jobs.render(self.f.repository.jobs())
         self.app.controller.job_detail()
         self.h.wait(lambda: "Full details in History" in self.app.jobs.detail.cget("text"))
-        self.assertEqual(self.app.jobs.tree.item(identifier, "values")[-1], "Inspect recovery")
+        self.assertEqual(self.app.jobs.tree.item(identifier, "values")[-1], "Next: check recovery")
         self.assertIn("narration", self.app.jobs.detail.cget("text"))
         for button in self.app.jobs.buttons.values():
             self.assertGreaterEqual(button.winfo_width(), button.winfo_reqwidth())
-        self.assertGreaterEqual(
-            self.app.shelf.help.winfo_width(), self.app.shelf.help.winfo_reqwidth()
-        )
         for widget in (*self.app.jobs.buttons.values(), self.app.jobs.detail):
             self.assertTrue(widget.winfo_viewable())
             self.assertLessEqual(

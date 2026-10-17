@@ -30,7 +30,7 @@ def upload_path(path: Path) -> str:
 
 def open_publisher() -> None:
     if not webbrowser.open("https://studio.youtube.com"):
-        raise ValueError("Open https://studio.youtube.com in your browser to upload this package")
+        raise ValueError("Open https://studio.youtube.com in your browser to upload these files")
 
 
 def launch_worker(root: Path) -> subprocess.Popen:
@@ -52,7 +52,7 @@ def launch_worker(root: Path) -> subprocess.Popen:
 
 def open_path(path: Path) -> None:
     if not path.exists():
-        raise ValueError("Produce this edition first")
+        raise ValueError("Produce this version first")
     if sys.platform == "win32":
         os.startfile(path)
     elif sys.platform == "darwin":

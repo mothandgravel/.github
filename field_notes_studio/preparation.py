@@ -101,16 +101,16 @@ class Preparation:
                 path = self._script(entry)
                 if not path.is_file() or not path.stat().st_size:
                     detail = (
-                        "The registered script is missing or empty. Restore it before inspection."
+                        "The registered script is missing or empty. Restore it before checking."
                     )
                 else:
-                    state = "Inspect script"
-                    detail = "Script saved; inspect its source fingerprints and narration request before generation."
+                    state = "Check script"
+                    detail = "Script saved; check its sources and narration request before anything is sent."
                     if episode in recordings:
                         state = "On production shelf"
-                        detail = "Recording listed in this checkout's catalog; media and external publication are not verified here."
+                        detail = "Narration listed in this checkout's catalog; media and external publication are not verified here."
                     else:
-                        detail += " No recording is listed on the production shelf; unregistered local jobs may still exist."
+                        detail += " No narrated note is listed on the shelf; unregistered local jobs may still exist."
             except (OSError, ValueError) as exc:
                 state, detail = "Needs repair", str(exc)
         if not self._path("docs/notes/" + slug).is_file():
@@ -177,7 +177,7 @@ class Preparation:
             or current_episodes.get(item.episode) != episode
         ):
             raise ValueError(
-                "Sources or settings changed during inspection. Refresh and inspect again."
+                "Sources or settings changed during the check. Refresh and check again."
             )
         summary = (
             f"{item.episode} · {item.title}\n"
@@ -187,9 +187,9 @@ class Preparation:
             f"{len(plan['requests'])} bounded narration requests · {model} · {endpoint}.\n\n"
             f"{item.detail}\n\n"
             "Before production: explicitly authorize narration, obtain and check captions, "
-            "then add the prepared recording to the production shelf. Existing local caches "
-            "and remote caption jobs have not been inspected in this pass.\n"
-            "This inspection does not check credentials, billing, Cloud resources or tool readiness. "
+            "then add the narrated note to the shelf. Existing saved parts "
+            "and remote caption jobs have not been checked in this pass.\n"
+            "This check does not cover credentials, billing, Cloud resources or tool readiness. "
             "It does not generate audio, submit captions, approve media or publish anything.\n"
             "Cloud execution from this preparation panel is not enabled yet. "
             "No service request was made."

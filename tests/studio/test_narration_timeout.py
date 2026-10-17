@@ -107,7 +107,7 @@ class NarrationTimeoutTests(unittest.TestCase):
         self.assertEqual(captured["uncertain_chunks"], {"3": receipt_hash})
         self.assertEqual(captured["tts_timeout_seconds"], 360)
         self.assertEqual(captured["plan"], self.request["plan"])
-        self.assertIn("2/3 narration cache records", snapshot.summary)
+        self.assertIn("2/3 narration parts report completion", snapshot.summary)
         with patch("field_notes_studio.preparation_service.launch_worker"):
             for general, recovery in ((False, True), (True, False)):
                 with self.assertRaises(ValueError):
@@ -233,6 +233,7 @@ class NarrationWaitUiTests(unittest.TestCase):
         self.app.preparation.close()
         self.app.root.geometry("1050x760+0+0")
         self.app.jobs.render(self.f.repository.jobs())
+        self.app.toggle_jobs(True)
 
     def test_waiting_beyond_180s_has_elapsed_not_fake_provider_progress(self):
         with patch("field_notes_studio.controller.datetime") as clock:

@@ -17,14 +17,14 @@ SOUND = (
     ("music_credit", "Music credit and license"),
 )
 PUBLISHING = (
-    ("title", "Episode title · 100 characters"),
-    ("description", "Episode summary · 4,000 characters"),
+    ("title", "Episode title · up to 100 characters"),
+    ("description", "Episode summary · up to 4,000 characters"),
     ("tags", "Additional episode tags · comma separated"),
     ("hashtags", "Additional hashtags · space separated"),
-    ("show_title", "Show template · title"),
-    ("show_description", "Show template · description"),
-    ("shared_tags", "Show template · shared tags"),
-    ("shared_hashtags", "Show template · shared hashtags"),
+    ("show_title", "Every episode · title pattern"),
+    ("show_description", "Every episode · description"),
+    ("shared_tags", "Every episode · tags"),
+    ("shared_hashtags", "Every episode · hashtags"),
 )
 
 
@@ -83,7 +83,7 @@ class Editor(ttk.Frame):
             footer.grid(row=2, column=0, sticky="ew")
             self.save = ActionButton(
                 footer,
-                text="Save publishing settings",
+                text="Save title and description",
                 pictogram="save",
                 command=save,
                 style="Accent.TButton",

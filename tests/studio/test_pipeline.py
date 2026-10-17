@@ -125,7 +125,7 @@ class PipelineTests(unittest.TestCase):
         self.assertIn(credit, details.description)
         self.assertNotIn("Changed draft credit", details.description)
         self.assertIn("specific tag", details.tags)
-        self.assertIn("verified saved audio", details.basis)
+        self.assertIn("saved audio's music credit", details.basis)
 
     def test_copy_prefers_actual_exported_text_after_later_settings_edits(self):
         directory = self.root / "artifacts/uploads/fixture"
@@ -149,9 +149,9 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(details.title, "Exported title")
         self.assertEqual(details.description, "Exported description")
         self.assertEqual(details.tags, "exported tags")
-        self.assertIn("Saved upload package text", details.basis)
+        self.assertIn("Saved upload folder text", details.basis)
         (directory / "title.txt").write_text("Changed behind the package's back")
-        with self.assertRaisesRegex(ValueError, "Export again"):
+        with self.assertRaisesRegex(ValueError, "Make the upload folder again"):
             self.pipeline.release_details("fixture")
 
     def test_outro_changes_create_another_edition_and_repeating_recipe_reuses_media(self):
@@ -183,7 +183,7 @@ class PipelineTests(unittest.TestCase):
         self.run_audio(0.5)
         request = self.pipeline.request("fixture", "export", 1.15, 0.5)
         write_json(self.pipeline.output / "fixture/latest.json", {"changed": True})
-        with self.assertRaisesRegex(ValueError, "edition changed"):
+        with self.assertRaisesRegex(ValueError, "version changed"):
             self.pipeline.run(
                 "fixture", "export", request, self.root / "export-job", lambda *_: None
             )
@@ -204,7 +204,8 @@ class PipelineTests(unittest.TestCase):
         unchanged = copy.deepcopy(request)
         unchanged["settings"]["outro_seconds"] = 0.5
         self.assertIn(
-            "verifies source, toolchain", self.pipeline.plan("fixture", "audio", unchanged)
+            "checks the note, tools and saved files",
+            self.pipeline.plan("fixture", "audio", unchanged),
         )
 
     def test_review_checks_saved_identity_and_preserves_source_media(self):
@@ -221,7 +222,7 @@ class PipelineTests(unittest.TestCase):
         self.assertIsNone(review["video_fingerprint"])
         self.assertEqual(digest_file(self.root / "docs/assets/audio/fixture.mp3"), original)
         self.run_audio(1)
-        with self.assertRaisesRegex(ValueError, "Edition changed"):
+        with self.assertRaisesRegex(ValueError, "version changed while you were reviewing"):
             self.pipeline.approve("fixture", snapshot, "Test listener")
         self.assertIn("pending", self.pipeline.review_snapshot("fixture").summary)
 

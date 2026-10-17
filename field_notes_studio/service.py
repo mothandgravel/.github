@@ -44,6 +44,42 @@ class Studio:
             for episode in self.pipeline.catalog()
         ]
 
+    def shelf_hints(self) -> dict[str, str]:
+        """Next step per narrated episode for the shelf: a quick hint, never evidence.
+
+        Read from jobs, release records and the saved-version pointers only; the
+        episode card's readiness check verifies files before anything is offered.
+        """
+        jobs = self.repository.jobs()
+        publications = self.repository.publications()
+        resolved = resolved_failures(jobs)
+        latest = {}
+        for job in jobs:
+            latest.setdefault(job.episode, job)
+        hints = {}
+        for episode, stage in self.pipeline.stage_hints().items():
+            job = latest.get(episode)
+            if job and job.status in {"queued", "running"}:
+                hints[episode] = "Working"
+            elif job and job.status == "waiting":
+                hints[episode] = "Resume"
+            elif job and job.status in {"failed", "interrupted"} and job.identifier not in resolved:
+                hints[episode] = "Recover"
+            elif episode in publications:
+                hints[episode] = "Done"
+            else:
+                hints[episode] = stage
+        return hints
+
+    def preferences(self) -> dict:
+        return self.repository.state("preferences")
+
+    def remember(self, **values) -> None:
+        """Per-computer conveniences, such as the reviewer's name. Never consent."""
+        preferences = self.repository.state("preferences")
+        preferences.update(values)
+        self.repository.checkpoint({"preferences": preferences})
+
     def health(self) -> str:
         worker = worker_status(self.repository)
         return worker["message"] + "\n\n" + self.pipeline.health() + "\n\n" + tool_status(self.root)
@@ -71,7 +107,7 @@ class Studio:
     def checked_plan(self, episode, action, speed, outro, sound=None, recipe=None):
         request, summary = self.plan(episode, action, speed, outro, sound, recipe)
         self.pipeline.preflight(episode, action, request)
-        return request, "Preflight passed for this action.\n\n" + summary
+        return request, "Checks passed.\n\n" + summary
 
     def spend_summary(self, episode: str) -> str:
         return self.pipeline.spend_summary(episode)
@@ -122,7 +158,7 @@ class Studio:
                         value = replace(
                             value,
                             action="health",
-                            title="Preflight needs attention",
+                            title="Checks need attention",
                             detail=plain(exc, "preflight"),
                             technical=technical(exc),
                         )
@@ -157,7 +193,7 @@ class Studio:
         if job.action == "prepare":
             if request.get("uncertain_chunks"):
                 raise ValueError(
-                    "Inspect preparation recovery again. A previous resend authorization cannot authorize another attempt."
+                    "Check recovery again. A previous resend consent cannot allow another attempt."
                 )
             PreparationJobs(self.root).validate(request)
             if job.status == "waiting":
@@ -166,7 +202,7 @@ class Studio:
                 return self.repository.resume_preparation(identifier)
             if request.get("spend_override"):
                 raise ValueError(
-                    "A spend-limit override covers one run only. Inspect preparation again and "
+                    "A spend-limit override covers one run only. Check the narration again and "
                     "confirm a new override if you still accept the possible charge."
                 )
         return self.submit(job.episode, job.action, request)
@@ -317,5 +353,5 @@ class Studio:
             kind
         ]
         if not snapshot.identity or not path:
-            raise ValueError("Load a completed edition for this review first")
+            raise ValueError("Load a finished version for this review first")
         open_path(Path(path))

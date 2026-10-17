@@ -174,7 +174,7 @@ class GatewayRecoveryTests(unittest.TestCase):
         current = self.service.inspect("104")
         self.assertIn("HTTP 502", current.summary)
         self.assertIn("Current receipt:", current.summary)
-        self.assertIn("2/3 narration cache records", current.summary)
+        self.assertIn("2/3 narration parts report completion", current.summary)
         self.assertNotIn("180.2", current.summary)
         self.assertEqual(
             self.completed, {n: digest_file(self.h.directory / n) for n in self.completed}

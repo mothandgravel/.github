@@ -194,7 +194,7 @@ class ReadinessUiTests(unittest.TestCase):
         self.assertGreaterEqual(
             self.app.readiness.primary.winfo_width(), self.app.readiness.primary.winfo_reqwidth()
         )
-        self.assertIn("Checked 2026", self.app.readiness.detail.cget("text"))
+        self.assertIn("Checked 16 Oct", self.app.readiness.checked.cget("text"))
         self.w.subtitle.configure(
             text="note-001 · Controlled fixture · saved full episode is approved"
         )
@@ -212,7 +212,11 @@ class ReadinessUiTests(unittest.TestCase):
         )
         self.app.root.update()
         for action in self.w.publication.actions.values():
+            self.w.publication.page.reveal(action)
+            self.app.root.update()
             self.h.assert_visible(action)
+        self.w.publication.page.canvas.yview_moveto(0)
+        self.app.root.update()
         self.assertTrue(self.w.publication.preflight.winfo_viewable())
         self.w.publication.basis.configure(
             text="Controlled fixture: saved publishing copy differs from the last export."

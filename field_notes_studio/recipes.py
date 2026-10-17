@@ -27,7 +27,7 @@ NAMES = {
     "video.width": "Video width",
     "video.height": "Video height",
     "video.fps": "Frame rate",
-    "video.concurrency": "Video workers",
+    "video.concurrency": "Video render threads",
 }
 
 
@@ -66,9 +66,9 @@ class Recipes:
             or data["version"] != 1
             or not isinstance(data["recipes"], dict)
         ):
-            raise ValueError("Invalid saved show recipes; preserve the journal and inspect it.")
+            raise ValueError("Saved show settings are damaged; keep the journal and check it.")
         if len(data["recipes"]) > 100:
-            raise ValueError("Too many saved show recipes")
+            raise ValueError("Too many saved show settings")
         names = set()
         for identifier, saved in data["recipes"].items():
             if (
@@ -76,10 +76,10 @@ class Recipes:
                 or not isinstance(saved, dict)
                 or set(saved) != {"name", "settings"}
             ):
-                raise ValueError("Invalid saved recipe")
+                raise ValueError("Damaged saved show settings")
             name = self.name(saved["name"])
             if name.casefold() in names or not isinstance(saved["settings"], dict):
-                raise ValueError("Duplicate or invalid saved recipe")
+                raise ValueError("Duplicate or damaged saved show settings")
             names.add(name.casefold())
         return data, identity
 
@@ -92,7 +92,7 @@ class Recipes:
             or len(value.splitlines()) > 1
             or any(ord(c) < 32 or ord(c) == 127 for c in value)
         ):
-            raise ValueError("Recipe name must be one plain-text line of 1–60 characters")
+            raise ValueError("The name must be one plain-text line of 1–60 characters")
         return value.strip()
 
     def save(self, name, settings, expected, identifier=None):
@@ -100,16 +100,18 @@ class Recipes:
         validated = recipe(self.pipeline, settings)
         data, identity = self.load()
         if identity != expected:
-            raise ValueError("Show recipes changed in another window. Reload before saving.")
+            raise ValueError("Show settings changed in another window. Reload before saving.")
         if identifier is not None and identifier not in data["recipes"]:
-            raise ValueError("The selected show recipe no longer exists")
+            raise ValueError("The chosen show settings no longer exist")
         if any(
             other != identifier and item["name"].casefold() == name.casefold()
             for other, item in data["recipes"].items()
         ):
-            raise ValueError("A recipe with that name exists. Select it and explicitly update it.")
+            raise ValueError(
+                "Show settings with that name exist. Choose them and update them explicitly."
+            )
         if identifier is None and len(data["recipes"]) >= 100:
-            raise ValueError("The local recipe library is full")
+            raise ValueError("The saved show settings list is full")
         identifier = identifier or uuid.uuid4().hex
         data["recipes"][identifier] = {"name": name, "settings": validated}
         identities = self.repository.checkpoint({KEY: data}, expected={KEY: expected})
@@ -120,7 +122,7 @@ class Recipes:
     def select(self, identifier, expected):
         data, identity = self.load()
         if identity != expected or identifier not in data["recipes"]:
-            raise ValueError("Recipe library changed. Reload and inspect before applying.")
+            raise ValueError("Show settings changed. Reload and check them before applying.")
         saved = data["recipes"][identifier]
         return {
             "id": identifier,

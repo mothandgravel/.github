@@ -46,12 +46,12 @@ class RecipeTests(unittest.TestCase):
         self.recipes.save("Other", self.settings, identity)
         with self.assertRaisesRegex(ValueError, "another window"):
             self.recipes.save("Default show", self.settings, identity, saved["id"])
-        with self.assertRaisesRegex(ValueError, "library changed"):
+        with self.assertRaisesRegex(ValueError, "Show settings changed"):
             self.recipes.select(saved["id"], identity)
 
     def test_same_name_requires_explicit_update_case_insensitively(self):
         saved, identity = self.recipes.save("Default", self.settings, "")
-        with self.assertRaisesRegex(ValueError, "exists"):
+        with self.assertRaisesRegex(ValueError, "with that name exist"):
             self.recipes.save("default", self.settings, identity)
         changed = {**self.settings, "speed": 1.25}
         updated, new_identity = self.recipes.save("Default", changed, identity, saved["id"])
@@ -97,7 +97,7 @@ class RecipeTests(unittest.TestCase):
 
     def test_corrupt_recipe_library_is_not_silently_replaced(self):
         self.repository.checkpoint({KEY: {"version": True, "recipes": {}}})
-        with self.assertRaisesRegex(ValueError, "Invalid saved show"):
+        with self.assertRaisesRegex(ValueError, "Saved show settings are damaged"):
             self.recipes.load()
         self.assertIs(self.repository.state(KEY)["version"], True)
 
@@ -214,7 +214,9 @@ class RecipeUiTests(unittest.TestCase):
             "Field Notes", {**reference["settings"], "speed": 1.5}, identity, reference["id"]
         )
         self.controls.reload_recipes()
-        self.assertIn("Library recipe changed", self.controls.window.message.cget("text"))
+        self.assertIn(
+            "These saved show settings changed", self.controls.window.message.cget("text")
+        )
         self.assertEqual(float(self.w.speed.get()), 1.15)
         self.assertEqual(self.w.show_recipe["settings"]["speed"], 1.15)
 

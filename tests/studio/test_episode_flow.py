@@ -115,7 +115,7 @@ class EpisodeFlowUiTests(unittest.TestCase):
             self.assertEqual(len(pending), 1)
             self.assertFalse(self.c.production.busy)
             self.assertEqual(self.repo.jobs(), [])
-            self.assertIn("changed during inspection", self.app.message.cget("text"))
+            self.assertIn("changed during the checks", self.app.message.cget("text"))
         finally:
             self.c.task = original
 
@@ -212,9 +212,8 @@ class EpisodeFlowUiTests(unittest.TestCase):
             written_url="https://mothandgravel.com/notes/013-work-outlives-the-window.html",
         )
         publication.load_episode(episode)
-        publication.field.set("Written note link")
-        self.assertEqual(publication.text.get("1.0", "end").strip(), episode.written_url)
-        publication.copy_button.invoke()
+        self.assertEqual(publication.measures["Written note link"].cget("text"), "65 characters")
+        publication.copy_buttons["Written note link"].invoke()
         self.assertEqual(self.root.clipboard_get(), episode.written_url)
         self.assertEqual(publication.url.get(), "")
         self.assertEqual(publication.date.get(), "")
@@ -228,6 +227,8 @@ class EpisodeFlowUiTests(unittest.TestCase):
         self.assertEqual(publication.date.get(), "2026-10-15")
 
     def test_later_success_removes_old_failure_attention_and_disables_its_retry(self):
+        # A poll that read the empty queue earlier must not land after this render.
+        self.h.wait(lambda: not self.c.polling)
         old = self.repo.submit("note-001", "prepare", {})
         self.repo.claim()
         self.repo.finish(old, "failed", error="Earlier TimeoutError")
@@ -239,7 +240,7 @@ class EpisodeFlowUiTests(unittest.TestCase):
         self.root.update()
         self.c.job_detail()
         self.h.wait(lambda: "Historical attempt" in self.app.jobs.detail.cget("text"))
-        self.assertIn("nothing needs attention", self.app.jobs.summary.cget("text"))
+        self.assertNotIn("need", self.app.jobs.summary.cget("text"))
         self.assertTrue(self.app.jobs.buttons["retry"].instate(["disabled"]))
         self.assertEqual(self.repo.get(old).error, "Earlier TimeoutError")
         with self.assertRaisesRegex(ValueError, "later attempt completed"):
@@ -248,6 +249,8 @@ class EpisodeFlowUiTests(unittest.TestCase):
     def test_compact_full_episode_controls_and_unified_review_are_not_clipped(self):
         self.root.geometry("1050x760+0+0")
         self.w.show_plan_tab()
+        self.w.toggle_more(True)
+        self.w.preflight_status("Checks · fixture")
         self.root.update()
         for widget in (self.w.full_episode, self.w.produce, self.w.guidance):
             self.assertTrue(widget.winfo_viewable())

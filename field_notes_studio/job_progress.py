@@ -22,29 +22,29 @@ class JobProgress:
 
 
 FLOWS = {
-    "prepare": (("narration", "Narration"), ("captions", "Captions"), ("save", "Save recording")),
-    "audio": (("audio", "Audio + captions"), ("save", "Save edition")),
-    "video": (("audio", "Audio + captions"), ("video", "Full video"), ("save", "Save edition")),
+    "prepare": (("narration", "Narration"), ("captions", "Captions"), ("save", "Save narration")),
+    "audio": (("audio", "Audio + captions"), ("save", "Save version")),
+    "video": (("audio", "Audio + captions"), ("video", "Full video"), ("save", "Save version")),
     "preview": (
         ("audio", "Audio + captions"),
         ("video", "Video preview"),
         ("save", "Save preview"),
     ),
-    "export": (("export", "Package files"), ("save", "Save package")),
+    "export": (("export", "Upload files"), ("save", "Save upload folder")),
 }
 TITLES = {
-    "prepare": "Prepare recording",
+    "prepare": "Narrate note",
     "audio": "Finish audio",
     "video": "Produce full episode",
     "preview": "Render preview",
-    "export": "Export package",
+    "export": "Make upload folder",
 }
 NEXT = {
-    "prepare": "Next: Produce episode. Narration and captions are saved; not yet a finished video.",
+    "prepare": "Next: Produce episode. Narration and captions are saved; there is no video yet.",
     "audio": "Next: review audio, or Produce episode for audio and full video together.",
-    "video": "Next: Review full episode once, then export. Nothing has been published.",
+    "video": "Next: review the full episode once, then make the upload folder. Nothing is published.",
     "preview": "Next: watch the preview, then Produce episode. A preview is not a full video.",
-    "export": "Next: Check package files, then upload manually. Export is not publication.",
+    "export": "Next: open Release, copy the files and text into YouTube. Nothing is published yet.",
 }
 TERMINAL_STAGES = {"failed", "interrupted", "cancelled", "succeeded", "waiting"}
 
@@ -97,8 +97,10 @@ def progress_for(job: Job, events: list[dict], *, historical: bool = False) -> J
                 and int(match[2]) == total
                 and 0 < int(match[1]) <= total
             }
-            unit = "chunk" if len(completed) == 1 else "chunks"
-            title = f"Narration {current}/{total} · {len(completed)} {unit} saved in this job"
+            unit = "part" if len(completed) == 1 else "parts"
+            title = (
+                f"Narrating part {current} of {total} · {len(completed)} {unit} saved in this job"
+            )
     if historical:
         next_step = "Historical attempt; a later job completed. No retry needed for this row."
     elif job.status == "succeeded":
@@ -109,19 +111,17 @@ def progress_for(job: Job, events: list[dict], *, historical: bool = False) -> J
         next_step = "Next: Resume to check the saved caption operation. No new narration request."
     elif job.status in {"failed", "interrupted", "cancelled"}:
         next_step = (
-            "Next: Inspect recovery. Keep saved chunks; another request needs fresh consent."
+            "Next: check recovery. Saved parts are kept; another request needs your consent again."
             if job.action == "prepare"
-            else "Next: inspect History, then retry or check a fresh recipe. Saved work is retained."
+            else "Next: read History, then retry or check a fresh plan. Saved work is kept."
         )
     elif job.status == "queued":
-        next_step = (
-            "Queued, not started. The worker runs one job at a time; closing this window is safe."
-        )
+        next_step = "Waiting for its turn. The background producer runs one job at a time; closing Studio is safe."
     elif not active:
         next_step = "Checking or moving between stages. No completion estimate is available."
     elif job.action == "prepare" and active in {"narration", "captions"}:
         next_step = (
-            "Waiting for the service; provider progress is unavailable. Saved chunks are retained."
+            "Waiting for the narration service, which reports no progress. Saved parts are kept."
         )
     else:
         next_step = "Working locally. Stages are not equal in duration; no completion estimate is available."

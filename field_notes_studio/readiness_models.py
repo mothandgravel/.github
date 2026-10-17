@@ -41,8 +41,8 @@ PLAIN = {
     "copy": "Upload title, description or tags are invalid. Fix them in Release.",
     "busy": "Another job is using these files. Wait for it, then Check.",
     "edition": "The saved episode can't be verified. Produce it again.",
-    "package": "The upload package can't be verified. Export it again.",
-    "preflight": "A production check failed; nothing was queued. See Health.",
+    "package": "The upload folder can't be verified. Make it again.",
+    "preflight": "A production check failed; nothing was queued. See Setup check.",
 }
 
 

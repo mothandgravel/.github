@@ -95,7 +95,7 @@ class PreparationJobs:
         plan = audio.make_plan(snapshot.episode, config["model"], config["endpoint"], self.root)
         if self.preparation.inspect(note).identity != snapshot.identity:
             raise ValueError(
-                "Sources or settings changed. Inspect again before authorizing preparation."
+                "Sources or settings changed. Check again before allowing the narration."
             )
         request = {
             "version": 1,
@@ -124,17 +124,17 @@ class PreparationJobs:
                 )
                 if state.get("request_sha256") != expected:
                     blockers.append(
-                        f"Narration chunk {index} receipt does not match this script. Inspect its saved evidence; do not delete it."
+                        f"Narration part {index} receipt does not match this script. Check its saved evidence; do not delete it."
                     )
                 else:
                     uncertain[str(index)] = digest_file(path)
                     diagnostics.append(
-                        f"Chunk {index}: "
+                        f"Part {index}: "
                         + narration_diagnostic(state)
                         + "\nCurrent receipt: "
                         + str(path.relative_to(self.root))
                     )
-        caption_state = "No matching local caption state inspected yet."
+        caption_state = "No matching local caption state checked yet."
         if (directory / "episode.mp3").exists():
             args = self._caption_args(plan, config, directory / "episode.mp3")
             directory2 = captions.recording_plan(args)[0]
@@ -157,9 +157,9 @@ class PreparationJobs:
         recovery_summary = ""
         if uncertain:
             recovery_summary = (
-                "Narration outcome unknown for chunk(s) " + ", ".join(uncertain) + ". "
+                "Narration outcome unknown for part(s) " + ", ".join(uncertain) + ". "
                 "Google may already have processed those requests. Resending can charge twice. "
-                "Completed audio is retained and verified; other missing chunks remain part of the preparation. "
+                "Completed audio is kept and verified; other missing parts are still part of the narration. "
                 "No retry happens without both authorizations below."
             )
             if not blockers:
@@ -177,13 +177,13 @@ class PreparationJobs:
             f"Client narration socket timeout: {request['tts_timeout_seconds']}s ({request['tts_timeout_seconds'] / 60:g} minutes). "
             "This is a wait policy, not a completion promise or automatic retry.\n"
             f"Captions: {config['caption_model']} · {config['location']}. Authentication: {config['auth']}.\n"
-            f"{complete}/{len(plan['requests'])} narration cache records report completion; the worker verifies their bytes.\n"
+            f"{complete}/{len(plan['requests'])} narration parts report completion; the background producer verifies their bytes.\n"
             f"{caption_state}\n\n"
             "Queueing authorizes missing narration requests, private audio upload and caption submission/polling. "
             "These services can incur charges; this is not a price quote or live billing check.\n"
             "Completed work is reused. Uncertain requests and failed caption operations are never silently restarted.\n"
-            "Successful preparation adds a private recording to the production shelf; no public files, approvals or publication records are changed.\n"
-            "No service request has been made by this inspection.\n\n" + intro
+            "Successful narration adds a private narrated note to the shelf; no public files, approvals or release records are changed.\n"
+            "This check sent no service request.\n\n" + intro
         )
         if saved_recording:
             summary += "\nVerified saved narration is available; no synthesis is needed.\n"
@@ -301,7 +301,7 @@ class PreparationJobs:
             or snapshot.identity != request["source_identity"]
         ):
             raise ValueError(
-                "Sources or settings changed after preparation was inspected. Inspect a fresh plan."
+                "Sources or settings changed after the narration was checked. Check a fresh plan."
             )
         config = self.configuration()
         plan = audio.make_plan(snapshot.episode, config["model"], config["endpoint"], self.root)
@@ -342,7 +342,7 @@ class PreparationJobs:
         for index, receipt in request.get("uncertain_chunks", {}).items():
             path = directory / f"chunk-{int(index):03d}.json"
             if not path.is_file() or digest_file(path) != receipt:
-                raise ValueError("Recovery receipt changed or disappeared. Inspect recovery again.")
+                raise ValueError("Recovery receipt changed or disappeared. Check recovery again.")
             state = read_object(path)
             expected = audio.digest(
                 json.dumps(plan["requests"][int(index) - 1], sort_keys=True).encode()
@@ -352,7 +352,7 @@ class PreparationJobs:
                 or state.get("request_sha256") != expected
             ):
                 raise ValueError(
-                    "Recovery receipt no longer describes the inspected uncertain request"
+                    "Recovery receipt no longer describes the checked uncertain request"
                 )
 
     def run(self, request: dict, emit, stopped) -> str:
@@ -387,13 +387,13 @@ class PreparationJobs:
             ),
             retry_receipts=request.get("uncertain_chunks", {}),
             _cancel_event=Guard(),
-            retry_hint="use Inspect recovery in Studio to try this part",
+            retry_hint="use Check recovery in Studio to try this part",
             allow_spend_over_limit=(request.get("spend_override") or {}).get("reason"),
             spend_token=(request.get("spend_override") or {}).get("token"),
         )
         emit(
             "narration",
-            "Reusing verified narration chunks or making explicitly authorized requests",
+            "Reusing verified narration parts or making explicitly allowed requests",
         )
         with run_lock(directory, "audio"):
             self._check_cache_paths(directory)
@@ -412,7 +412,7 @@ class PreparationJobs:
             caption_args._cancel_event = Guard()
             caption_args.allow_spend_over_limit = args.allow_spend_over_limit
             caption_args.spend_token = args.spend_token
-            caption_args.retry_hint = "use Inspect recovery in Studio"
+            caption_args.retry_hint = "use Check recovery in Studio"
             # Validate containment of all existing cache files before the engine opens them.
             cap_directory, caption_plan, *_ = captions.recording_plan(caption_args)
             self._check_cache_paths(directory)
@@ -428,7 +428,7 @@ class PreparationJobs:
                 or receipt["fingerprint"] != caption_plan["fingerprint"]
                 or receipt["audio_sha256"] != caption_plan["audio_sha256"]
             ):
-                raise ValueError("Saved caption Resume identity disagrees with this recording")
+                raise ValueError("Saved caption Resume identity disagrees with this narration")
             if receipt is not None:
                 captions.operation_url(receipt["operation"], config["location"], config["project"])
             completed = captions.run(

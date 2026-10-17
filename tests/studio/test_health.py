@@ -47,7 +47,7 @@ class HealthTests(unittest.TestCase):
             patch("signal.pidfd_send_signal") as signal,
         ):
             message = restart(self.repository, self.root)
-        self.assertIn("finish its current job", message)
+        self.assertIn("finishes its current job", message)
         self.assertTrue(self.repository.state("worker_control")["restart"])
         signal.assert_not_called()
 
@@ -73,7 +73,7 @@ class HealthTests(unittest.TestCase):
             ),
             patch("signal.pidfd_send_signal") as sent,
         ):
-            with self.assertRaisesRegex(ValueError, "identity"):
+            with self.assertRaisesRegex(ValueError, "could not be verified"):
                 restart(self.repository, self.root)
         sent.assert_not_called()
 
@@ -125,6 +125,6 @@ class HealthTests(unittest.TestCase):
             message = restart(self.repository, self.root)
         child.wait(timeout=5)
         self.assertEqual(child.returncode, -15)
-        self.assertIn("legacy", message)
+        self.assertIn("old background producer", message)
         self.assertIsNone(lock_owner(self.repository.path.parent))
         launched.assert_called_once_with(self.root)

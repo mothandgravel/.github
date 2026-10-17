@@ -67,6 +67,8 @@ class ReviewSnapshot:
     video: str = ""
     full_video: bool = False
     approved: bool = False
+    version: str = ""
+    duration: float = 0.0
 
 
 @dataclass(frozen=True)

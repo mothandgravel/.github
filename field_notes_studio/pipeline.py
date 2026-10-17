@@ -60,7 +60,7 @@ class Pipeline:
                     link,
                     published,
                     (
-                        "Private prepared recording; not published or human-reviewed."
+                        "Private narrated note; not published or reviewed."
                         if entry.get("local_prepared")
                         else "Podcast catalog in this checkout; external platforms have not been checked."
                     ),
@@ -73,6 +73,33 @@ class Pipeline:
                 )
             )
         return episodes
+
+    def stage_hints(self) -> dict[str, str]:
+        """A cheap next-step hint per episode from saved pointers, without hashing media.
+
+        "Produce" when no full version is saved, "Review" until a review record
+        says approved, then "Release". Catalog episodes with a podcast destination
+        and no local version are "In feed". Readiness re-verifies everything.
+        """
+        hints = {}
+        for entry in self.entries():
+            identifier = entry["id"]
+            pointer = self.output / identifier / "latest.json"
+            try:
+                if not pointer.is_file():
+                    link, _ = self.publication_defaults(entry)
+                    hints[identifier] = "In feed" if link else "Produce"
+                    continue
+                latest = read_object(pointer)
+                audio = (self.output / identifier / str(latest.get("audio", ""))).resolve()
+                if not audio.is_relative_to((self.output / identifier).resolve()):
+                    raise ValueError("Saved version pointer leaves the episode folder")
+                review = audio / "review.json"
+                approved = review.is_file() and read_object(review).get("status") == "approved"
+                hints[identifier] = "Release" if approved and latest.get("video") else "Review"
+            except (OSError, ValueError, TypeError):
+                hints[identifier] = "Check"
+        return hints
 
     @staticmethod
     def publication_defaults(entry: dict) -> tuple[str, str]:
@@ -94,7 +121,7 @@ class Pipeline:
             with run_lock(uploads, "upload export"):
                 manifest = read_object(directory / "upload.json")
                 names = ("title.txt", "description.txt", "tags.txt", "hashtags.txt")
-                message = "Saved upload text changed. Export again to repair the package."
+                message = "Saved upload text changed. Make the upload folder again to repair it."
                 if (
                     directory.is_symlink()
                     or manifest.get("episode") != identifier
@@ -114,17 +141,17 @@ class Pipeline:
                 *values,
                 link,
                 published,
-                "Saved upload package text (checksummed). Export again to apply later changes; media approval stays in Review.",
+                "Saved upload folder text (checksummed). Make the upload folder again to apply later changes; approval stays in Review.",
             )
         config = load_metadata(self.root / "audio/production/publishing.json")
         settings = self.settings(identifier)
-        basis = (
-            "Draft copy from publishing settings. Produce an edition to confirm its music credit."
-        )
+        basis = "Draft copy from the show's publishing settings. Produce the episode to confirm its music credit."
         if (self.output / identifier / "latest.json").exists():
             with packages.locked_editions([entry], self.output, full_video=False) as editions:
                 settings = editions[0].state["settings"]
-                basis = "Copy from publishing settings and the verified saved audio's music credit."
+                basis = (
+                    "Copy from the show's publishing settings and the saved audio's music credit."
+                )
         copy = publishing_copy(
             config,
             entry,
@@ -174,9 +201,9 @@ class Pipeline:
                 runner.preflight(
                     self.root, argparse.Namespace(audio_only=audio_only, browser_executable=None)
                 )
-                lines.append(f"{name} preflight: ready")
+                lines.append(f"{name} checks: ready")
             except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                lines.append(f"{name} preflight: {exc}")
+                lines.append(f"{name} checks: {exc}")
 
         preflight(True, "Audio")
         preflight(False, "Full video")
@@ -263,7 +290,7 @@ class Pipeline:
             or type(manifest.get("default_playback_rate")) is not int
             or manifest["default_playback_rate"] != 1
         ):
-            raise ValueError("Invalid upload package. Inspect and export the package again.")
+            raise ValueError("The upload folder is damaged. Make the upload folder again.")
         return directory, manifest
 
     def package_snapshot(self, identifier: str) -> PackageSnapshot:
@@ -274,7 +301,7 @@ class Pipeline:
                 identifier,
                 "",
                 "missing",
-                "No upload package yet. Produce and review the full video, then Inspect package and queue export.",
+                "No upload folder yet. Produce and review the full episode, then choose Make upload folder.",
             )
         with ExitStack() as stack:
             edition, problem = None, ""
@@ -291,7 +318,7 @@ class Pipeline:
                 directory, manifest = self._upload_manifest(identifier)
                 if not packages.upload_valid(directory, manifest["fingerprint"]):
                     raise ValueError(
-                        "Upload files are missing or changed. Inspect and export the package again."
+                        "Upload files are missing or changed. Make the upload folder again."
                     )
                 files = tuple(
                     PackageFile(
@@ -301,7 +328,7 @@ class Pipeline:
                 )
                 status, summary = (
                     "unverified",
-                    "Files checked; current edition unavailable: " + problem,
+                    "Files checked; the current version is unavailable: " + problem,
                 )
                 if edition is not None:
                     expected = {
@@ -325,22 +352,22 @@ class Pipeline:
                     if not current:
                         status, summary = (
                             "stale",
-                            "This package contains an older or different edition. Inspect package and export again for the latest media.",
+                            "This upload folder holds an older or different version. Make the upload folder again for the latest media.",
                         )
                     elif packages.review_status(edition, True) != "approved":
                         status, summary = (
                             "review",
-                            "Files match the saved edition; full-video review is pending. Review the video, then export again.",
+                            "Files match the saved version, but its review is pending. Review the full episode, then make the upload folder again.",
                         )
                     elif manifest["review_status"] != "approved":
                         status, summary = (
                             "stale",
-                            "Full-video review is approved; export again to attach that approval to this package.",
+                            "The full episode is approved; make the upload folder again to include that approval.",
                         )
                     else:
                         status, summary = (
                             "ready",
-                            "Files checked · current full edition · review approved. Ready for manual upload; platform publication is not checked.",
+                            "Files checked · current full version · approved. Ready to upload by hand; Studio does not check the platform.",
                         )
                 link, published = self.publication_defaults(entry)
                 details = ReleaseDetails(
@@ -350,7 +377,7 @@ class Pipeline:
                     ),
                     link,
                     published,
-                    "Saved upload package text (checksummed). Media and review status is shown in Package files.",
+                    "Saved upload folder text (checksummed). Media and review status is shown under Files.",
                 )
                 return PackageSnapshot(
                     identifier, fingerprint(manifest), status, summary, files, details
@@ -358,7 +385,7 @@ class Pipeline:
 
     def package_file(self, snapshot: PackageSnapshot, name: str) -> Path:
         if not snapshot.identity or name not in PACKAGE_MEDIA:
-            raise ValueError("Select a checked package file first")
+            raise ValueError("Choose a checked upload file first")
         try:
             with run_lock(self.root / "artifacts/uploads", "upload package check"):
                 directory, manifest = self._upload_manifest(snapshot.episode)
@@ -369,12 +396,12 @@ class Pipeline:
                     or digest_file(path) != manifest["files"][name]
                 ):
                     raise ValueError(
-                        "The package changed after checking. Check the files again before opening or copying a path."
+                        "The upload folder changed after checking. Check the files again before copying a path."
                     )
                 return path
         except OSError as exc:
             raise ValueError(
-                "Package files are unavailable. Check the files again before opening or copying a path."
+                "Upload files are unavailable. Check the files again before copying a path."
             ) from exc
 
     def preflight(self, identifier, action, request):
@@ -431,7 +458,7 @@ class Pipeline:
         if not (self.output / identifier / "latest.json").exists():
             return ReviewSnapshot(
                 "",
-                "No local edition yet. Choose Produce episode for audio, captions, full video and thumbnail together.",
+                "No saved version yet. Produce episode makes audio, captions, full video and thumbnail together.",
             )
         try:
             with packages.locked_editions(
@@ -441,22 +468,27 @@ class Pipeline:
                 status = packages.review_status(edition, full_video)
                 scope = "Audio, captions and full video" if full_video else "Audio and captions"
                 settings = edition.state["settings"]
+                # People see when the version was made; its content id stays a detail.
+                made = datetime.fromtimestamp((edition.audio / "production.json").stat().st_mtime)
+                when = made.strftime(
+                    "%H:%M" if made.date() == datetime.now().date() else "%d %b %H:%M"
+                )
                 detail = (
                     f"{scope}: {status} · {edition.state['duration_seconds'] / 60:.1f} min\n"
-                    f"Saved edition: {edition.audio.name} · {settings['speed']:g}× pace · "
-                    f"{settings['outro_seconds']:g}s outro\n"
+                    f"Saved version: made {when} · {settings['speed']:g}× pace · "
+                    f"{settings['outro_seconds']:g} s outro\n"
                 )
                 if status == "approved":
                     detail += (
-                        "Review recorded. Select export, inspect changes, then queue the upload package."
+                        "Approved. Next: make the upload folder."
                         if full_video
-                        else "Review recorded. For a YouTube package, produce and review the full video, then export."
+                        else "Approved. For YouTube, produce and review the full episode, then make the upload folder."
                     )
                 else:
                     detail += (
-                        "Watch and listen to the full episode, check its subtitles, then record one approval for all three."
+                        "Watch and listen to the full episode, check its subtitles, then approve all three at once."
                         if full_video
-                        else "Listen to the audio, check its subtitles, then record approval."
+                        else "Listen to the audio, check its subtitles, then approve."
                     )
                 return ReviewSnapshot(
                     self.review_identity(edition),
@@ -466,13 +498,15 @@ class Pipeline:
                     str(edition.video / "episode.mp4") if edition.video else "",
                     full_video,
                     approved=status == "approved",
+                    version=edition.audio.name,
+                    duration=float(edition.state["duration_seconds"]),
                 )
         except (ValueError, OSError) as exc:
             return ReviewSnapshot("", f"Review unavailable: {exc}")
 
     def approve(self, identifier: str, expected: ReviewSnapshot, reviewer: str) -> None:
         if not expected.identity:
-            raise ValueError("Load a completed edition before reviewing it")
+            raise ValueError("Load a finished version before reviewing it")
         with packages.locked_editions(
             [self.source(identifier)],
             self.output,
@@ -482,7 +516,7 @@ class Pipeline:
             edition = editions[0]
             if self.review_identity(edition) != expected.identity:
                 raise ValueError(
-                    "Edition changed while you were reviewing. Refresh and check the new assets."
+                    "The version changed while you were reviewing. Check again and review the new files."
                 )
             if not expected.full_video and packages.review_status(edition) == "approved":
                 # An optional audio-only recheck must not erase the existing fuller
@@ -533,7 +567,7 @@ class Pipeline:
     def plan(self, identifier: str, action: str, request: dict) -> str:
         settings = request["settings"]
         if action == "export":
-            return "Package the currently selected full video and audio with title, description, tags and subtitles. No rendering; pace and outro controls do not affect export. The job stops if the edition changes before export. Review status stays attached to that edition."
+            return "Make the upload folder from the saved full video and audio, with title, description, tags and subtitles. Nothing is rendered; pace and outro do not apply. The job stops if the version changes first. The approval stays with that version."
         lines = ["Use the preserved narration; no Cloud generation or transcription requests."]
         try:
             directory = self.output / identifier
@@ -548,7 +582,7 @@ class Pipeline:
             ]
             if not valid:
                 lines.append(
-                    "The latest audio is incomplete or changed; production will validate and repair the requested edition."
+                    "The latest audio is incomplete or changed; production checks and repairs it for this version."
                 )
             elif changed:
                 lines.append(
@@ -558,10 +592,10 @@ class Pipeline:
                 )
             else:
                 lines.append(
-                    "The latest edition has matching sound settings. The worker verifies source, toolchain and cache hashes before reuse."
+                    "The latest version has the same sound settings. The background producer checks the note, tools and saved files before reusing them."
                 )
         except (ValueError, OSError, TypeError, KeyError):
-            lines.append("No usable local edition: finish audio and retime captions.")
+            lines.append("No usable saved version: finish audio and retime captions.")
         if action != "audio":
             lines.append(
                 "Render a 10-second video preview."
@@ -571,9 +605,7 @@ class Pipeline:
             lines.append(
                 "The video engine verifies artwork, renderer, sound and caption identities before cache reuse."
             )
-        lines.append(
-            "Keep the published episode unchanged; new editions need listening and caption review."
-        )
+        lines.append("The published episode stays unchanged; a new version needs its own review.")
         return "\n\n".join(lines)
 
     def run(
@@ -607,13 +639,13 @@ class Pipeline:
             upload_dir=None,
             metadata=None,
         )
-        emit("preflight", "Checking episode source, recipe and installed tools")
+        emit("preflight", "Checking the note, its show settings and installed tools")
         if action == "export":
             if read_object(self.output / identifier / "latest.json") != request["edition"]:
                 raise ValueError(
-                    "Completed edition changed after planning export. Inspect a fresh plan."
+                    "The finished version changed after this plan was checked. Check the plan again."
                 )
-            emit("export", "Verifying and packaging the selected full edition")
+            emit("export", "Checking the full version and making its upload folder")
             packages.export(args, self.root, expected_edition=request["edition"])
             return str(self.root / "artifacts/uploads" / identifier)
         runner.produce(args, self.root)
