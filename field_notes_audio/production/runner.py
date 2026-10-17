@@ -55,7 +55,8 @@ def produce_video(
             "timeline": read_object(edition / "production.json")["timeline_duration_seconds"],
             "assets": {name: digest_file(path) for name, path in assets.items()},
             "renderer": code,
-            "video": settings["video"],
+            # Worker count changes speed, not bytes, so it must not change the identity.
+            "video": {k: v for k, v in settings["video"].items() if k != "concurrency"},
             "preview_seconds": args.preview_seconds,
         }
     )

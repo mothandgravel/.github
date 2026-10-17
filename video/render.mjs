@@ -9,8 +9,15 @@ if (!propsPath || !publicDir || !destination) throw new Error('Usage: render.mjs
 const root = dirname(fileURLToPath(import.meta.url));
 const props = JSON.parse(await readFile(propsPath, 'utf8'));
 // Per-frame budget. A busy desktop can need far longer than Remotion's 30 s default.
-const timeoutInMilliseconds = Number(process.env.MG_RENDER_FRAME_TIMEOUT_MS) > 0
-  ? Number(process.env.MG_RENDER_FRAME_TIMEOUT_MS) : 120000;
+const configuredTimeout = process.env.MG_RENDER_FRAME_TIMEOUT_MS;
+const FRAME_TIMEOUT_DEFAULT = 120000;
+// Remotion refuses under 7000 ms; Node timers overflow past 2^31-1 ms.
+const timeoutValid = configuredTimeout !== undefined && /^\d+$/.test(configuredTimeout)
+  && Number(configuredTimeout) >= 7000 && Number(configuredTimeout) <= 2147483647;
+if (configuredTimeout !== undefined && !timeoutValid) {
+  console.warn(`MG_RENDER_FRAME_TIMEOUT_MS must be a whole number from 7000 to 2147483647; using ${FRAME_TIMEOUT_DEFAULT}.`);
+}
+const timeoutInMilliseconds = timeoutValid ? Number(configuredTimeout) : FRAME_TIMEOUT_DEFAULT;
 const started = performance.now();
 const serveUrl = await preparedBundle(root, publicDir, sharedBundle || join(destination, 'bundle'));
 let browser;

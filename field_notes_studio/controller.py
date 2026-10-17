@@ -900,7 +900,7 @@ class Controller:
                     guidance = "This full episode is already approved. Next: make its upload folder. This job published nothing."
             reason, hidden = split_details(job.error or result or last)
             if hidden:
-                reason += " Renderer output: Job history, Details."
+                reason += " Full renderer output is in Job history."
             if job.status in {"failed", "interrupted", "cancelled"} and not re.fullmatch(
                 r"narration-\d+-of-\d+", at
             ):
