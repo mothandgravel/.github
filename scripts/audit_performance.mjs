@@ -3,7 +3,8 @@ import lighthouse from 'lighthouse';
 import desktopConfig from 'lighthouse/core/config/desktop-config.js';
 import * as chromeLauncher from 'chrome-launcher';
 import { chromium } from 'playwright';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const output = process.env.PERFORMANCE_OUTPUT || 'artifacts/performance';
@@ -11,7 +12,9 @@ const candidate = process.env.SITE_URL || 'http://127.0.0.1:8793/';
 const baseline = process.env.BASELINE_URL || 'http://127.0.0.1:8794/';
 await mkdir(output, { recursive: true });
 const runs = [], failures = [];
-const chrome = await chromeLauncher.launch({ chromePath: chromium.executablePath(),
+// A throwaway profile outside the repository: chrome-launcher's default can land in the working tree under WSL.
+const profile = await mkdtemp(join(tmpdir(), 'mg-lighthouse-'));
+const chrome = await chromeLauncher.launch({ chromePath: chromium.executablePath(), userDataDir: profile,
   chromeFlags: ['--headless', '--no-sandbox', '--disable-dev-shm-usage'] });
 try {
   for (const profile of ['mobile', 'desktop']) {
@@ -54,7 +57,7 @@ try {
       }
     }
   }
-} finally { await chrome.kill(); }
+} finally { await chrome.kill(); await rm(profile, { recursive: true, force: true }); }
 const median = values => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
 const summaries = [];
 for (const profile of ['mobile', 'desktop']) for (const name of [...new Set(runs.map(r => r.name))]) {

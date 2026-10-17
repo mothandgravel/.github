@@ -4,3 +4,17 @@ __pycache__/
 .venv/
 .ruff_cache/
 
+
+# Browser and audit tool output must never be committed. Under WSL, Lighthouse's
+# chrome-launcher can create Windows-style profile paths (C:\Users\...\lighthouse.*)
+# relative to the working directory; those profiles hold cookies and storage.
+C:*
+lighthouse.*
+*.lighthouse/
+.lighthouseci/
+chrome-profile*/
+.chrome-profile*/
+user-data-dir*/
+playwright-report/
+test-results/
+.playwright/
