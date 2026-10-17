@@ -1,0 +1,404 @@
+WEBVTT
+
+1
+00:00:04.209 --> 00:00:08.661
+Moth and Gravel, Field Note 12.
+The picture stays, an AI
+
+2
+00:00:08.661 --> 00:00:11.965
+narrated edition of the
+published note. We stopped the
+
+3
+00:00:11.965 --> 00:00:15.757
+local server. The coastline
+stayed where it was. So did the
+
+4
+00:00:15.757 --> 00:00:19.061
+last vessel positions. The
+picture still had its shape.
+
+5
+00:00:19.478 --> 00:00:23.270
+Helsinki above, Tallinn below, a
+few marks in the water between
+
+6
+00:00:23.270 --> 00:00:26.957
+them. There was plenty left to
+look at. The connection message
+
+7
+00:00:26.957 --> 00:00:30.365
+had changed and the age beside
+the selected observation kept
+
+8
+00:00:30.365 --> 00:00:33.739
+growing. That quiet interval
+became the useful part of
+
+9
+00:00:33.739 --> 00:00:39.374
+Coastal Watch. A coastline lends
+conviction. Coastal Watch began
+
+10
+00:00:39.374 --> 00:00:43.374
+with a maritime dashboard in
+Rivaries concept defense. A
+
+11
+00:00:43.374 --> 00:00:46.817
+track plot needed a place to
+belong. We gave it a base map,
+
+12
+00:00:46.957 --> 00:00:49.948
+then worked on selecting a mark
+and keeping its record close.
+
+13
+00:00:50.609 --> 00:00:53.357
+The coastline helped
+immediately. A position could be
+
+14
+00:00:53.357 --> 00:00:56.730
+read in relation to a shore.
+Zooming gave the view a
+
+15
+00:00:56.730 --> 00:01:00.348
+different scale. Selecting a
+track linked the mark to a
+
+16
+00:01:00.348 --> 00:01:04.209
+source, a time, and a short
+history. It also made the whole
+
+17
+00:01:04.209 --> 00:01:07.757
+thing look more settled. A
+recognizable coast gives a
+
+18
+00:01:07.757 --> 00:01:11.652
+drawing some borrowed authority.
+The land can be real while every
+
+19
+00:01:11.652 --> 00:01:15.513
+vessel on it is synthetic. In
+this study, that is exactly the
+
+20
+00:01:15.513 --> 00:01:18.643
+arrangement. Finishing the
+picture gave us another
+
+21
+00:01:18.643 --> 00:01:22.643
+obligation. Make its limits as
+easy to find as its details.
+
+22
+00:01:23.443 --> 00:01:27.339
+There is more than one clock. A
+message has an observation time.
+
+23
+00:01:27.826 --> 00:01:30.922
+The dashboard also has a time
+when it received that message.
+
+24
+00:01:31.478 --> 00:01:35.061
+Those are two useful pieces of
+information. A recently received
+
+25
+00:01:35.061 --> 00:01:38.957
+message can describe an older
+position. A connected stream can
+
+26
+00:01:38.957 --> 00:01:42.991
+carry an aging observation. The
+reassuring word connected
+
+27
+00:01:43.096 --> 00:01:46.296
+answers a question about the
+connection. The mark still needs
+
+28
+00:01:46.296 --> 00:01:50.574
+a time of its own. We kept
+observation age and receipt age
+
+29
+00:01:50.609 --> 00:01:54.400
+separate. The selected record
+puts the source and observation
+
+30
+00:01:54.400 --> 00:01:58.087
+age beside the position and
+movement. You can look into one
+
+31
+00:01:58.087 --> 00:02:01.426
+mark without giving up the
+surrounding water. That is a
+
+32
+00:02:01.426 --> 00:02:04.800
+small arrangement of labels. It
+changes what the reader has to
+
+33
+00:02:04.800 --> 00:02:10.157
+remember. Let the gap become
+visible. The server has stopped.
+
+34
+00:02:10.539 --> 00:02:14.574
+The last position remains. It's
+age continues to grow and the
+
+35
+00:02:14.574 --> 00:02:17.843
+interface offers a reload.
+Actual capture from the
+
+36
+00:02:17.843 --> 00:02:21.322
+synthetic rehearsal. See the
+interruption in the short film.
+
+37
+00:02:21.983 --> 00:02:24.974
+Removing every mark when the
+connection drops would remove
+
+38
+00:02:24.974 --> 00:02:28.974
+useful context too. Leaving the
+picture untouched would make the
+
+39
+00:02:28.974 --> 00:02:32.696
+gap hard to see. In the
+prototype, the last position
+
+40
+00:02:32.696 --> 00:02:36.974
+stays. The connection state
+changes. The age continues to
+
+41
+00:02:36.974 --> 00:02:40.765
+count even though no new message
+arrives to prompt it. The
+
+42
+00:02:40.765 --> 00:02:44.522
+retained position now has a more
+modest job. This is where the
+
+43
+00:02:44.522 --> 00:02:48.174
+last observation put the vessel.
+The screen has no new
+
+44
+00:02:48.174 --> 00:02:52.000
+observation to offer. We made
+the interruption by stopping the
+
+45
+00:02:52.000 --> 00:02:56.139
+local server. The recording
+shows that behavior. It does not
+
+46
+00:02:56.139 --> 00:02:58.991
+tell us whether someone arriving
+halfway through the gap would
+
+47
+00:02:58.991 --> 00:03:03.826
+understand it. Keep the record
+within reach. A mark is good at
+
+48
+00:03:03.826 --> 00:03:06.852
+attracting attention. It's
+record gives that attention
+
+49
+00:03:06.852 --> 00:03:11.443
+somewhere to go. The reported
+identifier, source, age, and
+
+50
+00:03:11.443 --> 00:03:15.791
+recent positions belong
+together. A quality figure needs
+
+51
+00:03:15.791 --> 00:03:19.896
+its own explanation. The
+demonstration heuristic in this
+
+52
+00:03:19.896 --> 00:03:24.383
+dashboard cannot establish a
+vessel's identity or intent.
+
+53
+00:03:25.078 --> 00:03:29.043
+Zooming closer cannot supply
+that missing evidence either.
+
+54
+00:03:29.809 --> 00:03:33.426
+This is where polish becomes
+more than a surface. The
+
+55
+00:03:33.426 --> 00:03:38.087
+selection color needs to connect
+the chart and the record. The
+
+56
+00:03:38.087 --> 00:03:42.504
+words need to say what was
+observed. The older position
+
+57
+00:03:42.678 --> 00:03:47.861
+needs to remain recognizably
+older. Ask someone to read the
+
+58
+00:03:47.861 --> 00:03:53.391
+silence. The next useful study
+is quite plain. Show someone the
+
+59
+00:03:53.391 --> 00:03:57.635
+interrupted view without
+explaining it first. Ask where
+
+60
+00:03:57.635 --> 00:04:01.739
+the selected vessel is, how they
+know, and what they would want
+
+61
+00:04:01.739 --> 00:04:06.574
+to check next. Listen for the
+difference between it is here
+
+62
+00:04:06.991 --> 00:04:09.461
+and it was last seen here.
+
+63
+00:04:10.400 --> 00:04:14.922
+Then ask them to find the source
+and the age. A label can be
+
+64
+00:04:14.922 --> 00:04:19.722
+present without doing its work.
+We have not run that observation
+
+65
+00:04:19.722 --> 00:04:24.174
+yet. For now, Coastal Watch
+gives us a working picture and
+
+66
+00:04:24.174 --> 00:04:28.487
+the gap we can repeat. Enough to
+put a better question in front
+
+67
+00:04:28.487 --> 00:04:33.670
+of someone. The water stays on
+the screen. The account of it
+
+68
+00:04:33.704 --> 00:04:35.374
+needs to keep its time.
+
+69
+00:04:38.643 --> 00:04:44.487
+Study scope, working prototype.
+What this picture contains. This
+
+70
+00:04:44.487 --> 00:04:47.965
+note accompanies the Coastal
+Watch specimen and its recorded
+
+71
+00:04:47.965 --> 00:04:52.278
+local rehearsal. The base map
+uses natural Earth land
+
+72
+00:04:52.278 --> 00:04:57.426
+geometry. Vessel tracks are
+synthetic. Alert examples are
+
+73
+00:04:57.426 --> 00:05:01.948
+separate static fixtures. The
+dashboard does not run the track
+
+74
+00:05:01.948 --> 00:05:07.548
+fusion pipeline. The captures
+show selection, zoom, and a real
+
+75
+00:05:07.548 --> 00:05:12.661
+interruption of the local demo
+stream. The 27-second silent
+
+76
+00:05:12.661 --> 00:05:17.183
+film has direct cuts where
+capture gaps were removed. The
+
+77
+00:05:17.183 --> 00:05:22.157
+application source is private.
+No operator comprehension result
+
+78
+00:05:22.261 --> 00:05:26.330
+where operational validation is
+established. Inspect the
+
+79
+00:05:26.330 --> 00:05:30.609
+captures and working record.
+Read the source and media
+
+80
+00:05:30.643 --> 00:05:35.235
+provenance. You have been
+listening to Moth and Gravel
+
+81
+00:05:35.270 --> 00:05:39.791
+Field Notes. The written edition
+is at mothandgravel.com.
