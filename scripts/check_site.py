@@ -487,11 +487,17 @@ def main() -> int:
     check(re.search(r'<a href="playground/">[^<]*playground', preview, re.I) is not None,
           'Example workbench must lead to its second room, the playground')
 
-    # Standing investigations and the playground: three questions on the home page, one open
-    # question page, a light index, and room 02 with three lazy toys. Nothing links a page that
-    # does not exist yet, the live game is not linked, and no organisation names appear.
-    check(len(re.findall(r'<p class="service-ask mono">0[123] / (?:PAGE COMING|OPEN NOW)</p>', html)) == 3 and 'href="./investigations/green-light/"' in html,
-          'Home must show three standing questions, with the green-light page linked')
+    # Standing investigations and the playground: three questions on the home page, each with its
+    # own open page, a light index, and room 02 with three lazy toys. Every question is open (no
+    # "page coming" anywhere), the live game is not linked, and no organisation names appear.
+    QUESTION_PAGES = ('how-old', 'take-it-back', 'green-light')
+    check(len(re.findall(r'<p class="service-ask mono">0[123] / OPEN NOW</p>', html)) == 3
+          and all(f'href="./investigations/{slug}/"' in html for slug in QUESTION_PAGES),
+          'Home must show three standing questions, each linked to its page')
+    for published in ROOT.rglob('*.html'):
+        check('page coming' not in published.read_text(encoding='utf-8').lower()
+              and 'page is coming' not in published.read_text(encoding='utf-8').lower(),
+              f'{published.relative_to(ROOT)} still promises a page that is coming')
     check('href="./workbench/">Workbench</a>' in html, 'Menu Workbench must lead to the two-room workbench')
     # Made here: the homepage renders it after load from assets/made-here.mjs; the static list on
     # /investigations/ is the no-script route. Both must say the same thing.
@@ -505,9 +511,12 @@ def main() -> int:
           and "['#questions','./assets/made-here.mjs']" in html, 'Made here must load when its section nears view, with a no-script link')
     check('run.app' not in html, 'The live Cyber Grid is not linked yet')
     for page_path, needles in {
-        'investigations/index.html': ['href="./green-light/"', 'PAGE COMING'],
-        'investigations/green-light/index.html': ['data-toy="grid"', 'assets/playground.mjs', 'assets/thread.css'],
-        'workbench/playground/index.html': ['data-toy="stamp"', 'data-toy="grid"', 'data-toy="week"', 'aria-current="page"', 'href="../"'],
+        'investigations/index.html': ['href="./how-old/"', 'href="./take-it-back/"', 'href="./green-light/"'],
+        'investigations/how-old/index.html': ['data-toy="week"', 'assets/playground.mjs', 'assets/thread.css', 'STANDING INVESTIGATION / 01'],
+        'investigations/take-it-back/index.html': ['data-toy="stamp"', 'assets/playground.mjs', 'assets/thread.css', 'STANDING INVESTIGATION / 02'],
+        'investigations/green-light/index.html': ['data-toy="grid"', 'assets/playground.mjs', 'assets/thread.css', 'STANDING INVESTIGATION / 03'],
+        'workbench/playground/index.html': ['data-toy="stamp"', 'data-toy="grid"', 'data-toy="week"', 'aria-current="page"', 'href="../"',
+                                            'href="../../investigations/how-old/"', 'href="../../investigations/take-it-back/"'],
     }.items():
         page_file = ROOT / page_path
         check(page_file.is_file(), f'Missing {page_path}')

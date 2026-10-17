@@ -1,4 +1,4 @@
-/** Standing investigations, the green-light question and the playground: both appearances, narrow layouts,
+/** Standing investigations, the three question pages and the playground: both appearances, narrow layouts,
  * zero axe violations with every toy mounted and exercised, keyboard play, reduced motion, lazy loading and
  * a homepage that never fetches a toy. */
 import { launchAuditBrowser } from './audit_browser.mjs';
@@ -18,6 +18,8 @@ const axeRun = async (page) => {
 const pages = [
   { name: 'home-questions', path: '/', toys: [] },
   { name: 'investigations', path: '/investigations/', toys: [] },
+  { name: 'how-old', path: '/investigations/how-old/', toys: ['week'] },
+  { name: 'take-it-back', path: '/investigations/take-it-back/', toys: ['stamp'] },
   { name: 'green-light', path: '/investigations/green-light/', toys: ['grid'] },
   { name: 'playground', path: '/workbench/playground/', toys: ['grid', 'stamp', 'week'] },
 ];
@@ -45,7 +47,7 @@ try {
       const made = await page.evaluate(() => { const box = document.querySelector('#made-here');
         return { items: box.querySelectorAll('li').length, height: box.getBoundingClientRect().height, reserve: parseFloat(getComputedStyle(box).minHeight) }; });
       if (made.items !== 12 || made.height > made.reserve + 0.5) fail(label + ' made here', made);
-    } else if (target.toys.length && width === 1440 && toyRequests.some(url => /playground\/(stamp|week)\.mjs/.test(url)))
+    } else if (target.name === 'playground' && width === 1440 && toyRequests.some(url => /playground\/(stamp|week)\.mjs/.test(url)))
       fail(label, { eagerToys: toyRequests });
     for (const toy of target.toys) {
       await page.locator(`#toy-${toy}`).scrollIntoViewIfNeeded();
@@ -68,6 +70,9 @@ try {
     }));
     if (check.overflow || check.headings !== 1 || check.animating || check.leaks || errors.length) fail(label, { check, errors });
     if (width !== 320) {
+      // Axe runs on the page at rest at its top: anything scrolled under the sticky header would
+      // otherwise read as an obscured target.
+      await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
       const violations = await axeRun(page);
       if (violations.length) fail(label + ' axe', violations);
       await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
@@ -121,6 +126,22 @@ try {
   // Normal motion: the river flows. Reduced motion (above) was checked to have no running animation.
   if (!(await page.evaluate(() => document.getAnimations().some(a => a.animationName === 'river-flow' && a.playState === 'running')))) fail('river flow', 'no flow with normal motion');
   await page.close();
+
+  // The question pages open with their toy, and it plays from the keyboard there too.
+  const question = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await question.goto(origin + '/investigations/how-old/', { waitUntil: 'networkidle' });
+  await question.locator('#toy-week').scrollIntoViewIfNeeded(); await question.locator('#toy-week[data-loaded="ready"]').waitFor();
+  await question.locator('#toy-week input[value="ring"]').focus(); await question.keyboard.press('Space');
+  await question.locator('#toy-week .week-item').nth(1).focus(); await question.keyboard.press('Enter');
+  if ((await question.locator('#toy-week .week-detail h3').textContent()) !== 'A choice now has a name.') fail('how-old keyboard', 'week item not chosen');
+  await question.goto(origin + '/investigations/take-it-back/', { waitUntil: 'networkidle' });
+  await question.locator('#toy-stamp').scrollIntoViewIfNeeded(); await question.locator('#toy-stamp[data-loaded="ready"]').waitFor();
+  await question.locator('#toy-stamp .stamp-cell[tabindex="0"]').focus();
+  await question.keyboard.press('Enter'); await question.waitForTimeout(80);
+  if (!/^Placed\./.test(await question.locator('#toy-stamp [data-status]').textContent())) fail('take-it-back keyboard', 'stamp not placed');
+  await question.locator('#toy-stamp [data-undo]').focus(); await question.keyboard.press('Enter'); await question.waitForTimeout(80);
+  if (!/^Undone\./.test(await question.locator('#toy-stamp [data-status]').textContent())) fail('take-it-back keyboard', 'undo did not take the stamp back');
+  await question.close();
 
   // Without JavaScript, every bench still says what its toy shows.
   const quiet = await browser.newContext({ javaScriptEnabled: false });
