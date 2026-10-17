@@ -31,10 +31,8 @@ try{
     await page.addInitScript(t=>localStorage.setItem('moth-and-gravel-theme',t),theme);
     await page.goto(origin,{waitUntil:'networkidle'});
     const menu=page.locator('#menu-toggle'),nav=page.locator('#primary-nav');
-    // Above 1100px the full navigation is visible, so the sheet control is not shown.
-    assert(await menu.isVisible()===(width<=1100),label+': sheet control only where navigation is compact');
+    assert(await menu.isVisible(),label+': no desktop/mobile sheet control');
     assert(await nav.isVisible()===(width>1100),label+': compact navigation boundary');
-    if(width<=1100){
     const before=await menu.boundingBox();await menu.click();await opened(page);
     await page.waitForTimeout(280);
     assert(await page.evaluate(()=>document.activeElement===document.querySelector('#primary-nav>a')),label+': opening focus does not reach first route');
@@ -58,7 +56,6 @@ try{
     await menu.click();await page.mouse.click(3,200);await closed(page,label+' outside');
     await menu.click();await page.setViewportSize({width:width+1,height:760});await closed(page,label+' resize');
     await page.setViewportSize({width,height:900});
-    }
     await page.locator('#field-notes').scrollIntoViewIfNeeded();
     assert(await page.locator('#field-notes').evaluate(el=>getComputedStyle(el).color==='rgb(32, 34, 34)'),label+': reading room not on paper');
     await page.locator('#work').scrollIntoViewIfNeeded();

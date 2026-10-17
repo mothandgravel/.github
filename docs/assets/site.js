@@ -7,10 +7,9 @@
   const navigation = document.getElementById("primary-nav");
   const storageKey = "moth-and-gravel-theme";
 
-  // A per-device choice: follow the system, or keep Light (afterlight) or Dark (night).
-  const choices = ["system", "light", "dark"];
-  const names = { system: "System", light: "Light", dark: "Dark" };
-  const stored = { system: "system", light: "afterlight", dark: "night" };
+  // A per-device choice in the studio's own names: Night, Afterlight, or follow the system.
+  // Choices use the same values as data-theme, so every Night and Afterlight style applies.
+  const names = { night: "Night", afterlight: "Afterlight" };
   const prefersLight = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
   const themeLabel = themeButton?.querySelector("[data-theme-label]");
 
@@ -31,23 +30,31 @@
     setTimeout(() => { voice.textContent = message; }, 40);
   }
 
+  function themeName(choice, resolved) {
+    return choice === "system" ? "System · " + names[resolved] : names[resolved];
+  }
+
   function applyTheme(choice) {
-    const resolved = choice === "light" ? "afterlight" : choice === "dark" ? "night"
-      : (prefersLight?.matches ? "afterlight" : "night");
+    const resolved = choice === "system" ? (prefersLight?.matches ? "afterlight" : "night") : choice;
     root.dataset.themeChoice = choice;
     root.dataset.theme = resolved;
-    if (themeLabel) themeLabel.textContent = names[choice];
+    if (themeLabel) themeLabel.textContent = themeName(choice, resolved);
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", resolved === "afterlight" ? "#f1eee6" : "#17191b");
   }
 
-  applyTheme(choices.includes(root.dataset.themeChoice) ? root.dataset.themeChoice : "system");
+  applyTheme(["night", "afterlight"].includes(root.dataset.themeChoice) ? root.dataset.themeChoice : "system");
 
+  // Each press changes what you see first: from System to the other named theme, then the
+  // remaining one, then back to System.
   themeButton?.addEventListener("click", () => {
-    const current = choices.indexOf(root.dataset.themeChoice);
-    const choice = choices[(current + 1) % choices.length];
+    const current = root.dataset.themeChoice;
+    const shown = root.dataset.theme;
+    const choice = current === "system" ? (shown === "night" ? "afterlight" : "night")
+      : (prefersLight?.matches ? "afterlight" : "night") === current ? "system"
+      : current === "night" ? "afterlight" : "night";
     applyTheme(choice);
-    try { localStorage.setItem(storageKey, stored[choice]); } catch (_) {}
-    say("Theme: " + names[choice]);
+    try { localStorage.setItem(storageKey, choice); } catch (_) {}
+    say("Theme: " + themeName(choice, root.dataset.theme));
   });
   prefersLight?.addEventListener?.("change", () => {
     if (root.dataset.themeChoice === "system") applyTheme("system");

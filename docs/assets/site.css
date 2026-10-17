@@ -1286,11 +1286,16 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .copy-mail {min-height:32px;padding:0 10px;border:1px solid var(--line);background:none;color:var(--secondary);font:12px var(--mono);letter-spacing:.06em;cursor:pointer;white-space:nowrap}
 .copy-mail:hover {border-color:var(--gold-bright);color:var(--ink)}
 .has-nav-sheet .header-actions {margin-left:0}
-:root[data-theme-choice="system"] .switch-orb {border-style:dashed}
-@media (min-width:1101px) {.has-nav-sheet .menu-toggle {display:none}}
 @media (min-width:1101px) and (max-width:1320px) {.main-nav {gap:22px;padding-left:12px}.header-inner {gap:20px}}
-@media (max-width:900px) {
+/* Up to 1320px the masthead also carries the top Menu sheet, so the address becomes a compact
+   EMAIL link; the full address and Copy return on wider screens and stay in the footer. */
+@media (max-width:1320px) {
   .header-mail .copy-mail {display:none}
+  .header-mail .header-mail-short {position:static;width:auto;height:auto;margin:0;overflow:visible;clip-path:none}
+  .header-mail .header-mail-address {position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .header-mail-link {padding:0 10px;border:1px solid var(--line);font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.07em}
+}
+@media (max-width:900px) {
   html:not(.has-nav-sheet) .header-inner>.header-mail {order:1}
   html:not(.has-nav-sheet) .header-mail-link {min-height:36px}
   html:not(.has-nav-sheet) .header-inner>.main-nav {order:2}
@@ -1298,9 +1303,8 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 }
 @media (max-width:660px) {
   .brand-sub {display:none}
-  .header-mail .header-mail-short {position:static;width:auto;height:auto;margin:0;overflow:visible;clip-path:none}
-  .header-mail .header-mail-address,.switch-label {display:block;position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-  .header-mail-link {padding:0 8px;border:1px solid var(--line);font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.03em}
+  .switch-label {display:block;position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .header-mail-link {padding:0 8px;letter-spacing:.03em}
   .header-inner {gap:6px}
   .header-actions {gap:5px}
   .brand-type {letter-spacing:.02em}

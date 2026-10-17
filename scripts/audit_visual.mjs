@@ -289,9 +289,9 @@ try {
     await captureLandingSections(page, 'night', viewport.width);
     await snap(page, `${viewport.name}-night`);
     const theme = page.locator("#light-switch");
-    assert(/^Theme: System$/.test((await theme.textContent()).trim()), "Theme control must state the current setting");
+    assert((await theme.textContent()).trim() === "Theme: System · Night", "Theme control must name the current setting");
     await theme.click();
-    assert((await theme.textContent()).trim() === "Theme: Light", `${viewport.name}: theme not activated`);
+    assert((await theme.textContent()).trim() === "Theme: Afterlight", `${viewport.name}: theme not activated`);
     assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
       `${viewport.name}: afterlight data-theme missing`);
 
@@ -302,8 +302,8 @@ try {
     await page.reload({ waitUntil: "networkidle", timeout: 30000 });
     assert(await page.locator("html").getAttribute("data-theme") === "afterlight",
       `${viewport.name}: afterlight preference did not persist on reload`);
-    assert((await theme.textContent()).trim() === "Theme: Light",
-      `${viewport.name}: reloaded theme control does not state the saved setting`);
+    assert((await theme.textContent()).trim() === "Theme: Afterlight",
+      `${viewport.name}: reloaded theme control does not name the saved setting`);
     await inspectFirstWork(page, viewport.name + " afterlight", "afterlight", viewport.width);
     await inspectSpecimens(page, viewport.name + " afterlight", "afterlight", viewport.width);
     report.afterlightCardContrast = await sampleCardContrast(page, `${viewport.name} afterlight`);

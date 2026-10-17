@@ -85,7 +85,7 @@ try {
     await page.locator('.connection-record summary').click();
     assert(await page.locator('.connection-record tbody tr').count() === 3, label + ': fixed record missing');
     await audit(page, label + ' stale record');
-    assert(await page.getByRole('button', { name: 'Menu', exact: true }).count() === (width <= 1100 ? 1 : 0), label + ': navigation control name');
+    assert(await page.getByRole('button', { name: 'Menu', exact: true }).count() === 1, label + ': navigation control name');
     assert(!(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)), label + ': horizontal overflow');
     assert(await page.locator('[data-connection-study]').evaluate(el => el.getAnimations({ subtree: true }).length === 0), label + ': inspection animates');
     // Capture only after accessibility checks: temporary header hiding can race name calculation.

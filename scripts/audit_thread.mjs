@@ -142,7 +142,6 @@ try {
   await moving.waitForFunction(()=>document.querySelector('.thread-wire').getAnimations().some(a=>a.playState==='running'));
   await moving.waitForFunction(()=>document.querySelector('.thread-wire').getAnimations().every(a=>a.playState==='finished'));
   assert(JSON.stringify(before)===JSON.stringify(await label.boundingBox()),'Optional glint never moves the question or its hit area');
-  await moving.setViewportSize({width:1100,height:900});
   await moving.locator('#menu-toggle').click();
   assert(await moving.locator('.nav-sheet-invitation').getAttribute('href')===origin+'/questions/','Nested thread masthead resolves the correct question route');
   await moving.keyboard.press('Escape');
