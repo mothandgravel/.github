@@ -2,19 +2,19 @@
 
 from tkinter import ttk
 
+from field_notes_studio.presentation import theme
 from field_notes_studio.presentation.icons import icon
-from field_notes_studio.presentation.theme import BRASS, INK, MUTED, SUCCESS, WARNING
 
 STATES = {
-    "Saved": ("check", SUCCESS),
-    "Working": ("produce", BRASS),
-    "Waiting": ("history", WARNING),
-    "Failed": ("stop", WARNING),
-    "Uncertain": ("history", WARNING),
-    "Stopped": ("stop", MUTED),
-    "Stopping": ("stop", WARNING),
-    "History": ("history", MUTED),
-    "Next": ("pending", MUTED),
+    "Saved": ("check", "SUCCESS"),
+    "Working": ("produce", "BRASS"),
+    "Waiting": ("history", "WARNING"),
+    "Failed": ("stop", "WARNING"),
+    "Uncertain": ("history", "WARNING"),
+    "Stopped": ("stop", "MUTED"),
+    "Stopping": ("stop", "WARNING"),
+    "History": ("history", "MUTED"),
+    "Next": ("pending", "MUTED"),
 }
 
 
@@ -32,14 +32,19 @@ class ProgressStrip(ttk.Frame):
 
     def _resize(self, event):
         if event.widget is self:
-            width = max(80, event.width // max(1, len(self.cells)) - 45)
+            width = max(80, event.width // max(1, len(self.cells)) - 36)
             for cell in self.cells:
                 cell.configure(wraplength=width)
+
+    def retheme(self):
+        snapshot, self.snapshot = self.snapshot, None
+        if snapshot is not None:
+            self.show(snapshot)
 
     def clear(self):
         self.snapshot = None
         for cell in self.cells:
-            cell.configure(text="", image="", foreground=INK)
+            cell.configure(text="", image="", foreground=theme.INK)
 
     def show(self, snapshot):
         if self.snapshot == snapshot:
@@ -55,5 +60,5 @@ class ProgressStrip(ttk.Frame):
             cell.configure(
                 text=f"{milestone.label} · {milestone.state}",
                 image=icon(self, glyph, color),
-                foreground=color,
+                foreground=theme.color(color),
             )

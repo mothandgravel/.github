@@ -70,20 +70,20 @@ def worker_status(repository) -> dict:
     if owner is None:
         return {
             "state": "stopped",
-            "message": "Worker stopped. Start worker to resume queued jobs.",
+            "message": "Background producer stopped. Start it to resume queued jobs.",
         }
     if record.get("pid") != owner or time.time() - record.get("heartbeat", 0) > 15:
         return {
             "state": "unknown",
             "pid": owner,
-            "message": "Worker owns the lock but has no current heartbeat. It may use an older version. Restart is allowed only while no job is running.",
+            "message": "The background producer holds the lock but reports no heartbeat. It may run older code. Restart is allowed only while no job is running.",
         }
     current = revision()
     state = "current" if record.get("revision") == current else "outdated"
     return {
         "state": state,
         "pid": owner,
-        "message": f"Worker {owner} · {state} · {record.get('activity', 'idle')} · heartbeat {int(time.time() - record['heartbeat'])}s ago. Code {record.get('revision', '')[:10]} / checkout {current[:10]}.",
+        "message": f"Background producer {owner} · {state} · {record.get('activity', 'idle')} · heartbeat {int(time.time() - record['heartbeat'])}s ago. Code {record.get('revision', '')[:10]} / checkout {current[:10]}.",
     }
 
 
@@ -91,28 +91,28 @@ def restart(repository, root: Path) -> str:
     status = worker_status(repository)
     if status["state"] == "stopped":
         launch_worker(root)
-        return "Worker starting; refresh health to confirm its heartbeat."
+        return "Background producer starting; check setup again to confirm its heartbeat."
     if status["state"] in {"current", "outdated"}:
         repository.checkpoint({"worker_control": {"restart": uuid.uuid4().hex}})
-        return "Restart requested. The worker will finish its current job, hand off the lock and launch the checkout's code."
+        return "Restart requested. The background producer finishes its current job, then starts this checkout's code."
     # Legacy workers do not understand control messages. Fence claims while checking
     # idleness and bind termination to a kernel process handle to prevent PID reuse.
     if not hasattr(os, "pidfd_open") or not hasattr(signal, "pidfd_send_signal"):
         raise ValueError(
-            "Safe legacy restart needs Linux pidfd support. Let the worker stop before starting a replacement."
+            "A safe restart of the old background producer needs Linux pidfd support. Let it stop before starting a new one."
         )
     with repository.connection() as db:
         db.execute("BEGIN IMMEDIATE")
         if db.execute("SELECT 1 FROM jobs WHERE status='running'").fetchone():
             raise ValueError(
-                "A job is running. Legacy worker restart is blocked until it finishes; refresh health afterwards."
+                "A job is running. Restarting the old background producer waits until it finishes; check setup afterwards."
             )
         owner = status["pid"]
         try:
             descriptor = os.pidfd_open(namespace_pid(owner))
         except OSError as exc:
             raise ValueError(
-                "Worker identity is unavailable. Refresh health; nothing was stopped."
+                "The background producer cannot be identified. Check setup again; nothing was stopped."
             ) from exc
         try:
             args = Path(f"/proc/{owner}/cmdline").read_bytes().split(b"\0")
@@ -122,16 +122,18 @@ def restart(repository, root: Path) -> str:
                 or Path(f"/proc/{owner}/cwd").resolve() != Path(__file__).resolve().parents[1]
                 or lock_owner(repository.path.parent) != owner
             ):
-                raise ValueError("Worker identity could not be verified. Nothing was stopped.")
+                raise ValueError(
+                    "The background producer could not be verified. Nothing was stopped."
+                )
             signal.pidfd_send_signal(descriptor, signal.SIGTERM)
             if not select.select([descriptor], [], [], 5)[0]:
                 raise ValueError(
-                    "Worker did not stop. No replacement was launched; refresh health."
+                    "The background producer did not stop. No new one was started; check setup again."
                 )
         finally:
             os.close(descriptor)
     launch_worker(root)
-    return "Idle legacy worker stopped safely; replacement starting. Refresh health to verify."
+    return "The idle old background producer stopped safely; a new one is starting. Check setup to confirm."
 
 
 def tool_status(root: Path) -> str:
@@ -157,5 +159,5 @@ def tool_status(root: Path) -> str:
         "Video dependencies: "
         + ("installed" if renderer.is_dir() else "MISSING · run npm ci in video/")
     )
-    lines.append(f"Worker log: {root / 'artifacts/studio/worker.log'}")
+    lines.append(f"Background producer log: {root / 'artifacts/studio/worker.log'}")
     return "\n".join(lines)

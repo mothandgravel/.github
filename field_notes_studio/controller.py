@@ -63,9 +63,6 @@ class Controller:
             "session": {
                 "episode": self.selected,
                 "tab": workspace.tabs.index(workspace.tabs.select()),
-                "release_tab": workspace.publication.tabs.index(
-                    workspace.publication.tabs.select()
-                ),
                 "search": self.view.shelf.query.get(),
                 "geometry": self.view.root.geometry(),
                 "batch": workspace.batch.selection(),
@@ -136,16 +133,66 @@ class Controller:
     def start(self):
         self.task(lambda: launch_worker(self.studio.root), lambda _: None)
         self.task(self.studio.catalog, self.loaded)
+        if getattr(self.view, "root", None):
+            self.task(self.studio.preferences, self.preferences_loaded, lambda _: None)
+
+    def preferences_loaded(self, preferences):
+        self.view.workspace.review.remember(preferences.get("reviewer", ""))
+
+    def refresh_shelf_hints(self):
+        if not hasattr(self.view.shelf, "load_hints"):
+            return
+
+        def hints():
+            # A hint that cannot be read is only a missing hint; the card still checks.
+            try:
+                return self.studio.shelf_hints()
+            except Exception:
+                return {}
+
+        self.task(hints, self.view.shelf.load_hints)
+
+    def refresh_notes(self):
+        notes = getattr(self.view, "notes", None)
+        if notes is None or not hasattr(self.view.shelf, "load_notes"):
+            return
+
+        def catalog():
+            # Written notes are a convenience row source; a checkout without the
+            # site catalog still shows its narrated episodes.
+            try:
+                return notes().catalog()
+            except Exception:
+                return []
+
+        self.task(catalog, self.view.shelf.load_notes)
 
     def loaded(self, episodes):
         self.episodes = {episode.identifier: episode for episode in episodes}
         self.view.shelf.load(episodes)
         self.view.workspace.batch.load(episodes)
+        self.refresh_shelf_hints()
+        self.refresh_notes()
         self.view.status(
-            "Produce episode → Review once → Export package → Upload manually."
+            "Episodes loaded. Choose one on the left; its card shows the next step."
             if episodes
-            else "No prepared recordings yet. Use Find / prepare a written note to start narration and captions."
+            else "No narrated notes yet. Choose New episode from a note… to start."
         )
+        if not episodes and self.selected is None and hasattr(self.view.workspace, "show_empty"):
+            self.view.workspace.show_empty(
+                "No narrated notes yet",
+                "Narrate a written note first. Studio then makes its audio, captions and "
+                "video, and you review it once.",
+                "New episode from a note…",
+                self.view.open_preparation,
+            )
+            self.view.readiness.empty(
+                "",
+                "Nothing to check yet",
+                "A narrated note appears here with its next step.",
+                "New episode from a note…",
+                self.view.open_preparation,
+            )
         if episodes and self.selected is None:
             session = self.studio.repository.state("session")
             self.restore_session = session
@@ -204,12 +251,6 @@ class Controller:
                         self.view.workspace.tabs.select(
                             min(session.get("tab", 0), len(self.view.workspace.tabs.tabs()) - 1)
                         )
-                        self.view.workspace.publication.tabs.select(
-                            min(
-                                session.get("release_tab", 0),
-                                len(self.view.workspace.publication.tabs.tabs()) - 1,
-                            )
-                        )
                         self.view.shelf.query.set(session.get("search", ""))
                         for episode, choice in self.view.workspace.batch.choices.items():
                             choice.set(episode in session.get("batch", []))
@@ -252,11 +293,54 @@ class Controller:
 
         self.task(lambda: self.studio.settings(identifier), loaded, failed)
 
+    def select_note(self, item):
+        """A written note that is not narrated yet: show its one next step, nothing else."""
+        if self.loading:
+            return
+        try:
+            self.checkpoint()
+        except Exception as exc:
+            self.view.status(f"Keep this draft open: checkpoint failed: {exc}")
+            return
+        self.selected = None
+        for name in (
+            "generation",
+            "selection_generation",
+            "review_generation",
+            "release_generation",
+            "package_generation",
+        ):
+            setattr(self, name, getattr(self, name) + 1)
+        self.episode_controls.epoch += 1
+        self.ready = None
+        workspace = self.view.workspace
+        workspace.draft_conflict(False)
+        state = item.state if item.state != "Inspect script" else "Not narrated yet"
+        workspace.show_empty(
+            "Not narrated yet" if item.state != "Needs script" else "No narration script yet",
+            item.detail
+            or "Narrate this note first. You see the plan and its cost before anything is sent.",
+            "Prepare this note…" if item.state != "Needs script" else None,
+            lambda: self.view.open_preparation(note=item.note),
+            heading=item.title,
+        )
+        workspace.subtitle.configure(text=f"Field Note {item.note} · written note · {state}")
+        self.view.readiness.empty(
+            f"FIELD NOTE {item.note}",
+            "Not narrated yet",
+            "Narration and captions come first. Studio shows the plan and any cost before "
+            "it sends anything.",
+            "Prepare this note…" if item.state != "Needs script" else None,
+            (lambda: self.view.open_preparation(note=item.note))
+            if item.state != "Needs script"
+            else None,
+        )
+
     def changed(self):
         self.episode_controls.invalidate()
         self.generation += 1
         self.ready = None
-        self.view.workspace.show_plan("Inspect your changes before queueing an edition.")
+        self.view.workspace.show_plan("Check your changes before queueing a version.")
         self.draft_changed()
         if hasattr(self.view.workspace, "batch"):
             self.batch_changed()
@@ -325,7 +409,7 @@ class Controller:
 
     def inspect(self):
         if not self.selected or self.loading:
-            self.view.status("Choose an episode and wait for its settings to load.")
+            self.view.status("Choose a narrated episode and wait for its settings to load.")
             return
         action = self.view.workspace.action.get()
         sound = None
@@ -341,19 +425,19 @@ class Controller:
                 return
         generation = self.generation
         identifier = self.selected
-        self.view.workspace.show_plan("Checking source and local editions…")
+        self.view.workspace.show_plan("Checking the note and the saved versions…")
 
         def planned(value):
             if generation != self.generation:
                 return
             request, summary = value
             self.view.workspace.preflight_status(
-                "Ready for " + action + ". Local checks passed; publication remains explicit.",
+                "Ready. Checks on this computer passed; nothing is published.",
                 action,
             )
             self.ready = (identifier, action, request)
             self.view.workspace.show_plan(summary, ready=True)
-            self.view.status("Plan inspected. Queue this edition when ready.")
+            self.view.status("Plan checked. Queue it when you are ready.")
 
         recipe = (
             copy.deepcopy(self.view.workspace.production_base)
@@ -365,7 +449,7 @@ class Controller:
             if generation == self.generation and identifier == self.selected:
                 self.episode_controls.failed(message)
                 self.view.workspace.preflight_status("Blocked: " + message, action)
-                self.view.workspace.show_plan("Preflight blocked:\n\n" + message)
+                self.view.workspace.show_plan("Checks stopped this plan:\n\n" + message)
 
         self.task(
             lambda: self.studio.checked_plan(identifier, action, speed, outro, sound, recipe),
@@ -423,11 +507,11 @@ class Controller:
     def submit(self):
         if self.production.busy:
             self.view.status(
-                "Full episode is being inspected or queued. No second job was submitted."
+                "The full episode is being checked or queued. No second job was started."
             )
             return
         if self.ready is None:
-            self.view.status("Inspect the current changes first.")
+            self.view.status("Check the plan first.")
             return
         identifier, action, request = self.ready
         self.changed()
@@ -454,7 +538,7 @@ class Controller:
             self.task(
                 lambda: self.studio.retry(identifier),
                 lambda _: self.view.status(
-                    "Retry queued with the original recipe. Source changes will block it."
+                    "Retry queued with the original settings. A changed note will block it."
                 ),
             )
 
@@ -471,7 +555,8 @@ class Controller:
             if episode is not None:
                 self.view.workspace.publication.record_saved(episode, url, published)
                 self.draft_changed()
-            self.view.status(f"Publication record saved for {identifier}.")
+            self.view.status(f"Release record saved for {identifier}.")
+            self.refresh_shelf_hints()
 
         def saved(_):
             self.task(self.studio.catalog, refreshed)
@@ -503,11 +588,10 @@ class Controller:
         self.task(lambda: self.studio.release_details(identifier), loaded, failed)
 
     def prepare_package(self):
-        if not self.selected or self.loading:
+        """Release's Make upload folder: the same checked, local export as the card."""
+        if not self.selected or self.loading or self.episode_controls.busy:
             return
-        self.view.workspace.action.set("export")
-        self.view.workspace.show_plan_tab()
-        self.inspect()
+        self.episode_controls.export()
 
     def refresh_package(self):
         if not self.selected or self.loading:
@@ -516,7 +600,7 @@ class Controller:
         self.package_generation += 1
         generation = self.package_generation
         files = self.view.workspace.publication.files
-        files.clear("Checking the saved package and latest full edition…", loading=True)
+        files.clear("Checking the upload folder and the latest full version…", loading=True)
 
         def loaded(snapshot):
             if generation == self.package_generation and identifier == self.selected:
@@ -526,62 +610,33 @@ class Controller:
 
         def failed(message):
             if generation == self.package_generation and identifier == self.selected:
-                files.clear("Package unavailable: " + message)
+                files.clear("Upload folder unavailable: " + message)
 
         self.task(lambda: self.studio.package_snapshot(identifier), loaded, failed)
 
-    def open_package_file(self):
+    def package_action_failed(self, generation, snapshot, message):
         files = self.view.workspace.publication.files
-        snapshot, name = files.snapshot, files.selection()
-        if snapshot and name:
-            generation = self.package_generation
-            files.working("open")
-
-            def opened(_):
-                if (
-                    generation == self.package_generation
-                    and files.snapshot == snapshot
-                    and files.selection() == name
-                ):
-                    files.selected()
-
-            self.task(
-                lambda: self.studio.open_package_file(snapshot, name),
-                opened,
-                lambda message: self.package_action_failed(generation, snapshot, name, message),
-            )
-
-    def package_action_failed(self, generation, snapshot, name, message):
-        files = self.view.workspace.publication.files
-        if (
-            generation == self.package_generation
-            and files.snapshot == snapshot
-            and files.selection() == name
-        ):
-            files.selected()
+        if generation == self.package_generation and files.snapshot == snapshot:
+            files.ready()
             files.error(message)
 
-    def copy_package_path(self):
+    def copy_package_path(self, name):
         files = self.view.workspace.publication.files
-        snapshot, name = files.snapshot, files.selection()
+        snapshot = files.snapshot
         generation = self.package_generation
-        if not snapshot or not name:
+        if not snapshot or name not in files.copy_buttons:
             return
-        files.working("copy")
+        files.working(name)
 
         def copied(path):
-            if (
-                generation == self.package_generation
-                and files.snapshot == snapshot
-                and files.selection() == name
-            ):
-                files.copied(path)
+            if generation == self.package_generation and files.snapshot == snapshot:
+                files.copied(name, path)
                 self.view.status("Upload path copied. Paste it into the browser's file picker.")
 
         self.task(
             lambda: self.studio.package_upload_path(snapshot, name),
             copied,
-            lambda message: self.package_action_failed(generation, snapshot, name, message),
+            lambda message: self.package_action_failed(generation, snapshot, message),
         )
 
     def release_review(self):
@@ -592,7 +647,7 @@ class Controller:
         self.task(
             self.studio.open_publisher,
             lambda _: self.view.status(
-                "YouTube Studio opened. Upload the saved package, then record its published link/date."
+                "YouTube Studio opened. Upload the files, then record the published link and date."
             ),
         )
 
@@ -620,16 +675,15 @@ class Controller:
                 return
             self.refresh_prepared_shelf(episodes)
             if episode not in self.episodes:
-                self.view.status(
-                    "The recording is not ready yet. Follow its preparation job first."
-                )
+                self.view.status("The narration is not ready yet. Follow its job first.")
                 return
             self.select(episode)
             if self.selected == episode:
                 self.view.shelf.reveal(episode)
                 self.view.workspace.tabs.select(0)
                 self.view.status(
-                    "Recording ready. Click Produce episode for audio, captions, full video and thumbnail together. Review and publication remain separate."
+                    "Narration ready. Produce episode makes audio, captions, full video and "
+                    "thumbnail together. You review it once; nothing is published."
                 )
                 if getattr(self.view, "preparation", None):
                     self.view.preparation.close()
@@ -655,11 +709,11 @@ class Controller:
                 )
                 return
             if job.episode not in self.episodes:
-                self.view.status("This job's episode is no longer in the prepared episode shelf.")
+                self.view.status("This job's episode is no longer on the shelf.")
                 return
             self.view.shelf.reveal(job.episode)
             self.select(job.episode, review_scope=job.action == "video")
-            self.view.status("Reviewing the latest saved edition; it may be newer than this job.")
+            self.view.status("Reviewing the latest saved version; it may be newer than this job.")
 
         self.task(lambda: self.studio.repository.get(identifier), loaded)
 
@@ -706,7 +760,7 @@ class Controller:
             or (snapshot.full_video and not review.video_checked.get())
             or not review.reviewer.get().strip()
         ):
-            self.view.status("Check the saved media and enter your name before approving.")
+            self.view.status("Tick both checks and enter your name before approving.")
             return
         identifier, reviewer = self.selected, review.reviewer.get().strip()
         generation = self.review_generation
@@ -714,7 +768,10 @@ class Controller:
         review.update_controls()
 
         def saved(_):
-            self.view.status(f"Review recorded for {identifier}.")
+            self.view.status(f"Approval recorded for {identifier}.")
+            review.remember(reviewer)
+            self.task(lambda: self.studio.remember(reviewer=reviewer), lambda _: None)
+            self.refresh_shelf_hints()
             if identifier == self.selected:
                 self.episode_controls.invalidate(refresh=True)
             if generation == self.review_generation:
@@ -722,7 +779,7 @@ class Controller:
 
         def failed(message):
             if generation == self.review_generation:
-                review.clear(message + " Refresh the edition before reviewing again.")
+                review.clear(message + " Check the version again before reviewing.")
 
         self.task(lambda: self.studio.approve(identifier, snapshot, reviewer), saved, failed)
 
@@ -735,7 +792,7 @@ class Controller:
             if self.view.jobs.selection() != identifier:
                 return
             job, events, spend = value
-            last = events[-1]["message"] if events else "Waiting for the worker."
+            last = events[-1]["message"] if events else "Waiting for the background producer."
             result = job.result
             if result:
                 try:
@@ -743,19 +800,19 @@ class Controller:
                 except ValueError:
                     pass
             guidance = {
-                "queued": "Waiting for the worker; jobs run one at a time.",
-                "running": "Stage in progress; closing the window keeps production running.",
-                "failed": "Retry the captured recipe, or inspect a fresh plan after source changes.",
-                "interrupted": "Outcome unknown. Inspect saved output or retry with validated caches.",
-                "cancelled": "Stopped at a safe boundary. Retry reuses validated completed stages.",
-                "succeeded": "Open the saved output. Audio and full video can be reviewed before export.",
-                "waiting": "Captions are still running. Resume polls the saved remote operation.",
+                "queued": "Waiting for the background producer; jobs run one at a time.",
+                "running": "Working; closing Studio keeps the job running.",
+                "failed": "Retry with the same settings, or check a fresh plan if the note changed.",
+                "interrupted": "Outcome unknown. Look at the saved result, or retry; checked saved parts are reused.",
+                "cancelled": "Stopped at a safe point. Retry reuses the stages already checked and saved.",
+                "succeeded": "Open the saved result. Review the full episode before making the upload folder.",
+                "waiting": "Captions are still being made. Resume asks about the same caption request.",
             }.get(job.status, "")
             if job.action == "prepare":
                 guidance = {
-                    "failed": "Preparation stopped. Inspect recovery shows the attempts; keep the caches.",
-                    "interrupted": "Outcome unknown. Inspect recovery before another request.",
-                    "succeeded": "Recording ready. Produce episode finishes audio, captions, full video and thumbnail in one job. Review follows; nothing is published.",
+                    "failed": "Narration stopped. Check recovery shows the attempts; keep the saved parts.",
+                    "interrupted": "Outcome unknown. Check recovery before another request.",
+                    "succeeded": "Narration ready. Produce episode makes audio, captions, full video and thumbnail in one job. Review follows; nothing is published.",
                     "waiting": "Use Resume to check the same caption operation. No new narration is generated.",
                 }.get(job.status, guidance)
             if job.identifier in getattr(self.view.jobs, "resolved", set()):
@@ -816,7 +873,7 @@ class Controller:
             if job.action != "prepare":
                 settings = json.loads(job.request).get("settings", {})
                 recipe = (
-                    "Saved export edition"
+                    "Saved full version"
                     if job.action == "export"
                     else f"{settings.get('speed', '—')}× pace · {settings.get('outro_seconds', '—')}s outro"
                 )
@@ -835,7 +892,7 @@ class Controller:
                     and job.result
                     and Path(review.video).parent == Path(job.result)
                 ):
-                    guidance = "This full episode already has saved approval. Next: inspect/export its package. Nothing was published by this job."
+                    guidance = "This full episode is already approved. Next: make its upload folder. This job published nothing."
             reason = job.error or result or last
             if job.status in {"failed", "interrupted", "cancelled"} and not re.fullmatch(
                 r"narration-\d+-of-\d+", at
@@ -879,7 +936,7 @@ class Controller:
             choice.set(identifier in choices)
         if selected in self.episodes:
             self.view.status(
-                "Prepared shelf refreshed. Existing edits remain open; new recordings still need production and review."
+                "Shelf refreshed. Your edits stay open; new narrations still need producing and review."
             )
 
     def poll(self):
@@ -899,6 +956,10 @@ class Controller:
                     self.task(self.studio.catalog, self.refresh_prepared_shelf)
             self.job_detail()
             self.episode_controls.jobs_changed(jobs)
+            statuses = tuple((job.identifier, job.status) for job in jobs)
+            if statuses != getattr(self, "shelf_jobs", None):
+                self.shelf_jobs = statuses
+                self.refresh_shelf_hints()
             signature = tuple(
                 (job.identifier, job.status) for job in jobs if job.episode == self.selected
             )
@@ -916,7 +977,8 @@ class Controller:
                     ):
                         self.view.workspace.review.scope.set("Full video and audio")
                         self.view.status(
-                            f"{self.selected}: full episode ready. Review its audio, video and subtitles together, then export."
+                            f"{self.selected}: full episode ready. Review it once, with its "
+                            "subtitles, then make the upload folder."
                         )
                     self.refresh_review()
                     self.refresh_release()

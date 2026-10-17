@@ -72,7 +72,7 @@ class PackageHandoffTests(unittest.TestCase):
             self.pipeline.package_file(snapshot, "thumbnail.png")
         with self.assertRaisesRegex(ValueError, "missing or changed"):
             self.pipeline.package_snapshot("note-001")
-        with self.assertRaisesRegex(ValueError, "Select a checked"):
+        with self.assertRaisesRegex(ValueError, "Choose a checked"):
             self.pipeline.package_file(snapshot, "../episode.mp4")
         (c.upload / "episode.mp4").unlink()
         with self.assertRaisesRegex(ValueError, "files are unavailable"):

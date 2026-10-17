@@ -4,11 +4,15 @@ import tkinter as tk
 from dataclasses import replace
 from tkinter import filedialog, messagebox, ttk
 
+from field_notes_studio.presentation.controls import Fieldset
+
+JOURNEY = "1 Narrate the note → 2 Produce the episode → 3 Review once → 4 Release"
+
 
 class PreparationWindow:
     def __init__(self, parent):
         self.window = tk.Toplevel(parent)
-        self.window.title("Moth & Gravel · Prepare a written note")
+        self.window.title("Moth & Gravel · New episode from a note")
         self.window.geometry("1050x760")
         self.window.minsize(760, 580)
         self.window.transient(parent)
@@ -26,7 +30,7 @@ class PreparationWindow:
         main.rowconfigure(6, weight=3)
         heading = ttk.Frame(main)
         heading.grid(row=0, column=0, sticky="ew")
-        ttk.Label(heading, text="Prepare a written note", style="Studio.TLabel").pack(side="left")
+        ttk.Label(heading, text="New episode from a note", style="Studio.TLabel").pack(side="left")
         self.setup_button = ttk.Button(heading, text="Import existing setup…")
         self.setup_button.pack(side="right")
         self.context = ttk.Label(
@@ -38,7 +42,7 @@ class PreparationWindow:
         self.context.grid(row=1, column=0, sticky="ew", pady=(4, 4))
         self.journey = ttk.Label(
             main,
-            text="1 Prepare recording → 2 Produce video → 3 Review → 4 Export & upload",
+            text=JOURNEY,
             style="Muted.TLabel",
             wraplength=700,
         )
@@ -66,8 +70,8 @@ class PreparationWindow:
         )
         for name, heading_text, width in (
             ("note", "Note", 65),
-            ("title", "Written edition", 420),
-            ("state", "Next stage", 205),
+            ("title", "Written note", 420),
+            ("state", "Next", 205),
         ):
             self.tree.heading(name, text=heading_text)
             self.tree.column(name, width=width, minwidth=60, stretch=name == "title")
@@ -79,7 +83,7 @@ class PreparationWindow:
         actions.grid(row=5, column=0, sticky="ew", pady=8)
         self.refresh_button = ttk.Button(actions, text="Refresh notes")
         self.inspect_button = ttk.Button(
-            actions, text="Inspect script · no service request", state="disabled"
+            actions, text="Check script · free, nothing is sent", state="disabled"
         )
         self.production_button = ttk.Button(
             actions, text="Open in production", state="disabled", command=self._open_production
@@ -96,34 +100,37 @@ class PreparationWindow:
             button.pack(side="left", padx=(0, 6))
         tabs = ttk.Notebook(main)
         tabs.grid(row=6, column=0, sticky="nsew")
-        self.plan = self._text(tabs, "Next step / request details")
+        self.plan = self._text(tabs, "Next step and request details")
         self.script = self._text(tabs, "Saved narration script")
         consent = ttk.Frame(main)
         consent.grid(row=7, column=0, sticky="ew", pady=(8, 0))
+        consent.columnconfigure(0, weight=1)
+        # One labelled group holds every consent box, one box per line.
+        self.consent = Fieldset(consent, "Your consent")
+        self.consent.grid(row=0, column=0, sticky="w")
         self.authorized = tk.BooleanVar(value=False)
         self.authorization = ttk.Checkbutton(
-            consent,
+            self.consent.body,
             text="Authorize the displayed Cloud work (charges may apply).",
             variable=self.authorized,
             command=lambda: self.busy(self.loading),
         )
-        self.authorization.pack(side="left")
+        self.authorization.pack(anchor="w")
         self.queue_button = ttk.Button(
-            consent, text="Queue preparation", style="Accent.TButton", state="disabled"
+            consent, text="Queue narration", style="Accent.TButton", state="disabled"
         )
-        self.queue_button.pack(side="right")
+        self.queue_button.grid(row=0, column=1, sticky="se")
         self.recover_uncertain = tk.BooleanVar(value=False)
         self.recovery_consent = ttk.Checkbutton(
-            main,
+            self.consent.body,
             text="Also resend the uncertain chunk(s); I accept possible duplicate charges.",
             variable=self.recover_uncertain,
             command=lambda: self.busy(self.loading),
         )
-        self.recovery_consent.grid(row=8, column=0, sticky="w", pady=(4, 0))
-        self.recovery_consent.grid_remove()
+        self.recovery_consent.pack(anchor="w")
+        self.recovery_consent.pack_forget()
         # Past the spend guard: a separate, deliberate override with a logged reason.
-        self.spend = ttk.Frame(main)
-        self.spend.grid(row=9, column=0, sticky="ew", pady=(4, 0))
+        self.spend = ttk.Frame(self.consent.body)
         self.spend.columnconfigure(2, weight=1)
         self.spend_allowed = tk.BooleanVar(value=False)
         self.spend_override = ttk.Checkbutton(
@@ -140,7 +147,6 @@ class PreparationWindow:
         self.spend_reason_entry = ttk.Entry(self.spend, textvariable=self.spend_reason)
         self.spend_reason_entry.grid(row=1, column=1, columnspan=2, sticky="ew", pady=(4, 0))
         self.spend_reason.trace_add("write", lambda *_: self.busy(self.loading))
-        self.spend.grid_remove()
         self.message = ttk.Label(main, style="Muted.TLabel", wraplength=700)
         self.message.grid(row=10, column=0, sticky="ew", pady=(8, 0))
         self.window.bind("<Configure>", self._resize, add=True)
@@ -252,21 +258,19 @@ class PreparationWindow:
 
     def clear(self, message=""):
         self.snapshot = None
-        self.journey.configure(
-            text="1 Prepare recording → 2 Produce video → 3 Review → 4 Export & upload"
-        )
+        self.journey.configure(text=JOURNEY)
         self.authorized.set(False)
         self.recover_uncertain.set(False)
-        self.recovery_consent.grid_remove()
+        self.recovery_consent.pack_forget()
         self.spend_allowed.set(False)
         self.spend_reason.set("")
-        self.spend.grid_remove()
+        self.spend.pack_forget()
         self.queued_id = ""
         item = self.items.get(self.selected())
         detail = (
             item.detail
             if item
-            else "Find a written note above. Inspect its script, check the setup, then authorize preparation. Recordings appear on the main shelf only after narration and captions are ready."
+            else "Find a written note above. Check its script and setup, then allow the narration. A note is ready to produce once narration and captions are saved."
         )
         self._put(self.plan, detail)
         self._put(self.script, "")
@@ -311,7 +315,7 @@ class PreparationWindow:
         )
         self.queue_button.configure(
             state="normal" if permitted else "disabled",
-            text="Queue recovery" if recovering else "Queue preparation",
+            text="Queue recovery" if recovering else "Queue narration",
         )
         self.production_button.configure(
             state="normal"
@@ -338,7 +342,7 @@ class PreparationWindow:
             self.tree.see(selected)
         count = len(self.tree.get_children())
         self.clear(
-            f"{count} of {len(self.items)} written notes. Search by title or number; the table scrolls independently."
+            f"{count} of {len(self.items)} written notes. Search by title or number."
             if count
             else "0 written notes match. Clear the search or refresh this checkout's notes."
         )
@@ -360,9 +364,9 @@ class PreparationWindow:
         self.spend_allowed.set(False)
         self.spend_reason.set("")
         if snapshot.recovery_json:
-            self.recovery_consent.grid()
+            self.recovery_consent.pack(anchor="w")
         else:
-            self.recovery_consent.grid_remove()
+            self.recovery_consent.pack_forget()
         if getattr(snapshot, "spend_blocked", False):
             # The count and possible spend sit in the label itself, read before ticking.
             self.spend_override.configure(
@@ -370,9 +374,9 @@ class PreparationWindow:
                 if snapshot.spend_overridable
                 else f"Already overridden once in this window ({snapshot.spend_label})."
             )
-            self.spend.grid()
+            self.spend.pack(anchor="w", fill="x", pady=(2, 0))
         else:
-            self.spend.grid_remove()
+            self.spend.pack_forget()
         self.busy(False)
         self.message.configure(
             text=(
@@ -384,9 +388,9 @@ class PreparationWindow:
                 and (snapshot.request_json or snapshot.recovery_json)
                 else "Recovery needs two confirmations. Completed audio is retained; uncertain resends can charge twice."
                 if snapshot.recovery_json
-                else "Script checked. Confirm the project and requests, authorize, then queue preparation."
+                else "Script checked. Confirm the project and requests, give consent, then queue the narration."
                 if snapshot.request_json
-                else "Preparation is blocked. Read the reason above; use Import existing setup or Show job as appropriate."
+                else "Narration is blocked. Read the reason above; use Import existing setup or Show job as needed."
             )
         )
 

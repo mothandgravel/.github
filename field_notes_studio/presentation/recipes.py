@@ -9,7 +9,7 @@ from field_notes_studio.presentation.theme import set_text
 class RecipeWindow:
     def __init__(self, parent, apply, save, reload, undo):
         self.window = tk.Toplevel(parent)
-        self.window.title("Show recipes · current episode only")
+        self.window.title("Show settings · this episode only")
         self.window.geometry("760x470")
         self.window.minsize(680, 420)
         self.window.transient(parent)
@@ -20,7 +20,7 @@ class RecipeWindow:
         main.pack(fill="both", expand=True)
         main.columnconfigure(0, weight=1)
         main.rowconfigure(3, weight=1)
-        ttk.Label(main, text="Named show recipes", style="Title.TLabel").grid(
+        ttk.Label(main, text="Saved show settings", style="Title.TLabel").grid(
             row=0, column=0, sticky="w"
         )
         ttk.Label(
@@ -35,7 +35,7 @@ class RecipeWindow:
         self.select.pack(side="left")
         self.apply = ttk.Button(toolbar, text="Apply to episode", command=apply, state="disabled")
         self.apply.pack(side="left", padx=8)
-        ttk.Button(toolbar, text="Reload recipes", command=reload).pack(side="left")
+        ttk.Button(toolbar, text="Reload", command=reload).pack(side="left")
         region = ttk.Frame(main)
         region.grid(row=3, column=0, sticky="nsew", pady=8)
         region.columnconfigure(0, weight=1)
@@ -61,7 +61,7 @@ class RecipeWindow:
         self.undo = ttk.Button(bottom, text="Undo apply", command=undo, state="disabled")
         self.undo.pack(side="left")
         self.message = ttk.Label(
-            main, text="Loading recipes…", style="Muted.TLabel", wraplength=620
+            main, text="Loading show settings…", style="Muted.TLabel", wraplength=620
         )
         self.message.grid(row=5, column=0, sticky="ew", pady=(8, 0))
         self.select.bind("<<ComboboxSelected>>", lambda _: self.show_difference())
@@ -88,9 +88,9 @@ class RecipeWindow:
             and selected[1]["settings"] != reference.get("settings")
         )
         self.message.configure(
-            text="Library recipe changed; this episode keeps its captured version until you Apply explicitly."
+            text="These saved show settings changed; this episode keeps its copy until you choose Apply."
             if changed
-            else "Choose a recipe to inspect differences. Save creates a local show recipe, not a production job."
+            else "Choose saved show settings to see the differences. Save stores them on this computer; it starts no job."
         )
         self.show_difference()
 
@@ -108,14 +108,12 @@ class RecipeWindow:
         item = self.items.get(self.choice.get())
         if update:
             if item and messagebox.askokcancel(
-                "Update show recipe",
-                "Update this named recipe from the current episode? Other episode drafts and queued jobs will not change.",
+                "Update show settings",
+                "Update these saved show settings from the current episode? Other episodes and queued jobs will not change.",
                 parent=self.window,
             ):
                 save(self.choice.get(), item[0])
         else:
-            name = simpledialog.askstring(
-                "Name this recipe", "Show recipe name:", parent=self.window
-            )
+            name = simpledialog.askstring("Name these show settings", "Name:", parent=self.window)
             if name is not None:
                 save(name, None)

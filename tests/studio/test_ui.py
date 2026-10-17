@@ -129,6 +129,10 @@ class UITests(unittest.TestCase):
         self.app.controller.inspect()
         self.wait(lambda: self.app.controller.ready is not None)
         self.assertEqual(str(self.app.workspace.produce["state"]), "normal")
+        # The two-step plan is an expert path behind More options; Produce episode is primary.
+        self.assertFalse(self.app.workspace.produce.winfo_ismapped())
+        self.app.workspace.more_button.invoke()
+        self.root.update()
         self.app.workspace.produce.focus_force()
         self.root.update()
         self.assertIs(self.root.focus_get(), self.app.workspace.produce)
@@ -173,7 +177,7 @@ class UITests(unittest.TestCase):
         )
         workspace.batch.choices["note-001"].set(True)
         workspace.tabs.select(workspace.publication)
-        workspace.publication.tabs.select(workspace.publication.editor)
+        workspace.publication.open_editor()
         self.root.update()
         self.app.close()
         self.assertTrue(self.app.closed)
@@ -193,7 +197,6 @@ class UITests(unittest.TestCase):
             "Paragraph one.\n\nUnfinished paragraph two",
         )
         self.assertEqual(workspace.tabs.select(), str(workspace.publication))
-        self.assertEqual(workspace.publication.tabs.select(), str(workspace.publication.editor))
         self.assertIsNone(self.app.controller.ready)
         self.assertFalse(workspace.review.audio_checked.get())
         self.assertEqual(self.app.controller.studio.repository.jobs(), [])
@@ -299,15 +302,19 @@ class UITests(unittest.TestCase):
         workspace.tabs.select(workspace.batch)
         self.root.update()
         self.assert_visible(workspace.batch.queue)
-        self.assert_visible(workspace.batch.form.content.winfo_children()[0])
+        group = workspace.batch.form.content.winfo_children()[0]
+        self.assertEqual(group.legend.cget("text"), "Episodes to include")
+        self.assert_visible(group.body.winfo_children()[0])
         self.capture("batch-inspection")
         workspace.tabs.select(workspace.publication)
-        workspace.publication.tabs.select(workspace.publication.editor)
+        workspace.publication.open_editor()
+        workspace.publication.editor_window.geometry("+0+0")
         self.root.update()
         self.assert_visible(workspace.publication.editor.save)
         self.assert_visible(workspace.publication.editor.widgets["title"])
+        workspace.publication.close_editor()
         self.capture("publishing-editor")
-        workspace.tabs.select(workspace.health.master)
+        workspace.tool_buttons[str(workspace.health.master)].invoke()
         with patch.object(
             self.app.controller.studio,
             "health",
@@ -348,8 +355,7 @@ class UITests(unittest.TestCase):
     def test_release_copy_is_ready_and_refresh_keeps_unsaved_publication_fields(self):
         publication = self.app.workspace.publication
         self.assertEqual(publication.details.title, "Curiosity with calluses.")
-        publication.field.set("Description")
-        publication.copy_button.invoke()
+        publication.copy_buttons["Description"].invoke()
         self.assertIn("Written edition:", self.root.clipboard_get())
         self.assertIn("AI-narrated", self.root.clipboard_get())
         publication.url.set("https://youtu.be/finished-release")
@@ -367,19 +373,25 @@ class UITests(unittest.TestCase):
         publication.url.set("https://youtu.be/another-release")
         self.assertEqual(publication.date.get(), "2026-10-15")
 
-    def test_release_handoff_selects_review_scope_and_inspects_export_without_queueing(self):
+    def test_release_makes_the_upload_folder_from_a_checked_export_plan_only(self):
         publication = self.app.workspace.publication
-        publication.actions["review"].invoke()
-        self.assertTrue(self.app.workspace.review.full_video())
-        self.assertEqual(self.app.workspace.tabs.select(), str(self.app.workspace.review))
+        self.app.workspace.tabs.select(publication)
+        controls = self.app.controller.episode_controls
+        self.wait(lambda: not controls.busy)
         with patch.object(
-            self.app.controller.studio, "plan", return_value=({"edition": {}}, "Package plan")
-        ):
+            self.app.controller.studio,
+            "checked_plan",
+            return_value=({"edition": {}}, "Upload folder plan"),
+        ) as plan:
             publication.actions["package"].invoke()
-            self.wait(lambda: self.app.controller.ready is not None)
-        self.assertEqual(self.app.workspace.action.get(), "export")
-        self.assertEqual(self.app.workspace.tabs.select(), str(self.app.workspace.plan.master))
-        self.assertEqual(self.app.controller.studio.repository.jobs(), [])
+            self.wait(lambda: bool(self.app.controller.studio.repository.jobs()))
+            self.wait(lambda: not controls.busy)
+        self.assertEqual(plan.call_args.args, ("note-001", "export", None, None))
+        self.assertEqual(
+            [j.action for j in self.app.controller.studio.repository.jobs()], ["export"]
+        )
+        self.assertEqual(self.app.workspace.tabs.select(), str(publication))
+        self.assertEqual(self.app.controller.studio.repository.publications(), {})
 
     def test_publication_drafts_survive_episode_switch_and_save_ack_keeps_newer_edits(self):
         controller = self.app.controller
@@ -434,16 +446,22 @@ class UITests(unittest.TestCase):
 
     def test_copy_feedback_is_local_and_resets_for_new_content_or_refresh(self):
         publication = self.app.workspace.publication
-        publication.copy_button.invoke()
-        self.assertEqual(publication.copy_button["text"], "Copied")
-        self.assertTrue(publication.copy_button["image"])
-        publication.field.set("Description")
-        self.assertEqual(publication.copy_button["text"], "Copy description")
-        self.assertIn(str(len(publication.details.description)), publication.measure["text"])
-        publication.copy_button.invoke()
+        title, description = (
+            publication.copy_buttons["Title"],
+            publication.copy_buttons["Description"],
+        )
+        title.invoke()
+        self.assertEqual(title["text"], "Copied")
+        self.assertTrue(title["image"])
+        description.invoke()
+        self.assertEqual(title["text"], "Copy")
+        self.assertEqual(description["text"], "Copied")
+        size = len((publication.details.description + "\n").encode("utf-8"))
+        self.assertEqual(publication.measures["Description"]["text"], f"{size:,} / 5,000 bytes")
+        self.assertEqual(publication.measures["Title"]["text"], "24 / 100")
         self.app.controller.refresh_release()
-        self.assertTrue(publication.copy_button.instate(["disabled"]))
-        self.assertNotEqual(publication.copy_button["text"], "Copied")
+        self.assertTrue(description.instate(["disabled"]))
+        self.assertNotEqual(description["text"], "Copied")
         self.assertEqual(publication.refresh["text"], "Refreshing…")
         self.wait(lambda: publication.details is not None)
         self.assertEqual(publication.refresh["text"], "Refresh")
@@ -458,13 +476,13 @@ class UITests(unittest.TestCase):
         self.wait(lambda: publication.record_status["text"] == "Saved locally")
         self.assertEqual(publication.save["text"], "Saved")
         publication.date.set("2026-10-16")
-        self.assertEqual(publication.save["text"], "Save publication record")
+        self.assertEqual(publication.save["text"], "Save release record")
         self.assertEqual(publication.record_status["text"], "Unsaved changes")
 
     def test_shelf_reports_empty_search_and_recovers_without_changing_episode(self):
         self.app.shelf.query.set("No such episode")
         self.assertFalse(self.app.shelf.tree.get_children())
-        self.assertIn("No matches", self.app.shelf.count["text"])
+        self.assertIn("Nothing matches", self.app.shelf.count["text"])
         self.assertEqual(self.app.controller.selected, "note-001")
         self.app.shelf.query.set("")
         self.assertIn("1 of 1", self.app.shelf.count["text"])
@@ -488,16 +506,15 @@ class UITests(unittest.TestCase):
         self.root.update()
         self.assertFalse(self.app.workspace.controls.winfo_ismapped())
         self.capture("release-upload-details")
-        for widget in (*publication.actions.values(), publication.copy_button):
+        for widget in (*publication.copy_buttons.values(), *publication.actions.values()):
+            publication.page.reveal(widget)
+            self.root.update()
             self.assert_visible(widget)
-        self.assertGreaterEqual(publication.text.winfo_height(), 20)
-        publication.field.set("Description")
+        publication.copy_buttons["Description"].invoke()
         self.capture("release-upload-description")
-        publication.tabs.select(1)
-        self.root.update()
-        publication.form.reveal(publication.url_entry)
-        self.root.update()
         for widget in (publication.url_entry, publication.date_entry, publication.save):
+            publication.page.reveal(widget)
+            self.root.update()
             x = widget.winfo_rootx() + widget.winfo_width() // 2
             y = widget.winfo_rooty() + widget.winfo_height() // 2
             self.assertIs(self.root.winfo_containing(x, y), widget)
@@ -513,7 +530,7 @@ class UITests(unittest.TestCase):
         visible = self.root.winfo_containing(tree.winfo_rootx() + x + 5, tree.winfo_rooty() + y + 5)
         self.assertIs(visible, tree)
         self.assert_visible(self.app.shelf.count)
-        self.assert_visible(self.app.shelf.help)
+        self.assert_visible(self.app.readiness.primary)
         bottom = self.app.message.winfo_rooty() + self.app.message.winfo_height()
         self.assertLessEqual(bottom, self.root.winfo_rooty() + self.root.winfo_height())
 
@@ -594,6 +611,8 @@ class UITests(unittest.TestCase):
             self.assertIs(self.root.winfo_containing(x, y), widget)
 
     def queue_job(self, action="audio", episode="note-001", status="queued", result=""):
+        # A poll that read the empty queue earlier must not land after this render.
+        self.wait(lambda: not self.app.controller.polling)
         repository = self.app.controller.studio.repository
         identifier = repository.submit(
             episode, action, {"settings": {"speed": 1.15, "outro_seconds": 8}}
@@ -601,6 +620,7 @@ class UITests(unittest.TestCase):
         if status != "queued":
             repository.finish(identifier, status, result=result)
         self.app.jobs.render(repository.jobs())
+        self.app.toggle_jobs(True)
         self.app.jobs.tree.selection_set(identifier)
         self.root.update()
         return identifier
@@ -620,7 +640,8 @@ class UITests(unittest.TestCase):
         repository.finish(identifier, "interrupted", error="Unknown outcome")
         self.app.jobs.render(repository.jobs())
         self.assertFalse(buttons["retry"].instate(["disabled"]))
-        self.assertIn("1 needs attention", self.app.jobs.summary["text"])
+        self.assertIn("1 needs you", self.app.jobs.summary["text"])
+        self.assertIn("1 job needs you", self.app.activity["text"])
         self.assertTrue(buttons["open"].instate(["disabled"]))
         repository.submit("note-001", "audio", {"settings": {}})
         self.app.jobs.render(repository.jobs())
@@ -679,14 +700,14 @@ class UITests(unittest.TestCase):
         self.root.update()
         self.assertEqual(self.app.jobs.tree.item(interrupted, "values")[2], "Interrupted")
         self.assertNotIn("Jobs will appear here", self.app.jobs.detail["text"])
-        publication.copy_button.invoke()
+        publication.copy_buttons["Title"].invoke()
         self.root.update()
         self.capture("release-copy-feedback")
-        for widget in (
-            *publication.actions.values(),
-            *self.app.jobs.buttons.values(),
-            publication.copy_button,
-        ):
+        for widget in (*publication.copy_buttons.values(), *publication.actions.values()):
+            publication.page.reveal(widget)
+            self.root.update()
+            self.assert_visible(widget)
+        for widget in self.app.jobs.buttons.values():
             self.assert_visible(widget)
 
     def show_package_files(self, status="ready"):
@@ -708,40 +729,39 @@ class UITests(unittest.TestCase):
             "Files checked · current full edition · review approved. Ready for manual upload; platform publication is not checked.",
             assets,
         )
-        with patch.object(self.app.controller.studio, "package_snapshot", return_value=snapshot):
-            self.app.workspace.tabs.select(self.app.workspace.publication)
-            self.app.workspace.publication.tabs.select(files)
-            self.wait(lambda: files.snapshot == snapshot)
+        # Keep the fixture for the whole test: polls and refreshes re-read the package.
+        fixture = patch.object(
+            self.app.controller.studio, "package_snapshot", return_value=snapshot
+        )
+        fixture.start()
+        self.addCleanup(fixture.stop)
+        self.app.workspace.tabs.select(self.app.workspace.publication)
+        self.wait(lambda: files.snapshot == snapshot)
         return files
 
     def test_package_files_are_lazy_and_missing_package_has_a_next_step(self):
         files = self.app.workspace.publication.files
         self.assertIsNone(files.snapshot)
-        self.app.workspace.publication.tabs.select(files)
+        self.app.workspace.tabs.select(self.app.workspace.publication)
         self.wait(lambda: files.snapshot is not None)
         self.assertEqual(files.snapshot.status, "missing")
-        self.assertTrue(files.open.instate(["disabled"]))
-        self.assertTrue(files.copy.instate(["disabled"]))
-        self.assertIn("Inspect package", files.summary.get("1.0", "end"))
+        self.assertEqual(files.copy_buttons, {})
+        self.assertIn("Make upload folder", files.summary["text"])
         self.assertFalse(files.folder.instate(["disabled"]))
 
     def test_package_file_actions_copy_picker_path_and_reset_for_another_asset(self):
         files = self.show_package_files()
         expected = r"\\wsl.localhost\Ubuntu\home\user\episode.mp4"
+        self.assertEqual(list(files.copy_buttons), ["episode.mp4", "thumbnail.png", "captions.srt"])
+        video = files.copy_buttons["episode.mp4"]
         with patch.object(
             self.app.controller.studio, "package_upload_path", return_value=expected
         ) as copied:
-            files.copy.invoke()
-            self.wait(lambda: files.copy["text"] == "Path copied")
+            video.invoke()
+            self.wait(lambda: video["text"] == "Path copied")
             self.assertEqual(self.root.clipboard_get(), expected)
             copied.assert_called_once_with(files.snapshot, "episode.mp4")
-        files.tree.selection_set("thumbnail.png")
-        files.selected()
-        self.assertEqual(files.copy["text"], "Copy upload path")
-        with patch.object(self.app.controller.studio, "open_package_file") as opened:
-            files.open.invoke()
-            self.wait(lambda: opened.called)
-            opened.assert_called_once_with(files.snapshot, "thumbnail.png")
+        self.assertEqual(files.copy_buttons["thumbnail.png"]["text"], "Copy path")
         self.assertEqual(self.app.controller.studio.repository.publications(), {})
 
     def test_package_copy_completion_respects_new_file_selection_and_refresh(self):
@@ -752,17 +772,17 @@ class UITests(unittest.TestCase):
         self.app.controller.task = lambda operation, callback, on_error=None: pending.append(
             callback
         )
-        files.copy.invoke()
-        self.assertTrue(files.copy.instate(["disabled"]))
-        self.assertTrue(files.open.instate(["disabled"]))
-        files.tree.selection_set("thumbnail.png")
-        files.selected()
+        files.copy_buttons["episode.mp4"].invoke()
+        self.assertTrue(files.copy_buttons["episode.mp4"].instate(["disabled"]))
+        self.assertTrue(files.copy_buttons["thumbnail.png"].instate(["disabled"]))
+        self.app.controller.refresh_package()
         pending.pop(0)("Old video path")
         self.assertEqual(self.root.clipboard_get(), "Keep this clipboard")
         self.app.controller.refresh_package()
         old = pending.pop(0)
         self.app.controller.refresh_package()
         old(PackageSnapshot("note-001", "old", "ready", "Old result"))
+        self.assertEqual(files.copy_buttons, {})
         self.assertIsNone(files.snapshot)
 
     def test_package_action_failure_keeps_recovery_available(self):
@@ -772,10 +792,10 @@ class UITests(unittest.TestCase):
             "package_upload_path",
             side_effect=ValueError("Package changed. Check files again."),
         ):
-            files.copy.invoke()
-            self.wait(lambda: "Package changed" in files.summary.get("1.0", "end"))
-        self.assertNotEqual(files.copy["text"], "Path copied")
-        self.assertFalse(files.copy.instate(["disabled"]))
+            files.copy_buttons["episode.mp4"].invoke()
+            self.wait(lambda: "Package changed" in files.summary["text"])
+        self.assertNotEqual(files.copy_buttons["episode.mp4"]["text"], "Path copied")
+        self.assertFalse(files.copy_buttons["episode.mp4"].instate(["disabled"]))
         self.assertFalse(files.refresh.instate(["disabled"]))
         files.clear("Package files changed. Export again.")
         with patch.object(self.app.controller.studio, "open_output") as opened:
@@ -787,12 +807,15 @@ class UITests(unittest.TestCase):
         self.root.geometry("1050x760")
         self.queue_job()
         files = self.show_package_files()
+        # Layout only: a poll finishing now would rebuild the rows being measured.
+        self.app.controller.polling = True
         self.root.update()
         self.assertFalse(self.app.workspace.outputs.winfo_ismapped())
-        for widget in (files.open, files.copy, files.folder, files.refresh):
-            self.assert_visible(widget)
-        self.assertTrue(files.tree.bbox("episode.mp4"))
-        _, y, _, height = files.tree.bbox("episode.mp4")
-        self.assertLessEqual(y + height, files.tree.winfo_height())
-        self.assertFalse(files.path_entry.winfo_ismapped())
+        page = self.app.workspace.publication.page
+        page.reveal(files)
+        self.root.update()
         self.capture("release-package-files")
+        for widget in (*files.copy_buttons.values(), files.folder, files.refresh):
+            page.reveal(widget)
+            self.root.update()
+            self.assert_visible(widget)

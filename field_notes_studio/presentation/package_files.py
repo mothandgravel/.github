@@ -1,10 +1,19 @@
-"""Inspect checked upload assets and hand their paths to an external file picker."""
+"""Checked upload files, one row each, with a Copy path for the browser's file picker."""
 
 import tkinter as tk
 from tkinter import ttk
 
 from field_notes_studio.presentation.controls import ActionButton
-from field_notes_studio.presentation.theme import MUTED, PAPER, SUCCESS, WARNING, set_text
+from field_notes_studio.presentation.icons import icon
+
+GLYPHS = {
+    "episode.mp4": "video",
+    "thumbnail.png": "folder",
+    "captions.srt": "captions",
+    "captions.vtt": "captions",
+    "episode.mp3": "audio",
+    "transcript.txt": "transcript",
+}
 
 
 def size_text(value):
@@ -16,167 +25,103 @@ def size_text(value):
 
 class PackageFiles(ttk.Frame):
     def __init__(self, parent, callbacks):
-        super().__init__(parent, padding=10)
+        super().__init__(parent, style="CardRow.TFrame")
+        self.callbacks = callbacks
         self.snapshot = None
+        self.copy_buttons = {}
         self.columnconfigure(0, weight=1)
-        self.rowconfigure(1, weight=1)
-        status = ttk.Frame(self)
-        status.columnconfigure(0, weight=1)
-        status.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 6))
-        self.summary = tk.Text(
-            status,
-            height=2,
-            width=1,
-            wrap="word",
-            padx=0,
-            pady=1,
-            borderwidth=0,
-            highlightthickness=0,
-            background=PAPER,
-            foreground=MUTED,
-            state="disabled",
-        )
-        self.summary.grid(row=0, column=0, sticky="ew")
-        status_scroll = ttk.Scrollbar(status, command=self.summary.yview)
-        status_scroll.grid(row=0, column=1, sticky="ns")
-        self.summary.configure(yscrollcommand=status_scroll.set)
-        self.tree = ttk.Treeview(
-            self,
-            columns=("purpose", "name", "size"),
-            show="headings",
-            selectmode="browse",
-            height=3,
-        )
-        for name, title, width in (
-            ("purpose", "Use", 170),
-            ("name", "File", 200),
-            ("size", "Size", 85),
-        ):
-            self.tree.heading(name, text=title, anchor="w")
-            self.tree.column(name, width=width, minwidth=60, stretch=name != "size")
-        self.tree.grid(row=1, column=0, sticky="nsew")
-        scrollbar = ttk.Scrollbar(self, command=self.tree.yview)
-        scrollbar.grid(row=1, column=1, sticky="ns")
-        self.tree.configure(yscrollcommand=scrollbar.set)
-        self.tree.bind("<<TreeviewSelect>>", lambda _: self.selected())
-        actions = ttk.Frame(self)
-        actions.grid(row=2, column=0, columnspan=2, sticky="ew", pady=6)
-        self.open = ActionButton(
-            actions,
-            pictogram="folder",
-            text="Open file",
-            command=callbacks["package_open"],
-            state="disabled",
-            style="Compact.TButton",
-        )
-        self.open.pack(side="left")
-        self.copy = ActionButton(
-            actions,
-            pictogram="copy",
-            text="Copy upload path",
-            command=callbacks["package_copy"],
-            state="disabled",
-            style="Compact.TButton",
-            width=19,
-        )
-        self.copy.pack(side="left", padx=6)
-        self.folder = ActionButton(
-            actions,
-            pictogram="folder",
-            text="Open folder",
-            command=lambda: callbacks["open"]("uploads"),
-            style="Compact.TButton",
-        )
-        self.folder.pack(side="left")
+        heading = ttk.Frame(self, style="CardRow.TFrame")
+        heading.grid(row=0, column=0, sticky="ew")
+        ttk.Label(heading, text="Files", style="CardHeading.TLabel").pack(side="left")
         self.refresh = ActionButton(
-            actions,
+            heading,
             pictogram="refresh",
             text="Check files",
             command=callbacks["package_refresh"],
             style="Compact.TButton",
         )
         self.refresh.pack(side="right")
+        self.rows = ttk.Frame(self, style="CardRow.TFrame")
+        self.rows.grid(row=1, column=0, sticky="ew", pady=(4, 0))
+        for column, weight in ((0, 0), (1, 0), (2, 1), (3, 0), (4, 0)):
+            self.rows.columnconfigure(column, weight=weight)
+        self.summary = ttk.Label(self, text="", style="CardMuted.TLabel", wraplength=520)
+        self.summary.grid(row=2, column=0, sticky="ew", pady=(6, 0))
         self.path = tk.StringVar()
-        self.path_entry = ttk.Entry(self, textvariable=self.path, state="readonly")
-        self.path_entry.grid(row=3, column=0, columnspan=2, sticky="ew")
-        self.bind("<Configure>", self.resize)
-
-    def resize(self, event):
-        if event.height < 240:
-            self.path_entry.grid_remove()
-        else:
-            self.path_entry.grid()
+        self.bind(
+            "<Configure>",
+            lambda e: self.summary.configure(wraplength=max(200, e.width - 10)),
+            add=True,
+        )
 
     def error(self, message):
-        set_text(self.summary, message)
-        self.summary.configure(foreground=WARNING)
+        self.summary.configure(text=message, style="CardWarn.TLabel")
 
-    def selection(self):
-        selected = self.tree.selection()
-        return selected[0] if selected else None
+    def _render(self):
+        for child in self.rows.winfo_children():
+            child.destroy()
+        self.copy_buttons = {}
+        files = self.snapshot.files if self.snapshot else ()
+        for row, asset in enumerate(files):
+            ttk.Label(
+                self.rows, image=icon(self, GLYPHS.get(asset.name, "folder")), style="Card.TLabel"
+            ).grid(row=row, column=0, padx=(0, 8), pady=3)
+            ttk.Label(self.rows, text=asset.purpose, style="Card.TLabel").grid(
+                row=row, column=1, sticky="w", padx=(0, 12)
+            )
+            ttk.Label(
+                self.rows,
+                text=f"{asset.name}  ·  {size_text(asset.size)}",
+                style="CardMono.TLabel",
+            ).grid(row=row, column=2, sticky="w")
+            button = ActionButton(
+                self.rows,
+                pictogram="copy",
+                text="Copy path",
+                command=lambda n=asset.name: self.callbacks["package_copy"](n),
+                style="Compact.TButton",
+            )
+            button.grid(row=row, column=4, sticky="e", pady=2)
+            self.copy_buttons[asset.name] = button
 
-    def selected(self):
-        name = self.selection()
-        asset = (
-            next((asset for asset in self.snapshot.files if asset.name == name), None)
-            if self.snapshot
-            else None
-        )
-        self.path.set(asset.path if asset else "")
-        self.open.reset_feedback()
-        self.copy.reset_feedback()
-        for button in (self.open, self.copy):
-            button.configure(state="normal" if asset else "disabled")
-
-    def working(self, action):
-        self.selected()
-        for button in (self.open, self.copy):
+    def working(self, name):
+        for asset, button in self.copy_buttons.items():
+            button.reset_feedback()
             button.configure(state="disabled")
-        (self.open if action == "open" else self.copy).configure(
-            text="Opening…" if action == "open" else "Copying…"
-        )
+            if asset == name:
+                button.configure(text="Copying…")
 
-    def clear(self, message="Check the saved upload package to see its files.", *, loading=False):
+    def ready(self):
+        for button in self.copy_buttons.values():
+            button.reset_feedback()
+            button.configure(state="normal")
+
+    def clear(self, message="Check the saved upload folder to see its files.", *, loading=False):
         self.snapshot = None
-        self.tree.delete(*self.tree.get_children())
-        set_text(self.summary, message)
-        self.summary.configure(foreground=MUTED)
-        self.selected()
+        self._render()
+        self.summary.configure(text=message, style="CardMuted.TLabel")
+        self.path.set("")
         self.refresh.configure(
             text="Checking…" if loading else "Check files",
             state="disabled" if loading else "normal",
         )
 
     def load(self, snapshot):
-        previous = (
-            self.selection()
-            if self.snapshot and self.snapshot.episode == snapshot.episode
-            else None
-        )
         self.clear(snapshot.summary)
         self.snapshot = snapshot
         self.summary.configure(
-            foreground=SUCCESS
+            style="CardOk.TLabel"
             if snapshot.status == "ready"
-            else MUTED
+            else "CardMuted.TLabel"
             if snapshot.status == "missing"
-            else WARNING
+            else "CardWarn.TLabel"
         )
-        for asset in snapshot.files:
-            self.tree.insert(
-                "", "end", iid=asset.name, values=(asset.purpose, asset.name, size_text(asset.size))
-            )
-        if snapshot.files:
-            self.tree.selection_set(
-                previous
-                if previous is not None and self.tree.exists(previous)
-                else snapshot.files[0].name
-            )
-        self.selected()
+        self._render()
 
-    def copied(self, path):
-        self.selected()
+    def copied(self, name, path):
+        self.ready()
         self.clipboard_clear()
         self.clipboard_append(path)
         self.path.set(path)
-        self.copy.complete("Path copied")
+        if name in self.copy_buttons:
+            self.copy_buttons[name].complete("Path copied")

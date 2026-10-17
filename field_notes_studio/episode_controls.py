@@ -28,7 +28,7 @@ class EpisodeControls:
             return
         self.epoch += 1
         self.c.view.readiness.invalidate(enabled=bool(self.c.selected and not self.c.loading))
-        self.c.view.workspace.preflight_status("Not checked for the current recipe.", "both")
+        self.c.view.workspace.preflight_status("Not checked for your current settings.", "both")
         self.open_package_after_check = False
         self.update_overrides()
         if refresh:
@@ -43,7 +43,7 @@ class EpisodeControls:
             self.window.valid_selection = self.window.episode == self.c.selected
         if self.window and self.window.alive() and not self.window.valid_selection:
             self.window.message.configure(
-                text="Episode selection changed. Reload recipes to work on the newly selected episode."
+                text="Episode selection changed. Reload show settings to work on the newly selected episode."
             )
             for button in (self.window.apply, self.window.save_new, self.window.update):
                 button.configure(state="disabled")
@@ -53,16 +53,20 @@ class EpisodeControls:
                 self.window.current = current
                 self.window.show_difference()
             delta = differences(reference.get("settings", w.production_base), current)
-            text = ("Recipe snapshot: " + reference["name"]) if reference else "Configured defaults"
-            text += f" · {len(delta)} episode override(s)" if delta else " · no episode overrides"
+            text = ("Show settings: " + reference["name"]) if reference else "Usual show settings"
+            text += (
+                f" · {len(delta)} change{'s' if len(delta) != 1 else ''} for this episode"
+                if delta
+                else " · no changes for this episode"
+            )
             if delta:
                 text += (
                     "\n"
                     + "; ".join(delta[:2])
-                    + (" · more in Show recipes" if len(delta) > 2 else "")
+                    + (" · more in Show settings" if len(delta) > 2 else "")
                 )
         except (TypeError, KeyError, ValueError):
-            text = "Unfinished recipe values · finish editing before checking or saving."
+            text = "Unfinished settings · finish editing before checking or saving."
             if self.window and self.window.alive() and self.window.valid_selection:
                 self.window.message.configure(text=text)
         w.recipe_info.configure(text=text)
@@ -96,7 +100,7 @@ class EpisodeControls:
                     )
                     if snapshot.action in {"export", "package", "review"}:
                         c.view.workspace.preflight_status(
-                            "Saved full edition verified. No production needed for the checked recipe."
+                            "Saved full version checked. Nothing to produce for these settings."
                         )
                     if self.open_package_after_check and snapshot.action == "package":
                         c.view.workspace.tabs.select(c.view.workspace.publication)
@@ -165,9 +169,9 @@ class EpisodeControls:
         elif snapshot.action == "health":
             c.view.workspace.tabs.select(c.view.workspace.health.master)
             c.view.workspace.show_health(
-                "Preflight blocker:\n\n"
+                "What blocks it:\n\n"
                 + snapshot.detail
-                + "\n\nCheck health for installed tools. No installation or repair is automatic."
+                + "\n\nCheck setup shows installed tools. Nothing is installed or repaired automatically."
                 + ("\n\nTechnical detail: " + snapshot.technical if snapshot.technical else "")
             )
         else:
@@ -184,7 +188,7 @@ class EpisodeControls:
         self.busy = True
         c.view.readiness.working()
         c.view.workspace.preflight_status(
-            "Checking full review, export files and saved publishing copy…", "export"
+            "Checking the approval, the files and the saved upload text…", "export"
         )
 
         def failed(message):
@@ -197,14 +201,14 @@ class EpisodeControls:
 
         def planned(value):
             if c.closed or episode != c.selected or generation != c.generation:
-                failed("Selection or recipe changed. Check readiness again; nothing was queued.")
+                failed("Selection or settings changed. Check again; nothing was queued.")
                 return
             request, _ = value
 
             def queued(identifier):
                 self.busy = False
                 c.view.status(
-                    f"{episode}: upload package queued · {identifier[:8]}. No rendering or publication."
+                    f"{episode}: upload folder queued · {identifier[:8]}. Nothing is rendered or published."
                 )
                 self.invalidate(refresh=True)
 
@@ -229,10 +233,10 @@ class EpisodeControls:
                 self.undo_recipe,
             )
             self.window.difference = lambda base, current: (
-                "Differences from selected recipe:\n\n"
+                "Differences from the chosen show settings:\n\n"
                 + ("\n".join(differences(base, current)) or "No differences.")
                 if base
-                else "Save the current settings as a named recipe, or choose a saved recipe."
+                else "Save the current settings under a name, or choose saved show settings."
             )
         self.reload_recipes()
 
@@ -297,7 +301,7 @@ class EpisodeControls:
         c = self.c
         if not self.undo_value or self.undo_value[0] != c.selected or c.loading:
             self.window.message.configure(
-                text="Undo belongs to the episode where the recipe was applied."
+                text="Undo belongs to the episode where these show settings were applied."
             )
             return
         try:
@@ -334,7 +338,7 @@ class EpisodeControls:
             window.choice.set(name.strip())
             self.reload_recipes()
             window.message.configure(
-                text="Show recipe saved locally. Other episode drafts and queued work are unchanged."
+                text="Show settings saved on this computer. Other episodes and queued work are unchanged."
             )
         except (OSError, ValueError, KeyError) as exc:
             window.message.configure(text=str(exc))

@@ -3,8 +3,11 @@
 import tkinter as tk
 from tkinter import ttk
 
-from field_notes_studio.presentation.controls import ActionButton
+from field_notes_studio.presentation.controls import ActionButton, Fieldset
 from field_notes_studio.presentation.scroll import ScrollArea
+
+FULL = "Full video and audio"
+AUDIO = "Audio and captions"
 
 
 class Review(ttk.Frame):
@@ -12,12 +15,12 @@ class Review(ttk.Frame):
         super().__init__(parent)
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
-        self.scroller = ScrollArea(self, padding=12)
+        self.scroller = ScrollArea(self, padding=(16, 14, 16, 6))
         self.scroller.grid(row=0, column=0, sticky="nsew")
         self.canvas = self.scroller.canvas
         content = self.scroller.content
         self.snapshot = None
-        self.scope = tk.StringVar(value="Full video and audio")
+        self.scope = tk.StringVar(value=FULL)
         self.reviewer = tk.StringVar()
         self.audio_checked = tk.BooleanVar()
         self.captions_checked = tk.BooleanVar()
@@ -25,85 +28,92 @@ class Review(ttk.Frame):
         self.busy = False
         header = ttk.Frame(content)
         header.pack(fill="x")
-        ttk.Label(header, text="Review saved edition", style="Heading.TLabel").pack(side="left")
+        self.review_help = ttk.Label(
+            header,
+            text="Watch the full episode once with sound, then check the subtitles.",
+            wraplength=540,
+        )
+        self.review_help.pack(side="left", anchor="w")
         self.refresh = ActionButton(
             header,
             pictogram="refresh",
-            text="Refresh edition",
+            text="Check again",
             command=callbacks["refresh"],
             style="Compact.TButton",
         )
         self.refresh.pack(side="right")
-        self.summary = ttk.Label(content, text="Loading edition…", wraplength=590)
-        self.summary.pack(anchor="w", pady=8)
-        content.bind(
-            "<Configure>",
-            lambda e: self.summary.configure(wraplength=max(250, e.width - 35)),
-            add=True,
-        )
-        combo = ttk.Combobox(
-            content,
-            textvariable=self.scope,
-            values=("Audio and captions", "Full video and audio"),
-            state="readonly",
-            width=24,
-        )
-        combo.pack(anchor="w", pady=(0, 8))
-        combo.bind("<<ComboboxSelected>>", lambda _: callbacks["refresh"]())
         assets = ttk.Frame(content)
-        assets.pack(fill="x", pady=(0, 8))
+        assets.pack(fill="x", pady=(10, 4))
         self.asset_buttons = {}
         for label, kind in (
-            ("Listen separately", "audio"),
+            ("Watch full episode", "video"),
             ("Check subtitles", "captions"),
-            ("Watch video", "video"),
+            ("Listen to audio only", "audio"),
         ):
             button = ActionButton(
                 assets,
                 pictogram=kind,
                 text=label,
                 command=lambda k=kind: callbacks["open_review"](k),
-                style="Compact.TButton",
             )
             button.pack(side="left", padx=(0, 6))
             self.asset_buttons[kind] = button
-        self.review_help = ttk.Label(
-            content,
-            style="Muted.TLabel",
-            wraplength=540,
-            text="Watch with sound, check subtitles, approve once. Separate audio playback is optional.",
+        self.summary = ttk.Label(
+            content, text="Loading version…", style="Muted.TLabel", wraplength=590
         )
-        self.review_help.pack(anchor="w", pady=(0, 6))
-        content.bind(
-            "<Configure>",
-            lambda e: self.review_help.configure(wraplength=max(250, e.width - 35)),
-            add=True,
-        )
+        self.summary.pack(anchor="w", pady=(6, 12))
+        self.checks = Fieldset(content, "Before you approve")
+        self.checks.pack(fill="x")
         self.audio_check = ttk.Checkbutton(
-            content, text="I listened to this saved audio", variable=self.audio_checked
+            self.checks.body,
+            text="I listened to the whole saved audio",
+            variable=self.audio_checked,
         )
         self.video_check = ttk.Checkbutton(
-            content,
-            text="I watched and listened to the full episode",
+            self.checks.body,
+            text="I watched and listened to the whole episode",
             variable=self.video_checked,
             command=self.watched_episode,
         )
         self.captions_check = ttk.Checkbutton(
-            content, text="I checked this episode's subtitles", variable=self.captions_checked
+            self.checks.body,
+            text="The subtitles match what is said",
+            variable=self.captions_checked,
         )
         self.captions_check.pack(anchor="w")
+        scope = ttk.Frame(content)
+        scope.pack(fill="x", pady=(14, 0))
+        ttk.Label(scope, text="What you are approving", style="Muted.TLabel").pack(side="left")
+        combo = self.scope_control = ttk.Combobox(
+            scope, textvariable=self.scope, values=(FULL, AUDIO), state="readonly", width=22
+        )
+        combo.pack(side="left", padx=8)
+        combo.bind("<<ComboboxSelected>>", lambda _: callbacks["refresh"]())
+        self.note = ttk.Label(
+            content,
+            text="Approval belongs to these exact files. Changing pace, outro or sound makes "
+            "a new version that needs its own review.",
+            style="Muted.TLabel",
+            wraplength=590,
+        )
+        self.note.pack(anchor="w", pady=(12, 0))
+        content.bind("<Configure>", self._resize, add=True)
         footer = ttk.Frame(self, padding=(16, 10))
-        footer.grid(row=1, column=0, columnspan=2, sticky="ew")
-        ttk.Label(footer, text="Reviewed by").pack(side="left", padx=(0, 8))
-        ttk.Entry(footer, textvariable=self.reviewer, width=20).pack(side="left")
+        footer.grid(row=1, column=0, sticky="ew")
+        footer.columnconfigure(3, weight=1)
+        ttk.Label(footer, text="Reviewer").grid(row=0, column=0, padx=(0, 8))
+        self.reviewer_entry = ttk.Entry(footer, textvariable=self.reviewer, width=20)
+        self.reviewer_entry.grid(row=0, column=1)
+        self.remembered = ttk.Label(footer, text="", style="Small.TLabel")
+        self.remembered.grid(row=0, column=2, padx=8, sticky="w")
         self.approve = ActionButton(
             footer,
-            pictogram="review",
-            text="Record approval",
+            pictogram="check",
+            text="Approve this episode",
             command=callbacks["approve"],
             style="Accent.TButton",
         )
-        self.approve.pack(side="left", padx=8)
+        self.approve.grid(row=0, column=4, sticky="e")
         for variable in (
             self.reviewer,
             self.audio_checked,
@@ -113,6 +123,18 @@ class Review(ttk.Frame):
             variable.trace_add("write", lambda *_: self.update_controls())
         self.update_controls()
         self.bind_navigation(content)
+
+    def _resize(self, event):
+        width = max(250, event.width - 40)
+        for label in (self.summary, self.note):
+            label.configure(wraplength=width)
+        self.review_help.configure(wraplength=max(200, width - 140))
+
+    def remember(self, name):
+        """Fill the reviewer remembered on this computer; never any of the ticks."""
+        if name and not self.reviewer.get().strip():
+            self.reviewer.set(name)
+        self.remembered.configure(text="remembered on this computer" if name else "")
 
     def watched_episode(self):
         # Only this explicit, labelled user action confirms both watching AND listening.
@@ -127,9 +149,9 @@ class Review(ttk.Frame):
         self.scroller.reveal(widget)
 
     def full_video(self):
-        return self.scope.get() == "Full video and audio"
+        return self.scope.get() == FULL
 
-    def clear(self, message="Loading edition…", *, loading=False):
+    def clear(self, message="Loading version…", *, loading=False):
         self.snapshot = None
         self.busy = False
         self.audio_checked.set(False)
@@ -137,7 +159,7 @@ class Review(ttk.Frame):
         self.video_checked.set(False)
         self.summary.configure(text=message)
         self.refresh.configure(
-            text="Checking…" if loading else "Refresh edition",
+            text="Checking…" if loading else "Check again",
             state="disabled" if loading else "normal",
         )
         self.canvas.yview_moveto(0)
@@ -146,7 +168,7 @@ class Review(ttk.Frame):
     def load(self, snapshot):
         self.clear(snapshot.summary)
         if snapshot.identity:
-            self.scope.set("Full video and audio" if snapshot.full_video else "Audio and captions")
+            self.scope.set(FULL if snapshot.full_video else AUDIO)
         self.snapshot = snapshot
         self.update_controls()
 
@@ -160,13 +182,14 @@ class Review(ttk.Frame):
             self.audio_check.pack_forget()
             self.video_check.pack(anchor="w", before=self.captions_check)
             self.review_help.configure(
-                text="Watch with sound, check subtitles, approve once. Separate audio playback is optional."
+                text="Watch the full episode once with sound, then check the subtitles."
             )
         else:
             self.video_check.pack_forget()
             self.audio_check.pack(anchor="w", before=self.captions_check)
             self.review_help.configure(
-                text="Audio-only review. For a video release, choose Full video and audio and approve that complete edition once."
+                text="Audio-only review. For a video release, choose Full video and audio "
+                "and approve that whole version once."
             )
         ready = (
             available
@@ -182,7 +205,7 @@ class Review(ttk.Frame):
             if self.busy
             else "Approved"
             if available and self.snapshot.approved
-            else "Record approval"
+            else "Approve this episode"
         )
         if self.busy:
             self.refresh.configure(state="disabled")
