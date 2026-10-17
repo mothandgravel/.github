@@ -16,6 +16,10 @@
 .service ul {list-style:none;margin:0;padding:0;display:grid;gap:12px}
 .service li {position:relative;padding-left:22px;color:var(--ink);font:400 17px/1.5 var(--serif)}
 .service li::before {content:"";position:absolute;left:0;top:.75em;width:10px;height:1px;background:var(--gold)}
+/* One thread across all three lines: a full-width card under the grid, text kept to a readable measure. */
+.service-wide {grid-column:1/-1;border-top:1px solid var(--line)}
+.services-grid .service-wide {border-left:0}
+.service-wide>* {max-width:760px}
 @media (max-width:1000px) {
   .services-grid {grid-template-columns:1fr}
   .service+.service {border-left:0;border-top:1px solid var(--line)}
