@@ -58,12 +58,13 @@
   @keyframes thread-glint { 30% { stroke:#202222;stroke-width:3; } }
 }
 @media(max-width:900px) { .thread-heading { grid-template-columns:1fr;gap:30px; }.thread-heading p { max-width:60ch; }.thread-map { padding:22px; }.thread-map ol { gap:18px; }.thread-map li+li::before { left:-18px;width:18px; }.thread-map a { padding:18px; }.thread-stop { grid-template-columns:1fr;gap:24px; }.thread-margin { display:flex;flex-wrap:wrap;gap:12px 32px;align-items:baseline; }.thread-margin a { margin:0; } }
-/* A failed script leaves a small, in-flow index rather than a fixed overlay. */
+/* A failed script leaves a small, in-flow index rather than a fixed overlay. While the menu script is
+   still on its way (nav-pending), the header already takes its enhanced shape, so nothing shifts. */
 @media(max-width:900px) {
-  html:not(.has-nav-sheet) .thread-page .site-header { position:relative; }
-  html:not(.has-nav-sheet) .thread-page .header-inner { height:auto;flex-wrap:wrap;padding-top:18px;gap:18px; }
-  html:not(.has-nav-sheet) .thread-page .header-actions { display:none; }
-  html:not(.has-nav-sheet) .thread-page .main-nav { position:static;flex-basis:100%;border:0;padding:0 0 12px; }
+  html:not(.has-nav-sheet):not(.nav-pending) .thread-page .site-header { position:relative; }
+  html:not(.has-nav-sheet):not(.nav-pending) .thread-page .header-inner { height:auto;flex-wrap:wrap;padding-top:18px;gap:18px; }
+  html:not(.has-nav-sheet):not(.nav-pending) .thread-page .header-actions { display:none; }
+  html:not(.has-nav-sheet):not(.nav-pending) .thread-page .main-nav { position:static;flex-basis:100%;border:0;padding:0 0 12px; }
 }
 @media(max-width:660px) { .thread-main { padding-top:26px; }.thread-heading { padding:40px 0; }.thread-heading h1 { font-size:clamp(40px,11vw,68px); }.thread-map ol { grid-template-columns:1fr;gap:28px; }.thread-map li+li::before { top:-28px;left:50%;width:0;height:28px;border-left:1px solid var(--gold); }.thread-map svg { max-width:170px;margin-block:10px 16px; }.thread-map strong { font-size:28px; }.thread-stop { padding-block:44px; }.thread-trace { grid-template-columns:1fr; }.thread-trace>div { padding:22px; }.thread-ending { margin-top:44px; }.thread-ending .button { width:100%;gap:16px; } }
 @media print { .site-header,.site-footer,.thread-map,.thread-exits { display:none; }.thread-heading,.thread-stop { display:block; }.thread-heading h1 { font-size:48px; }.thread-stop { break-inside:avoid;padding-block:25px; }.thread-main { width:100%; }.thread-ending { margin-top:30px; } }

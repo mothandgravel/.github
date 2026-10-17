@@ -480,8 +480,65 @@ def main() -> int:
                   f'{route}: broken local destination {relative}')
     preview = (ROOT / 'workbench/index.html').read_text()
     check('noindex, follow' in preview, 'Example workbench must be labelled outside search indexing')
-    check('https://mothandgravel.com/workbench/' not in (ROOT / 'sitemap.xml').read_text(),
+    sitemap_text = (ROOT / 'sitemap.xml').read_text()
+    # The fictional example rooms stay out; the playground (room 02) holds real, published work.
+    check(not re.search(r'<loc>https://mothandgravel\.com/workbench/(return/)?</loc>', sitemap_text),
           'Example workbench must stay out of the published-content sitemap')
+    check(re.search(r'<a href="playground/">[^<]*playground', preview, re.I) is not None,
+          'Example workbench must lead to its second room, the playground')
+
+    # Standing investigations and the playground: three questions on the home page, one open
+    # question page, a light index, and room 02 with three lazy toys. Nothing links a page that
+    # does not exist yet, the live game is not linked, and no organisation names appear.
+    check(len(re.findall(r'<p class="service-ask mono">0[123] / (?:PAGE COMING|OPEN NOW)</p>', html)) == 3 and 'href="./investigations/green-light/"' in html,
+          'Home must show three standing questions, with the green-light page linked')
+    check('href="./workbench/">Workbench</a>' in html, 'Menu Workbench must lead to the two-room workbench')
+    # Made here: the homepage renders it after load from assets/made-here.mjs; the static list on
+    # /investigations/ is the no-script route. Both must say the same thing.
+    module_items = re.findall(r"\['([^']+)', '(pr|pl|sd|in|)', '([^']+)'\]", (ROOT / 'assets/made-here.mjs').read_text())
+    index_items = re.findall(r'<li><strong>([^<]+)</strong><span class="status" data-status="(\w+)">([^<]+)</span></li>',
+                             (ROOT / 'investigations/index.html').read_text())
+    kinds = {'pr': 'production', 'pl': 'playable', 'sd': 'study', 'in': 'internal', '': 'prototype'}
+    check(len(module_items) == 12 and [(n, kinds[k], t) for n, k, t in module_items] == index_items,
+          'Made here must list the same twelve things and statuses on the homepage and the questions index')
+    check('id="made-here" data-made-here' in html and 'href="./investigations/#made-here"' in html
+          and "['#questions','./assets/made-here.mjs']" in html, 'Made here must load when its section nears view, with a no-script link')
+    check('run.app' not in html, 'The live Cyber Grid is not linked yet')
+    for page_path, needles in {
+        'investigations/index.html': ['href="./green-light/"', 'PAGE COMING'],
+        'investigations/green-light/index.html': ['data-toy="grid"', 'assets/playground.mjs', 'assets/thread.css'],
+        'workbench/playground/index.html': ['data-toy="stamp"', 'data-toy="grid"', 'data-toy="week"', 'aria-current="page"', 'href="../"'],
+    }.items():
+        page_file = ROOT / page_path
+        check(page_file.is_file(), f'Missing {page_path}')
+        if not page_file.is_file():
+            continue
+        page_html = page_file.read_text(encoding='utf-8')
+        url = 'https://mothandgravel.com/' + page_path.removesuffix('index.html')
+        check(f'<loc>{url}</loc>' in sitemap_text, f'{page_path} missing from sitemap')
+        check(f'<link rel="canonical" href="{url}">' in page_html and 'og:title' in page_html
+              and 'twitter:card' in page_html and '<!-- discovery:start -->' in page_html,
+              f'{page_path} needs canonical, social preview and structured data')
+        for needle in needles:
+            check(needle in page_html, f'{page_path} is missing {needle}')
+        check(not re.search(r'navivra|kistradegoods|digablesolutions|vesuno|run\.app', page_html, re.I),
+              f'{page_path} names an organisation, a private project or the unlinked game')
+        parsed = SiteParser()
+        parsed.feed(page_html)
+        for anchor in parsed.anchors:
+            check(anchor in parsed.ids, f'{page_path} broken anchor #{anchor}')
+        for relative in re.findall(r'(?:href|src)="(\.\.?/[^"]*|[a-z][^":#]*/?)"', page_html):
+            if relative.startswith(('http', 'mailto')):
+                continue
+            target = (page_file.parent / urlsplit(relative).path).resolve()
+            check(target.is_file() or (target.is_dir() and (target / 'index.html').is_file()),
+                  f'{page_path} broken destination {relative}')
+    check(not re.search(r'navivra|kistradegoods|digablesolutions|vesuno', html, re.I),
+          'Home names an organisation or a private project')
+    for toy in ('stamp', 'grid', 'week'):
+        check((ROOT / f'assets/playground/{toy}.mjs').is_file(), f'Missing playground toy {toy}')
+    check('playground' not in re.sub(r'href="[^"]*"', '', html.split('<!-- home-style:end -->')[0]),
+          'Toys and their styles must not load on the home page')
     check('href="#contact">Start a conversation' in html, 'Missing early enquiry invitation')
     check(html.count('mailto:hello@mothandgravel.com') >= 4, 'Missing private email route in header, band, contact and footer')
     robots = (ROOT / 'robots.txt').read_text()

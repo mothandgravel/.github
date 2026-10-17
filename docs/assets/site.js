@@ -94,7 +94,7 @@
     const routes = [...navigation.querySelectorAll("a")];
     // Hints are visual company for each route; the link keeps its plain name.
     const hints = {
-      "workbench": "Saved traces. Work in progress.",
+      "workbench": "An example study. A playground.",
       "field notes": "Questions worth following.",
       "the thinking": "Soft wings. Hard ground.",
       "contact": "Email, or shape a brief first.",

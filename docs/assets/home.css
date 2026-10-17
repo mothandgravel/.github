@@ -53,3 +53,12 @@
 @media (max-width:900px) {
   .contact-band-inner {grid-template-columns:1fr;gap:26px;padding-block:46px}
 }
+/* Standing investigations reuse the services grid. Made here arrives after load (assets/made-here.mjs),
+   into a reserved box so nothing moves; without scripts it is a link to the same list. */
+.made-roll {margin-top:46px}
+.made-roll h3 {margin:0;font:inherit}
+.has-js .made-roll {min-height:312px}
+@media (max-width:998px) {.has-js .made-roll {min-height:404px}}
+@media (max-width:660px) {.has-js .made-roll {min-height:495px}}
+@media (max-width:599px) {.has-js .made-roll {min-height:888px}}
+@media (max-width:428px) {.has-js .made-roll {min-height:913px}}
