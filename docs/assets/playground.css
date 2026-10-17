@@ -134,7 +134,6 @@
 .question-index h2 a:hover {color:var(--gold-bright)}
 .question-index p {margin:0 0 8px;color:var(--secondary)}
 .question-index .mono {color:var(--gold-bright)}
-.question-coming {color:var(--muted)!important;font-family:var(--mono);font-size:12px;letter-spacing:.1em}
 .question-made {list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .question-made li {font-size:13px;padding:3px 9px;border:1px solid var(--line-soft)}
 .made-stop .status {margin-top:8px}
