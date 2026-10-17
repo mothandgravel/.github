@@ -30,6 +30,68 @@
     }
   },
   {
+    "id": "workbench-001",
+    "title": "What does the interface let you believe?",
+    "kind": "conversation",
+    "description": "A listening edition from the Moth & Gravel workbench.",
+    "note_id": null,
+    "slug": null,
+    "language": "en-US",
+    "audio": "assets/audio/workbench-001-5c5cdda3f0895d22.mp3",
+    "bytes": 6102764,
+    "audio_sha256": "5c5cdda3f0895d22d835b8bb382d78d543ede0deb7dfff2fb43e29ed5141a6c8",
+    "script_sha256": "4d05d083cc1809ebb49f0a658fbe14024efa51d3a51521c3b093aef2e5989a0b",
+    "source_sha256": {
+      "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86",
+      "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2",
+      "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
+    },
+    "duration_seconds": 508.473,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.srt",
+    "vtt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.vtt",
+    "transcript": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.txt",
+    "cues": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.json",
+    "files_sha256": {
+      "srt": "84792b10eecb9ab5720cb81656c11f665411960dcf1b294638ca27f4b318c467",
+      "vtt": "c0678968ccf040676e2a8445c9198350241385709877b7158eac7773d2cfa85c",
+      "transcript": "cf3149f0bb49ecd5cfc10dfb12d07dd68fc7082796eb4207859414697a408b76",
+      "cues": "ec50e71051293e788040b553927b6c9b66b30262cda880e227a0b2a59e76922d"
+    }
+  },
+  {
+    "id": "note-001-brisk",
+    "title": "Curiosity with calluses. — brisk narration comparison",
+    "kind": "comparison",
+    "description": "A listening edition from the Moth & Gravel workbench.",
+    "note_id": null,
+    "slug": null,
+    "language": "en-US",
+    "audio": "assets/audio/note-001-brisk-6d6fabd422aafba0.mp3",
+    "bytes": 1950956,
+    "audio_sha256": "6d6fabd422aafba036bdf0678f6e2be3175df636fd8df3d5ff7eaf02898059b5",
+    "script_sha256": "eff44a6f4df4c4b1b3c1a647d0ec2e04b488002f028e298464bf0d7a2f7e1f1c",
+    "source_sha256": {
+      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
+    },
+    "duration_seconds": 162.491,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.srt",
+    "vtt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.vtt",
+    "transcript": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.txt",
+    "cues": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.json",
+    "files_sha256": {
+      "srt": "60b3115929b459b97a28842edb6e67155cb9121e1559e82170a9c8327f918c56",
+      "vtt": "e2088543f8fb55faaa5996f70764f8bd08f432b35f4bc264c2da0dc68cae4b57",
+      "transcript": "c329e63f0f0d58a1032dd9d60d6c27d0df77b821e183ed85596a7afc6b5d3766",
+      "cues": "b02a242248f8b2a0cd10d2bdc1cee8a1f4ed3f39cf836efa133c93ff7056da21"
+    }
+  },
+  {
     "id": "note-002",
     "title": "Afterlight / Nightfall.",
     "kind": "note",
@@ -702,65 +764,33 @@
     }
   },
   {
-    "id": "workbench-001",
-    "title": "What does the interface let you believe?",
-    "kind": "conversation",
-    "description": "A listening edition from the Moth & Gravel workbench.",
-    "note_id": null,
-    "slug": null,
+    "id": "note-015",
+    "title": "Cancelled is a result.",
+    "kind": "note",
+    "description": "A scan stops halfway. A step fails. A machine goes quiet. Three small tools that treat the unhappy ending as a result of its own.",
+    "note_id": "015",
+    "slug": "015-cancelled-is-a-result.html",
     "language": "en-US",
-    "audio": "assets/audio/workbench-001-5c5cdda3f0895d22.mp3",
-    "bytes": 6102764,
-    "audio_sha256": "5c5cdda3f0895d22d835b8bb382d78d543ede0deb7dfff2fb43e29ed5141a6c8",
-    "script_sha256": "4d05d083cc1809ebb49f0a658fbe14024efa51d3a51521c3b093aef2e5989a0b",
+    "audio": "assets/audio/note-015-41a6e40c46063a93.mp3",
+    "bytes": 4576076,
+    "audio_sha256": "41a6e40c46063a937c4c9d21d2daa0c7e4bc9cd0602313be6eb45667d4f9a4b7",
+    "script_sha256": "384e498e89c8c053f3816947f6f9721a34fb8fd7af83054370d39a619726e806",
     "source_sha256": {
-      "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86",
-      "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2",
-      "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
+      "015": "f6b53ae3e3af07e37986e5aabfb50e3d3b1ce8297d49ce5776e5a9a9fce26dbe"
     },
-    "duration_seconds": 508.473,
-    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "duration_seconds": 381.262,
+    "published_at": "2026-10-17T21:54:40.682225+00:00",
     "review_status": "pending",
     "narration": "AI-narrated",
-    "srt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.srt",
-    "vtt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.vtt",
-    "transcript": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.txt",
-    "cues": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.json",
+    "srt": "assets/audio/note-015-41a6e40c46063a93-381c57de188d0290.srt",
+    "vtt": "assets/audio/note-015-41a6e40c46063a93-381c57de188d0290.vtt",
+    "transcript": "assets/audio/note-015-41a6e40c46063a93-381c57de188d0290.txt",
+    "cues": "assets/audio/note-015-41a6e40c46063a93-381c57de188d0290.json",
     "files_sha256": {
-      "srt": "84792b10eecb9ab5720cb81656c11f665411960dcf1b294638ca27f4b318c467",
-      "vtt": "c0678968ccf040676e2a8445c9198350241385709877b7158eac7773d2cfa85c",
-      "transcript": "cf3149f0bb49ecd5cfc10dfb12d07dd68fc7082796eb4207859414697a408b76",
-      "cues": "ec50e71051293e788040b553927b6c9b66b30262cda880e227a0b2a59e76922d"
-    }
-  },
-  {
-    "id": "note-001-brisk",
-    "title": "Curiosity with calluses. — brisk narration comparison",
-    "kind": "comparison",
-    "description": "A listening edition from the Moth & Gravel workbench.",
-    "note_id": null,
-    "slug": null,
-    "language": "en-US",
-    "audio": "assets/audio/note-001-brisk-6d6fabd422aafba0.mp3",
-    "bytes": 1950956,
-    "audio_sha256": "6d6fabd422aafba036bdf0678f6e2be3175df636fd8df3d5ff7eaf02898059b5",
-    "script_sha256": "eff44a6f4df4c4b1b3c1a647d0ec2e04b488002f028e298464bf0d7a2f7e1f1c",
-    "source_sha256": {
-      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
-    },
-    "duration_seconds": 162.491,
-    "published_at": "2026-10-13T22:04:17.406795+00:00",
-    "review_status": "pending",
-    "narration": "AI-narrated",
-    "srt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.srt",
-    "vtt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.vtt",
-    "transcript": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.txt",
-    "cues": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.json",
-    "files_sha256": {
-      "srt": "60b3115929b459b97a28842edb6e67155cb9121e1559e82170a9c8327f918c56",
-      "vtt": "e2088543f8fb55faaa5996f70764f8bd08f432b35f4bc264c2da0dc68cae4b57",
-      "transcript": "c329e63f0f0d58a1032dd9d60d6c27d0df77b821e183ed85596a7afc6b5d3766",
-      "cues": "b02a242248f8b2a0cd10d2bdc1cee8a1f4ed3f39cf836efa133c93ff7056da21"
+      "srt": "a3413a7cea5a933356588ee61148ef49bc76a94d6e22bd22c971adf5ba582049",
+      "vtt": "50f03e2493efc27d949924bc107091d3272a9ac6f29dd7b8d10e1d0e08b9dd19",
+      "transcript": "c830a18ba102443069c15cc117eb48e9780e1303a2485c4a3319f9f70ec886a0",
+      "cues": "be77a45b1b74363008a103c2d12119378124ab2c6c5b42e54d44bb555bcd96f5"
     }
   }
 ]
