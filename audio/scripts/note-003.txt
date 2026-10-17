@@ -6,7 +6,7 @@ A river is an interesting way to show a week
 
 You come back to a project after a day away. Some work has landed. A decision has changed. Someone needs an answer. Before doing anything else, you need to recover the shape of what happened.
 
-Decision Docket is our upcoming product, being developed under our Navivra organization. It is concerned with that return: finding the reason behind a decision and continuing with the relevant context. This note follows one part of its design work—the attempt to give that experience a distinctive form on Android.
+Decision Docket is our own tool, in production for our own work. It is concerned with that return: finding the reason behind a decision and continuing with the relevant context. This note follows one part of its design work—the attempt to give that experience a distinctive form on Android.
 
 A river offers a useful starting point. Time gives it direction. Changes give each stretch something to inspect. Decisions and hand-offs can become recognizable marks. Touch a day and the corresponding work comes into view.
 
