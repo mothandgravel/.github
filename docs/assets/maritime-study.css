@@ -1,0 +1,36 @@
+/* Maritime study specimen. Builds on coastal-watch.css; adds the plate, films, harbour grid and framework sheet. */
+.maritime-links{display:flex;flex-wrap:wrap;gap:8px 28px;margin:0;}
+.maritime-plate{margin:0;padding:14px 14px 6px;border:1px solid var(--line);background:linear-gradient(135deg,var(--paper-edge),transparent 42%),var(--surface);box-shadow:inset 1px 1px var(--paper-edge),6px 9px 20px -16px var(--contact-shadow);}
+.plate-rule{display:flex;justify-content:space-between;gap:16px;padding:2px 4px 12px;color:var(--secondary);font-size:11px;}
+.plate-rule-foot{padding:10px 4px 6px;border-top:1px solid var(--line-soft);margin-top:4px;}
+.plate-figures{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.plate-figure{margin:0;}
+.plate-figure a,.maritime-plate img{display:block;}
+.plate-figure img,.harbour-grid img,.coastal-pair picture img{width:100%;height:auto;background:#101c22;}
+.plate-figure figcaption{padding:12px 4px 10px;font-size:13px;line-height:1.65;color:var(--secondary);}
+.plate-figure .fig{display:block;margin-bottom:4px;color:var(--gold-bright);font-size:11px;}
+.coastal-capture picture{display:block;}
+.maritime-film{margin:0;}
+.maritime-film video{display:block;width:100%;height:auto;border:1px solid var(--line);background:#101c22;}
+.maritime-film figcaption{display:flex;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;padding-top:14px;font-size:13px;color:var(--secondary);}
+.maritime-film figcaption a{color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px;}
+.maritime-films{margin-top:32px;align-items:start;}
+.maritime-films .coastal-transcript{padding-top:8px;}
+.harbour-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.harbour-grid .coastal-capture figcaption{min-height:128px;}
+.framework-sheet{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;padding-top:28px;border-top:1px solid var(--line);}
+.framework-materials{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:0 28px;}
+.framework-materials li{padding:14px 0;border-bottom:1px solid var(--line-soft);font:400 19px/1.35 var(--serif);}
+.framework-materials .mono{display:block;margin-bottom:4px;color:var(--gold-bright);font-size:11px;}
+.framework-copy{color:var(--secondary);font-size:16px;line-height:1.8;max-width:60ch;}
+.framework-copy p{margin:0 0 16px;}
+.maritime-boundaries{margin-top:72px;padding:32px 36px;border:1px solid var(--line);border-left:2px solid var(--gold);background:var(--surface);scroll-margin-top:110px;}
+.maritime-boundaries>.mono{color:var(--gold-bright);margin:0;}
+.maritime-boundaries h2{font:900 clamp(28px,3.4vw,42px)/1.1 var(--sans);letter-spacing:-.02em;margin:12px 0 22px;}
+.maritime-boundaries ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 40px;}
+.maritime-boundaries li{padding:14px 0;border-top:1px solid var(--line-soft);color:var(--secondary);font-size:15px;line-height:1.7;}
+.maritime-boundaries li strong{display:block;color:var(--ink);font-weight:600;}
+.maritime-attribution{margin:22px 0 0;font-size:13px;line-height:1.75;color:var(--secondary);}
+.maritime-boundaries a{color:var(--gold-bright);text-decoration:underline;text-underline-offset:4px;}
+@media(max-width:900px){.framework-sheet{grid-template-columns:1fr;gap:28px;}.harbour-grid .coastal-capture figcaption{min-height:0;}}
+@media(max-width:660px){.plate-figures,.harbour-grid,.framework-materials,.maritime-boundaries ul{grid-template-columns:1fr;}.maritime-plate{padding:10px 10px 4px;}.plate-rule{font-size:10px;gap:10px;}.plate-rule-foot span:nth-child(2){display:none;}.harbour-grid{gap:20px;}.maritime-boundaries{margin-top:48px;padding:24px 20px;}.framework-materials li{font-size:17px;}}

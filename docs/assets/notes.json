@@ -375,7 +375,7 @@
     ],
     "supersedes": [],
     "visual": "forms",
-    "featured": true,
+    "featured": false,
     "cover": {
       "small": "013-cover-800.webp",
       "large": "013-cover-1600.webp",
@@ -385,6 +385,44 @@
     "nextReading": {
       "id": "005",
       "bridge": "The job can outlive its window. Its labels still have to distinguish a saved result, a checked result and a delivered one."
+    }
+  },
+  {
+    "id": "014",
+    "slug": "014-enough-light-to-read-by.html",
+    "title": "Enough light to read by.",
+    "summary": "A ferry’s bridge at night, held at a fixed position. A maritime study in dimmed screens, borrowed weather and the labels that keep a study from posing as a voyage.",
+    "date": "2026-10-17",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "Maritime study / Raivari",
+    "thread": "",
+    "related": [
+      "012",
+      "002",
+      "007"
+    ],
+    "supersedes": [],
+    "visual": "forms",
+    "featured": true,
+    "socialImage": "assets/notes/014-cover-social.jpg",
+    "cover": {
+      "small": "014-cover-800.webp",
+      "large": "014-cover-976.webp",
+      "width": 976,
+      "height": 548
+    },
+    "nextReading": {
+      "id": "012",
+      "bridge": "This study holds its ship still on purpose. Coastal watch asks what the picture should say when the stream stops on its own."
+    },
+    "specimen": {
+      "href": "../specimens/maritime-study/",
+      "label": "Return to the maritime study"
     }
   }
 ]

@@ -14,6 +14,7 @@ on:
       - "scripts/audit_mapping.mjs"
       - "scripts/audit_thread.mjs"
       - "scripts/audit_reading.mjs"
+      - "scripts/audit_maritime.mjs"
       - "scripts/reading_output.test.py"
       - ".github/workflows/design-audit.yml"
   workflow_dispatch:
@@ -58,6 +59,7 @@ jobs:
           node scripts/audit_mapping.mjs
           node scripts/audit_thread.mjs
           node scripts/audit_studio_note.mjs
+          node scripts/audit_maritime.mjs
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4

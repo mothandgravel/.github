@@ -1,0 +1,71 @@
+Moth and Gravel. Field Note 14. Enough light to read by.
+
+An AI-narrated edition of the published note.
+
+The navigation screen reads 0.0 knots. Above the number, in smaller letters, it says MyStar / fixed study / no live voyage. Beyond the wheelhouse windows it is night. The console lights are low, and the sea is moving.
+
+Each of those things is true in a different way. That difference became the study.
+
+A bridge at night is a reading room
+
+A ship’s bridge after dark is a strange place to design for. The people in it need to see out. The screens in front of them want to be seen. Every lit pixel competes with the water beyond the glass.
+
+So the brightest thing in the room is a decision. Our wheelhouse has a dimmer. It turns down the instrument faces and the light they spill onto the console together, the way a real lamp would. The labels on the desk stay engraved and quiet. Nothing glows for atmosphere.
+
+We wanted the screens to give enough light to read by, and no more. That turned out to be a useful brief for the words on them, too.
+
+Three kinds of true
+
+The study holds a passenger ferry at a fixed position off Tallinn, with Helsinki’s West Terminal 2 and Tallinn’s D-terminal across the water. Its weather is observed: cloud, visibility, wind and sea come from the nearest Finnish Meteorological Institute stations, and the screen says how far away each station is. Sometimes that is three kilometres. Sometimes it is nearly seventy.
+
+Its night can be depicted at any hour. Set the clock to 19:00 UTC and the sun follows the date and the place: it drops below the horizon, the cabin windows and quay lamps come up, and the water picks up their reflections.
+
+So a single frame can hold three different kinds of truth. The sky was observed that morning, some distance away. The night is a lighting study, placed at an hour that had not yet come. The ship has not moved at all.
+
+None of that is a problem until it is presented as one thing. A finished, carefully lit scene lends every part of it the same confidence. The work was making sure each part kept its own.
+
+What the screen says when it has nothing
+
+The navigation and contact screens under depicted night lighting, 17 October, with that morning’s weather retained. Actual study capture; the local recording control is visible at lower right. Watch the bridge films
+
+A fixed study is a convenient place to work. Nothing has to arrive before you can look at hull lines, harbour lights or a console at night. It is also an easy place to start lying, because nothing arrives to contradict you.
+
+So the instruments name the study before they give a number. Speed over ground: 0.0 knots, because the ship is held still. Depth, rudder and radar: a dash, labelled as unavailable onboard inputs. Contacts: no nearby AIS reports received, and no synthetic contacts added to fill the screen.
+
+A plausible depth would have looked more finished. A few drifting vessels would have made the contact list feel alive. The dash is less handsome and more accurate. Where the study has no source, it shows the absence plainly.
+
+Fixed is not the same as frozen
+
+A fixed position does not make a still picture. The sea keeps moving, shaped by observed wind and wave measurements where a nearby station reports them. Fields that are missing fall back to visual defaults, and the study says so rather than quietly filling them in.
+
+Night works the same way. When we move the clock forward, the weather stays as it was observed, and the screen says that too. A lighting study must not become a forecast by accident.
+
+The harbours have the same honesty problem in brick and glass. Footprints and roads come from OpenStreetMap. The two terminals are shaped from published architectural references, then simplified for the distance you see them from. It is a harbour at viewing scale, not a survey.
+
+Built on our own ground
+
+All of this sits on Raivari, the framework we build our own work on. It is a full-stack TypeScript framework for Bun: server functions without the usual plumbing, with CBOR on the wire; typed REST endpoints; a small, pure functional PostgreSQL query builder; streaming and caching; and orchestration for AI agents.
+
+The maritime study uses a modest slice of it. Bun bundles the scene and serves two harbour weather endpoints. React 19 and three.js draw the ship, the harbours and the wheelhouse. The ship, the console and the camera are shared components, so a change to how the bridge is inspected reaches every view that uses them.
+
+That is the quiet benefit of owning the ground you stand on. The labels, the dashes and the rules about what may be shown live in the same place as the hull and the lamps. Raivari is private for now. We can describe it; its code stays in the workshop.
+
+What we have not shown
+
+We have not put this bridge in front of someone who stands a watch for a living. That is the next honest test: show them the night console without explanation, and ask what the ship is doing and how they know.
+
+If they read a fixed study as a crossing, the labels still have work to do. If they find the dash before the number, the screen is doing its job.
+
+Until then, it is a quiet room with the lights turned down. Enough light to read by. Enough words to know what you are reading.
+
+STUDY SCOPE / VISUALISATION, NOT NAVIGATION
+
+What these captures contain.
+
+This note accompanies the maritime study specimen. Positions are fixed; no voyage is shown. Weather and sea come from nearby FMI observations where available, with visual defaults for missing fields. The night captures are a lighting study, not a forecast. Harbour architecture is reference-informed and simplified. The ferry is drawn from published dimensions; nothing here comes from aboard the ship or from its operator.
+
+It is a visualisation study, not a navigation tool, and it makes no safety or compliance claim. The application source is private. No reader comprehension result is established. Weather observations: FMI, CC BY 4.0. Map data © OpenStreetMap contributors, ODbL. Basemap: Natural Earth, public domain.
+
+Inspect the captures and working record · Read the source and media provenance
+
+You have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.

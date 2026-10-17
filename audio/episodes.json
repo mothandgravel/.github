@@ -379,5 +379,30 @@
       "kind": "note",
       "note_id": "013"
     }
+  },
+  {
+    "id": "note-014",
+    "title": "Enough light to read by.",
+    "format": "narration",
+    "script": "scripts/note-014.txt",
+    "language": "en-US",
+    "notes": [
+      "014"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "014": "9483b09cd6f72013b70ef24ddf31acbd98e63351ed7300fb6670b7b62d49c4e1"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "014"
+    }
   }
 ]

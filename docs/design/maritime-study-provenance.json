@@ -1,0 +1,333 @@
+{
+  "title": "Maritime study",
+  "studio": "Moth & Gravel",
+  "specimen": "https://mothandgravel.com/specimens/maritime-study/",
+  "note": "https://mothandgravel.com/notes/014-enough-light-to-read-by.html",
+  "statement": "A visualisation study, not navigation. No safety, compliance or certification claim is made.",
+  "captureLibrary": {
+    "path": "design/concept-captures/2026-10-17/manifest.json",
+    "assembledOn": "2026-10-17"
+  },
+  "source": {
+    "repository": "navivra/raivari",
+    "visibility": "private",
+    "availability": "Private application source; not linked or published.",
+    "maritime": {
+      "capturedCommit": "a7ba282d5a96b9b0cb7680ab89c39992212438a2",
+      "mergedMainCommit": "abe8b9153caa2d92fb93fc5f7566b33428924e99",
+      "pullRequest": 125
+    },
+    "coastalWatch": {
+      "capturedCommit": "397a91e875aa942bdefb31dacb9c49099b0dc7fe",
+      "pullRequest": 126,
+      "record": "design/coastal-watch-provenance.json"
+    }
+  },
+  "recording": {
+    "maritime": "Direct MediaRecorder capture of the rendered canvas; silent WebM transcoded to H.264 MP4, variable frame timing retained, padded by at most one pixel to even dimensions. No interpolated motion. Browser capture has uneven frame cadence; encoded duration is reported per file. The recorder requests twenty seconds; frames can begin late under load.",
+    "coastalWatch": "Existing 15 October recording: 634 screenshots encoded with capture intervals at 30 output fps. 10.85 seconds of uncaptured gaps removed with direct cuts; UI clocks may jump. Silent. No fabricated observations.",
+    "screenshots": "JPEG browser screenshots. Earlier captures were copied without image changes; their incorrect .png suffixes were corrected to .jpg. Current proxy captures include the local recording controls."
+  },
+  "boundaries": [
+    "Maritime study positions are fixed. Weather and sea use nearby FMI observations where available; defaults remain for missing fields. This is not live voyage footage.",
+    "Night footage depicts 19:00 UTC while retaining the current morning weather observations. It is a lighting study, not a weather forecast.",
+    "Architecture is reference-informed, with simplified facade spacing, roof profiles and illustrative background heights and finishes.",
+    "Coastal watch tracks and alerts are synthetic. It does not run the track-fusion pipeline.",
+    "Earlier maritime screenshots predate this capture session; their precise commits are not asserted.",
+    "No client, operator, voyage or result is implied. Nothing was supplied by the ship or its operator."
+  ],
+  "attribution": [
+    "FMI weather observations: CC BY 4.0, https://en.ilmatieteenlaitos.fi/open-data",
+    "OpenStreetMap contributors: ODbL, https://www.openstreetmap.org/copyright",
+    "Natural Earth basemap: public domain, https://www.naturalearthdata.com/about/terms-of-use/"
+  ],
+  "reusedAssets": [
+    "assets/specimens/coastal-watch/01-overview.jpg",
+    "assets/specimens/coastal-watch/02-observation-record.jpg"
+  ],
+  "originals": [
+    {
+      "file": "assets/specimens/maritime-study/01-mystar-exterior.jpg",
+      "sha256": "611eb26846efef579070672027d79056a37b789d5884bbaa0cf5013b5ac31f0f",
+      "bytes": 100950,
+      "type": "image",
+      "title": "MyStar / exterior",
+      "caption": "Fresh capture, 17 October. Morning sky with observed overcast conditions.",
+      "capturedOn": "2026-10-17",
+      "libraryChecksumMatches": true
+    },
+    {
+      "file": "assets/specimens/maritime-study/01-mystar-motion.mp4",
+      "sha256": "867183e34e50e8cf5a2425bb71e2b21f083454251e0873a96da5e67be8b7f036",
+      "bytes": 1310853,
+      "type": "video",
+      "title": "The water keeps moving.",
+      "caption": "MyStar exterior, sea motion and a short orbit. Fixed Tallinn study position; nearby FMI weather observed at 06:40 UTC. Captured 17 October 2026.",
+      "capturedOn": "2026-10-17",
+      "libraryChecksumMatches": true,
+      "poster": "assets/specimens/maritime-study/01-mystar-motion-poster.webp"
+    },
+    {
+      "file": "assets/specimens/maritime-study/02-bridge-chart-current.jpg",
+      "sha256": "8b408dd761cf60caf20a32c0bd73119affa4c5c2d945b288cbcfa2ffb1a71c89",
+      "bytes": 75967,
+      "type": "image",
+      "title": "Bridge / chart inspection",
+      "caption": "Fresh capture, 17 October. Physical instrument, surrounding controls and the inspection UI.",
+      "capturedOn": "2026-10-17",
+      "libraryChecksumMatches": true
+    },
+    {
+      "file": "assets/specimens/maritime-study/02-bridge-inspection.mp4",
+      "sha256": "3b6a691d346d671b6e641d1b178c3d0c48674fbe857192fb0ba67faff775ed2c",
+      "bytes": 336521,
+      "type": "video",
+      "title": "A closer look at the chart.",
+      "caption": "The camera moves into the physical console. Instruments show a fixed study position, not a live voyage. Captured 17 October 2026.",
+      "capturedOn": "2026-10-17",
+      "libraryChecksumMatches": true,
+      "poster": "assets/specimens/maritime-study/02-bridge-inspection-poster.webp"
+    },
+    {
+      "file": "assets/specimens/maritime-study/03-helsinki-t2-current.jpg",
+      "sha256": "44fec71119cbc98fe7c3077b0c30aaf8c3d0eb1dc6a7def303faa10bdb22b949",
+      "bytes": 95752,
+      "type": "image",
+      "title": "Helsinki / West Terminal 2",
+      "caption": "Fresh capture, 17 October. Reference-informed terminal, mapped footprints and illustrative background buildings.",
+      "capturedOn": "2026-10-17",
+      "libraryChecksumMatches": true
+    },
+    {
+      "file": "assets/specimens/maritime-study/04-bridge-night.mp4",
+      "sha256": "5b79e1688d73460ed507e31dcccb4c6869249db6d7cc1c5017eb4f61f17d040f",
+      "bytes": 432956,
+      "type": "video",
+      "title": "Enough light to read by.",
+      "caption": "Navigation instrument and console lights. Depicted time: 17 October, 19:00 UTC / 22:00 EEST. Morning weather observations are retained for this light study.",
+      "capturedOn": "2026-10-17",
+      "libraryChecksumMatches": true,
+      "poster": "assets/specimens/maritime-study/04-bridge-night-poster.webp"
+    },
+    {
+      "file": "assets/specimens/maritime-study/04-tallinn-terminal-current.jpg",
+      "sha256": "774a31e3cd2485e877724ceca9fd68f1e12dfad0616486577bd6f770c58d0520",
+      "bytes": 95870,
+      "type": "image",
+      "title": "Tallinn / D-terminal",
+      "caption": "Fresh capture, 17 October. Reference-informed terminal and harbour geometry, with nearby observed weather.",
+      "capturedOn": "2026-10-17",
+      "libraryChecksumMatches": true
+    },
+    {
+      "file": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15.jpg",
+      "sha256": "a6278bab2305ae3c9b799b24f23a7bf03fd1f8073f4544d98f24a7ff4a419755",
+      "bytes": 81433,
+      "type": "image",
+      "title": "MyStar / working lights",
+      "caption": "Earlier screenshot, 15 October. Exterior lighting study.",
+      "capturedOn": "2026-10-15",
+      "libraryChecksumMatches": true
+    },
+    {
+      "file": "assets/specimens/maritime-study/08-helsinki-lights-2026-10-15.jpg",
+      "sha256": "eda9d44f98e40f97fba94f461a50bb5c03d12e2a08c4faf8f1c551bd40c6807a",
+      "bytes": 99579,
+      "type": "image",
+      "title": "Helsinki / harbour lights",
+      "caption": "Earlier screenshot, 15 October. Harbour lighting study.",
+      "capturedOn": "2026-10-15",
+      "libraryChecksumMatches": true
+    },
+    {
+      "file": "assets/specimens/maritime-study/09-tallinn-lights-2026-10-15.jpg",
+      "sha256": "65ecd900fa2a82f11ec3f880a00f0050fbf617a15d932c1bfb0e48d598d55008",
+      "bytes": 117063,
+      "type": "image",
+      "title": "Tallinn / harbour lights",
+      "caption": "Earlier screenshot, 15 October. Harbour lighting study.",
+      "capturedOn": "2026-10-15",
+      "libraryChecksumMatches": true
+    },
+    {
+      "file": "assets/specimens/maritime-study/12-bridge-night-current.jpg",
+      "sha256": "98e54799cacc28817e9b0ae77c8aa58dca8e6b8033dc3ae0105c0eba05bbba40",
+      "bytes": 78676,
+      "type": "image",
+      "title": "Bridge / navigation at night",
+      "caption": "Fresh capture, 17 October. Depicted night lighting; current morning weather retained.",
+      "capturedOn": "2026-10-17",
+      "libraryChecksumMatches": true
+    }
+  ],
+  "derivatives": [
+    {
+      "file": "assets/specimens/maritime-study/01-mystar-exterior-640.webp",
+      "sha256": "46d44c2413a0928528e31194ec5b042be33ef8f403323a83950909928a9b7930",
+      "bytes": 14786,
+      "derivedFrom": "assets/specimens/maritime-study/01-mystar-exterior.jpg",
+      "derivation": "cwebp -q 76 -m 6 -resize 640 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/01-mystar-exterior-800.webp",
+      "sha256": "9746653ec0db5c5c4428909a39208a2eddab3c8d52826e39dfab2047dcbf1e6c",
+      "bytes": 22056,
+      "derivedFrom": "assets/specimens/maritime-study/01-mystar-exterior.jpg",
+      "derivation": "cwebp -q 78 -m 6 -resize 800 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/01-mystar-exterior.webp",
+      "sha256": "a6a420dddff8b2c4d01a064ad44f425fa11e50736437f624f542765e73e72e11",
+      "bytes": 56450,
+      "derivedFrom": "assets/specimens/maritime-study/01-mystar-exterior.jpg",
+      "derivation": "cwebp -q 80 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/01-mystar-motion-poster.webp",
+      "sha256": "98474cabcba05647780c2afaa621f2e5633ea028ed1cf9a8515bd6f429f80795",
+      "bytes": 13970,
+      "derivedFrom": "design/concept-captures/2026-10-17/01-mystar-motion-poster.jpg",
+      "derivation": "cwebp -q 70 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/02-bridge-chart-current-800.webp",
+      "sha256": "814ffc40f59e09228c0f79e4f0cd47eb333387ed22888de1f07b581ce677155b",
+      "bytes": 16746,
+      "derivedFrom": "assets/specimens/maritime-study/02-bridge-chart-current.jpg",
+      "derivation": "cwebp -q 78 -m 6 -resize 800 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/02-bridge-chart-current.webp",
+      "sha256": "18cac135b345e2ba6d6c280136451bcea27ee43a9fbeb60e8f474c6f0738a2dd",
+      "bytes": 35766,
+      "derivedFrom": "assets/specimens/maritime-study/02-bridge-chart-current.jpg",
+      "derivation": "cwebp -q 80 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/02-bridge-inspection-poster.webp",
+      "sha256": "7762a041325727df06d84fb98ec5d8ccab2c8a22e67b3b68294a2c3a5f48b373",
+      "bytes": 14562,
+      "derivedFrom": "design/concept-captures/2026-10-17/02-bridge-inspection-poster.jpg",
+      "derivation": "cwebp -q 70 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/03-helsinki-t2-current-800.webp",
+      "sha256": "78685cb81347987e739491b6f828f70fe1467aabd7422fa135fe8138b8af57b8",
+      "bytes": 23786,
+      "derivedFrom": "assets/specimens/maritime-study/03-helsinki-t2-current.jpg",
+      "derivation": "cwebp -q 78 -m 6 -resize 800 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/03-helsinki-t2-current.webp",
+      "sha256": "a67f781164029aba161a1b450b699dc90aa3ec2b6025005b808aa1958f679590",
+      "bytes": 54956,
+      "derivedFrom": "assets/specimens/maritime-study/03-helsinki-t2-current.jpg",
+      "derivation": "cwebp -q 80 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/04-bridge-night-poster.webp",
+      "sha256": "8d2390e223df563819baced9646ac91faccf6ca7ea41fff0dd78b1efe1af2eab",
+      "bytes": 15928,
+      "derivedFrom": "design/concept-captures/2026-10-17/04-bridge-night-poster.jpg",
+      "derivation": "cwebp -q 70 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/04-tallinn-terminal-current-800.webp",
+      "sha256": "c6996ece6330378533bddfb448a5e9e778136d5ac3e3fd314f59a380ee69d229",
+      "bytes": 23672,
+      "derivedFrom": "assets/specimens/maritime-study/04-tallinn-terminal-current.jpg",
+      "derivation": "cwebp -q 78 -m 6 -resize 800 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/04-tallinn-terminal-current.webp",
+      "sha256": "a129a3a91e0ef9f54fa48383017aa9d2cbbd08334d89e74d9edee254a2d423c2",
+      "bytes": 54134,
+      "derivedFrom": "assets/specimens/maritime-study/04-tallinn-terminal-current.jpg",
+      "derivation": "cwebp -q 80 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15-640.webp",
+      "sha256": "66c492105d18a2158d44f1c7bc9a7cd8b87eda2a039f844f85becfb1933a37e8",
+      "bytes": 12128,
+      "derivedFrom": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15.jpg",
+      "derivation": "cwebp -q 76 -m 6 -resize 640 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15-800.webp",
+      "sha256": "a1939eb28e5dbfb1ea5d1ac6d2e4520ebc8c498c7289b01482444bf85ceeb616",
+      "bytes": 18220,
+      "derivedFrom": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15.jpg",
+      "derivation": "cwebp -q 78 -m 6 -resize 800 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15.webp",
+      "sha256": "9ff9f26f1b89b327ac05e5b7d7e926462fb69d080f4cadd45065b8318e4e45ed",
+      "bytes": 46834,
+      "derivedFrom": "assets/specimens/maritime-study/07-mystar-lights-2026-10-15.jpg",
+      "derivation": "cwebp -q 80 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/08-helsinki-lights-2026-10-15-800.webp",
+      "sha256": "402af855f924d319c4aff2972ab822c140274a6b3bc79bf26266796f48f289c4",
+      "bytes": 21484,
+      "derivedFrom": "assets/specimens/maritime-study/08-helsinki-lights-2026-10-15.jpg",
+      "derivation": "cwebp -q 78 -m 6 -resize 800 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/08-helsinki-lights-2026-10-15.webp",
+      "sha256": "f9040f0f3dfb5341ec08af7bfbf3b1d73170ca9399a533a17cd67e6c49b33c11",
+      "bytes": 56914,
+      "derivedFrom": "assets/specimens/maritime-study/08-helsinki-lights-2026-10-15.jpg",
+      "derivation": "cwebp -q 80 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/09-tallinn-lights-2026-10-15-800.webp",
+      "sha256": "bc4c041c1e5729279eba7e721ca4c4278335803aef8ec85fcdff36e03a34146c",
+      "bytes": 27222,
+      "derivedFrom": "assets/specimens/maritime-study/09-tallinn-lights-2026-10-15.jpg",
+      "derivation": "cwebp -q 78 -m 6 -resize 800 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/09-tallinn-lights-2026-10-15.webp",
+      "sha256": "d0214a75d697e964620b8c9dd9186ea840e8e0964da4117636fabe950a62866e",
+      "bytes": 69330,
+      "derivedFrom": "assets/specimens/maritime-study/09-tallinn-lights-2026-10-15.jpg",
+      "derivation": "cwebp -q 80 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/specimens/maritime-study/12-bridge-night-current-800.webp",
+      "sha256": "271f4b142dc236955f6619c63f4db8064135fd3a3954de8e950cfbaf2fbd0e4d",
+      "bytes": 17246,
+      "derivedFrom": "assets/specimens/maritime-study/12-bridge-night-current.jpg",
+      "derivation": "cwebp -q 78 -m 6 -resize 800 0"
+    },
+    {
+      "file": "assets/specimens/maritime-study/12-bridge-night-current.webp",
+      "sha256": "20d0fe2ea15fac995a2a7614505f23f3ee48a469244010a8647fe7b2749df4d4",
+      "bytes": 36910,
+      "derivedFrom": "assets/specimens/maritime-study/12-bridge-night-current.jpg",
+      "derivation": "cwebp -q 80 -m 6, original dimensions"
+    },
+    {
+      "file": "assets/notes/014-cover-800.webp",
+      "sha256": "dd4f622d0f195d4d94a4c06e1435fa045e3a15a9ba5b720a1a6712b0a916e60a",
+      "bytes": 9500,
+      "derivedFrom": "design/concept-captures/2026-10-17/07-mystar-lights-2026-10-15.jpg",
+      "derivation": "crop 976x548+272+263 (scene only, no captions), WebP"
+    },
+    {
+      "file": "assets/notes/014-cover-976.webp",
+      "sha256": "aebcc001231850b32feff8d7c7a55ad56df03206ed6ca7ba6b840db8d368e7a9",
+      "bytes": 14528,
+      "derivedFrom": "design/concept-captures/2026-10-17/07-mystar-lights-2026-10-15.jpg",
+      "derivation": "crop 976x548+272+263 (scene only, no captions), WebP"
+    },
+    {
+      "file": "assets/notes/014-cover-social.jpg",
+      "sha256": "412ee448e75366518c7376f191657d8bf0fbdbfca39da9fd9ec807db712c9d7f",
+      "bytes": 47007,
+      "derivedFrom": "design/concept-captures/2026-10-17/04-bridge-night-poster.jpg",
+      "derivation": "crop 1253x658+6+0, Lanczos scale to 1200x630, JPEG"
+    }
+  ]
+}
