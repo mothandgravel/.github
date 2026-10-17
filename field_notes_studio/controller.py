@@ -178,6 +178,8 @@ class Controller:
         self.view.status(
             "Work list ready. Open a row, or choose Make episode from a note…"
             if home
+            else ""
+            if getattr(self.view, "view_name", "episodes") == "run"
             else "Episodes loaded."
             if getattr(self.view, "view_name", "episodes") != "episodes"
             else "Episodes loaded. Choose one on the left; its card shows the next step."

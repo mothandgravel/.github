@@ -199,7 +199,14 @@ class MakeFlow:
                 if episode.identifier == view.episode:
                     title = f"{view.episode} · {episode.title}"
             run = self.studio.repository.run(run_id)
-            name = (run.get("consent") or {}).get("title") or title.split(" · ", 1)[-1]
+            # The note's title: from the catalog, else the one kept with the consent,
+            # else a readable form of the episode id (never the raw slug).
+            name = (
+                title.split(" · ", 1)[1]
+                if " · " in title
+                else (run.get("consent") or {}).get("title")
+                or view.episode.replace("-", " ").capitalize()
+            )
             if run.get("note"):
                 title = f"Field Note {run['note']} · {name}"
             attempts, diagnostics = (), ""
@@ -217,6 +224,7 @@ class MakeFlow:
             self.run_loading = False
             if run_id == self.run_id:
                 self.app.run_panel.show(*value)
+                self.app.run_status(value[0], value[1])
 
         def failed(_message):
             self.run_loading = False

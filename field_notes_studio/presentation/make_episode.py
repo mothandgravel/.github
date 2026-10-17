@@ -30,11 +30,35 @@ GLYPHS = {
 }
 ROW_STATE_STYLES = {
     "ok": "CardOk.TLabel",
-    "run": "CardBrass.TLabel",
+    "run": "CardState.TLabel",
     "todo": "CardMuted.TLabel",
     "warn": "CardWarn.TLabel",
-    "you": "CardBrass.TLabel",
+    "you": "CardState.TLabel",
 }
+# What the status bar says while a run's step is working.
+RUNNING_VERBS = {
+    "narrate": "Narrating",
+    "caption": "Captioning",
+    "sound": "Finishing the sound for",
+    "video": "Making the video for",
+    "package": "Making the upload folder for",
+}
+
+
+def run_activity(view, title):
+    """One status-bar line for a run: what is running, or who acts next."""
+    row = next((r for r in view.rows if r.kind == "run"), None)
+    if view.group == "working" and row is not None:
+        elapsed = row.detail.split(" elapsed", 1)[0] if " elapsed" in row.detail else ""
+        text = f"{RUNNING_VERBS.get(row.key, 'Working on')} {title}"
+        return ("produce", "BRASS", text + (f" · {elapsed}" if elapsed else ""))
+    if view.group == "working":
+        return ("history", "BRASS", f"{title} · {view.headline}")
+    if view.group == "needs-you":
+        return ("health" if view.phase == "paused" else "review", "WARNING", f"{title} needs you")
+    return ("check", "SUCCESS", f"{title} · {view.headline}")
+
+
 ROW_COLORS = {"ok": "SUCCESS", "run": "BRASS", "todo": "MUTED", "warn": "WARNING", "you": "BRASS"}
 GROUP_TITLES = {"needs-you": "Needs you", "working": "Working", "done": "Done"}
 
@@ -491,7 +515,7 @@ class RunPanel(ttk.Frame):
         self.cells = []
         for index in range(6):
             glyph = ttk.Label(self.box, style="Card.TLabel")
-            glyph.grid(row=index, column=0, padx=(0, 10), pady=3, sticky="w")
+            glyph.grid(row=index, column=0, padx=(0, 10), pady=4, sticky="w")
             name = ttk.Label(self.box, style="CardHeading.TLabel", width=14)
             name.grid(row=index, column=1, sticky="w")
             state = ttk.Label(self.box, style="CardMuted.TLabel", width=14)

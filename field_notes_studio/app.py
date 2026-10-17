@@ -355,6 +355,8 @@ class Application:
                 self.home_button.pack_configure(before=self.prepare_button)
         if name == "episodes" and self.release_focused:
             self.release_focus(True)
+        if name != "run":
+            self.run_activity = None
         if name == "home":
             self.flow.refresh_work()
         if name != "episodes" and self.jobs_open:
@@ -461,6 +463,15 @@ class Application:
         short = self.root.winfo_height() < 850
         self.workspace.compact(self.jobs_open and short)
 
+    def run_status(self, view, title):
+        """On the timeline the status bar describes that run, not the shelf."""
+        from field_notes_studio.presentation.make_episode import run_activity
+
+        self.run_activity = run_activity(view, title.split(" · ", 1)[0])
+        self.jobs_rendered()
+        # The timeline already says the producer keeps going; the bar names the step.
+        self.status("" if view.group == "working" else view.headline)
+
     def jobs_rendered(self):
         jobs = list(self.jobs.jobs.values())
         running = [job for job in jobs if job.status == "running"]
@@ -485,6 +496,10 @@ class Application:
         else:
             glyph, color, style = "check", "SUCCESS", "Success.TLabel"
             text = "Nothing running"
+        run = getattr(self, "run_activity", None)
+        if self.view_name == "run" and run is not None:
+            glyph, color, text = run
+            style = {"WARNING": "Draft.TLabel", "SUCCESS": "Success.TLabel"}.get(color, "TLabel")
         self.activity.configure(
             text=" " + text, image=icon(self.activity, glyph, color), style=style
         )

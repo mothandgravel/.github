@@ -291,6 +291,11 @@ class MakeEpisodeUITests(unittest.TestCase):
         self.wait(lambda: panel.view is not None)
         self.settle()
         self.assertEqual(self.app.brand.cget("text"), "MOTH & GRAVEL  /  MAKE EPISODE")
+        self.assertEqual(panel.title.cget("text"), "Field Note 012 · Coastal watch")
+        self.assertEqual(
+            self.app.activity.cget("text").strip(), "Making the video for Field Note 012 · 4 min"
+        )
+        self.assertNotIn("left", self.app.message_text)
         self.assertEqual(panel.cells[3][2].cget("text"), "Working")
         self.assertIn("6–9 min on this computer before", panel.cells[3][3].cget("text"))
         self.assertEqual(str(panel.stop_button["state"]), "normal")
