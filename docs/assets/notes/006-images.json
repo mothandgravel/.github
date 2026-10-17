@@ -14,32 +14,32 @@
   "source_readback_date": "2026-10-13",
   "sources": [
     {
-      "repository": "digablesolutions/kitronik-buggy",
+      "repository": "kitronik-buggy (private repository)",
       "path": "tools/scan_visualizer.py",
       "blob_sha": "e23f758fc680825d14bc104e9b79c0df63235da1"
     },
     {
-      "repository": "digablesolutions/kitronik-buggy",
+      "repository": "kitronik-buggy (private repository)",
       "path": "tools/sample_data/scan_box_test.json",
       "blob_sha": "c59b61e48bc2a277c8bac7d1b9492294b6746b3f"
     },
     {
-      "repository": "digablesolutions/kitronik-buggy",
+      "repository": "kitronik-buggy (private repository)",
       "path": "tools/ar_overlay.py",
       "blob_sha": "cea6183ca1bf4a53c776c4d5b1109df7738f3d37"
     },
     {
-      "repository": "digablesolutions/kitronik-buggy",
+      "repository": "kitronik-buggy (private repository)",
       "path": "firmware/src/app/occupancy_grid.c",
       "blob_sha": "470d3f57b2896ee70d33ffd28b127e955eab2baf"
     },
     {
-      "repository": "digablesolutions/kitronik-buggy",
+      "repository": "kitronik-buggy (private repository)",
       "path": "firmware/src/app/occupancy_grid.h",
       "blob_sha": "a39623556c27df2b745e17c160c33332a0c6704f"
     },
     {
-      "repository": "digablesolutions/kitronik-buggy",
+      "repository": "kitronik-buggy (private repository)",
       "path": "firmware/src/config/tuning.h",
       "blob_sha": "6df46d283121e3a7202845627b03b390b3cfafc1"
     }

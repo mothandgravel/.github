@@ -535,6 +535,10 @@ def main() -> int:
                   f'{page_path} broken destination {relative}')
     check(not re.search(r'navivra|kistradegoods|digablesolutions|vesuno', html, re.I),
           'Home names an organisation or a private project')
+    for data_file in sorted((ROOT / 'assets').rglob('*.json')) + sorted((ROOT / 'design').glob('*.json')):
+        if data_file.name == 'notes.json' or data_file.parent.name == 'notes' or data_file.parent.name == 'design':
+            check(not re.search(r'navivra|kistradegoods|digablesolutions|vesuno', data_file.read_text(encoding='utf-8'), re.I),
+                  f'{data_file.relative_to(ROOT)} names an organisation or the unlinked game')
     for toy in ('stamp', 'grid', 'week'):
         check((ROOT / f'assets/playground/{toy}.mjs').is_file(), f'Missing playground toy {toy}')
     check('playground' not in re.sub(r'href="[^"]*"', '', html.split('<!-- home-style:end -->')[0]),

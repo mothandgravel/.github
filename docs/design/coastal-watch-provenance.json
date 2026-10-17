@@ -6,7 +6,7 @@
   "suggestedCaption": "A working maritime observation interface. Real coastline, synthetic tracks. Select a mark to inspect its source, timing and recorded movement; interrupt the stream to see what remains.",
   "capturedOn": "2026-10-15",
   "source": {
-    "repository": "navivra/raivari",
+    "repository": "raivari (private repository)",
     "visibility": "private",
     "branch": "codex/coastal-watch-specimen",
     "commit": "397a91e875aa942bdefb31dacb9c49099b0dc7fe",

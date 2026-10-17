@@ -13,7 +13,7 @@
   "source_readback_date": "2026-10-13",
   "sources": [
     {
-      "repository": "digablesolutions/kitronik-buggy",
+      "repository": "kitronik-buggy (private repository)",
       "path": "tools/telemetry_gui.py",
       "blob_sha": "850938dfa3405ab9059cc20a863fd8f680aacd02",
       "scope": "receiver latest readings; 33 ms next-update schedule; age <0.5 seconds Connected, otherwise Stale data at the next check"

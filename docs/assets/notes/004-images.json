@@ -11,7 +11,7 @@
     "prompt": "Use case: stylized-concept. Asset type: landscape editorial cover illustration for Moth & Gravel Field Note 004, A control should stay where you left it. Primary request: an unexpected tactile still life about reserving a place and keeping an arrangement steady. A small low charcoal ceramic paperweight holds three parallel warm bone paper strips firmly on a warm pale work surface. Above the strips sits a clean square recess, deliberately empty, with a fine brass rule beside it. The blank square feels intentional and calm. An object could arrive later without moving the paper arrangement. Wide 16:9 composition, restrained elevated three-quarter view, generous breathing room. Materials: slightly rough charcoal ceramic, grainy bone paper, quietly worn brass, soft shadows. Muted warm bone, charcoal and brass palette matching an independent design studio. Elegant editorial photograph-like illustration with visible material texture, subtle asymmetry, no decorative spectacle. No writing, no text, no letters, no numbers, no logos, no interface, no loading spinner, no glowing technology, no watermark. This is a conceptual cover, not a diagram or product screenshot."
   },
   "measurement_source": {
-    "repository": "navivra/decision-docket",
+    "repository": "decision-docket (private repository)",
     "path": "docs/design/briefs/teammate-portrait-stability.md",
     "blob_sha": "be15102158895853a9f155720dc0aea21d1ae639",
     "accepted_source": "6b5bc536c44659d42d16cbd30c1b84e602697c21",
