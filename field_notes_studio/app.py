@@ -12,11 +12,13 @@ from tkinter import ttk
 
 from field_notes_studio import appearance
 from field_notes_studio.controller import Controller
+from field_notes_studio.make_flow import MakeFlow
 from field_notes_studio.preparation_controller import PreparationController
 from field_notes_studio.preparation_service import PreparationService
 from field_notes_studio.presentation import theme
 from field_notes_studio.presentation.controls import ActionButton
 from field_notes_studio.presentation.icons import icon
+from field_notes_studio.presentation.make_episode import RunPanel, WorkListView
 from field_notes_studio.presentation.preparation import PreparationWindow
 from field_notes_studio.presentation.queue import ProductionQueue
 from field_notes_studio.presentation.readiness import ReadinessCard
@@ -25,7 +27,8 @@ from field_notes_studio.presentation.workspace import Workspace
 from field_notes_studio.service import Studio
 
 SHORTCUTS = (
-    ("New episode from a note…", "Ctrl+N", "<Control-n>"),
+    ("Work list", "Ctrl+H", "<Control-h>"),
+    ("Make episode from a note…", "Ctrl+N", "<Control-n>"),
     ("Do the next step", "Ctrl+Enter", "<Control-Return>"),
     ("Search episodes", "Ctrl+F", "<Control-f>"),
     ("Go to Produce", "Ctrl+1", "<Control-Key-1>"),
@@ -68,19 +71,31 @@ class Application:
         main.pack(fill="both", expand=True)
         main.columnconfigure(0, weight=1)
         main.rowconfigure(2, weight=1)
-        ttk.Label(main, text="MOTH & GRAVEL  /  LOCAL PRODUCTION", style="Brand.TLabel").grid(
-            row=0, column=0, sticky="w"
+        self.brand = ttk.Label(
+            main, text="MOTH & GRAVEL  /  LOCAL PRODUCTION", style="Brand.TLabel"
         )
+        self.brand.grid(row=0, column=0, sticky="w")
         ttk.Label(main, text="Production studio", style="Studio.TLabel").grid(
             row=1, column=0, sticky="w", pady=(0, 4)
         )
         header = ttk.Frame(main)
         header.grid(row=0, column=0, rowspan=2, sticky="e")
+        self.view_name = "home"
+        self.home_button = ActionButton(
+            header,
+            pictogram="episodes",
+            text="Work list",
+            command=self.show_home,
+            style="Compact.TButton",
+        )
+        # B's front door: one summary, one confirm. The step-by-step Prepare window
+        # stays in the Menu as the expert path.
         self.prepare_button = ActionButton(
             header,
-            pictogram="transcript",
-            text="New episode from a note…",
-            command=self.open_preparation,
+            pictogram="produce",
+            text="Make episode from a note…",
+            command=self.make_episode,
+            style="Accent.TButton",
         )
         self.episodes_button = ActionButton(
             header,
@@ -98,8 +113,21 @@ class Application:
         self.menu_button.pack(side="left", padx=(8, 0))
         self.notes_service = None
         self.controller = Controller(studio, self)
+        self.flow = MakeFlow(self.controller, self)
         body = self.body = ttk.Panedwindow(main, orient="horizontal")
         body.grid(row=2, column=0, sticky="nsew")
+        self.home = WorkListView(main, {"open": self.flow.open_item})
+        self.run_panel = RunPanel(
+            main,
+            {
+                "hide": self.show_home,
+                "stop": self.flow.stop,
+                "next": self.flow.next,
+                "recover": self.flow.recover,
+                "billing": self.flow.billing,
+                "notify": self.flow.set_notify,
+            },
+        )
         self.shelf = Shelf(body, self.controller.select, self.controller.select_note)
         self.readiness = ReadinessCard(
             self.shelf,
@@ -139,6 +167,7 @@ class Application:
                 "package_refresh": self.controller.refresh_package,
                 "package_copy": self.controller.copy_package_path,
                 "youtube": self.controller.open_publisher,
+                "website": self.open_website,
                 "status": self.status,
                 "prepare": self.prepare_selected,
                 "stage": self.release_focus,
@@ -187,7 +216,10 @@ class Application:
         )
         self.shelf.query.trace_add("write", lambda *_: self.controller.draft_changed())
         root.bind("<FocusIn>", lambda _: self.check_appearance(), add=True)
+        self.flow.notify = bool(self.preferences.get("notify"))
+        self.run_panel.notify.set(self.flow.notify)
         self.controller.start()
+        self.show_view("home")
         self.check_appearance(force=True)
         self.tick()
         self.poll()
@@ -197,7 +229,8 @@ class Application:
     def _menu(self):
         menu = self.menu = tk.Menu(self.menu_button, tearoff=False)
         commands = {
-            "<Control-n>": self.open_preparation,
+            "<Control-h>": self.show_home,
+            "<Control-n>": self.make_episode,
             "<Control-Return>": self.next_step,
             "<Control-f>": self.focus_search,
             "<Control-Key-1>": lambda: self.workspace.select_stage(0),
@@ -206,10 +239,18 @@ class Application:
             "<Control-j>": self.toggle_jobs,
         }
         for index, (label, accelerator, sequence) in enumerate(SHORTCUTS):
-            if index in {1, 3, 6}:
+            if index in {2, 4, 7}:
                 menu.add_separator()
             menu.add_command(label=label, accelerator=accelerator, command=commands[sequence])
             self.root.bind(sequence, lambda event, c=commands[sequence]: self.shortcut(event, c))
+        menu.add_separator()
+        # The expert path: today's screens, unchanged.
+        menu.add_command(
+            label="Episodes and stages (expert)", command=lambda: self.show_view("episodes")
+        )
+        menu.add_command(
+            label="Prepare a note step by step…", command=lambda: self.open_preparation()
+        )
         menu.add_separator()
         self.appearance_menu = tk.Menu(menu, tearoff=False)
         for value, label in (
@@ -287,12 +328,66 @@ class Application:
                 lambda: self.controller.studio.remember(system_dark=dark), lambda _: None
             )
 
+    # Views: the work list (home), a Make episode run, and the expert episodes view ------
+
+    def show_view(self, name):
+        """Show one of the three views; the expert view keeps all its state."""
+        self.view_name = name
+        for widget in (self.home, self.run_panel, self.body):
+            widget.grid_remove()
+        {"home": self.home, "run": self.run_panel, "episodes": self.body}[name].grid(
+            row=2, column=0, sticky="nsew"
+        )
+        self.brand.configure(
+            text="MOTH & GRAVEL  /  " + ("MAKE EPISODE" if name == "run" else "LOCAL PRODUCTION")
+        )
+        self.home_button.reset_feedback("Hide" if name == "run" else "Work list")
+        self.home_button.pack_forget()
+        self.episodes_button.pack_forget()
+        self.prepare_button.set_style("Accent.TButton" if name == "home" else "TButton")
+        if name == "run":
+            self.prepare_button.pack_forget()
+        elif not self.prepare_button.winfo_manager():
+            self.prepare_button.pack(side="left", before=self.menu_button)
+        if name != "home":
+            self.home_button.pack(side="left", padx=(0, 8), before=self.menu_button)
+            if self.prepare_button.winfo_manager():
+                self.home_button.pack_configure(before=self.prepare_button)
+        if name == "episodes" and self.release_focused:
+            self.release_focus(True)
+        if name == "home":
+            self.flow.refresh_work()
+        if name != "episodes" and self.jobs_open:
+            self.toggle_jobs(False)
+
+    def show_home(self):
+        self.show_view("home")
+        self.home.focus_first()
+
+    def show_episode(self, identifier, stage=None):
+        self.show_view("episodes")
+        if identifier in self.controller.episodes:
+            self.shelf.reveal(identifier)
+            self.controller.select(identifier)
+        if stage is not None:
+            self.workspace.select_stage(stage)
+
+    def make_episode(self):
+        self.flow.choose()
+
+    def open_website(self, episode):
+        self.flow.open_website(episode)
+
     def next_step(self):
+        if self.view_name != "episodes":
+            return
         primary = self.readiness.primary
         if primary.instate(["!disabled"]):
             primary.invoke()
 
     def focus_search(self):
+        if self.view_name != "episodes":
+            self.show_view("episodes")
         self.shelf.search.focus_set()
         self.shelf.search.select_range(0, "end")
 
@@ -350,6 +445,9 @@ class Application:
 
     def toggle_jobs(self, show=None):
         show = not self.jobs_open if show is None else show
+        if show and self.view_name != "episodes":
+            # The job list lives under the stages, on the expert view.
+            self.show_view("episodes")
         self.jobs_open = show
         if show:
             self.jobs.grid(row=6, column=0, sticky="ew")
@@ -492,10 +590,19 @@ class Application:
     def poll(self):
         if not self.closed:
             self.controller.poll()
+            self.polls = getattr(self, "polls", 0) + 1
+            if self.view_name == "run":
+                self.flow.reload_run()
+            elif self.view_name == "home" and self.polls % 3 == 0:
+                self.flow.refresh_work()
             self.poll_handle = self.root.after(1000, self.poll)
 
     def close(self):
         if self.closed:
+            return
+        website = getattr(self.flow, "website", None)
+        if website is not None and website.running:
+            self.status("The website update is still running. Studio closes when it finishes.")
             return
         try:
             self.controller.close()

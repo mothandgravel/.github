@@ -12,7 +12,7 @@ class ScrollArea(ttk.Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
         self.canvas = tk.Canvas(self, height=180, highlightthickness=0, background=theme.PAPER)
-        scrollbar = ttk.Scrollbar(self, command=self.canvas.yview)
+        scrollbar = self.scrollbar = ttk.Scrollbar(self, command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=scrollbar.set)
         scrollbar.grid(row=0, column=1, sticky="ns")
         self.canvas.grid(row=0, column=0, sticky="nsew")

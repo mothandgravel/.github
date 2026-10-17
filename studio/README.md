@@ -5,6 +5,39 @@
 Real desktop screenshot from the automated UI fixture; media and publication states
 in these checks are controlled examples.
 
+## Make episode (the default path)
+
+Studio opens on the **work list**: every episode and written note, grouped by who acts
+next (**Needs you**, **Working**, **Done**). Each row's state comes from the verified
+readiness check, cached per episode until a file, the show settings, a job or the
+release record changes; a row whose inputs changed reads "checking…" until it is
+verified again. Notes without a narration script are counted, not listed.
+
+**Make episode from a note…** (Ctrl+N) shows one summary before anything starts:
+
+- the **paid** steps (narration parts with the local estimate, captions with their
+  length; there is no local caption price) and the **local** steps;
+- what is **reused for free** (saved narration parts, captions);
+- the **spend guard**: its limits and every uncertain paid attempt in its window.
+
+Tick **Allow paid narration and captions for this episode**, then **Make episode**.
+That one confirm covers exactly the summary on screen; if anything changed (files,
+saved work, a new uncertain attempt) Studio refuses and shows the new summary. It never
+covers an uncertain resend or a spend-guard override: those keep their own
+duplicate-charge consent on the expert path.
+
+The run then chains narration → captions → sound → full video and waits for your one
+review. The timeline shows each stage with measured times ("6–9 min on this computer
+before" only when this computer has history). You can close Studio; the background
+producer keeps going, and the run continues after a restart. **Stop after this step**
+pauses between steps. A failed paid step is never retried: the run pauses with the
+attempt ledger, and **Try part N once more…** opens the recovery with its own consent.
+After you approve the full episode, the upload folder is made automatically (local,
+free). Release then has the upload copy, files and **Prepare website update…**.
+
+The expert path is unchanged: **Menu → Episodes and stages (expert)** and **Menu →
+Prepare a note step by step…** open today's screens; **Work list** (Ctrl+H) returns.
+
 A Tkinter/ttk workspace for the existing local production engine. The **Episodes**
 shelf lists every written note with its **Next** step; **Needs me** filters it to the
 notes waiting for you. A note that is not narrated yet opens one step: **Prepare this
@@ -41,8 +74,9 @@ CLI commands, flags and files keep their existing names, for example
   its commit (Approve, Save release record) is brass.
 - **Status bar.** One line shows what is running or what needs you, plus the latest
   message. **Jobs (n)** opens the job list; a job that needs you opens it automatically.
-- **Keyboard.** Ctrl+N new episode, Ctrl+Enter the next step, Ctrl+F search,
-  Ctrl+1/2/3 stages, Ctrl+J jobs. The **Menu** lists them with their shortcuts.
+- **Keyboard.** Ctrl+H work list, Ctrl+N make episode, Ctrl+Enter the next step
+  (or Make episode in its summary), Ctrl+F search, Ctrl+1/2/3 stages, Ctrl+J jobs,
+  Escape closes a dialog. The **Menu** lists them with their shortcuts.
 - **Appearance.** Paper (light) is the identity. **Menu → Appearance** offers
   *Match this computer*, *Paper* and *Night*. Matching reads the desktop setting on
   Windows, macOS, WSLg (the Windows app setting), GNOME and KDE (freedesktop portal,
@@ -88,8 +122,14 @@ installation or publication occurs.
    with **Copy path** for the browser's file picker. **Open YouTube Studio**, **Open
    upload folder** and **Make upload folder** sit below. **Edit title and
    description…** opens the publishing editor in its own window.
-2. **Website and podcast feed.** Today this step runs in a terminal; the card shows the
-   exact `promote` and `publish` commands with **Copy commands**. Studio runs nothing.
+2. **Website and podcast feed.** **Prepare website update…** shows exactly what will
+   run (`promote <episode>`, then `publish --branch studio/field-notes-listening-…`),
+   the remote and the branch, and refuses unless this checkout is on a clean `main`
+   matching its GitHub remote. **Push branch for review** runs both, streaming their
+   output; a failure is one readable sentence. `publish` pushes that branch with this
+   computer's Git login and, when the GitHub CLI is signed in, opens a pull request.
+   Studio never merges: merging stays on GitHub. **Copy commands** remains for a
+   terminal.
 3. **Record where it went live.** The published link and its actual date, with
    **Use today** and **Use podcast details**, then **Save release record**.
 

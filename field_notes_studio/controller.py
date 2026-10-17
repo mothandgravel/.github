@@ -174,25 +174,30 @@ class Controller:
         self.view.workspace.batch.load(episodes)
         self.refresh_shelf_hints()
         self.refresh_notes()
+        home = getattr(self.view, "view_name", "episodes") == "home"
         self.view.status(
-            "Episodes loaded. Choose one on the left; its card shows the next step."
+            "Work list ready. Open a row, or choose Make episode from a note…"
+            if home
+            else "Episodes loaded."
+            if getattr(self.view, "view_name", "episodes") != "episodes"
+            else "Episodes loaded. Choose one on the left; its card shows the next step."
             if episodes
-            else "No narrated notes yet. Choose New episode from a note… to start."
+            else "No narrated notes yet. Choose Make episode from a note… to start."
         )
         if not episodes and self.selected is None and hasattr(self.view.workspace, "show_empty"):
             self.view.workspace.show_empty(
                 "No narrated notes yet",
                 "Narrate a written note first. Studio then makes its audio, captions and "
                 "video, and you review it once.",
-                "New episode from a note…",
-                self.view.open_preparation,
+                "Make episode from a note…",
+                getattr(self.view, "make_episode", self.view.open_preparation),
             )
             self.view.readiness.empty(
                 "",
                 "Nothing to check yet",
                 "A narrated note appears here with its next step.",
-                "New episode from a note…",
-                self.view.open_preparation,
+                "Make episode from a note…",
+                getattr(self.view, "make_episode", self.view.open_preparation),
             )
         if episodes and self.selected is None:
             session = self.studio.repository.state("session")
