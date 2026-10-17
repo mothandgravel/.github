@@ -169,6 +169,49 @@ Individual `make` and `captions` commands do not publish. `make-all` prepares
 completed site assets; `--publish` or `publish` explicitly pushes them to a PR.
 Original recordings, job state and Cloud settings stay in ignored `artifacts/`.
 
+## Script and transcript checks (AI judge)
+
+Two checks run without any setup, from simple rules:
+
+- **Script check**, before paid narration (`plan`, `make`, Studio's
+  **Make episode** summary and `make-episode`). Code fences, curly braces, JSON
+  keys, `def`/`import` lines and markup block paid narration until you fix the
+  script or accept it explicitly: `make ID --accept-script "reason"`,
+  `make-episode ID --confirm DIGEST --accept-script "reason"`, or the reason field
+  in Studio. URLs, a missing or doubled intro/outro, and passages that differ from
+  the article beyond the script rules (sidebars omitted, `×` → by, `px` → pixels,
+  `ms` → milliseconds) are shown but do not block.
+- **Transcript check**, before approval (`review` and Studio's Review stage). If
+  the script's last words are not at the end of the recognized transcript, or a
+  long passage near the end is not heard, approval is blocked until you give a
+  reason: `review ID --approve --reviewer NAME --override-judge "reason"`, or the
+  reason field in Studio. The reason is saved in `review.json`.
+
+With a Claude API key, a model also classifies each script/transcript difference
+as harmless, mis-hearing, missing content or extra content, and reviews the script
+for text that should not be read aloud. To enable it:
+
+1. In the [Claude Console](https://platform.claude.com/), create an API key for
+   this project and set a **monthly spend limit** on its workspace.
+2. Install the SDK once: `uv sync --group judge` (or `python3 -m pip install "anthropic>=1.15,<2"`).
+3. Export the key in the shell that runs the pipeline or Studio. Do not put it in
+   a file in this checkout:
+
+   ```bash
+   export FIELD_AUDIO_ANTHROPIC_API_KEY=...
+   ```
+
+Without the key (or the SDK) the checks say **AI check skipped (no key)** and the
+rule checks still run; nothing fails. The default model is `claude-haiku-5-5`
+(`FIELD_AUDIO_JUDGE_MODEL` changes it); `--judge deep` uses `claude-sonnet-5-5`
+and `--judge off` skips the model. Each call is capped at 4,000 output tokens with
+one retry, and is logged with its tokens, estimated cost and latency in
+`artifacts/audio/judge-calls.jsonl`. Results are cached by content in
+`artifacts/audio/judge/`, so looking again costs nothing. A Haiku check costs
+well under a cent per episode. Script and transcript text is passed to the model
+as untrusted data, never as instructions. The judge is not a paid speech step, so
+the spend guard does not apply to it.
+
 ## Requirements and saved settings
 
 Python 3.10+, Google Cloud CLI, FFmpeg and ffprobe are required. No Python packages,

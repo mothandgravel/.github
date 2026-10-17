@@ -66,6 +66,16 @@ class Review(ttk.Frame):
             if self.snapshot and self.snapshot.version
             else "",
         )
+        self.override = tk.StringVar()
+        self.transcript = ttk.Label(content, text="", style="Muted.TLabel", wraplength=590)
+        self.transcript.pack(anchor="w", pady=(0, 10))
+        self.override_row = ttk.Frame(content)
+        self.override_label = ttk.Label(
+            self.override_row, text="Reason to approve despite the blocking finding"
+        )
+        self.override_label.pack(anchor="w")
+        self.override_entry = ttk.Entry(self.override_row, textvariable=self.override, width=60)
+        self.override_entry.pack(anchor="w", fill="x", pady=(2, 0))
         self.checks = Fieldset(content, "Before you approve")
         self.checks.pack(fill="x")
         self.audio_check = ttk.Checkbutton(
@@ -119,6 +129,7 @@ class Review(ttk.Frame):
         self.note.pack(anchor="w", pady=(12, 0))
         content.bind("<Configure>", self._resize, add=True)
         for variable in (
+            self.override,
             self.reviewer,
             self.audio_checked,
             self.captions_checked,
@@ -130,7 +141,7 @@ class Review(ttk.Frame):
 
     def _resize(self, event):
         width = max(250, event.width - 40)
-        for label in (self.summary, self.note):
+        for label in (self.summary, self.note, self.transcript):
             label.configure(wraplength=width)
         self.review_help.configure(wraplength=max(200, width - 140))
 
@@ -161,6 +172,8 @@ class Review(ttk.Frame):
         self.audio_checked.set(False)
         self.captions_checked.set(False)
         self.video_checked.set(False)
+        self.override.set("")
+        self.transcript.configure(text="")
         self.summary.configure(text=message)
         self.refresh.configure(
             text="Checking…" if loading else "Check again",
@@ -177,6 +190,7 @@ class Review(ttk.Frame):
         )
         if snapshot.identity:
             self.scope.set(FULL if snapshot.full_video else AUDIO)
+        self.transcript.configure(text=snapshot.checks)
         self.snapshot = snapshot
         self.update_controls()
 
@@ -208,9 +222,15 @@ class Review(ttk.Frame):
                 text="Audio-only review. For a video release, choose Full video and audio "
                 "and approve that whole version once."
             )
+        blocking = available and self.snapshot.check_blocking and not self.snapshot.approved
+        if blocking:
+            self.override_row.pack(fill="x", pady=(0, 10), before=self.checks)
+        else:
+            self.override_row.pack_forget()
         ready = (
             available
             and not self.snapshot.approved
+            and (not blocking or self.override.get().strip())
             and self.reviewer.get().strip()
             and self.audio_checked.get()
             and self.captions_checked.get()

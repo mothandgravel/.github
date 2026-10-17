@@ -22,7 +22,7 @@ import json
 from dataclasses import replace
 from datetime import datetime
 
-from field_notes_audio import spend_guard
+from field_notes_audio import judge, spend_guard
 from field_notes_studio.make_models import Attempt, MakePlan, PlanStep, SpendState
 from field_notes_studio.preparation_jobs import PreparationJobs
 from field_notes_studio.readiness_models import plain
@@ -120,6 +120,11 @@ def token(plan: MakePlan) -> str:
         "recipe": [list(item) for item in plan.recipe],
         "blockers": list(plan.blockers),
         "history": list(plan.history),
+        # The AI status line says whether a saved result was reused; not a change.
+        "script_check": [
+            line for line in plan.script_check if not line.lstrip().startswith("AI check")
+        ],
+        "script_blocking": plan.script_blocking,
     }
     return hashlib.sha256(json.dumps(facts, sort_keys=True).encode()).hexdigest()
 
@@ -231,6 +236,13 @@ def build(studio, *, note: str = "", episode: str = "") -> MakePlan:
     paid = any(step.kind == "paid" for step in steps)
     if not paid:
         request_json = ""
+    script_check: tuple[str, ...] = ()
+    script_blocking = False
+    if snapshot is not None and snapshot.script:
+        checked = judge.episode_script_check(root, episode, snapshot.script)
+        script_check = tuple(checked.lines())
+        narrated = any(s.key == "narrate" and s.kind == "paid" for s in steps)
+        script_blocking = narrated and bool(checked.blocking)
     steps += [
         PlanStep("sound", "Finish sound", recipe_label(inputs), "local"),
         PlanStep("video", "Make video", "Full video and thumbnail", "local"),
@@ -281,6 +293,8 @@ def build(studio, *, note: str = "", episode: str = "") -> MakePlan:
         captions_minutes=captions_minutes,
         request_json=request_json,
         history=tuple(run for run, _token in studio.repository.consents(episode)),
+        script_check=script_check,
+        script_blocking=script_blocking,
         recipe=tuple(
             sorted((key, json.dumps(value, sort_keys=True)) for key, value in inputs.items())
         ),
@@ -297,9 +311,11 @@ def cost_line(root, episode: str, caption_minutes: float | None = None) -> str:
     return cost.sentence(caption_minutes)
 
 
-def consent_record(plan: MakePlan) -> dict:
+def consent_record(plan: MakePlan, accept_script: str = "") -> dict:
     """What the run keeps as evidence of the one confirm."""
     return {
+        "script_check": list(plan.script_check),
+        "script_accepted": accept_script.strip() or None,
         "token": plan.token,
         "title": plan.title,
         "at": datetime.now().astimezone().isoformat(timespec="seconds"),

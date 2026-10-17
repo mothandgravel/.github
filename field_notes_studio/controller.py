@@ -780,6 +780,12 @@ class Controller:
         ):
             self.view.status("Tick both checks and enter your name before approving.")
             return
+        override = review.override.get().strip()
+        if snapshot.check_blocking and not override:
+            self.view.status(
+                "The transcript check blocks approval: give a reason to approve anyway."
+            )
+            return
         identifier, reviewer = self.selected, review.reviewer.get().strip()
         generation = self.review_generation
         review.busy = True
@@ -799,7 +805,9 @@ class Controller:
             if generation == self.review_generation:
                 review.clear(message + " Check the version again before reviewing.")
 
-        self.task(lambda: self.studio.approve(identifier, snapshot, reviewer), saved, failed)
+        self.task(
+            lambda: self.studio.approve(identifier, snapshot, reviewer, override), saved, failed
+        )
 
     def job_detail(self):
         identifier = self.view.jobs.selection()

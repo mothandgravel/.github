@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-from field_notes_audio import audio, captions, site
+from field_notes_audio import audio, captions, judge, site
 from field_notes_audio.locks import run_lock
 from field_notes_audio.production.config import load_settings
 from field_notes_audio.production.editions import AUDIO_FILES, VIDEO_FILES, cache_valid, fingerprint
@@ -269,13 +269,14 @@ def review_status(edition: Edition, full_video: bool = False) -> str:
     return "approved"
 
 
-def record_review(edition: Edition, reviewer: str) -> None:
+def record_review(edition: Edition, reviewer: str, checks: dict | None = None) -> None:
     """Record explicit human approval of a verified snapshot under its episode lock."""
     reviewer = text(reviewer, "Reviewer", 120)
     write_json(
         edition.audio / "review.json",
         {
             "schema_version": 1,
+            "transcript_check": checks,
             "status": "approved",
             "reviewer": reviewer,
             "reviewed_at": datetime.now(timezone.utc).isoformat(),
@@ -300,9 +301,20 @@ def review(args: argparse.Namespace, root: Path = audio.ROOT) -> None:
     with locked_editions(
         entries, output, inspect_video=not getattr(args, "audio_only", False)
     ) as editions:
-        for edition in editions:
+        depth = getattr(args, "judge", "standard")
+        checks = [judge.edition_transcript_check(root, edition, depth) for edition in editions]
+        evidence = []
+        for edition, checked in zip(editions, checks, strict=True):
+            print(f"{edition.source['id']}: " + checked.text())
             if args.approve:
-                record_review(edition, reviewer)
+                # Refuse before recording anything when any selected edition blocks.
+                override = judge.check_override(
+                    checked, getattr(args, "override_judge", None), "Approval"
+                )
+                evidence.append(override or checked.evidence())
+        for index, edition in enumerate(editions):
+            if args.approve:
+                record_review(edition, reviewer, evidence[index])
             print(
                 f"{edition.source['id']}: audio {review_status(edition)}; "
                 f"video {review_status(edition, True) if edition.video else 'not produced'}"
@@ -587,3 +599,8 @@ def add_arguments(commands: argparse._SubParsersAction) -> None:
                 help="Record that you listened and checked captions/video",
             )
             command.add_argument("--reviewer", help="Name of the human reviewer")
+            judge.add_arguments(
+                command,
+                override="--override-judge",
+                help_text="Approve despite a blocking transcript finding, with the reason",
+            )

@@ -365,8 +365,10 @@ class Studio:
     def review_snapshot(self, episode: str, full_video: bool = False) -> ReviewSnapshot:
         return self.pipeline.review_snapshot(episode, full_video)
 
-    def approve(self, episode: str, snapshot: ReviewSnapshot, reviewer: str) -> None:
-        self.pipeline.approve(episode, snapshot, reviewer)
+    def approve(
+        self, episode: str, snapshot: ReviewSnapshot, reviewer: str, override: str = ""
+    ) -> None:
+        self.pipeline.approve(episode, snapshot, reviewer, override)
         if snapshot.full_video:
             # Make episode: the upload package is local and free, so it follows approval.
             run = self.runs().run_for(episode)
@@ -390,7 +392,7 @@ class Studio:
 
         return make_plan.build(self, note=note, episode=episode)
 
-    def make_episode(self, plan, allow_paid: bool) -> str:
+    def make_episode(self, plan, allow_paid: bool, accept_script: str = "") -> str:
         """The single consent: queue the displayed plan as one resumable run.
 
         Accepted only when a fresh inspection yields the same summary token, so
@@ -408,6 +410,11 @@ class Studio:
         if plan.paid and allow_paid is not True:
             raise ValueError(
                 "Tick Allow paid narration and captions for this episode first; nothing was queued."
+            )
+        if plan.script_blocking and not accept_script.strip():
+            raise ValueError(
+                "The script check found text that should not be read aloud. Fix the script, "
+                "or give a reason to narrate it anyway; nothing was queued."
             )
         fresh = make_plan.build(self, note=plan.note, episode=plan.episode)
         if self.consent_used(plan.episode, plan.token):
@@ -442,7 +449,7 @@ class Studio:
                 runs.close(run["identifier"])
         launch_worker(self.root)
         return self.repository.start_run(
-            fresh.episode, fresh.note, make_plan.consent_record(fresh), inputs, first
+            fresh.episode, fresh.note, make_plan.consent_record(fresh, accept_script), inputs, first
         )
 
     def spend_state(self, episode: str):

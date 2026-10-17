@@ -120,6 +120,9 @@ class PublishingTests(unittest.TestCase):
 
     def approve(self):
         self.args.approve, self.args.reviewer = True, "Test listener"
+        # The fixture's recognized transcript is a short placeholder, so the transcript
+        # check blocks; these tests approve through the explicit override.
+        self.args.override_judge = "Fixture transcript is a placeholder"
         packages.review(self.args, self.root)
 
     def test_planned_export_checks_the_edition_while_holding_the_production_lock(self):

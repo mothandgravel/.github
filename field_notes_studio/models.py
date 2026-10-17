@@ -69,6 +69,9 @@ class ReviewSnapshot:
     approved: bool = False
     version: str = ""
     duration: float = 0.0
+    # Transcript check shown before approval; a blocking finding needs a reason.
+    checks: str = ""
+    check_blocking: bool = False
 
 
 @dataclass(frozen=True)
