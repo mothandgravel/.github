@@ -424,5 +424,36 @@
       "href": "../specimens/maritime-study/",
       "label": "Return to the maritime study"
     }
+  },
+  {
+    "id": "015",
+    "slug": "015-cancelled-is-a-result.html",
+    "title": "Cancelled is a result.",
+    "summary": "A scan stops halfway. A step fails. A machine goes quiet. Three small tools that treat the unhappy ending as a result of its own.",
+    "date": "2026-10-17",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "Verstas, Luotsi and a relay bridge",
+    "thread": "",
+    "related": [
+      "008",
+      "013",
+      "005"
+    ],
+    "supersedes": [],
+    "visual": "forms",
+    "featured": false,
+    "nextReading": {
+      "id": "008",
+      "bridge": "A cancelled scan should not pose as a smaller inventory. A whole staircase should come back with one undo."
+    },
+    "specimen": {
+      "href": "../investigations/take-it-back/",
+      "label": "Follow the question: did it happen?"
+    }
   }
 ]

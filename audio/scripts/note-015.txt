@@ -1,0 +1,71 @@
+Moth and Gravel. Field Note 15. Cancelled is a result.
+
+An AI-narrated edition of the published note.
+
+You start a scan of a large folder. A minute in, you change your mind and press Cancel. The progress disappears.
+
+What did you just get?
+
+Nothing, most screens would say. The scan did not finish. But something did happen: the work began, stopped and left the world in some state. “Nothing” is a claim about that state, and it is rarely checked.
+
+Three small tools on our bench answer differently. Each treats the unhappy ending as a result of its own.
+
+The scan that did not finish
+
+Verstas is a prototype that looks at the workspaces on a disk and plans their cleanup. It only looks and plans; it deletes nothing. For each thing it might clean, the plan gives one of three answers: ready, review required or blocked.
+
+In a recorded run on a synthetic tree of 240,012 files, a scan was cancelled during discovery. The desktop said so in plain words: the operation “was cancelled before finalization”. Every live progress region cleared. The inventory from the last finished scan stayed selected, instead of being replaced by half of a new one.
+
+The same banner at reading size. The identifiers belong to the synthetic run.
+
+The finished history gained no entry for the cancelled scan. The next scan finished normally, and only its final answer replaced the earlier inventory.
+
+The scan after the cancellation, finalized. Unaltered crop from the same recorded run; the identifiers and times are the run’s own.
+
+The important part is what did not happen. The cancelled scan did not become a small, plausible inventory. A partial count is easy to mistake for a complete one, especially in a tool whose next step might be “clean these up”.
+
+The step that failed
+
+Luotsi drives Android devices from a laptop, one step at a time. When a step fails, the run does not end in a red line and silence. It writes a failure envelope: which scenario, which step, what the step was doing, the error and its kind, and the screenshot, recording and log it kept.
+
+The record itself is shown on the page.
+
+A shortened excerpt from a failure envelope in Luotsi’s test fixtures. A fixture, not a recorded device run; ellipses mark omissions.
+
+A failure becomes something to read later, after the device is unplugged. “Failed at step two, watching the stream, a transport error” starts a different conversation from “it didn’t work”.
+
+The machine that went quiet
+
+The third tool is smaller. A relay bridge of ours connects a relay board to a message broker, so a laptop can switch its outputs. When the bridge connects, it announces that it is online. Before that, it leaves the broker a last will.
+
+The code itself is shown on the page.
+
+From the bridge’s source, with its comment shortened. Read from the code; no hardware run was made for this note.
+
+If the bridge disappears without saying goodbye, the broker publishes “offline” on its behalf, and keeps it for anyone who asks later.
+
+Silence would be easier to build. It is also ambiguous: quiet could mean nothing changed, or that nobody is left to say so. A retained “offline” turns a disappearance into a message with a time on it.
+
+The last will covers only the connection. Whether a relay actually switched is a separate question. After a command, the bridge tries to read the relay’s state back from the board and reports what it read.
+
+One habit
+
+Three tools, three surfaces, one habit: the unhappy path leaves a receipt. The receipt is shown in the same place as success, in the same plain voice, and it does not claim more than it knows.
+
+For any button that starts something long or destructive, there is a useful question to ask before shipping it.
+
+What does the screen say if you stop halfway?
+
+If the answer is “nothing”, a result is probably missing.
+
+STUDY SCOPE / ONE RECORDED RUN AND SOURCE READING
+
+What these endings show.
+
+The Verstas images are unaltered crops from a recorded Windows run of the prototype at a pinned source revision, on a synthetic file tree. The tool planned only; nothing was deleted. Verstas is a working name.
+
+The Luotsi envelope is shortened from a test fixture, not from a device run. The relay bridge lines are read from its source; no hardware run was made for this note. No study with people was run: whether someone reads these endings as results is the next question.
+
+Read the image and source provenance
+
+You have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.

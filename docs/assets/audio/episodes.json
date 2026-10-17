@@ -702,6 +702,90 @@
     }
   },
   {
+    "id": "note-015",
+    "title": "Cancelled is a result.",
+    "kind": "note",
+    "description": "A scan stops halfway. A step fails. A machine goes quiet. Three small tools that treat the unhappy ending as a result of its own.",
+    "note_id": "015",
+    "slug": "015-cancelled-is-a-result.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-015-937dafc12cdd122d.mp3",
+    "bytes": 5449388,
+    "audio_sha256": "937dafc12cdd122df7a7ce8db345547b938a6a757d2c6799a1dc34b2facbb4ec",
+    "script_sha256": "384e498e89c8c053f3816947f6f9721a34fb8fd7af83054370d39a619726e806",
+    "source_sha256": {
+      "015": "f6b53ae3e3af07e37986e5aabfb50e3d3b1ce8297d49ce5776e5a9a9fce26dbe"
+    },
+    "duration_seconds": 340.584,
+    "published_at": "2026-10-17T21:54:40.682225+00:00",
+    "review_status": "approved",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-015-937dafc12cdd122d-30fb714f152a79a6.srt",
+    "vtt": "assets/audio/note-015-937dafc12cdd122d-692f614ea986a244.vtt",
+    "transcript": "assets/audio/note-015-937dafc12cdd122d-c830a18ba1024430.txt",
+    "cues": "assets/audio/note-015-937dafc12cdd122d-d03b568dfa01d81c.json",
+    "files_sha256": {
+      "srt": "30fb714f152a79a677051760aa3f985a823db07d4f913a2e2366aaa965370267",
+      "vtt": "692f614ea986a2440aa5db5f7d0387539958762c51b6b64bbe2cbdcf91f6b72b",
+      "transcript": "c830a18ba102443069c15cc117eb48e9780e1303a2485c4a3319f9f70ec886a0",
+      "cues": "d03b568dfa01d81c02f816f9781cf5fd19b91f66e8f0fa4a6ab2d64d9313a031"
+    },
+    "default_playback_rate": 1,
+    "production": {
+      "fingerprint": "07a131d28333fd3e239ad2698aafcba93eb3715541e57186b5e7d7cb4af38b74",
+      "pace": 1.15,
+      "music_credit": "Procedural opening and closing motif: Moth & Gravel.",
+      "source": {
+        "id": "note-015",
+        "title": "Cancelled is a result.",
+        "kind": "note",
+        "description": "A scan stops halfway. A step fails. A machine goes quiet. Three small tools that treat the unhappy ending as a result of its own.",
+        "note_id": "015",
+        "slug": "015-cancelled-is-a-result.html",
+        "language": "en-US",
+        "audio": "assets/audio/note-015-41a6e40c46063a93.mp3",
+        "bytes": 4576076,
+        "audio_sha256": "41a6e40c46063a937c4c9d21d2daa0c7e4bc9cd0602313be6eb45667d4f9a4b7",
+        "script_sha256": "384e498e89c8c053f3816947f6f9721a34fb8fd7af83054370d39a619726e806",
+        "source_sha256": {
+          "015": "f6b53ae3e3af07e37986e5aabfb50e3d3b1ce8297d49ce5776e5a9a9fce26dbe"
+        },
+        "duration_seconds": 381.262,
+        "published_at": "2026-10-17T21:54:40.682225+00:00",
+        "review_status": "pending",
+        "narration": "AI-narrated",
+        "srt": "assets/audio/note-015-41a6e40c46063a93-381c57de188d0290.srt",
+        "vtt": "assets/audio/note-015-41a6e40c46063a93-381c57de188d0290.vtt",
+        "transcript": "assets/audio/note-015-41a6e40c46063a93-381c57de188d0290.txt",
+        "cues": "assets/audio/note-015-41a6e40c46063a93-381c57de188d0290.json",
+        "files_sha256": {
+          "srt": "a3413a7cea5a933356588ee61148ef49bc76a94d6e22bd22c971adf5ba582049",
+          "vtt": "50f03e2493efc27d949924bc107091d3272a9ac6f29dd7b8d10e1d0e08b9dd19",
+          "transcript": "c830a18ba102443069c15cc117eb48e9780e1303a2485c4a3319f9f70ec886a0",
+          "cues": "be77a45b1b74363008a103c2d12119378124ab2c6c5b42e54d44bb555bcd96f5"
+        }
+      },
+      "review": {
+        "schema_version": 1,
+        "status": "approved",
+        "reviewer": "Perttu",
+        "reviewed_at": "2026-10-17T22:14:11.879259+00:00",
+        "audio_fingerprint": "07a131d28333fd3e239ad2698aafcba93eb3715541e57186b5e7d7cb4af38b74",
+        "audio_files": {
+          "captions.srt": "30fb714f152a79a677051760aa3f985a823db07d4f913a2e2366aaa965370267",
+          "captions.vtt": "692f614ea986a2440aa5db5f7d0387539958762c51b6b64bbe2cbdcf91f6b72b",
+          "cues.json": "f4ed33b3c9ef560f62e7ed1058de64a8089447a40ffff8cdf5861f7ce8d0f862",
+          "description.txt": "572b103b11c69b76af70e9948eced0908664634bad121d75271bc5bdd7ab1378",
+          "episode.mp3": "937dafc12cdd122df7a7ce8db345547b938a6a757d2c6799a1dc34b2facbb4ec",
+          "master.wav": "1dbb5672ad64ea2f894314d92282c5dc306a443bced688ca31969570d6990266",
+          "transcript.txt": "c830a18ba102443069c15cc117eb48e9780e1303a2485c4a3319f9f70ec886a0"
+        },
+        "video_fingerprint": null,
+        "video_files": null
+      }
+    }
+  },
+  {
     "id": "workbench-001",
     "title": "What does the interface let you believe?",
     "kind": "conversation",

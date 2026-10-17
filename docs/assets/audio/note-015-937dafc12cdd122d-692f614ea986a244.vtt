@@ -1,0 +1,371 @@
+WEBVTT
+
+1
+00:00:04.139 --> 00:00:12.000
+Moth and Gravel Field Note 15
+Cancelled is a result. An AI
+
+2
+00:00:12.000 --> 00:00:14.504
+narrated edition of the
+published note.
+
+3
+00:00:15.652 --> 00:00:20.070
+You start a scan of a large
+folder. A minute in, you change
+
+4
+00:00:20.070 --> 00:00:24.835
+your mind and press cancel. The
+progress disappears. What did
+
+5
+00:00:24.835 --> 00:00:29.913
+you just get? Nothing, most
+screens would say. The scan did
+
+6
+00:00:29.913 --> 00:00:35.409
+not finish, but something did
+happen. The work began, stopped,
+
+7
+00:00:35.548 --> 00:00:40.000
+and left the world in some
+state. Nothing is a claim about
+
+8
+00:00:40.000 --> 00:00:42.504
+that state, and it is rarely
+checked.
+
+9
+00:00:43.409 --> 00:00:47.617
+Three small tools on our bench
+answer differently. Each treats
+
+10
+00:00:47.617 --> 00:00:52.070
+the unhappy ending as a result
+of its own. The scan that did
+
+11
+00:00:52.070 --> 00:00:55.652
+not finish, Verstas, is a
+prototype that looks at the
+
+12
+00:00:55.652 --> 00:01:00.243
+workspaces on a disk and plans
+their cleanup. It only looks and
+
+13
+00:01:00.243 --> 00:01:05.043
+plans. It deletes nothing. For
+each thing it might clean, the
+
+14
+00:01:05.043 --> 00:01:09.913
+plan gives one of three answers:
+ready, review required, or
+
+15
+00:01:09.913 --> 00:01:16.209
+blocked. In a recorded run on a
+synthetic tree of 240,012 files,
+
+16
+00:01:16.487 --> 00:01:20.522
+a scan was cancelled during
+discovery. The desktop said so
+
+17
+00:01:20.522 --> 00:01:24.174
+in plain words. The operation
+was cancelled before
+
+18
+00:01:24.174 --> 00:01:28.730
+finalization. Every live
+progress region cleared. The
+
+19
+00:01:28.730 --> 00:01:32.626
+inventory from the last finished
+scan stayed selected instead of
+
+20
+00:01:32.626 --> 00:01:36.696
+being replaced by half of a new
+one. The same banner at reading
+
+21
+00:01:36.696 --> 00:01:41.600
+size. The identifiers belong to
+the synthetic run. The finished
+
+22
+00:01:41.600 --> 00:01:44.904
+history gained no entry for the
+cancelled scan.
+
+23
+00:01:45.843 --> 00:01:49.843
+The next scan finished normally,
+and only its final answer
+
+24
+00:01:49.843 --> 00:01:54.296
+replaced the earlier inventory.
+The scan after the cancellation
+
+25
+00:01:54.574 --> 00:01:59.687
+finalized. Unaltered crop from
+the same recorded run. The
+
+26
+00:01:59.687 --> 00:02:04.278
+identifiers and times are the
+run's own. The important part is
+
+27
+00:02:04.278 --> 00:02:08.209
+what did not happen. The
+cancelled scan did not become a
+
+28
+00:02:08.209 --> 00:02:13.043
+small, plausible inventory. A
+partial count is easy to mistake
+
+29
+00:02:13.043 --> 00:02:17.078
+for a complete one, especially
+in a tool whose next step might
+
+30
+00:02:17.078 --> 00:02:22.748
+be, clean these up. The step
+that failed. Luozi drives
+
+31
+00:02:22.748 --> 00:02:27.200
+Android devices from a laptop,
+one step at a time. When a step
+
+32
+00:02:27.200 --> 00:02:32.243
+fails, the run does not end in a
+red line and silence. It writes
+
+33
+00:02:32.243 --> 00:02:36.696
+a failure envelope. Which
+scenario? Which step? What the
+
+34
+00:02:36.696 --> 00:02:41.078
+step was doing? The error and
+its kind? And the screenshot,
+
+35
+00:02:41.148 --> 00:02:45.322
+recording, and log it kept. The
+record itself is shown on the
+
+36
+00:02:45.322 --> 00:02:50.087
+page. A shortened excerpt from a
+failure envelope in Luozi's test
+
+37
+00:02:50.087 --> 00:02:54.957
+fixtures. A fixture, not a
+recorded device run. Ellipses
+
+38
+00:02:54.991 --> 00:02:59.096
+mark omissions. A failure
+becomes something to read later,
+
+39
+00:02:59.339 --> 00:03:04.209
+after the device is unplugged.
+Failed at step two, watching the
+
+40
+00:03:04.209 --> 00:03:08.174
+stream, a transport error,
+starts a different conversation
+
+41
+00:03:08.174 --> 00:03:13.843
+from it didn't work. The machine
+that went quiet. The third tool
+
+42
+00:03:13.878 --> 00:03:17.843
+is smaller. A relay bridge of
+ours connects a relay board to a
+
+43
+00:03:17.843 --> 00:03:21.913
+message broker, so a laptop can
+switch its outputs. When the
+
+44
+00:03:21.913 --> 00:03:26.261
+bridge connects, it announces
+that it is online. Before that,
+
+45
+00:03:26.400 --> 00:03:30.400
+it leaves the broker a last
+will. The code itself is shown
+
+46
+00:03:30.400 --> 00:03:34.122
+on the page. From the bridge's
+source, with its comment
+
+47
+00:03:34.122 --> 00:03:38.435
+shortened. Read from the code,
+no hardware run was made for
+
+48
+00:03:38.435 --> 00:03:41.774
+this note. If the bridge
+disappears without saying
+
+49
+00:03:41.774 --> 00:03:46.643
+goodbye, the broker publishes
+offline on its behalf, and keeps
+
+50
+00:03:46.643 --> 00:03:50.817
+it for anyone who asks later.
+Silence would be easier to
+
+51
+00:03:50.817 --> 00:03:55.583
+build, but it is also ambiguous.
+Quiet could mean nothing
+
+52
+00:03:55.583 --> 00:04:00.904
+changed, or that nobody is left
+to say so. A retained offline
+
+53
+00:04:01.113 --> 00:04:05.322
+turns a disappearance into a
+message with a time on it. The
+
+54
+00:04:05.322 --> 00:04:08.835
+last will covers only the
+connection. Whether a relay
+
+55
+00:04:08.835 --> 00:04:13.252
+actually switched is a separate
+question. After a command, the
+
+56
+00:04:13.252 --> 00:04:17.043
+bridge tries to read the relay
+state back from the board and
+
+57
+00:04:17.043 --> 00:04:22.678
+reports what it read. One habit
+serves. One habit serves three
+
+58
+00:04:22.678 --> 00:04:27.235
+tools and surfaces. The unhappy
+path leaves a receipt. The
+
+59
+00:04:27.235 --> 00:04:30.852
+receipt is shown in the same
+place as success, in the same
+
+60
+00:04:30.852 --> 00:04:35.165
+plain voice, and it does not
+claim more than it knows. For
+
+61
+00:04:35.165 --> 00:04:38.574
+any button that starts something
+long or destructive, there is a
+
+62
+00:04:38.574 --> 00:04:42.191
+useful question to ask before
+shipping it. What does the
+
+63
+00:04:42.191 --> 00:04:46.957
+screen say if you stop halfway?
+If the answer is nothing, a
+
+64
+00:04:46.957 --> 00:04:52.174
+result is probably missing. What
+these endings show. The Verstas
+
+65
+00:04:52.174 --> 00:04:55.826
+images are unaltered crops from
+a recorded Windows run of the
+
+66
+00:04:55.826 --> 00:04:59.652
+prototype at a pinned source
+revision on a synthetic file
+
+67
+00:04:59.652 --> 00:05:05.078
+tree. The tool planned only.
+Nothing was deleted. Verstas is
+
+68
+00:05:05.078 --> 00:05:08.904
+a working name. The Luozi
+envelope is shortened from a
+
+69
+00:05:08.904 --> 00:05:13.774
+test fixture, not from a device
+run. The relay bridge lines are
+
+70
+00:05:13.774 --> 00:05:17.357
+read from its source. No
+hardware run was made for this
+
+71
+00:05:17.357 --> 00:05:22.122
+note. No study with people was
+run. Whether someone reads these
+
+72
+00:05:22.122 --> 00:05:26.643
+endings as results is the next
+question. Read the image and
+
+73
+00:05:26.643 --> 00:05:30.783
+source provenance. You have been
+listening to Moth and Gravel
+
+74
+00:05:30.783 --> 00:05:35.513
+Field Notes. The written edition
+is at mothandgravel.com.

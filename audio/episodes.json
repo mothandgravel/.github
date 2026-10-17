@@ -404,5 +404,30 @@
       "kind": "note",
       "note_id": "014"
     }
+  },
+  {
+    "id": "note-015",
+    "title": "Cancelled is a result.",
+    "format": "narration",
+    "script": "scripts/note-015.txt",
+    "language": "en-US",
+    "notes": [
+      "015"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "015": "f6b53ae3e3af07e37986e5aabfb50e3d3b1ce8297d49ce5776e5a9a9fce26dbe"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "015"
+    }
   }
 ]

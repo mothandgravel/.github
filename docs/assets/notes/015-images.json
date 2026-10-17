@@ -1,0 +1,60 @@
+{
+  "note": "015",
+  "captures": [
+    {
+      "file": "015-cancelled-before-finalization.png",
+      "sha256": "cdd8bcd8b11dc1441df266c56f9f5d7454804390cd234d231d531c95ecea5dba",
+      "dimensions": [1266, 180],
+      "repository": "verstas (private repository)",
+      "path": "docs/assets/progressive-scan-dogfood/cancelled-no-finalization.png",
+      "blob_sha": "6e032fd57ae725cb09497ea66812c48d396863ef",
+      "source_commit": "27bb59d57bfa852b0e4590cd21770c1e725b8820",
+      "kind": "actual desktop crop from a recorded Windows run of the prototype; unaltered, copied byte for byte",
+      "scope": "cancellation accepted during root discovery; the operation is reported as cancelled before finalization and the previously finalized inventory stays selected"
+    },
+    {
+      "file": "015-next-scan-finalized.png",
+      "sha256": "6c43322ab5141726ca76d6a9977ba648f0e23a2312d50d86a1b41e059a3b90e0",
+      "dimensions": [1266, 280],
+      "repository": "verstas (private repository)",
+      "path": "docs/assets/progressive-scan-dogfood/post-cancellation-success.png",
+      "blob_sha": "e7ce3489e782880958264488636674244002f92d",
+      "source_commit": "27bb59d57bfa852b0e4590cd21770c1e725b8820",
+      "kind": "actual desktop crop from the same recorded run; unaltered, copied byte for byte",
+      "scope": "the next scan finalizes normally and replaces the inventory only after its terminal response"
+    }
+  ],
+  "run": {
+    "evidence_document": "docs/evidence/progressive-scan-dogfood.md",
+    "evidence_blob_sha": "f3c7f3c0099735b808cec1602cd3f973d340f878",
+    "date": "2026-08-22",
+    "fixture": "synthetic file tree of 240,012 files; names and payloads synthetic",
+    "authority": "dry-run planning only; no cleanup or deletion was performed",
+    "review": "crops reviewed at original resolution for paths, identities, repository names and credentials before this note; they show synthetic operation and scan identifiers only"
+  },
+  "sources": [
+    {
+      "repository": "verstas (private repository)",
+      "head": "0532de0bbe332029ed007985425f6fc9ea553af6",
+      "path": "README.md",
+      "scope": "dry-run-only planner with ready, review required and blocked dispositions; working name"
+    },
+    {
+      "repository": "luotsi (public repository)",
+      "head": "99674fa9d0cf50d29d2cddcb1d49dbd70d63280b",
+      "path": "Luotsi.Cli.Tests/Fixtures/ReplayWorkbench/failure/failure-bundle.json",
+      "blob_sha": "19e48680f17a193a5ef4cc978ea468fe3db213ab",
+      "scope": "excerpted failure envelope from a test fixture; not a recorded device run"
+    },
+    {
+      "repository": "relay bridge (public repository)",
+      "head": "6ba8ad1ac4a39a7dbbe4538ac5a8979df27da4b9",
+      "path": "src/modbus_relay_control/mqtt_bridge.py",
+      "blob_sha": "8686a41138bc0c775e4f7a6592551c419f11c8bf",
+      "scope": "retained online/offline status with a last-will 'offline'; best-effort read-back of relay state after a command; source reading only, no hardware run"
+    }
+  ],
+  "source_readback_date": "2026-10-17",
+  "excerpts": "The envelope and code excerpts are shortened quotations set as text; ellipses mark omissions.",
+  "not_established": "No user study; no hardware run for the relay bridge; no claim about other tools."
+}

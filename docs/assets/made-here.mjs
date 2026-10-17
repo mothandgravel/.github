@@ -18,6 +18,9 @@ export const MADE_HERE = [
   ['flutter-test-rs', '', 'Prototype'],
   ['paja', 'in', 'Internal tool'],
   ['Field Notes studio', 'pr', 'In production for our own work'],
+  ['Luotsi', 'in', 'Internal tool'],
+  ['Vahti', 'in', 'Internal tool'],
+  ['Verstas', '', 'Prototype'],
 ];
 
 // Shape, not only colour, separates the statuses: filled circle, filled square, dashed circle, square.
