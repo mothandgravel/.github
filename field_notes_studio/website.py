@@ -34,9 +34,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPOSITORY = re.compile(
-    r"(?:https://github\.com/|git@github\.com:)mothandgravel/\.github(?:\.git)?"
-)
+REAL_REPOSITORY = r"(?:https://github\.com/|git@github\.com:)mothandgravel/\.github(?:\.git)?"
+REPOSITORY = re.compile(REAL_REPOSITORY)
 EPISODE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 BRANCH = re.compile(r"studio/field-notes-listening-\d{8}-\d{6}")
 ENGINE_COMMANDS = frozenset({"promote", "publish"})
@@ -51,6 +50,7 @@ class WebsitePlan:
     remote_url: str = ""
     head: str = ""
     branch: str = ""
+    push_urls: tuple[str, ...] = ()
     commands: tuple[tuple[str, ...], ...] = ()
     refusals: tuple[str, ...] = ()
 
@@ -68,7 +68,8 @@ class WebsitePlan:
             f"1. promote prepares the reviewed {self.episode} files for the website and "
             "podcast feed, in this checkout only.",
             f"2. publish commits them on a new branch {self.branch} (from main at "
-            f"{self.head[:12]}) and pushes that branch to {self.remote} ({self.remote_url}) "
+            f"{self.head[:12]}) and pushes that branch to {self.remote} "
+            f"({', '.join(self.push_urls) or self.remote_url}) "
             "with this computer's Git login. If the GitHub CLI is signed in, it opens a "
             "pull request into main.",
             "",
@@ -87,6 +88,12 @@ class WebsiteResult:
     output: tuple[str, ...] = field(default=(), repr=False)
 
 
+def environment() -> dict:
+    """Inherited GIT_DIR/GIT_WORK_TREE would point Git at another repository."""
+    clean = {k: v for k, v in os.environ.items() if k not in {"GIT_DIR", "GIT_WORK_TREE"}}
+    return {**clean, "GIT_TERMINAL_PROMPT": "0", "GH_PROMPT_DISABLED": "1"}
+
+
 def git(root: Path, *arguments: str) -> tuple[int, str]:
     result = subprocess.run(
         ["git", *arguments],
@@ -94,7 +101,7 @@ def git(root: Path, *arguments: str) -> tuple[int, str]:
         capture_output=True,
         text=True,
         timeout=60,
-        env={**os.environ, "GIT_TERMINAL_PROMPT": "0"},
+        env=environment(),
     )
     return result.returncode, result.stdout.strip()
 
@@ -130,6 +137,20 @@ def plan(root: Path, episode: str, *, python: str = sys.executable, now=None) ->
         refusals.append(
             f"The {remote} remote is not GitHub mothandgravel/.github, so nothing will be pushed."
         )
+    # A push goes to the push URLs (pushurl, after rewrites), not to the fetch URL.
+    code, pushes = git(root, "remote", "get-url", "--push", "--all", remote)
+    push_urls = tuple(pushes.split()) if code == 0 else ()
+    if not push_urls or not all(REPOSITORY.fullmatch(push) for push in push_urls):
+        refusals.append(
+            f"The {remote} remote pushes to {', '.join(push_urls) or 'an unknown address'}, "
+            "not GitHub mothandgravel/.github, so nothing will be pushed."
+        )
+    _, rewrites = git(root, "config", "--get-regexp", r"^url\..*\.pushinsteadof$")
+    if rewrites:
+        refusals.append(
+            "A Git url.*.pushInsteadOf rule rewrites push addresses. Remove it before "
+            "publishing, so the push goes where this dialog says."
+        )
     code, status = git(root, "status", "--porcelain=v1", "--untracked-files=all")
     if code:
         refusals.append("Git status could not be read.")
@@ -161,6 +182,7 @@ def plan(root: Path, episode: str, *, python: str = sys.executable, now=None) ->
         url,
         head,
         branch,
+        push_urls,
         commands(python, episode, branch),
         tuple(refusals),
     )
@@ -190,6 +212,7 @@ def run(
     *,
     confirmed: bool,
     emit: Callable[[str], None],
+    python: str = sys.executable,
 ) -> WebsiteResult:
     """Run promote, then publish, streaming output. Stops at the first failure."""
     if confirmed is not True:
@@ -203,13 +226,18 @@ def run(
         == 0
     ):
         return WebsiteResult(False, f"Nothing ran. {shown.branch} already exists.")
-    if (fresh.head, fresh.remote, fresh.remote_url) != (
+    if (fresh.head, fresh.remote, fresh.remote_url, fresh.push_urls, fresh.episode) != (
         shown.head,
         shown.remote,
         shown.remote_url,
+        shown.push_urls,
+        shown.episode,
     ):
         return WebsiteResult(False, "The checkout changed since you confirmed. Nothing ran.")
-    environment = {**os.environ, "GIT_TERMINAL_PROMPT": "0", "GH_PROMPT_DISABLED": "1"}
+    # Exactly the two engine commands for this episode and branch, with this Python.
+    if shown.commands != commands(python, fresh.episode, shown.branch):
+        raise ValueError("Unexpected website update command")
+    variables = environment()
     output: list[str] = []
     for index, command in enumerate(shown.commands):
         emit("$ " + " ".join(command[1:]))
@@ -221,7 +249,7 @@ def run(
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
-            env=environment,
+            env=variables,
         ) as process:
             for line in process.stdout or ():
                 line = line.rstrip("\n")

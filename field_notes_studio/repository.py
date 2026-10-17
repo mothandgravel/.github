@@ -488,6 +488,22 @@ class Repository:
                     "UPDATE runs SET blocked=? WHERE identifier=?", (blocked[:600], identifier)
                 )
 
+    def note_run(self, identifier: str, note: str) -> None:
+        """Append a dated line to the run's consent record; earlier lines stay."""
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT consent FROM runs WHERE identifier=?", (identifier,)
+            ).fetchone()
+            if row is None:
+                return
+            consent = json.loads(row[0])
+            consent.setdefault("notes", []).append(f"{timestamp()} {note}"[:300])
+            db.execute(
+                "UPDATE runs SET consent=? WHERE identifier=?",
+                (json.dumps(consent, sort_keys=True), identifier),
+            )
+
     def close_run(self, identifier: str) -> None:
         with self.connection() as db:
             db.execute(

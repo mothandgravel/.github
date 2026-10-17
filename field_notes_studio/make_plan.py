@@ -149,7 +149,8 @@ def build(studio, *, note: str = "", episode: str = "") -> MakePlan:
     blockers: list[str] = []
     reused: list[str] = []
     steps: list[PlanStep] = []
-    estimate: float | None = 0.0
+    # Only narration has a local price; captions alone leave this None, never $0.
+    estimate: float | None = None
     paid_parts: list[str] = []
     captions_minutes = 0.0
     request_json = ""
@@ -237,6 +238,18 @@ def build(studio, *, note: str = "", episode: str = "") -> MakePlan:
     ]
     if any(job.episode == episode and job.status in ACTIVE for job in studio.repository.jobs()):
         blockers.append("This episode already has work in progress. Open it from the work list.")
+    from field_notes_studio.make_runs import Runs
+
+    # An open run in review, paused or with its upload folder is never replaced
+    # silently; only a released run may be closed by a new Make episode.
+    if any(
+        run["episode"] == episode and Runs(studio).view(run["identifier"]).phase != "done"
+        for run in studio.repository.runs()
+    ):
+        blockers.append(
+            "This episode already has a Make episode run. Open it from the work list "
+            "and finish or close it there before starting again."
+        )
     try:
         if prepared:
             request = studio.pipeline.request(

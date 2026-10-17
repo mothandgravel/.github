@@ -87,6 +87,18 @@ class MakePlan:
     def allowed(self) -> bool:
         return not self.blockers
 
+    @property
+    def estimate_text(self) -> str:
+        """The cost line: only narration has a local price; captions never read as $0."""
+        if not self.paid:
+            return "nothing paid"
+        if self.estimate_usd is None:
+            paid = {step.key for step in self.steps if step.kind == "paid"}
+            return "no local estimate (captions)" if paid == {"caption"} else "no local estimate"
+        if self.estimate_usd < 0.01:
+            return "under $0.01"
+        return f"about ${self.estimate_usd:.2f}"
+
 
 @dataclass(frozen=True)
 class TimelineRow:
@@ -111,3 +123,5 @@ class RunView:
     job: str = ""
     stop_after: bool = False
     current: str = ""
+    # The last step failed and is local and free, so it can simply be run again.
+    retry_free: bool = False

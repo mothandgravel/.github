@@ -160,6 +160,29 @@ class SummaryTests(unittest.TestCase):
             self.m.studio.make_episode(plan, True)
         self.assertEqual(self.m.studio.repository.jobs(), [])
 
+    def test_captions_only_never_reads_as_free(self):
+        from field_notes_studio.preparation_models import CaptionsPending
+
+        with self.m.f.cloud(pending=True), self.assertRaises(CaptionsPending):
+            self.m.f.run_adapter()  # Narration saved; the caption operation is not done.
+        plan = self.m.studio.make_plan(note="104")
+        kinds = {step.key: step.kind for step in plan.steps}
+        self.assertEqual((kinds["narrate"], kinds["caption"]), ("reused", "paid"))
+        self.assertIsNone(plan.estimate_usd)
+        self.assertEqual(plan.estimate_text, "no local estimate (captions)")
+        self.assertIsNone(make_plan.consent_record(plan)["estimate_usd"])
+
+    def test_an_open_run_is_never_replaced_silently(self):
+        run_id = self.m.studio.make_episode(self.m.studio.make_plan(note="104"), True)
+        repository = self.m.studio.repository
+        job = repository.claim()
+        repository.finish(job.identifier, "failed", error="No reply")
+        plan = self.m.studio.make_plan(note="104")
+        self.assertTrue(any("already has a Make episode run" in b for b in plan.blockers))
+        with self.assertRaisesRegex(ValueError, "already has a Make episode run"):
+            self.m.studio.make_episode(plan, True)
+        self.assertFalse(repository.run(run_id)["closed"])
+
     def test_work_list_groups_by_who_acts_next(self):
         work = self.m.studio.work_list(check=False)
         note = next(i for i in work.items if i.identifier == "note:104")
@@ -214,7 +237,9 @@ class UncertainResendTests(unittest.TestCase):
         service = PreparationService(self.m.root)
         snapshot = service.inspect("104")
         with patch("field_notes_studio.preparation_service.launch_worker"):
-            with self.assertRaisesRegex(ValueError, "separate explicit consent|authorize|explicitly allow"):
+            with self.assertRaisesRegex(
+                ValueError, "separate explicit consent|authorize|explicitly allow"
+            ):
                 service.submit(snapshot, True)
             identifier = service.submit(snapshot, True, recover_uncertain=True)
         request = json.loads(self.m.studio.repository.get(identifier).request)
@@ -493,6 +518,50 @@ class PackageAfterApprovalTests(unittest.TestCase):
         view = self.runs.view(self.run_id)
         self.assertEqual((view.phase, view.group), ("paused", "needs-you"))
         self.assertIn("Saved edition changed", view.detail)
+
+    def test_a_failed_local_step_can_simply_run_again(self):
+        job = self.runs.queue_package(self.run_id)
+        self.repository.claim()
+        self.repository.finish(job, "failed", error="Disk full")
+        view = self.runs.view(self.run_id)
+        self.assertEqual(view.group, "needs-you")
+        self.assertTrue(view.retry_free)
+        again = self.runs.continue_run(self.run_id)
+        self.assertEqual(self.repository.get(again).action, "export")
+        self.assertEqual(self.steps(), ["video", "export", "export"])
+
+    def test_a_failed_video_is_queued_again_but_never_a_paid_step(self):
+        run_id = self.repository.start_run(
+            "ep2",
+            "",
+            {"reused": []},
+            {"speed": 1.0, "outro": 5, "sound": {}, "base": None},
+            ("video", "video", {"settings": {}}),
+        )
+        job = self.repository.claim()
+        self.repository.finish(job.identifier, "failed", error="Renderer crashed")
+        again = self.runs.continue_run(run_id)
+        self.assertEqual(self.repository.get(again).action, "video")
+        self.repository.claim()
+        self.repository.finish(again, "succeeded", result="/r")
+        paid = self.repository.start_run(
+            "ep3", "001", {"reused": []}, {}, ("prepare", "prepare", {"note": "001"})
+        )
+        job = self.repository.claim()
+        self.repository.finish(job.identifier, "failed", error="HTTP 502")
+        self.assertFalse(self.runs.view(paid).retry_free)
+        with self.assertRaisesRegex(ValueError, "never resends"):
+            self.runs.continue_run(paid)
+
+    def test_following_an_expert_job_with_other_settings_is_recorded(self):
+        identifier = self.repository.submit(
+            "ep", "video", {"settings": {"speed": 1.3, "outro_seconds": 2}}
+        )
+        self.assertTrue(self.runs.adopt(self.run_id))
+        notes = self.repository.run(self.run_id)["consent"]["notes"]
+        self.assertEqual(len(notes), 1)
+        self.assertIn(f"Followed video job {identifier[:12]}", notes[0])
+        self.assertIn("different from the ones consented to", notes[0])
 
     def test_package_done_is_ready_then_done_after_the_release_record(self):
         job = self.runs.queue_package(self.run_id)

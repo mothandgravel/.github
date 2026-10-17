@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -22,10 +23,24 @@ from field_notes_audio.progress import Timings
 from field_notes_audio.storage import read_object
 from field_notes_audio.transactions import FileTransaction
 
+PUBLICATION_REMOTE = r"(?:https://github\.com/|git@github\.com:)mothandgravel/\.github(?:\.git)?"
+
+
+def git_environment() -> dict:
+    """This checkout's Git only: an inherited GIT_DIR/GIT_WORK_TREE would redirect it."""
+    return {
+        key: value for key, value in os.environ.items() if key not in {"GIT_DIR", "GIT_WORK_TREE"}
+    }
+
 
 def git(arguments: list[str], optional: bool = False) -> str | None:
     result = subprocess.run(
-        ["git", *arguments], cwd=audio.ROOT, capture_output=True, text=True, timeout=180
+        ["git", *arguments],
+        cwd=audio.ROOT,
+        capture_output=True,
+        text=True,
+        timeout=180,
+        env=git_environment(),
     )
     if result.returncode and not optional:
         raise RuntimeError(
@@ -78,11 +93,22 @@ def publication_remote() -> tuple[str, str]:
         upstream.split("/", 1) if upstream else ("origin", git(["branch", "--show-current"]))
     )
     url = git(["remote", "get-url", remote])
-    if not re.fullmatch(
-        r"(?:https://github\.com/|git@github\.com:)mothandgravel/\.github(?:\.git)?", url or ""
+    # git push uses the push URLs (remote.<name>.pushurl, after any rewrite), not the
+    # fetch URL, so every one of them must be the publication repository.
+    pushes = (git(["remote", "get-url", "--push", "--all", remote], optional=True) or "").split()
+    if (
+        not re.fullmatch(PUBLICATION_REMOTE, url or "")
+        or not pushes
+        or not all(re.fullmatch(PUBLICATION_REMOTE, push) for push in pushes)
     ):
         raise ValueError(
-            "Publication requires this checkout's GitHub remote to be mothandgravel/.github"
+            "Publication requires this checkout's GitHub remote to be mothandgravel/.github "
+            "for fetch and push"
+        )
+    if git(["config", "--get-regexp", r"^url\..*\.pushinsteadof$"], optional=True):
+        raise ValueError(
+            "A Git url.*.pushInsteadOf rule rewrites push addresses; publication refuses "
+            "until it is removed"
         )
     if not branch:
         raise ValueError("Check out a branch before publishing; detached HEAD cannot be published")

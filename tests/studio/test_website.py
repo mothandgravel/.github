@@ -1,14 +1,17 @@
 """Prepare website update: refusals, the dry-run text, streaming and never merging.
 
-Every test uses a temporary Git checkout whose GitHub remote URL is rewritten for
-pushes to a local bare repository (``url.<bare>.pushInsteadOf``). SSH is disabled
-for the whole test process, so a broken rewrite fails instead of reaching GitHub.
+Every test uses a temporary Git checkout whose remote is a local bare repository.
+The success paths accept that one path in place of the GitHub pattern
+(``website.REPOSITORY`` and ``release.PUBLICATION_REMOTE`` are patched); the
+refusal tests use the real pattern. SSH is disabled for the whole test process
+and no remote is a GitHub address that can be pushed to.
 """
 
 import contextlib
 import io
 import json
 import os
+import re
 import stat
 import subprocess
 import sys
@@ -89,9 +92,15 @@ class Checkout:
         (self.work / "README.md").write_text("site\n")
         git(self.work, "add", ".")
         git(self.work, "commit", "-qm", "Start")
-        git(self.work, "remote", "add", "origin", GITHUB)
-        git(self.work, "config", f"url.{self.bare}.pushInsteadOf", GITHUB)
+        git(self.work, "remote", "add", "origin", str(self.bare))
         git(self.work, "push", "-q", "origin", "main")
+        local = re.escape(str(self.bare))
+        for target in (
+            patch.object(website, "REPOSITORY", re.compile(local)),
+            patch.object(release, "PUBLICATION_REMOTE", local),
+        ):
+            target.start()
+            case.addCleanup(target.stop)
         git(self.work, "update-ref", "refs/remotes/origin/main", "HEAD")
         git(self.work, "config", "branch.main.remote", "origin")
         git(self.work, "config", "branch.main.merge", "refs/heads/main")
@@ -102,6 +111,9 @@ class Checkout:
 
     def plan(self, episode="ep"):
         return website.plan(self.work, episode, python=str(self.engine), now=NOW)
+
+    def run(self, plan, **kwargs):
+        return website.run(plan, python=str(self.engine), **kwargs)
 
     def remote_branches(self):
         return git(self.bare, "for-each-ref", "--format=%(refname:short)", "refs/heads")
@@ -115,7 +127,8 @@ class RefusalTests(unittest.TestCase):
         plan = self.c.plan()
         self.assertEqual(plan.refusals, ())
         self.assertEqual(plan.branch, BRANCH)
-        self.assertEqual((plan.remote, plan.remote_url), ("origin", GITHUB))
+        self.assertEqual((plan.remote, plan.remote_url), ("origin", str(self.c.bare)))
+        self.assertEqual(plan.push_urls, (str(self.c.bare),))
         self.assertEqual(
             plan.commands,
             (
@@ -126,7 +139,7 @@ class RefusalTests(unittest.TestCase):
         text = plan.describe()
         self.assertIn("python3 -m field_notes_audio promote ep", text)
         self.assertIn("-m field_notes_audio publish --branch " + BRANCH, text)
-        self.assertIn(f"pushes that branch to origin ({GITHUB})", text)
+        self.assertIn(f"pushes that branch to origin ({self.c.bare})", text)
         self.assertIn("Nothing is merged or deployed", text)
         self.assertFalse(any("merge" in part for command in plan.commands for part in command))
 
@@ -145,6 +158,40 @@ class RefusalTests(unittest.TestCase):
             any("not GitHub mothandgravel/.github" in r for r in self.c.plan().refusals)
         )
 
+    def test_a_push_url_elsewhere_refuses_even_with_a_github_fetch_url(self):
+        """The reviewer's repro: fetch URL is GitHub, git push goes to a local path."""
+        elsewhere = self.c.bare.parent / "elsewhere.git"
+        git(self.c.bare.parent, "init", "-q", "--bare", str(elsewhere))
+        git(self.c.work, "remote", "set-url", "origin", GITHUB)
+        git(self.c.work, "config", "remote.origin.pushurl", str(elsewhere))
+        real = re.compile(website.REAL_REPOSITORY)
+        with (
+            patch.object(website, "REPOSITORY", real),
+            patch.object(release, "PUBLICATION_REMOTE", website.REAL_REPOSITORY),
+        ):
+            plan = self.c.plan()
+            self.assertFalse(plan.ready)
+            self.assertTrue(any(f"pushes to {elsewhere}" in r for r in plan.refusals))
+            self.assertIn(str(elsewhere), plan.push_urls)
+            with patch.object(release.audio, "ROOT", self.c.work):
+                with self.assertRaisesRegex(ValueError, "for fetch and push"):
+                    release.publication_remote()
+
+    def test_a_push_insteadof_rewrite_refuses(self):
+        git(self.c.work, "config", f"url.{self.c.bare}.pushInsteadOf", GITHUB)
+        plan = self.c.plan()
+        self.assertTrue(any("pushInsteadOf" in r for r in plan.refusals))
+        with patch.object(release.audio, "ROOT", self.c.work):
+            with self.assertRaisesRegex(ValueError, "pushInsteadOf"):
+                release.publication_remote()
+
+    def test_inherited_git_dir_does_not_redirect_the_checks(self):
+        other = self.c.bare.parent / "other"
+        git(self.c.bare.parent, "init", "-q", "-b", "feature", str(other))
+        with patch.dict(os.environ, {"GIT_DIR": str(other / ".git")}):
+            plan = self.c.plan()
+        self.assertEqual(plan.refusals, ())
+
     def test_main_behind_or_ahead_of_the_remote_refuses(self):
         (self.c.work / "README.md").write_text("changed\n")
         git(self.c.work, "commit", "-qam", "Local only")
@@ -158,14 +205,14 @@ class RefusalTests(unittest.TestCase):
     def test_nothing_runs_without_confirm_or_with_a_changed_command_list(self):
         plan = self.c.plan()
         with self.assertRaisesRegex(ValueError, "Confirm"):
-            website.run(plan, confirmed=False, emit=print)
+            self.c.run(plan, confirmed=False, emit=print)
         for commands in (
             plan.commands + (("x", "-m", "field_notes_audio", "promote", "ep"),),
             ((str(self.c.engine), "-m", "field_notes_audio", "merge", "ep"), plan.commands[1]),
             (plan.commands[0], ("gh", "pr", "merge", "--auto", "1", "x", "y")),
         ):
             with self.subTest(commands=commands), self.assertRaises(ValueError):
-                website.run(
+                self.c.run(
                     website.WebsitePlan(**{**plan.__dict__, "commands": commands}),
                     confirmed=True,
                     emit=print,
@@ -175,7 +222,7 @@ class RefusalTests(unittest.TestCase):
     def test_a_refusal_found_at_run_time_stops_before_anything_runs(self):
         plan = self.c.plan()
         (self.c.work / "notes.txt").write_text("draft")
-        result = website.run(plan, confirmed=True, emit=lambda _line: None)
+        result = self.c.run(plan, confirmed=True, emit=lambda _line: None)
         self.assertFalse(result.ok)
         self.assertIn("Nothing ran", result.summary)
         self.assertFalse((self.c.work / "docs").exists())
@@ -187,7 +234,7 @@ class RunTests(unittest.TestCase):
 
     def test_streams_output_pushes_a_new_branch_and_never_touches_main(self):
         lines = []
-        result = website.run(self.c.plan(), confirmed=True, emit=lines.append)
+        result = self.c.run(self.c.plan(), confirmed=True, emit=lines.append)
         self.assertTrue(result.ok, result.summary)
         self.assertEqual(lines[0], "$ -m field_notes_audio promote ep")
         self.assertIn("Prepared 1 reviewed finished editions.", lines)
@@ -201,7 +248,7 @@ class RunTests(unittest.TestCase):
     def test_promote_failure_is_readable_and_publish_never_runs(self):
         lines = []
         with patch.dict(os.environ, {"FAKE_PROMOTE_FAIL": "1"}):
-            result = website.run(self.c.plan(), confirmed=True, emit=lines.append)
+            result = self.c.run(self.c.plan(), confirmed=True, emit=lines.append)
         self.assertFalse(result.ok)
         self.assertEqual(
             result.summary,

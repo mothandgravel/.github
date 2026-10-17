@@ -22,6 +22,7 @@ Invariants (each is checked in code, not only documented):
 
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -108,9 +109,33 @@ class Runs:
         if not newer:
             return False
         job = newer[-1]
-        return self.repository.adopt_step(
+        adopted = self.repository.adopt_step(
             run_id, STEP_FOR_ACTION[job.action], job.identifier, after=last["job"]
         )
+        if adopted:
+            self.repository.note_run(run_id, self._adoption_note(run, job))
+        return adopted
+
+    @staticmethod
+    def _adoption_note(run: dict, job) -> str:
+        """The consent record says when the run followed someone else's job."""
+        request = json.loads(job.request)
+        note = f"Followed {job.action} job {job.identifier[:12]} queued on the expert path"
+        if job.action == "prepare":
+            return (
+                note
+                + " with its own consent"
+                + (" (uncertain resend)" if request.get("uncertain_chunks") else "")
+            )
+        settings = request.get("settings") or {}
+        recipe = run["recipe"]
+        if job.action == "video" and (
+            settings.get("speed") != recipe.get("speed")
+            or settings.get("outro_seconds") != recipe.get("outro")
+            or any(settings.get(k) != v for k, v in (recipe.get("sound") or {}).items())
+        ):
+            note += ", with show settings different from the ones consented to"
+        return note
 
     def advance(self, run_id: str, *, verify_review: bool = False) -> str | None:
         """Queue the next local job when the latest one succeeded. Returns its id."""
@@ -225,17 +250,22 @@ class Runs:
         self.repository.update_run(run_id, stop_after=True)
 
     def continue_run(self, run_id: str) -> str | None:
-        """Continue a run stopped between steps; never retries a failed paid job."""
+        """Continue a stopped run, or re-run a failed local step; never a paid one."""
         latest = self._latest(run_id)
         if latest is None:
             raise ValueError("This run is closed. Start Make episode again.")
-        _run, last, job = latest
-        if job.status in FAILED:
+        run, last, job = latest
+        if job.status in FAILED and job.action not in LOCAL_ACTIONS:
             raise ValueError(
                 "The last step did not finish. Check recovery on the expert path; "
                 "Make episode never resends a paid request on its own."
             )
         self.repository.update_run(run_id, stop_after=False, blocked="")
+        if job.status in FAILED and job.action == "video":
+            # Local and free: queue the same full video again after the failed job.
+            return self._queue_video(self.repository.run(run_id), job)
+        if job.status in FAILED and job.action == "export":
+            return self.queue_package(run_id)
         return self.advance(run_id, verify_review=True)
 
     def close(self, run_id: str) -> None:
@@ -372,6 +402,10 @@ class Runs:
             job=last.identifier if last else "",
             stop_after=bool(run["stop_after"]),
             current=current,
+            retry_free=last is not None
+            and last.status in FAILED
+            and last.action in LOCAL_ACTIONS
+            and not run["closed"],
         )
 
     def _estimate(self, key: str) -> str:
