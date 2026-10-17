@@ -563,6 +563,16 @@ class PackageAfterApprovalTests(unittest.TestCase):
         self.assertIn(f"Followed video job {identifier[:12]}", notes[0])
         self.assertIn("different from the ones consented to", notes[0])
 
+    def test_a_run_with_an_active_step_cannot_be_closed(self):
+        job = self.runs.queue_package(self.run_id)
+        with self.assertRaisesRegex(ValueError, "Stop the running step"):
+            self.runs.close(self.run_id)
+        self.assertFalse(self.repository.run(self.run_id)["closed"])
+        self.repository.claim()
+        self.repository.finish(job, "failed", error="Disk full")
+        self.runs.close(self.run_id)
+        self.assertTrue(self.repository.run(self.run_id)["closed"])
+
     def test_package_done_is_ready_then_done_after_the_release_record(self):
         job = self.runs.queue_package(self.run_id)
         self.repository.claim()

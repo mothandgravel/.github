@@ -505,7 +505,16 @@ class Repository:
             )
 
     def close_run(self, identifier: str) -> None:
+        """Close a run whose latest job is not queued or running, in one transaction."""
         with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            if db.execute(
+                "SELECT 1 FROM run_steps JOIN jobs ON jobs.identifier=run_steps.job "
+                "WHERE run_steps.run=? AND jobs.status IN ('queued','running') "
+                "AND run_steps.sequence=(SELECT MAX(sequence) FROM run_steps WHERE run=?)",
+                (identifier, identifier),
+            ).fetchone():
+                raise ValueError("Stop the running step first, or let it finish.")
             db.execute(
                 "UPDATE runs SET closed=? WHERE identifier=? AND closed=''",
                 (timestamp(), identifier),

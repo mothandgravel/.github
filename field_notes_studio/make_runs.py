@@ -269,9 +269,7 @@ class Runs:
         return self.advance(run_id, verify_review=True)
 
     def close(self, run_id: str) -> None:
-        latest = self._latest(run_id)
-        if latest is not None and latest[2].status in {"queued", "running"}:
-            raise ValueError("Stop the running step first, or let it finish.")
+        # The active-step check and the close are one transaction in the repository.
         self.repository.close_run(run_id)
 
     # -- durations ----------------------------------------------------------------------
@@ -368,8 +366,7 @@ class Runs:
                         key,
                         name,
                         "Waiting",
-                        "The caption service is still working; Studio checks again, "
-                        "no new request",
+                        "The caption service is still working; Studio checks again, no new request",
                         "run",
                     )
                 )
