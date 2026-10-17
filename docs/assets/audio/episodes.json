@@ -129,26 +129,26 @@
     "note_id": "003",
     "slug": "003-metaphor-earns-its-place.html",
     "language": "en-US",
-    "audio": "assets/audio/note-003-09abd76ea3a952c6.mp3",
-    "bytes": 5782508,
-    "audio_sha256": "09abd76ea3a952c6028a2dee41cf54ad32e80b73b5d0d1903e226cdd9c7026e7",
-    "script_sha256": "bc836011b1ad32e8a9ab091be32dd89c25c36e9b48beee59363546a66e192e84",
+    "audio": "assets/audio/note-003-f369fd03a61bebf8.mp3",
+    "bytes": 6482060,
+    "audio_sha256": "f369fd03a61bebf8f609fc796e0ca9f3ccd09af5719265a18c5376e036708f4b",
+    "script_sha256": "7627a79c820ddc9fde5a34d70d04d97514a6e5027265e2a6012b0e052e2b53e2",
     "source_sha256": {
-      "003": "ea69c49fd916319d2c723c3539749d6821fd1f848cefa6b1e9ee983f9042ba5a"
+      "003": "fdcef23d436e54e755923c5346d669c900056aa3769d1ab32d4b1fb276182ea3"
     },
-    "duration_seconds": 481.793,
+    "duration_seconds": 540.074,
     "published_at": "2026-10-13T22:04:17.406795+00:00",
     "review_status": "pending",
     "narration": "AI-narrated",
-    "srt": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.srt",
-    "vtt": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.vtt",
-    "transcript": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.txt",
-    "cues": "assets/audio/note-003-09abd76ea3a952c6-edefa5ed7b394cfd.json",
+    "srt": "assets/audio/note-003-f369fd03a61bebf8-1112124790cf9a51.srt",
+    "vtt": "assets/audio/note-003-f369fd03a61bebf8-1112124790cf9a51.vtt",
+    "transcript": "assets/audio/note-003-f369fd03a61bebf8-1112124790cf9a51.txt",
+    "cues": "assets/audio/note-003-f369fd03a61bebf8-1112124790cf9a51.json",
     "files_sha256": {
-      "srt": "8fdbb6c6e774895ab8d58ec198c9c2bdbf84a871c574d7cb9e6217453fa3889d",
-      "vtt": "0aab2dbbb2ee76b7d25c3154a226bfc4f1f8ba07b000f96c9359b5e373ed851b",
-      "transcript": "50fa1586d202351fca98594cd548b6a141205563c702358e9f68c8d47f22a18f",
-      "cues": "bfb6016a760f5fd3e953ce89a6e2a0477020106b9a891bdba709ef8a6548fafd"
+      "srt": "ca984992ea98e7b2f47b293cf26f0c80725a2decee4b7d3a9fc0d360db447dbe",
+      "vtt": "17aa50fa7cd62b008ff0a56527e5d14702de141132dacfa36e1254224409cbec",
+      "transcript": "a45afa4073c3caf3499bb70b3d369a16792124e6ba45711a5026c2e3cc87966d",
+      "cues": "f56187677799a015bd7b58a1cd929e71a8f873e080456d126e9ee5a7f7febc93"
     }
   },
   {
@@ -159,26 +159,26 @@
     "note_id": "004",
     "slug": "004-controls-stay-put.html",
     "language": "en-US",
-    "audio": "assets/audio/note-004-f913221d86a23608.mp3",
-    "bytes": 4059692,
-    "audio_sha256": "f913221d86a2360832acc245d7217b6841b1068be4d0bc213bdc41b3cd7ba8c8",
-    "script_sha256": "60a94b620b977fb89628cfcf39c2134835215e9642193955d27d0437a8d74eef",
+    "audio": "assets/audio/note-004-28fb47295ba98e75.mp3",
+    "bytes": 4174892,
+    "audio_sha256": "28fb47295ba98e75ecab5adf95a2bc9219205b2a7242788dc52e3bd35a4f7762",
+    "script_sha256": "181dbb75cad1f191e817eb104cc7bebe4ecaa4b99759da054fcd6064c339b4bf",
     "source_sha256": {
-      "004": "babd8cddfe78219c1b9a7f7f3d8c5f4daf0ceabeddb525035fb3c7f3b41e006a"
+      "004": "03e231e2f36621798c06e3e32f6a40de1545be22081070c4e3a523ded70a1823"
     },
-    "duration_seconds": 338.222,
+    "duration_seconds": 347.822,
     "published_at": "2026-10-13T22:04:17.406795+00:00",
     "review_status": "pending",
     "narration": "AI-narrated",
-    "srt": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.srt",
-    "vtt": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.vtt",
-    "transcript": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.txt",
-    "cues": "assets/audio/note-004-f913221d86a23608-213ce4764565d9ee.json",
+    "srt": "assets/audio/note-004-28fb47295ba98e75-a1193e6c140d2bbc.srt",
+    "vtt": "assets/audio/note-004-28fb47295ba98e75-a1193e6c140d2bbc.vtt",
+    "transcript": "assets/audio/note-004-28fb47295ba98e75-a1193e6c140d2bbc.txt",
+    "cues": "assets/audio/note-004-28fb47295ba98e75-a1193e6c140d2bbc.json",
     "files_sha256": {
-      "srt": "2ea46520926a4e2dc4e3303b21764314dffa06d02ff6e3541b47159e420730ba",
-      "vtt": "36138022442aed83efd69726852a5affe779d8126df11f51305b4912668edec4",
-      "transcript": "d3fb1354881ab2cdc1f6932a50446e16cf57405c7f729bd2fc29c1d716024385",
-      "cues": "0a94215b32aefddc2d4f8d800f5437023525e58e64951df329334310625f19af"
+      "srt": "e7f59cff0946401f8fb593b7d376af855ab5b1e3746750c2e5e4867377d9bf29",
+      "vtt": "4bac0d323f43c1f1587377757ad8371c9e2011ff5f8e8bba4f22fa982467ba82",
+      "transcript": "241466d5d105931fa4758ca005012f191c0e719493b6a364eac54cd35319df65",
+      "cues": "9100e9cceb12008894ce861c003ca333e5982c69a712a27cb0ea070eb1ba9353"
     }
   },
   {
@@ -389,6 +389,96 @@
       "vtt": "78504c00bb533b696a5eff5c122a70253e63b1b3893c29292354d0a117ddbdaf",
       "transcript": "c0603fb0da92e6560d656637e74b6c907b2d7ee8f542f4200b379e0c08adbb10",
       "cues": "8180a4410d46f02445e0ed07d085e7831ae164686e41ba4e0ef9a6c384f66062"
+    }
+  },
+  {
+    "id": "note-012",
+    "title": "The picture stays.",
+    "kind": "note",
+    "description": "The stream stops. The last position remains. A Coastal watch study in maps, observation age and the confidence a finished picture can borrow.",
+    "note_id": "012",
+    "slug": "012-the-picture-stays.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-012-e7166ca53a599eaf.mp3",
+    "bytes": 4636556,
+    "audio_sha256": "e7166ca53a599eaf889d77d272295857944200c690d46aaf9d3f22d54bf0b48c",
+    "script_sha256": "47fb61c98d789aed6e17eec3b0a57bc7037978aa8ae9af5eb03f34550cb0fa0a",
+    "source_sha256": {
+      "012": "1b747d36662fcf6906cf700c4f211e60d98178915ebe333d681f7c170ec8198d"
+    },
+    "duration_seconds": 386.302,
+    "published_at": "2026-10-17T18:52:56.095500+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-012-e7166ca53a599eaf-62b94eadceb2bc9a.srt",
+    "vtt": "assets/audio/note-012-e7166ca53a599eaf-62b94eadceb2bc9a.vtt",
+    "transcript": "assets/audio/note-012-e7166ca53a599eaf-62b94eadceb2bc9a.txt",
+    "cues": "assets/audio/note-012-e7166ca53a599eaf-62b94eadceb2bc9a.json",
+    "files_sha256": {
+      "srt": "57b9f7e2e545c95237d22478c790d1d26219c5a6b6606550be17cc7a91b7a68a",
+      "vtt": "a52c1c800207bcce6a8ee0c3a090f90cf9a634720b7859fdf375883fafa584cf",
+      "transcript": "69dd3aed29e77d15b7c2f5a21cd43776efdde63d06a357acac41b86f04192507",
+      "cues": "b158a488e64ee66b2a636694774e1e084c1f3826ec27f10563028f366a12ec4e"
+    }
+  },
+  {
+    "id": "note-013",
+    "title": "The work outlives the window.",
+    "kind": "note",
+    "description": "A podcast pipeline becomes a small desktop workbench. What closing its window taught us about drafts, jobs, review and a trustworthy route to release.",
+    "note_id": "013",
+    "slug": "013-work-outlives-the-window.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-013-d3e4ddd27ebc4fbb.mp3",
+    "bytes": 6425324,
+    "audio_sha256": "d3e4ddd27ebc4fbbe7dbfd337372672d4352da86bfb82491e3e7af19dfa41729",
+    "script_sha256": "ac7d2e261526640be6b9c5315f3e68b731765ecd6b114e003d9b432d91830138",
+    "source_sha256": {
+      "013": "87046bb0362c369eeeda702d89dbf8eaa9eded5421b63c5dee73b21dc5079a76"
+    },
+    "duration_seconds": 535.353,
+    "published_at": "2026-10-17T18:52:56.095500+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-013-d3e4ddd27ebc4fbb-a78789c93041bd3b.srt",
+    "vtt": "assets/audio/note-013-d3e4ddd27ebc4fbb-a78789c93041bd3b.vtt",
+    "transcript": "assets/audio/note-013-d3e4ddd27ebc4fbb-a78789c93041bd3b.txt",
+    "cues": "assets/audio/note-013-d3e4ddd27ebc4fbb-a78789c93041bd3b.json",
+    "files_sha256": {
+      "srt": "7c36853e5f827117d1bbe0e929c7c610225941bfa112336fbe46ea73454a9a30",
+      "vtt": "551b1303b05c752bc34ba959a4ae1460cce5cc932fa1f212f9665d918703d6d5",
+      "transcript": "aa8ec26da92a8df72b8ab1635b76cb23612f26d3d9562d07f8b08b270852ada7",
+      "cues": "787557ff1bcc1030706a9f62de3f3d5346fb671730287d8f51ecbd73356b9c6a"
+    }
+  },
+  {
+    "id": "note-014",
+    "title": "Enough light to read by.",
+    "kind": "note",
+    "description": "A ferry’s bridge at night, held at a fixed position. A maritime study in dimmed screens, borrowed weather and the labels that keep a study from posing as a voyage.",
+    "note_id": "014",
+    "slug": "014-enough-light-to-read-by.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-014-95652a1b7a90ea96.mp3",
+    "bytes": 6010028,
+    "audio_sha256": "95652a1b7a90ea96899a93240b359ba4fda08141252a05dcbeabd85765e468d3",
+    "script_sha256": "57c573db8bb7dfc36fb11cf0f1abef52395181c033fe6b6f127c2d0077e76ea4",
+    "source_sha256": {
+      "014": "9483b09cd6f72013b70ef24ddf31acbd98e63351ed7300fb6670b7b62d49c4e1"
+    },
+    "duration_seconds": 500.753,
+    "published_at": "2026-10-17T18:52:56.095500+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-014-95652a1b7a90ea96-4c63e9d15438089b.srt",
+    "vtt": "assets/audio/note-014-95652a1b7a90ea96-4c63e9d15438089b.vtt",
+    "transcript": "assets/audio/note-014-95652a1b7a90ea96-4c63e9d15438089b.txt",
+    "cues": "assets/audio/note-014-95652a1b7a90ea96-4c63e9d15438089b.json",
+    "files_sha256": {
+      "srt": "6a2216b78fcef4bec439822072cef8a5a43cccae6c79083ba48b03048aea6271",
+      "vtt": "58cb3d4b1fabb9f1a154337e714a813a50454217922644cc661a99ca25f13195",
+      "transcript": "2a811f3db277f00e3479ff21c5b027c7efcc2d7988445779632e8fddfa7fffbd",
+      "cues": "804d2fd048bb8295efe678ced7b426c069b694b801f43476f74501191ee894c3"
     }
   }
 ]

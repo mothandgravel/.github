@@ -1,0 +1,452 @@
+[
+  {
+    "start": 0.2,
+    "end": 5.92,
+    "text": "Moth and Gravel, Field Note 4. A\ncontrol should stay where you",
+    "speakers": []
+  },
+  {
+    "start": 5.92,
+    "end": 11.28,
+    "text": "left it. An AI narrated edition\nof the published note. The",
+    "speakers": []
+  },
+  {
+    "start": 11.28,
+    "end": 15.96,
+    "text": "button was there a moment ago.\nYou have found the next action.",
+    "speakers": []
+  },
+  {
+    "start": 16.44,
+    "end": 19.56,
+    "text": "Your eyes leave the text and\nyour hand starts toward the",
+    "speakers": []
+  },
+  {
+    "start": 19.56,
+    "end": 24.72,
+    "text": "control. Then a picture finishes\nloading. The card grows, the",
+    "speakers": []
+  },
+  {
+    "start": 24.72,
+    "end": 29.28,
+    "text": "words move down, and the button\nis somewhere else. Nothing",
+    "speakers": []
+  },
+  {
+    "start": 29.28,
+    "end": 33.84,
+    "text": "dramatic has happened. The page\nhas not failed. Yet, it has",
+    "speakers": []
+  },
+  {
+    "start": 33.84,
+    "end": 38.44,
+    "text": "asked you to find your place\nagain. Decision Docket, the tool",
+    "speakers": []
+  },
+  {
+    "start": 38.44,
+    "end": 42.2,
+    "text": "we use for our own work, had a\nsmall version of this problem in",
+    "speakers": []
+  },
+  {
+    "start": 42.2,
+    "end": 46.92,
+    "text": "its teammate card. A decorative\nportrait appeared only after its",
+    "speakers": []
+  },
+  {
+    "start": 46.92,
+    "end": 51.4,
+    "text": "local image had loaded. Until\nthat moment, the grid contained",
+    "speakers": []
+  },
+  {
+    "start": 51.4,
+    "end": 55.96,
+    "text": "no portrait row. The loaded card\nlooked right. The journey to",
+    "speakers": []
+  },
+  {
+    "start": 55.96,
+    "end": 60.12,
+    "text": "that appearance needed\nattention. Make room before the",
+    "speakers": []
+  },
+  {
+    "start": 60.12,
+    "end": 65.72,
+    "text": "picture arrives. The approved\nportrait was already 64 by 64",
+    "speakers": []
+  },
+  {
+    "start": 65.72,
+    "end": 70.72,
+    "text": "pixels. It's arrival added that\nheight and the existing 8 pixel",
+    "speakers": []
+  },
+  {
+    "start": 70.72,
+    "end": 74.92,
+    "text": "gap. In controlled measurements\nof the actual component, the",
+    "speakers": []
+  },
+  {
+    "start": 74.92,
+    "end": 79.88,
+    "text": "following text and switch\ncontrol moved by 72 pixels. The",
+    "speakers": []
+  },
+  {
+    "start": 79.88,
+    "end": 83.16,
+    "text": "fix was a permanent decorative\nwrapper in the portrait's",
+    "speakers": []
+  },
+  {
+    "start": 83.16,
+    "end": 88.44,
+    "text": "existing position. It reserved\nthe same 64 by 64 space from the",
+    "speakers": []
+  },
+  {
+    "start": 88.44,
+    "end": 93.0,
+    "text": "start. The image still appeared\nonly after loading. The card",
+    "speakers": []
+  },
+  {
+    "start": 93.0,
+    "end": 97.04,
+    "text": "simply knew where it would\nbelong. No extra artwork was",
+    "speakers": []
+  },
+  {
+    "start": 97.04,
+    "end": 102.4,
+    "text": "needed. No animation was added.\nThe surrounding type, spacing,",
+    "speakers": []
+  },
+  {
+    "start": 102.4,
+    "end": 104.92,
+    "text": "and control could remain as they\nwere.",
+    "speakers": []
+  },
+  {
+    "start": 106.12,
+    "end": 113.76,
+    "text": "Before, space added on load, 72\npixels of movement. Adding a 64",
+    "speakers": []
+  },
+  {
+    "start": 113.76,
+    "end": 118.24,
+    "text": "by 64 portrait row and its 8\npixel gap moved the following",
+    "speakers": []
+  },
+  {
+    "start": 118.24,
+    "end": 125.16,
+    "text": "text and control. After, space\npresent from the start, 0 pixels",
+    "speakers": []
+  },
+  {
+    "start": 125.16,
+    "end": 129.12,
+    "text": "of movement. The same role\npending to loaded positions",
+    "speakers": []
+  },
+  {
+    "start": 129.28,
+    "end": 134.24,
+    "text": "stayed fixed at both tested\nwidths. Explanatory diagrams,",
+    "speakers": []
+  },
+  {
+    "start": 134.36,
+    "end": 138.76,
+    "text": "not application screenshots. The\nfigures summarize recorded",
+    "speakers": []
+  },
+  {
+    "start": 138.76,
+    "end": 143.32,
+    "text": "component measurements at 390\nand 1440 pixels for product",
+    "speakers": []
+  },
+  {
+    "start": 143.32,
+    "end": 147.88,
+    "text": "partner and engineering lead.\nPale dashed marks show the",
+    "speakers": []
+  },
+  {
+    "start": 147.88,
+    "end": 152.68,
+    "text": "earlier position or reserved\nspace. An empty space can be the",
+    "speakers": []
+  },
+  {
+    "start": 152.68,
+    "end": 157.28,
+    "text": "right answer. While the portrait\nis pending, its place stays",
+    "speakers": []
+  },
+  {
+    "start": 157.28,
+    "end": 162.6,
+    "text": "blank. If decoding fails, it\nstays blank. The existing error",
+    "speakers": []
+  },
+  {
+    "start": 162.6,
+    "end": 166.92,
+    "text": "handling prevents a broken image\nfrom taking its place. That",
+    "speakers": []
+  },
+  {
+    "start": 166.92,
+    "end": 170.72,
+    "text": "might seem like an invitation to\nadd a shimmer, a spinner, or a",
+    "speakers": []
+  },
+  {
+    "start": 170.72,
+    "end": 175.52,
+    "text": "message. Here, the image is\ndecorative. The role and its",
+    "speakers": []
+  },
+  {
+    "start": 175.52,
+    "end": 179.28,
+    "text": "description are already\nexpressed in text. The person",
+    "speakers": []
+  },
+  {
+    "start": 179.28,
+    "end": 183.08,
+    "text": "can read the card and use its\ncontrol without waiting for the",
+    "speakers": []
+  },
+  {
+    "start": 183.08,
+    "end": 186.48,
+    "text": "portrait. A loading treatment\nwould make the missing",
+    "speakers": []
+  },
+  {
+    "start": 186.48,
+    "end": 191.24,
+    "text": "decoration more prominent. A\nquiet reserved space gives the",
+    "speakers": []
+  },
+  {
+    "start": 191.24,
+    "end": 195.72,
+    "text": "rest of the card permission to\ncarry on. There is a useful",
+    "speakers": []
+  },
+  {
+    "start": 195.72,
+    "end": 199.92,
+    "text": "distinction here. A missing\npiece of information may need an",
+    "speakers": []
+  },
+  {
+    "start": 199.92,
+    "end": 204.6,
+    "text": "explanation. A missing\ndecoration may only need room.",
+    "speakers": []
+  },
+  {
+    "start": 205.6,
+    "end": 210.68,
+    "text": "Keep the same role in view. The\ncard let someone switch between",
+    "speakers": []
+  },
+  {
+    "start": 210.68,
+    "end": 215.4,
+    "text": "product partner and engineering\nlead. An uncached role can need",
+    "speakers": []
+  },
+  {
+    "start": 215.4,
+    "end": 219.88,
+    "text": "another image load. During that\ntransition, the old portrait",
+    "speakers": []
+  },
+  {
+    "start": 219.92,
+    "end": 224.36,
+    "text": "must not masquerade as the new\nrole. The existing cleanup and",
+    "speakers": []
+  },
+  {
+    "start": 224.36,
+    "end": 228.2,
+    "text": "loading behavior were retained.\nThe reserved slot does not",
+    "speakers": []
+  },
+  {
+    "start": 228.2,
+    "end": 233.04,
+    "text": "introduce a new focus target or\nan announcement. In the bounded",
+    "speakers": []
+  },
+  {
+    "start": 233.04,
+    "end": 237.4,
+    "text": "keyboard walks, focus stayed on\nthe real switch control while",
+    "speakers": []
+  },
+  {
+    "start": 237.4,
+    "end": 241.76,
+    "text": "the role changed and the\nportrait loaded or failed. The",
+    "speakers": []
+  },
+  {
+    "start": 241.76,
+    "end": 245.96,
+    "text": "text can still reflow when the\nrole changes. Different",
+    "speakers": []
+  },
+  {
+    "start": 245.96,
+    "end": 249.52,
+    "text": "descriptions may have different\nlengths, especially on a phone.",
+    "speakers": []
+  },
+  {
+    "start": 250.28,
+    "end": 254.2,
+    "text": "The promise is narrower. Loading\na decorative portrait for the",
+    "speakers": []
+  },
+  {
+    "start": 254.2,
+    "end": 258.84,
+    "text": "same role should not rearrange\nthe work beneath it. Measure the",
+    "speakers": []
+  },
+  {
+    "start": 258.84,
+    "end": 263.12,
+    "text": "interruption you meant to\nremove. The comparison mounted",
+    "speakers": []
+  },
+  {
+    "start": 263.12,
+    "end": 267.96,
+    "text": "the actual card with its real\nlocal artwork, styles, and fonts",
+    "speakers": []
+  },
+  {
+    "start": 268.08,
+    "end": 273.04,
+    "text": "in an isolated fixture. Delayed\nimage responses reproduced the",
+    "speakers": []
+  },
+  {
+    "start": 273.04,
+    "end": 277.2,
+    "text": "original movement for both roles\nat desktop and phone widths.",
+    "speakers": []
+  },
+  {
+    "start": 278.12,
+    "end": 282.16,
+    "text": "After the change, the measured\ndisplacement was zero in all",
+    "speakers": []
+  },
+  {
+    "start": 282.16,
+    "end": 286.6,
+    "text": "four comparisons. The loaded\narrangement also retained the",
+    "speakers": []
+  },
+  {
+    "start": 286.6,
+    "end": 291.44,
+    "text": "same measured geometry. This\nmatters. Making the pending",
+    "speakers": []
+  },
+  {
+    "start": 291.44,
+    "end": 295.52,
+    "text": "state stable did not require a\ndifferent finished card.",
+    "speakers": []
+  },
+  {
+    "start": 296.36,
+    "end": 299.08,
+    "text": "Failures and cleanup received\ntheir own check.",
+    "speakers": []
+  },
+  {
+    "start": 300.4,
+    "end": 304.44,
+    "text": "The appearance review covered\npending, loaded, and invalid",
+    "speakers": []
+  },
+  {
+    "start": 304.44,
+    "end": 308.24,
+    "text": "image states across the two\nproduct themes and light and",
+    "speakers": []
+  },
+  {
+    "start": 308.24,
+    "end": 313.4,
+    "text": "dark appearances with a reduced\nmotion case. Those observations",
+    "speakers": []
+  },
+  {
+    "start": 313.4,
+    "end": 317.72,
+    "text": "establish a small component\nbehavior. They do not establish",
+    "speakers": []
+  },
+  {
+    "start": 317.72,
+    "end": 321.84,
+    "text": "whole page layout stability or\nshow how a real person",
+    "speakers": []
+  },
+  {
+    "start": 321.84,
+    "end": 326.96,
+    "text": "experiences the full onboarding\nflow. That is enough to make",
+    "speakers": []
+  },
+  {
+    "start": 326.96,
+    "end": 331.64,
+    "text": "this change worth recording. An\ninterface contains many small",
+    "speakers": []
+  },
+  {
+    "start": 331.64,
+    "end": 336.32,
+    "text": "invitations to spend attention.\nKeeping a control where someone",
+    "speakers": []
+  },
+  {
+    "start": 336.32,
+    "end": 341.24,
+    "text": "has already found it is one way\nto ask for less. You have been",
+    "speakers": []
+  },
+  {
+    "start": 341.24,
+    "end": 347.88,
+    "text": "listening to Moth and Gravel\nField Notes. The written edition\nis at mothandgravel.com.",
+    "speakers": []
+  }
+]
