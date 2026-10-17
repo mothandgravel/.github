@@ -301,15 +301,19 @@ token.
 To spend anyway, run **one** command by hand with
 `--allow-spend-over-limit "reason" --spend-token TOKEN`, using the token from the
 refusal. Any newer uncertain attempt changes the token, so repeating the command
-is refused, and a part can be overridden at most once per window. `make-all`
-never accepts an override. Studio asks for the same override and reason and binds
+is refused, and a part can be overridden at most once per window. Within one
+run, the same token covers each remaining blocked part of that episode once, as
+long as no new uncertain attempt changes it; the first uncertain result stops the
+run. `make-all` never accepts an override. Studio asks for the same override and reason and binds
 it to the attempts it showed. Each override is logged with its reason and token.
 
 `artifacts/audio/spend-guard.json`
 (`{"part_limit": 2, "episode_limit": 4, "window_hours": 24}`) and
 `FIELD_AUDIO_UNCERTAIN_PART_LIMIT`, `FIELD_AUDIO_UNCERTAIN_EPISODE_LIMIT` and
 `FIELD_AUDIO_UNCERTAIN_WINDOW_HOURS` can only make the guard stricter: fewer
-attempts, or a window of 24 h or longer. Looser values are refused. Stricter
+attempts, or a window of 24 h or longer. Looser values are refused. When the file
+and an environment variable both set a value, the stricter one applies (the lower
+count, the longer window). Stricter
 limits are logged. The narration client timeout is 360 s per chunk; change it
 with `--tts-timeout-seconds` or `FIELD_AUDIO_TTS_TIMEOUT_SECONDS`.
 
@@ -317,7 +321,13 @@ with `--tts-timeout-seconds` or `FIELD_AUDIO_TTS_TIMEOUT_SECONDS`.
 The next write starts a new line, and the damaged line counts as one uncertain
 attempt, at its recorded time when readable and otherwise now, so the guard
 errs towards stopping. To repair it, copy `attempts.jsonl` aside for the record,
-check the billing report, then correct or delete only that line.
+check the billing report, then correct or delete only that line. A refusal names
+any damaged lines it counted. Never delete `attempts.lock`: it is the lock that
+keeps parallel runs from passing the limit together, and it holds no data.
+
+An attempt that fails locally after its start was logged but before the request
+was made (for example, the receipt could not be written) is settled as
+`failed` with *not sent: local error before request*, so it does not count.
 
 Completed captions are re-exported locally from the saved Google response.
 Repeating replaces generated caption files; keep editorial corrections in a

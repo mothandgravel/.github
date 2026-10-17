@@ -604,23 +604,31 @@ def generate_locked(
                 token=getattr(args, "spend_token", None),
                 command="narration",
             )
-            if guard.blocked:
-                report(
-                    "Spend guard override logged: "
-                    + guard.sentence()
-                    + f" Reason: {spend_guard.validate_reason(override)}",
-                    flush=True,
+            try:
+                if guard.blocked:
+                    report(
+                        "Spend guard override logged: "
+                        + guard.sentence()
+                        + f" Reason: {spend_guard.validate_reason(override)}",
+                        flush=True,
+                    )
+                # Local steps between the reservation and the request. A failure here
+                # means synthesize() was never entered, so nothing was sent or billed.
+                write_json(
+                    state_path,
+                    {
+                        "status": "requesting",
+                        "request_sha256": expected,
+                        "attempt_id": attempt_id,
+                        "timeout_seconds": timeout_seconds,
+                    },
                 )
-            write_json(
-                state_path,
-                {
-                    "status": "requesting",
-                    "request_sha256": expected,
-                    "attempt_id": attempt_id,
-                    "timeout_seconds": timeout_seconds,
-                },
-            )
-            report(f"Chunk {index}/{total}: generate · attempt {attempt_id}", flush=True)
+                report(f"Chunk {index}/{total}: generate · attempt {attempt_id}", flush=True)
+            except BaseException:
+                spend_guard.record_not_sent(
+                    audio_root, episode=episode_id, part=part, attempt_id=attempt_id
+                )
+                raise
             attempt_start = time.perf_counter()
             failure_phase = "narration_request"
 
