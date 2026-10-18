@@ -29,7 +29,7 @@ let enquiry = null;
 function loadEnquiry() {
   enquiry ??= fetch(new URL('./enquiry-config.json', import.meta.url), { cache: 'no-cache' })
     .then(response => response.ok ? response.json() : null)
-    .then(config => config?.enabled === true ? import('./enquiry.mjs?v=2').then(module => module.start(config)) : null)
+    .then(config => config?.enabled === true ? import('./enquiry.mjs?v=3').then(module => module.start(config)) : null)
     .catch(() => null);
 }
 function download(text, name) {
