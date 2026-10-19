@@ -67,6 +67,7 @@ test('published provenance binds the reused map and exposes the working entry po
   const record = JSON.parse(read('design/coastal-two-stations-provenance.json'));
   const asset = record.implementation.reusedGeometry;
   assert.equal(createHash('sha256').update(read(asset.file)).digest('hex'), asset.sha256);
+  assert.equal(createHash('sha256').update(read(record.capture.path)).digest('hex'), record.capture.sha256);
   assert.match(read('specimens/coastal-watch/index.html').toString(), /href="\.\/two-stations\/"/);
   assert.match(read('sitemap.xml').toString(), /https:\/\/mothandgravel.com\/specimens\/coastal-watch\/two-stations\//);
   assert.equal(record.raivariReview.pieces.length, 9);

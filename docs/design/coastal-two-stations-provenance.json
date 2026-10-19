@@ -134,5 +134,21 @@
       },
       "runtimeBoundary": "Offline queue, burst-sync and signer were source-reviewed, not exercised by this static specimen."
     }
+  },
+  "capture": {
+    "path": "assets/specimens/coastal-watch/two-stations-preview.jpg",
+    "sha256": "c68c2c16b692ee24a4e4ac34d08ed48502f6479249ccae5f6f9074a43192b531",
+    "capturedFromRevision": "ef8e4da",
+    "date": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1200
+    },
+    "theme": "night",
+    "region": ".cw-stations",
+    "cursor": 420,
+    "view": "then",
+    "scenario": "default interrupted fixture",
+    "modifications": "Header and skip-link hidden only to prevent fixed-position overlays entering the element capture. Plot and data unchanged."
   }
 }
