@@ -1,3 +1,4 @@
+import { createTransportTransit } from "./coastal-transit.mjs";
 import {
   transportPicture,
   shortObservation,
@@ -44,7 +45,7 @@ function announce(text, tone = "normal") {
 function schedule() {
   clearTimeout(timer);
   if (live && connected && !document.hidden)
-    timer = setTimeout(() => refresh(false), 1500);
+    timer = setTimeout(() => refresh(false), busy || state?.busy ? 200 : 1500);
 }
 function availability() {
   const disabled = !connected || busy || Boolean(state?.busy);
@@ -53,6 +54,7 @@ function availability() {
   ))
     el.disabled = disabled;
   $("ct-controls").setAttribute("aria-busy", String(busy));
+  $("ct-refresh").disabled = busy;
   $("ct-export").disabled = !state;
   $("ct-filter").disabled = !selected;
   if (!selected) {
@@ -433,17 +435,6 @@ function render() {
   $("ct-paused").checked = state.controls.paused;
   $("ct-reject").checked = state.controls.reject;
   $("ct-response").checked = state.controls.failResponseOnce;
-  document.querySelector(".ct-link-strip").dataset.interrupted = String(
-    state.controls.paused || state.controls.reject,
-  );
-  $("ct-link-state").textContent = state.controls.paused
-    ? "Link interrupted"
-    : state.controls.reject
-      ? "Delivery refused"
-      : state.controls.failResponseOnce
-        ? "One ACK will fail"
-        : "Ready to send";
-  $("ct-link-count").textContent = `${state.queues.south.pending} waiting`;
   const pending = state.queues.north.pending + state.queues.south.pending;
   for (const [id, value] of [
     ["observations", state.observations.length],
@@ -464,12 +455,19 @@ function render() {
         : capture.status === "failed"
           ? `AIS capture failed: ${capture.error}. Existing records remain; no synthetic replacement was added.`
           : "Fetching public AIS…";
+  transit.update(state, {
+    selected,
+    connected,
+    busy,
+    origin: $("ct-origin").value,
+  });
   renderCharts();
   renderRecord();
   renderLedgers();
   availability();
 }
 async function refresh(manual = true) {
+  if (manual && busy) return;
   const version = ++requestVersion,
     wasConnected = connected;
   try {
@@ -506,9 +504,18 @@ async function refresh(manual = true) {
 async function command(body) {
   if (!connected || busy) return;
   busy = true;
+  transit.stop();
   availability();
   clearTimeout(timer);
   ++requestVersion;
+  schedule();
+  if (state)
+    transit.update(state, {
+      selected,
+      connected,
+      busy,
+      origin: $("ct-origin").value,
+    });
   announce(
     body.action === "capture-ais"
       ? "Capturing public AIS from Digitraffic…"
@@ -529,6 +536,8 @@ async function command(body) {
     if (!response.ok) throw Error(await response.text());
     const next = await response.json();
     ++requestVersion;
+    clearTimeout(timer);
+    connected = true;
     state = next;
     if (body.action === "observe" || body.action === "capture-ais")
       selected = state.observations
@@ -549,6 +558,8 @@ async function command(body) {
           : "Saved. The next delivery will use these conditions.",
       );
   } catch (error) {
+    ++requestVersion;
+    clearTimeout(timer);
     announce(
       `Request did not complete: ${error.message}. Refresh before retrying; the server may have stored it.`,
       "error",
@@ -556,6 +567,7 @@ async function command(body) {
     connected = false;
   } finally {
     busy = false;
+    if (state) render();
     availability();
     schedule();
   }
@@ -570,7 +582,10 @@ function mode(value) {
   if ($("cw-play").getAttribute("aria-pressed") === "true")
     $("cw-play").click();
   if (live) void refresh();
-  else clearTimeout(timer);
+  else {
+    clearTimeout(timer);
+    transit.stop();
+  }
 }
 for (const s of ["north", "south"]) {
   const original = document.querySelector(`#cw-${s}-marks`).closest("svg"),
@@ -623,6 +638,24 @@ fetch(new URL("./coastal-replay-land.json", import.meta.url))
     $("ct-map-note").textContent =
       "Coastline unavailable. Queue and receipt inspection remains available.";
   });
+const transit = createTransportTransit({
+  select,
+  inspect(id, destination, event) {
+    filtered = true;
+    $("ct-filter").checked = true;
+    select(id, destination);
+    setEvidence(event.receipt ? "receipts" : "attempts");
+    if (event.attempt) {
+      const details = [
+        ...document.querySelectorAll("#ct-attempts details"),
+      ].find((el) => el.dataset.attempt === event.attempt.id);
+      if (details) details.open = true;
+    }
+  },
+});
+$("ct-origin").addEventListener("change", () => {
+  if (state) render();
+});
 $("ct-live").addEventListener("click", () => mode(true));
 $("ct-authored").addEventListener("click", () => mode(false));
 $("ct-refresh").addEventListener("click", () => refresh());
@@ -709,7 +742,8 @@ $("ct-export").addEventListener("click", async () => {
 });
 document.addEventListener("visibilitychange", () => {
   clearTimeout(timer);
-  if (!document.hidden && live && connected && !busy) void refresh(false);
+  if (!document.hidden && live && connected) void refresh(false);
+  if (document.hidden) transit.stop();
 });
 document.querySelector(".ct-mode").hidden = false;
 availability();

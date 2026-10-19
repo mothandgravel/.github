@@ -47,6 +47,7 @@ const fixture = {
   receipts: [
     {
       id: 1,
+      attempt_id: "first-fixture",
       station: "north",
       observation_id: o.id,
       received_at: now - 5000,
@@ -55,6 +56,7 @@ const fixture = {
     },
     {
       id: 2,
+      attempt_id: "attempt-fixture",
       station: "north",
       observation_id: o.id,
       received_at: now - 4000,
@@ -226,6 +228,110 @@ try {
       results.push({ width, theme, passed: true });
       await page.close();
     }
+  if (!real) {
+    // Hold the command response open: snapshots must still expose acceptance and
+    // its failed response before the retry completes. No provider traffic here.
+    const page = await browser.newPage({
+      viewport: { width: 1440, height: 1000 },
+    });
+    const s = structuredClone(fixture);
+    s.observations[0].acked = false;
+    s.attempts = [];
+    s.receipts = [];
+    s.accepted = [];
+    s.controls.paused = true;
+    s.queues.south.pending = 1;
+    let release,
+      readsDuringBurst = 0;
+    const gate = new Promise((resolve) => {
+      release = resolve;
+    });
+    await page.route("**/api/coastal/state", async (route) => {
+      if (s.busy) readsDuringBurst++;
+      await route.fulfill({ json: s });
+    });
+    await page.route("**/api/coastal/command", async (route) => {
+      const body = route.request().postDataJSON();
+      if (body.action === "controls") s.controls = body.controls;
+      else if (body.action === "sync") {
+        s.busy = true;
+        s.cycles = [
+          { id: 1, started_at: now - 6000, finished_at: null, result: null },
+        ];
+        s.attempts = [
+          {
+            id: "first-fixture",
+            message_id: o.messageId,
+            origin: "south",
+            cycle_id: 1,
+            attempt: 1,
+            started_at: now - 5500,
+            finished_at: now - 4900,
+            status: 503,
+            error: "response failed",
+          },
+        ];
+        s.receipts = [structuredClone(fixture.receipts[0])];
+        s.accepted = structuredClone(fixture.accepted);
+        await gate;
+        s.attempts.push(structuredClone(fixture.attempts[0]));
+        s.receipts.push(structuredClone(fixture.receipts[1]));
+        s.observations[0].acked = true;
+        s.queues.south.pending = 0;
+        s.busy = false;
+        s.cycles[0].finished_at = now - 3900;
+      }
+      await route.fulfill({ json: s });
+    });
+    await page.goto(
+      `${origin}/specimens/coastal-watch/two-stations/?transport=live`,
+    );
+    await page.locator('#ct-crossing[data-phase="interrupted"]').waitFor();
+    assert.equal(await page.locator("#ct-transit-events button").count(), 1);
+    await page.locator("#ct-paused").uncheck();
+    await page.locator("#ct-sync").click();
+    await page.locator('#ct-crossing[data-phase="received"]').waitFor();
+    assert(readsDuringBurst > 0, "must poll while POST command is pending");
+    assert(await page.locator("#ct-refresh").isDisabled());
+    assert(await page.locator("#ct-replay-journey").isDisabled());
+    assert.match(await page.locator("#ct-to-state").innerText(), /stored/);
+    release();
+    await page.locator('#ct-crossing[data-phase="acknowledged"]').waitFor();
+    await page.locator('[data-transit-event="receipt-2"]').click();
+    assert(await page.locator("#ct-filter").isChecked());
+    assert.match(
+      await page.locator("#ct-event-detail").innerText(),
+      /POST 2 in burst 1/,
+    );
+    assert.equal(await page.locator("#ct-receipts tr").count(), 2);
+    await page.locator("#ct-replay-journey").click();
+    await page.locator('#ct-crossing[data-replay="true"]').waitFor();
+    assert.match(
+      await page.locator("#ct-transit-mode").innerText(),
+      /Recorded replay/i,
+    );
+    assert.equal(
+      await page.locator("#ct-to-state").innerText(),
+      "No acceptance recorded",
+    );
+    await page.locator("#ct-replay-journey").click();
+    assert.equal(
+      await page.locator("#ct-crossing").getAttribute("data-replay"),
+      "false",
+    );
+    assert.equal(s.attempts.length, 2, "replay must not send another POST");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    assert.equal(
+      await page
+        .locator(".ct-packet")
+        .evaluate((el) => getComputedStyle(el).animationName),
+      "none",
+    );
+    await page.close();
+    console.log(
+      "Live burst polling, failed response, exact retry receipt inspection and read-only replay passed.",
+    );
+  }
   await writeFile(
     `${output}/coastal-transport-${real ? "actual" : "fixture"}-results.json`,
     JSON.stringify(

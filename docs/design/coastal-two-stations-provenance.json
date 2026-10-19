@@ -41,7 +41,8 @@
         ],
         "sourceTimestamp": "timestampExternal preserved; not claimed as a verified vessel clock",
         "limits": "Reports older than ten minutes, future dated, invalid or outside extent excluded with counts. Source coordinates retained. Shared public AIS source is not independent corroboration."
-      }
+      },
+      "crossing": "assets/coastal-transit.mjs: live snapshots continue during burst sync; selectable queue, POST, receipt and response events are joined by observation/message/attempt identity. Recorded replay spaces the original events for reading and never sends a report."
     }
   },
   "research": [
