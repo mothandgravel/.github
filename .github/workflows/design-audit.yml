@@ -60,6 +60,7 @@ jobs:
           node scripts/audit_connection.mjs
           node scripts/audit_mapping.mjs
           node scripts/audit_coastal_replay.mjs
+          node scripts/audit_coastal_transport.mjs
           node scripts/audit_thread.mjs
           node scripts/audit_studio_note.mjs
           node scripts/audit_maritime.mjs

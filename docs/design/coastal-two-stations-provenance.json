@@ -3,7 +3,7 @@
   "date": "2026-10-19",
   "route": "/specimens/coastal-watch/two-stations/",
   "version": "coastal-two-stations-v1",
-  "evidence": "Authored synthetic encounter. Fictional stations near Helsinki. No operational or live feed.",
+  "evidence": "Authored synthetic replay plus optional local Raivari transport workbench. Workbench observations individually identify synthetic samples or public Digitraffic AIS captures; stations remain illustrative.",
   "implementation": {
     "model": "assets/coastal-replay-model.mjs",
     "interface": "assets/coastal-replay.mjs",
@@ -21,6 +21,27 @@
         "packages/dashboard/src/assets/gulf-of-finland-land.json"
       ],
       "reuse": "Replay and provenance semantics informed this original public implementation. Only public-domain coastline geometry was copied. No private application source or dataset recording is published."
+    },
+    "localTransport": {
+      "interface": "assets/coastal-transport.mjs",
+      "model": "assets/coastal-transport-model.mjs",
+      "backend": "Raivari packages/agent/bin/coastal-watch.ts",
+      "branch": "feat/coastal-watch-transport",
+      "queue": "createOfflineQueue, one SQLite database per station",
+      "delivery": "createBurstSync, actual loopback HTTP/CBOR, persistent receiver deduplication and individual attempt/receipt journals",
+      "ais": {
+        "source": "https://www.digitraffic.fi/en/marine-traffic/",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "mode": "Explicit REST captures, up to ten new reports per capture; no background collector",
+        "extent": [
+          24.55,
+          59.91,
+          25.25,
+          60.19
+        ],
+        "sourceTimestamp": "timestampExternal preserved; not claimed as a verified vessel clock",
+        "limits": "Reports older than ten minutes, future dated, invalid or outside extent excluded with counts. Source coordinates retained. Shared public AIS source is not independent corroboration."
+      }
     }
   },
   "research": [
@@ -104,13 +125,13 @@
       {
         "path": "packages/agent/src/offline-queue.ts",
         "existing": "SQLite queue, message IDs, payloads, priority, createdAt, retry counts and ACK state.",
-        "useHere": "Not executed in browser; the fixture models resulting receipts.",
+        "useHere": "Executed by the optional local workbench: two actual SQLite queues; original observation IDs and source timestamps inside CBOR payloads.",
         "integration": "Enqueue original observation ID and event time inside the payload. Queue creation/lastAttempt time is not observation time. Receiver must persist its own receipt time and retain retries separately."
       },
       {
         "path": "packages/agent/src/burst-sync.ts",
         "existing": "CBOR delivery using X-Message-Id, retry/circuit-breaker handling, queue ACK/NACK and bounded sender deduplication.",
-        "useHere": "Not executed in browser. The return of connectivity is distinct from the arrival of queued reports.",
+        "useHere": "Executed by the optional local workbench: actual POST retries, persistent receiver receipts and separate accepted records.",
         "integration": "Receiver-side idempotence must survive restart. Sender sent-ID memory is not evidence of receiver observation history."
       },
       {
@@ -132,7 +153,7 @@
         "result": "16 passed, 0 failed; 74 expectations",
         "checkout": "abe8b915; inspected replay source and these test files have no diff against the pinned origin/main revision"
       },
-      "runtimeBoundary": "Offline queue, burst-sync and signer were source-reviewed, not exercised by this static specimen."
+      "runtimeBoundary": "Authored replay remains static. The optional local workbench runs actual offline queues and burst-sync. Signing remains unconnected. No physical station network or operational validation."
     }
   },
   "capture": {

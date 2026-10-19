@@ -19,7 +19,7 @@ try {
     page.on('request',r=>{if(!r.url().startsWith(origin)&&!r.url().startsWith('data:'))external.push(r.url());});
     await page.addInitScript(t=>localStorage.setItem('moth-and-gravel-theme',t),theme);
     await page.goto(origin+route,{waitUntil:'networkidle'});
-    await page.locator('.cw-land path').first().waitFor();
+    await page.locator('#cw-desk .cw-land path').first().waitFor();
     assert.match(await page.locator('#cw-record').innerText(),/Not received/);
     assert.equal(await page.locator('#cw-north-marks [data-focus-key="north-S-300"]').count(),0);
     assert.equal(await page.locator('#cw-south-marks [data-focus-key="south-S-300"]').count(),1);
@@ -51,7 +51,7 @@ try {
     await page.locator('[data-cw-time="420"]').click();
     assert.doesNotMatch(await page.locator('#cw-record').innerText(),/Not received|Hindsight/);
     assert.match(await page.locator('#cw-record').innerText(),/12:05:08/);
-    await page.locator('.cw-tune summary').click();
+    await page.locator('#cw-desk .cw-tune summary').click();
     assert.equal(await page.locator('#cw-delay').isDisabled(),true);
     await page.locator('#cw-interrupted').check();
     await page.locator('#cw-delay').fill('340');
@@ -63,7 +63,7 @@ try {
     await page.locator('#cw-play').click();
     assert.equal(await page.locator('#cw-play').getAttribute('aria-pressed'),'false');
     await page.locator('#cw-reset').click();
-    await page.locator('.cw-tune summary').click();
+    await page.locator('#cw-desk .cw-tune summary').click();
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),name+': horizontal overflow');
     await page.addScriptTag({content:axe.source});
     const violations=await page.evaluate(async()=>(await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})));
