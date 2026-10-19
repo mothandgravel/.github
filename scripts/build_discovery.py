@@ -40,6 +40,7 @@ def build(check=False):
              (ROOT / 'docs/questions/index.html', DOMAIN + 'questions/', 'Leave a loose end — Moth & Gravel', None),
              (ROOT / 'docs/specimens/connected-to-what/index.html', DOMAIN + 'specimens/connected-to-what/', 'The connection came back. Did the picture?', None),
              (ROOT / 'docs/specimens/whose-map/index.html', DOMAIN + 'specimens/whose-map/', 'Where are we, according to whom?', None),
+             (ROOT / 'docs/specimens/coastal-watch/two-stations/index.html', DOMAIN + 'specimens/coastal-watch/two-stations/', 'Two shores. Different pictures.', None),
              (ROOT / 'docs/specimens/coastal-watch/index.html', DOMAIN + 'specimens/coastal-watch/', 'The water between updates.', None),
              (ROOT / 'docs/specimens/maritime-study/index.html', DOMAIN + 'specimens/maritime-study/', 'The crossing, held still.', None),
              (ROOT / 'docs/investigations/index.html', DOMAIN + 'investigations/', 'Three questions. Still open.', None),

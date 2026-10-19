@@ -1,0 +1,84 @@
+import { launchAuditBrowser } from './audit_browser.mjs';
+import axe from 'axe-core';
+import assert from 'node:assert/strict';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+
+const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
+const route = '/specimens/coastal-watch/two-stations/';
+const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
+await mkdir(output, {recursive:true});
+const browser = await launchAuditBrowser(process.env.BROWSER_EXECUTABLE ? {executablePath:process.env.BROWSER_EXECUTABLE} : {});
+const results=[];
+try {
+  for (const width of [320,390,768,1440]) for (const theme of ['night','afterlight']) {
+    const name=`coastal-replay-${width}-${theme}`;
+    const page=await browser.newPage({viewport:{width,height:1000},reducedMotion:'reduce'});
+    const errors=[],external=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    page.on('request',r=>{if(!r.url().startsWith(origin)&&!r.url().startsWith('data:'))external.push(r.url());});
+    await page.addInitScript(t=>localStorage.setItem('moth-and-gravel-theme',t),theme);
+    await page.goto(origin+route,{waitUntil:'networkidle'});
+    await page.locator('#cw-desk .cw-land path').first().waitFor();
+    assert.match(await page.locator('#cw-record').innerText(),/Not received/);
+    assert.equal(await page.locator('#cw-north-marks [data-focus-key="north-S-300"]').count(),0);
+    assert.equal(await page.locator('#cw-south-marks [data-focus-key="south-S-300"]').count(),1);
+    await page.locator('#cw-later').click();
+    assert.match(await page.locator('#cw-record').innerText(),/Hindsight/);
+    assert.equal(await page.locator('#cw-north-marks .historical').count(),3);
+    await page.locator('#cw-then').click();
+    assert.match(await page.locator('#cw-record').innerText(),/Not received/);
+    await page.locator('[data-cw-time="late"]').click();
+    assert.match(await page.locator('#cw-record').innerText(),/280s/);
+    assert.match(await page.locator('#cw-north-summary').innerText(),/AIS · S-500/);
+    const mark=page.locator('[data-focus-key="north-S-300"]');
+    await mark.focus();await page.keyboard.press('Enter');
+    assert.equal(await page.evaluate(()=>document.activeElement.dataset.focusKey),'north-S-300');
+    await page.locator('#cw-time').fill('584');
+    assert.match(await page.locator('#cw-record').innerText(),/2 receipts here; one original observation/);
+    const retry=page.getByRole('button',{name:'Inspect S-300 retry',exact:true});
+    await retry.click();
+    assert.match(await page.evaluate(()=>document.activeElement.dataset.focusKey),/receipt-north-S-300/);
+    if(width===1440&&theme==='night') {
+      const download=page.waitForEvent('download');await page.locator('#cw-export').click();
+      const receipt=await download;const exported=JSON.parse(await readFile(await receipt.path(),'utf8'));
+      assert.equal(exported.integrity.digest,createHash('sha256').update(JSON.stringify(exported.payload)).digest('hex'));
+      assert.equal(exported.payload.snapshots[0].duplicates,1);
+      assert.equal(exported.payload.synthetic,true);
+      await writeFile(`${output}/coastal-replay-export.json`,JSON.stringify(exported,null,2));
+    }
+    await page.locator('#cw-interrupted').uncheck();
+    await page.locator('[data-cw-time="420"]').click();
+    assert.doesNotMatch(await page.locator('#cw-record').innerText(),/Not received|Hindsight/);
+    assert.match(await page.locator('#cw-record').innerText(),/12:05:08/);
+    await page.locator('#cw-desk .cw-tune summary').click();
+    assert.equal(await page.locator('#cw-delay').isDisabled(),true);
+    await page.locator('#cw-interrupted').check();
+    await page.locator('#cw-delay').fill('340');
+    await page.locator('[data-cw-time="late"]').click();
+    assert.equal(await page.locator('#cw-clock').innerText(),'12:10:40');
+    await page.locator('#cw-reset').click();
+    await page.locator('#cw-play').click();
+    await page.waitForFunction(()=>document.querySelector('#cw-clock').textContent!=='12:07:00');
+    await page.locator('#cw-play').click();
+    assert.equal(await page.locator('#cw-play').getAttribute('aria-pressed'),'false');
+    await page.locator('#cw-reset').click();
+    await page.locator('#cw-desk .cw-tune summary').click();
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),name+': horizontal overflow');
+    await page.addScriptTag({content:axe.source});
+    const violations=await page.evaluate(async()=>(await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})));
+    assert.deepEqual(violations,[],name+': accessibility');
+    assert.deepEqual(errors,[],name+': browser errors');
+    assert.deepEqual(external,[],name+': external runtime requests');
+    await page.locator('#cw-desk').screenshot({style:'.site-header,.site-header *,.skip-link{visibility:hidden!important}',path:`${output}/${name}.png`});
+    results.push({name,passed:true});await page.close();
+  }
+  const noJS=await browser.newPage({javaScriptEnabled:false,viewport:{width:390,height:900}});
+  await noJS.goto(origin+route);assert(await noJS.locator('#cw-fallback').isVisible());assert(await noJS.locator('#cw-desk').isHidden());await noJS.close();
+  const missingMap=await browser.newPage();
+  await missingMap.route('**/coastal-replay-land.json',r=>r.abort());await missingMap.goto(origin+route);
+  await missingMap.waitForFunction(()=>document.querySelector('#cw-map-note').textContent.includes('unavailable'));
+  assert(await missingMap.locator('#cw-desk').isVisible());await missingMap.close();
+  await writeFile(`${output}/coastal-replay-results.json`,JSON.stringify({results,noScriptFallback:true,mapFallback:true},null,2));
+  console.log('Coastal replay: eight viewport/theme combinations, causal interaction, export integrity, keyboard, accessibility and fallbacks passed.');
+} finally {await browser.close();}

@@ -1,0 +1,175 @@
+{
+  "title": "Two shores. Different pictures.",
+  "date": "2026-10-19",
+  "route": "/specimens/coastal-watch/two-stations/",
+  "version": "coastal-two-stations-v1",
+  "evidence": "Authored synthetic replay plus optional local Raivari transport workbench. Workbench observations individually identify synthetic samples or public Digitraffic AIS captures; stations remain illustrative.",
+  "implementation": {
+    "model": "assets/coastal-replay-model.mjs",
+    "interface": "assets/coastal-replay.mjs",
+    "reusedGeometry": {
+      "file": "assets/coastal-replay-land.json",
+      "sha256": "d20758b5d318be382719f2b8cfbe7156b9dc2556851562eefd1acf0d04c0d722",
+      "license": "Public domain; Natural Earth. Original source and processing metadata retained in file."
+    },
+    "raivariBasis": {
+      "mainRevision": "3b66f321e332c88a39e600f340e878ee34acecdc",
+      "defenseRevision": "eebc30ac2f1e5bc35dc9766340cb1354d79270be",
+      "paths": [
+        "packages/modbus-simulator/src/replay/station-continuity.ts",
+        "packages/modbus-simulator/src/replay/radar-pairing.ts",
+        "packages/dashboard/src/assets/gulf-of-finland-land.json"
+      ],
+      "reuse": "Replay and provenance semantics informed this original public implementation. Only public-domain coastline geometry was copied. No private application source or dataset recording is published."
+    },
+    "localTransport": {
+      "interface": "assets/coastal-transport.mjs",
+      "model": "assets/coastal-transport-model.mjs",
+      "backend": "Raivari packages/agent/bin/coastal-watch.ts",
+      "branch": "feat/coastal-watch-transport",
+      "queue": "createOfflineQueue, one SQLite database per station",
+      "delivery": "createBurstSync, actual loopback HTTP/CBOR, persistent receiver deduplication and individual attempt/receipt journals",
+      "ais": {
+        "source": "https://www.digitraffic.fi/en/marine-traffic/",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "mode": "Explicit REST captures, up to ten new reports per capture; no background collector",
+        "extent": [
+          24.55,
+          59.91,
+          25.25,
+          60.19
+        ],
+        "sourceTimestamp": "timestampExternal preserved; not claimed as a verified vessel clock",
+        "limits": "Reports older than ten minutes, future dated, invalid or outside extent excluded with counts. Source coordinates retained. Shared public AIS source is not independent corroboration."
+      }
+    }
+  },
+  "research": [
+    {
+      "url": "https://www.nato.int/en/about-us/official-texts-and-resources/official-texts/2025/08/29/data-quality-framework-for-the-alliance",
+      "title": "Data Quality Framework for the Alliance",
+      "sections": "12; 18–23",
+      "influence": "Separate timeliness, uniqueness, source and lineage; no conformance claim."
+    },
+    {
+      "url": "https://arxiv.org/abs/2106.04898",
+      "title": "Continuous-discrete multiple target tracking with out-of-sequence measurements",
+      "influence": "Separate historical state from receipt order. No Bayesian tracking algorithm implemented."
+    },
+    {
+      "url": "https://arxiv.org/abs/2111.13589",
+      "title": "Fusion of Sensor Measurements and Target-Provided Information in Multitarget Tracking",
+      "influence": "Separate sensing and cooperative reports, asynchronous arrivals. No fusion or identity inference."
+    },
+    {
+      "url": "https://arxiv.org/abs/2202.03268",
+      "title": "Cyber-resilience for marine navigation by information fusion and change detection",
+      "influence": "Compare baseline and altered run. No spoofing detection implemented or validated."
+    },
+    {
+      "url": "https://www.cmre.nato.int/baltic-data-drives-nato-integration-at-cwix25/",
+      "title": "Sea Signals: Baltic data at CWIX25",
+      "influence": "Baltic interoperability context only; no representation of exercise stations."
+    },
+    {
+      "url": "https://zenodo.org/records/19824555",
+      "title": "HAXR multi-station radar dataset",
+      "version": "1.1.0",
+      "influence": "One shared AIS stream is not independent station corroboration. No HAXR data plotted in this specimen."
+    }
+  ],
+  "limits": [
+    "Sixteen authored observations of one fixture-assigned contact.",
+    "Consistent clocks assumed, no inferred clock correction.",
+    "One directional relay interruption; local observations continue.",
+    "Freshness is observation age, not time since delivery.",
+    "Hindsight is explicitly bounded to receipts by 12:12:00.",
+    "Retry preserves identity; latest observation does not roll back on late arrival.",
+    "Unsigned JSON export includes full scenario, including future events, and separately filtered snapshots.",
+    "No sensor processing, operational validation, operator study, NATO certification or endorsement."
+  ],
+  "raivariReview": {
+    "scope": "Focused source and contract review, not an exhaustive repository or security audit. No claim that all Raivari subsystems were runtime-tested.",
+    "revision": "3b66f321e332c88a39e600f340e878ee34acecdc",
+    "pieces": [
+      {
+        "path": "packages/modbus-simulator/src/replay/autoferry.ts",
+        "existing": "Validated recording adapter, causal replaySlice and immutable sensor-scoped applyDropout.",
+        "useHere": "Carries forward recorded-clock and unchanged-baseline semantics. This interruption delays relay delivery; it does not call sensor dropout or remove the source observation.",
+        "integration": "Keep source event time and original frame index when adapting a real recording."
+      },
+      {
+        "path": "packages/modbus-simulator/src/replay/station-continuity.ts",
+        "existing": "Two-station source availability with a causal evaluation cohort and explicit shared-AIS-source limits.",
+        "useHere": "Per-station records and separate source identity. Adds station receipt time, which the HAXR availability comparison does not supply.",
+        "integration": "Do not interpret station file membership as measured network arrival."
+      },
+      {
+        "path": "packages/modbus-simulator/src/replay/haxr.ts",
+        "existing": "Bounded dataset parser, provenance validation and causal AIS selection with conflict handling.",
+        "useHere": "Research context and provenance discipline; no HAXR data imported.",
+        "integration": "Preserve source coordinates, dataset clocks, license, station identity and hashes. Never relocate Hamburg measurements to Helsinki."
+      },
+      {
+        "path": "packages/modbus-simulator/src/replay/radar-pairing.ts",
+        "existing": "Explicit bounded acquisition-window skew; retains unmatched frames.",
+        "useHere": "Assumes consistent fixture clocks and makes that limitation explicit.",
+        "integration": "Carry uncertainty in source clocks separately from transport delay; do not infer correction."
+      },
+      {
+        "path": "packages/modbus-simulator/src/replay/tracker-view.ts",
+        "existing": "Causal read-only display of tracker snapshots, with lastSeen age and bounded trails.",
+        "useHere": "Latest observation is selected by event time. No tracker or estimates are represented by the dots.",
+        "integration": "Keep estimates in a distinct layer with estimator/version and parent observation IDs."
+      },
+      {
+        "path": "packages/agent/src/offline-queue.ts",
+        "existing": "SQLite queue, message IDs, payloads, priority, createdAt, retry counts and ACK state.",
+        "useHere": "Executed by the optional local workbench: two actual SQLite queues; original observation IDs and source timestamps inside CBOR payloads.",
+        "integration": "Enqueue original observation ID and event time inside the payload. Queue creation/lastAttempt time is not observation time. Receiver must persist its own receipt time and retain retries separately."
+      },
+      {
+        "path": "packages/agent/src/burst-sync.ts",
+        "existing": "CBOR delivery using X-Message-Id, retry/circuit-breaker handling, queue ACK/NACK and bounded sender deduplication.",
+        "useHere": "Executed by the optional local workbench: actual POST retries, persistent receiver receipts and separate accepted records.",
+        "integration": "Receiver-side idempotence must survive restart. Sender sent-ID memory is not evidence of receiver observation history."
+      },
+      {
+        "path": "packages/modbus-simulator/src/security/audit-signer.ts",
+        "existing": "Canonical CBOR HMAC signing and chained audit events with key rotation support.",
+        "useHere": "Not executed; public export is explicitly unsigned SHA-256.",
+        "integration": "Use the existing signer and persistence in a hosted receiver, with verification and retained key identity; never put a signing secret into this public page."
+      },
+      {
+        "path": "packages/agent/src/redacted-evidence.ts",
+        "existing": "Redacted evidence references with completeness, missing/degraded states and producer metadata.",
+        "useHere": "The specimen exposes fixture provenance and limits, not agent-internal traces.",
+        "integration": "Link run/source/receipt references and explicit completeness; do not export raw prompts, completions or hidden reasoning."
+      }
+    ],
+    "validation": {
+      "raivariTests": {
+        "command": "bun test packages/modbus-simulator/tests/station-continuity.test.ts packages/modbus-simulator/tests/autoferry.test.ts packages/modbus-simulator/tests/radar-pairing.test.ts",
+        "result": "16 passed, 0 failed; 74 expectations",
+        "checkout": "abe8b915; inspected replay source and these test files have no diff against the pinned origin/main revision"
+      },
+      "runtimeBoundary": "Authored replay remains static. The optional local workbench runs actual offline queues and burst-sync. Signing remains unconnected. No physical station network or operational validation."
+    }
+  },
+  "capture": {
+    "path": "assets/specimens/coastal-watch/two-stations-preview.jpg",
+    "sha256": "c68c2c16b692ee24a4e4ac34d08ed48502f6479249ccae5f6f9074a43192b531",
+    "capturedFromRevision": "ef8e4da",
+    "date": "2026-10-19",
+    "viewport": {
+      "width": 1440,
+      "height": 1200
+    },
+    "theme": "night",
+    "region": ".cw-stations",
+    "cursor": 420,
+    "view": "then",
+    "scenario": "default interrupted fixture",
+    "modifications": "Header and skip-link hidden only to prevent fixed-position overlays entering the element capture. Plot and data unchanged."
+  }
+}
