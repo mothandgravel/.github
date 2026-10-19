@@ -115,6 +115,29 @@ try {
         await page.locator("#ct-north-summary").innerText(),
         /Radar sample/,
       );
+      const beforeHistory = await page
+        .locator('#ct-south-marks [role="button"]')
+        .count();
+      await page.locator("#ct-history").check();
+      assert(
+        (await page.locator('#ct-south-marks [role="button"]').count()) >=
+          beforeHistory,
+      );
+      await page.locator("#ct-history").uncheck();
+      await page.locator("#ct-filter").check();
+      assert(await page.locator("#ct-filter").isChecked());
+      await page.locator("#ct-observation").selectOption("");
+      assert(!(await page.locator("#ct-filter").isChecked()));
+      assert(await page.locator("#ct-filter").isDisabled());
+      await page.locator("#ct-observation").selectOption({ index: 1 });
+      await page.locator("#ct-record details summary").click();
+      await page.evaluate(() => {
+        window.coastalRecordNode = document.querySelector("#ct-record h3");
+        window.coastalPickerOption = document.querySelector(
+          "#ct-observation option:last-child",
+        );
+      });
+      await page.locator("#ct-attempts-tab").click();
       await page
         .locator("#ct-attempts details")
         .first()
@@ -132,6 +155,21 @@ try {
           .first()
           .getAttribute("open")) !== null,
       );
+      assert(
+        await page.evaluate(
+          () =>
+            window.coastalRecordNode ===
+              document.querySelector("#ct-record h3") &&
+            window.coastalPickerOption ===
+              document.querySelector("#ct-observation option:last-child"),
+        ),
+      );
+      assert(
+        (await page.locator("#ct-record details").getAttribute("open")) !==
+          null,
+      );
+      await page.locator("#ct-receipts-tab").click();
+      assert(await page.locator("#ct-receipts-pane").isVisible());
       assert(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,
@@ -172,20 +210,16 @@ try {
             (o) => o.evidence === "public-ais",
           ),
         );
-        await page
-          .locator("#ct-panel")
-          .screenshot({
-            path: `${output}/coastal-transport-${real ? "actual" : "fixture"}-desktop.png`,
-            style: ".site-header,.skip-link{visibility:hidden!important}",
-          });
+        await page.locator("#ct-panel").screenshot({
+          path: `${output}/coastal-transport-${real ? "actual" : "fixture"}-desktop.png`,
+          style: ".site-header,.skip-link{visibility:hidden!important}",
+        });
       }
       if (width === 390 && theme === "night")
-        await page
-          .locator("#ct-panel")
-          .screenshot({
-            path: `${output}/coastal-transport-${real ? "actual" : "fixture"}-mobile.png`,
-            style: ".site-header,.skip-link{visibility:hidden!important}",
-          });
+        await page.locator("#ct-panel").screenshot({
+          path: `${output}/coastal-transport-${real ? "actual" : "fixture"}-mobile.png`,
+          style: ".site-header,.skip-link{visibility:hidden!important}",
+        });
       await page.locator("#ct-authored").click();
       assert(await page.locator("#cw-desk").isVisible());
       assert(await page.locator("#ct-panel").isHidden());
