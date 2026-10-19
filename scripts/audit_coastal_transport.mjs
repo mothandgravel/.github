@@ -149,11 +149,9 @@ try {
         );
       });
       await page.locator("#ct-attempts-tab").click();
-      await page
-        .locator("#ct-attempts details")
-        .first()
-        .locator("summary")
-        .click();
+      const firstAttempt = page.locator("#ct-attempts details").first();
+      if ((await firstAttempt.getAttribute("open")) === null)
+        await firstAttempt.locator("summary").click();
       await page.locator("#ct-refresh").click();
       await page.waitForFunction(() =>
         document
