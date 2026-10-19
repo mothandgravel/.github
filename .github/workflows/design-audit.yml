@@ -13,6 +13,7 @@ on:
       - "scripts/audit_connection.mjs"
       - "scripts/audit_mapping.mjs"
       - "scripts/audit_coastal_replay.mjs"
+      - "scripts/audit_coastal_transport.mjs"
       - "scripts/audit_thread.mjs"
       - "scripts/audit_reading.mjs"
       - "scripts/audit_maritime.mjs"
