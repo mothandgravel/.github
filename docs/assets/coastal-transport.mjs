@@ -588,7 +588,7 @@ function mode(value) {
   $("ct-authored").setAttribute("aria-pressed", String(!live));
   if ($("cw-play").getAttribute("aria-pressed") === "true")
     $("cw-play").click();
-  if (live) void refresh();
+  if (live) void refresh(!busy);
   else {
     clearTimeout(timer);
     transit.stop();

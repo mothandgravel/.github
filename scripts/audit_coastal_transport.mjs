@@ -302,6 +302,13 @@ try {
     assert(await page.locator("#ct-refresh").isDisabled());
     assert(await page.locator("#ct-replay-journey").isDisabled());
     assert.match(await page.locator("#ct-to-state").innerText(), /stored/);
+    await page.locator("#ct-authored").click();
+    const resumedSnapshot = page.waitForResponse((r) =>
+      r.url().endsWith("/api/coastal/state"),
+    );
+    await page.locator("#ct-live").click();
+    await resumedSnapshot;
+    assert(await page.locator("#ct-workbench").isVisible());
     release();
     await page.locator('#ct-crossing[data-phase="acknowledged"]').waitFor();
     await page.locator('[data-transit-event="receipt-2"]').click();
