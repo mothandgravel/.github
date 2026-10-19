@@ -83,7 +83,7 @@ export function createTransportTransit({ select, inspect }) {
     $("ct-link-count").textContent =
       `${state.queues[from].pending} waiting now`;
     $("ct-receipt-count").textContent =
-      `${receipts.length} ${replay ? "replayed " : ""}receipts`;
+      `${receipts.length} ${replay ? "replayed " : ""}${receipts.length === 1 ? "receipt" : "receipts"}`;
     $("ct-link-state").textContent =
       (!connected && !replay ? "Last snapshot · " : "") + phases[phase];
     const runningBurst =
@@ -96,7 +96,9 @@ export function createTransportTransit({ select, inspect }) {
         ? "Burst in progress / live snapshots"
         : busy || state.busy
           ? "Request in progress / live snapshots"
-          : "Live evidence / latest snapshot";
+          : connected
+            ? "Live evidence / latest snapshot"
+            : "Disconnected / retained snapshot";
     $("ct-crossing-caption").textContent = current
       ? `${transportClock(current.time)} UTC · ${eventDescription(current)}`
       : j
@@ -177,6 +179,9 @@ export function createTransportTransit({ select, inspect }) {
     if (replay) return stop();
     const j = journey();
     if (!j || busy || state.busy) return;
+    eventFocus = null;
+    $("ct-event-detail").textContent =
+      "Choose an event to inspect its evidence.";
     replay = { events: structuredClone(j.events), index: 0 };
     tick();
   });

@@ -491,6 +491,13 @@ async function refresh(manual = true) {
   } catch {
     if (version !== requestVersion) return;
     connected = false;
+    if (state)
+      transit.update(state, {
+        selected,
+        connected,
+        busy,
+        origin: $("ct-origin").value,
+      });
     availability();
     announce(
       state
