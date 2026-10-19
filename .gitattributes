@@ -1,0 +1,2 @@
+# Preserve the published coastline bytes bound by the provenance SHA-256.
+docs/assets/coastal-replay-land.json -text
