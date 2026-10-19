@@ -119,6 +119,7 @@ export function createTransportTransit({ select, inspect }) {
       signature = sig;
       const focused = document.activeElement?.dataset?.transitEvent;
       const lane = $("ct-transit-events");
+      const scrollLeft = lane.scrollLeft;
       lane.replaceChildren();
       for (const e of events) {
         const b = add("button", "", lane, "ct-transit-event");
@@ -154,6 +155,7 @@ export function createTransportTransit({ select, inspect }) {
           draw();
         });
       }
+      lane.scrollLeft = scrollLeft;
       if (focused)
         [...lane.children]
           .find((el) => el.dataset.transitEvent === focused)
@@ -206,6 +208,7 @@ export function createTransportTransit({ select, inspect }) {
         replay = null;
         if (id !== currentId) {
           eventFocus = null;
+          $("ct-transit-events").scrollLeft = 0;
           $("ct-event-detail").textContent =
             "Choose an event to inspect its evidence.";
         }

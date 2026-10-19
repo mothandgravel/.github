@@ -126,6 +126,15 @@ try {
           beforeHistory,
       );
       await page.locator("#ct-history").uncheck();
+      const lastEvent = page.locator("#ct-transit-events button").last();
+      await lastEvent.click();
+      const eventBox = await lastEvent.boundingBox(),
+        laneBox = await page.locator("#ct-transit-events").boundingBox();
+      assert(
+        eventBox.x >= laneBox.x - 2 &&
+          eventBox.x + eventBox.width <= laneBox.x + laneBox.width + 2,
+        "selected event stays visible after inspection",
+      );
       await page.locator("#ct-filter").check();
       assert(await page.locator("#ct-filter").isChecked());
       await page.locator("#ct-observation").selectOption("");
