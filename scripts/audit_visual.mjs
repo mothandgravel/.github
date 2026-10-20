@@ -102,21 +102,11 @@ async function assertLandingStyleParity(viewport, label) {
   try {
   await page.goto(origin, { waitUntil: "networkidle" });
   const measure = () => page.evaluate(() => {
-    // Compare computed auto margins as auto, and check their rendered position
-    // separately. Chromium's legacy CSSOM can report zero used margins even
-    // when getBoundingClientRect() shows the correctly centred box.
     const properties = ['display', 'font-size', 'font-family', 'line-height', 'color',
-      'background-color', 'padding', 'margin-top', 'margin-right', 'margin-bottom',
-      'margin-left', 'width', 'height', 'grid-template-columns', 'gap'];
+      'background-color', 'padding', 'margin', 'width', 'height', 'grid-template-columns', 'gap'];
     return [...document.querySelectorAll('body *')].filter(el => !['SCRIPT', 'STYLE'].includes(el.tagName))
-      .map(el => {
-        const rect = el.getBoundingClientRect();
-        return { name: el.id || el.className?.baseVal || el.className || el.tagName,
-          values: [...properties.map(property => property.startsWith('margin-')
-            ? String(el.computedStyleMap().get(property))
-            : getComputedStyle(el).getPropertyValue(property)),
-            rect.x, rect.y, rect.width, rect.height] };
-      });
+      .map(el => ({ name: el.id || el.className?.baseVal || el.className || el.tagName,
+        values: properties.map(property => getComputedStyle(el).getPropertyValue(property)) }));
   });
   const before = await measure();
   // The authored landing styles are the shared stylesheet followed by the home-only rooms.

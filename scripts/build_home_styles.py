@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Render-ready opening styles, with the full homepage stylesheet loaded alongside."""
+"""One render-ready homepage response, derived from the authored stylesheet."""
 from pathlib import Path
 from html.parser import HTMLParser
-from hashlib import sha256
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -101,32 +100,8 @@ def build(check=False):
         tokens[i] = tokens[i].replace(';}', '}')
     css = ''.join(tokens)
     assert '</style' not in css.lower()
+    block = '<!-- home-style:start -->\n<style>\n' + css + '\n</style>\n<!-- home-style:end -->'
     old = path.read_text()
-    # The opening was waiting for 50 KB of inline styles, most of them for rooms
-    # farther down the page. Keep the masthead, hero and statement band ready in
-    # the first response; fetch the full cascade without blocking paint.
-    boundary = '<section class="services-section'
-    assert boundary in old, 'Missing opening-style boundary'
-    opening = LandingElements()
-    opening.feed(old.split(boundary, 1)[0])
-    critical = used_rules(css, opening).replace('\n', '')
-    full = css + '\n'
-    full_path = ROOT / 'docs/assets/home-full.css'
-    if check:
-        assert full_path.read_text() == full, 'Stale full homepage styles'
-    else:
-        full_path.write_text(full)
-    version = sha256(full.encode()).hexdigest()[:12]
-    href = './assets/home-full.css?v=' + version
-    # Retire the opening cascade only after the real stylesheet has loaded.
-    # The complete cascade owns the page once it is available.
-    block = ('<!-- home-style:start -->\n<style id="home-opening-style">\n' + critical + '\n</style>\n'
-             '<link rel="preload" as="style" fetchpriority="low" href="' + href + '" '
-             'onload="this.onload=null;this.addEventListener(\'load\','
-             '()=>document.getElementById(\'home-opening-style\')?.remove(),'
-             '{once:true});this.rel=\'stylesheet\'">\n'
-             '<noscript><link rel="stylesheet" href="' + href + '"></noscript>\n'
-             '<!-- home-style:end -->')
     if '<!-- home-style:start -->' in old:
         new, count = re.subn(r'<!-- home-style:start -->.*?<!-- home-style:end -->',
                              lambda _: block, old, flags=re.S)
