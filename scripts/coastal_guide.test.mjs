@@ -6,7 +6,12 @@ import {
   guidePair,
 } from "../docs/assets/coastal-guide-model.mjs";
 
-function harness({ unchanged = false, failSync = false, sleep } = {}) {
+function harness({
+  unchanged = false,
+  failSync = false,
+  sleep,
+  afterCommand,
+} = {}) {
   let now = 100000,
     captures = 0;
   const commands = [],
@@ -82,6 +87,7 @@ function harness({ unchanged = false, failSync = false, sleep } = {}) {
         state.queues.south.pending = 0;
       }
     }
+    await afterCommand?.(body);
     return state;
   };
   const guide = createGuidedRun({
@@ -163,6 +169,36 @@ test("uncertain burst is never automatically retried or called complete", async 
   assert.equal(guide.state.phase, "incomplete");
   assert.match(guide.state.note, /Uncertain network outcome/);
   assert.equal(commands.filter((c) => c.action === "sync").length, 2);
+});
+
+test("stopping an in-flight burst keeps its completed receipts without claiming reports are still queued", async () => {
+  let finish;
+  let delivered;
+  const inFlight = new Promise((resolve) => {
+    delivered = resolve;
+  });
+  const { guide, state } = harness({
+    afterCommand: async (body) => {
+      if (body.action === "sync" && !state.controls.paused) {
+        delivered();
+        await new Promise((resolve) => {
+          finish = resolve;
+        });
+      }
+    },
+  });
+  await guide.begin();
+  await guide.findNewer();
+  const sending = guide.release();
+  await inFlight;
+  await guide.stop();
+  finish();
+  await sending;
+  assert.equal(guide.state.phase, "stopped");
+  assert.equal(state.queues.south.pending, 0);
+  assert.equal(state.receipts.length, 3);
+  assert.doesNotMatch(guide.state.note, /remain queued/);
+  assert.equal(state.controls.paused, false);
 });
 
 test("preflight protects existing queues, journey conditions, capacity and capture cooldown", () => {

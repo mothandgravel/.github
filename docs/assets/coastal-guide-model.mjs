@@ -47,7 +47,8 @@ export function createGuidedRun({
     change(run);
   };
   const check = () => {
-    if (stopRequested) throw Error("Stopped. Captured reports remain queued.");
+    if (stopRequested)
+      throw Error("Stopped. Captured reports and any receipts remain.");
     if (getState().runId !== run.runId)
       throw Error(
         "The service record changed. Reconnect and inspect its queue.",
@@ -247,7 +248,7 @@ export function createGuidedRun({
         });
       } else {
         await perform(async () => {
-          throw Error("Stopped. Captured reports remain queued.");
+          throw Error("Stopped. Captured reports and any receipts remain.");
         });
       }
     },
