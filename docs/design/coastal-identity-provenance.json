@@ -1,0 +1,54 @@
+{
+  "version": "coastal-identity-v1",
+  "title": "The same ship?",
+  "date": "2026-10-20",
+  "route": "/specimens/coastal-watch/identity-ledger/",
+  "relationship": "Coastal watch is the umbrella: observation picture, delivery history, source comparison and identity inquiry are linked views.",
+  "rehearsal": {
+    "kind": "authored synthetic",
+    "names": ["EMBER", "VEIL"],
+    "identifiers": "All MMSI, IMO and callsign values in the rehearsal are invented and must not be looked up as real subjects.",
+    "time": "Fictional UTC on 2026-01-01, receipt-gated replay.",
+    "position": "Invented east/north metre plane; no real coast or ship.",
+    "sourceGraph": "Authored dependencies, not inferred from a live feed.",
+    "assumptions": "A shared westward GNSS correction moves all descendants in the comparison only. GNSS allowance is adjustable; radar allowance is a fixed illustrative 35 m. No calibrated covariance or probability.",
+    "identity": "Append-only analyst hypothesis revisions. Names and reported identifiers are claims; source records remain immutable. Radar association is always unverified."
+  },
+  "reuse": [
+    {
+      "source": "docs/assets/coastal-transport-model.mjs",
+      "implementation": "Direct import of transportPicture for the real transport snapshot inspector."
+    },
+    {
+      "source": "Raivari packages/modbus-simulator/src/bridge/ais-data-bridge.ts",
+      "implementation": "Identity vocabulary and distinct location/metadata epochs inform the public model; no private implementation copied."
+    },
+    {
+      "source": "Raivari packages/modbus-simulator/src/replay/station-continuity.ts and radar-pairing.ts",
+      "implementation": "Shared AIS lineage and explicit clock/association boundaries inform the rehearsal."
+    }
+  ],
+  "transport": {
+    "input": "Existing Coastal watch JSON export or one manual GET /api/coastal/state on a loopback host.",
+    "writes": "None",
+    "limits": "2 MB input; 200 observations; 400 station acceptances; 5000 receipts. Only required fields are projected and displayed as text.",
+    "authenticity": "Unsigned and unverified; imported hash is not presented as authentication.",
+    "identity": "MMSI grouping only. Missing name, IMO, registry and GNSS lineage remain unknown.",
+    "separation": "Actual transport records never enter the fictional rehearsal or acquire its invented dependencies."
+  },
+  "researchRegister": "coastal-datasets.json",
+  "notImplemented": [
+    "Operational identity resolution",
+    "GNSS interference detection",
+    "Live radar association",
+    "Sanctions matching",
+    "Signed case handoff",
+    "Persistent multi-user analyst case storage"
+  ],
+  "sources": [
+    "https://www.imo.org/en/ourwork/iiis/pages/imo-identification-number-schemes.aspx",
+    "https://www.nato.int/en/about-us/official-texts-and-resources/official-texts/2025/08/29/data-quality-framework-for-the-alliance",
+    "https://arxiv.org/html/2111.13589v1",
+    "https://arxiv.org/html/2202.03268v1"
+  ]
+}
