@@ -104,7 +104,7 @@ def build(check=False):
     old = path.read_text()
     # The opening was waiting for 50 KB of inline styles, most of them for rooms
     # farther down the page. Keep the masthead, hero and statement band ready in
-    # the first response; fetch the unchanged full cascade without blocking paint.
+    # the first response; fetch the full cascade without blocking paint.
     boundary = '<section class="services-section'
     assert boundary in old, 'Missing opening-style boundary'
     opening = LandingElements()
@@ -118,9 +118,13 @@ def build(check=False):
         full_path.write_text(full)
     version = sha256(full.encode()).hexdigest()[:12]
     href = './assets/home-full.css?v=' + version
-    block = ('<!-- home-style:start -->\n<style>\n' + critical + '\n</style>\n'
+    # Retire the opening cascade only after the real stylesheet has loaded.
+    # The complete cascade owns the page once it is available.
+    block = ('<!-- home-style:start -->\n<style id="home-opening-style">\n' + critical + '\n</style>\n'
              '<link rel="preload" as="style" fetchpriority="low" href="' + href + '" '
-             'onload="this.onload=null;this.rel=\'stylesheet\'">\n'
+             'onload="this.onload=null;this.addEventListener(\'load\','
+             '()=>document.getElementById(\'home-opening-style\')?.remove(),'
+             '{once:true});this.rel=\'stylesheet\'">\n'
              '<noscript><link rel="stylesheet" href="' + href + '"></noscript>\n'
              '<!-- home-style:end -->')
     if '<!-- home-style:start -->' in old:

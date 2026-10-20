@@ -1,6 +1,6 @@
-/* Home-only rooms. These rules are inlined into docs/index.html by
-   scripts/build_home_styles.py; no page links this file, so other pages
-   do not download them. */
+/* Home-only rooms. scripts/build_home_styles.py includes the opening rules
+   inline and the complete cascade in home-full.css. Other pages do not
+   download these rules. */
 
 /* The hero says plainly what the studio takes on. */
 .hero-subhead {max-width:560px;margin:0 0 18px;color:var(--ink);font:400 clamp(20px,1.7vw,25px)/1.42 var(--serif);letter-spacing:-.01em}

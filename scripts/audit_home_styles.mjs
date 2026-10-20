@@ -6,7 +6,7 @@ const browser = await launchAuditBrowser();
 try {
   for (const width of [390, 1440]) {
     for (const theme of ["night", "afterlight"]) {
-      const page = await browser.newPage({ viewport: { width, height: 1000 } });
+      const page = await browser.newPage({ viewport: { width, height: 1000 }, reducedMotion: "reduce" });
       await page.addInitScript(
         (t) => localStorage.setItem("moth-and-gravel-theme", t),
         theme,
@@ -54,6 +54,7 @@ try {
           "stylesheet",
       );
       await page.waitForLoadState("load");
+      await page.locator("#home-opening-style").waitFor({ state: "detached" });
       assert.deepEqual(
         await opening(),
         before,
@@ -64,6 +65,21 @@ try {
           .locator("#services .services-grid")
           .evaluate((el) => getComputedStyle(el).display),
         "grid",
+      );
+      // Sections initially styled by the opening cascade must adopt their
+      // complete styling when a visitor reaches them.
+      await page.locator("#contact").scrollIntoViewIfNeeded();
+      assert.equal(
+        await page.locator(".contact-inner .eyebrow")
+          .evaluate((el) => getComputedStyle(el).color),
+        "rgb(23, 25, 27)",
+        "contact copy adopts the full stylesheet after asynchronous loading",
+      );
+      assert.equal(
+        await page.locator(".button-light")
+          .evaluate((el) => getComputedStyle(el).backgroundColor),
+        "rgb(23, 25, 27)",
+        "contact action retains its contrasting background",
       );
       await page.close();
     }

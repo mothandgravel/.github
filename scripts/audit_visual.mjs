@@ -102,8 +102,11 @@ async function assertLandingStyleParity(viewport, label) {
   try {
   await page.goto(origin, { waitUntil: "networkidle" });
   const measure = () => page.evaluate(() => {
+    // Physical longhands resolve auto margins consistently; Chromium can
+    // serialize the margin shorthand as zero while logical margins are auto.
     const properties = ['display', 'font-size', 'font-family', 'line-height', 'color',
-      'background-color', 'padding', 'margin', 'width', 'height', 'grid-template-columns', 'gap'];
+      'background-color', 'padding', 'margin-top', 'margin-right', 'margin-bottom',
+      'margin-left', 'width', 'height', 'grid-template-columns', 'gap'];
     return [...document.querySelectorAll('body *')].filter(el => !['SCRIPT', 'STYLE'].includes(el.tagName))
       .map(el => ({ name: el.id || el.className?.baseVal || el.className || el.tagName,
         values: properties.map(property => getComputedStyle(el).getPropertyValue(property)) }));
