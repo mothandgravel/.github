@@ -1,7 +1,32 @@
 {
   "checked": "2026-10-20",
   "purpose": "Candidate public inputs for Coastal watch identity, source lineage and uncertainty studies. No listed dataset is used as ground truth for the fictional identity rehearsal.",
+  "unfilledEvidence": "No suitable public labelled AIS RF-fingerprint dataset was verified in this pass. GNSS I/Q, NMEA messages, SAR imagery and decoded AIS trajectories are different measurements; none is a substitute for measured AIS radio metrics. FGI's Baltic RFI entry is marked coming soon. SeaSpoofFinder's paper is a relevant methods lead, but its public viewer could not be retrieved and data redistribution terms were not verified: https://arxiv.org/html/2602.16257v1.",
   "datasets": [
+    {
+      "title": "MARSIM / maritime GNSS anomaly scenarios",
+      "region": "Germany / controlled maritime simulation",
+      "kind": "Labelled synthetic NMEA network recordings",
+      "url": "https://zenodo.org/records/8202936",
+      "use": "A reproducible navigation-integrity rehearsal with benign and attacked scenarios, separate device accounts and explicit synthetic provenance.",
+      "access": "Open v2 release. Zenodo API confirms dataset.tar.bz2 at 560,246,467 bytes, MD5 9f458760e8b746854dae451627ff6aff; accompanying README and parameter-space figure.",
+      "rights": "CC BY 4.0 in the release API metadata. Credit Spravil, Hemminghaus and Bauer and retain scenario parameters.",
+      "limit": "120-second simulated scenarios with two GNSS receivers 4 m apart and a constant northward course. These are NMEA packet captures, not raw AIS RF recordings or observed shadow-fleet activity.",
+      "verification": "Versioned release description and API metadata inspected. Scenario archive not downloaded or executed.",
+      "priority": 2
+    },
+    {
+      "title": "FGI / GNSS jamming and spoofing recordings",
+      "region": "Finland research / Norway test campaign",
+      "kind": "Raw GNSS I/Q and controlled interference scenarios",
+      "url": "https://www.maanmittauslaitos.fi/en/research/research/gnss-specialists/fgi-gnss-jamming-and-spoofing-dataset-repository-fgi-jsdr",
+      "use": "A Finnish research route for testing the integrity of the position source itself. Keep GNSS signal evidence distinct from downstream AIS messages and network delivery timing.",
+      "access": "Official National Land Survey of Finland page links FGI-SpoofRepo, OSNMA and Jammertest 2023 releases in Fairdata. The Baltic RFI entry is currently marked coming soon.",
+      "rights": "Dataset-specific Fairdata terms and file access still need verification. The public overview is not a redistribution grant.",
+      "limit": "GNSS radio recordings do not validate an AIS VHF transmitter fingerprint or a vessel identity. Controlled interference labels cannot be transferred to live maritime contacts.",
+      "verification": "Official scenario descriptions and repository links inspected. Fairdata pages required JavaScript in the research fetch; no signal files acquired or receiver implementation tested.",
+      "priority": 2
+    },
     {
       "title": "Copernicus Sentinel-1 / original SAR scenes",
       "region": "Global, including the Gulf of Finland",
