@@ -1,5 +1,6 @@
 import { createTransportTransit } from "./coastal-transit.mjs";
 import { createArrivalInspector } from "./coastal-arrival.mjs";
+import { createGuide } from "./coastal-guide.mjs";
 import {
   transportPicture,
   transportArrival,
@@ -50,7 +51,7 @@ function schedule() {
     timer = setTimeout(() => refresh(false), busy || state?.busy ? 200 : 1500);
 }
 function availability() {
-  const disabled = !connected || busy || Boolean(state?.busy);
+  const disabled = !connected || busy || Boolean(state?.busy) || guide.active;
   for (const el of document.querySelectorAll(
     "#ct-controls input,#ct-controls select,#ct-controls button,.ct-conditions input,#ct-observe",
   ))
@@ -69,6 +70,8 @@ function availability() {
     ? "Local service connected"
     : "Service disconnected";
   $("ct-panel").dataset.busy = String(busy);
+  $("ct-authored").disabled = guide.active;
+  guide.update(connected, busy || Boolean(state?.busy));
 }
 function select(id, s) {
   if (!state?.observations.some((o) => o.id === id)) return;
@@ -541,8 +544,12 @@ async function refresh(manual = true) {
   }
   schedule();
 }
-async function command(body) {
-  if (!connected || busy) return;
+async function command(body, guided = false) {
+  if (!connected || busy || (guide.active && !guided)) {
+    if (guided)
+      throw Error("The service is disconnected or another request is running.");
+    return;
+  }
   busy = true;
   transit.stop();
   availability();
@@ -594,9 +601,10 @@ async function command(body) {
     else
       announce(
         body.action === "sync"
-          ? "Burst finished. The receiver receipts and sender attempts are ready to inspect."
+          ? "Burst finished. Inspect the outcome, receiver receipts and sender attempts below."
           : "Saved. The next delivery will use these conditions.",
       );
+    return state;
   } catch (error) {
     ++requestVersion;
     clearTimeout(timer);
@@ -605,6 +613,7 @@ async function command(body) {
       "error",
     );
     connected = false;
+    if (guided) throw error;
   } finally {
     busy = false;
     if (state) render();
@@ -693,19 +702,27 @@ const transit = createTransportTransit({
     }
   },
 });
+function inspectReceipt(id, destination, receipt) {
+  filtered = true;
+  $("ct-filter").checked = true;
+  select(id, destination);
+  setEvidence("receipts");
+  const button = document.querySelector(
+    `[data-transport-focus="receipt-${receipt.id}"]`,
+  );
+  button?.scrollIntoView({ block: "center", behavior: "instant" });
+  button?.focus({ preventScroll: true });
+}
 const arrivalInspector = createArrivalInspector({
   select,
-  inspect(id, destination, receipt) {
-    filtered = true;
-    $("ct-filter").checked = true;
-    select(id, destination);
-    setEvidence("receipts");
-    const button = document.querySelector(
-      `[data-transport-focus="receipt-${receipt.id}"]`,
-    );
-    button?.scrollIntoView({ block: "center", behavior: "instant" });
-    button?.focus({ preventScroll: true });
-  },
+  inspect: inspectReceipt,
+});
+const guide = createGuide({
+  getState: () => state,
+  command: (body) => command(body, true),
+  select,
+  inspect: inspectReceipt,
+  availability,
 });
 $("ct-origin").addEventListener("change", () => {
   if (state) render();

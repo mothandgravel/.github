@@ -3,6 +3,7 @@ import axe from "axe-core";
 import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { auditGuidedRun } from "./audit_coastal_guide.mjs";
 const origin = process.env.SITE_URL || "http://127.0.0.1:8793";
 const output = process.env.AUDIT_OUTPUT || "artifacts/design-review";
 const real = process.env.TRANSPORT_REAL === "1";
@@ -523,6 +524,7 @@ try {
       2,
     ),
   );
+  if (!real) await auditGuidedRun(browser, origin, fixture, o, output);
   console.log(
     `Coastal transport: eight viewport/theme checks, source inspection, export integrity and accessibility passed (${real ? "actual backend" : "fixtures"}).`,
   );
