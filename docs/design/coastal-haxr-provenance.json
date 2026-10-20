@@ -1,0 +1,93 @@
+{
+  "schema": "coastal-haxr-provenance-v1",
+  "source": "https://zenodo.org/records/19824555",
+  "release": "1.1.0",
+  "acquired": "2026-10-20",
+  "evidence": "Recorded Hamburg port radar and pseudonymous AIS. Not live.",
+  "attribution": "HAXR by Nis Meinert and Lucas Moreira, German Aerospace Center (DLR).",
+  "license": "CC-BY-4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "sourceFiles": [
+    {
+      "file": "reiherstieg_08-UTC.hdf5",
+      "bytes": 70022703,
+      "md5": "md5:eea013c43fe4af5b6db3d64f45e09a3a",
+      "sha256": "dd9141817809db9f34744d5b1f9aa43637dd53f1b9f12d19e2b00f6d262c6962",
+      "url": "https://zenodo.org/api/records/19824555/files/reiherstieg_08-UTC.hdf5/content"
+    },
+    {
+      "file": "hohe_schaar_08-UTC.csv",
+      "bytes": 157097,
+      "md5": "md5:5bb2eff1cfdeafc0ef4f3222a5a361a0",
+      "sha256": "5ce190baeb2303c7aac4770d6c9bfe851fd0d784f7455e9c5ab312ec0ccc07d3",
+      "url": "https://zenodo.org/api/records/19824555/files/hohe_schaar_08-UTC.csv/content"
+    },
+    {
+      "file": "reiherstieg_08-UTC.csv",
+      "bytes": 253843,
+      "md5": "md5:3c7f67f4efed4d63040bca1ee5019fcd",
+      "sha256": "b132ef44f4b8e1df711a2449fe2d5cc866b93145f04296d8152486f3718945c5",
+      "url": "https://zenodo.org/api/records/19824555/files/reiherstieg_08-UTC.csv/content"
+    },
+    {
+      "file": "hohe_schaar_08-UTC.hdf5",
+      "bytes": 79444282,
+      "md5": "md5:5e40f2141b1abb47b6730e63164a68e7",
+      "sha256": "ea6c02236caa2c409053439118b455e09535c9470963ef7500fab77a38f0b58f",
+      "url": "https://zenodo.org/api/records/19824555/files/hohe_schaar_08-UTC.hdf5/content"
+    }
+  ],
+  "sourceVerification": "All four byte lengths and published MD5 checksums matched the Zenodo API metadata. SHA-256 recorded on downloaded bytes.",
+  "raivari": {
+    "revision": "b8ac188973ecccc2ce7068d8dfaa4125e002231b",
+    "extractor": "packages/modbus-simulator/scripts/extract-haxr.py",
+    "extractorSha256": "5cd7646a5bac79869ae8b822e48402b59c7fd533496988016f6f5e31522eb0b1",
+    "coreManifest": "coastal-haxr-core.json",
+    "reuse": "Original extractor, parseHaxr, selectHaxrAis, haxrPixels and pairRadarFrames; no substitute pairing or AIS selection algorithm."
+  },
+  "transformation": {
+    "commandTemplate": "uv run --no-project --with h5py==3.16.0 python <raivari>/packages/modbus-simulator/scripts/extract-haxr.py <station>_08-UTC.hdf5 <output>.json --frames 16 --start-tod 29100 --cell-timing --ais <station>_08-UTC.csv [--station hohe_schaar --expected-md5 5e40f2141b1abb47b6730e63164a68e7 --expected-size 79444282]",
+    "raster": "128 x 128 Cartesian cell-centre bins over +/-2000 m; maximum amplitude per bin; 31.25 m bin width.",
+    "display": "Fixed logarithmic normalization over all 16 frames separately for each station. Missing bins transparent; measured zero remains opaque.",
+    "timing": "Radar acquisition intervals retained. Extract includes timing investigation metadata; the browser core displays validated frame boundaries, not per-cell acquisition instants.",
+    "ais": "Latest report per pseudonymous ID at/before each frame end, at most 10 s old. Conflicting latest timestamps excluded. No interpolation or prediction.",
+    "pairing": "Existing offline left-anchored greedy pairing by maximum start/end difference, one use per counterpart. User can switch anchor and vary endpoint tolerance from 0 to 3 s."
+  },
+  "extracts": [
+    {
+      "station": "reiherstieg",
+      "path": "data/haxr/reiherstieg.json",
+      "bytes": 1326050,
+      "sha256": "d834d70b960975b7857c95f6e5c4e5cd600494dd1f6447f72de7ce75f64e9bfc",
+      "frames": 16,
+      "aisReports": 107,
+      "firstStartTod": 29100.2265625,
+      "lastEndTod": 29147.75,
+      "radarFile": "reiherstieg_08-UTC.hdf5",
+      "aisFile": "reiherstieg_08-UTC.csv"
+    },
+    {
+      "station": "hohe_schaar",
+      "path": "data/haxr/hohe-schaar.json",
+      "bytes": 1323056,
+      "sha256": "e5371fb18ae502aa01f3a2490629205233d05ff679e97a2711ceae79cc8ea399",
+      "frames": 16,
+      "aisReports": 57,
+      "firstStartTod": 29100.0078125,
+      "lastEndTod": 29147.09375,
+      "radarFile": "hohe_schaar_08-UTC.hdf5",
+      "aisFile": "hohe_schaar_08-UTC.csv"
+    }
+  ],
+  "limits": [
+    "Station AIS files are projections of one shared upstream stream, not independent witnesses.",
+    "Local coordinate frames are not spatially aligned; no geometric fusion, radar detection or target association.",
+    "Pseudonymous IDs do not establish MMSI, IMO, hull or sanctioned status.",
+    "Tolerance is an experimental eligibility bound, not calibrated clock uncertainty.",
+    "Acquisition intervals contain cells observed at different times; this is not a snapshot at one instant.",
+    "UTC seconds since midnight are retained; no calendar date inferred.",
+    "Brightness is not calibrated power or comparable equal strength between stations.",
+    "Published hashes are unsigned integrity references, not authentication.",
+    "No relationship is asserted between these recordings, the live transport journal or the fictional identity ledger."
+  ]
+}

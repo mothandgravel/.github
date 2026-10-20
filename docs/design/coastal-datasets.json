@@ -72,7 +72,7 @@
       "access": "Open files; Zenodo API metadata verified. Release 1.1.0, 82 files. Radar HDF5 chunks are typically tens to hundreds of MB; AIS CSV files are smaller.",
       "rights": "CC BY 4.0 in the release metadata. Attribute DLR and the named authors; pin the release and transformations.",
       "limit": "Pseudonymous vessel IDs cannot be joined to real IMO/name histories. Station-local coordinates, timing and calibration still require care. Not a labelled spoofing dataset.",
-      "verification": "Release metadata and documentation inspected; existing Raivari extracts were reviewed earlier. Full new release not downloaded.",
+      "verification": "Four 08-UTC station files downloaded and checked against published size and MD5 on 2026-10-20. Raivari extracted 16 radar frames per station with 107 / 57 AIS reports. Inspect the recorded radar desk at /specimens/coastal-watch/radar-replay/; full release not downloaded.",
       "priority": 1
     },
     {
