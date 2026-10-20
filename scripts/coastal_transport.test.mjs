@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   transportPicture,
   transportJourney,
+  transportArrival,
 } from "../docs/assets/coastal-transport-model.mjs";
 const observation = (id, observedAt, mmsi = 230123456) => ({
   id,
@@ -11,6 +12,113 @@ const observation = (id, observedAt, mmsi = 230123456) => ({
   source: { mmsi },
   observedAt,
   queuedAt: observedAt + 100,
+});
+
+test("first acceptance compares knowledge then, preserves current position and ignores later duplicates", () => {
+  const s = crossing();
+  s.observations = [observation("old", 1000), observation("new", 3000)];
+  s.accepted = [
+    { observation_id: "new", station: "north", first_received_at: 4000 },
+  ];
+  assert.equal(transportArrival(s, "old").status, "pending");
+  assert.equal(transportArrival(s, "old", "south").status, "local");
+  assert.equal(transportPicture(s, "north").latest[0].id, "new");
+  s.accepted.push({
+    observation_id: "old",
+    station: "north",
+    first_received_at: 8000,
+  });
+  s.receipts = [
+    {
+      id: 1,
+      observation_id: "old",
+      station: "north",
+      received_at: 8000,
+      outcome: "accepted-response-failed",
+    },
+    {
+      id: 2,
+      observation_id: "old",
+      station: "north",
+      received_at: 9000,
+      outcome: "duplicate",
+    },
+  ];
+  const a = transportArrival(s, "old");
+  assert.equal(a.status, "late");
+  assert.equal(a.retained.id, "new");
+  assert.equal(a.current.id, "new");
+  assert.equal(a.receivedAt, 8000);
+  assert.equal(a.sourceAgeMs, 7000);
+  assert.equal(a.queueDelayMs, 6900);
+  assert.equal(a.receipt.id, 1);
+  assert.equal(transportPicture(s, "north").latest[0].id, "new");
+  assert.deepEqual(
+    transportArrival({ ...s, serverTime: 11000 }, "old"),
+    a,
+    "advancing the snapshot clock must not change immutable arrival evidence",
+  );
+  // A subsequent newer arrival changes today's chart, not the earlier decision.
+  s.observations.push(observation("newest", 5000));
+  s.accepted.push({
+    observation_id: "newest",
+    station: "north",
+    first_received_at: 9500,
+  });
+  assert.equal(transportArrival(s, "old").retained.id, "new");
+  assert.equal(transportArrival(s, "old").current.id, "newest");
+  assert.equal(transportArrival(s, "new").status, "accepted");
+});
+
+test("old age, other vessels, other origins and equal source times do not imply out-of-order arrival", () => {
+  const s = crossing();
+  s.observations = [
+    observation("old", 1000),
+    observation("equal", 1000),
+    observation("other-vessel", 4000, 230123457),
+    { ...observation("other-origin", 5000), origin: "north" },
+  ];
+  s.accepted = s.observations.slice(0, 3).map((o, i) => ({
+    observation_id: o.id,
+    station: "north",
+    first_received_at: i ? 6000 : 9000,
+  }));
+  const a = transportArrival(s, "old");
+  assert.equal(a.status, "accepted");
+  assert.equal(a.previous.id, "equal");
+  assert.equal(a.retained, null);
+});
+
+test("same-millisecond arrival uses receiver journal order and never guesses from observation ID", () => {
+  const s = crossing();
+  s.observations = [observation("a-old", 1000), observation("z-new", 3000)];
+  s.accepted = s.observations.map((o) => ({
+    observation_id: o.id,
+    station: "north",
+    first_received_at: 8000,
+  }));
+  assert.equal(transportArrival(s, "a-old").status, "accepted");
+  s.receipts = [
+    {
+      id: 7,
+      observation_id: "z-new",
+      station: "north",
+      received_at: 8000,
+      outcome: "accepted",
+    },
+    {
+      id: 8,
+      observation_id: "a-old",
+      station: "north",
+      received_at: 8000,
+      outcome: "accepted",
+    },
+  ];
+  assert.equal(transportArrival(s, "a-old").status, "late");
+  s.receipts[0].id = 9;
+  assert.equal(transportArrival(s, "a-old").status, "accepted");
+  s.serverTime = 7000;
+  assert.equal(transportArrival(s, "a-old").status, "pending");
 });
 
 const crossing = () => ({
