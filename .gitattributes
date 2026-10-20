@@ -2,4 +2,5 @@
 docs/assets/coastal-replay-land.json -text
 # Preserve integrity-bound HAXR extracts across Windows and Linux checkouts.
 docs/data/haxr/*.json -text
-docs/assets/coastal-haxr-core.mjs text eol=lf
+# Zod's generated code includes whitespace inside template literals; keep it verbatim.
+docs/assets/coastal-haxr-core.mjs text eol=lf whitespace=-blank-at-eol linguist-generated=true
