@@ -1,2 +1,5 @@
 # Preserve the published coastline bytes bound by the provenance SHA-256.
 docs/assets/coastal-replay-land.json -text
+# Preserve integrity-bound HAXR extracts across Windows and Linux checkouts.
+docs/data/haxr/*.json -text
+docs/assets/coastal-haxr-core.mjs text eol=lf
