@@ -1,0 +1,206 @@
+{
+  "title": "The second witness / Shadow Fleet Sentinel inquiry",
+  "reviewDate": "2026-10-20",
+  "owner": "Moth & Gravel",
+  "route": "/specimens/coastal-watch/shadow-inquiry/",
+  "implementation": "Original public JavaScript model, synthetic fixture, no private implementation source copied.",
+  "raivariRevision": "b8ac188973ecccc2ce7068d8dfaa4125e002231b",
+  "reviewScope": "Focused source, documentation and test review of Sentinel, AIS bridge, radar bridge, audit signing, station continuity and shore handoff. Not an exhaustive repository, security or operational audit.",
+  "concept": {
+    "workingName": "Shadow Fleet Sentinel / inquiry desk",
+    "job": "Reconstruct a contested passage as evidence, hypotheses and missing records that survive interrupted ship-to-shore transport.",
+    "studioOpportunity": "A bounded, inspectable evidence workbench for analysts and integration partners. This is a product hypothesis, not established market demand or NATO procurement eligibility.",
+    "implemented": [
+      "A fictional thirty-minute AIS gap with receiver coverage explicitly unknown",
+      "Causal receipt boundaries and an inspectable original/relay lineage",
+      "Separate delivery, original-report and source-family counts",
+      "An unverified AIS/radar association with adjustable relative clock assumptions",
+      "Deterministic position bounds and reproducible separation calculations",
+      "An unsigned export preserving assumptions, visible records and a separately labelled full fixture"
+    ],
+    "notImplemented": [
+      "Real RF acquisition, radar, satellite AIS or imagery ingestion",
+      "Identity resolution, registry/ownership history or sanctions matching",
+      "Statistical independence estimation, fusion or calibrated detection",
+      "Persistent analyst case editing, signed case checkpoints or shore case synchronization"
+    ]
+  },
+  "review": [
+    {
+      "path": "docs/maritime/SHADOW-FLEET-SENTINEL.md",
+      "finding": "Describes RF heuristics, ARPA correlation, optional satellite AIS and signed events. Contains stronger claims about detection, performance and standards than the reviewed evidence establishes.",
+      "implication": "Treat it as architecture and prototype history. Do not adopt its headline capability claims as acceptance evidence.",
+      "details": "The correlation example uses positionDelta, while the implementation returns discrepancyNm. The document's satellite-AIS row has no corresponding integration in the reviewed Sentinel path. No benchmark artifact was found alongside its latency and scale figures."
+    },
+    {
+      "path": "packages/modbus-simulator/src/bridge/ais-data-bridge.ts",
+      "symbols": [
+        "calculateRfMetrics",
+        "createAisDataBridge",
+        "enableSyntheticSecurity"
+      ],
+      "finding": "RF jitter, RSSI and isSpoofing are generated from a simulation, including an MMSI-derived synthetic label. The bridge defaults enableSyntheticSecurity to false and gates Sentinel processing and RF/security register writes on that option.",
+      "implication": "Public AIS positions cannot supply measured RF evidence. Preserve the existing opt-in guard; attach explicit synthetic provenance wherever simulated RF travels.",
+      "details": "The simulator and analyzer use different simplified path-loss constants. Passing a constructed signal test does not establish real propagation discrimination."
+    },
+    {
+      "path": "packages/core-native/src/security.rs",
+      "symbols": [
+        "AisSecurityAnalyzer.analyze_rf_metrics"
+      ],
+      "finding": "Adds fixed weights for jitter variance, assumed free-space signal strength and RSSI variance, capped at one; high risk is strictly greater than 0.7.",
+      "implication": "The output is a heuristic score. A probability claim needs calibrated labelled data, false-positive analysis and receiver/environment stratification.",
+      "details": "Inter-arrival timing at an application or provider is not necessarily RF slot timing. Normal message scheduling, receiver timestamps, antenna motion, propagation and gain must be accounted for before interpreting these features."
+    },
+    {
+      "path": "packages/core-native/index.js",
+      "finding": "The JavaScript AIS fallback uses a different mean-based scoring formula and a different high-risk boundary from the Rust implementation.",
+      "implication": "Capability reporting must include which implementation actually executed. Native and fallback scores cannot be presented as interchangeable without validation."
+    },
+    {
+      "path": "packages/modbus-simulator/src/analysis/shadow-sentinel.ts",
+      "symbols": [
+        "createShadowSentinel",
+        "processVessel",
+        "loggedAlertsRef",
+        "shadowSentinel"
+      ],
+      "finding": "Returns null without RF metrics. Requires five samples and a two-second interval. Optional radar heuristics are added only after RF analysis. Logs the first high-risk event per MMSI per process session.",
+      "implication": "An inquiry should preserve evidence changes and contradictions over time, including non-alert observations. One session-level event is not a complete case history.",
+      "details": "BAM wording says Shadow Fleet Detected and Spoofing probability despite fixed heuristic weights. Cached results carry no public source-evidence age. The singleton captures getRadarBridge() at module initialization; CLI later resets/configures the bridge. Wiring should be verified before claiming the singleton reads the newly configured radar."
+    },
+    {
+      "path": "packages/modbus-simulator/src/bridge/radar-data-bridge.ts",
+      "symbols": [
+        "findTargetNearPosition",
+        "correlateAisWithRadar",
+        "checkRadarVisibility",
+        "processTTM"
+      ],
+      "finding": "Associates nearest target within 0.5 nm, flags discrepancy over 0.3 nm, and treats no target within 1 nm and nominal 24 nm range as suspicious. The lookup does not gate target age, tracking status, clutter or coverage.",
+      "implication": "Range is not a detection guarantee. Missing measurement must remain unknown until sensor health, coverage and detectability are established.",
+      "details": "TTM receipt uses Date.now rather than a preserved acquisition epoch. Relative bearing conversion uses own-ship COG, which should not be assumed equal to heading. This review does not establish a calibrated radar association pipeline."
+    },
+    {
+      "path": "packages/modbus-simulator/src/analysis/security-audit-logger.ts",
+      "symbols": [
+        "createSecurityAuditLogger",
+        "logSecurityAlert",
+        "verifyChain"
+      ],
+      "finding": "Builds HMAC-linked canonical-CBOR payloads, stores events in memory and offers a persistence callback. Verification operates on the internal signed-byte event array.",
+      "implication": "A new case export must carry exact signed bytes and a checkpoint, with verification performed on the exported/imported artifact. Integrity does not prove sensor truth.",
+      "details": "The convenient security-event projection is distinct from the signed-byte envelope. Durable replay, restart continuity and exported projection verification are not established by calling the internal verifyChain method."
+    },
+    {
+      "path": "packages/modbus-simulator/src/security/audit-signer.ts",
+      "symbols": [
+        "signEvent",
+        "verifyEvent",
+        "verifyChain"
+      ],
+      "finding": "Verifies supplied HMAC events and adjacency. A supplied suffix can verify when its first event has a valid predecessor signature; there is no externally supplied expected head or total count in verifyChain.",
+      "implication": "Completeness and truncation detection require an independently retained checkpoint and expected coverage, beyond link integrity. Shared-key verification is not public sensor attestation."
+    },
+    {
+      "path": "packages/modbus-simulator/src/replay/station-continuity.ts",
+      "finding": "Explicitly models the availability of one AIS stream across station filters.",
+      "implication": "Reuse source-family semantics. Two station copies must not become two witnesses."
+    },
+    {
+      "path": "packages/modbus-simulator/src/replay/radar-pairing.ts",
+      "finding": "Retains unmatched acquisition windows and warns that reported timestamps do not establish clock synchronization.",
+      "implication": "Keep clock bounds and unmatched measurements visible. A failed pairing is not a spoofing finding."
+    },
+    {
+      "path": "packages/modbus-simulator/src/replay/tracker.ts",
+      "finding": "A radar-only nearest-neighbour hold-position baseline, without covariance or motion prediction.",
+      "implication": "The public desk's motion/bound illustration is new and explicitly synthetic; it is not output from this tracker."
+    },
+    {
+      "path": "docs/maritime/SHORE-PACKAGE-STATUS.md",
+      "finding": "Distinguishes the actual packages/shore ingest, outbox and integration UI from older demo shore-agent narratives.",
+      "implication": "Use the existing Coastal queue/receipt journal for a bounded case handoff first. Evaluate Shore ingest separately; do not call the local loopback receiver a deployed Shore integration."
+    },
+    {
+      "path": "docs/maritime/ARCHIVE/business/PROPOSITIONS.md",
+      "finding": "Historical concept material with unverified performance and market statements; the active business path is a compatibility pointer.",
+      "implication": "Useful direction-setting context only. Do not reuse its numbers or customer-fit assertions as current evidence."
+    }
+  ],
+  "research": [
+    {
+      "url": "https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/IndexofIMOResolutions/AssemblyDocuments/A.1192(33).pdf",
+      "title": "IMO A.1192(33), 2023",
+      "section": "Pages 2-4",
+      "designDecision": "Non-reception can warrant inquiry without establishing illegal activity. Carry coverage, identity, insurance and inspection questions separately from movement evidence."
+    },
+    {
+      "url": "https://www.nato.int/en/about-us/official-texts-and-resources/official-texts/2025/08/29/data-quality-framework-for-the-alliance",
+      "title": "NATO Data Quality Framework for the Alliance, 2025",
+      "section": "12 and 18-23",
+      "designDecision": "Expose timeliness, uniqueness, provenance and transformation lineage as separate properties. No NATO conformance or endorsement claim."
+    },
+    {
+      "url": "https://arxiv.org/html/2111.13589v1",
+      "title": "Gaglione et al., Fusion of Sensor Measurements and Target-Provided Information in Multitarget Tracking",
+      "section": "II-IV",
+      "designDecision": "Separate cooperative reporting from sensing; preserve association uncertainty and state dependency assumptions. Do not treat a distinct sensor family as proof of independent errors."
+    },
+    {
+      "url": "https://arxiv.org/html/2202.03268v1",
+      "title": "Dagdilelis et al., Cyber-resilience for marine navigation by information fusion and change detection",
+      "section": "4-6",
+      "designDecision": "Expose uncertainty and consistency assumptions. Its sea-test plus simulated-spoofing results cannot be transferred to our illustrative bounds or Raivari heuristics."
+    },
+    {
+      "url": "https://www.emsa.europa.eu/combined-maritime-data-menu/data-sources.html",
+      "title": "EMSA Integrated Maritime Services / Data sources",
+      "designDecision": "Satellite AIS remains cooperative reporting; SAR/optical imagery are different observations. Preserve acquisition time, footprint and association evidence instead of simply increasing a witness count."
+    },
+    {
+      "url": "https://www.emsa.europa.eu/copernicus.html",
+      "title": "EMSA Copernicus Maritime Surveillance",
+      "designDecision": "Relevant partner/service landscape. Public description does not establish access to operational products; no CMS integration is claimed."
+    },
+    {
+      "url": "https://www.imo.org/en/ourwork/iiis/pages/imo-identification-number-schemes.aspx",
+      "title": "IMO Identification Number Scheme",
+      "designDecision": "Use verified IMO identity as the longitudinal anchor when available. Keep MMSI/name/flag assertions dated and sourced; a checksum is not identity verification."
+    },
+    {
+      "url": "https://www.itu.int/rec/R-REC-M.1371",
+      "title": "ITU-R M.1371 recommendation series",
+      "designDecision": "Check the applicable AIS class, message type and scheduling regime before interpreting arrival timing. The architecture's M.1371-5 reference is not proof that its RF heuristics implement the standard."
+    }
+  ],
+  "nextImplementation": [
+    {
+      "stage": "Evidence contract",
+      "work": "Append-only observations with evidence kind, acquisition interval, receipt time, source family, parent IDs, receiver coverage and raw artifact reference. Separate assertions from source observations.",
+      "acceptance": "A relay cannot increase unique-origin count; unknown coverage cannot become a vessel-silence finding; no simulated RF can produce an unlabelled live-vessel accusation."
+    },
+    {
+      "stage": "Contested identity",
+      "work": "Dated IMO/MMSI/name/flag assertions, reversible candidate links, explicit conflicts and analyst disposition. Preserve registry document date, retrieval date, source and license.",
+      "acceptance": "Changing a name does not merge hull identities. A copied registry entry does not count as independent verification. Corrected assertions remain in history."
+    },
+    {
+      "stage": "Cross-sensor comparison",
+      "work": "Load licensed, time-referenced radar or SAR observations with calibration and uncertainty. Compare alternate associations and clock bounds.",
+      "acceptance": "Stale/lost/unhealthy radar reports cannot clear or accuse a vessel. No unmeasured covariance is rendered as calibrated confidence."
+    },
+    {
+      "stage": "Case handoff",
+      "work": "Carry immutable evidence references and analyst revisions over Raivari's actual queue/burst sync. Add exact-byte signed exports, external checkpoints and receiver verification.",
+      "acceptance": "Late evidence adds a case revision; retries preserve identity; imported evidence verifies independently; truncation fails against an expected checkpoint."
+    }
+  ],
+  "validationBoundary": "Model/browser checks validate this synthetic interaction and arithmetic. Existing Raivari tests exercise constructed signals and replay contracts, not operational shadow-fleet detection or analyst accuracy.",
+  "validation": {
+    "raivariTests": "11 existing tests passed: one constructed Sentinel smoke test plus radar-pairing and station-continuity contracts.",
+    "nativeBoundary": "Native availability is false in this checkout. The smoke test used the JavaScript fallback; the seven native Sentinel cases were skipped. No native RF execution or parity is established.",
+    "controlledProbe": "Isolated constructed probes confirmed that empty radar can be flagged suspicious and a one-hour-old tracked target remains eligible. Audit signing needs repair and independent export verification before integration.",
+    "siteTests": "Synthetic model and browser checks cover causality, lineage, rewind, bounds, keyboard controls and JSON export. They do not validate detection performance."
+  }
+}

@@ -1,6 +1,7 @@
 import {
   knowledgeRuns,
   knowledgeSnapshot,
+  knowledgeChanges,
 } from "./coastal-knowledge-model.mjs";
 import {
   transportPicture,
@@ -39,10 +40,12 @@ export function createKnowledgeReplay({ redraw, select, inspect, onStart }) {
         : "Complete a late-arrival run to build a replay from its queue records and receipts.";
       $("ct-knowledge-clock").textContent = "—";
       $("ct-knowledge-stations").replaceChildren();
+      $("ct-knowledge-stations").dataset.boundary = "";
       return;
     }
     const step = run.steps[index],
-      snapshot = knowledgeSnapshot(frozen, run, index);
+      snapshot = knowledgeSnapshot(frozen, run, index),
+      changes = knowledgeChanges(frozen, run, index);
     $("ct-knowledge-heading").textContent = step.title;
     $("ct-knowledge-note").textContent = step.note;
     $("ct-knowledge-clock").textContent =
@@ -62,14 +65,22 @@ export function createKnowledgeReplay({ redraw, select, inspect, onStart }) {
       ? `Inspect receipt #${step.receipt.id} ↗`
       : "";
     const target = $("ct-knowledge-stations");
+    const boundary = `${run.id}:${index}`;
+    if (target.dataset.boundary === boundary) return;
+    target.dataset.boundary = boundary;
     target.replaceChildren();
     for (const station of ["south", "north"]) {
       const picture = transportPicture(snapshot, station),
-        latest = picture.latest[0];
+        latest = picture.latest[0],
+        delta = changes[station];
       const card = document.createElement("div");
+      card.dataset.station = station;
+      card.dataset.changed = String(
+        Boolean(delta.added.length || delta.receipts.length),
+      );
       const label = document.createElement("span");
       label.className = "cw-label";
-      label.textContent = `${station} / ${picture.records.length} reports known`;
+      label.textContent = `${station} / ${delta.before} → ${delta.after} reports known`;
       const time = document.createElement("strong");
       time.textContent = latest
         ? transportClock(latest.observedAt)
@@ -79,6 +90,70 @@ export function createKnowledgeReplay({ redraw, select, inspect, onStart }) {
         ? `Latest source time · ${latest.lon.toFixed(6)}° E, ${latest.lat.toFixed(6)}° N`
         : "No accepted report for this vessel at this boundary.";
       card.append(label, time, detail);
+      const change = document.createElement("p");
+      change.className = "ct-delta-summary";
+      change.textContent = [
+        delta.added.length
+          ? `+${delta.added.length} report${delta.added.length === 1 ? "" : "s"}`
+          : "No new report",
+        delta.retained
+          ? "position retained"
+          : latest
+            ? "latest position changes"
+            : "no position yet",
+        delta.history.length ? `+${delta.history.length} to history` : null,
+      ]
+        .filter(Boolean)
+        .join(" / ");
+      card.append(change);
+      const rows = document.createElement("ul");
+      rows.className = "ct-delta-records";
+      const record = (o, label, kind) => {
+        const row = document.createElement("li");
+        row.dataset.change = kind;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = `${label} · ${transportClock(o.observedAt)} UTC ↗`;
+        button.addEventListener("click", () => {
+          pause();
+          draw();
+          select(o.id, station);
+        });
+        const note = document.createElement("small");
+        note.textContent = `${o.id} · ${o.lon.toFixed(6)}° E, ${o.lat.toFixed(6)}° N`;
+        row.append(button, note);
+        rows.append(row);
+      };
+      for (const o of delta.added) {
+        const history = delta.history.some((h) => h.id === o.id);
+        record(
+          o,
+          `${o.origin === station ? "Captured" : "Arrived"} / ${history ? "history added" : "latest"}`,
+          history ? "history" : "arrival",
+        );
+      }
+      if (delta.retained) record(delta.latest, "Retained position", "retained");
+      if (delta.demoted)
+        record(delta.demoted, "Previous latest / now history", "demoted");
+      for (const receipt of delta.receipts) {
+        const row = document.createElement("li");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = `Receipt #${receipt.id} · ${receipt.outcome} · ${transportClock(receipt.received_at)} UTC ↗`;
+        button.addEventListener("click", () => {
+          pause();
+          draw();
+          inspect(receipt.observation_id, station, receipt);
+        });
+        row.append(button);
+        rows.append(row);
+      }
+      if (!rows.children.length) {
+        const row = document.createElement("li");
+        row.textContent = "No report or receipt added at this shore.";
+        rows.append(row);
+      }
+      card.append(rows);
       target.append(card);
     }
   }
@@ -87,7 +162,7 @@ export function createKnowledgeReplay({ redraw, select, inspect, onStart }) {
     draw();
     const step = run.steps[index];
     select(
-      step.kind === "newer" || step.kind === "retry"
+      step.kind === "newer" || step.kind === "retry" || step.kind === "captured"
         ? run.newer.id
         : run.older.id,
       ["held", "interrupted", "captured"].includes(step.kind)
@@ -169,9 +244,12 @@ export function createKnowledgeReplay({ redraw, select, inspect, onStart }) {
     get snapshot() {
       return run ? knowledgeSnapshot(frozen, run, index) : null;
     },
+    get changes() {
+      return run ? knowledgeChanges(frozen, run, index) : null;
+    },
     get label() {
       return run
-        ? `Recorded step ${index + 1}/${run.steps.length} · MMSI ${run.older.source.mmsi} only · both plots show knowledge then. Journey, ledger and record inspectors below use the latest snapshot.`
+        ? `Recorded step ${index + 1}/${run.steps.length} · MMSI ${run.older.source.mmsi} only · changes since the previous recorded boundary (before capture for step 1). Square: added report. Dotted ring: added history. Solid ring: retained position. Journey, ledger and record inspectors below use the latest snapshot.`
         : "";
     },
     start,

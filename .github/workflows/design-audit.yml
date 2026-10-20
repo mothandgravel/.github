@@ -15,6 +15,7 @@ on:
       - "scripts/audit_coastal_replay.mjs"
       - "scripts/audit_coastal_transport.mjs"
       - "scripts/audit_coastal_guide.mjs"
+      - "scripts/audit_shadow_inquiry.mjs"
       - "scripts/audit_thread.mjs"
       - "scripts/audit_reading.mjs"
       - "scripts/audit_maritime.mjs"
@@ -63,6 +64,7 @@ jobs:
           node scripts/audit_mapping.mjs
           node scripts/audit_coastal_replay.mjs
           node scripts/audit_coastal_transport.mjs
+          node scripts/audit_shadow_inquiry.mjs
           node scripts/audit_thread.mjs
           node scripts/audit_studio_note.mjs
           node scripts/audit_maritime.mjs

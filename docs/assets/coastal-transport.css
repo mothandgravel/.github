@@ -52,6 +52,7 @@
 }
 .ct-knowledge-stations > div {
   display: grid;
+  align-content: start;
   gap: 12px;
   border-top: 2px solid var(--gold);
   padding: 20px 0;
@@ -67,6 +68,57 @@
 .ct-knowledge-stations small {
   color: var(--secondary);
   font: 10px/1.8 var(--mono);
+}
+.ct-delta-summary {
+  font: 12px/1.8 var(--mono);
+  margin: 4px 0;
+}
+.ct-delta-records {
+  list-style: none;
+  margin: 0;
+  padding: 0 20px 0 0;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+.ct-delta-records li {
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+  font: 11px/1.8 var(--mono);
+}
+.ct-delta-records li[data-change="history"] {
+  border-left: 3px dotted var(--gold);
+}
+.ct-delta-records li[data-change="arrival"] {
+  border-left: 3px solid var(--gold);
+}
+.ct-delta-records li[data-change="retained"] {
+  border-left: 3px double var(--ink);
+}
+#ct-panel .ct-delta-records button {
+  text-align: left;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+}
+.ct-delta-records small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.ct-delta-added,
+.ct-delta-history,
+.ct-delta-retained {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.6px;
+  pointer-events: none;
+}
+.ct-delta-history {
+  stroke-dasharray: 2 3;
+}
+.ct-delta-retained {
+  stroke: var(--ink);
 }
 #ct-knowledge-scope {
   font: 11px/1.8 var(--mono);
