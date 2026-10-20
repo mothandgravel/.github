@@ -75,7 +75,7 @@ function render() {
     "A-01 / reported";
   if (step >= 1) {
     svg("circle", { cx: ax, cy: ay, r: 22, class: "si-copy" }, layer);
-    svg("text", { x: ax - 65, y: ay + 57 }, layer).textContent =
+    svg("text", { x: ax - 65, y: ay + 57, class: "si-copy-label" }, layer).textContent =
       "relay / same origin";
   }
   if (comparison) {
@@ -109,7 +109,7 @@ function render() {
     );
     svg("text", { x: rx + 22, y: ry - 64 }, layer).textContent =
       "R-17 / measured";
-    svg("text", { x: 315, y: 400 }, layer).textContent =
+    svg("text", { x: 315, y: 400, class: "si-bound-label" }, layer).textContent =
       `AIS comparison envelope / ${comparison.radius.toFixed(0)} m`;
   }
   $("si-map-summary").textContent =

@@ -322,6 +322,8 @@
   }
 }
 @media (max-width: 650px) {
+  .si-chart svg text { font-size: 32px; }
+  .si-chart .si-copy-label, .si-chart .si-bound-label { display: none; }
   .si-main {
     padding-top: 115px;
   }
