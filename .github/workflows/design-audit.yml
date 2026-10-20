@@ -5,6 +5,7 @@ on:
     paths:
       - "docs/**"
       - "scripts/audit_visual.mjs"
+      - "scripts/audit_home_styles.mjs"
       - "scripts/audit_loose_end.mjs"
       - "scripts/audit_moth.mjs"
       - "scripts/audit_handling.mjs"
@@ -53,6 +54,7 @@ jobs:
         run: |
           node scripts/audit_reading.mjs
           node scripts/audit_visual.mjs
+          node scripts/audit_home_styles.mjs
           node scripts/audit_loose_end.mjs
           node scripts/audit_moth.mjs
           node scripts/audit_handling.mjs
