@@ -1,3 +1,8 @@
+const contactKey = (o) =>
+  `${o.origin}:${o.evidence === "public-ais" ? "ais-" + o.source.mmsi : "synthetic"}`;
+const sourceOrder = (a, b) =>
+  a.observedAt - b.observedAt || a.id.localeCompare(b.id);
+
 /** Project actual queue/receiver evidence. Source evidence remains attached to each observation. */
 export function transportPicture(state, station) {
   if (!["north", "south"].includes(station)) throw Error("Unknown station");
@@ -23,16 +28,77 @@ export function transportPicture(state, station) {
         },
       ];
     })
-    .sort((a, b) => a.observedAt - b.observedAt || a.id.localeCompare(b.id));
-  const latest = [
-    ...new Map(
-      records.map((r) => [
-        `${r.origin}:${r.evidence === "public-ais" ? "ais-" + r.source.mmsi : "synthetic"}`,
-        r,
-      ]),
-    ).values(),
-  ];
+    .sort(sourceOrder);
+  const latest = [...new Map(records.map((r) => [contactKey(r), r])).values()];
   return { records, latest };
+}
+
+/** Compare first acceptance with knowledge already present at that shore.
+ * Duplicate receipts never change arrival time. Equal host milliseconds need
+ * receiver journal order; without it, do not assert an out-of-order arrival.
+ */
+export function transportArrival(state, id, station) {
+  const observation = state.observations.find((o) => o.id === id);
+  if (!observation) return null;
+  station ??= observation.origin === "south" ? "north" : "south";
+  const picture = transportPicture(state, station);
+  const currentRecord = picture.latest.find(
+    (o) => contactKey(o) === contactKey(observation),
+  );
+  // Return immutable source records, not age-bearing projections. Polling must
+  // not rebuild a focused inspector just because the snapshot clock advanced.
+  const current = state.observations.find((o) => o.id === currentRecord?.id);
+  const accepted = state.accepted.find(
+    (r) => r.station === station && r.observation_id === id,
+  );
+  const base = { observation, station, current };
+  if (station === observation.origin) return { ...base, status: "local" };
+  if (
+    !accepted ||
+    accepted.first_received_at > state.serverTime ||
+    observation.observedAt > state.serverTime
+  )
+    return { ...base, status: "pending" };
+  const receivedAt = accepted.first_received_at;
+  const firstReceipt = (recordId, time) =>
+    state.receipts?.find(
+      (r) =>
+        r.observation_id === recordId &&
+        r.station === station &&
+        r.received_at === time &&
+        ["accepted", "accepted-response-failed"].includes(r.outcome),
+    );
+  const receipt = firstReceipt(id, receivedAt);
+  const previousRecord = picture.records
+    .filter((o) => {
+      if (o.id === id || contactKey(o) !== contactKey(observation))
+        return false;
+      if (o.observedAt > receivedAt) return false;
+      if (o.availableAt < receivedAt) return true;
+      const other = firstReceipt(o.id, o.availableAt);
+      return (
+        o.availableAt === receivedAt &&
+        receipt &&
+        other &&
+        other.id < receipt.id
+      );
+    })
+    .sort(sourceOrder)
+    .at(-1);
+  const previous = state.observations.find((o) => o.id === previousRecord?.id);
+  const late = Boolean(
+    previous && previous.observedAt > observation.observedAt,
+  );
+  return {
+    ...base,
+    status: late ? "late" : "accepted",
+    receivedAt,
+    receipt,
+    previous,
+    retained: late ? previous : null,
+    sourceAgeMs: receivedAt - observation.observedAt,
+    queueDelayMs: receivedAt - observation.queuedAt,
+  };
 }
 export const shortObservation = (o) =>
   `${o.evidence === "public-ais" ? "AIS " + o.source.mmsi + " / " : ""}${o.origin === "north" ? "N" : "S"}-${o.id.slice(0, 8)}`;

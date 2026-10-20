@@ -346,6 +346,170 @@ try {
       "Live burst polling, failed response, exact retry receipt inspection and read-only replay passed.",
     );
   }
+  if (!real) {
+    for (const width of [390, 1440])
+      for (const theme of ["night", "afterlight"]) {
+        const page = await browser.newPage({
+          viewport: { width, height: 1100 },
+          reducedMotion: "reduce",
+        });
+        await page.addInitScript(
+          (t) => localStorage.setItem("moth-and-gravel-theme", t),
+          theme,
+        );
+        const newer = {
+          ...structuredClone(o),
+          id: "newer-report",
+          messageId: "newer-message",
+          observedAt: now - 15000,
+          lon: 24.97,
+          lat: 60.11,
+        };
+        const s = structuredClone(fixture);
+        s.observations.push(newer);
+        s.accepted = [
+          {
+            station: "north",
+            observation_id: newer.id,
+            first_received_at: now - 8000,
+          },
+        ];
+        s.receipts = [
+          {
+            id: 0,
+            station: "north",
+            observation_id: newer.id,
+            received_at: now - 8000,
+            outcome: "accepted",
+            status: 200,
+          },
+        ];
+        await page.route("**/api/coastal/state", (r) => r.fulfill({ json: s }));
+        await page.goto(
+          origin + "/specimens/coastal-watch/two-stations/?transport=live",
+        );
+        await page.locator("#ct-follow").selectOption(o.id);
+        await page
+          .locator('#ct-arrival-comparison[data-arrival="pending"]')
+          .waitFor();
+        assert.equal(
+          await page
+            .locator(`#ct-north-marks [data-observation="${o.id}"]`)
+            .count(),
+          0,
+        );
+        const mark = page.locator(
+          '#ct-north-marks [data-observation="newer-report"] .mark',
+        );
+        const before = await mark.getAttribute("cx");
+        s.accepted.push(...structuredClone(fixture.accepted));
+        s.receipts.push(...structuredClone(fixture.receipts));
+        await page.locator("#ct-refresh").click();
+        await page
+          .locator('#ct-arrival-comparison[data-arrival="late"]')
+          .waitFor();
+        assert.equal(
+          await mark.getAttribute("cx"),
+          before,
+          "a late acceptance must not move the latest position",
+        );
+        assert.equal(
+          await page
+            .locator('#ct-north-marks [data-latest="true"]')
+            .getAttribute("data-observation"),
+          newer.id,
+        );
+        assert.equal(
+          await page
+            .locator('#ct-north-marks [data-latest="false"]')
+            .getAttribute("data-observation"),
+          o.id,
+        );
+        assert.match(
+          await page.locator("#ct-arrival-explanation").innerText(),
+          /does not move.*backwards/,
+        );
+        assert.equal(
+          await page
+            .locator("#ct-arrival-clocks time")
+            .nth(0)
+            .getAttribute("datetime"),
+          new Date(o.observedAt).toISOString(),
+        );
+        assert.equal(
+          await page
+            .locator("#ct-arrival-clocks time")
+            .nth(1)
+            .getAttribute("datetime"),
+          new Date(now - 5000).toISOString(),
+        );
+        assert.equal(
+          await page.locator(".ct-retained-label").textContent(),
+          "LATEST / UNCHANGED",
+        );
+        const retainedButton = page.getByRole("button", {
+          name: "Inspect the retained report",
+        });
+        await retainedButton.focus();
+        await retainedButton.evaluate((el) => {
+          window.retainedArrivalButton = el;
+        });
+        s.serverTime += 1000;
+        await page.waitForFunction(
+          (expected) =>
+            document.querySelector("#ct-snapshot-clock").textContent ===
+            expected,
+          new Date(s.serverTime).toISOString().slice(11, 19),
+        );
+        assert(
+          await page.evaluate(
+            () =>
+              document.activeElement === window.retainedArrivalButton &&
+              window.retainedArrivalButton.isConnected,
+          ),
+          "snapshot polling preserves the focused arrival inspection button",
+        );
+        await page
+          .getByRole("button", { name: "Inspect the retained report" })
+          .click();
+        assert.equal(await page.locator("#ct-follow").inputValue(), newer.id);
+        await page.locator("#ct-late-reports").selectOption(o.id);
+        await page.locator("#ct-arrival-receipt").click();
+        assert(await page.locator("#ct-filter").isChecked());
+        assert.equal(await page.locator("#ct-receipts tr").count(), 2);
+        assert.equal(
+          await page.locator("#ct-receipts .ct-late-badge").count(),
+          1,
+          "duplicate receipt is not a second late arrival",
+        );
+        assert.equal(
+          await page.locator("#ct-arrival-receipt").textContent(),
+          "Inspect first receipt #1 ↗",
+        );
+        await page.evaluate(() => document.fonts.ready);
+        await page.addScriptTag({ content: axe.source });
+        const accessibility = await page.evaluate(
+          async () =>
+            (await axe.run(document.querySelector("#ct-panel"))).violations,
+        );
+        assert.deepEqual(
+          accessibility.map((v) => v.id),
+          [],
+        );
+        assert(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth + 1,
+          ),
+        );
+        await page
+          .locator("#ct-arrival-comparison")
+          .screenshot({ path: `${output}/coastal-late-${width}-${theme}.png` });
+        await page.close();
+      }
+    console.log(
+      "Late acceptance: stationary latest mark, source/receipt clocks, retained-report inspection, first receipt and responsive accessibility passed.",
+    );
+  }
   await writeFile(
     `${output}/coastal-transport-${real ? "actual" : "fixture"}-results.json`,
     JSON.stringify(

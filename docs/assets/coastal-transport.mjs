@@ -1,6 +1,8 @@
 import { createTransportTransit } from "./coastal-transit.mjs";
+import { createArrivalInspector } from "./coastal-arrival.mjs";
 import {
   transportPicture,
+  transportArrival,
   shortObservation,
   transportClock as clock,
 } from "./coastal-transport-model.mjs";
@@ -117,6 +119,8 @@ function renderCharts() {
           layer,
         );
         g.dataset.transportFocus = `${s}-${o.id}`;
+        g.dataset.observation = o.id;
+        g.dataset.latest = String(latest);
         svg("title", {}, g).textContent = shortObservation(o);
         svg("circle", { cx: x, cy: y, r: 16, class: "hit" }, g);
         const classes = `mark ${o.origin} ${o.age > 120 ? "old" : ""} ${!latest ? "history-mark" : ""} ${isSelected ? "selected" : ""}`;
@@ -143,7 +147,7 @@ function renderCharts() {
         const [x, y] = point(o.lon, o.lat),
           label =
             o.evidence === "public-ais"
-              ? `AIS / ${o.source.mmsi}`
+              ? `${picture.latest.some((l) => l.id === o.id) ? "AIS" : "HISTORY"} / ${o.source.mmsi}`
               : "SYNTHETIC SAMPLE",
           lx = Math.min(445, Math.max(10, x + 18)),
           ly = Math.min(333, Math.max(15, y - 24));
@@ -157,7 +161,7 @@ function renderCharts() {
           {
             x: lx - 6,
             y: ly - 12,
-            width: 145,
+            width: 153,
             height: 22,
             rx: 1,
             class: "selection-label-bg",
@@ -169,6 +173,23 @@ function renderCharts() {
           { x: lx, y: ly + 2, class: "selection-label" },
           g,
         ).textContent = label;
+        const a = transportArrival(state, o.id, s);
+        if (a?.status === "late" && a.current && a.current.id !== o.id) {
+          const [cx, cy] = point(a.current.lon, a.current.lat);
+          svg("circle", { cx, cy, r: 10, class: "ct-retained-ring" }, g);
+          svg(
+            "text",
+            {
+              x: Math.min(465, Math.max(10, cx + 15)),
+              y: Math.min(344, Math.max(30, cy + 25)),
+              class: "ct-retained-label",
+            },
+            g,
+          ).textContent =
+            a.current.id === a.retained.id
+              ? "LATEST / UNCHANGED"
+              : "LATEST / NEWER REPORT";
+        }
       }
     }
     const known = picture.records.length,
@@ -211,7 +232,8 @@ function renderRecord() {
   const receipt = state.accepted.find(
     (r) => r.station === station && r.observation_id === selected,
   );
-  if (!changed("record", [o, station, receipt])) return;
+  const arrival = o ? transportArrival(state, o.id, station) : null;
+  if (!changed("record", [o, station, receipt, arrival])) return;
   const record = $("ct-record");
   record.replaceChildren();
   if (!o) {
@@ -238,6 +260,13 @@ function renderRecord() {
   );
   add("span", `${title(o.origin)} origin`, kicker);
   add("h3", isAis ? String(o.source.mmsi) : "Sample observation", record);
+  if (arrival?.status === "late")
+    add(
+      "p",
+      "Out-of-order arrival / history added, newer position retained.",
+      record,
+      "ct-late-badge",
+    );
   add(
     "p",
     `${o.lat.toFixed(6)}° N / ${o.lon.toFixed(6)}° E`,
@@ -348,6 +377,9 @@ function renderLedgers() {
         label = add("span", r.outcome.replaceAll("-", " "), cell, "ct-result");
       label.dataset.kind = r.outcome;
       add("span", `HTTP ${r.status}`, cell, "ct-receipt-outcome");
+      const a = o && transportArrival(state, o.id, r.station);
+      if (a?.status === "late" && a.receipt?.id === r.id)
+        add("span", "Late / history only", cell, "ct-late-badge");
     }
     if (!receipts.length) {
       const cell = add(
@@ -461,6 +493,7 @@ function render() {
     busy,
     origin: $("ct-origin").value,
   });
+  arrivalInspector(state, selected);
   renderCharts();
   renderRecord();
   renderLedgers();
@@ -658,6 +691,20 @@ const transit = createTransportTransit({
       ].find((el) => el.dataset.attempt === event.attempt.id);
       if (details) details.open = true;
     }
+  },
+});
+const arrivalInspector = createArrivalInspector({
+  select,
+  inspect(id, destination, receipt) {
+    filtered = true;
+    $("ct-filter").checked = true;
+    select(id, destination);
+    setEvidence("receipts");
+    const button = document.querySelector(
+      `[data-transport-focus="receipt-${receipt.id}"]`,
+    );
+    button?.scrollIntoView({ block: "center", behavior: "instant" });
+    button?.focus({ preventScroll: true });
   },
 });
 $("ct-origin").addEventListener("change", () => {

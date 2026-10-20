@@ -50,6 +50,12 @@
 <div class="ct-burst-strip" id="ct-burst-strip"></div>
 <div id="ct-transit-events" class="ct-transit-events" role="group" aria-label="Recorded transport events"></div>
 <p id="ct-event-detail" class="ct-event-detail" role="status">Choose an event to inspect its evidence.</p>
+<section class="ct-arrival-comparison" id="ct-arrival-comparison" aria-labelledby="ct-arrival-heading">
+<div class="ct-arrival-heading"><div><p class="cw-label">First acceptance / comparison from latest snapshot</p><h4 id="ct-arrival-heading">One report. Two times.</h4></div><label>Out-of-order arrivals<select id="ct-late-reports" disabled><option value="">No out-of-order arrivals recorded</option></select></label></div>
+<div id="ct-arrival-clocks" class="ct-arrival-clocks"></div>
+<div class="ct-arrival-footer"><p id="ct-arrival-explanation">Choose a report to compare its source time with its first acceptance.</p><button id="ct-arrival-receipt" type="button" hidden>Inspect first receipt ↗</button></div>
+<p class="ct-arrival-boundary">Source time is Digitraffic timestampExternal, not a verified onboard clock. Arrival is the receiver’s first stored acceptance. Retries do not reset it. This comparison stays on the latest snapshot during replay.</p>
+</section>
 <p class="ct-transit-boundary">The crossing shows transport between illustrative stations, not vessel movement. Replay spaces recorded events for reading; timestamps and receipts stay unchanged. Charts and queue totals remain live.</p>
 </section>
 <div class="ct-conditions-wrap"><fieldset class="ct-conditions"><legend>Change the journey <span>South → North</span></legend><label><input id="ct-paused" type="checkbox"><span>Interrupt the link<small>Keep reports at South</small></span></label><label><input id="ct-reject" type="checkbox"><span>Refuse delivery<small>Record each failed attempt</small></span></label><label><input id="ct-response" type="checkbox"><span>Lose one acknowledgement<small>Accept, return 503, then retry</small></span></label></fieldset>
