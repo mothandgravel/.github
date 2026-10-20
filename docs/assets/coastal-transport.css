@@ -1,4 +1,98 @@
 /* Coastal watch: a working instrument within the specimen. */
+.ct-knowledge {
+  padding: clamp(20px, 3vw, 36px);
+  margin-top: 28px;
+  border-block: 1px solid var(--line);
+  background: color-mix(in srgb, var(--gold) 4%, transparent);
+  scroll-margin-top: 100px;
+}
+.ct-knowledge-top,
+.ct-knowledge-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+}
+#ct-panel .ct-knowledge h3 {
+  font: 400 clamp(27px, 3vw, 40px) / 1.15 var(--serif);
+  margin: 14px 0 0;
+}
+.ct-knowledge-top label {
+  display: grid;
+  gap: 8px;
+  font: 10px var(--mono);
+  max-width: 44%;
+  min-width: 0;
+}
+.ct-knowledge-top select {
+  width: 100%;
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+#ct-knowledge-note {
+  max-width: 85ch;
+  font: 14px/1.8 var(--sans);
+  margin: 22px 0;
+}
+.ct-knowledge-clock {
+  font: 12px/1.8 var(--mono);
+  color: var(--gold-bright, var(--gold));
+}
+.ct-knowledge-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+.ct-knowledge-stations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 24px;
+}
+.ct-knowledge-stations > div {
+  display: grid;
+  gap: 12px;
+  border-top: 2px solid var(--gold);
+  padding: 20px 0;
+}
+.ct-knowledge-stations > div + div {
+  border-top-color: var(--ink);
+  padding-left: 24px;
+  border-left: 1px solid var(--line);
+}
+.ct-knowledge-stations strong {
+  font: 26px/1.2 var(--mono);
+}
+.ct-knowledge-stations small {
+  color: var(--secondary);
+  font: 10px/1.8 var(--mono);
+}
+#ct-knowledge-scope {
+  font: 11px/1.8 var(--mono);
+  color: var(--secondary);
+  margin-bottom: 0;
+}
+.ct-knowledge[data-replaying="true"] {
+  box-shadow: inset 3px 0 var(--gold);
+}
+@media (max-width: 700px) {
+  .ct-knowledge-top,
+  .ct-knowledge-bar {
+    display: grid;
+    gap: 18px;
+  }
+  .ct-knowledge-top label {
+    max-width: 100%;
+  }
+  .ct-knowledge-stations {
+    grid-template-columns: 1fr;
+  }
+  .ct-knowledge-stations > div + div {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
 .ct-guide {
   border: 1px solid var(--line);
   border-top: 2px solid var(--gold);

@@ -33,7 +33,7 @@ jobs:
         run: |
           python3 scripts/build_notes.py --check
           python3 scripts/reading_output.test.py
-          node --test scripts/coastal_replay.test.mjs scripts/coastal_transport.test.mjs scripts/coastal_guide.test.mjs
+          node --test scripts/coastal_replay.test.mjs scripts/coastal_transport.test.mjs scripts/coastal_guide.test.mjs scripts/coastal_knowledge.test.mjs
           node --test scripts/notes_model.test.mjs
           node --test scripts/field_listen_model.test.mjs
           node --test scripts/loose_end_model.test.mjs
@@ -53,6 +53,8 @@ jobs:
           node --check docs/assets/coastal-transport-model.mjs
           node --check docs/assets/coastal-guide.mjs
           node --check docs/assets/coastal-guide-model.mjs
+          node --check docs/assets/coastal-knowledge.mjs
+          node --check docs/assets/coastal-knowledge-model.mjs
           node --check scripts/audit_coastal_guide.mjs
           node --check docs/assets/specimens.mjs
           node --check docs/assets/mapping-study.mjs
