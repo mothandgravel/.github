@@ -1,0 +1,163 @@
+{
+  "checked": "2026-10-20",
+  "purpose": "Candidate public inputs for Coastal watch identity, source lineage and uncertainty studies. No listed dataset is used as ground truth for the fictional identity rehearsal.",
+  "unfilledEvidence": "No suitable public labelled AIS RF-fingerprint dataset was verified in this pass. GNSS I/Q, NMEA messages, SAR imagery and decoded AIS trajectories are different measurements; none is a substitute for measured AIS radio metrics. FGI's Baltic RFI entry is marked coming soon. SeaSpoofFinder's paper is a relevant methods lead, but its public viewer could not be retrieved and data redistribution terms were not verified: https://arxiv.org/html/2602.16257v1.",
+  "datasets": [
+    {
+      "title": "MARSIM / maritime GNSS anomaly scenarios",
+      "region": "Germany / controlled maritime simulation",
+      "kind": "Labelled synthetic NMEA network recordings",
+      "url": "https://zenodo.org/records/8202936",
+      "use": "A reproducible navigation-integrity rehearsal with benign and attacked scenarios, separate device accounts and explicit synthetic provenance.",
+      "access": "Open v2 release. Zenodo API confirms dataset.tar.bz2 at 560,246,467 bytes, MD5 9f458760e8b746854dae451627ff6aff; accompanying README and parameter-space figure.",
+      "rights": "CC BY 4.0 in the release API metadata. Credit Spravil, Hemminghaus and Bauer and retain scenario parameters.",
+      "limit": "120-second simulated scenarios with two GNSS receivers 4 m apart and a constant northward course. These are NMEA packet captures, not raw AIS RF recordings or observed shadow-fleet activity.",
+      "verification": "Versioned release description and API metadata inspected. Scenario archive not downloaded or executed.",
+      "priority": 2
+    },
+    {
+      "title": "FGI / GNSS jamming and spoofing recordings",
+      "region": "Finland research / Norway test campaign",
+      "kind": "Raw GNSS I/Q and controlled interference scenarios",
+      "url": "https://www.maanmittauslaitos.fi/en/research/research/gnss-specialists/fgi-gnss-jamming-and-spoofing-dataset-repository-fgi-jsdr",
+      "use": "A Finnish research route for testing the integrity of the position source itself. Keep GNSS signal evidence distinct from downstream AIS messages and network delivery timing.",
+      "access": "Official National Land Survey of Finland page links FGI-SpoofRepo, OSNMA and Jammertest 2023 releases in Fairdata. The Baltic RFI entry is currently marked coming soon.",
+      "rights": "Dataset-specific Fairdata terms and file access still need verification. The public overview is not a redistribution grant.",
+      "limit": "GNSS radio recordings do not validate an AIS VHF transmitter fingerprint or a vessel identity. Controlled interference labels cannot be transferred to live maritime contacts.",
+      "verification": "Official scenario descriptions and repository links inspected. Fairdata pages required JavaScript in the research fetch; no signal files acquired or receiver implementation tested.",
+      "priority": 2
+    },
+    {
+      "title": "Copernicus Sentinel-1 / original SAR scenes",
+      "region": "Global, including the Gulf of Finland",
+      "kind": "Satellite radar measurements and acquisition metadata",
+      "url": "https://dataspace.copernicus.eu/data-collections/copernicus-sentinel-missions/sentinel-1",
+      "use": "A separate observation channel for a dated Baltic case. Preserve acquisition time, footprint, polarization and processing version alongside an AIS account.",
+      "access": "Public STAC catalogue at https://stac.dataspace.copernicus.eu/v1/search. A bounded query for 24–26 E, 59–61 N and 1–19 October 2026 returned three Sentinel-1C GRD scenes with VV/VH assets. Product download requires registered access.",
+      "rights": "Sentinel data have free, full and open access under the Copernicus Sentinel legal notice. Portal editorial images and text have separate terms: https://dataspace.copernicus.eu/terms-and-conditions.",
+      "limit": "A scene is not an identified vessel or continuous surveillance. Ship detection, acquisition coverage, geolocation and association uncertainty must be evaluated. Public Sentinel imagery does not grant access to EMSA's restricted maritime surveillance products.",
+      "verification": "Official product, terms and STAC documentation inspected. Anonymous catalogue query succeeded. Example: S1C_IW_GRDH_1SDV_20261019T160433_20261019T160458_009956_013D93_BE81_COG, acquisition start 2026-10-19T16:04:33.265952Z. Metadata only; pixels not downloaded or interpreted.",
+      "priority": 1
+    },
+    {
+      "title": "Global Fishing Watch / Sentinel-1 vessel detections",
+      "region": "Global maritime regions",
+      "kind": "Derived SAR detections, footprints and AIS associations",
+      "url": "https://globalfishingwatch.org/platform-update/2024-may-data-download-portal-new-dataset-released-featuring-vessel-detections-from-sentinel-1-sar/",
+      "use": "Inspect a detection, the area actually searched and a proposed AIS association as separate records. Useful for an unmatched-contact study without treating missing AIS as identity or intent.",
+      "access": "GFW download portal and API. Published September 2026 service notice reports resumed Sentinel-1C/1D processing and backfill from 30 June 2026.",
+      "rights": "GFW service guide states CC BY-NC 4.0/non-commercial terms. Confirm dataset-specific rights before commercial specimen redistribution.",
+      "limit": "AIS-derived labels and matching scores share AIS dependencies. Unmatched detections may include false positives or unavailable AIS. Calibration changes can affect comparisons across satellites and time.",
+      "verification": "Official release, API dataset description and current service notice inspected: https://globalfishingwatch.org/platform-update/sar-vessel-detection-and-fixed-infrastructure-datasets-issue/. No download account used or detection rows acquired.",
+      "priority": 2
+    },
+    {
+      "title": "OpenSanctions / maritime entities and assertions",
+      "region": "Global / multiple jurisdictions",
+      "kind": "Aggregated vessel, owner and designation records",
+      "url": "https://www.opensanctions.org/docs/coverage/maritime/",
+      "use": "A source-linked identity graph for names, IMO numbers, flags and ownership assertions. Keep source, jurisdiction and dates visible when comparing records.",
+      "access": "Public research pages and structured bulk datasets; dedicated maritime CSV is offered to bulk-data clients.",
+      "rights": "Free for non-commercial users; business use requires a data licence. Do not treat public browsing as permission to redistribute a studio dataset.",
+      "limit": "An aggregation is not an independent witness for every copied designation. Shared official sources must remain visible; entity matching does not identify a radar contact.",
+      "verification": "Provider maritime schema, bulk export description and business-licensing notice inspected. No entity rows downloaded or joined to the rehearsal.",
+      "priority": 2
+    },
+    {
+      "title": "HAXR / multi-station radar and AIS",
+      "region": "Germany / port environment",
+      "kind": "Recorded radar + anonymized AIS",
+      "url": "https://zenodo.org/records/19824555",
+      "use": "Strongest near-term continuation of Raivari's existing radar and station-continuity replay. Compare different radar observations with copies of one shared AIS stream.",
+      "access": "Open files; Zenodo API metadata verified. Release 1.1.0, 82 files. Radar HDF5 chunks are typically tens to hundreds of MB; AIS CSV files are smaller.",
+      "rights": "CC BY 4.0 in the release metadata. Attribute DLR and the named authors; pin the release and transformations.",
+      "limit": "Pseudonymous vessel IDs cannot be joined to real IMO/name histories. Station-local coordinates, timing and calibration still require care. Not a labelled spoofing dataset.",
+      "verification": "Release metadata and documentation inspected; existing Raivari extracts were reviewed earlier. Full new release not downloaded.",
+      "priority": 1
+    },
+    {
+      "title": "Finnish waters / large-scale AIS archive",
+      "region": "Finland / Baltic",
+      "kind": "Historical AIS",
+      "url": "https://zenodo.org/records/8112336",
+      "use": "A regional candidate for replaying identity fields and ordinary vessel movement before designing anomaly comparisons.",
+      "access": "Open Zenodo archive. API metadata verified: AIS_Dataset.zip, 43,556,570,046 bytes, MD5 5e0414e51483469a6699b84ec8cd339a.",
+      "rights": "CC BY 4.0 in the record metadata.",
+      "limit": "The 43.6 GB archive has not been downloaded or parsed here. No receiver coverage, RF measurements or shadow-fleet labels are established by the listing.",
+      "verification": "Repository metadata and associated paper inspected; schema and quality require a bounded extraction.",
+      "priority": 2
+    },
+    {
+      "title": "Tracking elusive and shifting vessel identities",
+      "region": "Global / fishing fleet",
+      "kind": "Identity research and derived data",
+      "url": "https://github.com/GlobalFishingWatch/paper-tracking-vessel-identity",
+      "use": "The closest research fit for dated identity assertions, changing identifiers and source-by-source corroboration.",
+      "access": "Public research code and a 32.5 MB Zenodo release at doi:10.5281/zenodo.7549119. The repository points to a separate core identity dataset in GFW's download portal.",
+      "rights": "Zenodo labels the research release 'other-open'; this is not a specific redistribution grant. GFW's service guide states CC BY-NC 4.0/non-commercial terms. Resolve exact dataset terms before publishing rows in a studio specimen.",
+      "limit": "Fishing-fleet identity research is not a tanker sanctions or shadow-fleet label set. A research-code archive does not imply that raw AIS or all registry inputs are redistributed.",
+      "verification": "Repository README, data directory, release metadata and GFW user guide inspected. Core portal data not acquired.",
+      "priority": 1
+    },
+    {
+      "title": "Hot spots of unseen fishing vessels",
+      "region": "Global / high-seas fisheries",
+      "kind": "Derived AIS-gap events",
+      "url": "https://github.com/GlobalFishingWatch/AIS-disabling-high-seas",
+      "use": "A bounded event ledger with start/end times and locations, vessel attributes and duration. Useful for inspecting what a derived gap event does and does not establish.",
+      "access": "Direct 4.26 MB disabling_events.zip in the public repository. The data README describes 55,368 events and documents the CSV fields.",
+      "rights": "Repository has Apache-2.0 licensing. Confirm applicability to the event data and any upstream restrictions before redistributing a subset; service terms and paper licensing are separate.",
+      "limit": "These are research-derived events, not independently verified criminal acts. They are not raw reception logs, RF records or a Baltic tanker benchmark.",
+      "verification": "Pinned commit 814305b4b562de8f9f4b52a27a32baaae7fac20b archive downloaded and parsed: 55,368 CSV rows, 15 columns, 4,260,948 archive bytes. SHA-256 d619e1fc256669e1441b62dc6655d03faa34090d95a0c4215988d5987445d6fc. Individual event claims not independently validated.",
+      "priority": 2
+    },
+    {
+      "title": "xView3 / Sentinel-1 vessel observations",
+      "region": "Multiple maritime regions",
+      "kind": "Satellite SAR + derived annotations",
+      "url": "https://iuu.xview.us/",
+      "use": "A candidate second observation channel for comparing a satellite acquisition with an AIS account and inspecting association uncertainty.",
+      "access": "Public challenge and dataset documentation. Current download workflow and a bounded scene acquisition still need verification.",
+      "rights": "Dataset-specific download and redistribution terms have not been verified in this pass. Do not infer them from model-code licenses.",
+      "limit": "Annotations combine AIS/VMS-derived information, automated analysis and manual review. SAR pixels are a different measurement, but AIS-derived labels are not an independent identity witness.",
+      "verification": "Official challenge description and dataset whitepaper inspected; no imagery downloaded or bundled.",
+      "priority": 3
+    },
+    {
+      "title": "MarineCadastre / vessel traffic archive",
+      "region": "United States",
+      "kind": "Historical AIS",
+      "url": "https://github.com/ocm-marinecadastre/ais-vessel-traffic",
+      "use": "An additional region for testing identity grouping, trajectory import and sensitivity to collection/processing conventions.",
+      "access": "Official bulk downloads; repository documents daily CSV and newer GeoParquet options. AccessAIS's custom ordering page currently reports unavailable; bulk access is the alternative.",
+      "rights": "Check the metadata for the selected release and retain NOAA/BOEM/USCG attribution. No raw records redistributed by this specimen.",
+      "limit": "Processed AIS observations do not supply RF evidence, continuous receiver coverage or verified vessel intent.",
+      "verification": "Official repository and AccessAIS status page inspected. Bulk archives not downloaded.",
+      "priority": 3
+    },
+    {
+      "title": "UK Sanctions List",
+      "region": "United Kingdom / international designations",
+      "kind": "Dated official assertions",
+      "url": "https://www.gov.uk/government/publications/the-uk-sanctions-list",
+      "use": "An authoritative source for an explicitly dated designation assertion, linked by identifiers and preserved with its jurisdiction and source document.",
+      "access": "Official CSV, XML and other formats linked from the publication page. Do not use the retired OFSI consolidated list as the current feed.",
+      "rights": "Publication page states Open Government Licence v3.0 except where otherwise stated; retain attribution and inspect selected-file exceptions.",
+      "limit": "A designation is jurisdiction- and time-specific. It is not proof of a sensor anomaly, a universal shadow-fleet classification, or the identity of an observed contact.",
+      "verification": "Official publication, format links and current-source notice inspected. No live list joined to the rehearsal.",
+      "priority": 2
+    },
+    {
+      "title": "Digitraffic / the existing live source",
+      "region": "Finland",
+      "kind": "Public AIS captures",
+      "url": "https://www.digitraffic.fi/en/marine-traffic/",
+      "use": "Continue using Raivari's bounded captures to exercise real queue receipts, retries and late arrival. The identity inspector imports their existing transport exports.",
+      "access": "Already integrated in the local Coastal watch workbench; manual REST captures and a separate maritime MQTT bridge.",
+      "rights": "Raivari's capture provenance records CC BY 4.0 and Fintraffic / Digitraffic attribution.",
+      "limit": "Transport exports currently preserve MMSI and position fields, not name/IMO history or GNSS dependency evidence. Manual capture and capacity limits cannot establish vessel silence.",
+      "verification": "Raivari collector and export contracts inspected. No new background collection started.",
+      "priority": 1
+    }
+  ]
+}

@@ -35,6 +35,7 @@ jobs:
           python3 scripts/reading_output.test.py
           node --test scripts/coastal_replay.test.mjs scripts/coastal_transport.test.mjs scripts/coastal_guide.test.mjs scripts/coastal_knowledge.test.mjs
           node --test scripts/shadow_inquiry.test.mjs
+          node --test scripts/coastal_identity.test.mjs
           node --test scripts/notes_model.test.mjs
           node --test scripts/field_listen_model.test.mjs
           node --test scripts/loose_end_model.test.mjs
@@ -59,6 +60,9 @@ jobs:
           node --check docs/assets/shadow-inquiry.mjs
           node --check docs/assets/shadow-inquiry-model.mjs
           node --check scripts/audit_shadow_inquiry.mjs
+          node --check docs/assets/coastal-identity.mjs
+          node --check docs/assets/coastal-identity-model.mjs
+          node --check scripts/audit_coastal_identity.mjs
           node --check scripts/audit_coastal_guide.mjs
           node --check docs/assets/specimens.mjs
           node --check docs/assets/mapping-study.mjs
