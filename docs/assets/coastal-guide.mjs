@@ -7,6 +7,7 @@ export function createGuide({
   select,
   inspect,
   availability,
+  replay,
 }) {
   const $ = (id) => document.getElementById(id);
   const stages = [
@@ -87,6 +88,7 @@ export function createGuide({
     $("ct-guide-stop").disabled = !run.active;
     $("ct-guide-inspect").hidden = run.phase !== "complete";
     $("ct-guide-retry").hidden = run.phase !== "complete";
+    $("ct-guide-replay").hidden = run.phase !== "complete";
     $("ct-guide-pair").hidden = !run.pair;
     if (run.pair) {
       $("ct-guide-older").textContent = transportClock(
@@ -113,6 +115,9 @@ export function createGuide({
   $("ct-guide-retry").addEventListener("click", () => {
     const r = guide.state.retry;
     if (r) inspect(r.observation_id, "north", r);
+  });
+  $("ct-guide-replay").addEventListener("click", () => {
+    if (guide.state.arrival) replay(guide.state.arrival.observation.id);
   });
   window.addEventListener("beforeunload", (event) => {
     if (guide.state.active) {

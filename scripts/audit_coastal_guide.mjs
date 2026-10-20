@@ -76,6 +76,7 @@ export async function auditGuidedRun(
             south: {
               success: !state.controls.paused,
               messagesSent: state.controls.paused ? 0 : 2,
+              error: state.controls.paused ? "No connection" : undefined,
             },
           },
         });
@@ -87,7 +88,19 @@ export async function auditGuidedRun(
               observation_id: o.id,
               first_received_at: state.serverTime,
             });
+            const attemptId = `guided-attempt-${state.receipts.length + 1}`;
+            state.attempts.push({
+              id: attemptId,
+              cycle_id: syncs,
+              message_id: o.messageId,
+              origin: "south",
+              attempt: 1,
+              started_at: state.serverTime,
+              finished_at: state.serverTime,
+              status: state.controls.failResponseOnce ? 503 : 200,
+            });
             state.receipts.push({
+              attempt_id: attemptId,
               id: state.receipts.length + 1,
               station: "north",
               observation_id: o.id,
@@ -98,8 +111,16 @@ export async function auditGuidedRun(
                 : "accepted",
             });
             if (state.controls.failResponseOnce) {
+              const retryId = `guided-attempt-${state.receipts.length + 1}`;
+              state.attempts.push({
+                ...state.attempts.at(-1),
+                id: retryId,
+                attempt: 2,
+                status: 200,
+              });
               state.receipts.push({
                 ...state.receipts.at(-1),
+                attempt_id: retryId,
                 id: state.receipts.length + 1,
                 status: 200,
                 outcome: "duplicate",
@@ -150,14 +171,115 @@ export async function auditGuidedRun(
       "guided-2",
     );
     assert.equal(await page.locator("#ct-paused").isChecked(), false);
+    const sentBeforeReplay = syncs,
+      capturesBeforeReplay = captures;
+    await page.locator("#ct-guide-replay").click();
+    assert.equal(
+      await page.locator("#ct-knowledge-position").textContent(),
+      "1 / 7",
+    );
+    assert.equal(
+      await page.locator("#ct-north-marks [data-observation]").count(),
+      0,
+    );
+    assert.equal(
+      await page.locator("#ct-south-marks [data-observation]").count(),
+      1,
+    );
+    assert(await page.locator("#ct-sync").isDisabled());
+    assert(
+      await page.locator("#ct-replay-journey").isDisabled(),
+      "historical plots do not run a second transport animation",
+    );
+    for (let i = 0; i < 4; i++)
+      await page.locator("#ct-knowledge-next").click();
+    assert.match(
+      await page.locator("#ct-knowledge-heading").innerText(),
+      /newer report arrives/,
+    );
+    const latest = page.locator('#ct-north-marks [data-latest="true"]');
+    assert.equal(await latest.getAttribute("data-observation"), "guided-2");
+    const position = await latest.locator("circle.mark").getAttribute("cx");
+    const replayClock = await page.locator("#ct-knowledge-clock").textContent();
+    state.serverTime += 40000;
+    state.busy = true;
+    await page.locator("#ct-refresh").click();
+    assert.equal(
+      await page.locator("#ct-knowledge-clock").textContent(),
+      replayClock,
+      "live refresh cannot move the replay clock",
+    );
+    assert.equal(
+      await page.locator("#ct-knowledge-controls").isVisible(),
+      true,
+      "another service operation must not erase the frozen replay",
+    );
+    state.busy = false;
+    await page.locator("#ct-refresh").click();
+    await page.locator("#ct-knowledge-next").click();
+    assert.equal(
+      await page.locator("#ct-north-marks [data-observation]").count(),
+      1,
+      "duplicate adds no observation",
+    );
+    await page.locator("#ct-knowledge-next").click();
+    assert.equal(
+      await page.locator("#ct-north-marks [data-observation]").count(),
+      2,
+    );
+    assert.equal(await latest.getAttribute("data-observation"), "guided-2");
+    assert.equal(
+      await latest.locator("circle.mark").getAttribute("cx"),
+      position,
+    );
+    assert.match(
+      await page.locator("#ct-knowledge-stations").innerText(),
+      /north \/ 2 reports known/i,
+    );
+    await page.locator("#ct-knowledge-receipt").click();
+    assert.equal(await page.locator("#ct-receipts tr").count(), 1);
+    await page.locator("#ct-knowledge").screenshot({
+      path: `${output}/coastal-knowledge-${width}-${theme}.png`,
+    });
+    await page.locator("#ct-knowledge-prev").click();
+    assert.equal(
+      await page.locator("#ct-north-marks [data-observation]").count(),
+      1,
+      "rewind removes late history",
+    );
+    await page.locator("#ct-knowledge-play").click();
+    await page.clock.runFor(2500);
+    assert.equal(
+      await page.locator("#ct-knowledge-position").textContent(),
+      "7 / 7",
+    );
+    assert.equal(
+      await page.locator("#ct-knowledge-play").getAttribute("aria-pressed"),
+      "false",
+      "playback pauses at the final recorded step",
+    );
+    assert.equal(syncs, sentBeforeReplay);
+    assert.equal(captures, capturesBeforeReplay);
     await page.addScriptTag({ content: axe.source });
     const violations = await page.evaluate(async () =>
-      (await axe.run(document.querySelector("#ct-guide"))).violations.map(
+      (await axe.run(document.querySelector("#ct-panel"))).violations.map(
         (v) => v.id,
       ),
     );
     assert.deepEqual(violations, []);
     assert.deepEqual(errors, []);
+    await page.locator("#ct-knowledge-live").click();
+    assert(!(await page.locator("#ct-sync").isDisabled()));
+    assert.equal(
+      await page.locator("#ct-knowledge-controls").isVisible(),
+      false,
+    );
+    await page.reload();
+    await page.locator("#ct-workbench").waitFor();
+    assert(
+      await page.locator("#ct-knowledge-start").isEnabled(),
+      "persisted journal reconstructs the replay after reload",
+    );
     assert(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth + 1,

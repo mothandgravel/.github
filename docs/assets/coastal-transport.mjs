@@ -1,6 +1,7 @@
 import { createTransportTransit } from "./coastal-transit.mjs";
 import { createArrivalInspector } from "./coastal-arrival.mjs";
 import { createGuide } from "./coastal-guide.mjs";
+import { createKnowledgeReplay } from "./coastal-knowledge.mjs";
 import {
   transportPicture,
   transportArrival,
@@ -51,7 +52,12 @@ function schedule() {
     timer = setTimeout(() => refresh(false), busy || state?.busy ? 200 : 1500);
 }
 function availability() {
-  const disabled = !connected || busy || Boolean(state?.busy) || guide.active;
+  const disabled =
+    !connected ||
+    busy ||
+    Boolean(state?.busy) ||
+    guide.active ||
+    knowledge.active;
   for (const el of document.querySelectorAll(
     "#ct-controls input,#ct-controls select,#ct-controls button,.ct-conditions input,#ct-observe",
   ))
@@ -71,7 +77,8 @@ function availability() {
     : "Service disconnected";
   $("ct-panel").dataset.busy = String(busy);
   $("ct-authored").disabled = guide.active;
-  guide.update(connected, busy || Boolean(state?.busy));
+  guide.update(connected, busy || Boolean(state?.busy) || knowledge.active);
+  if (knowledge.active) $("ct-replay-journey").disabled = true;
 }
 function select(id, s) {
   if (!state?.observations.some((o) => o.id === id)) return;
@@ -89,22 +96,34 @@ function setEvidence(view) {
   }
 }
 function renderCharts() {
+  const chartState = knowledge.snapshot ?? state;
+  if (!chartState) return;
+  $("ct-knowledge-scope").textContent =
+    knowledge.label ||
+    "Replay uses recorded evidence at reading speed. Opening a replay sends no reports. Return to live to change the queue.";
+  document.querySelector(".ct-transit-boundary").textContent = knowledge.active
+    ? "The station plots above replay recorded knowledge. This journey panel, queue totals and receipt inspectors use the latest snapshot. Return to live before replaying an individual transport journey."
+    : "The crossing shows transport between illustrative stations, not vessel movement. Replay spaces recorded events for reading; timestamps and receipts stay unchanged. Charts and queue totals remain live.";
   const focused = document.activeElement?.dataset?.transportFocus;
   for (const s of ["north", "south"]) {
-    const picture = transportPicture(state, s),
+    const picture = transportPicture(chartState, s),
       layer = $(`ct-${s}-marks`);
     // Avoid rebuilding focused marks on every poll; age changes only alter freshness class.
-    const visible = earlier
-      ? picture.records
-      : picture.records.filter(
-          (o) => picture.latest.some((l) => l.id === o.id) || o.id === selected,
-        );
+    const visible =
+      earlier || knowledge.active
+        ? picture.records
+        : picture.records.filter(
+            (o) =>
+              picture.latest.some((l) => l.id === o.id) || o.id === selected,
+          );
     if (
       changed(`map-${s}`, [
         visible.map((o) => [o.id, o.age > 120]),
         selected,
         station,
         earlier,
+        knowledge.active,
+        picture.latest.map((o) => o.id),
       ])
     ) {
       layer.replaceChildren();
@@ -176,7 +195,7 @@ function renderCharts() {
           { x: lx, y: ly + 2, class: "selection-label" },
           g,
         ).textContent = label;
-        const a = transportArrival(state, o.id, s);
+        const a = transportArrival(chartState, o.id, s);
         if (a?.status === "late" && a.current && a.current.id !== o.id) {
           const [cx, cy] = point(a.current.lon, a.current.lat);
           svg("circle", { cx, cy, r: 10, class: "ct-retained-ring" }, g);
@@ -199,10 +218,24 @@ function renderCharts() {
       ais = picture.latest.filter((o) => o.evidence === "public-ais").length;
     $(`ct-${s}-count`).textContent = String(known).padStart(2, "0");
     const summary = $(`ct-${s}-summary`);
-    if (changed(`summary-${s}`, [known, ais, state.queues[s].pending])) {
+    if (
+      changed(`summary-${s}`, [
+        known,
+        ais,
+        state.queues[s].pending,
+        knowledge.active,
+        knowledge.active ? chartState.serverTime : null,
+      ])
+    ) {
       summary.replaceChildren();
       add("span", `${ais} AIS contact records · ${known} reports`, summary);
-      add("strong", `${state.queues[s].pending} waiting`, summary);
+      add(
+        "strong",
+        knowledge.active
+          ? `Known at ${clock(chartState.serverTime)} UTC`
+          : `${state.queues[s].pending} waiting`,
+        summary,
+      );
     }
   }
   if (focused)
@@ -458,6 +491,7 @@ function renderLedgers() {
 }
 function render() {
   if (!state) return;
+  knowledge.update(state, busy || Boolean(state.busy) || guide.active);
   if (!selected) {
     filtered = false;
     $("ct-filter").checked = false;
@@ -550,6 +584,7 @@ async function command(body, guided = false) {
       throw Error("The service is disconnected or another request is running.");
     return;
   }
+  if (knowledge.active) knowledge.stop();
   busy = true;
   transit.stop();
   availability();
@@ -634,6 +669,7 @@ function mode(value) {
   else {
     clearTimeout(timer);
     transit.stop();
+    if (knowledge.active) knowledge.stop();
   }
 }
 for (const s of ["north", "south"]) {
@@ -717,12 +753,27 @@ const arrivalInspector = createArrivalInspector({
   select,
   inspect: inspectReceipt,
 });
+const knowledge = createKnowledgeReplay({
+  redraw() {
+    render();
+  },
+  onStart() {
+    transit.stop();
+  },
+  select,
+  inspect: inspectReceipt,
+});
 const guide = createGuide({
   getState: () => state,
   command: (body) => command(body, true),
   select,
   inspect: inspectReceipt,
   availability,
+  replay(id) {
+    knowledge.start(id);
+    $("ct-knowledge").scrollIntoView({ block: "start", behavior: "instant" });
+    $("ct-knowledge-next").focus({ preventScroll: true });
+  },
 });
 $("ct-origin").addEventListener("change", () => {
   if (state) render();
