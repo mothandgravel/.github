@@ -1,4 +1,138 @@
 /* Coastal watch: a working instrument within the specimen. */
+.ct-guide {
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--gold);
+  padding: clamp(20px, 3vw, 38px);
+  margin: 12px 0 36px;
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--gold) 6%, transparent),
+    transparent 65%
+  );
+}
+.ct-guide-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+}
+#ct-panel .ct-guide h3 {
+  font: 400 clamp(30px, 3.6vw, 48px) / 1.05 var(--serif);
+  margin: 12px 0 26px;
+}
+.ct-guide-heading > p {
+  color: var(--secondary);
+  font: 13px/1.8 var(--sans);
+  margin-bottom: 28px;
+}
+.ct-guide-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  font: 10px/1.6 var(--mono);
+  color: var(--secondary);
+}
+.ct-guide-steps li {
+  padding: 12px 0;
+  border-top: 2px solid var(--line);
+}
+.ct-guide-steps [data-state="done"] {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.ct-guide-steps [data-state="current"] {
+  border-color: var(--gold);
+  color: var(--ink);
+}
+.ct-guide-body {
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  align-items: center;
+  min-height: 120px;
+}
+#ct-guide-note {
+  max-width: 55ch;
+  font: 15px/1.7 var(--sans);
+}
+.ct-guide-pair {
+  min-width: 290px;
+}
+.ct-guide-pair > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 14px 0;
+}
+.ct-guide-pair strong {
+  display: block;
+  margin-top: 8px;
+  font: 22px/1.2 var(--mono);
+}
+.ct-guide-pair span {
+  font: 10px/1.5 var(--mono);
+}
+.ct-guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.ct-guide-actions a {
+  align-self: center;
+  padding: 12px 0;
+  font: 11px var(--mono);
+}
+#ct-panel .ct-guide-limit {
+  margin: 18px 0;
+  font: 10px/1.7 var(--mono);
+  color: var(--secondary);
+}
+.ct-guide-method {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  color: var(--secondary);
+  font: 12px/1.7 var(--sans);
+}
+.ct-guide-method summary {
+  cursor: pointer;
+  font: 11px var(--mono);
+  padding: 6px 0;
+}
+.ct-guide-method p {
+  max-width: 90ch;
+}
+.ct-guide[data-phase="complete"] {
+  border-top-color: var(--ink);
+}
+@media (max-width: 700px) {
+  .ct-guide-heading,
+  .ct-guide-body {
+    display: block;
+  }
+  .ct-guide-heading > p {
+    display: none;
+  }
+  .ct-guide-steps {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .ct-guide-steps li {
+    padding: 7px 0 7px 12px;
+    border-top: 0;
+    border-left: 2px solid var(--line);
+  }
+  .ct-guide-pair {
+    min-width: 0;
+    margin-block: 22px;
+  }
+  .ct-guide-pair strong {
+    font-size: 18px;
+  }
+}
 .ct-arrival-comparison {
   margin-top: 26px;
   padding: 24px 0 4px;
@@ -46,7 +180,7 @@
   border-left: 1px solid var(--line);
 }
 .ct-time-card time {
-  font: 500 clamp(18px, 2.2vw, 29px)/1.2 var(--mono);
+  font: 500 clamp(18px, 2.2vw, 29px) / 1.2 var(--mono);
   letter-spacing: -0.05em;
   white-space: nowrap;
 }
@@ -139,7 +273,7 @@
   margin-bottom: 28px;
 }
 #ct-panel .ct-transit h3 {
-  font: 800 clamp(25px, 3vw, 40px)/1.05 var(--sans);
+  font: 800 clamp(25px, 3vw, 40px) / 1.05 var(--sans);
   letter-spacing: -0.025em;
   margin: 10px 0 0;
 }
@@ -170,7 +304,7 @@
   min-width: 0;
 }
 .ct-shore strong {
-  font: 700 clamp(26px, 3vw, 44px)/1 var(--sans);
+  font: 700 clamp(26px, 3vw, 44px) / 1 var(--sans);
 }
 .ct-shore > span:not(.cw-label) {
   font-size: 12px;
@@ -452,7 +586,7 @@
   padding: 36px 40px 28px;
 }
 #ct-panel .ct-masthead h2 {
-  font: 800 clamp(34px, 4.2vw, 58px)/0.98 var(--sans);
+  font: 800 clamp(34px, 4.2vw, 58px) / 0.98 var(--sans);
   letter-spacing: -0.035em;
   margin: 14px 0;
 }
@@ -472,7 +606,7 @@
   gap: 9px;
 }
 .ct-instrument time {
-  font: 300 clamp(28px, 4vw, 48px)/1 var(--mono);
+  font: 300 clamp(28px, 4vw, 48px) / 1 var(--mono);
   letter-spacing: -0.07em;
   font-variant-numeric: tabular-nums;
 }
@@ -833,7 +967,7 @@
   border: 0;
 }
 .ct-metrics strong {
-  font: 400 clamp(28px, 4vw, 46px)/1 var(--mono);
+  font: 400 clamp(28px, 4vw, 46px) / 1 var(--mono);
   letter-spacing: -0.07em;
 }
 .ct-metrics span {
