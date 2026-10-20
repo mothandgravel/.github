@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   knowledgeRuns,
   knowledgeSnapshot,
+  knowledgeChanges,
 } from "../docs/assets/coastal-knowledge-model.mjs";
 import { transportPicture } from "../docs/assets/coastal-transport-model.mjs";
 
@@ -171,4 +172,52 @@ test("replay preserves prior knowledge for the focused vessel and excludes other
       (o) => o.id === "other",
     ),
   );
+  const changes = knowledgeChanges(state, run, 0);
+  assert.deepEqual(
+    changes.south.added.map((o) => o.id),
+    ["old"],
+  );
+  assert.equal(changes.north.before, 1);
+  assert.equal(changes.north.after, 1);
+  assert.equal(changes.north.retained, true);
+});
+
+test("step deltas separate capture, replacement, retry and late history", () => {
+  const state = crossingFixture(),
+    original = structuredClone(state);
+  const run = knowledgeRuns(state)[0];
+  const held = knowledgeChanges(state, run, 0);
+  assert.equal(held.south.before, 0);
+  assert.deepEqual(
+    held.south.added.map((o) => o.id),
+    ["old"],
+  );
+  const capture = knowledgeChanges(state, run, 2);
+  assert.equal(capture.south.demoted.id, "old");
+  assert.equal(capture.south.latest.id, "new");
+  assert.deepEqual(capture.north.added, []);
+  const arriving = knowledgeChanges(state, run, 4).north;
+  assert.equal(arriving.arriving.id, "new");
+  assert.equal(arriving.retained, false);
+  const retry = knowledgeChanges(state, run, 5).north;
+  assert.equal(retry.retained, true);
+  assert.deepEqual(retry.added, []);
+  assert.deepEqual(
+    retry.receipts.map((r) => r.id),
+    [2],
+  );
+  const late = knowledgeChanges(state, run, 6).north;
+  assert.deepEqual(
+    late.history.map((o) => o.id),
+    ["old"],
+  );
+  assert.equal(late.latest.id, "new");
+  assert.equal(late.arriving.id, "old");
+  assert.equal(late.retained, true);
+  assert.deepEqual(
+    knowledgeChanges(state, run, 4).north,
+    arriving,
+    "rewind is independent of navigation order",
+  );
+  assert.deepEqual(state, original);
 });

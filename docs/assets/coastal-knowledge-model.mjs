@@ -1,4 +1,7 @@
-import { transportArrival } from "./coastal-transport-model.mjs";
+import {
+  transportArrival,
+  transportPicture,
+} from "./coastal-transport-model.mjs";
 
 /** Reconstruct crossings from persisted evidence, not from a remembered UI animation. */
 export function knowledgeRuns(state) {
@@ -106,7 +109,7 @@ export function knowledgeRuns(state) {
       // Do not build a causal story from inconsistent or incomplete evidence.
       if (
         o.queuedAt > arrival.retained.queuedAt ||
-      arrival.retained.queuedAt > burst.started_at ||
+        arrival.retained.queuedAt > burst.started_at ||
         arrival.retained.queuedAt > first.received_at ||
         burst.started_at > first.received_at ||
         first.id >= arrival.receipt.id
@@ -154,4 +157,52 @@ export function knowledgeSnapshot(state, run, index) {
       ),
   );
   return { ...state, serverTime: step.time, observations, receipts, accepted };
+}
+
+/** Differences between recorded boundaries, independent of playback direction. */
+export function knowledgeChanges(state, run, index) {
+  const step = run.steps[index];
+  const current = knowledgeSnapshot(state, run, index);
+  const previous =
+    index > 0
+      ? knowledgeSnapshot(state, run, index - 1)
+      : knowledgeSnapshot(
+          state,
+          { ...run, steps: [{ time: step.time - 1 }] },
+          0,
+        );
+  return Object.fromEntries(
+    ["south", "north"].map((station) => {
+      const before = transportPicture(previous, station);
+      const after = transportPicture(current, station);
+      const known = new Set(before.records.map((o) => o.id));
+      const added = after.records.filter((o) => !known.has(o.id));
+      const latest = after.latest[0] ?? null;
+      const prior = before.latest[0] ?? null;
+      const received = new Set(previous.receipts.map((r) => r.id));
+      const receipts = current.receipts.filter(
+        (r) => r.station === station && !received.has(r.id),
+      );
+      return [
+        station,
+        {
+          before: before.records.length,
+          after: after.records.length,
+          added,
+          receipts,
+          latest,
+          prior,
+          retained: Boolean(latest && latest.id === prior?.id),
+          history: added.filter((o) => o.id !== latest?.id),
+          demoted: prior && latest && prior.id !== latest.id ? prior : null,
+          arriving:
+            step.receipt?.station === station
+              ? (after.records.find(
+                  (o) => o.id === step.receipt.observation_id,
+                ) ?? null)
+              : null,
+        },
+      ];
+    }),
+  );
 }

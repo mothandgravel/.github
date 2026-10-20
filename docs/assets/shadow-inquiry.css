@@ -1,0 +1,365 @@
+.si-main {
+  padding-block: 145px 80px;
+}
+.si-index {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font: 10px/1.8 var(--mono);
+  letter-spacing: 0.12em;
+}
+.si-hero {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 8vw;
+  align-items: end;
+  margin: 65px 0;
+}
+.si-hero h1 {
+  font: 400 clamp(52px, 7.5vw, 106px) / 0.98 var(--serif);
+  letter-spacing: -0.05em;
+  margin: 0;
+}
+.si-hero h1 em {
+  color: var(--gold);
+  font-weight: 400;
+}
+.si-hero p {
+  font: 16px/1.9 var(--sans);
+  max-width: 48ch;
+}
+.si-label {
+  font: 10px/1.8 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--secondary);
+}
+.si-boundary {
+  border-left: 2px solid var(--gold);
+  padding-left: 20px;
+  font-size: 12px !important;
+}
+.si-desk {
+  border: 1px solid var(--line);
+}
+.si-chapters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--line);
+}
+.si-main button {
+  font: 11px/1.6 var(--mono);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: transparent;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+.si-main button:hover {
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+}
+.si-main button:focus-visible,
+.si-main input:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+.si-main button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.si-chapters button {
+  text-align: left;
+  padding: 22px;
+  border: 0;
+  border-right: 1px solid var(--line);
+}
+.si-chapters button[aria-pressed="true"] {
+  color: var(--gold-bright, var(--gold));
+  box-shadow: inset 0 -3px var(--gold);
+  background: color-mix(in srgb, var(--gold) 6%, transparent);
+}
+.si-chapters span {
+  display: block;
+  font-size: 10px;
+  margin-bottom: 10px;
+  opacity: 1;
+}
+.si-scene {
+  display: grid;
+  grid-template-columns: 1fr 290px;
+}
+.si-chart {
+  padding: 30px;
+  min-width: 0;
+  background: radial-gradient(
+    ellipse at 60% 45%,
+    color-mix(in srgb, var(--gold) 5%, transparent),
+    transparent 70%
+  );
+}
+.si-chart-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font: 11px/1.8 var(--mono);
+}
+.si-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 12px 0;
+}
+.si-chart svg text {
+  fill: var(--secondary);
+  font: 12px var(--mono);
+}
+.si-chart .si-grid {
+  stroke: var(--line);
+  stroke-width: 0.5;
+}
+.si-chart .si-axis {
+  stroke: var(--secondary);
+  stroke-width: 0.6;
+}
+.si-ais {
+  fill: var(--gold);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+.si-copy {
+  fill: none;
+  stroke: var(--gold);
+  stroke-dasharray: 2 5;
+}
+.si-projection {
+  stroke: var(--gold);
+  stroke-dasharray: 7 6;
+  fill: none;
+}
+.si-envelope {
+  fill: color-mix(in srgb, var(--gold) 9%, transparent);
+  stroke: var(--gold);
+  stroke-width: 1.2;
+}
+.si-radar-bound {
+  fill: color-mix(in srgb, var(--ink) 5%, transparent);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.si-radar {
+  fill: var(--ink);
+}
+.si-residual {
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+  fill: none;
+}
+.si-result {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+.si-result h2 {
+  font: 400 25px/1.25 var(--serif);
+  margin: 0 0 10px;
+}
+.si-result p {
+  font: 11px/1.9 var(--mono);
+  color: var(--secondary);
+  margin: 8px 0 0;
+}
+.si-tally {
+  padding: 30px;
+  border-left: 1px solid var(--line);
+  display: grid;
+  align-content: start;
+  gap: 25px;
+}
+.si-tally p {
+  margin: 0;
+}
+.si-tally strong {
+  display: block;
+  font: 400 54px/1.2 var(--serif);
+}
+.si-tally .si-lineage-node {
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  font: 11px/1.8 var(--mono);
+}
+.si-lineage-node[data-available="false"] {
+  opacity: 0.45;
+}
+.si-lineage-node[data-available="true"]::before {
+  content: "↳ ";
+  color: var(--gold);
+}
+.si-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 45px;
+  padding: 36px;
+  border-top: 1px solid var(--line);
+}
+.si-story h2 {
+  font: 400 clamp(28px, 3vw, 40px) / 1.15 var(--serif);
+  margin: 12px 0 18px;
+}
+.si-story p {
+  font: 14px/1.9 var(--sans);
+}
+.si-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+.si-assumptions {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.si-assumptions legend {
+  margin-bottom: 20px;
+}
+.si-assumptions label {
+  display: grid;
+  gap: 12px;
+  font: 11px/1.7 var(--mono);
+  margin-bottom: 24px;
+}
+.si-assumptions input {
+  width: 100%;
+  accent-color: var(--gold);
+}
+.si-assumptions output {
+  float: right;
+  color: var(--ink);
+}
+.si-records {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 45px;
+  border-top: 1px solid var(--line);
+  padding: 36px;
+}
+.si-records h3 {
+  font: 400 28px/1.2 var(--serif);
+  margin: 12px 0 22px;
+}
+.si-ledger {
+  overflow-x: auto;
+}
+.si-records table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 10px/1.7 var(--mono);
+  white-space: nowrap;
+}
+.si-records th,
+.si-records td {
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 8px;
+}
+.si-records button {
+  padding: 8px;
+}
+.si-records button[aria-pressed="true"] {
+  border-color: var(--gold);
+  color: var(--gold-bright, var(--gold));
+}
+.si-records pre {
+  padding: 16px;
+  border: 1px solid var(--line);
+  font: 11px/1.7 var(--mono);
+  overflow: auto;
+}
+.si-records p {
+  font: 12px/1.8 var(--sans);
+}
+.si-reading {
+  margin: 70px 0;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 8vw;
+}
+.si-reading h2 {
+  font: 400 42px/1.1 var(--serif);
+  margin: 14px 0;
+}
+.si-reading p,
+.si-reading li {
+  font: 14px/1.9 var(--sans);
+}
+.si-reading li {
+  margin-bottom: 16px;
+}
+.si-reading summary {
+  padding: 18px 0;
+  cursor: pointer;
+  font: 12px var(--mono);
+}
+.si-export {
+  padding: 24px 36px;
+  border-top: 1px solid var(--line);
+}
+#si-export-status {
+  font: 11px/1.7 var(--mono);
+}
+@media (max-width: 900px) {
+  .si-scene {
+    grid-template-columns: 1fr;
+  }
+  .si-tally {
+    grid-template-columns: repeat(3, 1fr);
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .si-tally > div:last-child {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 650px) {
+  .si-chart svg text { font-size: 32px; }
+  .si-chart .si-copy-label, .si-chart .si-bound-label { display: none; }
+  .si-main {
+    padding-top: 115px;
+  }
+  .si-hero,
+  .si-story,
+  .si-records,
+  .si-reading {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .si-hero {
+    margin: 40px 0;
+  }
+  .si-chapters {
+    grid-template-columns: 1fr 1fr;
+  }
+  .si-chapters button {
+    padding: 16px;
+  }
+  .si-chart,
+  .si-tally,
+  .si-story,
+  .si-records,
+  .si-export {
+    padding: 20px;
+  }
+  .si-tally {
+    gap: 14px;
+  }
+  .si-tally strong {
+    font-size: 40px;
+  }
+  .si-index {
+    font-size: 9px;
+  }
+  .si-records > div {
+    min-width: 0;
+  }
+}

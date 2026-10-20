@@ -234,7 +234,27 @@ export async function auditGuidedRun(
     );
     assert.match(
       await page.locator("#ct-knowledge-stations").innerText(),
-      /north \/ 2 reports known/i,
+      /north \/ 1 → 2 reports known/i,
+    );
+    assert.match(
+      await page
+        .locator('[data-station="north"] .ct-delta-summary')
+        .innerText(),
+      /position retained.*\+1 to history/,
+    );
+    assert.equal(
+      await page
+        .locator(
+          '#ct-north-marks [data-change="history"][data-arriving="true"]',
+        )
+        .count(),
+      1,
+    );
+    assert.equal(
+      await page
+        .locator('#ct-north-marks [data-change="retained"]')
+        .getAttribute("data-observation"),
+      "guided-2",
     );
     await page.locator("#ct-knowledge-receipt").click();
     assert.equal(await page.locator("#ct-receipts tr").count(), 1);

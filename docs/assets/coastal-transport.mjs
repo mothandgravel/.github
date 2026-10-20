@@ -97,6 +97,7 @@ function setEvidence(view) {
 }
 function renderCharts() {
   const chartState = knowledge.snapshot ?? state;
+  const changes = knowledge.changes;
   if (!chartState) return;
   $("ct-knowledge-scope").textContent =
     knowledge.label ||
@@ -123,6 +124,9 @@ function renderCharts() {
         station,
         earlier,
         knowledge.active,
+        changes?.[s].added.map((o) => o.id),
+        changes?.[s].arriving?.id,
+        changes?.[s].retained,
         picture.latest.map((o) => o.id),
       ])
     ) {
@@ -143,6 +147,45 @@ function renderCharts() {
         g.dataset.transportFocus = `${s}-${o.id}`;
         g.dataset.observation = o.id;
         g.dataset.latest = String(latest);
+        const delta = changes?.[s];
+        const added = delta?.added.some((a) => a.id === o.id);
+        const addedHistory = delta?.history.some((a) => a.id === o.id);
+        const retained = delta?.retained && delta.latest.id === o.id;
+        g.dataset.change = addedHistory
+          ? "history"
+          : added
+            ? "arrival"
+            : retained
+              ? "retained"
+              : "";
+        if (delta?.arriving?.id === o.id) g.dataset.arriving = "true";
+        if (added)
+          svg(
+            "rect",
+            {
+              x: x - 10,
+              y: y - 10,
+              width: 20,
+              height: 20,
+              class: "ct-delta-added",
+            },
+            g,
+          );
+        if (addedHistory || retained)
+          svg(
+            "circle",
+            {
+              cx: x,
+              cy: y,
+              r: addedHistory ? 19 : 12,
+              class: addedHistory ? "ct-delta-history" : "ct-delta-retained",
+            },
+            g,
+          );
+        g.setAttribute(
+          "aria-label",
+          `Inspect ${shortObservation(o)} at ${s} station${addedHistory ? ", added to history" : added ? ", newly known" : ""}${retained ? ", retained position" : ""}${delta?.arriving?.id === o.id ? ", arriving report" : ""}`,
+        );
         svg("title", {}, g).textContent = shortObservation(o);
         svg("circle", { cx: x, cy: y, r: 16, class: "hit" }, g);
         const classes = `mark ${o.origin} ${o.age > 120 ? "old" : ""} ${!latest ? "history-mark" : ""} ${isSelected ? "selected" : ""}`;
