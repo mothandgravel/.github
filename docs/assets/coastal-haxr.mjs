@@ -1,5 +1,6 @@
-import { createHaxrStudy, exportHaxrView, STATIONS } from "./coastal-haxr-model.mjs?v=history-1";
-import { haxrPixels } from "./coastal-haxr-core.mjs?v=history-1";
+import { createReturnsPanel } from "./coastal-haxr-returns-view.mjs?v=returns-1";
+import { createHaxrStudy, exportHaxrView, STATIONS } from "./coastal-haxr-model.mjs?v=returns-1";
+import { haxrPixels } from "./coastal-haxr-core.mjs?v=returns-1";
 
 const $ = id => document.getElementById(`hx-${id}`);
 const settings = { anchor: "reiherstieg", index: 0, tolerance: 1 };
@@ -34,6 +35,7 @@ function facts(entries) {
   return dl;
 }
 function stop() {
+  $("returns-play").textContent = "Play frames"; $("returns-play").setAttribute("aria-pressed", "false");
   clearInterval(timer); timer = null;
   $("play").textContent = "Play frames";
   $("play").setAttribute("aria-pressed", "false");
@@ -285,6 +287,15 @@ function inspectBin() {
     note: "Acquisition times describe the frame; no per-bin instant is inferred.",
   }, null, 2);
 }
+const returnsPanel = createReturnsPanel({
+  selectFrame: selectHistoryFrame, selectUid: uid => { stop(); selectedUid = uid; render(); }, stop, redraw: render, time,
+  inspectBin: (station, col, row) => {
+    stop(); bin = { station, col, row };
+    $("cell-station").value = station; $("col").value = col; $("row").value = row;
+    render(); $("cell-result").scrollIntoView({ block: "center", behavior: "smooth" });
+    $("inspect").focus({ preventScroll: true });
+  },
+});
 function render() {
   view = study.view(settings);
   following = study.follow(selectedUid, settings);
@@ -295,6 +306,7 @@ function render() {
   $("tolerance-value").textContent = `${fmt(settings.tolerance)} s`;
   for (const id of Object.keys(STATIONS)) drawStation(id);
   drawTiming(); drawContact(); drawHistory(); inspectBin();
+  returnsPanel.draw({ study, view, uid: selectedUid, settings, names: STATIONS });
 }
 $("anchor").addEventListener("change", () => { stop(); settings.anchor = $("anchor").value; render(); });
 $("frame").addEventListener("input", () => { stop(); settings.index = Number($("frame").value); render(); });
@@ -306,6 +318,7 @@ $("play").addEventListener("click", () => {
   if (settings.index === 15) { settings.index = 0; render(); }
   $("play").textContent = "Pause frames"; $("play").setAttribute("aria-pressed", "true");
   $("history-play").textContent = "Pause history"; $("history-play").setAttribute("aria-pressed", "true");
+  $("returns-play").textContent = "Pause frames"; $("returns-play").setAttribute("aria-pressed", "true");
   timer = setInterval(() => {
     settings.index++; render();
     if (settings.index >= 15) stop();
@@ -331,11 +344,11 @@ for (const id of Object.keys(STATIONS)) $(`${id}-scope`).addEventListener("click
   $("cell-station").value = id; $("col").value = bin.col; $("row").value = bin.row; render();
 });
 $("export").addEventListener("click", () => {
-  const record = exportHaxrView(study, settings, selectedUid);
+  const record = exportHaxrView(study, settings, selectedUid, returnsPanel.options);
   record.selectedBin = JSON.parse($("raw").textContent);
   const url = URL.createObjectURL(new Blob([JSON.stringify(record, null, 2)], { type: "application/json" }));
   const link = element("a"); link.href = url; link.download = `coastal-haxr-${settings.anchor}-${settings.index + 1}.json`;
   document.body.append(link); link.click(); link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  $("export-status").textContent = "Comparison exported with the selected ID’s full recorded history, current-frame cutoffs, shared-source continuity, bin value and source hashes. Unsigned; recorded data, not a live receipt.";
+  $("export-status").textContent = "Comparison exported with the selected ID’s full recorded history, current-frame cutoffs, shared-source continuity, local radar apertures and display settings, bin value and source hashes. Unsigned; recorded data, not a live receipt.";
 });
