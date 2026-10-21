@@ -1,9 +1,11 @@
-import { createHaxrStudy, exportHaxrView, STATIONS } from "./coastal-haxr-model.mjs";
-import { haxrPixels } from "./coastal-haxr-core.mjs";
+import { createHaxrStudy, exportHaxrView, STATIONS } from "./coastal-haxr-model.mjs?v=history-1";
+import { haxrPixels } from "./coastal-haxr-core.mjs?v=history-1";
 
 const $ = id => document.getElementById(`hx-${id}`);
 const settings = { anchor: "reiherstieg", index: 0, tolerance: 1 };
-let study, view, selectedUid = null, timer, bin = { station: "reiherstieg", col: 64, row: 64 };
+let study, view, following, selectedUid = null, timer, bin = { station: "reiherstieg", col: 64, row: 64 };
+const stateLabels = { new: "Newer report", held: "Held report", stale: "Report too old", conflict: "Conflicting latest reports", unseen: "No prior report" };
+const stateMarks = { new: "N", held: "H", stale: "—", conflict: "!", unseen: "·" };
 const svgNS = "http://www.w3.org/2000/svg";
 const fmt = (n, places = 2) => n.toFixed(places);
 const time = n => {
@@ -35,6 +37,8 @@ function stop() {
   clearInterval(timer); timer = null;
   $("play").textContent = "Play frames";
   $("play").setAttribute("aria-pressed", "false");
+  $("history-play").textContent = "Play this history";
+  $("history-play").setAttribute("aria-pressed", "false");
 }
 async function boundedText(url, limit) {
   const response = await fetch(url, { cache: "no-cache", signal: AbortSignal.timeout(20000) });
@@ -77,6 +81,7 @@ $("load").addEventListener("click", async () => {
       ?? first.contacts.find(c => Object.values(c.reports).every(Boolean))?.uid ?? first.contacts[0]?.uid ?? null;
     const uids = [...new Set(records.flatMap(r => r.ais.reports.map(a => a.uid)))].sort();
     $("contact").replaceChildren(...uids.map(uid => new Option(uid, uid)));
+    $("follow-id").replaceChildren(...uids.map(uid => new Option(uid, uid)));
     if (selectedUid) $("contact").value = selectedUid;
     $("load-panel").hidden = true;
     $("workspace").hidden = false;
@@ -101,6 +106,13 @@ function drawStation(id) {
     overlay.append(svg("text", { x, y, fill: "currentColor", "text-anchor": "middle", "paint-order": "stroke", stroke: "#101719", "stroke-width": 3 }, label));
   let onChart = 0;
   if ($("ais").checked) {
+    if ($("trail").checked) for (const report of following.current[id].trail) {
+      const x = 256 + report.east * .128, y = 256 - report.north * .128;
+      if (x < 0 || x > 512 || y < 0 || y > 512) continue;
+      const dot = svg("rect", { x: x - 3, y: y - 3, width: 6, height: 6, class: "hx-trail-point", "data-tod": report.tod });
+      dot.append(svg("title", {}, `Earlier AIS ${report.uid} at ${time(report.tod)} UTC; recorded position, not a radar detection`));
+      overlay.append(dot);
+    }
     for (const report of station.ais.selected) {
       const x = 256 + report.east * .128, y = 256 - report.north * .128;
       if (x < 0 || x > 512 || y < 0 || y > 512) continue;
@@ -110,7 +122,7 @@ function drawStation(id) {
       const mark = svg("circle", { cx: x, cy: y, r: selected ? 5 : 3.5, class: "hx-ais-mark", "data-selected": selected });
       mark.append(svg("title", {}, `AIS ${report.uid} · ${fmt(report.ageSeconds)} s old · select using the reported ID control below`));
       mark.addEventListener("click", event => {
-        event.stopPropagation(); selectedUid = report.uid; $("contact").value = selectedUid; render();
+        event.stopPropagation(); stop(); selectedUid = report.uid; render();
       });
       overlay.append(mark);
       if (selected) overlay.append(svg("text", {
@@ -127,6 +139,82 @@ function drawStation(id) {
   role.dataset.eligible = String(Boolean(view.selectedPair));
   $(`${id}-time`).textContent = `${time(frame.startTod)} – ${time(frame.endTod)} UTC`;
   $(`${id}-stats`).textContent = `Frame ${String(station.index + 1).padStart(2, "0")} · ${fmt(frame.endTod - frame.startTod, 3)} s acquisition · ${station.ais.selected.length} eligible AIS IDs${$("ais").checked ? ` / ${onChart} on chart` : " / overlay hidden"}`;
+  let note = $(`${id}-follow`);
+  if (!note) { note = element("p", undefined, "hx-station-follow"); note.id = `hx-${id}-follow`; $(`${id}-stats`).after(note); }
+  const h = following.current[id];
+  note.replaceChildren(document.createTextNode(`${selectedUid} / ${stateLabels[h.state]}`));
+  note.append(element("span", h.report ? `${time(h.report.tod)} UTC · ${fmt(h.report.ageSeconds, 3)} s old at this frame end · same upstream AIS family${Math.abs(h.report.east) > 2000 || Math.abs(h.report.north) > 2000 ? " · outside this radar square" : ""}`
+    : h.latestReportTod !== null ? `Latest recorded time ${time(h.latestReportTod)} UTC · ${fmt(h.latestAgeSeconds, 3)} s old. No eligible current position.`
+    : "No earlier report for this ID in this station’s extract. No current position inferred."));
+}
+function selectHistoryFrame(station, index, focus = false) {
+  stop(); settings.anchor = station; settings.index = index; render();
+  if (focus) $(`history-${station}-${index}`).focus({ preventScroll: true });
+}
+function drawHistory() {
+  $("history-selected").textContent = `AIS ${selectedUid}`;
+  const signature = h => Object.values(h.current).map(s => s.report ? `report:${s.report.tod}` : s.state).join("|");
+  const changes = [0];
+  let previous = signature(study.follow(selectedUid, { ...settings, index: 0 }));
+  for (let i = 1; i < study.recordings[settings.anchor].frames.length; i++) {
+    const current = signature(study.follow(selectedUid, { ...settings, index: i }));
+    if (current !== previous) changes.push(i);
+    previous = current;
+  }
+  for (const [id, index] of [["history-prev", changes.filter(i => i < settings.index).at(-1)], ["history-next", changes.find(i => i > settings.index)]]) {
+    $(id).disabled = index === undefined; $(id).dataset.index = index ?? "";
+  }
+  const lanes = $("history-lanes"), rows = $("history-records"); lanes.replaceChildren(); rows.replaceChildren();
+  for (const [id, history] of Object.entries(following.stations)) {
+    const lane = element("div", undefined, "hx-history-lane"), head = element("div", undefined, "hx-history-lane-head");
+    head.append(element("h3", STATIONS[id]), element("p", `${history.totals.new} newer · ${history.totals.held} held · ${history.frames.length - history.eligibleFrames} without an eligible report`, "hx-small"));
+    const strip = element("div", undefined, "hx-history-strip"); strip.setAttribute("role", "group"); strip.setAttribute("aria-label", `${STATIONS[id]} recorded frame history`);
+    for (const f of history.frames) {
+      const button = element("button", String(f.index + 1).padStart(2, "0")); button.type = "button";
+      button.id = `hx-history-${id}-${f.index}`; button.dataset.state = f.state;
+      button.setAttribute("aria-pressed", String(view.stations[id].index === f.index));
+      button.setAttribute("aria-label", `${STATIONS[id]} frame ${f.index + 1}, ${stateLabels[f.state]}, ends ${time(f.endTod)} UTC${f.report ? `, AIS ${time(f.report.tod)}, ${fmt(f.report.ageSeconds, 3)} seconds old` : ""}`);
+      const mark = element("span", stateMarks[f.state]); mark.setAttribute("aria-hidden", "true"); button.append(mark);
+      button.addEventListener("click", () => selectHistoryFrame(id, f.index, true));
+      button.addEventListener("keydown", event => {
+        const next = event.key === "Home" ? 0 : event.key === "End" ? history.frames.length - 1 : event.key === "ArrowRight" ? Math.min(history.frames.length - 1, f.index + 1) : event.key === "ArrowLeft" ? Math.max(0, f.index - 1) : null;
+        if (next !== null) { event.preventDefault(); selectHistoryFrame(id, next, true); }
+      });
+      strip.append(button);
+      const row = element("tr");
+      row.append(...[`${STATIONS[id]} / ${String(f.index + 1).padStart(2, "0")}`, time(f.endTod), f.latestReportTod === null ? "—" : time(f.latestReportTod), f.latestAgeSeconds === null ? "—" : `${fmt(f.latestAgeSeconds, 3)} s`, stateLabels[f.state]].map(value => element("td", value)));
+      rows.append(row);
+    }
+    const displayed = following.current[id];
+    const role = id === view.anchor ? "anchor" : view.selectedPair ? "eligible time pair" : "nearest / unpaired";
+    lane.append(head, strip,
+      element("p", `Frame ${String(displayed.index + 1).padStart(2, "0")} · ${role} · ${stateLabels[displayed.state]}${displayed.latestReportTod !== null ? ` · AIS ${time(displayed.latestReportTod)} UTC / ${fmt(displayed.latestAgeSeconds, 3)} s old` : " in this station’s extract"}`, "hx-history-current"),
+      element("p", `${time(history.frames[0].startTod)} – ${time(history.frames.at(-1).endTod)} UTC / recorded window.`, "hx-small")); lanes.append(lane);
+  }
+  $("history-caption").textContent = `AIS ${selectedUid} · full recorded window, including frames beyond the current cursor. For gaps, AIS time is the latest prior timestamp, not an eligible position. One shared source family.`;
+  const comparison = following.comparison;
+  const relation = {
+    "same-source-time": ["Same AIS time.", "Both eligible copies carry the same timestamp. This does not prove an identical packet or independent corroboration."],
+    "different-source-times": ["Different AIS times.", `The selected reports are ${fmt(comparison.reportTimeDifference ?? 0, 3)} s apart. The views do not describe one common AIS instant.`],
+    "one-sided": ["One eligible copy.", "One station’s displayed frame has no eligible report for this ID. Inspect its age and state; this does not establish vessel absence."],
+    "neither-eligible": ["Neither copy qualifies.", "Neither displayed frame has an eligible report for this ID. Earlier squares remain historical; they are not current positions."],
+  }[comparison.aisRelation];
+  const panel = $("history-comparison"); panel.replaceChildren();
+  for (const [label, title, body] of [
+    ["AIS / AT EACH FRAME END", ...relation],
+    ["RADAR / ACQUISITION INTERVALS", comparison.radarTimePairEligible ? "Within the time bound." : "The frames stay unpaired.", `${fmt(comparison.endpointDifference, 3)} s maximum endpoint difference at a ${fmt(settings.tolerance)} s bound. Spatial alignment and radar association remain unestablished.`],
+    ["SOURCE / THROUGHOUT THE HISTORY", "One upstream family.", "Two local projections of the shared HAXR AIS stream. More frames and more copies do not add independent witnesses."],
+  ]) { const card = element("div"); card.append(element("p", label, "hx-label"), element("h3", title), element("p", body)); panel.append(card); }
+  const grid = $("continuity-samples"); grid.replaceChildren();
+  const continuity = following.continuity;
+  for (const sample of continuity?.samples ?? []) {
+    const state = sample.both ? "both" : sample.aOnly ? "reiherstieg" : sample.bOnly ? "hohe_schaar" : sample.neither ? "neither" : "unseen";
+    const label = { both: "Both filters", reiherstieg: "Reiherstieg only", hohe_schaar: "Hohe Schaar only", neither: "Neither eligible", unseen: "Not yet seen" }[state];
+    const cell = element("div", undefined, "hx-continuity-sample"); cell.dataset.state = state;
+    cell.append(element("strong", state === "both" ? "R + H" : state === "reiherstieg" ? "R" : state === "hohe_schaar" ? "H" : state === "neither" ? "—" : "·"), element("span", time(sample.time).slice(0, 8)), element("div", label));
+    cell.title = `${time(sample.time)} UTC · ${label} · one source family`; grid.append(cell);
+  }
+  $("continuity-summary").textContent = continuity ? `${continuity.samples.length} common-clock samples · ${time(continuity.samples[0].time)} to ${time(continuity.samples.at(-1).time)} UTC. R = Reiherstieg; H = Hohe Schaar. Eligibility follows the same 10 s age limit.` : "These recordings have no overlapping comparison window. No common-clock samples are invented.";
 }
 function drawTiming() {
   const a = view.stations[view.anchor].frame, b = view.stations[view.other].frame;
@@ -199,11 +287,14 @@ function inspectBin() {
 }
 function render() {
   view = study.view(settings);
+  following = study.follow(selectedUid, settings);
+  $("anchor").value = settings.anchor;
+  $("contact").value = selectedUid; $("follow-id").value = selectedUid;
   $("frame").value = settings.index; $("frame-value").textContent = `${String(settings.index + 1).padStart(2, "0")} / 16`;
   $("prev").disabled = settings.index === 0; $("next").disabled = settings.index === 15;
   $("tolerance-value").textContent = `${fmt(settings.tolerance)} s`;
   for (const id of Object.keys(STATIONS)) drawStation(id);
-  drawTiming(); drawContact(); inspectBin();
+  drawTiming(); drawContact(); drawHistory(); inspectBin();
 }
 $("anchor").addEventListener("change", () => { stop(); settings.anchor = $("anchor").value; render(); });
 $("frame").addEventListener("input", () => { stop(); settings.index = Number($("frame").value); render(); });
@@ -214,6 +305,7 @@ $("play").addEventListener("click", () => {
   if (timer) return stop();
   if (settings.index === 15) { settings.index = 0; render(); }
   $("play").textContent = "Pause frames"; $("play").setAttribute("aria-pressed", "true");
+  $("history-play").textContent = "Pause history"; $("history-play").setAttribute("aria-pressed", "true");
   timer = setInterval(() => {
     settings.index++; render();
     if (settings.index >= 15) stop();
@@ -222,7 +314,10 @@ $("play").addEventListener("click", () => {
 document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); });
 window.addEventListener("pagehide", stop);
 $("ais").addEventListener("change", render);
-$("contact").addEventListener("change", () => { selectedUid = $("contact").value; render(); });
+$("trail").addEventListener("change", render);
+for (const id of ["contact", "follow-id"]) $(id).addEventListener("change", () => { stop(); selectedUid = $(id).value; render(); });
+$("history-play").addEventListener("click", () => $("play").click());
+for (const id of ["history-prev", "history-next"]) $(id).addEventListener("click", () => selectHistoryFrame(settings.anchor, Number($(id).dataset.index)));
 $("inspect").addEventListener("click", () => {
   const col = Number($("col").value), row = Number($("row").value);
   if (!$("col").value || !$("row").value || !Number.isInteger(col) || !Number.isInteger(row) || col < 0 || col > 127 || row < 0 || row > 127) {
@@ -242,5 +337,5 @@ $("export").addEventListener("click", () => {
   const link = element("a"); link.href = url; link.download = `coastal-haxr-${settings.anchor}-${settings.index + 1}.json`;
   document.body.append(link); link.click(); link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  $("export-status").textContent = "Comparison exported with frame times, AIS exclusions, bin value and source hashes. Unsigned; recorded data, not a live receipt.";
+  $("export-status").textContent = "Comparison exported with the selected ID’s full recorded history, current-frame cutoffs, shared-source continuity, bin value and source hashes. Unsigned; recorded data, not a live receipt.";
 });

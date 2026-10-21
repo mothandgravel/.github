@@ -43,7 +43,7 @@
     "extractor": "packages/modbus-simulator/scripts/extract-haxr.py",
     "extractorSha256": "5cd7646a5bac79869ae8b822e48402b59c7fd533496988016f6f5e31522eb0b1",
     "coreManifest": "coastal-haxr-core.json",
-    "reuse": "Original extractor, parseHaxr, selectHaxrAis, haxrPixels and pairRadarFrames; no substitute pairing or AIS selection algorithm."
+    "reuse": "Original extractor, parseHaxr, selectHaxrAis, haxrPixels, pairRadarFrames and compareStationContinuity; no substitute pairing, AIS selection or common-clock continuity algorithm."
   },
   "transformation": {
     "commandTemplate": "uv run --no-project --with h5py==3.16.0 python <raivari>/packages/modbus-simulator/scripts/extract-haxr.py <station>_08-UTC.hdf5 <output>.json --frames 16 --start-tod 29100 --cell-timing --ais <station>_08-UTC.csv [--station hohe_schaar --expected-md5 5e40f2141b1abb47b6730e63164a68e7 --expected-size 79444282]",
@@ -51,7 +51,9 @@
     "display": "Fixed logarithmic normalization over all 16 frames separately for each station. Missing bins transparent; measured zero remains opaque.",
     "timing": "Radar acquisition intervals retained. Extract includes timing investigation metadata; the browser core displays validated frame boundaries, not per-cell acquisition instants.",
     "ais": "Latest report per pseudonymous ID at/before each frame end, at most 10 s old. Conflicting latest timestamps excluded. No interpolation or prediction.",
-    "pairing": "Existing offline left-anchored greedy pairing by maximum start/end difference, one use per counterpart. User can switch anchor and vary endpoint tolerance from 0 to 3 s."
+    "pairing": "Existing offline left-anchored greedy pairing by maximum start/end difference, one use per counterpart. User can switch anchor and vary endpoint tolerance from 0 to 3 s.",
+    "selectedHistory": "Full-window history for one pseudonymous AIS ID. Native AIS selection is evaluated at each station's radar-frame end; newer, held, stale, conflicting and unseen states remain distinct. Displayed breadcrumbs contain only prior non-conflicting reports at/before that station's displayed frame end, including the extraction lookback. No interpolated path or radar object track.",
+    "continuity": "Original compareStationContinuity sampled at five-second intervals on the common recording window, filtered to the selected UID. A final partial interval is omitted. This is availability of copies of one shared AIS source, not an independent witness count or a radar handoff."
   },
   "extracts": [
     {

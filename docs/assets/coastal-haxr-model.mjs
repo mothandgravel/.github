@@ -1,4 +1,5 @@
-import { parseHaxr, selectHaxrAis, pairRadarFrames, HAXR_AIS_POLICY } from "./coastal-haxr-core.mjs";
+import { parseHaxr, selectHaxrAis, pairRadarFrames, HAXR_AIS_POLICY } from "./coastal-haxr-core.mjs?v=history-1";
+import { selectedHistory, historyAtView } from "./coastal-haxr-history.mjs?v=history-1";
 export { HAXR_AIS_POLICY };
 export const STATIONS = Object.freeze({ reiherstieg: "Reiherstieg", hohe_schaar: "Hohe Schaar" });
 export const endpointSkew = (a, b) => Math.max(Math.abs(a.startTod - b.startTod), Math.abs(a.endTod - b.endTod));
@@ -47,7 +48,15 @@ export function createHaxrStudy(inputs) {
       sourceFamilies: 1,
     };
   }
-  return Object.freeze({ recordings, view });
+  let historyUid, history;
+  function follow(uid, settings) {
+    if (uid !== historyUid) {
+      history = frozen(selectedHistory(recordings, uid));
+      historyUid = uid;
+    }
+    return historyAtView(history, view(settings));
+  }
+  return Object.freeze({ recordings, view, follow });
 }
 export function exportHaxrView(study, settings, uid = null) {
   const v = study.view(settings);
@@ -56,6 +65,7 @@ export function exportHaxrView(study, settings, uid = null) {
     evidence: "recorded HAXR radar and shared AIS; modified downsampled extracts",
     signed: false,
     selection: { ...settings, uid },
+    selectedHistory: uid ? study.follow(uid, settings) : null,
     comparison: { preview: v.preview, selectedPair: v.selectedPair, unmatchedReason: v.unmatchedReason },
     pairing: v.pairing,
     stations: Object.fromEntries(Object.entries(v.stations).map(([id, s]) => [id, {

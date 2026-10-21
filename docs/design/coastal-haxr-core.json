@@ -9,17 +9,23 @@
     {
       "path": "packages/modbus-simulator/src/replay/radar-pairing.ts",
       "sha256": "b5e76184601b66dd9dd64bf547eaa49f69ac80e66a59e34c31bff51ada4ee499"
+    },
+    {
+      "path": "packages/modbus-simulator/src/replay/station-continuity.ts",
+      "sha256": "9ba8ef4fddfe001d883d7328cb3834461489a7f0c811e18c3e494a7005099b7b"
     }
   ],
   "bun": "1.4.0",
   "zod": "4.5.4",
-  "bundleSha256": "a256b1992004a8a2f9acfd8a54a6103faa6bbb0da158474b183d5c04b61d2009",
+  "bundleSha256": "3aa706028b75ab696e52f7d4a417c9c486c5bb31debc744e7c46e05755029085",
   "exports": [
     "parseHaxr",
     "selectHaxrAis",
     "haxrPixels",
     "HAXR_AIS_POLICY",
-    "pairRadarFrames"
+    "pairRadarFrames",
+    "compareStationContinuity",
+    "CONTINUITY_POLICY"
   ],
-  "scope": "Unmodified Raivari replay validation, AIS selection, amplitude mapping and directional timestamp pairing. No server, credentials, transport or RF analyzer included."
+  "scope": "Unmodified Raivari replay validation, AIS selection, amplitude mapping, directional timestamp pairing and shared-stream continuity. No server, credentials, transport or RF analyzer included."
 }
