@@ -1,4 +1,4 @@
-import { selectHaxrAis } from "./coastal-haxr-core.mjs?v=returns-1";
+import { selectHaxrAis } from "./coastal-haxr-core.mjs?v=motion-1";
 
 export const RETURN_DEFAULTS = Object.freeze({ radius: 125, floor: 60 });
 export const BIN_METERS = 31.25;

@@ -215,3 +215,17 @@
  .hx-return-empty { inset: 20%; }
  .hx-return-station h3 { min-height: 0; }
 }
+
+.hx-follow-return { margin-top: 8px; }
+.hx-motion { padding: 42px 32px; border-bottom: 1px solid var(--line); scroll-margin-top: 105px; }
+#hx-motion-selection { margin: 30px 0 18px; }
+.hx-motion-controls { display: flex; flex-wrap: wrap; gap: 18px; align-items: end; border-block: 1px solid var(--line); padding: 20px 0; }
+.hx-motion-controls label { flex: 1 1 220px; }
+.hx-motion-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 32px; margin-top: 32px; }
+.hx-motion-grid > div { min-width: 0; }
+.hx-motion-grid canvas { display: block; width: 100%; height: auto; border: 1px solid var(--line); background: #101719; }
+#hx-motion-state { margin-bottom: 18px; }
+.hx-motion-strip button[data-state="matched"], .hx-motion-strip button[data-state="seed"] { border-top: 2px solid var(--gold); }
+.hx-motion-strip button[data-state="stopped"] { background: repeating-linear-gradient(135deg,transparent,transparent 5px,var(--line) 6px,transparent 7px); }
+#hx-motion-seed-bin { margin-bottom: 12px; }
+@media(max-width:680px) { .hx-motion { padding:28px 18px; } .hx-motion-grid { grid-template-columns:1fr; gap:24px; } }
