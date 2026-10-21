@@ -1,8 +1,8 @@
-import { haxrPixels } from "./coastal-haxr-core.mjs?v=returns-1";
-import { BIN_METERS } from "./coastal-haxr-returns.mjs?v=returns-1";
+import { haxrPixels } from "./coastal-haxr-core.mjs?v=motion-1";
+import { BIN_METERS } from "./coastal-haxr-returns.mjs?v=motion-1";
 const labels = { nearby: "Returns inside the aperture", "below-floor": "No bins above this floor", missing: "No sampled bins here", "no-ais": "No eligible AIS position", outside: "AIS outside this raster" };
 const marks = { nearby: "+", "below-floor": "·", missing: "?", "no-ais": "—", outside: "↗" };
-export function createReturnsPanel({ selectFrame, selectUid, inspectBin, stop, redraw, time }) {
+export function createReturnsPanel({ selectFrame, selectUid, inspectBin, followBin, stop, redraw, time }) {
   const $ = id => document.getElementById(`hx-${id}`);
   const options = { radius: 125, floor: 60 };
   const el = (tag, text, cls) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; return e; };
@@ -79,6 +79,8 @@ export function createReturnsPanel({ selectFrame, selectUid, inspectBin, stop, r
       panel.append(el("p", `${time(current.startTod)}–${time(current.endTod)} UTC acquisition. ${current.reportTiming === "within-frame" ? "AIS falls within this interval and may be later than individual radar cells." : current.reportTiming === "before-frame" ? "AIS predates this acquisition interval; motion is not compensated." : "No current position comparison."}${current.clipped ? " The inspection circle is clipped by the raster edge." : ""}`, "hx-small"));
       const nearest = el("button", "Inspect nearest qualifying bin ↗"); nearest.type = "button"; nearest.disabled = !current.nearest;
       nearest.addEventListener("click", () => inspectBin(id, current.nearest.col, current.nearest.row)); panel.append(nearest);
+      const follow = el("button", "Follow this return over time ↓"); follow.type = "button"; follow.className = "hx-follow-return"; follow.disabled = !current.nearest;
+      follow.addEventListener("click", () => followBin(id, current.nearest.col, current.nearest.row)); panel.append(follow);
       panel.append(el("p", "THROUGH THIS RECORDING / FULL WINDOW", "hx-label hx-return-through"));
       const strip = el("div", undefined, "hx-history-strip hx-return-strip"); strip.setAttribute("role", "group"); strip.setAttribute("aria-label", `${names[id]} local return history`);
       for (const item of inquiry.stations[id]) {

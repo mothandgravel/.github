@@ -1,6 +1,7 @@
-import { createReturnsPanel } from "./coastal-haxr-returns-view.mjs?v=returns-1";
-import { createHaxrStudy, exportHaxrView, STATIONS } from "./coastal-haxr-model.mjs?v=returns-1";
-import { haxrPixels } from "./coastal-haxr-core.mjs?v=returns-1";
+import { createMotionPanel } from "./coastal-haxr-motion-view.mjs?v=motion-1";
+import { createReturnsPanel } from "./coastal-haxr-returns-view.mjs?v=motion-1";
+import { createHaxrStudy, exportHaxrView, STATIONS } from "./coastal-haxr-model.mjs?v=motion-1";
+import { haxrPixels } from "./coastal-haxr-core.mjs?v=motion-1";
 
 const $ = id => document.getElementById(`hx-${id}`);
 const settings = { anchor: "reiherstieg", index: 0, tolerance: 1 };
@@ -35,6 +36,7 @@ function facts(entries) {
   return dl;
 }
 function stop() {
+  $("motion-play").textContent = "Play frames"; $("motion-play").setAttribute("aria-pressed", "false");
   $("returns-play").textContent = "Play frames"; $("returns-play").setAttribute("aria-pressed", "false");
   clearInterval(timer); timer = null;
   $("play").textContent = "Play frames";
@@ -278,6 +280,7 @@ function drawContact() {
 function inspectBin() {
   const s = view.stations[bin.station], f = s.frame, amplitude = f.pixels[bin.row * 128 + bin.col];
   const east = -2000 + bin.col * 31.25, north = 2000 - bin.row * 31.25;
+  $("motion-seed-bin").disabled = amplitude === null || amplitude <= 0;
   $("cell-result").textContent = `${STATIONS[bin.station]}, column ${bin.col}, row ${bin.row}: ${amplitude === null ? "no selected cell (null). This does not establish empty water." : `recorded maximum amplitude ${amplitude}. ${amplitude === 0 ? "Measured zero is distinct from a missing cell." : "This value is not calibrated power."}`} East ${fmt(east)} to ${fmt(east + 31.25)} m; north ${fmt(north - 31.25)} to ${fmt(north)} m.`;
   $("raw").textContent = JSON.stringify({
     station: bin.station, sourceFile: study.recordings[bin.station].file,
@@ -287,7 +290,11 @@ function inspectBin() {
     note: "Acquisition times describe the frame; no per-bin instant is inferred.",
   }, null, 2);
 }
+const motionPanel = createMotionPanel({ stop, selectFrame: selectHistoryFrame, redraw: render, time, names: STATIONS });
+const followBin = (station, col, row) => motionPanel.seed(station, view.stations[station].index, col, row, selectedUid);
+$("motion-seed-bin").addEventListener("click", () => followBin(bin.station, bin.col, bin.row));
 const returnsPanel = createReturnsPanel({
+  followBin,
   selectFrame: selectHistoryFrame, selectUid: uid => { stop(); selectedUid = uid; render(); }, stop, redraw: render, time,
   inspectBin: (station, col, row) => {
     stop(); bin = { station, col, row };
@@ -307,6 +314,7 @@ function render() {
   for (const id of Object.keys(STATIONS)) drawStation(id);
   drawTiming(); drawContact(); drawHistory(); inspectBin();
   returnsPanel.draw({ study, view, uid: selectedUid, settings, names: STATIONS });
+  motionPanel.draw({ study, view, uid: selectedUid });
 }
 $("anchor").addEventListener("change", () => { stop(); settings.anchor = $("anchor").value; render(); });
 $("frame").addEventListener("input", () => { stop(); settings.index = Number($("frame").value); render(); });
@@ -319,6 +327,7 @@ $("play").addEventListener("click", () => {
   $("play").textContent = "Pause frames"; $("play").setAttribute("aria-pressed", "true");
   $("history-play").textContent = "Pause history"; $("history-play").setAttribute("aria-pressed", "true");
   $("returns-play").textContent = "Pause frames"; $("returns-play").setAttribute("aria-pressed", "true");
+  $("motion-play").textContent = "Pause frames"; $("motion-play").setAttribute("aria-pressed", "true");
   timer = setInterval(() => {
     settings.index++; render();
     if (settings.index >= 15) stop();
@@ -345,6 +354,7 @@ for (const id of Object.keys(STATIONS)) $(`${id}-scope`).addEventListener("click
 });
 $("export").addEventListener("click", () => {
   const record = exportHaxrView(study, settings, selectedUid, returnsPanel.options);
+  record.radarMotion = motionPanel.export();
   record.selectedBin = JSON.parse($("raw").textContent);
   const url = URL.createObjectURL(new Blob([JSON.stringify(record, null, 2)], { type: "application/json" }));
   const link = element("a"); link.href = url; link.download = `coastal-haxr-${settings.anchor}-${settings.index + 1}.json`;
