@@ -1,7 +1,8 @@
-import { selectHaxrAis } from "./coastal-haxr-core.mjs?v=motion-1";
-import { BIN_METERS } from "./coastal-haxr-returns.mjs?v=motion-1";
+import { selectHaxrAis } from "./coastal-haxr-core.mjs?v=branches-1";
+import { BIN_METERS } from "./coastal-haxr-returns.mjs?v=branches-1";
 
 export const MOTION_POLICY = Object.freeze({ patchBins: 5, minPairs: 9, minCoverage: .7, minCorrelation: .7, minMargin: .1 });
+export const MAX_HYPOTHESES = 16;
 const point = (col, row) => ({ col, row, east: -2000 + (col + .5) * BIN_METERS, north: 2000 - (row + .5) * BIN_METERS });
 const patch = (frame, col, row) => Array.from({ length: 25 }, (_, i) => {
   const x = col + i % 5 - 2, y = row + Math.floor(i / 5) - 2;
@@ -16,6 +17,49 @@ function similarity(template, target) {
   for (const [x, y] of pairs) { aa += (x - a) ** 2; bb += (y - b) ** 2; ab += (x - a) * (y - b); }
   if (aa < 1e-12 || bb < 1e-12) return null;
   return { correlation: Math.max(-1, Math.min(1, ab / Math.sqrt(aa * bb))), pairedBins: pairs.length };
+}
+
+const freeze = value => {
+  if (value && typeof value === "object" && !Object.isFrozen(value)) { Object.values(value).forEach(freeze); Object.freeze(value); }
+  return value;
+};
+
+// Analyst choices are separate, immutable accounts. They never repair the parent.
+export function createRadarHypotheses(recording, uid, seed, options) {
+  const entries = [freeze({ id: "H01", parentId: null, decision: null, follow: followRadarReturn(recording, uid, seed, options) })];
+  const get = id => {
+    const entry = entries.find(e => e.id === id);
+    if (!entry) throw Error("Unknown radar hypothesis");
+    return entry;
+  };
+  return {
+    get,
+    entries: () => [...entries],
+    branch(parentId, frameIndex, rank) {
+      const parent = get(parentId), step = parent.follow.steps[frameIndex];
+      if (!Number.isInteger(frameIndex) || !Number.isInteger(rank) || !step || !["ambiguous", "weak"].includes(step.state) || !step.candidates[rank]) throw Error("Choose a retained candidate at a stopped comparison");
+      const existing = entries.find(e => e.parentId === parentId && e.decision.frameIndex === frameIndex && e.decision.rank === rank);
+      if (existing) return existing;
+      if (entries.length >= MAX_HYPOTHESES) throw Error("This account holds at most 16 hypotheses");
+      const candidate = step.candidates[rank];
+      const entry = freeze({ id: `H${String(entries.length + 1).padStart(2, "0")}`, parentId,
+        decision: { kind: "manual-candidate-choice", frameIndex, rank, candidate,
+          parentState: step.state, parentMargin: step.margin, candidateCount: step.candidateCount,
+          retainedCandidates: step.candidates, parentPolicy: parent.follow.policy,
+          template: "Fresh 5x5 patch at the chosen candidate in the stop frame; no acceptance is backfilled into the parent.",
+          assertion: "Inspection choice only; not evidence of a match, vessel identity, shore clutter or an independent AIS source." },
+        follow: followRadarReturn(recording, uid, { index: frameIndex, col: candidate.col, row: candidate.row }, { searchBins: parent.follow.policy.searchBins }) });
+      entries.push(entry);
+      return entry;
+    },
+    export(activeId, displayedFrame) {
+      const active = get(activeId);
+      if (!Number.isInteger(displayedFrame) || !active.follow.steps[displayedFrame]) throw Error("Invalid displayed frame");
+      return { schema: "coastal-haxr-hypotheses-v1", activeId, displayedFrame, sourceFamilies: 1,
+        association: "unestablished", classification: "unassigned", entries: [...entries],
+        scope: "Full retrospective account, including future steps and manual choices. Read each follow only through displayedFrame for the current view. Each branch starts a new displacement origin; never splice branches into a confirmed track." };
+    },
+  };
 }
 
 // This is a bounded, fixed-template texture hypothesis. AIS never enters matching.

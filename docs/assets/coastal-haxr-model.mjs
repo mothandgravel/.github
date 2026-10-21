@@ -1,6 +1,6 @@
-import { returnHistory, returnOptions } from "./coastal-haxr-returns.mjs?v=motion-1";
-import { parseHaxr, selectHaxrAis, pairRadarFrames, HAXR_AIS_POLICY } from "./coastal-haxr-core.mjs?v=motion-1";
-import { selectedHistory, historyAtView } from "./coastal-haxr-history.mjs?v=motion-1";
+import { returnHistory, returnOptions } from "./coastal-haxr-returns.mjs?v=branches-1";
+import { parseHaxr, selectHaxrAis, pairRadarFrames, HAXR_AIS_POLICY } from "./coastal-haxr-core.mjs?v=branches-1";
+import { selectedHistory, historyAtView } from "./coastal-haxr-history.mjs?v=branches-1";
 export { HAXR_AIS_POLICY };
 export const STATIONS = Object.freeze({ reiherstieg: "Reiherstieg", hohe_schaar: "Hohe Schaar" });
 export const endpointSkew = (a, b) => Math.max(Math.abs(a.startTod - b.startTod), Math.abs(a.endTod - b.endTod));

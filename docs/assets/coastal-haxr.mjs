@@ -1,7 +1,7 @@
-import { createMotionPanel } from "./coastal-haxr-motion-view.mjs?v=motion-1";
-import { createReturnsPanel } from "./coastal-haxr-returns-view.mjs?v=motion-1";
-import { createHaxrStudy, exportHaxrView, STATIONS } from "./coastal-haxr-model.mjs?v=motion-1";
-import { haxrPixels } from "./coastal-haxr-core.mjs?v=motion-1";
+import { createMotionPanel } from "./coastal-haxr-motion-view.mjs?v=branches-1";
+import { createReturnsPanel } from "./coastal-haxr-returns-view.mjs?v=branches-1";
+import { createHaxrStudy, exportHaxrView, STATIONS } from "./coastal-haxr-model.mjs?v=branches-1";
+import { haxrPixels } from "./coastal-haxr-core.mjs?v=branches-1";
 
 const $ = id => document.getElementById(`hx-${id}`);
 const settings = { anchor: "reiherstieg", index: 0, tolerance: 1 };
@@ -360,5 +360,5 @@ $("export").addEventListener("click", () => {
   const link = element("a"); link.href = url; link.download = `coastal-haxr-${settings.anchor}-${settings.index + 1}.json`;
   document.body.append(link); link.click(); link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  $("export-status").textContent = "Comparison exported with the selected ID’s full recorded history, current-frame cutoffs, shared-source continuity, local radar apertures and display settings, bin value and source hashes. Unsigned; recorded data, not a live receipt.";
+  $("export-status").textContent = "Comparison exported with the selected ID’s full recorded history, current-frame cutoffs, shared-source continuity, local radar apertures, all radar hypotheses and manual-choice receipts, display settings, bin value and source hashes. Unsigned; recorded data, not a live receipt.";
 });

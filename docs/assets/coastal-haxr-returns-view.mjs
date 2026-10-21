@@ -1,5 +1,5 @@
-import { haxrPixels } from "./coastal-haxr-core.mjs?v=motion-1";
-import { BIN_METERS } from "./coastal-haxr-returns.mjs?v=motion-1";
+import { haxrPixels } from "./coastal-haxr-core.mjs?v=branches-1";
+import { BIN_METERS } from "./coastal-haxr-returns.mjs?v=branches-1";
 const labels = { nearby: "Returns inside the aperture", "below-floor": "No bins above this floor", missing: "No sampled bins here", "no-ais": "No eligible AIS position", outside: "AIS outside this raster" };
 const marks = { nearby: "+", "below-floor": "·", missing: "?", "no-ais": "—", outside: "↗" };
 export function createReturnsPanel({ selectFrame, selectUid, inspectBin, followBin, stop, redraw, time }) {
