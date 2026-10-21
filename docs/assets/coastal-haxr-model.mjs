@@ -1,5 +1,6 @@
-import { parseHaxr, selectHaxrAis, pairRadarFrames, HAXR_AIS_POLICY } from "./coastal-haxr-core.mjs?v=history-1";
-import { selectedHistory, historyAtView } from "./coastal-haxr-history.mjs?v=history-1";
+import { returnHistory, returnOptions } from "./coastal-haxr-returns.mjs?v=returns-1";
+import { parseHaxr, selectHaxrAis, pairRadarFrames, HAXR_AIS_POLICY } from "./coastal-haxr-core.mjs?v=returns-1";
+import { selectedHistory, historyAtView } from "./coastal-haxr-history.mjs?v=returns-1";
 export { HAXR_AIS_POLICY };
 export const STATIONS = Object.freeze({ reiherstieg: "Reiherstieg", hohe_schaar: "Hohe Schaar" });
 export const endpointSkew = (a, b) => Math.max(Math.abs(a.startTod - b.startTod), Math.abs(a.endTod - b.endTod));
@@ -56,9 +57,19 @@ export function createHaxrStudy(inputs) {
     }
     return historyAtView(history, view(settings));
   }
-  return Object.freeze({ recordings, view, follow });
+  let returnKey, returns;
+  function inspect(uid, settings, options = {}) {
+    const policy = returnOptions(options);
+    // Reuse UID validation and the native AIS admission contract.
+    follow(uid, settings);
+    const key = JSON.stringify([uid, policy]);
+    if (key !== returnKey) { returns = frozen(returnHistory(recordings, uid, policy)); returnKey = key; }
+    const v = view(settings);
+    return { ...returns, current: Object.fromEntries(Object.entries(v.stations).map(([id, s]) => [id, returns.stations[id][s.index]])) };
+  }
+  return Object.freeze({ recordings, view, follow, inspect });
 }
-export function exportHaxrView(study, settings, uid = null) {
+export function exportHaxrView(study, settings, uid = null, returnSettings = {}) {
   const v = study.view(settings);
   return {
     schema: "coastal-haxr-inquiry-v1",
@@ -66,6 +77,7 @@ export function exportHaxrView(study, settings, uid = null) {
     signed: false,
     selection: { ...settings, uid },
     selectedHistory: uid ? study.follow(uid, settings) : null,
+    localReturns: uid ? study.inspect(uid, settings, returnSettings) : null,
     comparison: { preview: v.preview, selectedPair: v.selectedPair, unmatchedReason: v.unmatchedReason },
     pairing: v.pairing,
     stations: Object.fromEntries(Object.entries(v.stations).map(([id, s]) => [id, {

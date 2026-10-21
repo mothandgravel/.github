@@ -206,3 +206,58 @@ test("history export preserves current cutoffs and the full recorded window with
   assert.match(result.selectedHistory.limits.join(" "), /not radar detections/);
   assert.equal(result.selectedHistory.sourceFamilies, 1);
 });
+
+
+// Controlled raster fixtures distinguish proximity from detection/identity.
+const { inspectReturns, returnOptions } = await import("../docs/assets/coastal-haxr-returns.mjs");
+const fixtureFrame = () => ({ startTod: 10, endTod: 12, pixels: Array(128 * 128).fill(null) });
+const fixtureReport = { uid: "fixture", tod: 11, east: 15.625, north: -15.625 };
+test("local aperture uses bin centres, native row orientation and raw amplitudes", () => {
+  const f = fixtureFrame(); f.pixels[64 * 128 + 64] = 99; f.pixels[63 * 128 + 64] = 9;
+  const r = inspectReturns(f, fixtureReport, 99, { radius: 62.5, floor: 60 });
+  assert.equal(r.state, "nearby"); assert.equal(r.sampledBins, 2); assert.equal(r.aboveFloorBins, 1);
+  assert.equal(r.nearest.distanceMeters, 0); assert.equal(r.nearest.col, 64); assert.equal(r.nearest.row, 64);
+  assert.equal(r.nearest.north, -15.625); assert.equal(r.nearest.amplitude, 99);
+  assert.equal(r.reportTiming, "within-frame"); assert.equal(r.association, "unestablished");
+});
+test("missing, zero and below-floor returns remain distinct; zero never qualifies", () => {
+  const f = fixtureFrame();
+  assert.equal(inspectReturns(f, fixtureReport, 99).state, "missing");
+  f.pixels[64 * 128 + 64] = 0;
+  const zero = inspectReturns(f, fixtureReport, 99, { floor: 0 });
+  assert.equal(zero.state, "below-floor"); assert.equal(zero.zeroBins, 1); assert.equal(zero.nearest, null);
+  f.pixels[64 * 128 + 64] = 9;
+  assert.equal(inspectReturns(f, fixtureReport, 99, { floor: 60 }).aboveFloorBins, 0);
+  assert.equal(inspectReturns(f, fixtureReport, 99, { floor: 40 }).aboveFloorBins, 1);
+  assert.equal(f.pixels[64 * 128 + 64], 9);
+});
+test("edge clipping, outside positions and absent AIS do not produce an inferred aperture", () => {
+  const f = fixtureFrame();
+  assert.equal(inspectReturns(f, null, 99).state, "no-ais");
+  assert.equal(inspectReturns(f, { ...fixtureReport, east: 2000 }, 99).state, "outside");
+  assert.equal(inspectReturns(f, { ...fixtureReport, east: 1990 }, 99).clipped, true);
+  for (const options of [{ radius: 0 }, { radius: Infinity }, { floor: NaN }, { floor: -1 }, { floor: 101 }]) assert.throws(() => returnOptions(options));
+});
+test("aperture changes retain exact radius bounds and other eligible AIS ambiguity", () => {
+  const f = fixtureFrame(); f.pixels[64 * 128 + 67] = 99;
+  const other = { ...fixtureReport, uid: "other", east: 80 };
+  assert.equal(inspectReturns(f, fixtureReport, 99, { radius: 62.5 }, [other]).aboveFloorBins, 0);
+  const wider = inspectReturns(f, fixtureReport, 99, { radius: 125 }, [fixtureReport, other]);
+  assert.equal(wider.aboveFloorBins, 1); assert.deepEqual(wider.nearbyAisIds, ["other"]);
+  assert.equal(wider.nearest.distanceMeters, 93.75);
+});
+test("real return histories use eligible positions only and keep independent station scales", () => {
+  const first = study.inspect("1b1e4", { index: 0 });
+  assert.equal(first.stations.reiherstieg.length, 16); assert.equal(first.sourceFamilies, 1);
+  assert.equal(study.inspect("1b1e4", { index: 3 }).current.hohe_schaar.state, "no-ais");
+  assert(Object.values(study.inspect("1b1e4", { index: 4 }).current).every(r => r.state === "no-ais" && r.nearest === null));
+  for (const r of Object.values(first.current)) {
+    assert(r.report.tod <= r.endTod); assert(r.nearest === null || r.nearest.distanceMeters <= 125);
+    assert.equal(r.association, "unestablished");
+  }
+  const altered = study.inspect("1b1e4", { index: 0, anchor: "hohe_schaar", tolerance: 3 });
+  assert.deepEqual(altered.stations, first.stations);
+  const exported = exportHaxrView(study, { index: 0 }, "1b1e4", { radius: 250, floor: 80 });
+  assert.deepEqual(exported.localReturns.options, { radius: 250, floor: 80 });
+  assert.match(exported.localReturns.limits.join(" "), /not calibrated power/);
+});
