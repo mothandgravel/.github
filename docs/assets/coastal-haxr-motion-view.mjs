@@ -1,18 +1,32 @@
-import { followRadarReturn } from "./coastal-haxr-motion.mjs?v=motion-1";
-import { haxrPixels } from "./coastal-haxr-core.mjs?v=motion-1";
-import { BIN_METERS } from "./coastal-haxr-returns.mjs?v=motion-1";
+import { createRadarHypotheses } from "./coastal-haxr-motion.mjs?v=branches-1";
+import { drawCandidates } from "./coastal-haxr-candidates-view.mjs?v=branches-1";
+import { haxrPixels } from "./coastal-haxr-core.mjs?v=branches-1";
+import { BIN_METERS } from "./coastal-haxr-returns.mjs?v=branches-1";
 const labels = { seed: "Selected seed", matched: "Texture match retained", ambiguous: "Competing patches", weak: "Texture changed", insufficient: "Insufficient measured texture", stopped: "Following stopped", "unusable-seed": "Seed has too little distinct texture", "before-seed": "Before the selected seed" };
 export function createMotionPanel({ stop, selectFrame, redraw, time, names }) {
   const $ = id => document.getElementById(`hx-${id}`);
   const el = (tag, text, cls) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; return e; };
-  let selection = null, cacheKey, hypothesis, lastContext;
+  let selection = null, ledger = null, activeId = "H01", hypothesis, lastContext;
   function seed(station, index, col, row, uid) {
-    selection = { station, index, col, row, uid }; cacheKey = null;
+    selection = { station, index, col, row, uid }; ledger = null; activeId = "H01";
     stop(); selectFrame(station, index);
     $("motion").scrollIntoView({ block: "start", behavior: "smooth" }); $("motion-search").focus({ preventScroll: true });
   }
-  $("motion-clear").addEventListener("click", () => { stop(); selection = null; redraw(); });
-  $("motion-search").addEventListener("change", () => { stop(); cacheKey = null; redraw(); });
+  $("motion-example").addEventListener("click", () => {
+    $("motion-search").value = "2";
+    seed("reiherstieg", 0, 46, 40, lastContext.uid);
+    selectFrame("reiherstieg", 1);
+    $("motion-candidates").scrollIntoView({ block: "start", behavior: "smooth" });
+    $("motion-candidate-cards").querySelector("button").focus({ preventScroll: true });
+  });
+  $("motion-clear").addEventListener("click", () => { stop(); selection = null; ledger = null; redraw(); });
+  function visit(id, index) {
+    const entry = ledger.get(id); activeId = id;
+    selection = { ...entry.follow.seed, station: entry.follow.station, uid: entry.follow.uid };
+    stop(); selectFrame(selection.station, index);
+    $("motion-account").focus({ preventScroll: true });
+  }
+  $("motion-account").addEventListener("change", e => visit(e.target.value, lastContext.view.stations[selection.station].index));
   $("motion-play").addEventListener("click", () => {
     if (selection && $("play").getAttribute("aria-pressed") !== "true") {
       const currentIndex = lastContext.view.stations[selection.station].index;
@@ -23,17 +37,19 @@ export function createMotionPanel({ stop, selectFrame, redraw, time, names }) {
   function draw(context) {
     lastContext = context;
     const { study, view, uid } = context;
-    if (selection && selection.uid !== uid) selection = null;
+    if (selection && selection.uid !== uid) { selection = null; ledger = null; }
     $("motion-empty").hidden = Boolean(selection); $("motion-content").hidden = !selection;
     if (!selection) { hypothesis = null; return; }
-    const searchBins = Number($("motion-search").value);
-    const key = JSON.stringify([selection, searchBins]);
-    if (key !== cacheKey) {
-      hypothesis = followRadarReturn(study.recordings[selection.station], uid, selection, { searchBins }); cacheKey = key;
-    }
+    if (!ledger) ledger = createRadarHypotheses(study.recordings[selection.station], uid, selection, { searchBins: Number($("motion-search").value) });
+    hypothesis = ledger.get(activeId).follow;
     const index = view.stations[selection.station].index, current = hypothesis.steps[index];
     const past = hypothesis.steps.filter(s => s.index <= index && s.index >= selection.index);
-    $("motion-selection").textContent = `${names[selection.station]} · bin ${selection.col} / ${selection.row} · seed frame ${selection.index + 1} · AIS ${uid} · 01 shared AIS family`;
+    $("motion-selection").textContent = `${activeId} · ${names[selection.station]} · bin ${selection.col} / ${selection.row} · seed frame ${selection.index + 1} · AIS ${uid} · 01 shared AIS family · search ±${hypothesis.policy.searchHalfWidthMeters} m`;
+    drawCandidates({ ledger, activeId, index, recording: study.recordings[selection.station], max: view.stations[selection.station].max, time, visit,
+      choose: (frameIndex, rank) => {
+        const child = ledger.branch(activeId, frameIndex, rank); visit(child.id, frameIndex);
+        $("motion-accounts").scrollIntoView({ block: "start", behavior: "smooth" });
+      } });
     $("motion-state").textContent = labels[current.state];
     $("motion-play").disabled = selection.index === hypothesis.steps.length - 1;
     $("motion-play").textContent = $("play").getAttribute("aria-pressed") === "true" ? "Pause frames" : "Play frames";
@@ -89,7 +105,7 @@ export function createMotionPanel({ stop, selectFrame, redraw, time, names }) {
     for (const [k, v] of facts) { const row = el("div"); row.append(el("dt", k), el("dd", v)); dl.append(row); }
     $("motion-time").textContent = `${time(current.startTod)}–${time(current.endTod)} UTC / radar acquisition interval. AIS is selected at frame end; it can postdate individual radar cells.`;
     const moved = current.radarDisplacement && Math.hypot(current.radarDisplacement.east, current.radarDisplacement.north);
-    $("motion-reading").textContent = !current.accepted ? "This frame has no retained radar position. A stopped chain is not extended or silently reacquired. Choose another measured bin to begin a new hypothesis."
+    $("motion-reading").textContent = !current.accepted ? "This frame has no retained radar position. A stopped chain is not extended or silently reacquired. Inspect its candidate patches below; a manual branch keeps the original stop."
       : !current.aisDisplacement ? "The radar texture remains inspectable, but there is no eligible AIS displacement comparison. No held or predicted vessel position fills the gap."
       : moved === 0 ? "The retained texture stays in the same raster bin. That is compatible with stationary structure, clutter or a moored vessel; it does not identify shore. Motion smaller than a 31.25 m bin is unresolved here."
       : "The retained texture changes raster bins. Compare both displacement components with AIS below. Similar motion can motivate inspection, but does not establish that this is the same vessel.";
@@ -116,5 +132,6 @@ export function createMotionPanel({ stop, selectFrame, redraw, time, names }) {
     if (current.index >= h.seed.index) { ctx.strokeStyle = "#87978f"; ctx.setLineDash([2, 5]); ctx.beginPath(); ctx.moveTo(x(current.endTod), 36); ctx.lineTo(x(current.endTod), 291); ctx.stroke(); ctx.setLineDash([]); }
     ctx.fillStyle = "#dce8e2"; ctx.fillText("Seed", 65, 312); ctx.fillText(`+${(last - first).toFixed(1)} s`, 500, 312);
   }
-  return { seed, draw, export: () => selection && hypothesis ? { ...hypothesis, displayedFrame: lastContext.view.stations[selection.station].index, current: hypothesis.steps[lastContext.view.stations[selection.station].index] } : null };
+  return { seed, draw, export: () => selection && hypothesis ? { ...hypothesis, displayedFrame: lastContext.view.stations[selection.station].index, current: hypothesis.steps[lastContext.view.stations[selection.station].index],
+    hypothesisLedger: ledger.export(activeId, lastContext.view.stations[selection.station].index) } : null };
 }

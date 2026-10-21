@@ -1,4 +1,4 @@
-import { selectHaxrAis, compareStationContinuity, HAXR_AIS_POLICY } from "./coastal-haxr-core.mjs?v=motion-1";
+import { selectHaxrAis, compareStationContinuity, HAXR_AIS_POLICY } from "./coastal-haxr-core.mjs?v=branches-1";
 
 // This is report history in each station's local frame, never a radar track.
 export function selectedHistory(recordings, uid) {

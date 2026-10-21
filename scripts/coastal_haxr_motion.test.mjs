@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { followRadarReturn } from "../docs/assets/coastal-haxr-motion.mjs";
+import { followRadarReturn, createRadarHypotheses, MAX_HYPOTHESES } from "../docs/assets/coastal-haxr-motion.mjs";
 import { createHaxrStudy } from "../docs/assets/coastal-haxr-model.mjs";
 const pattern = [3, 41, 7, 90, 22, 51, 1, 72, 15, 32, 8, 63, 100, 4, 81, 37, 16, 92, 26, 58, 70, 11, 45, 2, 33];
 const frame = (i, fill = 0) => ({ startTod: 100 + i * 3, endTod: 102 + i * 3, pixels: Array(16384).fill(fill) });
@@ -69,4 +69,62 @@ test("recorded fixed-bin texture persists through AIS expiry without inventing a
   assert.equal(h.steps[4].ais, null); assert.equal(h.steps[4].displacementDifference, null);
   assert(h.steps[10].ais); assert(h.steps[10].displacementDifference < 31.25);
   assert.equal(h.steps[0].ais.ageSeconds, .7109375);
+});
+
+const forks = () => record([stamp(frame(0), 64, 64), ...[1, 2, 3].map(i => stamp(stamp(frame(i), 61, 64), 67, 64))]);
+test("manual branches preserve the ambiguous parent, siblings and shared-source uncertainty", () => {
+  const ledger = createRadarHypotheses(forks(), "test", seed, { searchBins: 4 });
+  const before = structuredClone(ledger.get("H01"));
+  const a = ledger.branch("H01", 1, 0), b = ledger.branch("H01", 1, 1);
+  assert.deepEqual(ledger.get("H01"), before);
+  assert.equal(a.id, "H02"); assert.equal(b.id, "H03");
+  assert.equal(a.follow.steps[0].state, "before-seed");
+  assert.equal(a.follow.seed.col, 61); assert.equal(b.follow.seed.col, 67);
+  assert.equal(a.follow.steps[2].accepted.col, 61); assert.equal(b.follow.steps[2].accepted.col, 67);
+  assert.equal(before.follow.steps[2].accepted, null);
+  assert.equal(a.decision.parentState, "ambiguous"); assert.equal(a.decision.parentMargin, 0);
+  assert.equal(a.decision.rank, 0); assert.equal(a.decision.kind, "manual-candidate-choice");
+  assert.deepEqual(a.follow.policy, before.follow.policy);
+  assert.match(a.decision.template, /Fresh 5x5/);
+  assert.throws(() => { a.follow.steps[1].accepted.col = 80; }, TypeError);
+  assert.throws(() => { a.decision.retainedCandidates[0].correlation = 1; }, TypeError);
+  assert.equal(ledger.branch("H01", 1, 0), a, "Repeated choice reopens the same hypothesis");
+  const exported = ledger.export(b.id, 2);
+  assert.equal(exported.sourceFamilies, 1); assert.equal(exported.association, "unestablished");
+  assert.equal(exported.entries.length, 3);
+  assert.equal(exported.entries[0].follow.steps[1].accepted, null);
+  assert.equal(ledger.export(a.id, 0).entries[1].follow.steps[0].accepted, null);
+  assert.equal(ledger.export(a.id, 1).entries[0].follow.steps[1].state, "ambiguous");
+  exported.entries.pop(); assert.equal(ledger.entries().length, 3);
+});
+
+test("branch selection rejects invented candidates, non-stop frames and bad cutoffs", () => {
+  const ledger = createRadarHypotheses(forks(), "test", seed, { searchBins: 4 });
+  for (const args of [["H99", 1, 0], ["H01", 0, 0], ["H01", 2, 0], ["H01", 1, -1], ["H01", 1, 2], ["H01", 1, .5], ["H01", "1", 0]]) assert.throws(() => ledger.branch(...args));
+  for (const cutoff of [-1, 999, .5, "1"]) assert.throws(() => ledger.export("H01", cutoff));
+  assert.equal(ledger.entries().length, 1);
+});
+
+test("recorded branch uses the candidate's stop-frame template, not the parent's seed texture", () => {
+  const s = createHaxrStudy(["reiherstieg", "hohe-schaar"].map(id => JSON.parse(readFileSync(new URL(`../docs/data/haxr/${id}.json`, import.meta.url)))));
+  const r = s.recordings.reiherstieg, ledger = createRadarHypotheses(r, "1b1e4", { index: 0, col: 46, row: 40 });
+  const parent = ledger.get("H01"); assert.equal(parent.follow.steps[1].state, "ambiguous");
+  const child = ledger.branch("H01", 1, 1);
+  assert.equal(child.follow.seed.col, 45); assert.equal(child.follow.seed.index, 1);
+  assert.deepEqual(child.follow, followRadarReturn(r, "1b1e4", { index: 1, col: 45, row: 40 }, { searchBins: 2 }));
+  assert.equal(child.decision.parentMargin, parent.follow.steps[1].margin);
+  assert.equal(parent.follow.steps[2].state, "stopped");
+});
+
+test("a branch can stop again, branch again, and remains bounded", () => {
+  // Repeated identical textures leave many competing candidate centres.
+  const frames = Array.from({ length: 20 }, (_, i) => {
+    const f = frame(i); for (let y = 35; y < 94; y++) for (let x = 35; x < 94; x++) f.pixels[y * 128 + x] = (x + y) % 2 ? 20 : 100; return f;
+  });
+  const ledger = createRadarHypotheses(record(frames), "test", seed);
+  let parent = ledger.get("H01");
+  for (let i = 1; i < MAX_HYPOTHESES; i++) { parent = ledger.branch(parent.id, i, 0); assert.equal(parent.decision.parentState, "ambiguous"); }
+  assert.equal(ledger.entries().length, MAX_HYPOTHESES);
+  assert.throws(() => ledger.branch(parent.id, MAX_HYPOTHESES, 0), /at most 16/);
+  assert.equal(ledger.branch("H01", 1, 0).id, "H02", "Existing choices still open at capacity");
 });
