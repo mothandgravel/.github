@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { createHaxrStudy, exportHaxrView } from "../docs/assets/coastal-haxr-model.mjs";
-import { parseHaxr, selectHaxrAis, haxrPixels, pairRadarFrames } from "../docs/assets/coastal-haxr-core.mjs";
+import { parseHaxr, selectHaxrAis, haxrPixels, pairRadarFrames, compareStationContinuity } from "../docs/assets/coastal-haxr-core.mjs";
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url));
 const data = ["reiherstieg", "hohe-schaar"].map(id => JSON.parse(read(`docs/data/haxr/${id}.json`)));
@@ -103,4 +103,106 @@ test("invalid selections and mismatched or incomplete recordings fail closed", (
   assert.throws(() => createHaxrStudy([data[0], data[0]]));
   assert.throws(() => createHaxrStudy([{ ...data[0], station: "hohe_schaar" }, data[1]]));
   assert.throws(() => createHaxrStudy([{ ...data[0], ais: undefined }, data[1]]));
+});
+
+test("recorded ID history distinguishes held reports, unequal expiry and later recovery", () => {
+  const first = study.follow("1b1e4", { index: 0 });
+  assert.equal(first.comparison.aisRelation, "same-source-time");
+  assert.equal(first.current.reiherstieg.state, "new");
+  assert.equal(study.follow("1b1e4", { index: 1 }).current.reiherstieg.state, "held");
+  const boundary = study.follow("1b1e4", { index: 3 });
+  assert.equal(boundary.current.reiherstieg.state, "held");
+  assert.equal(boundary.current.hohe_schaar.state, "stale");
+  assert.equal(boundary.comparison.aisRelation, "one-sided");
+  const gap = study.follow("1b1e4", { index: 4 });
+  assert.equal(gap.comparison.aisRelation, "neither-eligible");
+  assert.equal(gap.current.reiherstieg.report, null);
+  assert(gap.current.reiherstieg.latestAgeSeconds > 10);
+  assert(gap.current.reiherstieg.trail.some(r => r.tod === 29101));
+  const recovered = study.follow("1b1e4", { index: 10 });
+  assert.equal(recovered.current.reiherstieg.state, "new");
+  assert.equal(recovered.current.reiherstieg.report.tod, 29132);
+  assert.equal(recovered.current.hohe_schaar.report.tod, 29132);
+  assert.equal(recovered.sourceFamilies, 1);
+});
+
+test("history admission matches the original selector at every station frame", () => {
+  for (const uid of ["1b1e4", "7baba"]) {
+    const h = study.follow(uid, {});
+    for (const [id, station] of Object.entries(h.stations)) {
+      for (const f of station.frames) {
+        const expected = selectHaxrAis(study.recordings[id].ais.reports, f.endTod).selected.find(r => r.uid === uid) ?? null;
+        assert.deepEqual(f.report, expected);
+      }
+    }
+    const a = study.recordings.reiherstieg.ais, b = study.recordings.hohe_schaar.ais;
+    assert.deepEqual(h.continuity, compareStationContinuity({ ...a, reports: a.reports.filter(r => r.uid === uid) }, { ...b, reports: b.reports.filter(r => r.uid === uid) }, h.continuity.startTod, h.continuity.endTod));
+  }
+});
+
+test("rewind removes future breadcrumbs while the labelled full-window history remains retrospective", () => {
+  const later = study.follow("1b1e4", { index: 15 });
+  assert(later.current.reiherstieg.trail.some(r => r.tod === 29132));
+  const early = study.follow("1b1e4", { index: 0 });
+  for (const s of Object.values(early.current)) {
+    assert(s.visibleEvents.every(e => e.tod <= s.endTod));
+    assert(s.trail.every(r => r.tod <= s.endTod && r.tod !== s.report?.tod));
+    assert(!s.trail.some(r => r.tod === 29132));
+  }
+  assert(early.stations.reiherstieg.events.some(e => e.tod === 29132));
+  assert.match(early.scope, /Retrospective full extracted window/);
+});
+
+test("changing anchor or timing tolerance cannot rewrite a report history or multiply its sources", () => {
+  const first = study.follow("1b1e4", { tolerance: .5 });
+  const second = study.follow("1b1e4", { anchor: "hohe_schaar", tolerance: 3, index: 10 });
+  assert.deepEqual(first.stations, second.stations);
+  assert.deepEqual(first.continuity, second.continuity);
+  assert.equal(first.comparison.sourceFamilies, 1);
+  assert.equal(second.comparison.sourceFamilies, 1);
+  assert.equal(first.comparison.radarTimePairEligible, false);
+  assert.equal(second.comparison.radarTimePairEligible, true);
+  assert.equal(second.comparison.radarAssociation, "not established");
+});
+
+test("controlled duplicate and conflicting timestamps do not become extra or arbitrarily selected points", () => {
+  const report = { uid: "controlled", tod: 29101, rangeMeters: 100, azimuthDegrees: 90 };
+  const inputs = structuredClone(data);
+  inputs[0].ais.reports = [report, { ...report }, { ...report, tod: 29104, rangeMeters: 110 }, { ...report, tod: 29104, rangeMeters: 120 }, { ...report, tod: 29107, rangeMeters: 130 }];
+  inputs[1].ais.reports = [{ ...report, tod: 29100 }];
+  const controlled = createHaxrStudy(inputs);
+  const initial = controlled.follow("controlled", { index: 0 });
+  assert.equal(initial.stations.reiherstieg.events[0].sourceRows, 2);
+  assert.equal(initial.stations.reiherstieg.events.length, 3);
+  assert.equal(initial.comparison.aisRelation, "different-source-times");
+  assert.equal(initial.comparison.reportTimeDifference, 1);
+  const conflicted = controlled.follow("controlled", { index: 1 });
+  assert.equal(conflicted.current.reiherstieg.state, "conflict");
+  assert.equal(conflicted.current.reiherstieg.report, null);
+  assert.deepEqual(conflicted.current.reiherstieg.trail.map(r => r.tod), [29101]);
+  const recovered = controlled.follow("controlled", { index: 2 });
+  assert.equal(recovered.current.reiherstieg.report.tod, 29107);
+  assert(!recovered.current.reiherstieg.trail.some(r => r.tod === 29104));
+});
+
+test("unknown and future-only IDs never appear as current points or proven outages", () => {
+  const missing = study.follow("not-in-recordings", {});
+  assert(Object.values(missing.current).every(s => s.state === "unseen" && s.latestReportTod === null && s.trail.length === 0));
+  assert(missing.continuity.samples.every(s => s.both + s.aOnly + s.bOnly + s.neither === 0));
+  const inputs = structuredClone(data);
+  inputs.forEach(r => { r.ais.reports = [{ uid: "later", tod: 29140, rangeMeters: 200, azimuthDegrees: 0 }]; });
+  const future = createHaxrStudy(inputs).follow("later", {});
+  assert(Object.values(future.current).every(s => s.state === "unseen" && s.visibleEvents.length === 0));
+  assert.equal(future.continuity.samples[0].neither, 0);
+  for (const id of ["", null, "x".repeat(81)]) assert.throws(() => study.follow(id, {}));
+});
+
+test("history export preserves current cutoffs and the full recorded window with explicit scope", () => {
+  const result = exportHaxrView(study, { anchor: "reiherstieg", index: 4, tolerance: 1 }, "1b1e4");
+  assert.equal(result.selectedHistory.uid, "1b1e4");
+  assert.equal(result.selectedHistory.current.reiherstieg.report, null);
+  assert.equal(result.selectedHistory.comparison.aisRelation, "neither-eligible");
+  assert.equal(result.selectedHistory.stations.reiherstieg.frames.length, 16);
+  assert.match(result.selectedHistory.limits.join(" "), /not radar detections/);
+  assert.equal(result.selectedHistory.sourceFamilies, 1);
 });

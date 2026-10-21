@@ -66,6 +66,7 @@ jobs:
           node --check scripts/audit_coastal_identity.mjs
           node --check docs/assets/coastal-haxr.mjs
           node --check docs/assets/coastal-haxr-model.mjs
+          node --check docs/assets/coastal-haxr-history.mjs
           node --check scripts/audit_coastal_haxr.mjs
           node --check scripts/audit_coastal_guide.mjs
           node --check docs/assets/specimens.mjs
