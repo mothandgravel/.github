@@ -29,6 +29,7 @@ try {
   await context.close();
   const raw=await page.video().path();
   execFileSync('ffmpeg',['-y','-i',raw,'-an','-c:v','libx264','-preset','slow','-crf','24','-pix_fmt','yuv420p','-movflags','+faststart',`${publicOut}/field-power-recovery.mp4`],{stdio:'ignore'});
+  execFileSync('ffmpeg',['-y','-i',raw,'-an','-c:v','libvpx-vp9','-b:v','0','-crf','32','-row-mt','1','-cpu-used','3',`${publicOut}/field-power-recovery.webm`],{stdio:'ignore'});
   execFileSync('ffmpeg',['-y','-i',`${out}/site.png`,'-vf','scale=1200:-2','-c:v','libwebp','-quality','87',`${publicOut}/field-power-site.webp`],{stdio:'ignore'});
   const timestamp=s=>{const ms=Math.floor(s*1000);return `00:${String(Math.floor(ms/60000)).padStart(2,'0')}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}.${String(ms%1000).padStart(3,'0')}`;};
   await writeFile(`${publicOut}/field-power-recovery.vtt`,'WEBVTT\n\n'+cues.map((c,i)=>`${i+1}\n${timestamp(c.from)} --> ${timestamp(c.to)}\n${c.text}\n`).join('\n'));

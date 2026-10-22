@@ -75,6 +75,15 @@ try {
     await page.addScriptTag({content:axe.source});
     const a=await page.evaluate(async()=>axe.run(document.querySelector('main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}));
     assert.deepEqual(a.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[]);
+    await page.locator('.fp-film summary').click();
+    await page.locator('video').evaluate(v=>v.load());
+    await page.waitForFunction(()=>document.querySelector('video').readyState>=1);
+    const media=await page.locator('video').evaluate(v=>({duration:v.duration,width:v.videoWidth,tracks:v.textTracks.length}));
+    assert.ok(media.duration>25&&media.duration<40);assert.equal(media.width,1440);assert.equal(media.tracks,1);
+    await page.locator('video').evaluate(async v=>{v.muted=true;await v.play();});
+    await page.waitForFunction(()=>document.querySelector('video').currentTime>.2);
+    await page.locator('video').evaluate(v=>v.pause());
+    await page.locator('.fp-film summary').click();
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
     assert.equal(overflow,false); assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);
     if(width===390){
@@ -83,7 +92,7 @@ try {
       const size=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,large:[...document.querySelectorAll('main *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1&&e.tagName!==e.tagName.toLowerCase()).map(e=>({tag:e.tagName,id:e.id,w:e.getBoundingClientRect().width}))}));
       assert.equal(size.scroll<=size.width,true,JSON.stringify(size));
     }
-    results.push({width,theme,errors,writes,axeViolations:a.violations.length,overflow,manualRecovery:'expired then applied',branch:'original retained',export:'verified'});
+    results.push({width,theme,errors,writes,axeViolations:a.violations.length,overflow,manualRecovery:'expired then applied',branch:'original retained',export:'verified',media});
     await page.close();
   }
   await writeFile(`${out}/audit.json`,JSON.stringify(results,null,2)+'\n');
