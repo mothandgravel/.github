@@ -767,14 +767,14 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .field-notes-section { border-top:1px solid var(--line); }
 /* Keep the first paint focused on the masthead and studio introduction.
    Offscreen editions remain searchable and accessible; remember rendered sizes. */
-/* Field Notes renders with the page: the services section now sits above it, and a deferred
-   estimate would shift the specimens below once it renders. */
-.hero~.work-section,.hero~.first-work-section,.hero~.ethos-section,.hero~.studio-section,.hero~.contact-section {
+/* Field Notes and the specimen collection lay out with the page. Estimated collection
+   height shifts deep inspection targets when its variable-length contents become visible.
+   Specimen images and optional handling modules still load only near inspection. */
+.hero~.first-work-section,.hero~.ethos-section,.hero~.studio-section,.hero~.contact-section {
   content-visibility:auto;
   contain-intrinsic-block-size:auto 900px;
 }
 @media (max-width:760px) {
-  .hero~.work-section { contain-intrinsic-block-size:auto 1600px; }
   .hero~.contact-section { contain-intrinsic-block-size:auto 1250px; }
 }
 .section-kicker a { color:var(--gold-bright);text-underline-offset:4px; }

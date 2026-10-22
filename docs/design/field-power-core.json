@@ -1,0 +1,25 @@
+{
+  "source": "Raivari",
+  "revision": "b8ac188973ecccc2ce7068d8dfaa4125e002231b",
+  "inputs": [
+    {
+      "path": "packages/modbus-simulator/src/behaviors/maritime-behaviors.ts",
+      "sha256": "803ed1f7fb45e5e678a5a42470f155d59fc28dd74e788bfa876a726a23a8165d"
+    },
+    {
+      "path": "packages/maritime-types/src/registers.ts",
+      "sha256": "7b2b1271f7192f31303c2e28ce7bc14d46a05cef247a9fc7b2d8a5b0aac6e594"
+    }
+  ],
+  "bun": "1.4.0",
+  "bundleSha256": "be9cc6ddf25c7da8d34da619ff30cbffbc9138e12b35a3ab2d52ea0c743ec15a",
+  "exports": [
+    "clamp",
+    "rateLimit",
+    "BESS_REGISTERS",
+    "GENSET_REGISTERS",
+    "SCALE",
+    "encodeValue"
+  ],
+  "scope": "Unmodified numerical helpers and register definitions. The energy accounting, decision receipts and land-site scenario are new specimen code. No actual Modbus connection or offline queue. No calibrated electrical or thermal simulation."
+}

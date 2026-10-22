@@ -1,0 +1,49 @@
+name: Field power specimen audit
+
+on:
+  pull_request:
+    paths:
+      - "docs/assets/field-power*"
+      - "docs/specimens/field-power/**"
+      - "docs/assets/site.css"
+      - "docs/assets/site.js"
+      - "scripts/audit_field_power.mjs"
+      - "scripts/field_power.test.mjs"
+      - ".github/workflows/field-power-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  field-power:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install pinned browser audit dependencies
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
+          npx playwright install --with-deps chromium
+      - name: Verify energy and decision contracts
+        run: node --test scripts/field_power.test.mjs
+      - name: Start specimen server
+        run: |
+          python3 -m http.server 8793 --bind 127.0.0.1 --directory docs >/tmp/field-power-site.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8793/specimens/field-power/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/field-power-site.log
+          exit 1
+      - name: Inspect recovery, branching, receipts, themes and keyboard access
+        run: node scripts/audit_field_power.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: field-power-review
+          path: artifacts/design-review/field-power/
+          retention-days: 14
