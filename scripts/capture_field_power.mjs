@@ -1,0 +1,37 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { launchAuditBrowser } from './audit_browser.mjs';
+const origin=process.env.SITE_URL??'http://127.0.0.1:8794';
+const out='artifacts/design-review/field-power-film',publicOut='docs/assets/specimens/field-power';
+await mkdir(out,{recursive:true});await mkdir(publicOut,{recursive:true});
+const browser=await launchAuditBrowser();
+const context=await browser.newContext({viewport:{width:1440,height:1000},recordVideo:{dir:out,size:{width:1440,height:1000}}});
+const page=await context.newPage();const start=Date.now(), cues=[];
+const wait=ms=>page.waitForTimeout(ms);
+const cue=async(text,ms)=>{const from=(Date.now()-start)/1000;await wait(ms);cues.push({from,to:(Date.now()-start)/1000,text});};
+const scroll=async selector=>{await page.locator(selector).evaluate(e=>e.scrollIntoView({block:'start',behavior:'instant'}));};
+const minute=async t=>{await page.locator('#fp-scrub').fill(String(t));await page.locator('#fp-scrub').dispatchEvent('input');};
+try {
+  await page.goto(`${origin}/specimens/field-power/`);await page.locator('#fp-scene svg').waitFor();
+  await page.addStyleTag({content:'.site-header{position:relative!important}.skip-link{visibility:hidden!important}html{scroll-behavior:auto!important}'});
+  await cue('What stays on. A synthetic field-power rehearsal.',2500);
+  await page.locator('#fp-example').click();
+  await scroll('.fp-stage');await cue('Minute 00. Four loads supplied. The generator charges the battery.',2500);
+  await minute(4);await scroll('.fp-stage');await cue('Minute 04. The generator trips. Demand exceeds the battery output limit.',2800);
+  await minute(13);await scroll('.fp-stage');await cue('Minute 13. Two loads shed. Restart approval waits on an interrupted link.',3200);
+  await minute(34);await scroll('.fp-stage');
+  await page.locator('.fp-stage').screenshot({path:`${out}/site.png`});
+  await cue('Minute 34. Stored energy has fallen. The battery percentage is still held.',3000);
+  await scroll('.fp-recovery-grid');await cue('The late approval has expired. No restart was applied.',3200);
+  await minute(36);await scroll('.fp-recovery-grid');await cue('Minute 36. A fresh proposal and approval. Warm-up begins; the old receipt remains.',3200);
+  await minute(42);await scroll('.fp-stage');await cue('Minute 42. The generator reaches capacity. Supply has returned.',3200);
+  await scroll('.fp-budget');await cue('Open the energy balance. Keep the no-action account alongside it.',3000);
+  await context.close();
+  const raw=await page.video().path();
+  execFileSync('ffmpeg',['-y','-i',raw,'-an','-c:v','libx264','-preset','slow','-crf','24','-pix_fmt','yuv420p','-movflags','+faststart',`${publicOut}/field-power-recovery.mp4`],{stdio:'ignore'});
+  execFileSync('ffmpeg',['-y','-i',`${out}/site.png`,'-vf','scale=1200:-2','-c:v','libwebp','-quality','87',`${publicOut}/field-power-site.webp`],{stdio:'ignore'});
+  const timestamp=s=>{const ms=Math.floor(s*1000);return `00:${String(Math.floor(ms/60000)).padStart(2,'0')}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}.${String(ms%1000).padStart(3,'0')}`;};
+  await writeFile(`${publicOut}/field-power-recovery.vtt`,'WEBVTT\n\n'+cues.map((c,i)=>`${i+1}\n${timestamp(c.from)} --> ${timestamp(c.to)}\n${c.text}\n`).join('\n'));
+  await writeFile(`${out}/capture.json`,JSON.stringify({origin,viewport:{width:1440,height:1000},recording:'Actual browser interaction; synthetic worked recovery; jumps in replay time',cues},null,2)+'\n');
+  console.log(`${publicOut}/field-power-recovery.mp4`);
+} finally {await browser.close();}

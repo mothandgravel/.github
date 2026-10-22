@@ -37,6 +37,7 @@ jobs:
           node --test scripts/shadow_inquiry.test.mjs
           node --test scripts/coastal_identity.test.mjs
           node --test scripts/coastal_haxr.test.mjs scripts/coastal_haxr_motion.test.mjs
+          node --test scripts/field_power.test.mjs
           node --test scripts/notes_model.test.mjs
           node --test scripts/field_listen_model.test.mjs
           node --test scripts/loose_end_model.test.mjs
@@ -48,6 +49,10 @@ jobs:
         run: python3 scripts/check_site.py
       - name: Syntax-check browser JavaScript
         run: |
+          node --check docs/assets/field-power.mjs
+          node --check docs/assets/field-power-model.mjs
+          node --check docs/assets/field-power-scene.mjs
+          node --check scripts/audit_field_power.mjs
           node --check docs/assets/coastal-replay.mjs
           node --check docs/assets/coastal-replay-model.mjs
           node --check scripts/audit_coastal_replay.mjs

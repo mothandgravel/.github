@@ -44,6 +44,7 @@ def build(check=False):
              (ROOT / 'docs/specimens/coastal-watch/shadow-inquiry/index.html', DOMAIN + 'specimens/coastal-watch/shadow-inquiry/', 'The second witness.', None),
              (ROOT / 'docs/specimens/coastal-watch/identity-ledger/index.html', DOMAIN + 'specimens/coastal-watch/identity-ledger/', 'The same ship?', None),
              (ROOT / 'docs/specimens/coastal-watch/radar-replay/index.html', DOMAIN + 'specimens/coastal-watch/radar-replay/', 'The water, twice recorded.', None),
+             (ROOT / 'docs/specimens/field-power/index.html', DOMAIN + 'specimens/field-power/', 'What stays on.', None),
              (ROOT / 'docs/specimens/coastal-watch/index.html', DOMAIN + 'specimens/coastal-watch/', 'The water between updates.', None),
              (ROOT / 'docs/specimens/maritime-study/index.html', DOMAIN + 'specimens/maritime-study/', 'The crossing, held still.', None),
              (ROOT / 'docs/investigations/index.html', DOMAIN + 'investigations/', 'Three questions. Still open.', None),
