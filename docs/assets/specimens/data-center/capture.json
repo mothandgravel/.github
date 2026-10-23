@@ -1,0 +1,121 @@
+{
+  "schema": "mg-datacenter-capture-1",
+  "still": {
+    "renderer": {
+      "three": "185",
+      "softwareRenderer": false,
+      "quality": "full geometry",
+      "ambientOcclusion": true,
+      "contextLost": false,
+      "refining": false,
+      "samples": 128,
+      "drawCalls": 14020,
+      "triangles": 2284166,
+      "selected": "",
+      "geometry": "authored; no rack power allocation"
+    },
+    "imageCheck": {
+      "mean": 79.96645333333382,
+      "variance": 3163.5173368435444,
+      "width": 1600,
+      "height": 1000
+    },
+    "probe": [
+      0.0995296835899353,
+      0.09828810393810272,
+      0.07938465476036072,
+      0.9999973177909851
+    ],
+    "viewport": {
+      "width": 1600,
+      "height": 1000
+    },
+    "sourceSHA256": "813b013097b4840c2bbf983e564cfbb9b5d366e18423424e301c4de35a09094f",
+    "method": "Native 1600 x 1000 radiance buffer; 128 samples, four light bounces, authored edge-aware denoising and AgX tone mapping. No telemetry-derived rack power or light simulation."
+  },
+  "film": {
+    "viewport": {
+      "width": 1280,
+      "height": 960
+    },
+    "recording": "Actual browser interactions; recorded facility power, authored geometry, separate counterfactual supply branch. No audio.",
+    "cues": [
+      {
+        "from": 0,
+        "to": 4.001000000000001,
+        "text": "Where the power goes. An authored room beside recorded ESIF facility power."
+      },
+      {
+        "from": 8.517000000000003,
+        "to": 13.023000000000003,
+        "text": "Constructed racks, working lights and water services. No per-rack readings are inferred."
+      },
+      {
+        "from": 14.64,
+        "to": 19.149,
+        "text": "Approach the water loop. Its meter is a whole-facility category."
+      },
+      {
+        "from": 19.176000000000002,
+        "to": 22.676000000000002,
+        "text": "The geometry is authored. The source clock and raw records stay separately inspectable."
+      },
+      {
+        "from": 22.698999999999998,
+        "to": 28.711,
+        "text": "Two recorded hours: period PUE falls while estimated mean facility power rises by 10.077%."
+      },
+      {
+        "from": 28.747999999999998,
+        "to": 34.261,
+        "text": "A separate supply scenario: grid cap, battery reserve, conversion loss and unmet energy."
+      }
+    ]
+  },
+  "files": [
+    {
+      "file": "assets/specimens/data-center/room-cover.jpg",
+      "sha256": "714b7c4f065aa8aa238d8f7dbc968ae41da508c4fae01eebb7ee1ba9b01c2979",
+      "bytes": 174394,
+      "canonicalLF": false
+    },
+    {
+      "file": "assets/specimens/data-center/recorded-account.mp4",
+      "sha256": "5ef3e0490454c95ce0203c1ac6db694f96d2a7d90a658476c4c03d297b799387",
+      "bytes": 2769497,
+      "canonicalLF": false
+    },
+    {
+      "file": "assets/specimens/data-center/recorded-account.webm",
+      "sha256": "c1ff3ba46fb4dd166dbcad8482e7f2e0f087f7499fcc4f880e257f89ffe5c3cd",
+      "bytes": 3303278,
+      "canonicalLF": false
+    },
+    {
+      "file": "assets/specimens/data-center/recorded-account.vtt",
+      "sha256": "3f56d2711dbd7798961434083e4ff98baa1503b8366ee99697a6b1c1226dab80",
+      "bytes": 703,
+      "canonicalLF": true
+    },
+    {
+      "file": "assets/notes/016-cover-1600.webp",
+      "sha256": "e151cb84660b7ecd436ea3ed50715833fc1269cadc26d8d2f98466aeb00e44f0",
+      "bytes": 130182,
+      "canonicalLF": false
+    },
+    {
+      "file": "assets/notes/016-cover-800.webp",
+      "sha256": "4d7da8e4ed13d195593667b4d263889fef7e07f3c357d69f418873b6af1dde9e",
+      "bytes": 41940,
+      "canonicalLF": false
+    },
+    {
+      "file": "assets/notes/016-cover-social.jpg",
+      "sha256": "536b9286ab30b84a6efcb08fb857114af9feecbef05e7bab65bf9fa7e5b8e258",
+      "bytes": 96024,
+      "canonicalLF": false
+    }
+  ],
+  "scope": "Authored room. Facility observations and counterfactual supply are labelled separately. Stills use progressive light refinement; film uses real-time lighting. No photographed or surveyed ESIF interior is implied.",
+  "credit": "Recorded data: DOE/NREL/ALLIANCE; Clark & Strelka; DOI 10.7799/3015212. Room and interface: Moth & Gravel. Environment and normal map: CC0, see assets/data-center/materials.json."
+}

@@ -408,7 +408,7 @@
     ],
     "supersedes": [],
     "visual": "forms",
-    "featured": true,
+    "featured": false,
     "socialImage": "assets/notes/014-cover-social.jpg",
     "cover": {
       "small": "014-cover-800.webp",
@@ -454,6 +454,44 @@
     "specimen": {
       "href": "../investigations/take-it-back/",
       "label": "Follow the question: did it happen?"
+    }
+  },
+  {
+    "id": "016",
+    "slug": "016-the-number-got-better.html",
+    "title": "The number got better.",
+    "summary": "The ratio fell. The load did not. A recorded week of facility power, and the boundaries a useful number needs to keep.",
+    "date": "2026-10-23",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "Where the power goes / Raivari",
+    "thread": "",
+    "related": [
+      "005",
+      "007",
+      "014"
+    ],
+    "supersedes": [],
+    "visual": "forms",
+    "featured": true,
+    "socialImage": "assets/notes/016-cover-social.jpg",
+    "cover": {
+      "small": "016-cover-800.webp",
+      "large": "016-cover-1600.webp",
+      "width": 1600,
+      "height": 1000
+    },
+    "nextReading": {
+      "id": "005",
+      "bridge": "A ratio needs its boundary. A green light needs a promise just as precise."
+    },
+    "specimen": {
+      "href": "../specimens/data-center/",
+      "label": "Return to the recorded account"
     }
   }
 ]

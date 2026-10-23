@@ -1,0 +1,20 @@
+{
+  "packages": [
+    [
+      "three-gpu-pathtracer",
+      "0.0.26"
+    ],
+    [
+      "three-mesh-bvh",
+      "0.9.15"
+    ],
+    [
+      "xatlas-web",
+      "0.1.0"
+    ]
+  ],
+  "sha256": "6f00852d7ef6f73c7b7c2190ac837ee174644a0380f9a12d1f4b8622f182cad8",
+  "license": "MIT",
+  "source": "https://github.com/gkjohnson/three-gpu-pathtracer/tree/v0.0.26",
+  "scope": "Optional progressive light-transport rendering; no thermal or energy simulation."
+}

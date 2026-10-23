@@ -1,0 +1,41 @@
+{
+  "dataset": "ESIF measured replay",
+  "file": "assets/data-center/esif-week.json",
+  "sha256": "8ab1e558deba88e1a6807b43c8796eb5f8a5795170c7e6ec308eba1525b41621",
+  "rows": 10082,
+  "weatherRows": 10091,
+  "windowSamples": 10080,
+  "source": {
+    "title": "NLR HPC Facility Power Usage Effectiveness (PUE) Data",
+    "authors": [
+      "Struan Clark",
+      "Justin Strelka"
+    ],
+    "catalog": "https://data.nlr.gov/submissions/300",
+    "doi": "10.7799/3015212",
+    "credit": "DOE/NREL/ALLIANCE; dataset published by National Laboratory of the Rockies",
+    "retrieved": "2026-10-22",
+    "inputSha256": {
+      "power.parquet": "19cd12405dde9144b1a360e8c8418666c399a3d0d15a7f846880d71ab22f9dd4",
+      "weather.parquet": "97b424993fa77a15117fb2c4659a2c327fc83280f943fab47d9036260289a6a0",
+      "README.md": "f69d32f1af598c48a899d54d48b26def2ca78a0c11d848516169570ecae4c029",
+      "LICENSE.html": "24768d4c58eb513d63422cdd54479e2ec88d272651d66262f6f2debed75ca74b"
+    },
+    "reader": "pyarrow==21.0.0",
+    "inputURLs": {
+      "power.parquet": "https://data.nlr.gov/system/files/300/1757103411-esif.influx.buildingData.PUE.combined.parquet",
+      "weather.parquet": "https://data.nlr.gov/system/files/300/1757105566-esif.influx.buildingData.outside.combined_2.parquet",
+      "README.md": "https://data.nlr.gov/system/files/300/1769711385-README.md",
+      "LICENSE.html": "https://data.nlr.gov/node/300/license"
+    }
+  },
+  "method": {
+    "samplingAssumption": "Reported power is treated as point samples. Publisher does not specify sensor averaging or aggregation windows.",
+    "powerToEnergy": "Piecewise-linear power interpolation and trapezoidal integration; only valid intervals <=90 seconds. No extrapolation; excluded time remains uncovered.",
+    "periodPUE": "Integrated five-component facility energy / integrated IT energy over identical valid intervals. Never the arithmetic mean of sample PUE.",
+    "weather": "Most recent same-facility source-clock observation at or before power time, maximum age 90 seconds. Clock alignment is unverified.",
+    "heatReuse": "energy_reuse and ere are preserved only as raw fields. Their units/definitions are insufficiently documented for derived heat-recovery claims.",
+    "scene": "Authored room and equipment geometry. Facility totals are not disaggregated into invented rack measurements."
+  },
+  "licenseFile": "assets/data-center/publisher-notice.txt"
+}

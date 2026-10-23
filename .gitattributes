@@ -4,3 +4,9 @@ docs/assets/coastal-replay-land.json -text
 docs/data/haxr/*.json -text
 # Zod's generated code includes whitespace inside template literals; keep it verbatim.
 docs/assets/coastal-haxr-core.mjs text eol=lf whitespace=-blank-at-eol linguist-generated=true
+# Integrity-bound recorded extract and verbatim publisher field definitions.
+docs/assets/data-center/esif-week.json -text
+docs/assets/data-center/source-readme.txt text eol=lf whitespace=-blank-at-eol
+# Preserve upstream GLSL whitespace inside the generated renderer bundles.
+docs/assets/datacenter-engine.mjs text eol=lf whitespace=-blank-at-eol,-space-before-tab linguist-generated=true
+docs/assets/datacenter-pathtracer.mjs text eol=lf whitespace=-blank-at-eol,-space-before-tab linguist-generated=true
