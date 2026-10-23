@@ -429,5 +429,30 @@
       "kind": "note",
       "note_id": "015"
     }
+  },
+  {
+    "id": "note-016",
+    "title": "The number got better.",
+    "format": "narration",
+    "script": "scripts/note-016.txt",
+    "language": "en-US",
+    "notes": [
+      "016"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "016": "ed437d875241c2e4e00b2167a9d3d1c03640759589ec6802c05935b50258e9b6"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "016"
+    }
   }
 ]

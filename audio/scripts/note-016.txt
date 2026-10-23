@@ -1,0 +1,67 @@
+Moth and Gravel. Field Note 16. The number got better.
+
+An AI-narrated edition of the published note.
+
+A room full of computers is doing its work. Fans turn. Water moves. Somewhere above the room, a number gets better.
+
+It would make a reassuring green tile.
+
+We opened the account underneath it.
+
+Two hours from the same week
+
+The material is a public record from the Energy Systems Integration Facility: five power channels, a published efficiency ratio and a separate weather file. Struan Clark and Justin Strelka published the dataset through what is now the National Laboratory of the Rockies. We pinned the source files and kept one week, 14–20 July 2025, open on the bench.
+
+Two hours in that week make a useful pair. During the first, the facility’s estimated mean demand is 2.683 MW. During the second, it is 2.953 MW. Demand rises by 10.077%. The period efficiency ratio falls from 1.063015 to 1.052937.
+
+Source-clock hours. Energy estimated from recorded power.
+
+Account A. 14 July, 23:00 to the following midnight. Facility energy: 2,682.661 kilowatt-hours. IT energy: 2,523.635 kilowatt-hours. Period PUE: 1.063015.
+
+Account B. 18 July, 09:00 to 10:00. Facility energy: 2,952.992 kilowatt-hours. IT energy: 2,804.529 kilowatt-hours. Period PUE: 1.052937.
+
+PUE is facility energy divided by IT energy. A smaller overhead relative to IT can sit beside a larger absolute load. Both numbers can be right.
+
+Nothing in these two hours tells us that one caused the other. We have no count of useful computing work, no controlled intervention and no grounds to call one hour a better service. The pair shows why one ratio cannot carry the whole account.
+
+Keep the units attached
+
+The file contains power in kilowatts. Energy needs time. We treat each reported power as a point sample; the publisher does not specify the instruments’ averaging windows. Between neighbouring readings we draw a straight line, clip it at the hour boundary and integrate the trapezoid underneath it. The result is an estimate in kilowatt-hours.
+
+Every component uses the same valid intervals. Missing or negative components leave time uncovered. A gap over 90 seconds also stays uncovered. We do not fill silence with zero demand. The selected week has complete coverage under that rule; the larger archive has missing values and outlying ratios worth inspecting.
+
+The hourly ratio divides the two energy totals. Averaging the sample ratios would answer another question. It produces a nearby number here, but proximity is a poor reason to lose the definition.
+
+The publisher’s timestamps carry no timezone. We preserve their clock, including microseconds, without quietly turning it into Finnish time. Weather is matched only to an earlier reading on that same source clock, within 90 seconds. The alignment of the two instruments’ clocks remains unverified.
+
+A room, with its own label
+
+We wanted somewhere to look while keeping that account in view. A graphite cabinet door. A water connection above it. A working light reflected in the floor.
+
+The room is authored in metres, with constructed racks, server faces, valves and overhead services. Its lighting and surfaces can be inspected. Selecting a system opens its facility-level meter boundary beside the geometry.
+
+The data does not tell us how many racks to draw, where they stood or what each consumed. The room makes no such claim. Its geometry remains an interpretation; the account remains recorded. More convincing materials should make that distinction easier to read, not easier to overlook.
+
+A reserve is a choice
+
+A separate branch lets the recorded hour meet a chosen grid cap and battery. At the second hour’s demand, a 2.5 MW cap leaves work for the reserve. A 500 kWh battery starts at 80%, keeps 10% in reserve and delivers 92% of the energy it discharges. With the branch’s 1 MW output limit, it supplies 322 kWh. Conversion loss is 28 kWh. The remaining accounting shortfall is about 130.992 kWh.
+
+Those assumptions are ours. They model neither a generator starting nor a server failing. There is no cooling response, charging or workload rescheduling hidden behind the button. Change a choice and the branch must be calculated again. Export it and the assumptions travel with it.
+
+A useful number should be able to make that journey: from a reassuring tile, through its arithmetic, back to what was observed and what somebody chose.
+
+METHOD / SOURCES / LIMITS
+
+What this account can support.
+
+Source: Clark & Strelka, ESIF facility PUE dataset, DOI 10.7799/3015212. Credit: DOE/NREL/ALLIANCE. Source use implies no endorsement. The complete publisher notice accompanies the extract and every exported inspection.
+
+The replay retains 10,080 observations and one power observation on either side of the week for boundary interpolation. Every hour covers 3,600 seconds under the stated validity rule. JavaScript energy integrals are checked against a separate Python implementation using 50-digit decimal arithmetic; this checks numerical implementation, not meter calibration. No calibration uncertainty was supplied.
+
+The publisher’s measurement boundaries include attributed shared loads. We use the published channels without adding that allowance again. Undocumented heat-reuse fields stay raw. We derive no heat-recovery quantity from them.
+
+For the larger question: Berkeley Lab’s 2025 DOE Data Center Load Flexibility Workshop Summary and LUMI’s job-energy accounting limits describe different boundaries around flexibility and workload energy. Neither supplies measurements for this room.
+
+Inspect the source hashes and numerical method · Complete publisher notice
+
+You have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.
