@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" fill="none">
+<title>The grid is shared — a connection drawn from home</title>
+<desc>An authored schematic: a home, an electricity connection and a server hall above separate electricity and heat routes. This is an editorial illustration, not a surveyed network or measured heat attribution.</desc>
+<defs>
+ <linearGradient id="ground" x2="1" y2="1"><stop stop-color="#242827"/><stop offset="1" stop-color="#111719"/></linearGradient>
+ <radialGradient id="light"><stop stop-color="#c5ab75" stop-opacity=".14"/><stop offset="1" stop-color="#c5ab75" stop-opacity="0"/></radialGradient>
+ <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" stroke="#ebe5d3" stroke-opacity=".035"/></pattern>
+ <pattern id="fins" width="15" height="16" patternUnits="userSpaceOnUse"><path d="M0 4h10M0 8h10M0 12h10" stroke="#b8b5a8" stroke-opacity=".25"/></pattern>
+</defs>
+<path fill="url(#ground)" d="M0 0h1600v1000H0z"/><path fill="url(#grid)" d="M0 0h1600v1000H0z"/>
+<ellipse cx="350" cy="590" rx="470" ry="390" fill="url(#light)"/>
+<g stroke="#b9b1a0" stroke-opacity=".25"><path d="M64 70h1472M64 930h1472M64 70v24m1472-24v24M64 906v24m1472-24v24"/></g>
+<g fill="#cbb990" font-family="monospace" font-size="17" letter-spacing="3"><text x="80" y="118">MOTH &amp; GRAVEL / FIELD NOTE 017</text><text x="1520" y="118" text-anchor="end">SUOMI</text></g>
+<text x="80" y="255" fill="#eee7d5" font-family="Georgia,serif" font-size="94" letter-spacing="-3">The grid is shared.</text>
+<text x="84" y="300" fill="#b5b4a7" font-family="monospace" font-size="18" letter-spacing="1">A BILL. A CONNECTION. HEAT AT HOME.</text>
+<g stroke="#ddd3bb" stroke-width="2" stroke-linejoin="round">
+ <!-- A home, drawn as an inhabited place, not a demand block. -->
+ <path d="m156 525 169-112 160 112-159 112Z" fill="#303532"/>
+ <path d="m180 538 146 99 136-96v160l-136 92-146-91Z" fill="#252d2b"/>
+ <path d="m326 637 136-96v160l-136 92Z" fill="#182120"/>
+ <path d="M257 430v-53l30-18 20 13v46" fill="#2f3531"/>
+ <path d="m206 572 39 26v48l-39-26Z" fill="#c3a16b" fill-opacity=".35"/>
+ <path d="m268 614 35 24v50l-35-24Z" fill="#c3a16b" fill-opacity=".6"/>
+ <path d="m358 643 37-25v50l-37 25Zm50-35 28-19v50l-28 19Z" fill="#c3a16b" fill-opacity=".25"/>
+ <path d="m268 712 35 24v42l-35-24Z"/>
+ <path d="m189 702 138 91 137-91M326 637v156"/>
+ <!-- A connection. The routes are conceptual and carry no flow quantities. -->
+ <path d="m651 666 120-72 120 72-120 73Z" fill="#252e2d"/>
+ <path d="m651 666 120 73v61l-120-74Zm120 73 120-73v61l-120 73Z" fill="#171f20"/>
+ <path d="M744 610v-98l25-16 32 17v98l-32 19Z" fill="#2d3431"/>
+ <path d="m681 644 25-16 32 18v55l-32 20-25-17Z" fill="#3b4037"/>
+ <path d="m810 647 25-16 32 17v56l-32 20-25-18Z" fill="#3b4037"/>
+ <path d="M769 496v-82m-54 40 108-63m-123 88 137-80m-68 15-21 96m21-96 22 72"/>
+ <!-- A hall: cabinets, clerestory, service seams. -->
+ <path d="m1002 510 228-127 233 130-230 137Z" fill="#343b36"/>
+ <path d="m1002 510 231 140v155l-231-140Z" fill="#252e2d"/>
+ <path d="m1233 650 230-137v156l-230 136Z" fill="#192322"/>
+ <path d="m1054 480 174-97 143 80-175 100Z" stroke-opacity=".4"/>
+ <path d="m1040 557 34 21v109l-34-20Zm49 29 34 21v110l-34-21Zm49 30 34 21v110l-34-21Z" fill="url(#fins)"/>
+ <path d="m1270 654 49-29v56l-49 29Zm64-38 49-29v56l-49 29Zm64-38 40-24v56l-40 24Z" fill="#d7c9a1" fill-opacity=".15"/>
+ <path d="m1245 766 205-121M1014 642l204 124" stroke-opacity=".35"/>
+ <path d="m1070 435 154-87 128 72M1224 348v35"/>
+</g>
+<g stroke="#c8ad76" stroke-width="3"><path d="M327 793v36h296l148-89M1233 805v24h-275l-187-89"/><circle cx="771" cy="740" r="9" fill="#c8ad76"/></g>
+<g stroke="#b77c60" stroke-width="3"><path d="M400 751v102h895v-84"/><path d="m419 844-10 9 10 9m840-18-10 9 10 9"/></g>
+<g fill="#ddd3bb" font-family="monospace" font-size="17" letter-spacing="2"><text x="165" y="345">01 / THE HOUSEHOLD</text><text x="640" y="367">02 / THE CONNECTION</text><text x="1107" y="327">03 / THE FACILITY</text></g>
+<g font-family="monospace" font-size="15" letter-spacing="1"><text x="84" y="899" fill="#c8ad76">ELECTRICITY / SHARED SYSTEM</text><text x="920" y="899" fill="#cf9b7e">HEAT / A PARTICULAR NETWORK</text><text x="84" y="969" fill="#a8aa9e">AUTHOR-DRAWN SCHEMATIC / NO MEASURED FLOW OR GEOGRAPHY IMPLIED</text></g>
+</svg>
