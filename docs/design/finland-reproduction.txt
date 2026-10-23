@@ -1,0 +1,61 @@
+THE GRID IS SHARED / Finnish account, 23 October 2026
+
+Source attribution, source URLs and SHA-256 fingerprints:
+  finland-provenance.json (beside this file)
+
+Reproduce from the repository root with Python and openpyxl==3.1.5:
+  python scripts/fetch_finland_sources.py artifacts/research/finland-energy
+  python scripts/build_finland_data.py artifacts/research/finland-energy --check
+
+The fetcher uses public publisher endpoints, without credentials. The price query
+is retained in the extract. Already-pinned inputs are reused. Changed downloads
+fail the fingerprint check instead of silently updating published observations.
+The original XLSX workbooks and PDF are not modified or redistributed. The 2025
+sales and central-network origin share are explicit transcriptions with pinned
+source documents. Spreadsheet cells retain their original labels and values.
+
+Offline numerical and source-integrity checks:
+  node --test scripts/finland_account.test.mjs scripts/datacenter.test.mjs
+
+Browser inspection (requires the repository's pinned Playwright and axe-core):
+  python scripts/serve_performance.py 8794 --directory docs
+  node scripts/audit_finland_account.mjs
+
+The browser audit covers both themes, desktop and phone, source selection,
+keyboard navigation, playback, source export, missing heat allocations, and a
+deliberately corrupted extract. No public API is called by the running specimen.
+
+PRICE / monthly national household consumer bands, January 2024–June 2026.
+Energy and network components exclude tax. The published tax component includes
+electricity excise and VAT; no VAT is added again. Annual use is authored.
+The selected monthly price held for a year is an annualised illustration, not
+a household bill, a contract offer, a forecast, or a data-centre causal effect.
+Each exported price record includes the zero-based JSON-stat value indices.
+
+GRID / two complete recorded weeks, 1–7 January and 1–7 July 2024.
+336 one-hour mean-power intervals. Publisher fixed normal time is UTC+2, even
+in July. Source labels 1–24 are interpreted as hour-ending slots. That explicit
+normalisation is retained alongside the original date, hour, sheet and row.
+The annual source validation covers all 8,784 intervals of leap year 2024.
+Energy uses sum(MW × 1 hour); no trapezoid, daylight-saving adjustment or gap fill.
+Exports remain negative. Wind is included in production, never added again.
+The additional-load branch is arithmetic at fixed historical supply. It does not
+model dispatch, imports, spare grid capacity, a blackout or a price response.
+
+HEAT / Nivos company/municipal row 114, 2024 district-heat statistics.
+Thermal GWh remain distinct from electrical MWh. Recovery / heat-pump output
+is one combined category. It is not pure server heat. Residential customer use
+is reported directly in Taul5!R138, not inferred from the source mix. Heat to
+industry and other customers is kept separate. Losses include meter differences.
+Heat-production electricity is '..' in the source and remains unavailable.
+The first supply category keeps its original Finnish label in the receipt;
+the interface calls it other net heat production, without treating it all as
+combustion. A source-to-residential attribution of recovered heat is unavailable.
+
+2025 company-wide heat sales are a separate report, with no residential split
+in this extract. The 41% recovered-heat origin disclosure concerns only central
+Mäntsälä; it is never multiplied by company-wide sales or used as a tariff saving.
+
+Data-source checks do not validate physical meters or the causal impact of a
+particular data-centre investment. The existing ESIF facility study is a separate
+US account and its authored room makes no claim to depict a Finnish facility.
