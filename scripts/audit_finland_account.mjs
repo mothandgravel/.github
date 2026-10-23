@@ -61,6 +61,7 @@ try{
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   for(const target of ['homes','bill','grid','heat']){await page.locator(`[data-fi-panel="${target}"]`).click();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);}
   if(width===390){await page.setViewportSize({width:320,height:850});for(const target of ['homes','bill','grid','heat']){await page.locator(`[data-fi-panel="${target}"]`).click();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);}}
+  if(width===390){await page.locator('[data-fi-panel="homes"]').click();await page.locator('#fi-apartment-use').fill('60000');await page.locator('#fi-electric-use').fill('60000');for(const change of ['10','-3']){await page.locator('#fi-price-change').fill(change);for(const key of ['apartment','electric'])assert.ok(await page.locator(`#fi-${key}-change`).evaluate(e=>e.scrollWidth<=e.clientWidth),'Largest valid currency changes fit the smallest supported screen');}}
   assert.ok(!requests.some(x=>/esif-week.json|datacenter-engine.mjs|studio-small|pathtracer.mjs/.test(x)),'Finnish account does not load US data or 3D');
   assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);results.push({width,theme,axeViolations:0,errors,writes,export:'source records and assumptions',overflow:false});await page.close();
  }
