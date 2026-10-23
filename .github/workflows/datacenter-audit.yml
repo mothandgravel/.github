@@ -9,6 +9,10 @@ on:
       - "docs/assets/site.js"
       - "scripts/audit_datacenter.mjs"
       - "scripts/datacenter.test.mjs"
+      - "scripts/finland_account.test.mjs"
+      - "scripts/audit_finland_account.mjs"
+      - "scripts/build_finland_data.py"
+      - "docs/design/finland-provenance.json"
       - ".github/workflows/datacenter-audit.yml"
   workflow_dispatch:
 permissions:
@@ -27,7 +31,7 @@ jobs:
           npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
           npx playwright install --with-deps chromium
       - name: Verify measurement and numerical contracts
-        run: node --test scripts/datacenter.test.mjs
+        run: node --test scripts/datacenter.test.mjs scripts/finland_account.test.mjs
       - name: Start specimen server
         run: |
           python3 scripts/serve_performance.py 8794 --directory docs >/tmp/datacenter-site.log 2>&1 &
@@ -39,9 +43,13 @@ jobs:
           exit 1
       - name: Inspect records, arithmetic, exports, themes, keyboard access and graphics fallback
         run: node scripts/audit_datacenter.mjs
+      - name: Inspect Finnish bills, grid records, heat boundaries and source exports
+        run: node scripts/audit_finland_account.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: datacenter-review
-          path: artifacts/design-review/datacenter/
+          path: |
+            artifacts/design-review/datacenter/
+            artifacts/design-review/datacenter-finland/
           retention-days: 14

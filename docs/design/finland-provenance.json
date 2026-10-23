@@ -1,0 +1,48 @@
+{
+  "schema": "moth-gravel/finland-account@1",
+  "retrieved": "2026-10-23",
+  "sha256": "82fc1f73c499023b4889710da110311a8ef0d6da6c0d37d61cc317932aa99a3c",
+  "extract": "../assets/data-center/finland.json",
+  "inputs": {
+    "statfin-13rb.json": {
+      "sha256": "b01492f4309c65dcfa18421ff55d7d83bdb38810d26cfc890f0b2776847b8e38",
+      "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/ehi/13rb.px"
+    },
+    "statfin-13rb-query.json": {
+      "sha256": "d9a669e5b7a0c0da3508aaa57a5ff4372224bbc68a98d9bab00b6c7fc365dadb",
+      "url": null
+    },
+    "grid.xlsx": {
+      "sha256": "b3dcec0cdf043bf218f5e78b995e93cefd27e21c8911af65015986089e8beb9e",
+      "url": "https://energia.fi/wp-content/uploads/2026/10/tuntidata_2020-2025.xlsx"
+    },
+    "heat.xlsx": {
+      "sha256": "dcafa61b2844cd2aa16121604f5818b1697425565c11040def1d6443407c78a1",
+      "url": "https://energia.fi/wp-content/uploads/2026/06/KL_Vuositaulukot_24_paivitetty_20260612.xlsx"
+    },
+    "nivos-2025.pdf": {
+      "sha256": "381a60a127f1fbabd7e6fa9592876e3e7592d05b3e8e6ebd804d4245b1000d84",
+      "url": "https://nivos.fi/wp-content/uploads/2026/04/Nivos-Vesi-ja-Lampo-Oy-tilinpaatos-ja-toimintakertomus-2025.pdf"
+    },
+    "nivos-origin.html": {
+      "sha256": "1a05945730578ea32ac8e62f9cd1762388ead5f59fe311de619c96a6ef9555a2",
+      "url": "https://nivos.fi/kaukolampo/kaukolammon-alkupera/"
+    }
+  },
+  "methods": {
+    "bill": "Published monthly consumer-band unit prices. Energy and distribution exclude tax; the tax channel includes electricity excise and VAT. Published total retained. Annualised illustration = authored annual kWh × selected-month c/kWh / 100. No extra VAT, invented load profile or causal price model.",
+    "grid": "Energiateollisuus 2024 worksheet. Hour labels 1–24 interpreted as hour-ending slots in publisher fixed UTC+2 normal time; end = source date + hour, start = end − 1 h. No daylight-saving adjustment. MW are treated as hourly means. Energy = sum(MW × 1 h); no trapezoidal integration. Exports are signed negative in the source. Balance = production + import + signed export − consumption. These are national flows, not available capacity.",
+    "heat": "Published 2024 Nivos company/municipal row 114. Thermal GWh retained separately from electrical MWh. Recovered heat / heat-pump output is a combined source category, not pure server waste heat. Residential use is reported directly, not allocated by fuel mix. 2025 company sales (43.1 GWh) transcribed from report PDF page 3; central-network origin share (41%) transcribed from the pinned origin disclosure. Different scopes; no multiplication across them.",
+    "branch": "Authored extra whole-facility MW is added arithmetically to a historical national demand observation. The unmet-by-fixed-historical-supply increment is a requirement to investigate, not a forecast of imports, generation, blackouts, grid capacity or price. No PUE multiplier."
+  },
+  "licenses": {
+    "statfin": {
+      "name": "CC BY 4.0",
+      "url": "https://stat.fi/en/about-us/get-to-know-statistics-finland/legislation/terms-of-use"
+    },
+    "energy": "Source: Energiateollisuus ry. Bounded factual extracts with attribution; no blanket Creative Commons licence asserted. Original workbooks linked, not redistributed.",
+    "nivos": "Source: Nivos Vesi ja Lämpö Oy. Limited reported facts with page references; original report linked, not redistributed."
+  },
+  "builder": "scripts/build_finland_data.py",
+  "dependency": "openpyxl==3.1.5"
+}

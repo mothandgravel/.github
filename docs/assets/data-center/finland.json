@@ -1,0 +1,6096 @@
+{
+  "schema": "moth-gravel/finland-account@1",
+  "retrieved": "2026-10-23",
+  "methods": {
+    "bill": "Published monthly consumer-band unit prices. Energy and distribution exclude tax; the tax channel includes electricity excise and VAT. Published total retained. Annualised illustration = authored annual kWh × selected-month c/kWh / 100. No extra VAT, invented load profile or causal price model.",
+    "grid": "Energiateollisuus 2024 worksheet. Hour labels 1–24 interpreted as hour-ending slots in publisher fixed UTC+2 normal time; end = source date + hour, start = end − 1 h. No daylight-saving adjustment. MW are treated as hourly means. Energy = sum(MW × 1 h); no trapezoidal integration. Exports are signed negative in the source. Balance = production + import + signed export − consumption. These are national flows, not available capacity.",
+    "heat": "Published 2024 Nivos company/municipal row 114. Thermal GWh retained separately from electrical MWh. Recovered heat / heat-pump output is a combined source category, not pure server waste heat. Residential use is reported directly, not allocated by fuel mix. 2025 company sales (43.1 GWh) transcribed from report PDF page 3; central-network origin share (41%) transcribed from the pinned origin disclosure. Different scopes; no multiplication across them.",
+    "branch": "Authored extra whole-facility MW is added arithmetically to a historical national demand observation. The unmet-by-fixed-historical-supply increment is a requirement to investigate, not a forecast of imports, generation, blackouts, grid capacity or price. No PUE multiplier."
+  },
+  "prices": {
+    "source": "Statistics Finland, energy prices / 13rb",
+    "updated": "2026-09-24T05:00:00Z",
+    "unit": "c/kWh",
+    "months": [
+      "2024M01",
+      "2024M02",
+      "2024M03",
+      "2024M04",
+      "2024M05",
+      "2024M06",
+      "2024M07",
+      "2024M08",
+      "2024M09",
+      "2024M10",
+      "2024M11",
+      "2024M12",
+      "2025M01",
+      "2025M02",
+      "2025M03",
+      "2025M04",
+      "2025M05",
+      "2025M06",
+      "2025M07",
+      "2025M08",
+      "2025M09",
+      "2025M10",
+      "2025M11",
+      "2025M12",
+      "2026M01",
+      "2026M02",
+      "2026M03",
+      "2026M04",
+      "2026M05",
+      "2026M06"
+    ],
+    "bandLabels": {
+      "A": "Household customer, annual consumption < 1 000 kW",
+      "B": "Household customer, annual consumption 1 000 kWh - 2 499 kWh",
+      "C": "Household customer, annual consumption 2 500 kWh - 4 999 kWh",
+      "D": "Household customer, annual consumption 5 000 kWh - 15 000 kWh",
+      "E": "Household customer, annual consumption > 15 000 kWh"
+    },
+    "labelNote": "The source English band-A label says kW. Display labels use kWh for annual energy, consistently with the other annual-consumption bands. Original labels are retained here.",
+    "rows": [
+      {
+        "month": "2024M01",
+        "band": "A",
+        "energy": 12.5,
+        "network": 8.355,
+        "tax": 7.799,
+        "total": 28.654,
+        "valueIndices": [
+          0,
+          5,
+          10,
+          15
+        ]
+      },
+      {
+        "month": "2024M01",
+        "band": "B",
+        "energy": 12.04,
+        "network": 8.355,
+        "tax": 7.688,
+        "total": 28.083,
+        "valueIndices": [
+          1,
+          6,
+          11,
+          16
+        ]
+      },
+      {
+        "month": "2024M01",
+        "band": "C",
+        "energy": 10.88,
+        "network": 7.532,
+        "tax": 7.213,
+        "total": 25.625,
+        "valueIndices": [
+          2,
+          7,
+          12,
+          17
+        ]
+      },
+      {
+        "month": "2024M01",
+        "band": "D",
+        "energy": 10.13,
+        "network": 5.383,
+        "tax": 6.517,
+        "total": 22.03,
+        "valueIndices": [
+          3,
+          8,
+          13,
+          18
+        ]
+      },
+      {
+        "month": "2024M01",
+        "band": "E",
+        "energy": 9.53,
+        "network": 3.81,
+        "tax": 5.995,
+        "total": 19.336,
+        "valueIndices": [
+          4,
+          9,
+          14,
+          19
+        ]
+      },
+      {
+        "month": "2024M02",
+        "band": "A",
+        "energy": 11.05,
+        "network": 8.355,
+        "tax": 7.451,
+        "total": 26.856,
+        "valueIndices": [
+          20,
+          25,
+          30,
+          35
+        ]
+      },
+      {
+        "month": "2024M02",
+        "band": "B",
+        "energy": 10.5,
+        "network": 8.355,
+        "tax": 7.319,
+        "total": 26.174,
+        "valueIndices": [
+          21,
+          26,
+          31,
+          36
+        ]
+      },
+      {
+        "month": "2024M02",
+        "band": "C",
+        "energy": 9.31,
+        "network": 7.528,
+        "tax": 6.835,
+        "total": 23.673,
+        "valueIndices": [
+          22,
+          27,
+          32,
+          37
+        ]
+      },
+      {
+        "month": "2024M02",
+        "band": "D",
+        "energy": 8.48,
+        "network": 5.379,
+        "tax": 6.12,
+        "total": 19.979,
+        "valueIndices": [
+          23,
+          28,
+          33,
+          38
+        ]
+      },
+      {
+        "month": "2024M02",
+        "band": "E",
+        "energy": 7.78,
+        "network": 3.81,
+        "tax": 5.575,
+        "total": 17.166,
+        "valueIndices": [
+          24,
+          29,
+          34,
+          39
+        ]
+      },
+      {
+        "month": "2024M03",
+        "band": "A",
+        "energy": 11.26,
+        "network": 8.387,
+        "tax": 7.509,
+        "total": 27.156,
+        "valueIndices": [
+          40,
+          45,
+          50,
+          55
+        ]
+      },
+      {
+        "month": "2024M03",
+        "band": "B",
+        "energy": 10.66,
+        "network": 8.387,
+        "tax": 7.365,
+        "total": 26.412,
+        "valueIndices": [
+          41,
+          46,
+          51,
+          56
+        ]
+      },
+      {
+        "month": "2024M03",
+        "band": "C",
+        "energy": 9.37,
+        "network": 7.556,
+        "tax": 6.856,
+        "total": 23.783,
+        "valueIndices": [
+          42,
+          47,
+          52,
+          57
+        ]
+      },
+      {
+        "month": "2024M03",
+        "band": "D",
+        "energy": 8.44,
+        "network": 5.395,
+        "tax": 6.114,
+        "total": 19.949,
+        "valueIndices": [
+          43,
+          48,
+          53,
+          58
+        ]
+      },
+      {
+        "month": "2024M03",
+        "band": "E",
+        "energy": 7.75,
+        "network": 3.819,
+        "tax": 5.57,
+        "total": 17.139,
+        "valueIndices": [
+          44,
+          49,
+          54,
+          59
+        ]
+      },
+      {
+        "month": "2024M04",
+        "band": "A",
+        "energy": 11.07,
+        "network": 8.629,
+        "tax": 7.521,
+        "total": 27.221,
+        "valueIndices": [
+          60,
+          65,
+          70,
+          75
+        ]
+      },
+      {
+        "month": "2024M04",
+        "band": "B",
+        "energy": 10.39,
+        "network": 8.629,
+        "tax": 7.358,
+        "total": 26.377,
+        "valueIndices": [
+          61,
+          66,
+          71,
+          76
+        ]
+      },
+      {
+        "month": "2024M04",
+        "band": "C",
+        "energy": 8.97,
+        "network": 7.794,
+        "tax": 6.817,
+        "total": 23.582,
+        "valueIndices": [
+          62,
+          67,
+          72,
+          77
+        ]
+      },
+      {
+        "month": "2024M04",
+        "band": "D",
+        "energy": 7.88,
+        "network": 5.52,
+        "tax": 6.01,
+        "total": 19.41,
+        "valueIndices": [
+          63,
+          68,
+          73,
+          78
+        ]
+      },
+      {
+        "month": "2024M04",
+        "band": "E",
+        "energy": 7.29,
+        "network": 3.831,
+        "tax": 5.463,
+        "total": 16.583,
+        "valueIndices": [
+          64,
+          69,
+          74,
+          79
+        ]
+      },
+      {
+        "month": "2024M05",
+        "band": "A",
+        "energy": 10.64,
+        "network": 8.637,
+        "tax": 7.42,
+        "total": 26.697,
+        "valueIndices": [
+          80,
+          85,
+          90,
+          95
+        ]
+      },
+      {
+        "month": "2024M05",
+        "band": "B",
+        "energy": 9.95,
+        "network": 8.637,
+        "tax": 7.255,
+        "total": 25.842,
+        "valueIndices": [
+          81,
+          86,
+          91,
+          96
+        ]
+      },
+      {
+        "month": "2024M05",
+        "band": "C",
+        "energy": 8.45,
+        "network": 7.798,
+        "tax": 6.693,
+        "total": 22.942,
+        "valueIndices": [
+          82,
+          87,
+          92,
+          97
+        ]
+      },
+      {
+        "month": "2024M05",
+        "band": "D",
+        "energy": 7.34,
+        "network": 5.524,
+        "tax": 5.881,
+        "total": 18.745,
+        "valueIndices": [
+          83,
+          88,
+          93,
+          98
+        ]
+      },
+      {
+        "month": "2024M05",
+        "band": "E",
+        "energy": 6.75,
+        "network": 3.839,
+        "tax": 5.335,
+        "total": 15.924,
+        "valueIndices": [
+          84,
+          89,
+          94,
+          99
+        ]
+      },
+      {
+        "month": "2024M06",
+        "band": "A",
+        "energy": 10.92,
+        "network": 8.355,
+        "tax": 7.42,
+        "total": 26.695,
+        "valueIndices": [
+          100,
+          105,
+          110,
+          115
+        ]
+      },
+      {
+        "month": "2024M06",
+        "band": "B",
+        "energy": 9.86,
+        "network": 8.355,
+        "tax": 7.165,
+        "total": 25.38,
+        "valueIndices": [
+          101,
+          106,
+          111,
+          116
+        ]
+      },
+      {
+        "month": "2024M06",
+        "band": "C",
+        "energy": 8.39,
+        "network": 7.476,
+        "tax": 6.602,
+        "total": 22.467,
+        "valueIndices": [
+          102,
+          107,
+          112,
+          117
+        ]
+      },
+      {
+        "month": "2024M06",
+        "band": "D",
+        "energy": 7.28,
+        "network": 5.323,
+        "tax": 5.818,
+        "total": 18.421,
+        "valueIndices": [
+          103,
+          108,
+          113,
+          118
+        ]
+      },
+      {
+        "month": "2024M06",
+        "band": "E",
+        "energy": 6.57,
+        "network": 3.798,
+        "tax": 5.282,
+        "total": 15.651,
+        "valueIndices": [
+          104,
+          109,
+          114,
+          119
+        ]
+      },
+      {
+        "month": "2024M07",
+        "band": "A",
+        "energy": 10.25,
+        "network": 8.411,
+        "tax": 7.272,
+        "total": 25.934,
+        "valueIndices": [
+          120,
+          125,
+          130,
+          135
+        ]
+      },
+      {
+        "month": "2024M07",
+        "band": "B",
+        "energy": 9.01,
+        "network": 8.411,
+        "tax": 6.975,
+        "total": 24.396,
+        "valueIndices": [
+          121,
+          126,
+          131,
+          136
+        ]
+      },
+      {
+        "month": "2024M07",
+        "band": "C",
+        "energy": 7.79,
+        "network": 7.524,
+        "tax": 6.469,
+        "total": 21.783,
+        "valueIndices": [
+          122,
+          127,
+          132,
+          137
+        ]
+      },
+      {
+        "month": "2024M07",
+        "band": "D",
+        "energy": 6.57,
+        "network": 5.351,
+        "tax": 5.655,
+        "total": 17.576,
+        "valueIndices": [
+          123,
+          128,
+          133,
+          138
+        ]
+      },
+      {
+        "month": "2024M07",
+        "band": "E",
+        "energy": 5.83,
+        "network": 3.815,
+        "tax": 5.108,
+        "total": 14.753,
+        "valueIndices": [
+          124,
+          129,
+          134,
+          139
+        ]
+      },
+      {
+        "month": "2024M08",
+        "band": "A",
+        "energy": 10.065,
+        "network": 8.403,
+        "tax": 7.226,
+        "total": 25.694,
+        "valueIndices": [
+          140,
+          145,
+          150,
+          155
+        ]
+      },
+      {
+        "month": "2024M08",
+        "band": "B",
+        "energy": 9.242,
+        "network": 8.403,
+        "tax": 7.029,
+        "total": 24.673,
+        "valueIndices": [
+          141,
+          146,
+          151,
+          156
+        ]
+      },
+      {
+        "month": "2024M08",
+        "band": "C",
+        "energy": 7.399,
+        "network": 7.516,
+        "tax": 6.373,
+        "total": 21.288,
+        "valueIndices": [
+          142,
+          147,
+          152,
+          157
+        ]
+      },
+      {
+        "month": "2024M08",
+        "band": "D",
+        "energy": 6.335,
+        "network": 5.343,
+        "tax": 5.596,
+        "total": 17.274,
+        "valueIndices": [
+          143,
+          148,
+          153,
+          158
+        ]
+      },
+      {
+        "month": "2024M08",
+        "band": "E",
+        "energy": 5.515,
+        "network": 3.81,
+        "tax": 5.032,
+        "total": 14.357,
+        "valueIndices": [
+          144,
+          149,
+          154,
+          159
+        ]
+      },
+      {
+        "month": "2024M09",
+        "band": "A",
+        "energy": 11.6,
+        "network": 10.805,
+        "tax": 8.541,
+        "total": 30.946,
+        "valueIndices": [
+          160,
+          165,
+          170,
+          175
+        ]
+      },
+      {
+        "month": "2024M09",
+        "band": "B",
+        "energy": 10.21,
+        "network": 10.805,
+        "tax": 8.186,
+        "total": 29.201,
+        "valueIndices": [
+          161,
+          166,
+          171,
+          176
+        ]
+      },
+      {
+        "month": "2024M09",
+        "band": "C",
+        "energy": 9.1,
+        "network": 8.849,
+        "tax": 7.404,
+        "total": 25.353,
+        "valueIndices": [
+          162,
+          167,
+          172,
+          177
+        ]
+      },
+      {
+        "month": "2024M09",
+        "band": "D",
+        "energy": 7.743,
+        "network": 5.315,
+        "tax": 6.157,
+        "total": 19.215,
+        "valueIndices": [
+          163,
+          168,
+          173,
+          178
+        ]
+      },
+      {
+        "month": "2024M09",
+        "band": "E",
+        "energy": 6.881,
+        "network": 3.502,
+        "tax": 5.475,
+        "total": 15.858,
+        "valueIndices": [
+          164,
+          169,
+          174,
+          179
+        ]
+      },
+      {
+        "month": "2024M10",
+        "band": "A",
+        "energy": 9.866,
+        "network": 10.861,
+        "tax": 8.113,
+        "total": 28.839,
+        "valueIndices": [
+          180,
+          185,
+          190,
+          195
+        ]
+      },
+      {
+        "month": "2024M10",
+        "band": "B",
+        "energy": 8.809,
+        "network": 10.861,
+        "tax": 7.843,
+        "total": 27.513,
+        "valueIndices": [
+          181,
+          186,
+          191,
+          196
+        ]
+      },
+      {
+        "month": "2024M10",
+        "band": "C",
+        "energy": 7.685,
+        "network": 8.888,
+        "tax": 7.054,
+        "total": 23.627,
+        "valueIndices": [
+          182,
+          187,
+          192,
+          197
+        ]
+      },
+      {
+        "month": "2024M10",
+        "band": "D",
+        "energy": 6.781,
+        "network": 5.327,
+        "tax": 5.915,
+        "total": 18.022,
+        "valueIndices": [
+          183,
+          188,
+          193,
+          198
+        ]
+      },
+      {
+        "month": "2024M10",
+        "band": "E",
+        "energy": 6.238,
+        "network": 3.502,
+        "tax": 5.311,
+        "total": 15.052,
+        "valueIndices": [
+          184,
+          189,
+          194,
+          199
+        ]
+      },
+      {
+        "month": "2024M11",
+        "band": "A",
+        "energy": 9.79,
+        "network": 10.805,
+        "tax": 8.079,
+        "total": 28.674,
+        "valueIndices": [
+          200,
+          205,
+          210,
+          215
+        ]
+      },
+      {
+        "month": "2024M11",
+        "band": "B",
+        "energy": 8.94,
+        "network": 10.805,
+        "tax": 7.862,
+        "total": 27.607,
+        "valueIndices": [
+          201,
+          206,
+          211,
+          216
+        ]
+      },
+      {
+        "month": "2024M11",
+        "band": "C",
+        "energy": 7.84,
+        "network": 8.841,
+        "tax": 7.081,
+        "total": 23.762,
+        "valueIndices": [
+          202,
+          207,
+          212,
+          217
+        ]
+      },
+      {
+        "month": "2024M11",
+        "band": "D",
+        "energy": 6.94,
+        "network": 5.319,
+        "tax": 5.953,
+        "total": 18.212,
+        "valueIndices": [
+          203,
+          208,
+          213,
+          218
+        ]
+      },
+      {
+        "month": "2024M11",
+        "band": "E",
+        "energy": 6.43,
+        "network": 3.522,
+        "tax": 5.365,
+        "total": 15.317,
+        "valueIndices": [
+          204,
+          209,
+          214,
+          219
+        ]
+      },
+      {
+        "month": "2024M12",
+        "band": "A",
+        "energy": 9.403,
+        "network": 10.805,
+        "tax": 7.981,
+        "total": 28.189,
+        "valueIndices": [
+          220,
+          225,
+          230,
+          235
+        ]
+      },
+      {
+        "month": "2024M12",
+        "band": "B",
+        "energy": 8.57,
+        "network": 10.805,
+        "tax": 7.768,
+        "total": 27.143,
+        "valueIndices": [
+          221,
+          226,
+          231,
+          236
+        ]
+      },
+      {
+        "month": "2024M12",
+        "band": "C",
+        "energy": 7.484,
+        "network": 8.841,
+        "tax": 6.99,
+        "total": 23.315,
+        "valueIndices": [
+          222,
+          227,
+          232,
+          237
+        ]
+      },
+      {
+        "month": "2024M12",
+        "band": "D",
+        "energy": 6.71,
+        "network": 5.319,
+        "tax": 5.895,
+        "total": 17.924,
+        "valueIndices": [
+          223,
+          228,
+          233,
+          238
+        ]
+      },
+      {
+        "month": "2024M12",
+        "band": "E",
+        "energy": 6.208,
+        "network": 3.522,
+        "tax": 5.309,
+        "total": 15.039,
+        "valueIndices": [
+          224,
+          229,
+          234,
+          239
+        ]
+      },
+      {
+        "month": "2025M01",
+        "band": "A",
+        "energy": 9.73,
+        "network": 10.47,
+        "tax": 7.979,
+        "total": 28.179,
+        "valueIndices": [
+          240,
+          245,
+          250,
+          255
+        ]
+      },
+      {
+        "month": "2025M01",
+        "band": "B",
+        "energy": 8.85,
+        "network": 10.47,
+        "tax": 7.754,
+        "total": 27.074,
+        "valueIndices": [
+          241,
+          246,
+          251,
+          256
+        ]
+      },
+      {
+        "month": "2025M01",
+        "band": "C",
+        "energy": 7.94,
+        "network": 8.622,
+        "tax": 7.051,
+        "total": 23.612,
+        "valueIndices": [
+          242,
+          247,
+          252,
+          257
+        ]
+      },
+      {
+        "month": "2025M01",
+        "band": "D",
+        "energy": 7.17,
+        "network": 5.255,
+        "tax": 5.996,
+        "total": 18.421,
+        "valueIndices": [
+          243,
+          248,
+          253,
+          258
+        ]
+      },
+      {
+        "month": "2025M01",
+        "band": "E",
+        "energy": 6.7,
+        "network": 3.494,
+        "tax": 5.427,
+        "total": 15.621,
+        "valueIndices": [
+          244,
+          249,
+          254,
+          259
+        ]
+      },
+      {
+        "month": "2025M02",
+        "band": "A",
+        "energy": 10.23,
+        "network": 10.47,
+        "tax": 8.106,
+        "total": 28.806,
+        "valueIndices": [
+          260,
+          265,
+          270,
+          275
+        ]
+      },
+      {
+        "month": "2025M02",
+        "band": "B",
+        "energy": 9.13,
+        "network": 10.47,
+        "tax": 7.826,
+        "total": 27.426,
+        "valueIndices": [
+          261,
+          266,
+          271,
+          276
+        ]
+      },
+      {
+        "month": "2025M02",
+        "band": "C",
+        "energy": 7.87,
+        "network": 8.622,
+        "tax": 7.033,
+        "total": 23.524,
+        "valueIndices": [
+          262,
+          267,
+          272,
+          277
+        ]
+      },
+      {
+        "month": "2025M02",
+        "band": "D",
+        "energy": 7.01,
+        "network": 5.255,
+        "tax": 5.955,
+        "total": 18.22,
+        "valueIndices": [
+          263,
+          268,
+          273,
+          278
+        ]
+      },
+      {
+        "month": "2025M02",
+        "band": "E",
+        "energy": 6.55,
+        "network": 3.494,
+        "tax": 5.389,
+        "total": 15.433,
+        "valueIndices": [
+          264,
+          269,
+          274,
+          279
+        ]
+      },
+      {
+        "month": "2025M03",
+        "band": "A",
+        "energy": 10.22,
+        "network": 10.47,
+        "tax": 8.104,
+        "total": 28.794,
+        "valueIndices": [
+          280,
+          285,
+          290,
+          295
+        ]
+      },
+      {
+        "month": "2025M03",
+        "band": "B",
+        "energy": 8.81,
+        "network": 10.47,
+        "tax": 7.744,
+        "total": 27.024,
+        "valueIndices": [
+          281,
+          286,
+          291,
+          296
+        ]
+      },
+      {
+        "month": "2025M03",
+        "band": "C",
+        "energy": 7.77,
+        "network": 8.626,
+        "tax": 7.008,
+        "total": 23.404,
+        "valueIndices": [
+          282,
+          287,
+          292,
+          297
+        ]
+      },
+      {
+        "month": "2025M03",
+        "band": "D",
+        "energy": 6.86,
+        "network": 5.259,
+        "tax": 5.918,
+        "total": 18.037,
+        "valueIndices": [
+          283,
+          288,
+          293,
+          298
+        ]
+      },
+      {
+        "month": "2025M03",
+        "band": "E",
+        "energy": 6.42,
+        "network": 3.498,
+        "tax": 5.357,
+        "total": 15.275,
+        "valueIndices": [
+          284,
+          289,
+          294,
+          299
+        ]
+      },
+      {
+        "month": "2025M04",
+        "band": "A",
+        "energy": 9.68,
+        "network": 10.486,
+        "tax": 7.97,
+        "total": 28.136,
+        "valueIndices": [
+          300,
+          305,
+          310,
+          315
+        ]
+      },
+      {
+        "month": "2025M04",
+        "band": "B",
+        "energy": 8.728,
+        "network": 10.486,
+        "tax": 7.727,
+        "total": 26.941,
+        "valueIndices": [
+          301,
+          306,
+          311,
+          316
+        ]
+      },
+      {
+        "month": "2025M04",
+        "band": "C",
+        "energy": 7.51,
+        "network": 8.641,
+        "tax": 6.946,
+        "total": 23.097,
+        "valueIndices": [
+          302,
+          307,
+          312,
+          317
+        ]
+      },
+      {
+        "month": "2025M04",
+        "band": "D",
+        "energy": 6.639,
+        "network": 5.271,
+        "tax": 5.864,
+        "total": 17.774,
+        "valueIndices": [
+          303,
+          308,
+          313,
+          318
+        ]
+      },
+      {
+        "month": "2025M04",
+        "band": "E",
+        "energy": 6.189,
+        "network": 3.502,
+        "tax": 5.299,
+        "total": 14.99,
+        "valueIndices": [
+          304,
+          309,
+          314,
+          319
+        ]
+      },
+      {
+        "month": "2025M05",
+        "band": "A",
+        "energy": 10.36,
+        "network": 10.494,
+        "tax": 8.145,
+        "total": 28.999,
+        "valueIndices": [
+          320,
+          325,
+          330,
+          335
+        ]
+      },
+      {
+        "month": "2025M05",
+        "band": "B",
+        "energy": 7.796,
+        "network": 10.494,
+        "tax": 7.491,
+        "total": 25.781,
+        "valueIndices": [
+          321,
+          326,
+          331,
+          336
+        ]
+      },
+      {
+        "month": "2025M05",
+        "band": "C",
+        "energy": 6.555,
+        "network": 8.645,
+        "tax": 6.704,
+        "total": 21.904,
+        "valueIndices": [
+          322,
+          327,
+          332,
+          337
+        ]
+      },
+      {
+        "month": "2025M05",
+        "band": "D",
+        "energy": 5.666,
+        "network": 5.271,
+        "tax": 5.617,
+        "total": 16.554,
+        "valueIndices": [
+          323,
+          328,
+          333,
+          338
+        ]
+      },
+      {
+        "month": "2025M05",
+        "band": "E",
+        "energy": 5.007,
+        "network": 3.506,
+        "tax": 4.998,
+        "total": 13.511,
+        "valueIndices": [
+          324,
+          329,
+          334,
+          339
+        ]
+      },
+      {
+        "month": "2025M06",
+        "band": "A",
+        "energy": 10.557,
+        "network": 10.494,
+        "tax": 8.195,
+        "total": 29.246,
+        "valueIndices": [
+          340,
+          345,
+          350,
+          355
+        ]
+      },
+      {
+        "month": "2025M06",
+        "band": "B",
+        "energy": 7.821,
+        "network": 10.494,
+        "tax": 7.498,
+        "total": 25.813,
+        "valueIndices": [
+          341,
+          346,
+          351,
+          356
+        ]
+      },
+      {
+        "month": "2025M06",
+        "band": "C",
+        "energy": 6.507,
+        "network": 8.649,
+        "tax": 6.692,
+        "total": 21.849,
+        "valueIndices": [
+          342,
+          347,
+          352,
+          357
+        ]
+      },
+      {
+        "month": "2025M06",
+        "band": "D",
+        "energy": 5.604,
+        "network": 5.275,
+        "tax": 5.602,
+        "total": 16.481,
+        "valueIndices": [
+          343,
+          348,
+          353,
+          358
+        ]
+      },
+      {
+        "month": "2025M06",
+        "band": "E",
+        "energy": 5.002,
+        "network": 3.506,
+        "tax": 4.997,
+        "total": 13.505,
+        "valueIndices": [
+          344,
+          349,
+          354,
+          359
+        ]
+      },
+      {
+        "month": "2025M07",
+        "band": "A",
+        "energy": 10.16,
+        "network": 10.653,
+        "tax": 8.135,
+        "total": 28.948,
+        "valueIndices": [
+          360,
+          365,
+          370,
+          375
+        ]
+      },
+      {
+        "month": "2025M07",
+        "band": "B",
+        "energy": 7.81,
+        "network": 10.653,
+        "tax": 7.536,
+        "total": 25.999,
+        "valueIndices": [
+          361,
+          366,
+          371,
+          376
+        ]
+      },
+      {
+        "month": "2025M07",
+        "band": "C",
+        "energy": 6.69,
+        "network": 8.717,
+        "tax": 6.756,
+        "total": 22.163,
+        "valueIndices": [
+          362,
+          367,
+          372,
+          377
+        ]
+      },
+      {
+        "month": "2025M07",
+        "band": "D",
+        "energy": 5.92,
+        "network": 5.275,
+        "tax": 5.682,
+        "total": 16.877,
+        "valueIndices": [
+          363,
+          368,
+          373,
+          378
+        ]
+      },
+      {
+        "month": "2025M07",
+        "band": "E",
+        "energy": 5.29,
+        "network": 3.53,
+        "tax": 5.077,
+        "total": 13.896,
+        "valueIndices": [
+          364,
+          369,
+          374,
+          379
+        ]
+      },
+      {
+        "month": "2025M08",
+        "band": "A",
+        "energy": 10.95,
+        "network": 10.653,
+        "tax": 8.336,
+        "total": 29.94,
+        "valueIndices": [
+          380,
+          385,
+          390,
+          395
+        ]
+      },
+      {
+        "month": "2025M08",
+        "band": "B",
+        "energy": 8.91,
+        "network": 10.653,
+        "tax": 7.816,
+        "total": 27.38,
+        "valueIndices": [
+          381,
+          386,
+          391,
+          396
+        ]
+      },
+      {
+        "month": "2025M08",
+        "band": "C",
+        "energy": 7.88,
+        "network": 8.721,
+        "tax": 7.061,
+        "total": 23.662,
+        "valueIndices": [
+          382,
+          387,
+          392,
+          397
+        ]
+      },
+      {
+        "month": "2025M08",
+        "band": "D",
+        "energy": 7.18,
+        "network": 5.279,
+        "tax": 6.005,
+        "total": 18.463,
+        "valueIndices": [
+          383,
+          388,
+          393,
+          398
+        ]
+      },
+      {
+        "month": "2025M08",
+        "band": "E",
+        "energy": 6.71,
+        "network": 3.53,
+        "tax": 5.439,
+        "total": 15.679,
+        "valueIndices": [
+          384,
+          389,
+          394,
+          399
+        ]
+      },
+      {
+        "month": "2025M09",
+        "band": "A",
+        "energy": 10.7,
+        "network": 10.677,
+        "tax": 8.279,
+        "total": 29.656,
+        "valueIndices": [
+          400,
+          405,
+          410,
+          415
+        ]
+      },
+      {
+        "month": "2025M09",
+        "band": "B",
+        "energy": 8.47,
+        "network": 10.677,
+        "tax": 7.71,
+        "total": 26.857,
+        "valueIndices": [
+          401,
+          406,
+          411,
+          416
+        ]
+      },
+      {
+        "month": "2025M09",
+        "band": "C",
+        "energy": 7.33,
+        "network": 8.737,
+        "tax": 6.925,
+        "total": 22.992,
+        "valueIndices": [
+          402,
+          407,
+          412,
+          417
+        ]
+      },
+      {
+        "month": "2025M09",
+        "band": "D",
+        "energy": 6.46,
+        "network": 5.287,
+        "tax": 5.823,
+        "total": 17.57,
+        "valueIndices": [
+          403,
+          408,
+          413,
+          418
+        ]
+      },
+      {
+        "month": "2025M09",
+        "band": "E",
+        "energy": 5.89,
+        "network": 3.538,
+        "tax": 5.232,
+        "total": 14.659,
+        "valueIndices": [
+          404,
+          409,
+          414,
+          419
+        ]
+      },
+      {
+        "month": "2025M10",
+        "band": "A",
+        "energy": 10.72,
+        "network": 10.924,
+        "tax": 8.347,
+        "total": 29.991,
+        "valueIndices": [
+          420,
+          425,
+          430,
+          435
+        ]
+      },
+      {
+        "month": "2025M10",
+        "band": "B",
+        "energy": 8.46,
+        "network": 10.924,
+        "tax": 7.771,
+        "total": 27.155,
+        "valueIndices": [
+          421,
+          426,
+          431,
+          436
+        ]
+      },
+      {
+        "month": "2025M10",
+        "band": "C",
+        "energy": 7.38,
+        "network": 8.876,
+        "tax": 6.973,
+        "total": 23.229,
+        "valueIndices": [
+          422,
+          427,
+          432,
+          437
+        ]
+      },
+      {
+        "month": "2025M10",
+        "band": "D",
+        "energy": 6.57,
+        "network": 5.315,
+        "tax": 5.858,
+        "total": 17.743,
+        "valueIndices": [
+          423,
+          428,
+          433,
+          438
+        ]
+      },
+      {
+        "month": "2025M10",
+        "band": "E",
+        "energy": 6.14,
+        "network": 3.562,
+        "tax": 5.301,
+        "total": 15.003,
+        "valueIndices": [
+          424,
+          429,
+          434,
+          439
+        ]
+      },
+      {
+        "month": "2025M11",
+        "band": "A",
+        "energy": 11.21,
+        "network": 10.932,
+        "tax": 8.474,
+        "total": 30.616,
+        "valueIndices": [
+          440,
+          445,
+          450,
+          455
+        ]
+      },
+      {
+        "month": "2025M11",
+        "band": "B",
+        "energy": 8.64,
+        "network": 10.932,
+        "tax": 7.818,
+        "total": 27.391,
+        "valueIndices": [
+          441,
+          446,
+          451,
+          456
+        ]
+      },
+      {
+        "month": "2025M11",
+        "band": "C",
+        "energy": 7.53,
+        "network": 8.884,
+        "tax": 7.013,
+        "total": 23.428,
+        "valueIndices": [
+          442,
+          447,
+          452,
+          457
+        ]
+      },
+      {
+        "month": "2025M11",
+        "band": "D",
+        "energy": 6.75,
+        "network": 5.327,
+        "tax": 5.907,
+        "total": 17.984,
+        "valueIndices": [
+          443,
+          448,
+          453,
+          458
+        ]
+      },
+      {
+        "month": "2025M11",
+        "band": "E",
+        "energy": 6.33,
+        "network": 3.59,
+        "tax": 5.357,
+        "total": 15.277,
+        "valueIndices": [
+          444,
+          449,
+          454,
+          459
+        ]
+      },
+      {
+        "month": "2025M12",
+        "band": "A",
+        "energy": 10.83,
+        "network": 10.932,
+        "tax": 8.377,
+        "total": 30.139,
+        "valueIndices": [
+          460,
+          465,
+          470,
+          475
+        ]
+      },
+      {
+        "month": "2025M12",
+        "band": "B",
+        "energy": 8.09,
+        "network": 10.932,
+        "tax": 7.678,
+        "total": 26.7,
+        "valueIndices": [
+          461,
+          466,
+          471,
+          476
+        ]
+      },
+      {
+        "month": "2025M12",
+        "band": "C",
+        "energy": 6.96,
+        "network": 8.884,
+        "tax": 6.868,
+        "total": 22.712,
+        "valueIndices": [
+          462,
+          467,
+          472,
+          477
+        ]
+      },
+      {
+        "month": "2025M12",
+        "band": "D",
+        "energy": 6.1,
+        "network": 5.327,
+        "tax": 5.741,
+        "total": 17.168,
+        "valueIndices": [
+          463,
+          468,
+          473,
+          478
+        ]
+      },
+      {
+        "month": "2025M12",
+        "band": "E",
+        "energy": 5.64,
+        "network": 3.59,
+        "tax": 5.181,
+        "total": 14.411,
+        "valueIndices": [
+          464,
+          469,
+          474,
+          479
+        ]
+      },
+      {
+        "month": "2026M01",
+        "band": "A",
+        "energy": 12.72,
+        "network": 11.306,
+        "tax": 8.954,
+        "total": 32.981,
+        "valueIndices": [
+          480,
+          485,
+          490,
+          495
+        ]
+      },
+      {
+        "month": "2026M01",
+        "band": "B",
+        "energy": 10.69,
+        "network": 11.306,
+        "tax": 8.437,
+        "total": 30.433,
+        "valueIndices": [
+          481,
+          486,
+          491,
+          496
+        ]
+      },
+      {
+        "month": "2026M01",
+        "band": "C",
+        "energy": 9.8,
+        "network": 9.16,
+        "tax": 7.662,
+        "total": 26.622,
+        "valueIndices": [
+          482,
+          487,
+          492,
+          497
+        ]
+      },
+      {
+        "month": "2026M01",
+        "band": "D",
+        "energy": 8.93,
+        "network": 5.452,
+        "tax": 6.495,
+        "total": 20.877,
+        "valueIndices": [
+          483,
+          488,
+          493,
+          498
+        ]
+      },
+      {
+        "month": "2026M01",
+        "band": "E",
+        "energy": 8.83,
+        "network": 3.66,
+        "tax": 6.013,
+        "total": 18.503,
+        "valueIndices": [
+          484,
+          489,
+          494,
+          499
+        ]
+      },
+      {
+        "month": "2026M02",
+        "band": "A",
+        "energy": 13.57,
+        "network": 11.315,
+        "tax": 9.173,
+        "total": 34.058,
+        "valueIndices": [
+          500,
+          505,
+          510,
+          515
+        ]
+      },
+      {
+        "month": "2026M02",
+        "band": "B",
+        "energy": 11.4,
+        "network": 11.315,
+        "tax": 8.62,
+        "total": 31.334,
+        "valueIndices": [
+          501,
+          506,
+          511,
+          516
+        ]
+      },
+      {
+        "month": "2026M02",
+        "band": "C",
+        "energy": 10.45,
+        "network": 9.165,
+        "tax": 7.829,
+        "total": 27.444,
+        "valueIndices": [
+          502,
+          507,
+          512,
+          517
+        ]
+      },
+      {
+        "month": "2026M02",
+        "band": "D",
+        "energy": 9.66,
+        "network": 5.453,
+        "tax": 6.681,
+        "total": 21.795,
+        "valueIndices": [
+          503,
+          508,
+          513,
+          518
+        ]
+      },
+      {
+        "month": "2026M02",
+        "band": "E",
+        "energy": 9.51,
+        "network": 3.661,
+        "tax": 6.186,
+        "total": 19.358,
+        "valueIndices": [
+          504,
+          509,
+          514,
+          519
+        ]
+      },
+      {
+        "month": "2026M03",
+        "band": "A",
+        "energy": 10.72,
+        "network": 11.357,
+        "tax": 8.457,
+        "total": 30.535,
+        "valueIndices": [
+          520,
+          525,
+          530,
+          535
+        ]
+      },
+      {
+        "month": "2026M03",
+        "band": "B",
+        "energy": 7.94,
+        "network": 11.357,
+        "tax": 7.748,
+        "total": 27.046,
+        "valueIndices": [
+          521,
+          526,
+          531,
+          536
+        ]
+      },
+      {
+        "month": "2026M03",
+        "band": "C",
+        "energy": 6.83,
+        "network": 9.192,
+        "tax": 6.913,
+        "total": 22.935,
+        "valueIndices": [
+          522,
+          527,
+          532,
+          537
+        ]
+      },
+      {
+        "month": "2026M03",
+        "band": "D",
+        "energy": 5.94,
+        "network": 5.462,
+        "tax": 5.735,
+        "total": 17.137,
+        "valueIndices": [
+          523,
+          528,
+          533,
+          538
+        ]
+      },
+      {
+        "month": "2026M03",
+        "band": "E",
+        "energy": 5.34,
+        "network": 3.666,
+        "tax": 5.124,
+        "total": 14.13,
+        "valueIndices": [
+          524,
+          529,
+          534,
+          539
+        ]
+      },
+      {
+        "month": "2026M04",
+        "band": "A",
+        "energy": 10.97,
+        "network": 11.363,
+        "tax": 8.613,
+        "total": 30.945,
+        "valueIndices": [
+          540,
+          545,
+          550,
+          555
+        ]
+      },
+      {
+        "month": "2026M04",
+        "band": "B",
+        "energy": 8.48,
+        "network": 11.363,
+        "tax": 7.978,
+        "total": 27.82,
+        "valueIndices": [
+          541,
+          546,
+          551,
+          556
+        ]
+      },
+      {
+        "month": "2026M04",
+        "band": "C",
+        "energy": 7.3,
+        "network": 9.203,
+        "tax": 7.126,
+        "total": 23.629,
+        "valueIndices": [
+          542,
+          547,
+          552,
+          557
+        ]
+      },
+      {
+        "month": "2026M04",
+        "band": "D",
+        "energy": 6.41,
+        "network": 5.478,
+        "tax": 5.949,
+        "total": 17.837,
+        "valueIndices": [
+          543,
+          548,
+          553,
+          558
+        ]
+      },
+      {
+        "month": "2026M04",
+        "band": "E",
+        "energy": 5.99,
+        "network": 3.681,
+        "tax": 5.384,
+        "total": 15.055,
+        "valueIndices": [
+          544,
+          549,
+          554,
+          559
+        ]
+      },
+      {
+        "month": "2026M05",
+        "band": "A",
+        "energy": 10.99,
+        "network": 11.363,
+        "tax": 8.618,
+        "total": 30.97,
+        "valueIndices": [
+          560,
+          565,
+          570,
+          575
+        ]
+      },
+      {
+        "month": "2026M05",
+        "band": "B",
+        "energy": 8.71,
+        "network": 11.363,
+        "tax": 8.036,
+        "total": 28.109,
+        "valueIndices": [
+          561,
+          566,
+          571,
+          576
+        ]
+      },
+      {
+        "month": "2026M05",
+        "band": "C",
+        "energy": 7.57,
+        "network": 9.199,
+        "tax": 7.194,
+        "total": 23.963,
+        "valueIndices": [
+          562,
+          567,
+          572,
+          577
+        ]
+      },
+      {
+        "month": "2026M05",
+        "band": "D",
+        "energy": 6.65,
+        "network": 5.474,
+        "tax": 6.01,
+        "total": 18.134,
+        "valueIndices": [
+          563,
+          568,
+          573,
+          578
+        ]
+      },
+      {
+        "month": "2026M05",
+        "band": "E",
+        "energy": 6.29,
+        "network": 3.681,
+        "tax": 5.461,
+        "total": 15.432,
+        "valueIndices": [
+          564,
+          569,
+          574,
+          579
+        ]
+      },
+      {
+        "month": "2026M06",
+        "band": "A",
+        "energy": 11.67,
+        "network": 11.331,
+        "tax": 8.783,
+        "total": 31.784,
+        "valueIndices": [
+          580,
+          585,
+          590,
+          595
+        ]
+      },
+      {
+        "month": "2026M06",
+        "band": "B",
+        "energy": 8.83,
+        "network": 11.331,
+        "tax": 8.059,
+        "total": 28.22,
+        "valueIndices": [
+          581,
+          586,
+          591,
+          596
+        ]
+      },
+      {
+        "month": "2026M06",
+        "band": "C",
+        "energy": 7.39,
+        "network": 9.175,
+        "tax": 7.142,
+        "total": 23.707,
+        "valueIndices": [
+          582,
+          587,
+          592,
+          597
+        ]
+      },
+      {
+        "month": "2026M06",
+        "band": "D",
+        "energy": 6.48,
+        "network": 5.466,
+        "tax": 5.964,
+        "total": 17.91,
+        "valueIndices": [
+          583,
+          588,
+          593,
+          598
+        ]
+      },
+      {
+        "month": "2026M06",
+        "band": "E",
+        "energy": 5.86,
+        "network": 3.681,
+        "tax": 5.351,
+        "total": 14.892,
+        "valueIndices": [
+          584,
+          589,
+          594,
+          599
+        ]
+      }
+    ],
+    "query": {
+      "query": [
+        {
+          "code": "timeperiod_m",
+          "selection": {
+            "filter": "item",
+            "values": [
+              "2024M01",
+              "2024M02",
+              "2024M03",
+              "2024M04",
+              "2024M05",
+              "2024M06",
+              "2024M07",
+              "2024M08",
+              "2024M09",
+              "2024M10",
+              "2024M11",
+              "2024M12",
+              "2025M01",
+              "2025M02",
+              "2025M03",
+              "2025M04",
+              "2025M05",
+              "2025M06",
+              "2025M07",
+              "2025M08",
+              "2025M09",
+              "2025M10",
+              "2025M11",
+              "2025M12",
+              "2026M01",
+              "2026M02",
+              "2026M03",
+              "2026M04",
+              "2026M05",
+              "2026M06"
+            ]
+          }
+        },
+        {
+          "code": "energia_48_20220905",
+          "selection": {
+            "filter": "item",
+            "values": [
+              "A",
+              "B",
+              "C",
+              "SSS"
+            ]
+          }
+        },
+        {
+          "code": "energia_49_20220905",
+          "selection": {
+            "filter": "item",
+            "values": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E"
+            ]
+          }
+        },
+        {
+          "code": "contentscode",
+          "selection": {
+            "filter": "item",
+            "values": [
+              "hinta_snt_kwh"
+            ]
+          }
+        }
+      ],
+      "response": {
+        "format": "json-stat2"
+      }
+    },
+    "notes": [
+      "<A HREF='https://stat.fi/en/statistics/documentation/ehi' TARGET=_blank>Documentation of statistics</A>",
+      ".. not applicable",
+      "The user classification is based on the classification used by the European Union in her collection of electricity price data. Prices of electric energy are collected from sellers by catergory and then combined with the transmission prices published by the Energy Authority.\r\nTaxes for enterprise and corporate clients do not include VAT.\r\n13rb -- Price of electricity by type of consumer, 2008M01-2026M06, Energy prices, Statistics Finland"
+    ],
+    "maxComponentResidualCKWh": 0.0010000000000012221
+  },
+  "grid": {
+    "source": "Energiateollisuus ry / Sähkön tuntidata 2020–2025",
+    "sheet": "2024",
+    "unit": "MW",
+    "sourceColumns": {
+      "consumption": "R",
+      "production": "G",
+      "import": "P",
+      "exportSigned": "Q",
+      "wind": "I"
+    },
+    "windows": [
+      {
+        "id": "winter",
+        "label": "1–7 January 2024",
+        "rows": [
+          {
+            "start": "2024-01-01T00:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 1,
+            "row": 2,
+            "consumption": 12545.22596927,
+            "production": 10195.34565327,
+            "import": 2355.844316,
+            "exportSigned": -5.964,
+            "wind": 2232.27708198
+          },
+          {
+            "start": "2024-01-01T01:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 2,
+            "row": 3,
+            "consumption": 12401.849673760002,
+            "production": 10475.65743776,
+            "import": 1926.192236,
+            "exportSigned": 0,
+            "wind": 2517.04883644
+          },
+          {
+            "start": "2024-01-01T02:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 3,
+            "row": 4,
+            "consumption": 12265.703406400002,
+            "production": 10857.756342400002,
+            "import": 1444.773064,
+            "exportSigned": -36.826,
+            "wind": 2994.64705627
+          },
+          {
+            "start": "2024-01-01T03:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 4,
+            "row": 5,
+            "consumption": 12125.934752840001,
+            "production": 11021.47903584,
+            "import": 1206.175717,
+            "exportSigned": -101.72,
+            "wind": 3275.97694277
+          },
+          {
+            "start": "2024-01-01T04:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 5,
+            "row": 6,
+            "consumption": 12100.035009080002,
+            "production": 10790.070448080001,
+            "import": 1309.964561,
+            "exportSigned": 0,
+            "wind": 3164.75286815
+          },
+          {
+            "start": "2024-01-01T05:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 6,
+            "row": 7,
+            "consumption": 12159.89313193,
+            "production": 10751.556652930001,
+            "import": 1408.336479,
+            "exportSigned": 0,
+            "wind": 3034.72316258
+          },
+          {
+            "start": "2024-01-01T06:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 7,
+            "row": 8,
+            "consumption": 12328.655164400001,
+            "production": 10775.2728934,
+            "import": 1553.382271,
+            "exportSigned": 0,
+            "wind": 2867.6579189
+          },
+          {
+            "start": "2024-01-01T07:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 8,
+            "row": 9,
+            "consumption": 12339.07746173,
+            "production": 10884.08484473,
+            "import": 1454.992617,
+            "exportSigned": 0,
+            "wind": 2950.29466573
+          },
+          {
+            "start": "2024-01-01T08:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 9,
+            "row": 10,
+            "consumption": 12541.08165061,
+            "production": 11044.03105861,
+            "import": 1497.050592,
+            "exportSigned": 0,
+            "wind": 3110.18715654
+          },
+          {
+            "start": "2024-01-01T09:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 10,
+            "row": 11,
+            "consumption": 12595.192264090001,
+            "production": 11109.45418009,
+            "import": 1485.738084,
+            "exportSigned": 0,
+            "wind": 3068.27078028
+          },
+          {
+            "start": "2024-01-01T10:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 11,
+            "row": 12,
+            "consumption": 12697.07472537,
+            "production": 11061.945485369999,
+            "import": 1635.1292400000002,
+            "exportSigned": 0,
+            "wind": 2943.67616388
+          },
+          {
+            "start": "2024-01-01T11:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 12,
+            "row": 13,
+            "consumption": 12935.60577138,
+            "production": 11313.78796438,
+            "import": 1621.817807,
+            "exportSigned": 0,
+            "wind": 3028.42197063
+          },
+          {
+            "start": "2024-01-01T12:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 13,
+            "row": 14,
+            "consumption": 13055.08704664,
+            "production": 11068.64456664,
+            "import": 1986.44248,
+            "exportSigned": 0,
+            "wind": 2708.05979495
+          },
+          {
+            "start": "2024-01-01T13:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 14,
+            "row": 15,
+            "consumption": 13033.29756146,
+            "production": 10939.21615746,
+            "import": 2094.081404,
+            "exportSigned": 0,
+            "wind": 2481.69242881
+          },
+          {
+            "start": "2024-01-01T14:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 15,
+            "row": 16,
+            "consumption": 13120.552440860001,
+            "production": 10833.20085486,
+            "import": 2287.351586,
+            "exportSigned": 0,
+            "wind": 2487.15438876
+          },
+          {
+            "start": "2024-01-01T15:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 16,
+            "row": 17,
+            "consumption": 13375.58641257,
+            "production": 11134.99438157,
+            "import": 2240.5920309999997,
+            "exportSigned": 0,
+            "wind": 2558.18513129
+          },
+          {
+            "start": "2024-01-01T16:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 17,
+            "row": 18,
+            "consumption": 13616.89692892,
+            "production": 11601.20336292,
+            "import": 2017.444566,
+            "exportSigned": -1.751,
+            "wind": 2699.51190388
+          },
+          {
+            "start": "2024-01-01T17:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 18,
+            "row": 19,
+            "consumption": 13696.38290348,
+            "production": 11466.54404848,
+            "import": 2388.952855,
+            "exportSigned": -159.114,
+            "wind": 2536.78284169
+          },
+          {
+            "start": "2024-01-01T18:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 19,
+            "row": 20,
+            "consumption": 13798.136470940002,
+            "production": 11502.931661940002,
+            "import": 2502.613809,
+            "exportSigned": -207.409,
+            "wind": 2407.65076102
+          },
+          {
+            "start": "2024-01-01T19:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 20,
+            "row": 21,
+            "consumption": 13803.48233014,
+            "production": 11521.15220714,
+            "import": 2315.4411229999996,
+            "exportSigned": -33.111,
+            "wind": 2607.78322569
+          },
+          {
+            "start": "2024-01-01T20:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 21,
+            "row": 22,
+            "consumption": 13668.058008099999,
+            "production": 11454.9550551,
+            "import": 2213.102953,
+            "exportSigned": 0,
+            "wind": 2688.28248335
+          },
+          {
+            "start": "2024-01-01T21:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 22,
+            "row": 23,
+            "consumption": 13403.631245229999,
+            "production": 11095.43329623,
+            "import": 2308.197949,
+            "exportSigned": 0,
+            "wind": 2613.65163585
+          },
+          {
+            "start": "2024-01-01T22:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 23,
+            "row": 24,
+            "consumption": 13596.28093508,
+            "production": 11078.58811508,
+            "import": 2517.69282,
+            "exportSigned": 0,
+            "wind": 2575.51203058
+          },
+          {
+            "start": "2024-01-01T23:00:00+02:00",
+            "sourceDay": "2024-01-01",
+            "sourceHour": 24,
+            "row": 25,
+            "consumption": 13534.31406617,
+            "production": 10863.58835917,
+            "import": 2670.7257069999996,
+            "exportSigned": 0,
+            "wind": 2543.10655073
+          },
+          {
+            "start": "2024-01-02T00:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 1,
+            "row": 26,
+            "consumption": 13309.50775616,
+            "production": 10523.52303716,
+            "import": 2785.984719,
+            "exportSigned": 0,
+            "wind": 2432.48124014
+          },
+          {
+            "start": "2024-01-02T01:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 2,
+            "row": 27,
+            "consumption": 13067.74347647,
+            "production": 10340.65424647,
+            "import": 2727.08923,
+            "exportSigned": 0,
+            "wind": 2239.33604972
+          },
+          {
+            "start": "2024-01-02T02:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 3,
+            "row": 28,
+            "consumption": 12867.13200184,
+            "production": 9988.76128684,
+            "import": 2878.370715,
+            "exportSigned": 0,
+            "wind": 1943.14011546
+          },
+          {
+            "start": "2024-01-02T03:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 4,
+            "row": 29,
+            "consumption": 12862.870749149999,
+            "production": 9755.11510315,
+            "import": 3107.755646,
+            "exportSigned": 0,
+            "wind": 1747.48625712
+          },
+          {
+            "start": "2024-01-02T04:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 5,
+            "row": 30,
+            "consumption": 12948.291008569999,
+            "production": 9884.29792057,
+            "import": 3063.993088,
+            "exportSigned": 0,
+            "wind": 1612.24398041
+          },
+          {
+            "start": "2024-01-02T05:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 6,
+            "row": 31,
+            "consumption": 13108.4152641,
+            "production": 10291.5626161,
+            "import": 2816.852648,
+            "exportSigned": 0,
+            "wind": 1576.36725726
+          },
+          {
+            "start": "2024-01-02T06:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 7,
+            "row": 32,
+            "consumption": 13454.09307977,
+            "production": 10706.31461677,
+            "import": 2747.778463,
+            "exportSigned": 0,
+            "wind": 1536.57987927
+          },
+          {
+            "start": "2024-01-02T07:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 8,
+            "row": 33,
+            "consumption": 13620.57991851,
+            "production": 11003.51286551,
+            "import": 2617.0670529999998,
+            "exportSigned": 0,
+            "wind": 1561.50776208
+          },
+          {
+            "start": "2024-01-02T08:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 9,
+            "row": 34,
+            "consumption": 13842.19167363,
+            "production": 11424.36438463,
+            "import": 2417.827289,
+            "exportSigned": 0,
+            "wind": 1664.25529537
+          },
+          {
+            "start": "2024-01-02T09:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 10,
+            "row": 35,
+            "consumption": 13948.44961538,
+            "production": 11647.414429379998,
+            "import": 2301.035186,
+            "exportSigned": 0,
+            "wind": 1720.22988023
+          },
+          {
+            "start": "2024-01-02T10:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 11,
+            "row": 36,
+            "consumption": 14096.95546704,
+            "production": 11612.89694404,
+            "import": 2484.058523,
+            "exportSigned": 0,
+            "wind": 1592.07828179
+          },
+          {
+            "start": "2024-01-02T11:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 12,
+            "row": 37,
+            "consumption": 14158.15379193,
+            "production": 11579.44594393,
+            "import": 2578.707848,
+            "exportSigned": 0,
+            "wind": 1432.42530681
+          },
+          {
+            "start": "2024-01-02T12:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 13,
+            "row": 38,
+            "consumption": 14322.4131391,
+            "production": 11464.1123151,
+            "import": 2858.300824,
+            "exportSigned": 0,
+            "wind": 1389.44223753
+          },
+          {
+            "start": "2024-01-02T13:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 14,
+            "row": 39,
+            "consumption": 14251.6707252,
+            "production": 11577.0869052,
+            "import": 2674.5838200000003,
+            "exportSigned": 0,
+            "wind": 1426.90584294
+          },
+          {
+            "start": "2024-01-02T14:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 15,
+            "row": 40,
+            "consumption": 14216.01613163,
+            "production": 11667.80546163,
+            "import": 2548.21067,
+            "exportSigned": 0,
+            "wind": 1506.5039689
+          },
+          {
+            "start": "2024-01-02T15:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 16,
+            "row": 41,
+            "consumption": 14330.060327819998,
+            "production": 11793.976694819998,
+            "import": 2536.083633,
+            "exportSigned": 0,
+            "wind": 1505.63626957
+          },
+          {
+            "start": "2024-01-02T16:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 17,
+            "row": 42,
+            "consumption": 14489.28658305,
+            "production": 11893.81725705,
+            "import": 2595.4693260000004,
+            "exportSigned": 0,
+            "wind": 1590.76587815
+          },
+          {
+            "start": "2024-01-02T17:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 18,
+            "row": 43,
+            "consumption": 14592.15401792,
+            "production": 11879.53474692,
+            "import": 2712.6192709999996,
+            "exportSigned": 0,
+            "wind": 1598.80796297
+          },
+          {
+            "start": "2024-01-02T18:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 19,
+            "row": 44,
+            "consumption": 14597.49875128,
+            "production": 11797.32924028,
+            "import": 2800.169511,
+            "exportSigned": 0,
+            "wind": 1585.25533312
+          },
+          {
+            "start": "2024-01-02T19:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 20,
+            "row": 45,
+            "consumption": 14607.594365510002,
+            "production": 11735.738922510001,
+            "import": 2871.855443,
+            "exportSigned": 0,
+            "wind": 1637.65538388
+          },
+          {
+            "start": "2024-01-02T20:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 21,
+            "row": 46,
+            "consumption": 14423.210557299999,
+            "production": 11888.4911223,
+            "import": 2542.7674349999998,
+            "exportSigned": -8.048,
+            "wind": 1840.6492201
+          },
+          {
+            "start": "2024-01-02T21:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 22,
+            "row": 47,
+            "consumption": 14190.39497385,
+            "production": 11553.91061685,
+            "import": 2642.1443569999997,
+            "exportSigned": -5.66,
+            "wind": 1808.93742346
+          },
+          {
+            "start": "2024-01-02T22:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 23,
+            "row": 48,
+            "consumption": 14318.35151662,
+            "production": 11433.76117362,
+            "import": 2884.654343,
+            "exportSigned": -0.064,
+            "wind": 1707.70914698
+          },
+          {
+            "start": "2024-01-02T23:00:00+02:00",
+            "sourceDay": "2024-01-02",
+            "sourceHour": 24,
+            "row": 49,
+            "consumption": 14161.572069999998,
+            "production": 11091.401885,
+            "import": 3070.170185,
+            "exportSigned": 0,
+            "wind": 1469.84027301
+          },
+          {
+            "start": "2024-01-03T00:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 1,
+            "row": 50,
+            "consumption": 13868.82531442,
+            "production": 10894.77693342,
+            "import": 2974.1094200000002,
+            "exportSigned": -0.061039,
+            "wind": 1442.50874694
+          },
+          {
+            "start": "2024-01-03T01:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 2,
+            "row": 51,
+            "consumption": 13728.20962526,
+            "production": 10840.67440826,
+            "import": 2887.882208,
+            "exportSigned": -0.346991,
+            "wind": 1587.92896601
+          },
+          {
+            "start": "2024-01-03T02:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 3,
+            "row": 52,
+            "consumption": 13549.78469326,
+            "production": 10820.15981626,
+            "import": 2729.732037,
+            "exportSigned": -0.10716,
+            "wind": 1754.33480976
+          },
+          {
+            "start": "2024-01-03T03:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 4,
+            "row": 53,
+            "consumption": 13535.8397567,
+            "production": 10813.6981777,
+            "import": 2722.141579,
+            "exportSigned": 0,
+            "wind": 1937.2932342
+          },
+          {
+            "start": "2024-01-03T04:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 5,
+            "row": 54,
+            "consumption": 13610.80642323,
+            "production": 10721.46069523,
+            "import": 2889.347785,
+            "exportSigned": -0.002057,
+            "wind": 2009.82264975
+          },
+          {
+            "start": "2024-01-03T05:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 6,
+            "row": 55,
+            "consumption": 13740.5092991,
+            "production": 10810.413659099999,
+            "import": 2930.274449,
+            "exportSigned": -0.178809,
+            "wind": 2012.36889726
+          },
+          {
+            "start": "2024-01-03T06:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 7,
+            "row": 56,
+            "consumption": 14156.12032467,
+            "production": 11202.93780867,
+            "import": 2953.213528,
+            "exportSigned": -0.031012,
+            "wind": 1981.29294715
+          },
+          {
+            "start": "2024-01-03T07:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 8,
+            "row": 57,
+            "consumption": 14352.91611919,
+            "production": 11496.72876519,
+            "import": 2856.187354,
+            "exportSigned": 0,
+            "wind": 1863.21992201
+          },
+          {
+            "start": "2024-01-03T08:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 9,
+            "row": 58,
+            "consumption": 14634.583716690002,
+            "production": 12063.88074869,
+            "import": 2570.7029680000005,
+            "exportSigned": 0,
+            "wind": 1949.237049
+          },
+          {
+            "start": "2024-01-03T09:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 10,
+            "row": 59,
+            "consumption": 14657.801681290002,
+            "production": 11969.503820290001,
+            "import": 2688.297861,
+            "exportSigned": 0,
+            "wind": 1906.40677965
+          },
+          {
+            "start": "2024-01-03T10:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 11,
+            "row": 60,
+            "consumption": 14664.01582013,
+            "production": 11979.13267013,
+            "import": 2684.88315,
+            "exportSigned": 0,
+            "wind": 1889.95200955
+          },
+          {
+            "start": "2024-01-03T11:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 12,
+            "row": 61,
+            "consumption": 14792.15451742,
+            "production": 11961.20258142,
+            "import": 2830.9519360000004,
+            "exportSigned": 0,
+            "wind": 1800.24754552
+          },
+          {
+            "start": "2024-01-03T12:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 13,
+            "row": 62,
+            "consumption": 14798.24632548,
+            "production": 11931.05314148,
+            "import": 2867.1931839999997,
+            "exportSigned": 0,
+            "wind": 1687.91369804
+          },
+          {
+            "start": "2024-01-03T13:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 14,
+            "row": 63,
+            "consumption": 14706.68066465,
+            "production": 11901.42540665,
+            "import": 2805.255258,
+            "exportSigned": 0,
+            "wind": 1547.31423145
+          },
+          {
+            "start": "2024-01-03T14:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 15,
+            "row": 64,
+            "consumption": 14723.5812336,
+            "production": 11920.2960756,
+            "import": 2803.285158,
+            "exportSigned": 0,
+            "wind": 1577.7644385
+          },
+          {
+            "start": "2024-01-03T15:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 16,
+            "row": 65,
+            "consumption": 14866.24912156,
+            "production": 12043.91608656,
+            "import": 2822.3330349999997,
+            "exportSigned": 0,
+            "wind": 1678.94826008
+          },
+          {
+            "start": "2024-01-03T16:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 17,
+            "row": 66,
+            "consumption": 14884.39798709,
+            "production": 12213.33472509,
+            "import": 2671.0632619999997,
+            "exportSigned": 0,
+            "wind": 1887.90186068
+          },
+          {
+            "start": "2024-01-03T17:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 18,
+            "row": 67,
+            "consumption": 14969.316682600002,
+            "production": 12311.965032600001,
+            "import": 2657.35165,
+            "exportSigned": 0,
+            "wind": 2033.94561791
+          },
+          {
+            "start": "2024-01-03T18:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 19,
+            "row": 68,
+            "consumption": 14951.70008808,
+            "production": 12161.92493208,
+            "import": 2789.7751559999997,
+            "exportSigned": 0,
+            "wind": 2093.15950608
+          },
+          {
+            "start": "2024-01-03T19:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 20,
+            "row": 69,
+            "consumption": 15030.567648,
+            "production": 12111.427339,
+            "import": 2919.140309,
+            "exportSigned": 0,
+            "wind": 2035.3364841
+          },
+          {
+            "start": "2024-01-03T20:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 21,
+            "row": 70,
+            "consumption": 14890.57919009,
+            "production": 11971.18509009,
+            "import": 2919.3941,
+            "exportSigned": 0,
+            "wind": 1974.45562651
+          },
+          {
+            "start": "2024-01-03T21:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 22,
+            "row": 71,
+            "consumption": 14477.76546778,
+            "production": 11986.40632878,
+            "import": 2491.359139,
+            "exportSigned": 0,
+            "wind": 1892.39891004
+          },
+          {
+            "start": "2024-01-03T22:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 23,
+            "row": 72,
+            "consumption": 14549.533250299999,
+            "production": 11779.778584299998,
+            "import": 2769.754666,
+            "exportSigned": 0,
+            "wind": 1948.29815329
+          },
+          {
+            "start": "2024-01-03T23:00:00+02:00",
+            "sourceDay": "2024-01-03",
+            "sourceHour": 24,
+            "row": 73,
+            "consumption": 14398.2672949,
+            "production": 11529.5807719,
+            "import": 2868.686523,
+            "exportSigned": 0,
+            "wind": 1938.31275527
+          },
+          {
+            "start": "2024-01-04T00:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 1,
+            "row": 74,
+            "consumption": 14143.74532578,
+            "production": 11309.43364978,
+            "import": 2834.3116760000003,
+            "exportSigned": 0,
+            "wind": 1912.30752474
+          },
+          {
+            "start": "2024-01-04T01:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 2,
+            "row": 75,
+            "consumption": 13797.29708052,
+            "production": 11294.815077520001,
+            "import": 2502.4820029999996,
+            "exportSigned": 0,
+            "wind": 1888.77071057
+          },
+          {
+            "start": "2024-01-04T02:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 3,
+            "row": 76,
+            "consumption": 13734.52261063,
+            "production": 11104.64105763,
+            "import": 2629.881553,
+            "exportSigned": 0,
+            "wind": 1865.80528153
+          },
+          {
+            "start": "2024-01-04T03:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 4,
+            "row": 77,
+            "consumption": 13733.5988542,
+            "production": 10699.485313199999,
+            "import": 3034.113541,
+            "exportSigned": 0,
+            "wind": 1731.34546652
+          },
+          {
+            "start": "2024-01-04T04:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 5,
+            "row": 78,
+            "consumption": 13821.13960304,
+            "production": 10771.44674904,
+            "import": 3049.692854,
+            "exportSigned": 0,
+            "wind": 1641.7154451
+          },
+          {
+            "start": "2024-01-04T05:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 6,
+            "row": 79,
+            "consumption": 14039.409365939999,
+            "production": 10941.46892294,
+            "import": 3097.940443,
+            "exportSigned": 0,
+            "wind": 1560.95629927
+          },
+          {
+            "start": "2024-01-04T06:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 7,
+            "row": 80,
+            "consumption": 14357.07637345,
+            "production": 11296.13408245,
+            "import": 3060.9422910000003,
+            "exportSigned": 0,
+            "wind": 1541.25098585
+          },
+          {
+            "start": "2024-01-04T07:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 8,
+            "row": 81,
+            "consumption": 14461.660408160002,
+            "production": 11384.95967016,
+            "import": 3076.7007380000005,
+            "exportSigned": 0,
+            "wind": 1547.18488971
+          },
+          {
+            "start": "2024-01-04T08:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 9,
+            "row": 82,
+            "consumption": 14784.78332183,
+            "production": 11779.63627483,
+            "import": 3005.147047,
+            "exportSigned": 0,
+            "wind": 1664.64785669
+          },
+          {
+            "start": "2024-01-04T09:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 10,
+            "row": 83,
+            "consumption": 14776.34847254,
+            "production": 11803.38634754,
+            "import": 2972.962125,
+            "exportSigned": 0,
+            "wind": 1744.70786618
+          },
+          {
+            "start": "2024-01-04T10:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 11,
+            "row": 84,
+            "consumption": 14824.91253188,
+            "production": 11807.66550888,
+            "import": 3017.2470230000004,
+            "exportSigned": 0,
+            "wind": 1679.87803249
+          },
+          {
+            "start": "2024-01-04T11:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 12,
+            "row": 85,
+            "consumption": 14825.70136212,
+            "production": 11770.66102612,
+            "import": 3055.040336,
+            "exportSigned": 0,
+            "wind": 1513.25953868
+          },
+          {
+            "start": "2024-01-04T12:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 13,
+            "row": 86,
+            "consumption": 14839.927932120001,
+            "production": 11633.65815112,
+            "import": 3206.269781,
+            "exportSigned": 0,
+            "wind": 1485.36486179
+          },
+          {
+            "start": "2024-01-04T13:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 14,
+            "row": 87,
+            "consumption": 14665.292141900001,
+            "production": 11783.671278900001,
+            "import": 2881.620863,
+            "exportSigned": 0,
+            "wind": 1496.14460795
+          },
+          {
+            "start": "2024-01-04T14:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 15,
+            "row": 88,
+            "consumption": 14625.585779329998,
+            "production": 11929.26788833,
+            "import": 2696.3178909999997,
+            "exportSigned": 0,
+            "wind": 1430.06823014
+          },
+          {
+            "start": "2024-01-04T15:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 16,
+            "row": 89,
+            "consumption": 14687.85562845,
+            "production": 12085.31398745,
+            "import": 2602.541641,
+            "exportSigned": 0,
+            "wind": 1471.98025272
+          },
+          {
+            "start": "2024-01-04T16:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 17,
+            "row": 90,
+            "consumption": 14795.93827068,
+            "production": 12127.68236468,
+            "import": 2668.2559060000003,
+            "exportSigned": 0,
+            "wind": 1482.31912609
+          },
+          {
+            "start": "2024-01-04T17:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 18,
+            "row": 91,
+            "consumption": 14819.019565390001,
+            "production": 11976.50826439,
+            "import": 2842.5113009999995,
+            "exportSigned": 0,
+            "wind": 1382.04196953
+          },
+          {
+            "start": "2024-01-04T18:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 19,
+            "row": 92,
+            "consumption": 14767.79880022,
+            "production": 11931.85133522,
+            "import": 2835.947465,
+            "exportSigned": 0,
+            "wind": 1361.64925287
+          },
+          {
+            "start": "2024-01-04T19:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 20,
+            "row": 93,
+            "consumption": 14708.48229348,
+            "production": 11927.17048848,
+            "import": 2781.3118050000003,
+            "exportSigned": 0,
+            "wind": 1408.26904559
+          },
+          {
+            "start": "2024-01-04T20:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 21,
+            "row": 94,
+            "consumption": 14643.56770461,
+            "production": 11868.742868610001,
+            "import": 2774.8248360000002,
+            "exportSigned": 0,
+            "wind": 1430.41031115
+          },
+          {
+            "start": "2024-01-04T21:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 22,
+            "row": 95,
+            "consumption": 14355.366790850003,
+            "production": 11705.518560850001,
+            "import": 2649.8482300000005,
+            "exportSigned": 0,
+            "wind": 1427.0540717
+          },
+          {
+            "start": "2024-01-04T22:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 23,
+            "row": 96,
+            "consumption": 14510.29183826,
+            "production": 11746.32001426,
+            "import": 2763.971824,
+            "exportSigned": 0,
+            "wind": 1497.42208389
+          },
+          {
+            "start": "2024-01-04T23:00:00+02:00",
+            "sourceDay": "2024-01-04",
+            "sourceHour": 24,
+            "row": 97,
+            "consumption": 14366.81396828,
+            "production": 11926.37663228,
+            "import": 2440.437336,
+            "exportSigned": 0,
+            "wind": 1647.48033696
+          },
+          {
+            "start": "2024-01-05T00:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 1,
+            "row": 98,
+            "consumption": 14096.14455976,
+            "production": 11713.72212576,
+            "import": 2382.422434,
+            "exportSigned": 0,
+            "wind": 1712.57808466
+          },
+          {
+            "start": "2024-01-05T01:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 2,
+            "row": 99,
+            "consumption": 13715.757919090001,
+            "production": 11381.856638090001,
+            "import": 2333.901281,
+            "exportSigned": 0,
+            "wind": 1662.42834906
+          },
+          {
+            "start": "2024-01-05T02:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 3,
+            "row": 100,
+            "consumption": 13628.467081330002,
+            "production": 11128.637659330001,
+            "import": 2499.8294220000002,
+            "exportSigned": 0,
+            "wind": 1743.9433073
+          },
+          {
+            "start": "2024-01-05T03:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 4,
+            "row": 101,
+            "consumption": 13618.1389848,
+            "production": 10950.4417078,
+            "import": 2667.697277,
+            "exportSigned": 0,
+            "wind": 1662.40042193
+          },
+          {
+            "start": "2024-01-05T04:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 5,
+            "row": 102,
+            "consumption": 13663.294076400001,
+            "production": 10875.778365400001,
+            "import": 2787.515711,
+            "exportSigned": 0,
+            "wind": 1514.23030429
+          },
+          {
+            "start": "2024-01-05T05:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 6,
+            "row": 103,
+            "consumption": 13880.82152679,
+            "production": 11098.82797579,
+            "import": 2781.993551,
+            "exportSigned": 0,
+            "wind": 1373.40824451
+          },
+          {
+            "start": "2024-01-05T06:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 7,
+            "row": 104,
+            "consumption": 14056.17703678,
+            "production": 11429.44409178,
+            "import": 2626.732945,
+            "exportSigned": 0,
+            "wind": 1311.47771376
+          },
+          {
+            "start": "2024-01-05T07:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 8,
+            "row": 105,
+            "consumption": 14102.942602899999,
+            "production": 11550.862317899999,
+            "import": 2552.080285,
+            "exportSigned": 0,
+            "wind": 1383.96284781
+          },
+          {
+            "start": "2024-01-05T08:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 9,
+            "row": 106,
+            "consumption": 14255.25039943,
+            "production": 11884.08782543,
+            "import": 2371.162574,
+            "exportSigned": 0,
+            "wind": 1507.76153755
+          },
+          {
+            "start": "2024-01-05T09:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 10,
+            "row": 107,
+            "consumption": 14250.16099715,
+            "production": 12015.13706715,
+            "import": 2235.02393,
+            "exportSigned": 0,
+            "wind": 1561.9497704
+          },
+          {
+            "start": "2024-01-05T10:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 11,
+            "row": 108,
+            "consumption": 14260.06967465,
+            "production": 12325.92111965,
+            "import": 1934.148555,
+            "exportSigned": 0,
+            "wind": 1645.62344202
+          },
+          {
+            "start": "2024-01-05T11:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 12,
+            "row": 109,
+            "consumption": 14168.22017244,
+            "production": 12423.16241444,
+            "import": 1745.057758,
+            "exportSigned": 0,
+            "wind": 1643.25500408
+          },
+          {
+            "start": "2024-01-05T12:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 13,
+            "row": 110,
+            "consumption": 14301.885263839999,
+            "production": 12417.581802839999,
+            "import": 1884.303461,
+            "exportSigned": 0,
+            "wind": 1698.07667009
+          },
+          {
+            "start": "2024-01-05T13:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 14,
+            "row": 111,
+            "consumption": 14139.12236666,
+            "production": 12302.86492166,
+            "import": 1836.257445,
+            "exportSigned": 0,
+            "wind": 1673.23429551
+          },
+          {
+            "start": "2024-01-05T14:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 15,
+            "row": 112,
+            "consumption": 14014.3798338,
+            "production": 12288.6248538,
+            "import": 1725.7549800000002,
+            "exportSigned": 0,
+            "wind": 1632.92909555
+          },
+          {
+            "start": "2024-01-05T15:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 16,
+            "row": 113,
+            "consumption": 14050.6329636,
+            "production": 12294.192615599999,
+            "import": 1756.4403479999999,
+            "exportSigned": 0,
+            "wind": 1558.85758236
+          },
+          {
+            "start": "2024-01-05T16:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 17,
+            "row": 114,
+            "consumption": 14167.78290565,
+            "production": 12153.40947965,
+            "import": 2014.373426,
+            "exportSigned": 0,
+            "wind": 1426.94856799
+          },
+          {
+            "start": "2024-01-05T17:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 18,
+            "row": 115,
+            "consumption": 14024.92851403,
+            "production": 12106.70488703,
+            "import": 1918.2236269999999,
+            "exportSigned": 0,
+            "wind": 1308.10741603
+          },
+          {
+            "start": "2024-01-05T18:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 19,
+            "row": 116,
+            "consumption": 13834.112188059999,
+            "production": 11864.682958059999,
+            "import": 1969.4292300000002,
+            "exportSigned": 0,
+            "wind": 1090.51139106
+          },
+          {
+            "start": "2024-01-05T19:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 20,
+            "row": 117,
+            "consumption": 13736.47530895,
+            "production": 11662.89656895,
+            "import": 2073.57874,
+            "exportSigned": 0,
+            "wind": 871.3263611
+          },
+          {
+            "start": "2024-01-05T20:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 21,
+            "row": 118,
+            "consumption": 13482.325335319998,
+            "production": 11366.80042932,
+            "import": 2115.5249059999996,
+            "exportSigned": 0,
+            "wind": 780.54896016
+          },
+          {
+            "start": "2024-01-05T21:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 22,
+            "row": 119,
+            "consumption": 13221.1855615,
+            "production": 11293.8822025,
+            "import": 1927.303359,
+            "exportSigned": 0,
+            "wind": 822.00310412
+          },
+          {
+            "start": "2024-01-05T22:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 23,
+            "row": 120,
+            "consumption": 13407.73384596,
+            "production": 11329.286865959999,
+            "import": 2078.44698,
+            "exportSigned": 0,
+            "wind": 849.8562396
+          },
+          {
+            "start": "2024-01-05T23:00:00+02:00",
+            "sourceDay": "2024-01-05",
+            "sourceHour": 24,
+            "row": 121,
+            "consumption": 13424.72188213,
+            "production": 11213.08028013,
+            "import": 2211.641602,
+            "exportSigned": 0,
+            "wind": 846.78894594
+          },
+          {
+            "start": "2024-01-06T00:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 1,
+            "row": 122,
+            "consumption": 13227.7362614,
+            "production": 10980.1911914,
+            "import": 2247.54507,
+            "exportSigned": 0,
+            "wind": 853.04702698
+          },
+          {
+            "start": "2024-01-06T01:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 2,
+            "row": 123,
+            "consumption": 13094.74148523,
+            "production": 10537.515219230001,
+            "import": 2557.2262659999997,
+            "exportSigned": 0,
+            "wind": 840.13172395
+          },
+          {
+            "start": "2024-01-06T02:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 3,
+            "row": 124,
+            "consumption": 12929.209629410001,
+            "production": 10117.512813410001,
+            "import": 2811.6968159999997,
+            "exportSigned": 0,
+            "wind": 718.14174396
+          },
+          {
+            "start": "2024-01-06T03:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 4,
+            "row": 125,
+            "consumption": 12794.32154597,
+            "production": 10018.58147597,
+            "import": 2775.74007,
+            "exportSigned": 0,
+            "wind": 637.02101173
+          },
+          {
+            "start": "2024-01-06T04:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 5,
+            "row": 126,
+            "consumption": 12727.471134549998,
+            "production": 9950.402224549998,
+            "import": 2777.06891,
+            "exportSigned": 0,
+            "wind": 579.26964616
+          },
+          {
+            "start": "2024-01-06T05:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 6,
+            "row": 127,
+            "consumption": 12727.877897549999,
+            "production": 10027.76766355,
+            "import": 2700.110234,
+            "exportSigned": 0,
+            "wind": 521.52744197
+          },
+          {
+            "start": "2024-01-06T06:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 7,
+            "row": 128,
+            "consumption": 12851.48631674,
+            "production": 10186.81937574,
+            "import": 2664.666941,
+            "exportSigned": 0,
+            "wind": 423.45946305
+          },
+          {
+            "start": "2024-01-06T07:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 8,
+            "row": 129,
+            "consumption": 12847.00495417,
+            "production": 10372.75100117,
+            "import": 2474.253953,
+            "exportSigned": 0,
+            "wind": 349.70867938
+          },
+          {
+            "start": "2024-01-06T08:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 9,
+            "row": 130,
+            "consumption": 13068.13055903,
+            "production": 10397.33335203,
+            "import": 2670.797207,
+            "exportSigned": 0,
+            "wind": 323.44419309
+          },
+          {
+            "start": "2024-01-06T09:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 10,
+            "row": 131,
+            "consumption": 13118.382898169999,
+            "production": 10457.31876117,
+            "import": 2661.0641370000003,
+            "exportSigned": 0,
+            "wind": 289.41813202
+          },
+          {
+            "start": "2024-01-06T10:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 11,
+            "row": 132,
+            "consumption": 13304.383857620001,
+            "production": 10659.075091620001,
+            "import": 2645.3087659999997,
+            "exportSigned": 0,
+            "wind": 256.34236903
+          },
+          {
+            "start": "2024-01-06T11:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 12,
+            "row": 133,
+            "consumption": 13409.18974273,
+            "production": 10783.77369973,
+            "import": 2625.416043,
+            "exportSigned": 0,
+            "wind": 238.45707551
+          },
+          {
+            "start": "2024-01-06T12:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 13,
+            "row": 134,
+            "consumption": 13427.131708070001,
+            "production": 10815.75344607,
+            "import": 2611.378262,
+            "exportSigned": 0,
+            "wind": 193.73012671
+          },
+          {
+            "start": "2024-01-06T13:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 14,
+            "row": 135,
+            "consumption": 13367.57845827,
+            "production": 10863.02191127,
+            "import": 2504.556547,
+            "exportSigned": 0,
+            "wind": 185.76578684
+          },
+          {
+            "start": "2024-01-06T14:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 15,
+            "row": 136,
+            "consumption": 13376.83446437,
+            "production": 10881.57955837,
+            "import": 2495.254906,
+            "exportSigned": 0,
+            "wind": 219.10338532
+          },
+          {
+            "start": "2024-01-06T15:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 16,
+            "row": 137,
+            "consumption": 13521.56413027,
+            "production": 11063.42715327,
+            "import": 2458.136977,
+            "exportSigned": 0,
+            "wind": 253.37509087
+          },
+          {
+            "start": "2024-01-06T16:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 17,
+            "row": 138,
+            "consumption": 13778.515702100001,
+            "production": 11309.588143100002,
+            "import": 2468.927559,
+            "exportSigned": 0,
+            "wind": 274.35046173
+          },
+          {
+            "start": "2024-01-06T17:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 18,
+            "row": 139,
+            "consumption": 13844.948830730002,
+            "production": 11402.62727973,
+            "import": 2442.321551,
+            "exportSigned": 0,
+            "wind": 291.48206855
+          },
+          {
+            "start": "2024-01-06T18:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 19,
+            "row": 140,
+            "consumption": 13907.403024369998,
+            "production": 11496.796879369998,
+            "import": 2410.6061449999997,
+            "exportSigned": 0,
+            "wind": 386.8594328
+          },
+          {
+            "start": "2024-01-06T19:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 20,
+            "row": 141,
+            "consumption": 13934.76222871,
+            "production": 11487.59051371,
+            "import": 2447.171715,
+            "exportSigned": 0,
+            "wind": 569.22425067
+          },
+          {
+            "start": "2024-01-06T20:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 21,
+            "row": 142,
+            "consumption": 13770.078097020001,
+            "production": 11441.850390020001,
+            "import": 2328.227707,
+            "exportSigned": 0,
+            "wind": 755.69940861
+          },
+          {
+            "start": "2024-01-06T21:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 22,
+            "row": 143,
+            "consumption": 13451.713718199999,
+            "production": 11378.6341872,
+            "import": 2073.079531,
+            "exportSigned": 0,
+            "wind": 997.75163407
+          },
+          {
+            "start": "2024-01-06T22:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 23,
+            "row": 144,
+            "consumption": 13601.65400081,
+            "production": 11534.16927081,
+            "import": 2067.48473,
+            "exportSigned": 0,
+            "wind": 1183.5204266
+          },
+          {
+            "start": "2024-01-06T23:00:00+02:00",
+            "sourceDay": "2024-01-06",
+            "sourceHour": 24,
+            "row": 145,
+            "consumption": 13532.884958719998,
+            "production": 11521.994829719999,
+            "import": 2010.890129,
+            "exportSigned": 0,
+            "wind": 1317.48304653
+          },
+          {
+            "start": "2024-01-07T00:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 1,
+            "row": 146,
+            "consumption": 13348.52029406,
+            "production": 11150.33437606,
+            "import": 2198.185918,
+            "exportSigned": 0,
+            "wind": 1368.23966323
+          },
+          {
+            "start": "2024-01-07T01:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 2,
+            "row": 147,
+            "consumption": 13260.4951512,
+            "production": 10985.4718852,
+            "import": 2275.023266,
+            "exportSigned": 0,
+            "wind": 1312.897368
+          },
+          {
+            "start": "2024-01-07T02:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 3,
+            "row": 148,
+            "consumption": 13130.77532154,
+            "production": 10912.88970854,
+            "import": 2403.9126130000004,
+            "exportSigned": -186.027,
+            "wind": 1396.72441984
+          },
+          {
+            "start": "2024-01-07T03:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 4,
+            "row": 149,
+            "consumption": 13035.112406929999,
+            "production": 10799.172941929999,
+            "import": 2381.952465,
+            "exportSigned": -146.013,
+            "wind": 1531.81659463
+          },
+          {
+            "start": "2024-01-07T04:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 5,
+            "row": 150,
+            "consumption": 13058.501673109999,
+            "production": 10692.37021211,
+            "import": 2469.8224609999997,
+            "exportSigned": -103.691,
+            "wind": 1436.37746799
+          },
+          {
+            "start": "2024-01-07T05:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 6,
+            "row": 151,
+            "consumption": 13104.979142179998,
+            "production": 10850.64701318,
+            "import": 2506.451129,
+            "exportSigned": -252.119,
+            "wind": 1317.8592284
+          },
+          {
+            "start": "2024-01-07T06:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 7,
+            "row": 152,
+            "consumption": 13172.65099876,
+            "production": 11085.426018760001,
+            "import": 2350.9249800000002,
+            "exportSigned": -263.7,
+            "wind": 1306.38569881
+          },
+          {
+            "start": "2024-01-07T07:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 8,
+            "row": 153,
+            "consumption": 13215.154986099998,
+            "production": 11132.793877099999,
+            "import": 2339.255109,
+            "exportSigned": -256.894,
+            "wind": 1291.22453253
+          },
+          {
+            "start": "2024-01-07T08:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 9,
+            "row": 154,
+            "consumption": 13319.892950989999,
+            "production": 11210.32311899,
+            "import": 2269.1588319999996,
+            "exportSigned": -159.589,
+            "wind": 1274.61861016
+          },
+          {
+            "start": "2024-01-07T09:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 10,
+            "row": 155,
+            "consumption": 13455.39586944,
+            "production": 11245.36613544,
+            "import": 2405.696734,
+            "exportSigned": -195.667,
+            "wind": 1329.03631049
+          },
+          {
+            "start": "2024-01-07T10:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 11,
+            "row": 156,
+            "consumption": 13636.10092455,
+            "production": 11493.19806155,
+            "import": 2404.461863,
+            "exportSigned": -261.559,
+            "wind": 1437.77811293
+          },
+          {
+            "start": "2024-01-07T11:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 12,
+            "row": 157,
+            "consumption": 13732.347798499999,
+            "production": 11673.1930285,
+            "import": 2493.1817699999997,
+            "exportSigned": -434.027,
+            "wind": 1476.0555368
+          },
+          {
+            "start": "2024-01-07T12:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 13,
+            "row": 158,
+            "consumption": 13751.127004779999,
+            "production": 11758.41026678,
+            "import": 2538.433738,
+            "exportSigned": -545.717,
+            "wind": 1577.84809961
+          },
+          {
+            "start": "2024-01-07T13:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 14,
+            "row": 159,
+            "consumption": 13621.68132679,
+            "production": 11953.12130379,
+            "import": 2334.8000230000002,
+            "exportSigned": -666.24,
+            "wind": 1696.40500422
+          },
+          {
+            "start": "2024-01-07T14:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 15,
+            "row": 160,
+            "consumption": 13588.768781629999,
+            "production": 11922.59060163,
+            "import": 2364.28518,
+            "exportSigned": -698.107,
+            "wind": 1845.46938428
+          },
+          {
+            "start": "2024-01-07T15:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 16,
+            "row": 161,
+            "consumption": 13710.605256630002,
+            "production": 11991.606697630003,
+            "import": 2526.8155589999997,
+            "exportSigned": -807.817,
+            "wind": 1961.49122826
+          },
+          {
+            "start": "2024-01-07T16:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 17,
+            "row": 162,
+            "consumption": 13914.334386749999,
+            "production": 12280.44500375,
+            "import": 2398.013383,
+            "exportSigned": -764.124,
+            "wind": 2137.30023575
+          },
+          {
+            "start": "2024-01-07T17:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 18,
+            "row": 163,
+            "consumption": 13925.686270499998,
+            "production": 12538.257582499999,
+            "import": 2259.300688,
+            "exportSigned": -871.872,
+            "wind": 2433.48293557
+          },
+          {
+            "start": "2024-01-07T18:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 19,
+            "row": 164,
+            "consumption": 13903.53803426,
+            "production": 12703.61330026,
+            "import": 2211.469734,
+            "exportSigned": -1011.545,
+            "wind": 2818.19550434
+          },
+          {
+            "start": "2024-01-07T19:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 20,
+            "row": 165,
+            "consumption": 13983.504144599998,
+            "production": 12845.057851599999,
+            "import": 2154.0382929999996,
+            "exportSigned": -1015.592,
+            "wind": 3129.44986432
+          },
+          {
+            "start": "2024-01-07T20:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 21,
+            "row": 166,
+            "consumption": 13797.761972309998,
+            "production": 12911.390827309999,
+            "import": 1902.000145,
+            "exportSigned": -1015.629,
+            "wind": 3346.51927476
+          },
+          {
+            "start": "2024-01-07T21:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 22,
+            "row": 167,
+            "consumption": 13425.29259885,
+            "production": 12623.766752849999,
+            "import": 1814.060846,
+            "exportSigned": -1012.535,
+            "wind": 3454.82864319
+          },
+          {
+            "start": "2024-01-07T22:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 23,
+            "row": 168,
+            "consumption": 13564.82621344,
+            "production": 12835.65421744,
+            "import": 1744.898996,
+            "exportSigned": -1015.727,
+            "wind": 3724.12921267
+          },
+          {
+            "start": "2024-01-07T23:00:00+02:00",
+            "sourceDay": "2024-01-07",
+            "sourceHour": 24,
+            "row": 169,
+            "consumption": 13311.496108360001,
+            "production": 12788.42576836,
+            "import": 1536.0723400000002,
+            "exportSigned": -1013.002,
+            "wind": 3777.25833036
+          }
+        ],
+        "consumptionMWhDecimal": "2315230.516782919998"
+      },
+      {
+        "id": "summer",
+        "label": "1–7 July 2024",
+        "rows": [
+          {
+            "start": "2024-07-01T00:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 1,
+            "row": 4370,
+            "consumption": 6949.1373709,
+            "production": 8320.3291879,
+            "import": 54.841562,
+            "exportSigned": -1426.033379,
+            "wind": 1058.6713892
+          },
+          {
+            "start": "2024-07-01T01:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 2,
+            "row": 4371,
+            "consumption": 6862.505732049998,
+            "production": 8203.158868049999,
+            "import": 59.722262,
+            "exportSigned": -1400.375398,
+            "wind": 1086.9563794
+          },
+          {
+            "start": "2024-07-01T02:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 3,
+            "row": 4372,
+            "consumption": 6796.523968460001,
+            "production": 8263.19127746,
+            "import": 64.801691,
+            "exportSigned": -1531.469,
+            "wind": 1100.41715191
+          },
+          {
+            "start": "2024-07-01T03:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 4,
+            "row": 4373,
+            "consumption": 6750.69489907,
+            "production": 8292.72928107,
+            "import": 67.010618,
+            "exportSigned": -1609.045,
+            "wind": 1212.30614073
+          },
+          {
+            "start": "2024-07-01T04:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 5,
+            "row": 4374,
+            "consumption": 6946.41252824,
+            "production": 8517.88647924,
+            "import": 63.586049,
+            "exportSigned": -1635.06,
+            "wind": 1336.31154133
+          },
+          {
+            "start": "2024-07-01T05:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 6,
+            "row": 4375,
+            "consumption": 7414.413670979999,
+            "production": 8855.159276979999,
+            "import": 62.280394,
+            "exportSigned": -1503.0259999999998,
+            "wind": 1622.72604333
+          },
+          {
+            "start": "2024-07-01T06:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 7,
+            "row": 4376,
+            "consumption": 7836.100601449998,
+            "production": 9148.181167449999,
+            "import": 55.720109,
+            "exportSigned": -1367.800675,
+            "wind": 1800.13189023
+          },
+          {
+            "start": "2024-07-01T07:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 8,
+            "row": 4377,
+            "consumption": 8252.769956780001,
+            "production": 9325.07293478,
+            "import": 54.702,
+            "exportSigned": -1127.004978,
+            "wind": 1706.96101064
+          },
+          {
+            "start": "2024-07-01T08:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 9,
+            "row": 4378,
+            "consumption": 8548.26790284,
+            "production": 9255.37139384,
+            "import": 54.742,
+            "exportSigned": -761.845491,
+            "wind": 1425.8846742
+          },
+          {
+            "start": "2024-07-01T09:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 10,
+            "row": 4379,
+            "consumption": 8760.89043152,
+            "production": 9127.863429519999,
+            "import": 54.672,
+            "exportSigned": -421.64499800000004,
+            "wind": 1200.59150076
+          },
+          {
+            "start": "2024-07-01T10:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 11,
+            "row": 4380,
+            "consumption": 8874.83330776,
+            "production": 8956.90411376,
+            "import": 277.52232,
+            "exportSigned": -359.593126,
+            "wind": 1013.88435072
+          },
+          {
+            "start": "2024-07-01T11:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 12,
+            "row": 4381,
+            "consumption": 8847.47467785,
+            "production": 8803.34249385,
+            "import": 401.21871699999997,
+            "exportSigned": -357.086533,
+            "wind": 922.74794813
+          },
+          {
+            "start": "2024-07-01T12:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 13,
+            "row": 4382,
+            "consumption": 8785.722586799999,
+            "production": 8638.9090518,
+            "import": 503.62553499999996,
+            "exportSigned": -356.812,
+            "wind": 837.10777372
+          },
+          {
+            "start": "2024-07-01T13:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 14,
+            "row": 4383,
+            "consumption": 8785.17034242,
+            "production": 8623.46460542,
+            "import": 518.511737,
+            "exportSigned": -356.806,
+            "wind": 770.60309009
+          },
+          {
+            "start": "2024-07-01T14:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 15,
+            "row": 4384,
+            "consumption": 8697.09353447,
+            "production": 8481.32539347,
+            "import": 572.601141,
+            "exportSigned": -356.833,
+            "wind": 709.7731668
+          },
+          {
+            "start": "2024-07-01T15:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 16,
+            "row": 4385,
+            "consumption": 8649.743250970001,
+            "production": 8474.65442097,
+            "import": 531.95483,
+            "exportSigned": -356.866,
+            "wind": 713.28820153
+          },
+          {
+            "start": "2024-07-01T16:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 17,
+            "row": 4386,
+            "consumption": 8565.50684216,
+            "production": 8467.62540816,
+            "import": 454.747434,
+            "exportSigned": -356.866,
+            "wind": 779.4293394
+          },
+          {
+            "start": "2024-07-01T17:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 18,
+            "row": 4387,
+            "consumption": 8465.547757760001,
+            "production": 8456.17798276,
+            "import": 366.295775,
+            "exportSigned": -356.926,
+            "wind": 849.07949862
+          },
+          {
+            "start": "2024-07-01T18:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 19,
+            "row": 4388,
+            "consumption": 8419.96564545,
+            "production": 8486.40231745,
+            "import": 290.455328,
+            "exportSigned": -356.892,
+            "wind": 871.18282779
+          },
+          {
+            "start": "2024-07-01T19:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 20,
+            "row": 4389,
+            "consumption": 8352.38241994,
+            "production": 8279.555440940001,
+            "import": 429.709979,
+            "exportSigned": -356.883,
+            "wind": 775.146688
+          },
+          {
+            "start": "2024-07-01T20:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 21,
+            "row": 4390,
+            "consumption": 8060.7706072,
+            "production": 8157.9898882,
+            "import": 259.621719,
+            "exportSigned": -356.841,
+            "wind": 816.16480495
+          },
+          {
+            "start": "2024-07-01T21:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 22,
+            "row": 4391,
+            "consumption": 8032.1480913000005,
+            "production": 8506.727505300001,
+            "import": 54.178402,
+            "exportSigned": -528.757816,
+            "wind": 1121.06155948
+          },
+          {
+            "start": "2024-07-01T22:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 23,
+            "row": 4392,
+            "consumption": 7822.485111709999,
+            "production": 8426.66463371,
+            "import": 49.32,
+            "exportSigned": -653.499522,
+            "wind": 1164.54340036
+          },
+          {
+            "start": "2024-07-01T23:00:00+02:00",
+            "sourceDay": "2024-07-01",
+            "sourceHour": 24,
+            "row": 4393,
+            "consumption": 7516.750402129999,
+            "production": 8217.11557813,
+            "import": 49.326,
+            "exportSigned": -749.691176,
+            "wind": 1264.05640696
+          },
+          {
+            "start": "2024-07-02T00:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 1,
+            "row": 4394,
+            "consumption": 7276.539635000001,
+            "production": 8323.300186,
+            "import": 49.376,
+            "exportSigned": -1096.136551,
+            "wind": 1375.48325669
+          },
+          {
+            "start": "2024-07-02T01:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 2,
+            "row": 4395,
+            "consumption": 7108.049188089999,
+            "production": 8397.88749309,
+            "import": 49.344,
+            "exportSigned": -1339.1823049999998,
+            "wind": 1442.89976682
+          },
+          {
+            "start": "2024-07-02T02:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 3,
+            "row": 4396,
+            "consumption": 7008.286130759999,
+            "production": 8358.33418276,
+            "import": 49.38,
+            "exportSigned": -1399.4280520000002,
+            "wind": 1381.79028361
+          },
+          {
+            "start": "2024-07-02T03:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 4,
+            "row": 4397,
+            "consumption": 7005.039610060001,
+            "production": 8273.23813406,
+            "import": 49.421727,
+            "exportSigned": -1317.620251,
+            "wind": 1424.33349737
+          },
+          {
+            "start": "2024-07-02T04:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 5,
+            "row": 4398,
+            "consumption": 7197.681810870002,
+            "production": 8391.324354870001,
+            "import": 51.140418000000004,
+            "exportSigned": -1244.782962,
+            "wind": 1485.10591673
+          },
+          {
+            "start": "2024-07-02T05:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 6,
+            "row": 4399,
+            "consumption": 7712.265096180001,
+            "production": 8846.42329118,
+            "import": 58.753805,
+            "exportSigned": -1192.912,
+            "wind": 1564.93475995
+          },
+          {
+            "start": "2024-07-02T06:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 7,
+            "row": 4400,
+            "consumption": 8092.321252919999,
+            "production": 9107.38363492,
+            "import": 62.645618,
+            "exportSigned": -1077.708,
+            "wind": 1445.64543196
+          },
+          {
+            "start": "2024-07-02T07:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 8,
+            "row": 4401,
+            "consumption": 8349.697112869999,
+            "production": 9237.33842687,
+            "import": 65.809686,
+            "exportSigned": -953.451,
+            "wind": 1411.4550814
+          },
+          {
+            "start": "2024-07-02T08:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 9,
+            "row": 4402,
+            "consumption": 8514.481901499998,
+            "production": 9590.1233855,
+            "import": 66.853516,
+            "exportSigned": -1142.4950000000001,
+            "wind": 1645.13840499
+          },
+          {
+            "start": "2024-07-02T09:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 10,
+            "row": 4403,
+            "consumption": 8573.762465150001,
+            "production": 9883.08630715,
+            "import": 67.378158,
+            "exportSigned": -1376.702,
+            "wind": 1921.65780885
+          },
+          {
+            "start": "2024-07-02T10:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 11,
+            "row": 4404,
+            "consumption": 8680.67806903,
+            "production": 10211.26107103,
+            "import": 65.411998,
+            "exportSigned": -1595.995,
+            "wind": 2388.05194051
+          },
+          {
+            "start": "2024-07-02T11:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 12,
+            "row": 4405,
+            "consumption": 8692.52941212,
+            "production": 10413.91731212,
+            "import": 65.1381,
+            "exportSigned": -1786.526,
+            "wind": 2723.2342528
+          },
+          {
+            "start": "2024-07-02T12:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 13,
+            "row": 4406,
+            "consumption": 8542.20581212,
+            "production": 10250.574489120001,
+            "import": 63.470323,
+            "exportSigned": -1771.839,
+            "wind": 2647.91516821
+          },
+          {
+            "start": "2024-07-02T13:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 14,
+            "row": 4407,
+            "consumption": 8547.90029641,
+            "production": 10192.365680410001,
+            "import": 62.600616,
+            "exportSigned": -1707.0659999999998,
+            "wind": 2630.39134684
+          },
+          {
+            "start": "2024-07-02T14:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 15,
+            "row": 4408,
+            "consumption": 8507.60713828,
+            "production": 10055.38322628,
+            "import": 66.125912,
+            "exportSigned": -1613.902,
+            "wind": 2684.59766492
+          },
+          {
+            "start": "2024-07-02T15:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 16,
+            "row": 4409,
+            "consumption": 8475.99966642,
+            "production": 10181.12370742,
+            "import": 66.935959,
+            "exportSigned": -1772.06,
+            "wind": 2909.26846179
+          },
+          {
+            "start": "2024-07-02T16:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 17,
+            "row": 4410,
+            "consumption": 8407.31224589,
+            "production": 10138.48807789,
+            "import": 69.451168,
+            "exportSigned": -1800.627,
+            "wind": 2861.91019623
+          },
+          {
+            "start": "2024-07-02T17:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 18,
+            "row": 4411,
+            "consumption": 8336.557588169999,
+            "production": 9952.62066417,
+            "import": 71.874924,
+            "exportSigned": -1687.9379999999999,
+            "wind": 2737.2687286
+          },
+          {
+            "start": "2024-07-02T18:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 19,
+            "row": 4412,
+            "consumption": 8344.19611982,
+            "production": 9868.00436982,
+            "import": 73.82975,
+            "exportSigned": -1597.638,
+            "wind": 2561.26976252
+          },
+          {
+            "start": "2024-07-02T19:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 20,
+            "row": 4413,
+            "consumption": 8379.398838239998,
+            "production": 9889.33169324,
+            "import": 74.784145,
+            "exportSigned": -1584.717,
+            "wind": 2553.76584793
+          },
+          {
+            "start": "2024-07-02T20:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 21,
+            "row": 4414,
+            "consumption": 8114.913367770001,
+            "production": 9520.48267977,
+            "import": 74.306688,
+            "exportSigned": -1479.876,
+            "wind": 2330.28880074
+          },
+          {
+            "start": "2024-07-02T21:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 22,
+            "row": 4415,
+            "consumption": 8089.024756670001,
+            "production": 9584.25491867,
+            "import": 70.942838,
+            "exportSigned": -1566.173,
+            "wind": 2388.34096849
+          },
+          {
+            "start": "2024-07-02T22:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 23,
+            "row": 4416,
+            "consumption": 7906.86421496,
+            "production": 9390.52515596,
+            "import": 70.096059,
+            "exportSigned": -1553.757,
+            "wind": 2423.96992745
+          },
+          {
+            "start": "2024-07-02T23:00:00+02:00",
+            "sourceDay": "2024-07-02",
+            "sourceHour": 24,
+            "row": 4417,
+            "consumption": 7570.37431727,
+            "production": 8971.22693027,
+            "import": 69.248387,
+            "exportSigned": -1470.101,
+            "wind": 2375.7427659
+          },
+          {
+            "start": "2024-07-03T00:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 1,
+            "row": 4418,
+            "consumption": 7347.609168569999,
+            "production": 8717.16328757,
+            "import": 68.246881,
+            "exportSigned": -1437.801,
+            "wind": 2247.64478775
+          },
+          {
+            "start": "2024-07-03T01:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 2,
+            "row": 4419,
+            "consumption": 7164.58307721,
+            "production": 8510.55170821,
+            "import": 69.270369,
+            "exportSigned": -1415.239,
+            "wind": 2059.75579853
+          },
+          {
+            "start": "2024-07-03T02:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 3,
+            "row": 4420,
+            "consumption": 6985.200853589999,
+            "production": 8445.38938259,
+            "import": 68.535471,
+            "exportSigned": -1528.724,
+            "wind": 1919.22179156
+          },
+          {
+            "start": "2024-07-03T03:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 4,
+            "row": 4421,
+            "consumption": 6920.775414310001,
+            "production": 8127.567117310001,
+            "import": 66.56429700000001,
+            "exportSigned": -1273.356,
+            "wind": 1512.42267194
+          },
+          {
+            "start": "2024-07-03T04:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 5,
+            "row": 4422,
+            "consumption": 6995.70455734,
+            "production": 8029.76709834,
+            "import": 67.874459,
+            "exportSigned": -1101.937,
+            "wind": 1065.20255476
+          },
+          {
+            "start": "2024-07-03T05:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 6,
+            "row": 4423,
+            "consumption": 7453.352035420001,
+            "production": 7840.94585342,
+            "import": 71.244182,
+            "exportSigned": -458.838,
+            "wind": 545.76498001
+          },
+          {
+            "start": "2024-07-03T06:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 7,
+            "row": 4424,
+            "consumption": 7849.16693375,
+            "production": 7614.98931875,
+            "import": 591.047615,
+            "exportSigned": -356.87,
+            "wind": 202.83396757
+          },
+          {
+            "start": "2024-07-03T07:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 8,
+            "row": 4425,
+            "consumption": 8022.91721725,
+            "production": 7708.52975225,
+            "import": 671.2694650000001,
+            "exportSigned": -356.882,
+            "wind": 117.28835753
+          },
+          {
+            "start": "2024-07-03T08:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 9,
+            "row": 4426,
+            "consumption": 8255.14296634,
+            "production": 7857.29793534,
+            "import": 754.726031,
+            "exportSigned": -356.881,
+            "wind": 94.41497025
+          },
+          {
+            "start": "2024-07-03T09:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 10,
+            "row": 4427,
+            "consumption": 8450.733956119999,
+            "production": 8071.342892119999,
+            "import": 736.0630639999999,
+            "exportSigned": -356.672,
+            "wind": 181.88504755
+          },
+          {
+            "start": "2024-07-03T10:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 11,
+            "row": 4428,
+            "consumption": 8554.4551566,
+            "production": 8104.230797599999,
+            "import": 796.8143590000001,
+            "exportSigned": -346.59,
+            "wind": 291.46084835
+          },
+          {
+            "start": "2024-07-03T11:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 12,
+            "row": 4429,
+            "consumption": 8630.278476790001,
+            "production": 8123.86825179,
+            "import": 815.737225,
+            "exportSigned": -309.327,
+            "wind": 336.09093967
+          },
+          {
+            "start": "2024-07-03T12:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 13,
+            "row": 4430,
+            "consumption": 8546.905106130002,
+            "production": 7917.487495130001,
+            "import": 884.470611,
+            "exportSigned": -255.053,
+            "wind": 325.11675896
+          },
+          {
+            "start": "2024-07-03T13:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 14,
+            "row": 4431,
+            "consumption": 8548.615614710001,
+            "production": 8056.24724771,
+            "import": 802.287367,
+            "exportSigned": -309.919,
+            "wind": 382.38642091
+          },
+          {
+            "start": "2024-07-03T14:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 15,
+            "row": 4432,
+            "consumption": 8405.73042959,
+            "production": 8088.71100359,
+            "import": 650.6454259999999,
+            "exportSigned": -333.626,
+            "wind": 423.96492753
+          },
+          {
+            "start": "2024-07-03T15:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 16,
+            "row": 4433,
+            "consumption": 8343.72164272,
+            "production": 8182.312949720001,
+            "import": 469.900693,
+            "exportSigned": -308.492,
+            "wind": 459.03689438
+          },
+          {
+            "start": "2024-07-03T16:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 17,
+            "row": 4434,
+            "consumption": 8336.32974951,
+            "production": 8216.69395651,
+            "import": 475.732793,
+            "exportSigned": -356.097,
+            "wind": 485.15060925
+          },
+          {
+            "start": "2024-07-03T17:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 18,
+            "row": 4435,
+            "consumption": 8273.843055929998,
+            "production": 8207.671805929998,
+            "import": 423.03024999999997,
+            "exportSigned": -356.859,
+            "wind": 486.33638218
+          },
+          {
+            "start": "2024-07-03T18:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 19,
+            "row": 4436,
+            "consumption": 8270.9639365,
+            "production": 7948.3870225,
+            "import": 679.453914,
+            "exportSigned": -356.877,
+            "wind": 366.99122499
+          },
+          {
+            "start": "2024-07-03T19:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 20,
+            "row": 4437,
+            "consumption": 8233.17194386,
+            "production": 7868.45955486,
+            "import": 721.589389,
+            "exportSigned": -356.877,
+            "wind": 312.00488263
+          },
+          {
+            "start": "2024-07-03T20:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 21,
+            "row": 4438,
+            "consumption": 7992.97964551,
+            "production": 7776.41811851,
+            "import": 573.453527,
+            "exportSigned": -356.892,
+            "wind": 329.51489528
+          },
+          {
+            "start": "2024-07-03T21:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 22,
+            "row": 4439,
+            "consumption": 8034.5121217900005,
+            "production": 7665.6736937900005,
+            "import": 725.7894279999999,
+            "exportSigned": -356.951,
+            "wind": 367.13777501
+          },
+          {
+            "start": "2024-07-03T22:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 23,
+            "row": 4440,
+            "consumption": 7803.43802537,
+            "production": 7648.67811837,
+            "import": 511.643907,
+            "exportSigned": -356.884,
+            "wind": 488.98622716
+          },
+          {
+            "start": "2024-07-03T23:00:00+02:00",
+            "sourceDay": "2024-07-03",
+            "sourceHour": 24,
+            "row": 4441,
+            "consumption": 7482.0295700100005,
+            "production": 7633.34837101,
+            "import": 205.852686,
+            "exportSigned": -357.171487,
+            "wind": 603.03158415
+          },
+          {
+            "start": "2024-07-04T00:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 1,
+            "row": 4442,
+            "consumption": 7110.7588161,
+            "production": 7577.196897100001,
+            "import": 49.617706,
+            "exportSigned": -516.055787,
+            "wind": 650.58292223
+          },
+          {
+            "start": "2024-07-04T01:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 2,
+            "row": 4443,
+            "consumption": 6981.459929170001,
+            "production": 7549.054219170001,
+            "import": 49.242,
+            "exportSigned": -616.83629,
+            "wind": 631.55026924
+          },
+          {
+            "start": "2024-07-04T02:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 3,
+            "row": 4444,
+            "consumption": 6891.120691039999,
+            "production": 7594.721344039999,
+            "import": 49.618262,
+            "exportSigned": -753.218915,
+            "wind": 667.2682733
+          },
+          {
+            "start": "2024-07-04T03:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 4,
+            "row": 4445,
+            "consumption": 6928.057285070002,
+            "production": 7694.055628070001,
+            "import": 50.40454,
+            "exportSigned": -816.402883,
+            "wind": 739.05685175
+          },
+          {
+            "start": "2024-07-04T04:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 5,
+            "row": 4446,
+            "consumption": 7109.227566580001,
+            "production": 7849.31697958,
+            "import": 52.531586999999995,
+            "exportSigned": -792.6210000000001,
+            "wind": 875.72003649
+          },
+          {
+            "start": "2024-07-04T05:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 6,
+            "row": 4447,
+            "consumption": 7583.1605260100005,
+            "production": 8003.39326701,
+            "import": 57.000259,
+            "exportSigned": -477.233,
+            "wind": 923.00931959
+          },
+          {
+            "start": "2024-07-04T06:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 7,
+            "row": 4448,
+            "consumption": 7866.987609330001,
+            "production": 7937.94065933,
+            "import": 285.87495,
+            "exportSigned": -356.828,
+            "wind": 685.36819829
+          },
+          {
+            "start": "2024-07-04T07:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 8,
+            "row": 4449,
+            "consumption": 8187.05989416,
+            "production": 8111.324255160001,
+            "import": 432.591639,
+            "exportSigned": -356.856,
+            "wind": 625.78052959
+          },
+          {
+            "start": "2024-07-04T08:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 9,
+            "row": 4450,
+            "consumption": 8329.26526795,
+            "production": 8436.89593595,
+            "import": 249.264332,
+            "exportSigned": -356.895,
+            "wind": 760.62562672
+          },
+          {
+            "start": "2024-07-04T09:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 10,
+            "row": 4451,
+            "consumption": 8459.75694324,
+            "production": 8805.943226239999,
+            "import": 73.633717,
+            "exportSigned": -419.82,
+            "wind": 983.69940378
+          },
+          {
+            "start": "2024-07-04T10:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 11,
+            "row": 4452,
+            "consumption": 8584.8650509,
+            "production": 8534.1941059,
+            "import": 407.459945,
+            "exportSigned": -356.789,
+            "wind": 1096.67729904
+          },
+          {
+            "start": "2024-07-04T11:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 12,
+            "row": 4453,
+            "consumption": 8646.039999199998,
+            "production": 8379.823346199999,
+            "import": 622.993653,
+            "exportSigned": -356.777,
+            "wind": 1238.81905268
+          },
+          {
+            "start": "2024-07-04T12:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 13,
+            "row": 4454,
+            "consumption": 8656.885612819999,
+            "production": 8462.39197082,
+            "import": 548.185919,
+            "exportSigned": -353.692277,
+            "wind": 1457.54190946
+          },
+          {
+            "start": "2024-07-04T13:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 14,
+            "row": 4455,
+            "consumption": 8672.14653549,
+            "production": 8582.089767489999,
+            "import": 394.152,
+            "exportSigned": -304.09523199999995,
+            "wind": 1705.01752105
+          },
+          {
+            "start": "2024-07-04T14:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 15,
+            "row": 4456,
+            "consumption": 8608.87734214,
+            "production": 8619.81464314,
+            "import": 294.356,
+            "exportSigned": -305.293301,
+            "wind": 1789.63018862
+          },
+          {
+            "start": "2024-07-04T15:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 16,
+            "row": 4457,
+            "consumption": 8586.52275128,
+            "production": 8816.39294428,
+            "import": 76.286,
+            "exportSigned": -306.15619300000003,
+            "wind": 1964.75946494
+          },
+          {
+            "start": "2024-07-04T16:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 17,
+            "row": 4458,
+            "consumption": 8553.799962750001,
+            "production": 8611.322288750001,
+            "import": 314.024,
+            "exportSigned": -371.546326,
+            "wind": 1803.43859348
+          },
+          {
+            "start": "2024-07-04T17:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 18,
+            "row": 4459,
+            "consumption": 8461.71337346,
+            "production": 8975.545101459998,
+            "import": 49.156,
+            "exportSigned": -562.9877280000001,
+            "wind": 2261.44195361
+          },
+          {
+            "start": "2024-07-04T18:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 19,
+            "row": 4460,
+            "consumption": 8358.270150979999,
+            "production": 9207.48183298,
+            "import": 49.160306,
+            "exportSigned": -898.371988,
+            "wind": 2360.00752049
+          },
+          {
+            "start": "2024-07-04T19:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 20,
+            "row": 4461,
+            "consumption": 8187.975011090001,
+            "production": 9130.332116090001,
+            "import": 49.169759,
+            "exportSigned": -991.526864,
+            "wind": 2115.67992112
+          },
+          {
+            "start": "2024-07-04T20:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 21,
+            "row": 4462,
+            "consumption": 7914.2691366399995,
+            "production": 9092.46757164,
+            "import": 49.108,
+            "exportSigned": -1227.306435,
+            "wind": 2088.36176379
+          },
+          {
+            "start": "2024-07-04T21:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 22,
+            "row": 4463,
+            "consumption": 7985.256174759999,
+            "production": 9150.35034676,
+            "import": 49.06,
+            "exportSigned": -1214.154172,
+            "wind": 2203.88879198
+          },
+          {
+            "start": "2024-07-04T22:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 23,
+            "row": 4464,
+            "consumption": 7863.93860264,
+            "production": 9316.69396764,
+            "import": 49.116,
+            "exportSigned": -1501.871365,
+            "wind": 2432.2405076
+          },
+          {
+            "start": "2024-07-04T23:00:00+02:00",
+            "sourceDay": "2024-07-04",
+            "sourceHour": 24,
+            "row": 4465,
+            "consumption": 7561.762498100001,
+            "production": 9260.4012621,
+            "import": 49.138,
+            "exportSigned": -1747.7767640000002,
+            "wind": 2659.03920029
+          },
+          {
+            "start": "2024-07-05T00:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 1,
+            "row": 4466,
+            "consumption": 7379.95670576,
+            "production": 9082.71897876,
+            "import": 49.26,
+            "exportSigned": -1752.022273,
+            "wind": 2784.0222428
+          },
+          {
+            "start": "2024-07-05T01:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 2,
+            "row": 4467,
+            "consumption": 7183.312529989999,
+            "production": 8582.00097499,
+            "import": 49.104,
+            "exportSigned": -1447.792445,
+            "wind": 2333.83875515
+          },
+          {
+            "start": "2024-07-05T02:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 3,
+            "row": 4468,
+            "consumption": 7081.0615640099995,
+            "production": 8409.80361901,
+            "import": 49.252,
+            "exportSigned": -1377.9940550000001,
+            "wind": 2056.70516694
+          },
+          {
+            "start": "2024-07-05T03:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 4,
+            "row": 4469,
+            "consumption": 7113.307038260002,
+            "production": 8263.08320226,
+            "import": 49.28,
+            "exportSigned": -1199.056164,
+            "wind": 1768.0835088
+          },
+          {
+            "start": "2024-07-05T04:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 5,
+            "row": 4470,
+            "consumption": 7315.255094160001,
+            "production": 8312.79874516,
+            "import": 49.308,
+            "exportSigned": -1046.851651,
+            "wind": 1552.14928174
+          },
+          {
+            "start": "2024-07-05T05:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 6,
+            "row": 4471,
+            "consumption": 7756.04776992,
+            "production": 8284.87540992,
+            "import": 52.898503999999996,
+            "exportSigned": -581.726144,
+            "wind": 1195.45032544
+          },
+          {
+            "start": "2024-07-05T06:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 7,
+            "row": 4472,
+            "consumption": 8149.292878429998,
+            "production": 8263.24512543,
+            "import": 242.906753,
+            "exportSigned": -356.859,
+            "wind": 866.20162135
+          },
+          {
+            "start": "2024-07-05T07:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 8,
+            "row": 4473,
+            "consumption": 8498.50563984,
+            "production": 8485.54029084,
+            "import": 369.823349,
+            "exportSigned": -356.858,
+            "wind": 746.63623122
+          },
+          {
+            "start": "2024-07-05T08:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 9,
+            "row": 4474,
+            "consumption": 8716.403141349998,
+            "production": 8593.518504349999,
+            "import": 479.726637,
+            "exportSigned": -356.842,
+            "wind": 726.11597984
+          },
+          {
+            "start": "2024-07-05T09:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 10,
+            "row": 4475,
+            "consumption": 8826.504541269998,
+            "production": 8395.616637269999,
+            "import": 766.700904,
+            "exportSigned": -335.813,
+            "wind": 803.05569277
+          },
+          {
+            "start": "2024-07-05T10:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 11,
+            "row": 4476,
+            "consumption": 8997.123080030002,
+            "production": 8144.62250803,
+            "import": 1115.3095720000001,
+            "exportSigned": -262.809,
+            "wind": 733.84670901
+          },
+          {
+            "start": "2024-07-05T11:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 12,
+            "row": 4477,
+            "consumption": 8993.300290739999,
+            "production": 8135.507909739999,
+            "import": 1164.7025709999998,
+            "exportSigned": -306.91019,
+            "wind": 806.17725014
+          },
+          {
+            "start": "2024-07-05T12:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 13,
+            "row": 4478,
+            "consumption": 8943.88046681,
+            "production": 8054.6734418099995,
+            "import": 1217.075,
+            "exportSigned": -327.867975,
+            "wind": 908.69894602
+          },
+          {
+            "start": "2024-07-05T13:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 14,
+            "row": 4479,
+            "consumption": 8821.803360869999,
+            "production": 8081.86511087,
+            "import": 1092.156,
+            "exportSigned": -352.21775,
+            "wind": 1031.4610848
+          },
+          {
+            "start": "2024-07-05T14:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 15,
+            "row": 4480,
+            "consumption": 8689.13427799,
+            "production": 8266.544843990001,
+            "import": 746.0219999999999,
+            "exportSigned": -323.432566,
+            "wind": 1300.12840051
+          },
+          {
+            "start": "2024-07-05T15:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 16,
+            "row": 4481,
+            "consumption": 8637.96137741,
+            "production": 7972.85772541,
+            "import": 1010.824,
+            "exportSigned": -345.720348,
+            "wind": 1109.6709213
+          },
+          {
+            "start": "2024-07-05T16:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 17,
+            "row": 4482,
+            "consumption": 8539.816435769999,
+            "production": 7997.809251769999,
+            "import": 788.434,
+            "exportSigned": -246.426816,
+            "wind": 1164.91589603
+          },
+          {
+            "start": "2024-07-05T17:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 18,
+            "row": 4483,
+            "consumption": 8393.842579700002,
+            "production": 8615.1499817,
+            "import": 131.486,
+            "exportSigned": -352.793402,
+            "wind": 1540.89337128
+          },
+          {
+            "start": "2024-07-05T18:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 19,
+            "row": 4484,
+            "consumption": 8264.24680809,
+            "production": 8979.61879609,
+            "import": 49.06,
+            "exportSigned": -764.431988,
+            "wind": 1733.31670483
+          },
+          {
+            "start": "2024-07-05T19:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 20,
+            "row": 4485,
+            "consumption": 8241.150682309999,
+            "production": 9060.40530531,
+            "import": 49.088,
+            "exportSigned": -868.342623,
+            "wind": 1773.71084164
+          },
+          {
+            "start": "2024-07-05T20:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 21,
+            "row": 4486,
+            "consumption": 7919.1341451200005,
+            "production": 9021.44602612,
+            "import": 15.716,
+            "exportSigned": -1118.027881,
+            "wind": 1696.45924088
+          },
+          {
+            "start": "2024-07-05T21:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 22,
+            "row": 4487,
+            "consumption": 7939.155797859999,
+            "production": 9049.093951859999,
+            "import": 0,
+            "exportSigned": -1109.938154,
+            "wind": 1771.971851
+          },
+          {
+            "start": "2024-07-05T22:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 23,
+            "row": 4488,
+            "consumption": 7860.865167289999,
+            "production": 9203.529426289999,
+            "import": 0,
+            "exportSigned": -1342.6642590000001,
+            "wind": 2248.10701103
+          },
+          {
+            "start": "2024-07-05T23:00:00+02:00",
+            "sourceDay": "2024-07-05",
+            "sourceHour": 24,
+            "row": 4489,
+            "consumption": 7566.4916097000005,
+            "production": 9103.5994647,
+            "import": 0.020915,
+            "exportSigned": -1537.1287699999998,
+            "wind": 2513.05943642
+          },
+          {
+            "start": "2024-07-06T00:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 1,
+            "row": 4490,
+            "consumption": 7325.412987079999,
+            "production": 8792.98259408,
+            "import": 0.075807,
+            "exportSigned": -1467.645414,
+            "wind": 2531.44720978
+          },
+          {
+            "start": "2024-07-06T01:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 2,
+            "row": 4491,
+            "consumption": 7145.29741125,
+            "production": 8831.13633125,
+            "import": 0.636341,
+            "exportSigned": -1686.475261,
+            "wind": 2674.90469546
+          },
+          {
+            "start": "2024-07-06T02:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 3,
+            "row": 4492,
+            "consumption": 7074.245336069999,
+            "production": 8744.83076207,
+            "import": 2.141016,
+            "exportSigned": -1672.726442,
+            "wind": 2723.15998559
+          },
+          {
+            "start": "2024-07-06T03:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 4,
+            "row": 4493,
+            "consumption": 7040.668322499999,
+            "production": 8878.4180375,
+            "import": 0.009729,
+            "exportSigned": -1837.759444,
+            "wind": 2842.06342711
+          },
+          {
+            "start": "2024-07-06T04:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 5,
+            "row": 4494,
+            "consumption": 7069.699490660001,
+            "production": 9006.296593660001,
+            "import": 0.802937,
+            "exportSigned": -1937.4000400000002,
+            "wind": 2784.55763285
+          },
+          {
+            "start": "2024-07-06T05:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 6,
+            "row": 4495,
+            "consumption": 7131.3942518600015,
+            "production": 8826.75963186,
+            "import": 4.919287,
+            "exportSigned": -1700.2846670000004,
+            "wind": 2161.41948063
+          },
+          {
+            "start": "2024-07-06T06:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 7,
+            "row": 4496,
+            "consumption": 7264.0970637499995,
+            "production": 8230.27490575,
+            "import": 3.826328,
+            "exportSigned": -970.0041699999999,
+            "wind": 1106.52801544
+          },
+          {
+            "start": "2024-07-06T07:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 8,
+            "row": 4497,
+            "consumption": 7539.005192199998,
+            "production": 7875.926236199999,
+            "import": 2.759792,
+            "exportSigned": -339.680836,
+            "wind": 744.53642989
+          },
+          {
+            "start": "2024-07-06T08:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 9,
+            "row": 4498,
+            "consumption": 7759.398449820001,
+            "production": 8022.590586820001,
+            "import": 75.735164,
+            "exportSigned": -338.927301,
+            "wind": 945.31348856
+          },
+          {
+            "start": "2024-07-06T09:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 10,
+            "row": 4499,
+            "consumption": 7848.473085729999,
+            "production": 8198.58626973,
+            "import": 0.002937,
+            "exportSigned": -350.11612099999996,
+            "wind": 1258.60026194
+          },
+          {
+            "start": "2024-07-06T10:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 11,
+            "row": 4500,
+            "consumption": 7932.74933112,
+            "production": 8401.96322112,
+            "import": 0.69704,
+            "exportSigned": -469.91093,
+            "wind": 1358.48299907
+          },
+          {
+            "start": "2024-07-06T11:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 12,
+            "row": 4501,
+            "consumption": 7872.2854531699995,
+            "production": 8332.12022717,
+            "import": 0.280749,
+            "exportSigned": -460.115523,
+            "wind": 1466.64205009
+          },
+          {
+            "start": "2024-07-06T12:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 13,
+            "row": 4502,
+            "consumption": 7852.660341050001,
+            "production": 8223.662077050001,
+            "import": 0,
+            "exportSigned": -371.001736,
+            "wind": 1610.96275814
+          },
+          {
+            "start": "2024-07-06T13:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 14,
+            "row": 4503,
+            "consumption": 7859.70377014,
+            "production": 8088.5624951400005,
+            "import": 96.582,
+            "exportSigned": -325.44072500000004,
+            "wind": 1666.42063149
+          },
+          {
+            "start": "2024-07-06T14:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 15,
+            "row": 4504,
+            "consumption": 7899.710270369999,
+            "production": 7833.69662237,
+            "import": 373.873,
+            "exportSigned": -307.85935200000006,
+            "wind": 1449.04826808
+          },
+          {
+            "start": "2024-07-06T15:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 16,
+            "row": 4505,
+            "consumption": 7943.36565233,
+            "production": 7886.40171533,
+            "import": 380.956,
+            "exportSigned": -323.992063,
+            "wind": 1521.87343659
+          },
+          {
+            "start": "2024-07-06T16:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 17,
+            "row": 4506,
+            "consumption": 7994.58194767,
+            "production": 8391.98732867,
+            "import": 0,
+            "exportSigned": -397.40538100000003,
+            "wind": 1938.9508428
+          },
+          {
+            "start": "2024-07-06T17:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 18,
+            "row": 4507,
+            "consumption": 7997.62736654,
+            "production": 9160.65354454,
+            "import": 0,
+            "exportSigned": -1163.026178,
+            "wind": 2436.64581787
+          },
+          {
+            "start": "2024-07-06T18:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 19,
+            "row": 4508,
+            "consumption": 8065.56527785,
+            "production": 9511.08726185,
+            "import": 0,
+            "exportSigned": -1445.521984,
+            "wind": 2608.00689628
+          },
+          {
+            "start": "2024-07-06T19:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 20,
+            "row": 4509,
+            "consumption": 7945.698770249999,
+            "production": 9469.70932325,
+            "import": 0,
+            "exportSigned": -1524.0105529999998,
+            "wind": 2485.39780898
+          },
+          {
+            "start": "2024-07-06T20:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 21,
+            "row": 4510,
+            "consumption": 7736.822799779999,
+            "production": 9387.525376779999,
+            "import": 0,
+            "exportSigned": -1650.702577,
+            "wind": 2650.09663521
+          },
+          {
+            "start": "2024-07-06T21:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 22,
+            "row": 4511,
+            "consumption": 7842.90114722,
+            "production": 9378.61747922,
+            "import": 0,
+            "exportSigned": -1535.716332,
+            "wind": 2760.31167709
+          },
+          {
+            "start": "2024-07-06T22:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 23,
+            "row": 4512,
+            "consumption": 7767.9743148200005,
+            "production": 9325.18330482,
+            "import": 0,
+            "exportSigned": -1557.20899,
+            "wind": 3030.30330293
+          },
+          {
+            "start": "2024-07-06T23:00:00+02:00",
+            "sourceDay": "2024-07-06",
+            "sourceHour": 24,
+            "row": 4513,
+            "consumption": 7444.191696139999,
+            "production": 9368.11711014,
+            "import": 0,
+            "exportSigned": -1923.925414,
+            "wind": 3156.02588667
+          },
+          {
+            "start": "2024-07-07T00:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 1,
+            "row": 4514,
+            "consumption": 7150.038787720001,
+            "production": 9345.97371772,
+            "import": 0,
+            "exportSigned": -2195.93493,
+            "wind": 3596.1219794
+          },
+          {
+            "start": "2024-07-07T01:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 2,
+            "row": 4515,
+            "consumption": 6958.226012830001,
+            "production": 8985.126559830001,
+            "import": 0,
+            "exportSigned": -2026.900547,
+            "wind": 3437.97918605
+          },
+          {
+            "start": "2024-07-07T02:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 3,
+            "row": 4516,
+            "consumption": 6861.2430104099985,
+            "production": 8681.48725941,
+            "import": 0.011958,
+            "exportSigned": -1820.256207,
+            "wind": 3197.95192242
+          },
+          {
+            "start": "2024-07-07T03:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 4,
+            "row": 4517,
+            "consumption": 6796.17154084,
+            "production": 8956.06869384,
+            "import": 1.240363,
+            "exportSigned": -2161.1375160000002,
+            "wind": 3435.89136237
+          },
+          {
+            "start": "2024-07-07T04:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 5,
+            "row": 4518,
+            "consumption": 6756.679680240001,
+            "production": 8737.537284240001,
+            "import": 0,
+            "exportSigned": -1980.857604,
+            "wind": 3091.15130744
+          },
+          {
+            "start": "2024-07-07T05:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 6,
+            "row": 4519,
+            "consumption": 6897.68880669,
+            "production": 8710.57454069,
+            "import": 0.633004,
+            "exportSigned": -1813.518738,
+            "wind": 2944.29872887
+          },
+          {
+            "start": "2024-07-07T06:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 7,
+            "row": 4520,
+            "consumption": 7104.84255435,
+            "production": 9140.99218335,
+            "import": 0,
+            "exportSigned": -2036.1496289999998,
+            "wind": 3295.39907221
+          },
+          {
+            "start": "2024-07-07T07:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 8,
+            "row": 4521,
+            "consumption": 7438.486503460001,
+            "production": 9421.35989046,
+            "import": 0,
+            "exportSigned": -1982.8733869999999,
+            "wind": 3522.84028729
+          },
+          {
+            "start": "2024-07-07T08:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 9,
+            "row": 4522,
+            "consumption": 7743.62486714,
+            "production": 9664.44896514,
+            "import": 0,
+            "exportSigned": -1920.824098,
+            "wind": 3784.51670771
+          },
+          {
+            "start": "2024-07-07T09:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 10,
+            "row": 4523,
+            "consumption": 7987.49468813,
+            "production": 8898.54100413,
+            "import": 0,
+            "exportSigned": -911.046316,
+            "wind": 2962.19844246
+          },
+          {
+            "start": "2024-07-07T10:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 11,
+            "row": 4524,
+            "consumption": 8176.656181469999,
+            "production": 9014.30191547,
+            "import": 0.000327,
+            "exportSigned": -837.646061,
+            "wind": 3072.33818583
+          },
+          {
+            "start": "2024-07-07T11:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 12,
+            "row": 4525,
+            "consumption": 8233.30141209,
+            "production": 8873.88689109,
+            "import": 0,
+            "exportSigned": -640.5854790000001,
+            "wind": 2992.88889698
+          },
+          {
+            "start": "2024-07-07T12:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 13,
+            "row": 4526,
+            "consumption": 8238.9581752,
+            "production": 9025.9267472,
+            "import": 0,
+            "exportSigned": -786.968572,
+            "wind": 3114.24797244
+          },
+          {
+            "start": "2024-07-07T13:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 14,
+            "row": 4527,
+            "consumption": 8161.86739964,
+            "production": 8800.93389464,
+            "import": 0,
+            "exportSigned": -639.066495,
+            "wind": 2836.19765683
+          },
+          {
+            "start": "2024-07-07T14:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 15,
+            "row": 4528,
+            "consumption": 8026.632355050001,
+            "production": 8584.50933405,
+            "import": 0,
+            "exportSigned": -557.876979,
+            "wind": 2633.21430694
+          },
+          {
+            "start": "2024-07-07T15:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 16,
+            "row": 4529,
+            "consumption": 7897.55027207,
+            "production": 8673.81544907,
+            "import": 0.008935,
+            "exportSigned": -776.2741120000001,
+            "wind": 2709.25224172
+          },
+          {
+            "start": "2024-07-07T16:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 17,
+            "row": 4530,
+            "consumption": 7875.771520349999,
+            "production": 9263.17215635,
+            "import": 0.001333,
+            "exportSigned": -1387.401969,
+            "wind": 3288.59476301
+          },
+          {
+            "start": "2024-07-07T17:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 18,
+            "row": 4531,
+            "consumption": 8040.0246910999995,
+            "production": 10155.6120041,
+            "import": 0.242,
+            "exportSigned": -2115.829313,
+            "wind": 4191.74578684
+          },
+          {
+            "start": "2024-07-07T18:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 19,
+            "row": 4532,
+            "consumption": 8048.863663829999,
+            "production": 10094.64160883,
+            "import": 5.764,
+            "exportSigned": -2051.541945,
+            "wind": 4135.17241189
+          },
+          {
+            "start": "2024-07-07T19:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 20,
+            "row": 4533,
+            "consumption": 7953.065176780001,
+            "production": 9962.972438780002,
+            "import": 27.032,
+            "exportSigned": -2036.9392619999999,
+            "wind": 4016.91983029
+          },
+          {
+            "start": "2024-07-07T20:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 21,
+            "row": 4534,
+            "consumption": 7757.79484368,
+            "production": 10001.12243168,
+            "import": 18.06,
+            "exportSigned": -2261.387588,
+            "wind": 4122.12772803
+          },
+          {
+            "start": "2024-07-07T21:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 22,
+            "row": 4535,
+            "consumption": 7859.503388089999,
+            "production": 9887.36519709,
+            "import": 7.17,
+            "exportSigned": -2035.031809,
+            "wind": 4071.38790469
+          },
+          {
+            "start": "2024-07-07T22:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 23,
+            "row": 4536,
+            "consumption": 7732.246127020001,
+            "production": 9790.329940020001,
+            "import": 5.258,
+            "exportSigned": -2063.341813,
+            "wind": 4124.00632525
+          },
+          {
+            "start": "2024-07-07T23:00:00+02:00",
+            "sourceDay": "2024-07-07",
+            "sourceHour": 24,
+            "row": 4537,
+            "consumption": 7424.993116590002,
+            "production": 9337.166339590001,
+            "import": 24.278,
+            "exportSigned": -1936.451223,
+            "wind": 3726.11256795
+          }
+        ],
+        "consumptionMWhDecimal": "1331721.1425594199910"
+      }
+    ],
+    "year": {
+      "year": 2024,
+      "hours": 8784,
+      "consumptionMWhDecimal": "83053177.0128794499615",
+      "maxBalanceResidualMW": 0.0
+    }
+  },
+  "heat": {
+    "source": "Energiateollisuus ry, district heat statistics 2024; Nivos reporting",
+    "company": "Nivos Vesi ja Lämpö Oy, Mäntsälä",
+    "scope2024": "Company/municipal row 114; multiple networks; residential, industrial and other customers.",
+    "cells": [
+      {
+        "id": "fuelHeat",
+        "sheet": "Taul1",
+        "cell": "F148",
+        "sourceLabel": "Nettotuotanto polttoaineilla",
+        "raw": 31.5,
+        "value": 31.5,
+        "unit": "GWh"
+      },
+      {
+        "id": "recoveryAndHeatPump",
+        "sheet": "Taul1",
+        "cell": "G148",
+        "sourceLabel": "Lämmön talteenotto tai lämpöpumpun tuotanto",
+        "raw": 22.7,
+        "value": 22.7,
+        "unit": "GWh"
+      },
+      {
+        "id": "supply",
+        "sheet": "Taul1",
+        "cell": "I148",
+        "sourceLabel": "Yhteensä",
+        "raw": 54.2,
+        "value": 54.2,
+        "unit": "GWh"
+      },
+      {
+        "id": "customerUse",
+        "sheet": "Taul1",
+        "cell": "J148",
+        "sourceLabel": "Käyttö",
+        "raw": 48.5,
+        "value": 48.5,
+        "unit": "GWh"
+      },
+      {
+        "id": "lossAndMeterDifference",
+        "sheet": "Taul1",
+        "cell": "L148",
+        "sourceLabel": "Verkkohäviöt ja mittauserot",
+        "raw": 5.7,
+        "value": 5.7,
+        "unit": "GWh"
+      },
+      {
+        "id": "productionElectricityMWh",
+        "sheet": "Taul1",
+        "cell": "O148",
+        "sourceLabel": "Kaukolämmön tuotantoon kulunut sähkö",
+        "raw": "..",
+        "value": null,
+        "unit": "MWh"
+      },
+      {
+        "id": "distributionPumpElectricityMWh",
+        "sheet": "Taul1",
+        "cell": "P148",
+        "sourceLabel": "Kaukolämmön siirron pumppuenergia",
+        "raw": 200,
+        "value": 200,
+        "unit": "MWh"
+      },
+      {
+        "id": "residentialCustomers",
+        "sheet": "Taul5",
+        "cell": "F138",
+        "sourceLabel": "Asuintaloasiakkaat",
+        "raw": 115,
+        "value": 115,
+        "unit": "customers"
+      },
+      {
+        "id": "residentialUse",
+        "sheet": "Taul5",
+        "cell": "R138",
+        "sourceLabel": "Asuintaloasiakkaat",
+        "raw": 16,
+        "value": 16,
+        "unit": "GWh"
+      },
+      {
+        "id": "industrialUse",
+        "sheet": "Taul5",
+        "cell": "S138",
+        "sourceLabel": "Teollisuusasiakkaat",
+        "raw": 0.4,
+        "value": 0.4,
+        "unit": "GWh"
+      },
+      {
+        "id": "otherUse",
+        "sheet": "Taul5",
+        "cell": "T138",
+        "sourceLabel": "Muut asiakkaat",
+        "raw": 32.1,
+        "value": 32.1,
+        "unit": "GWh"
+      },
+      {
+        "id": "allCustomerUse",
+        "sheet": "Taul5",
+        "cell": "U138",
+        "sourceLabel": "Yhteensä",
+        "raw": 48.5,
+        "value": 48.5,
+        "unit": "GWh"
+      }
+    ],
+    "report2025": {
+      "salesGWh": 43.1,
+      "scope": "All company district-heat sales; residential breakdown unavailable in this extract.",
+      "pdfPage": 3,
+      "printedPage": 2,
+      "centralNetworkRecoveryPercent": 41,
+      "originScope": "Mäntsälä central network only. Rounded origin share; do not multiply by all-company sales.",
+      "residentialUseGWh": null
+    }
+  }
+}

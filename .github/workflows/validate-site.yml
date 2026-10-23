@@ -39,6 +39,7 @@ jobs:
           node --test scripts/coastal_haxr.test.mjs scripts/coastal_haxr_motion.test.mjs
           node --test scripts/field_power.test.mjs
           node --test scripts/datacenter.test.mjs
+          node --test scripts/finland_account.test.mjs
           node --test scripts/notes_model.test.mjs
           node --test scripts/field_listen_model.test.mjs
           node --test scripts/loose_end_model.test.mjs
@@ -51,6 +52,9 @@ jobs:
       - name: Syntax-check browser JavaScript
         run: |
           node --check docs/assets/datacenter.mjs
+          node --check docs/assets/datacenter-finland.mjs
+          node --check docs/assets/datacenter-finland-model.mjs
+          node --check scripts/audit_finland_account.mjs
           node --check docs/assets/datacenter-model.mjs
           node --check docs/assets/datacenter-room.mjs
           node --check scripts/audit_datacenter.mjs
