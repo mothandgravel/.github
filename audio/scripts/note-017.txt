@@ -1,0 +1,145 @@
+Moth and Gravel. Field Note 17. The grid is shared.
+
+An AI-narrated edition of the published note.
+
+A kettle, a hot-water tank, a room of servers. Very different work, carried through the same electricity system.
+
+Finland’s appeal to a data-centre developer is easy to put on a slide: a cool climate, clean electricity, room to build. At home, the question arrives in smaller print. The price on a contract renewal. The network charge. The housing company’s heating budget.
+
+We wanted to follow the connection that far.
+
+The resulting Finnish account opens three records: household electricity prices, national power flows and heat delivered in Mäntsälä. Each keeps its own date and boundary. Put them beside one another and the public question becomes more precise: who pays for the connection, who can change their demand, and who receives the useful heat?
+
+The bill has three parts
+
+The price discussed in an electricity-market headline is only part of what a household pays. There is the electricity sold, the network service and tax. A resident can choose an electricity seller; the local distribution network comes with the address. KKV’s consumer guidance makes that distinction explicit.
+
+Our first account uses Statistics Finland’s table 13rb. Take January 2024, consumer band C, for annual use between 2,500 and 4,999 kWh. Choose an illustrative 3,000 kWh a year and hold that month’s published rates constant.
+
+January 2024 rates. Band C. An assumed 3,000 kilowatt-hour year.
+
+Energy, excluding tax: 10.880 cents per kilowatt-hour. Annualised: 326 euros and 40 cents.
+
+Network, excluding tax: 7.532 cents per kilowatt-hour. Annualised: 225 euros and 96 cents.
+
+Tax, including excise and VAT: 7.213 cents per kilowatt-hour. Annualised: 216 euros and 39 cents.
+
+Published total, including tax: 25.625 cents per kilowatt-hour. Annualised: 768 euros and 75 cents.
+
+The arithmetic is annual kWh multiplied by cents per kWh, divided by 100. The total already includes tax. We add neither another layer of VAT nor separate fixed charges to this published unit-price statistic.
+
+€768.75 is an illustration at one month’s national consumer-band rates. It is neither a measured household bill nor the cost of consuming electricity throughout 2024 at the prices that actually occurred. The distinction matters before we ask a future price to explain anything.
+
+A simple sensitivity is useful here. If a VAT-inclusive retail energy rate were one cent per kWh higher, a home using 20,000 kWh would pay €200 more over a year, with use and every other charge held constant. At 3,000 kWh the difference would be €30. These are conditional multiplications. We have supplied no evidence that data centres cause that one-cent change.
+
+A cheap year can contain a difficult hour
+
+Additional demand has to meet electricity available at the same time and through a network able to carry it. Its effect on prices depends on the supply response, weather, imports, outages, location and the load’s ability to move. New demand can support new generation investment. A promise of future generation still needs a commissioning date.
+
+Fingrid reported in August 2026 that data-centre projects with signed connection agreements had a planned final combined capacity of nearly 5 GW, including distribution-network connections. That is a project capacity figure. It does not mean 5 GW was already drawing power continuously.
+
+To see why the distinction matters, assume a whole-facility load of 100 MW operating constantly for an ordinary 8,760-hour year. It consumes 876,000 MWh, or 0.876 TWh. This is arithmetic, not a surveyed Finnish facility. A nameplate, an annual energy total and the demand on a cold evening are three different descriptions.
+
+The Ministry of Economic Affairs and Employment’s October 2026 account acknowledges both the opportunity for new production and regional network scarcity. National abundance does not establish room at a particular substation.
+
+Our grid view replays two recorded weeks, one in January and one in July 2024, from Energiateollisuus’s hourly data. Consumption reconciles with domestic production plus imports and signed exports. Wind is already inside production. The source clock stays at UTC+2, including July.
+
+Adding a chosen facility draw makes an extra requirement visible beside the historical hour. We hold historical supply fixed. The dashed line cannot tell us which plant would respond, what the market would charge or whether a connection would be permitted. Exporting electricity in a recorded hour is also no proof of spare network capacity at a proposed site.
+
+This is where an annual renewable-energy claim needs another question: what happens in the hours the contracted generation is absent? A useful answer specifies timing, balancing, transmission and the demand that can actually be deferred.
+
+Flexibility belongs to someone
+
+“Households will adjust” can sound painless at the scale of a national chart.
+
+At home it means deciding when the water heats, whether the car can wait, whether a room can be cooler. A home with a controllable heat pump, an insulated envelope and money for improvements has options that a tenant may be unable to buy or install. A low bill achieved by giving something up deserves a different label from the same bill achieved by better equipment.
+
+There is Finnish research on this uneven room to move. Lassi Ahlvik, Tuomas Kaariaho, Matti Liski and Iivo Vehviläinen’s 2025 working paper on the European energy crisis uses the timing of expiring two-year fixed-price contracts to study Finnish households during 2022. The authors find that lower-income households have fewer ways to adjust, with greater financial distress and cuts in other spending.
+
+This is a working paper about a particular price shock. It does not estimate the future household effect of Finnish data centres. It does give us a reason to distrust the idea of one representative household with an unlimited ability to shift demand.
+
+A fixed-price contract can delay exposure to energy-price changes until renewal. A spot-priced contract exposes the resident sooner to the timing of use. Neither makes the network charge disappear. The same wholesale-price development can therefore reach two neighbours in different months, with different consequences.
+
+For a large new consumer, we would want flexibility described just as concretely. How many megawatts can stop? For how long? With how much notice? What happens when the work resumes? Who verifies delivery? An interruptible commitment has public value only to the extent that it can be used when the system needs it. A demonstration on an easy day leaves that question open.
+
+The cable has an account too
+
+A new connection can bring investment, work and demand for electricity that helps finance production. It can also require reinforcement. The household question is how the costs and benefits are divided across the connection charge, network tariffs, the developer and any public support.
+
+We cannot infer that division from the size of a building or from a national consumption trace. It needs the applicable connection terms, the reinforcement plan and the regulated network account. A claim that households will pay for everything is as incomplete as a claim that they will pay for nothing.
+
+According to KKV, the Energy Authority supervises network pricing as a whole over four-year periods using a reasonable-return framework. This is not a cap on each individual tariff. The existence of supervision does not remove the need to inspect how a particular expansion is funded.
+
+For a municipality considering a project, we would put the dates beside the money. When does the facility start using power? When is the reinforcement available? Who bears a delay? Which spending is committed if the campus is built in phases or remains smaller than announced?
+
+Those are terms a resident should be able to understand without becoming an electricity-market analyst. They are also terms a project can publish before asking its neighbours to trust a distant benefit.
+
+Follow the heat to a building
+
+Heat recovery is the most tangible part of the promise. Somewhere, a radiator becomes warm. To follow that promise we need a pipe, an operating system and a measured delivery.
+
+The 2024 district-heating statistics give us a reported Nivos Vesi ja Lämpö account for Mäntsälä, covering several networks. On the supply side, 31.5 GWh of other net heat production and 22.7 GWh in a combined recovery/heat-pump category make 54.2 GWh. On the other side:
+
+Nivos. Mäntsälä. 2024. Thermal energy in gigawatt-hours.
+
+Residential buildings: 16.0 gigawatt-hours. Industry: 0.4. Other customers: 32.1.
+
+All customer use: 48.5 gigawatt-hours. Network losses and meter differences: 5.7.
+
+Total supplied heat: 54.2 gigawatt-hours.
+
+16.0 + 0.4 + 32.1 = 48.5. Add 5.7 and the account returns to 54.2. The 115 residential customers reported alongside these figures are building accounts, not 115 households.
+
+The recovery category does not isolate pure server waste heat. Nor does the table allocate particular heat sources to particular homes. We can say that residential buildings used 16.0 GWh. We cannot say that data-centre heat supplied that entire amount.
+
+A heat pump adds its own electricity to the recovered heat. Distribution then has its own losses. Thermal kilowatt-hours delivered and electrical kilowatt-hours consumed must keep their separate meters; subtracting one from the other would conceal the system we are trying to understand.
+
+There is a seasonal question too. Useful heat depends on temperature, demand and the alternative source it displaces. A year-round server load does not come with year-round winter heating demand. Storage, hot water and other users may help, but their capacity and operation need evidence of their own.
+
+A percentage needs an address
+
+The Nivos report for 2025 records company-wide heat sales of 43.1 GWh. A separate origin disclosure gives recovered/surplus heat a 41% share in the central Mäntsälä network that year.
+
+The boundaries differ. Multiplying 43.1 by 41% would produce a neat number with no matching published account behind it. We leave that multiplication undone.
+
+Commissioning language needs the same care. Fortum’s May 2026 announcement says its plants at the Espoo and Kirkkonummi data-centre sites had begun producing heat from ambient air and electric boilers. The release schedules data-centre waste-heat integration to begin in stages in 2027. A plant operating at a data-centre site does not by itself mean server heat has already reached a home.
+
+Even a measured heat benefit has a distribution question. It reaches properties connected to the relevant network. Living nearby does not make a detached home part of that system. For a housing company or tenant, a lower production cost still needs a route through the heat tariff, building costs and household charges.
+
+There is something concrete to inspect in Mäntsälä. Nivos reports a 15% cut in the summer energy charge from 1 May 2025 and a 5% cut in the winter energy charge from 1 January 2026. These are particular tariff components and dates. They are neither equivalent cuts to every customer’s total annual bill nor proof that recovered heat alone caused the reductions.
+
+The useful promise would name the network, the delivered quantity, the season, the alternative heat source and the tariff consequence. Then a resident can follow it beyond a rendering of a pipe.
+
+Rules, with something to inspect
+
+Finland is not starting from an absence of rules. As checked on 23 October 2026, the Tax Administration says data-centre electricity moved from tax class II to class I on 1 July 2026. That change is separate from both the household’s historical price record and a forecast of future market prices.
+
+The energy-efficiency amendment effective from January 2026 also contains heat-reuse duties. Section 29e applies above one megawatt of total power; for existing centres with no reuse, technical or economic infeasibility must be demonstrated through a cost-benefit analysis. The first notification under that provision is due by 31 December 2027. Related provisions address analysis for new or substantially refurbished centres. This is more specific than a universal percentage of heat that every site must sell.
+
+EU Regulation 2024/1364 establishes reporting for data centres with at least 500 kW of installed IT power. Its public database information is aggregated; individual facility submissions are kept confidential. A reporting requirement does not automatically give a neighbour the local account we have been following.
+
+Our interest is in what can be checked afterwards. A connection agreement should remain distinguishable from a working load. An offered interruption should leave a delivery record. A heat agreement should lead to a delivered-energy account. A claimed household saving should identify the charge that changed and the homes that can receive it.
+
+These are design requirements as much as research questions. Dates beside percentages. Units beside numbers. Assumptions that remain attached when an account is exported. A missing residential breakdown shown as missing, without a reassuring estimate quietly taking its place.
+
+The room of servers can be useful. The recovered heat can be useful. The people outside should be able to inspect the terms on which those things become useful to them.
+
+The grid is shared. The account should be readable from home.
+
+METHOD / SOURCES / LIMITS
+
+Three records. Separate boundaries.
+
+Written and checked 23 October 2026. The working specimen opens the source records and exports the selection with its assumptions, source locations and hashes. The provenance manifest and reproduction instructions preserve the numerical method. This note estimates no causal effect of data centres on Finnish prices, network tariffs or household welfare.
+
+Prices: Statistics Finland, energy prices, table 13rb, pinned API response updated 24 September 2026; excerpt January 2024–June 2026. The worked example selects January 2024, band C, and an authored 3,000 kWh annual use. Every displayed amount is calculated from the published rate at its stated precision. Annualisation holds that single monthly rate constant. Credit: Statistics Finland, CC BY 4.0; excerpt and illustration by Moth & Gravel.
+
+Grid: Energiateollisuus ry, hourly electricity workbook, worksheet 2024. The specimen retains 1–7 January and 1–7 July, 168 hours each. Source slots 1–24 are interpreted as hour-ending intervals in fixed UTC+2. Energy sums hourly mean MW multiplied by one hour. This differs from the point-sample integration in the separate US facility study. National flows establish neither local headroom nor a future dispatch response.
+
+Heat: Energiateollisuus ry, district-heating workbook 2024, updated 12 June 2026: Nivos row identifier 114, Taul1 row 148 and Taul5 row 138. The cells contain rounded thermal GWh; exact arithmetic here means arithmetic at that published precision, not extra measurement accuracy. Heat-production electricity is unreported in this row; we derive no heat-pump efficiency. Nivos’s 2025 report, PDF pages 3 and 6, and its 2025 central-network origin disclosure have separately stated scopes. Original workbooks and report remain with their publishers.
+
+Households and policy: Ahlvik, Kaariaho, Liski & Vehviläinen, Household-Level Responses to the European Energy Crisis, MIT CEEPR Working Paper 2025-08, April 2025; evidence about the 2022 crisis, not a data-centre scenario. Consumer, tax, legislative and operator sources are linked at the claims they support. Policy status is dated above. Proposals, targets and connection capacities are not treated as observed deliveries.
+
+The earlier Field Note 016 follows recorded power inside a US facility. No Finnish household price or local heat figure is inferred from that room.
+
+You have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.

@@ -471,13 +471,14 @@
     "project": "Where the power goes / Raivari",
     "thread": "",
     "related": [
+      "017",
       "005",
       "007",
       "014"
     ],
     "supersedes": [],
     "visual": "forms",
-    "featured": true,
+    "featured": false,
     "socialImage": "assets/notes/016-cover-social.jpg",
     "cover": {
       "small": "016-cover-800.webp",
@@ -486,12 +487,50 @@
       "height": 1000
     },
     "nextReading": {
-      "id": "005",
-      "bridge": "A ratio needs its boundary. A green light needs a promise just as precise."
+      "id": "017",
+      "bridge": "The facility has an account. Follow its connection outside, to Finnish household bills and heat at home."
     },
     "specimen": {
       "href": "../specimens/data-center/",
       "label": "Return to the recorded account"
+    }
+  },
+  {
+    "id": "017",
+    "slug": "017-the-grid-is-shared.html",
+    "title": "The grid is shared.",
+    "summary": "A household bill, a shared electricity system and heat at home. Following Finland’s data-centre promise to the people outside the room.",
+    "date": "2026-10-23",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "The Finnish account / Where the power goes",
+    "thread": "",
+    "related": [
+      "016",
+      "005",
+      "007"
+    ],
+    "supersedes": [],
+    "visual": "forms",
+    "featured": true,
+    "socialImage": "assets/notes/017-cover-social.jpg",
+    "cover": {
+      "small": "017-cover-800.webp",
+      "large": "017-cover-1600.webp",
+      "width": 1600,
+      "height": 1000
+    },
+    "nextReading": {
+      "id": "016",
+      "bridge": "Follow the connection back into the room, where an improving ratio can sit beside a larger load."
+    },
+    "specimen": {
+      "href": "../specimens/data-center/#fi-account",
+      "label": "Inspect the Finnish account"
     }
   }
 ]

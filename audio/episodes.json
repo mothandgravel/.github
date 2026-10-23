@@ -454,5 +454,30 @@
       "kind": "note",
       "note_id": "016"
     }
+  },
+  {
+    "id": "note-017",
+    "title": "The grid is shared.",
+    "format": "narration",
+    "script": "scripts/note-017.txt",
+    "language": "en-US",
+    "notes": [
+      "017"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "017": "200da46fce62b41a84538f78624670696df41bc5df3eecdf89e8b36a788abb48"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "017"
+    }
   }
 ]
