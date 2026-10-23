@@ -53,6 +53,7 @@ jobs:
         run: |
           node --check docs/assets/datacenter.mjs
           node --check docs/assets/datacenter-finland.mjs
+          node --check docs/assets/datacenter-households.mjs
           node --check docs/assets/datacenter-finland-model.mjs
           node --check scripts/audit_finland_account.mjs
           node --check docs/assets/datacenter-model.mjs
