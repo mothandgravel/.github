@@ -33,6 +33,7 @@ try{
   await page.locator('#fi-home-connection').selectOption('connected');
   await page.locator('#fi-home-heat-diagram').screenshot({path:`${out}/${width}-${theme}-heat-route.png`});
   await page.locator('#fi-apartment-use').fill('');assert.equal(await page.locator('#fi-homes-error').isVisible(),true);assert.equal(await page.locator('#fi-export').isDisabled(),true);assert.equal(await page.locator('.fi-home-calculation').first().isHidden(),true);
+  assert.equal(await page.locator('#fi-home-scale').isHidden(),true);assert.equal(await page.locator('#fi-home-heat-diagram').isHidden(),true);assert.match(await page.locator('#fi-apartment-exposure-value').innerText(),/awaiting complete inputs/);await page.locator('#fi-price-change').fill('2');assert.match(await page.locator('#fi-price-change-value').innerText(),/\+2 c/);
   await page.locator('#fi-apartment-use').fill('3000');assert.equal(await page.locator('#fi-export').isEnabled(),true);
   await page.locator('#fi-price-change').fill('-1');assert.equal(await page.locator('#fi-electric-change').innerText(),'−€200.00');
   await page.locator('#fi-homes-reset').click();

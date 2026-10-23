@@ -35,12 +35,12 @@ export function createHouseholdComparison({getData,getMonth,onMonth,onReceipt,on
   const month=getMonth();if($('fi-compare-month').options.length!==data.prices.months.length)$('fi-compare-month').replaceChildren(...data.prices.months.map(m=>new Option(new Date(`${m.replace('M','-')}-01T12:00:00Z`).toLocaleDateString('en-GB',{month:'long',year:'numeric',timeZone:'UTC'}),m)));
   $('fi-compare-month').value=month;
   $('fi-heat-assumed-inputs').hidden=$('fi-heat-assumption').value!=='assumed';
+  const selectedShift=$('fi-price-change').valueAsNumber;put('fi-price-change-value',`${selectedShift>0?'+':''}${number(selectedShift)} c/kWh / VAT included`);
   try{
    latest=householdComparison(data,month,settings());valid=true;$('fi-homes-error').hidden=true;
-   document.querySelectorAll('.fi-home-calculation,.fi-home-benefits').forEach(e=>e.hidden=false);
+   document.querySelectorAll('.fi-home-calculation,.fi-home-benefits,#fi-home-scale,#fi-home-vat,#fi-home-heat-diagram').forEach(e=>e.hidden=false);
    const max=Math.max(1,...[latest.apartment,latest.electricHome].flatMap(a=>[a.electricity.baseline.annualEUR.total,a.electricity.afterEUR.total]));
    home('apartment',latest.apartment,max);home('electric',latest.electricHome,max);
-   const shift=latest.assumptions.changeCentsIncludingVAT;put('fi-price-change-value',`${shift>0?'+':''}${number(shift)} c/kWh / VAT included`);
    put('fi-home-scale',`Both homes / same €0–€${money(max)} scale. Upper bar: recorded-rate baseline. Lower bar: chosen price branch.`);
    const h=latest.apartment.heat;
    const statements={
@@ -56,7 +56,7 @@ export function createHouseholdComparison({getData,getMonth,onMonth,onReceipt,on
    put('fi-home-heat-record',`${number(latest.recordedHeatContext.residentialUseGWh)} GWh / residential-building use, Nivos 2024. Taul5!R138. No server-to-home attribution is published.`);
    put('fi-home-vat',`The ${month.replace('M',' / ')} source-month VAT convention is ${number(latest.apartment.electricity.vatRate*100)}%. The change already includes VAT; it is split into net energy and VAT, never taxed a second time.`);
    onReceipt(latest);
-  }catch(e){valid=false;latest=null;put('fi-homes-error',e.message);$('fi-homes-error').hidden=false;document.querySelectorAll('.fi-home-calculation,.fi-home-benefits').forEach(e=>e.hidden=true);onReceipt({kind:'incomplete household assumptions',message:e.message,calculation:null});}
+  }catch(e){valid=false;latest=null;put('fi-homes-error',e.message);$('fi-homes-error').hidden=false;document.querySelectorAll('.fi-home-calculation,.fi-home-benefits,#fi-home-scale,#fi-home-vat,#fi-home-heat-diagram').forEach(e=>e.hidden=true);for(const key of ['apartment','electric'])put(`fi-${key}-exposure-value`,`${$('fi-'+key+'-exposure').value}% / awaiting complete inputs`);onReceipt({kind:'incomplete household assumptions',message:e.message,calculation:null});}
   onValidity(valid);
  }
  for(const input of document.querySelectorAll('[data-fi-home-input]'))input.addEventListener(input.tagName==='SELECT'?'change':'input',render);
