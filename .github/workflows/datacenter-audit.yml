@@ -1,0 +1,47 @@
+name: Data centre measured account audit
+on:
+  pull_request:
+    paths:
+      - "docs/assets/datacenter*"
+      - "docs/assets/data-center/**"
+      - "docs/specimens/data-center/**"
+      - "docs/assets/site.css"
+      - "docs/assets/site.js"
+      - "scripts/audit_datacenter.mjs"
+      - "scripts/datacenter.test.mjs"
+      - ".github/workflows/datacenter-audit.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  measured-account:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install pinned inspection tools
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
+          npx playwright install --with-deps chromium
+      - name: Verify measurement and numerical contracts
+        run: node --test scripts/datacenter.test.mjs
+      - name: Start specimen server
+        run: |
+          python3 scripts/serve_performance.py 8794 --directory docs >/tmp/datacenter-site.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8794/specimens/data-center/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/datacenter-site.log
+          exit 1
+      - name: Inspect records, arithmetic, exports, themes, keyboard access and graphics fallback
+        run: node scripts/audit_datacenter.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: datacenter-review
+          path: artifacts/design-review/datacenter/
+          retention-days: 14

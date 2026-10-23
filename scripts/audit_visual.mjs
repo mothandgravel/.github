@@ -626,7 +626,8 @@ try {
   await newNote.locator('.note-feature .editorial-link').click();
   await newNote.locator('.note-heading h1').waitFor();
   assert(newNote.url().endsWith('/notes/' + featured.slug), 'Featured note route failed');
-  const scopeLink = newNote.locator('.note-aside a');
+  const scopeLink = newNote.locator('.note-aside a[href^="#"]');
+  assert(await scopeLink.count() === 1, 'Featured note has one local study-scope link');
   const scopeTarget = await scopeLink.getAttribute('href');
   assert(/^#[a-z0-9-]+$/.test(scopeTarget) && await newNote.locator(scopeTarget).count() === 1,
     'Featured note scope link has no unique local destination');

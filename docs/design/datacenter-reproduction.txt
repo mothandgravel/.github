@@ -1,0 +1,58 @@
+Where the power goes / reproduction record
+
+DATA
+The public replay is a bounded extract of ESIF facility power and weather, DOI
+10.7799/3015212. See datacenter-provenance.json for original URLs, SHA-256 input
+hashes, extract hash, authors and measurement method. The complete publisher
+notice is assets/data-center/publisher-notice.txt and is embedded in the extract.
+No source data is fetched from a live service by this specimen.
+
+1. Download the four inputs named in the provenance record, retaining their
+   original bytes, as power.parquet, weather.parquet, README.md and LICENSE.html.
+2. Install Python 3.13 and pyarrow==21.0.0 in an isolated environment.
+3. Run python scripts/build_datacenter_data.py PATH_TO_INPUTS
+   Use --check to compare a rebuild without changing the public extract.
+4. Run node --test scripts/datacenter.test.mjs
+
+The independent reference uses Python Decimal at precision 50, inserts clipped
+hour boundaries, then integrates the resulting polyline. Browser integrals are
+checked within 1e-8 kWh and 1e-11 PUE for the two published comparison hours.
+These are numerical implementation tolerances, not sensor uncertainties.
+All 168 hourly energies must sum back to the whole-window integral.
+Reported power is treated as point samples; sensor averaging windows are not
+documented. Missing/negative channels and gaps >90 s are excluded from all five
+component integrals together. No extrapolation, zero filling or timezone claim.
+
+GRAPHICS
+The authored room is separate from the ESIF records and is not a surveyed layout.
+It has no measured rack-level, temperature, airflow or illumination distribution.
+Three.js 0.185.1 and reviewed unmodified addons are bundled with Bun 1.4.0:
+  bun scripts/build_datacenter_engine.ts PATH_TO_THREE_PACKAGE
+The optional WebGL path tracer is bundled from pinned MIT packages:
+  npm install --prefix artifacts/graphics-runtime --no-save --no-package-lock \
+    --ignore-scripts three@0.185.1 three-gpu-pathtracer@0.0.26 \
+    three-mesh-bvh@0.9.15 xatlas-web@0.1.0
+  bun scripts/build_datacenter_pathtracer.ts
+Renderer and path-tracer hashes are in assets/data-center/engine.json and
+pathtracer.json. Full dependency notices accompany the bundles.
+HDR lighting and floor normal map are CC0 assets; URLs and hashes are recorded
+in assets/data-center/materials.json. Surface noise and all geometry are authored.
+Interactive lighting uses PBR materials, area lights, shadows and ambient
+occlusion. Software renderers use reduced geometry/resolution without AO.
+Optional fixed-view refinement accumulates four-bounce light transport and uses
+an authored edge-aware radiance filter and AgX tone mapping. This is image
+rendering, not a model of electrical or thermal performance.
+
+INSPECTION
+Serve docs with scripts/serve_performance.py (correct module MIME and gzip).
+Run node scripts/audit_datacenter.mjs for measured UI journeys, keyboard access,
+both themes, accessibility, media, compact WebGL and unavailable-WebGL fallback.
+Set DATACENTER_SOFTWARE=1 to exercise the reduced software rendering path.
+scripts/capture_datacenter.mjs records the actual browser inspection and writes
+captioned silent MP4/WebM derivatives. scripts/capture_datacenter_room.mjs
+renders the fixed-view still and records its source hash and render settings.
+Run node scripts/build_datacenter_capture.mjs after both captures to bind their
+receipts and public media derivatives.
+Neither browser checks nor numerical agreement establish meter calibration,
+operational suitability, a controlled causal result, or validation by the data
+publisher. The studio's geometry, assumptions and conclusions are its own.
