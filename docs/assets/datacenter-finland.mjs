@@ -1,7 +1,8 @@
 import {prepareFinnishAccount,householdAccount,gridAccount,heatAccount,finnishInspection} from './datacenter-finland-model.mjs';
+import {createHouseholdComparison} from './datacenter-households.mjs';
 const $=id=>document.getElementById(id),put=(id,t)=>{$(id).textContent=t;},num=(v,d=1)=>Number.isFinite(v)?(Math.abs(v)<.5*10**-d?0:v).toLocaleString('en-GB',{minimumFractionDigits:d,maximumFractionDigits:d}):'Not reported';
 const monthName=m=>new Date(`${m.replace('M','-')}-01T12:00:00Z`).toLocaleDateString('en-GB',{month:'long',year:'numeric',timeZone:'UTC'});
-const SVG='http://www.w3.org/2000/svg';let data=null,sha='',provenance=null,panel='bill',playing=null;
+const SVG='http://www.w3.org/2000/svg';let data=null,sha='',provenance=null,panel='homes',playing=null;
 const state={month:'2026M06',annualKWh:20000,windowId:'winter',index:112,additionalMW:0,heatYear:2024};
 function node(tag,attrs={},text){const el=document.createElementNS(SVG,tag);for(const[k,v]of Object.entries(attrs))el.setAttribute(k,v);if(text!==undefined)el.textContent=text;return el;}
 function chartFrame(svg,height,label){const w=Math.max(240,Math.round(svg.getBoundingClientRect().width));svg.setAttribute('viewBox',`0 0 ${w} ${height}`);svg.replaceChildren(node('title',{},label));return w;}
@@ -50,7 +51,7 @@ function renderHeat(){
  put('fi-heat-formula',a.complete?`${num(v.fuelHeat)} + ${num(v.recoveryAndHeatPump)} = ${num(v.supply)} GWh supplied. ${num(v.residentialUse)} + ${num(v.industrialUse)} + ${num(v.otherUse)} = ${num(v.customerUse)} GWh customer use. ${num(v.customerUse)} + ${num(v.lossAndMeterDifference)} = ${num(v.supply)} GWh. Heat-production electricity is “..” / not reported.`:'No 2025 residential allocation or heat balance is inferred. Missing values remain unavailable. The 2024 balance stays available in the year selector.');
  put('fi-heat-selection','Choose a heat entry to inspect its source.');if(panel==='heat')showReceipt(a);
 }
-function render(){if(!data)return;renderBill();renderGrid();renderHeat();}
+function render(){if(!data)return;renderBill();renderGrid();renderHeat();comparison.render();}
 function pause(){if(playing)clearInterval(playing);playing=null;put('fi-play','Play the week');$('fi-play').setAttribute('aria-pressed','false');}
 function selectPanel(key){panel=key;for(const b of document.querySelectorAll('[data-fi-panel]'))b.setAttribute('aria-pressed',String(b.dataset.fiPanel===key));for(const el of document.querySelectorAll('[data-fi-content]'))el.hidden=el.dataset.fiContent!==key;pause();render();}
 async function open(){
@@ -60,13 +61,14 @@ async function open(){
 }
 $('fi-open').addEventListener('click',open);
 for(const b of document.querySelectorAll('[data-fi-panel]'))b.addEventListener('click',()=>selectPanel(b.dataset.fiPanel));
-$('fi-month').addEventListener('change',e=>{state.month=e.target.value;renderBill();});
+$('fi-month').addEventListener('change',e=>{state.month=e.target.value;renderBill();comparison.render();});
 $('fi-household').addEventListener('change',e=>{state.annualKWh=Number(e.target.value);renderBill();});
 $('fi-week').addEventListener('change',e=>{pause();state.windowId=e.target.value;state.index=0;$('fi-hour').value=0;renderGrid();});
 $('fi-hour').addEventListener('input',e=>{pause();state.index=Number(e.target.value);renderGrid();});
 $('fi-extra').addEventListener('input',e=>{state.additionalMW=Number(e.target.value);renderGrid();});
 $('fi-play').addEventListener('click',()=>{if(playing){pause();return;}put('fi-play','Pause the week');$('fi-play').setAttribute('aria-pressed','true');playing=setInterval(()=>{state.index=(state.index+1)%168;$('fi-hour').value=state.index;renderGrid();if(state.index===167)pause();},450);});
 $('fi-heat-period').addEventListener('change',e=>{state.heatYear=Number(e.target.value);renderHeat();});
-$('fi-export').addEventListener('click',()=>{if(!data)return;const blob=new Blob([JSON.stringify(finnishInspection(data,state,sha,provenance),null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='moth-gravel-finnish-account.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+const comparison=createHouseholdComparison({getData:()=>data,getMonth:()=>state.month,onMonth:m=>{state.month=m;$('fi-month').value=m;render();},onReceipt:r=>{if(panel==='homes')showReceipt(r);},onInspect:r=>{showReceipt(r);document.querySelector('.fi-receipts').open=true;$('fi-receipt').scrollIntoView({block:'center'});$('fi-receipt').focus({preventScroll:true});},onValidity:valid=>{$('fi-export').disabled=!data||!valid;}});
+$('fi-export').addEventListener('click',()=>{if(!data||!comparison.valid)return;const blob=new Blob([JSON.stringify(finnishInspection(data,{...state,comparison:comparison.settings},sha,provenance),null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='moth-gravel-finnish-account.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
 new ResizeObserver(()=>{if(data){if(panel==='bill')renderBill();if(panel==='grid')renderGrid();}}).observe($('fi-workspace'));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});

@@ -1,5 +1,5 @@
 // Source records are immutable. Rehearsals never rewrite observed prices or flows.
-export const FINLAND_METHOD_VERSION='2026-10-23.1';
+export const FINLAND_METHOD_VERSION='2026-10-23.2';
 const finite=v=>typeof v==='number'&&Number.isFinite(v);
 const demand=v=>{if(!finite(v)||v<0)throw Error('Demand must be a finite, nonnegative number.');return v;};
 export function bandFor(annualKWh){demand(annualKWh);if(annualKWh<1000)return'A';if(annualKWh<2500)return'B';if(annualKWh<5000)return'C';if(annualKWh<=15000)return'D';return'E';}
@@ -30,4 +30,44 @@ export function heatAccount(data,year){
  if(Math.max(Math.abs(inputResidualGWh),Math.abs(outputResidualGWh),Math.abs(customerResidualGWh))>.001)throw Error('Heat account does not reconcile.');
  return{year,complete:true,values,residentialUseGWh:values.residentialUse,customerUseGWh:values.customerUse,source:data.heat.cells,inputResidualGWh,outputResidualGWh,customerResidualGWh,heatProductionElectricityMWh:values.productionElectricityMWh,recoveredHeatDeliveredToHomesGWh:null,scope:data.heat.scope2024};
 }
-export function finnishInspection(data,{month,annualKWh,windowId,index,additionalMW,heatYear},manifestSHA,provenance=null){return{schema:'moth-gravel/finland-inspection@1',methodVersion:FINLAND_METHOD_VERSION,extractSHA256:manifestSHA,retrieved:data.retrieved,signed:false,provenance,household:householdAccount(data,month,annualKWh),grid:gridAccount(data,windowId,index,additionalMW),heat:heatAccount(data,heatYear),methods:data.methods,attribution:{prices:'Source: Statistics Finland, energy prices, table 13rb / CC BY 4.0. https://creativecommons.org/licenses/by/4.0/ Bounded extract and annualised calculations by Moth & Gravel.',gridAndHeat:'Source: Energiateollisuus ry / bounded factual extracts, source workbook sheet and cell references retained.',heat2025:'Source: Nivos Vesi ja Lämpö Oy, 2025 annual report, PDF page 3, and central Mäntsälä origin disclosure. Different scopes kept separate.'}};}
+export function priceExposure(data,month,{annualKWh,exposedPercent},changeCentsIncludingVAT){
+ demand(annualKWh);
+ if(annualKWh>60000||!finite(exposedPercent)||exposedPercent<0||exposedPercent>100)throw Error('Use must be 0–60,000 kWh; exposure must be 0–100%.');
+ if(!finite(changeCentsIncludingVAT)||changeCentsIncludingVAT< -3||changeCentsIncludingVAT>10)throw Error('Choose a price change from −3 to +10 c/kWh, including VAT.');
+ const baseline=householdAccount(data,month,annualKWh);
+ for(const key of ['energy','network','tax','total'])if(!finite(baseline.source[key])||baseline.source[key]<0)throw Error('Price component unavailable for this household.');
+ if(!/^202[4-6]M(0[1-9]|1[0-2])$/.test(month)||month>'2026M06')throw Error('VAT convention unavailable for this source month.');
+ const vatRate=month<'2024M09'?.24:.255,exposedKWh=annualKWh*exposedPercent/100;
+ const total=exposedKWh*changeCentsIncludingVAT/100,energy=total/(1+vatRate),tax=total-energy;
+ const deltaEUR={energy,network:0,tax,total};
+ const afterEUR=Object.fromEntries(Object.keys(deltaEUR).map(k=>[k,baseline.annualEUR[k]+deltaEUR[k]]));
+ return{kind:'authored price sensitivity',baseline,exposedPercent,exposedKWh,changeCentsIncludingVAT,vatRate,deltaEUR,afterEUR,
+  formula:'exposed annual kWh × VAT-inclusive change in c/kWh ÷ 100; energy delta = gross delta ÷ (1 + source-month VAT); VAT delta = gross − net',
+  vatSource:'https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/arvonlisaverotus/arvonlisaveroprosentit/',
+  scope:'Constant selected-month consumer-band rates; chosen annual use and exposed kWh share. Exposure is not calendar months or a measured hourly load profile. Network, electricity excise, fixed-charge assumptions and total use stay unchanged. No data-centre price forecast or behavioural response.'};
+}
+export function householdHeatRoute({connection,tariff,allocatedHeatMWh,reductionEURPerMWh,passedThroughPercent}){
+ if(!['connected','not-connected','unknown'].includes(connection)||!['unreported','unchanged','assumed'].includes(tariff))throw Error('Choose a valid heat connection and tariff assumption.');
+ for(const [value,max]of [[allocatedHeatMWh,50],[reductionEURPerMWh,100],[passedThroughPercent,100]])if(!(value===null&&tariff!=='assumed')&&(!finite(value)||value<0||value>max))throw Error('Heat assumptions are outside the stated bounds.');
+ let status='tariff-unreported',allocatedEnergyChargeReductionEUR=null,householdReductionEUR=null;
+ if(connection==='not-connected'){status='no-direct-route';allocatedEnergyChargeReductionEUR=0;householdReductionEUR=0;}
+ else if(connection==='unknown'){status='connection-unknown';}
+ else if(tariff==='unchanged'){status='assumed-no-change';allocatedEnergyChargeReductionEUR=0;householdReductionEUR=0;}
+ else if(tariff==='assumed'){status='assumed-reduction';allocatedEnergyChargeReductionEUR=allocatedHeatMWh*reductionEURPerMWh;householdReductionEUR=allocatedEnergyChargeReductionEUR*passedThroughPercent/100;}
+ return{connection,tariff,allocatedHeatMWh,reductionEURPerMWh,passedThroughPercent,status,allocatedEnergyChargeReductionEUR,householdReductionEUR,
+  attributedToRecoveredHeatEUR:null,measuredHouseholdSavingEUR:null,
+  formula:'chosen household allocation in thermal MWh × chosen VAT-inclusive energy-charge reduction in EUR/MWh × chosen pass-through fraction',
+  scope:'Separate district-heat charge sensitivity. The thermal allocation is chosen, not a household heat meter. Fixed heat charges stay unchanged. Pass-through is a scenario, not a claim about a landlord or housing company. No source-to-home recovered-heat allocation or causal saving is inferred; indirect electricity-market effects are unmodelled.'};
+}
+export function householdComparison(data,month,settings){
+ const {changeCentsIncludingVAT,apartment,electricHome,heat}=settings;
+ const apartmentElectricity=priceExposure(data,month,apartment,changeCentsIncludingVAT),homeElectricity=priceExposure(data,month,electricHome,changeCentsIncludingVAT);
+ const apartmentHeat=householdHeatRoute(heat),electricHomeHeat=householdHeatRoute({...heat,connection:'not-connected'});
+ const observed=heatAccount(data,2024);
+ return{kind:'two authored homes / separate recorded context',month,assumptions:structuredClone(settings),
+  apartment:{electricity:apartmentElectricity,heat:apartmentHeat,combinedChangeEUR:apartmentHeat.householdReductionEUR===null?null:apartmentElectricity.deltaEUR.total-apartmentHeat.householdReductionEUR},
+  electricHome:{electricity:homeElectricity,heat:electricHomeHeat,combinedChangeEUR:homeElectricity.deltaEUR.total},
+  recordedHeatContext:{year:2024,scope:observed.scope,residentialUseGWh:observed.residentialUseGWh,source:data.heat.cells.find(c=>c.id==='residentialUse'),recoveredHeatDeliveredToHomesGWh:null},
+  scope:'These are editable illustrative homes, not averages, measured addresses or contract offers. The apartment electricity account excludes separately allocated district heat. The electric-home electricity input includes its heating and has no district-heat connection. Combined values are changes across two separate charges, not complete household bills. Historical electricity prices and local 2024 heat are not joined to estimate a causal effect.'};
+}
+export function finnishInspection(data,{month,annualKWh,windowId,index,additionalMW,heatYear,comparison},manifestSHA,provenance=null){return{schema:'moth-gravel/finland-inspection@2',methodVersion:FINLAND_METHOD_VERSION,extractSHA256:manifestSHA,retrieved:data.retrieved,signed:false,provenance,household:householdAccount(data,month,annualKWh),householdComparison:comparison?householdComparison(data,month,comparison):null,grid:gridAccount(data,windowId,index,additionalMW),heat:heatAccount(data,heatYear),methods:data.methods,attribution:{prices:'Source: Statistics Finland, energy prices, table 13rb / CC BY 4.0. https://creativecommons.org/licenses/by/4.0/ Bounded extract and annualised calculations by Moth & Gravel.',gridAndHeat:'Source: Energiateollisuus ry / bounded factual extracts, source workbook sheet and cell references retained.',heat2025:'Source: Nivos Vesi ja Lämpö Oy, 2025 annual report, PDF page 3, and central Mäntsälä origin disclosure. Different scopes kept separate.'}};}

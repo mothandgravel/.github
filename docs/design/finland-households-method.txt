@@ -1,0 +1,76 @@
+TWO HOMES / A SEPARATE HOUSEHOLD COMPARISON
+Method version 2026-10-23.2. Checked 23 October 2026.
+
+Published source records and original input fingerprints remain in
+finland-provenance.json. The pinned Finnish extract is unchanged.
+
+These are editable scenarios, not measured homes or population averages.
+Defaults: apartment electricity 3,000 kWh/year; electrically heated home
+20,000 kWh/year. Apartment electricity excludes separately allocated district
+heat. The electric home includes heating and has no district-heat connection.
+Every source-band selection uses total annual electricity, not exposed use.
+
+ELECTRICITY
+Baseline = annual kWh x selected-month published total c/kWh / 100.
+Baseline component prices already contain the published tax allocation. No VAT
+or separate fixed charges are added to that unit-price account.
+
+Exposed kWh = annual kWh x chosen exposure percentage / 100.
+Gross change EUR = exposed kWh x chosen VAT-inclusive price change c/kWh / 100.
+Net energy change = gross change / (1 + source-month VAT rate).
+VAT change = gross change - net energy change.
+After component = baseline component + component change.
+Network and electricity excise do not change in this branch. The baseline's
+published component-rounding residual is preserved. No demand response occurs.
+
+VAT: 24% through August 2024; 25.5% from September 2024 within the pinned
+2024-2026 price window. Source: Finnish Tax Administration, rate history:
+https://www.vero.fi/yritykset-ja-yhteisot/verot-ja-maksut/arvonlisaverotus/arvonlisaveroprosentit/
+The shock is VAT-inclusive. Splitting it does not add another tax charge.
+
+The exposed share is a share of kWh, not calendar months. Zero means an
+unchanged retail energy rate is assumed for all use. It is not a claim that
+every fixed contract protects against tax or network changes. A partial share
+does not invent an hourly or seasonal profile. The shock is not a predicted
+effect of data centres. Historical month changes are not causal comparisons.
+
+HEAT
+Default: a connected apartment building is assumed, with its tariff consequence
+unreported. The direct benefit and combined change remain null, not zero.
+A verified pipe alone establishes neither a recovered-heat quantity nor savings.
+
+Optional lower-charge branch:
+  allocated thermal MWh/year x chosen VAT-inclusive reduction EUR/MWh
+  x chosen fraction reaching the household.
+Defaults inside this optional branch: 7.5 MWh, 10 EUR/MWh, 100% pass-through.
+All are authored, including the thermal allocation. Fixed heat charges are
+unchanged; there is no complete heat bill or seasonal heat model.
+
+An unverified connection leaves the benefit null. No connection gives zero
+direct reduction through that district-heat network in this scenario. It says
+nothing about indirect electricity-market or wider economic effects.
+An assumed unchanged tariff gives zero tariff reduction, labelled as assumed.
+Even an assumed lower charge does not establish a saving caused by server heat:
+attributedToRecoveredHeatEUR and measuredHouseholdSavingEUR always remain null.
+
+Nivos's 2024 residential use is 16.0 GWh, Taul5!R138. Its source-to-home recovered
+heat attribution is unavailable. Nivos's 2025 annual report, PDF page 6, reports
+15% lower summer energy charges from 1 May 2025 and 5% lower winter energy
+charges from 1 January 2026. Those reported tariff-component changes are not
+inserted into the household scenario or treated as full-bill/causal savings.
+
+COMBINED CHANGE
+Electricity change minus separately quantified household heat-charge reduction.
+This is a change across separate charges, not a complete household bill. Where
+the heat consequence is unknown the apartment's combined change remains null.
+Heat is never deducted from the electricity account or national grid demand.
+
+EXPORT
+finland-inspection@2 adds householdComparison, preserving the existing accounts,
+original source locations, source fingerprints and reuse notices. It contains
+both homes, price exposure, source-month VAT, all heat assumptions, null unknowns,
+formulae and the separate recorded local heat context. Invalid inputs suppress
+results and disable export rather than exporting the previous valid branch.
+
+Checks: node --test scripts/finland_account.test.mjs
+Browser: node scripts/audit_finland_account.mjs

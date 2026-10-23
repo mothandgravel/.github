@@ -26,6 +26,9 @@ keyboard navigation, playback, source export, missing heat allocations, and a
 deliberately corrupted extract. No public API is called by the running specimen.
 
 PRICE / monthly national household consumer bands, January 2024–June 2026.
+The two-home sensitivity and its separate heat routes are documented in
+finland-households-method.txt. Export schema @2 adds the chosen profiles,
+exposed kWh, VAT split, heat pass-through and null unknowns to the source account.
 Energy and network components exclude tax. The published tax component includes
 electricity excise and VAT; no VAT is added again. Annual use is authored.
 The selected monthly price held for a year is an annualised illustration, not
