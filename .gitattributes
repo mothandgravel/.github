@@ -17,3 +17,8 @@ scripts/maintenance/*.sh text eol=lf
 scripts/maintenance/*.py text eol=lf
 scripts/maintenance/*.mjs text eol=lf
 scripts/maintenance/*.ts text eol=lf
+# Byte-bound public TNT data and verbatim source CSVs.
+docs/assets/maintenance-tnt.json -text
+docs/assets/tnt/source/*.csv -text
+docs/assets/tnt/LICENSE.txt text eol=lf
+docs/design/maintenance-tnt-provenance.json text eol=lf

@@ -1,0 +1,42 @@
+/** Historical observations only. Replay never produces a network or application receipt. */
+export function createTntStudy(data) {
+  if (data?.format !== 'mg.maintenance-tnt.v1' || !Array.isArray(data.records) || !data.records.length) throw Error('Unsupported TNT record');
+  const records = data.records;
+  for (const [index, record] of records.entries()) {
+    if (record.ordinal !== index + 1 || !Number.isSafeInteger(record.sentUs) || record.sentUs < 0 || (record.receivedUs !== null && (!Number.isSafeInteger(record.receivedUs) || record.receivedUs < record.sentUs || record.delayUs !== record.receivedUs - record.sentUs))) throw Error('Invalid recorded event');
+  }
+  const events = records.flatMap((record) => [{ kind: 'sent', atUs: record.sentUs, ordinal: record.ordinal }, ...(record.receivedUs === null ? [] : [{ kind: 'received', atUs: record.receivedUs, ordinal: record.ordinal }])]).sort((a, b) => a.atUs - b.atUs || (a.kind === b.kind ? a.ordinal - b.ordinal : a.kind === 'sent' ? -1 : 1));
+  if (!Number.isSafeInteger(data.endUs) || data.endUs !== events.at(-1).atUs) throw Error('Invalid capture end');
+  return { data, records, events };
+}
+
+export function packetState(record, cursorUs, endUs) {
+  if (record.sentUs > cursorUs) return 'unsent';
+  if (record.receivedUs !== null && record.receivedUs <= cursorUs) return 'received';
+  if (record.receivedUs === null && cursorUs >= endUs) return 'not-observed';
+  return 'awaiting';
+}
+
+export function tntSnapshot(study, requestedUs, ordinal = 1) {
+  const cursorUs = Math.round(Math.max(0, Math.min(study.data.endUs, Number.isFinite(requestedUs) ? requestedUs : 0)));
+  const record = study.records[Math.max(0, Math.min(study.records.length - 1, Number.isFinite(ordinal) ? Math.trunc(ordinal) - 1 : 0))];
+  const states = study.records.map((r) => packetState(r, cursorUs, study.data.endUs));
+  const counts = { sent: states.filter((s) => s !== 'unsent').length, received: states.filter((s) => s === 'received').length, awaiting: states.filter((s) => s === 'awaiting').length, notObserved: states.filter((s) => s === 'not-observed').length };
+  const state = packetState(record, cursorUs, study.data.endUs);
+  const sent = state !== 'unsent', arrived = state === 'received';
+  const selected = { ordinal: record.ordinal, packetId: record.packetId, occurrence: record.occurrence, state, sentUs: sent ? record.sentUs : null, receivedUs: arrived ? record.receivedUs : null, delayUs: arrived ? record.delayUs : null, waitingUs: sent ? (arrived ? record.delayUs : cursorUs - record.sentUs) : null, sender: sent ? record.sender : null, receiver: arrived ? record.receiver : null, sourceRows: { sender: sent ? record.sourceRows.sender : null, receiver: arrived ? record.sourceRows.receiver : null } };
+  return { cursorUs, ended: cursorUs === study.data.endUs, counts, states, selected, recentEvents: study.events.filter((event) => event.atUs <= cursorUs).slice(-5) };
+}
+
+export function exportTntPrefix(study, cursorUs, ordinal) {
+  const snapshot = tntSnapshot(study, cursorUs, ordinal);
+  return { format: 'mg.maintenance-tnt.export.v1', evidence: 'recorded-radio-bench', revision: study.data.source.revision, sourceFiles: study.data.source.files, clock: study.data.source.clock, matching: study.data.source.matching, cursorUs: snapshot.cursorUs, counts: snapshot.counts, selected: snapshot.selected, events: study.events.filter((event) => event.atUs <= snapshot.cursorUs), limits: study.data.limits };
+}
+
+export function elapsedLabel(us, precise = false) {
+  if (us === null || us === undefined) return '—';
+  const seconds = Math.max(0, us) / 1_000_000;
+  const hours = Math.floor(seconds / 3600), minutes = Math.floor(seconds / 60) % 60;
+  const tail = precise ? (seconds % 60).toFixed(3).padStart(6, '0') : String(Math.floor(seconds) % 60).padStart(2, '0');
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${tail}`;
+}

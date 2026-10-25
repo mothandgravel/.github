@@ -1,0 +1,37 @@
+{
+  "format": "mg.maintenance-tnt.provenance.v1",
+  "revision": "e213681d00b9fd4ec8bd96da63209f017a898b65",
+  "datasetSha256": "5c6be521c9ab59fb268f18780a9a495932861b8b3525cebf5c084e9687557aeb",
+  "sourceFiles": {
+    "sender": {
+      "file": "tnt/source/sender.csv",
+      "sha256": "107e034d0833037a25e6dda8e54dc7e0e6906158b26183316438bf9344771985",
+      "upstream": "https://github.com/prettore/TNT/blob/e213681d00b9fd4ec8bd96da63209f017a898b65/experiment_testbed/data/statistics/long/tb_sender_pckts_ManhattanGrid_VHF_1000p1to50p_20t.csv",
+      "rows": 1000
+    },
+    "receiver": {
+      "file": "tnt/source/receiver.csv",
+      "sha256": "387bb8a480df4863bf4dcec8a936e344392c89c44c5f1eb4c91125f17568d461",
+      "upstream": "https://github.com/prettore/TNT/blob/e213681d00b9fd4ec8bd96da63209f017a898b65/experiment_testbed/data/statistics/long/tb_receiver_pckts_ManhattanGrid_VHF_1000p1to50p_20t.csv",
+      "rows": 927
+    },
+    "summary": {
+      "file": "tnt/source/summary.csv",
+      "sha256": "90ce7f55a3ccbe11e3644b7f59eb3069852e1ea67b4125306bbed8302e7e8cfb",
+      "upstream": "https://github.com/prettore/TNT/blob/e213681d00b9fd4ec8bd96da63209f017a898b65/experiment_testbed/data/statistics/long/tb_ip_statistics_ManhattanGrid_VHF_1000p1to50p_20t.csv",
+      "rows": 1
+    }
+  },
+  "generatedBy": "scripts/build_maintenance_tnt.py",
+  "summary": {
+    "sent": 1000,
+    "received": 927,
+    "notObserved": 73,
+    "lossPercent": 7.3,
+    "meanDelaySeconds": 123.00541230312837,
+    "minDelaySeconds": 15.74251,
+    "maxDelaySeconds": 335.835865
+  },
+  "records": 1000,
+  "scope": "Deterministic transformation of published CSVs. No upstream experiment code or radio hardware executed."
+}
