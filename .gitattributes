@@ -10,3 +10,10 @@ docs/assets/data-center/source-readme.txt text eol=lf whitespace=-blank-at-eol
 # Preserve upstream GLSL whitespace inside the generated renderer bundles.
 docs/assets/datacenter-engine.mjs text eol=lf whitespace=-blank-at-eol,-space-before-tab linguist-generated=true
 docs/assets/datacenter-pathtracer.mjs text eol=lf whitespace=-blank-at-eol,-space-before-tab linguist-generated=true
+# Byte-bound maintenance captures and POSIX runtime launcher.
+docs/assets/maintenance-acceptance-recordings.json -text
+docs/design/maintenance-acceptance-provenance.json text eol=lf
+scripts/maintenance/*.sh text eol=lf
+scripts/maintenance/*.py text eol=lf
+scripts/maintenance/*.mjs text eol=lf
+scripts/maintenance/*.ts text eol=lf
