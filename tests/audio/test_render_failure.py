@@ -29,7 +29,7 @@ class FakeProcess:
     """Stands in for Popen: no real subprocess is started."""
 
     def __init__(self, stderr="", code=1, hang=False):
-        self.stderr = io.StringIO(stderr)
+        self.stderr = io.BytesIO(stderr.encode("utf-8"))
         self.code, self.hang, self.killed = code, hang, False
 
     def wait(self, timeout=None):
