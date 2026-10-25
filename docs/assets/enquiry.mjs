@@ -35,7 +35,7 @@ function loadTurnstile() {
 function build() {
   const identity = document.createElement('div');
   identity.className = 'enquiry-identity';
-  identity.innerHTML = `<p class="question-help" id="enquiry-help">Send to Moth &amp; Gravel delivers your brief below to ${INBOX} with your name and email, so we can reply. Nothing is published.</p>
+  identity.innerHTML = `<p class="question-help" id="enquiry-help">Send to Moth &amp; Gravel delivers your brief below to ${INBOX} with your name and email, so we can reply. Nothing is published. <a href="../privacy/#message">How we handle your message</a>.</p>
     <label for="enquiry-name">Your name</label><input id="enquiry-name" name="name" type="text" form="enquiry-form" autocomplete="name" maxlength="120" required aria-describedby="enquiry-name-error">
     <p id="enquiry-name-error" class="question-error" hidden>Add the name we should use when we reply.</p>
     <label for="enquiry-email">Your email</label><input id="enquiry-email" name="email" type="email" form="enquiry-form" autocomplete="email" maxlength="254" required spellcheck="false" aria-describedby="enquiry-email-error">

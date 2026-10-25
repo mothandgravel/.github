@@ -52,7 +52,8 @@ def build(check=False):
              (ROOT / 'docs/investigations/how-old/index.html', DOMAIN + 'investigations/how-old/', 'How old is what I’m seeing?', None),
              (ROOT / 'docs/investigations/take-it-back/index.html', DOMAIN + 'investigations/take-it-back/', 'Did it happen, and can I take it back?', None),
              (ROOT / 'docs/investigations/green-light/index.html', DOMAIN + 'investigations/green-light/', 'What does a green light promise?', None),
-             (ROOT / 'docs/workbench/playground/index.html', DOMAIN + 'workbench/playground/', 'The playground', None)]
+             (ROOT / 'docs/workbench/playground/index.html', DOMAIN + 'workbench/playground/', 'The playground', None),
+             (ROOT / 'docs/privacy/index.html', DOMAIN + 'privacy/', 'Privacy notice — Moth & Gravel', None)]
     pages += [(ROOT / 'docs/notes' / n['slug'], DOMAIN + 'notes/' + n['slug'], n['title'], n) for n in notes]
     for path, url, title, note in pages:
         page = {'@type': 'CollectionPage' if url.endswith('notes/') else 'WebPage',
@@ -87,6 +88,8 @@ def build(check=False):
                 crumbs.append(('Standing investigations', DOMAIN + 'investigations/'))
                 if not url.endswith('investigations/'):
                     crumbs.append((title, url))
+            elif url.endswith('privacy/'):
+                crumbs.append(('Privacy notice', url))
             elif url.endswith('workbench/playground/'):
                 crumbs.append((title, url))
             elif '/specimens/' in url:
