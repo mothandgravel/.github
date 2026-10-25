@@ -42,6 +42,29 @@ test('exports exclude future receiver evidence and are bounded to the selected p
   assert.equal(exported.events.some((event) => event.atUs > packet.sentUs), false);
   assert.equal(exported.events.some((event) => event.ordinal === packet.ordinal && event.kind === 'received'), false);
 });
+test('a selected unsent packet exports no future source identity or row', () => {
+  const packet = study.records[500];
+  const exported = exportTntPrefix(study, packet.sentUs - 1, packet.ordinal);
+  assert.equal(exported.selected.packetId, null);
+  assert.equal(exported.selected.occurrence, null);
+  assert.equal(exported.selected.sender, null);
+  assert.deepEqual(exported.selected.sourceRows, { sender: null, receiver: null });
+});
+test('matching is unique within the declared published-delay bound and intervals differ explicitly', () => {
+  assert.ok(data.source.matchingCheck.shortestReuseGapUs > data.source.matchingCheck.maximumDelayUs);
+  assert.equal(data.source.matchingCheck.candidatesWithinBoundPerReceiver, 1);
+  assert.ok(Math.abs(data.source.interval.publishedReceiveSpanUs / 1e6 - Number(data.publishedSummary.total_time_s)) < 1e-6);
+  assert.ok(data.endUs > data.source.interval.publishedReceiveSpanUs);
+});
+test('malformed source rows, missing-delay states and send ordering fail during load', () => {
+  const invalidMissing = structuredClone(data);
+  invalidMissing.records.find((r) => r.receivedUs === null).delayUs = 10;
+  assert.throws(() => createTntStudy(invalidMissing));
+  const invalidOrder = structuredClone(data); invalidOrder.records[10].sentUs = 0;
+  assert.throws(() => createTntStudy(invalidOrder));
+  const invalidRow = structuredClone(data); invalidRow.records[0].sourceRows.sender = null;
+  assert.throws(() => createTntStudy(invalidRow));
+});
 test('reused IPv4 IDs remain separate occurrences with nonnegative recorded delay', () => {
   assert.equal(data.failedControl.uniqueSenderKeys, 994);
   assert.equal(data.failedControl.negativeDelayCount, 5);
@@ -53,5 +76,7 @@ test('replay has recorded bounds and explicit evidence limits', () => {
   assert.equal(tntSnapshot(study, Infinity).cursorUs, 0);
   assert.equal(tntSnapshot(study, data.endUs * 2).cursorUs, data.endUs);
   assert.equal(elapsedLabel(335_835_865, true), '00:05:35.836');
+  assert.equal(elapsedLabel(59_999_999, true), '00:01:00.000');
+  assert.equal(elapsedLabel(3_599_999_999, true), '01:00:00.000');
   assert.ok(data.limits.some((text) => text.includes('No application acknowledgement')));
 });
