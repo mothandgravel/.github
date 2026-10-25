@@ -6,6 +6,7 @@ export function planSha256(plan) {
 export function phaseFromBench(bench, fallback) {
   if (bench.journal?.status === 'SUCCEEDED') return bench.verification ? bench.verification.accepted ? 'accepted' : 'held' : 'recovered';
   if (bench.journal) return 'interrupted';
+  if (bench.actions?.at(-1)?.action === 'dispatch-refused' && !Object.keys(bench.receiver?.operations || {}).length && !bench.physicalWrites?.length) return 'refused';
   return fallback;
 }
 export function appendSnapshot(state, action) {

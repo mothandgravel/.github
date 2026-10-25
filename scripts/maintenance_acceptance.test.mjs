@@ -41,6 +41,14 @@ test('a changed-input guard probe can never dispatch even if a guard returns all
   assert.equal(mayDispatch('dispatch', { decision: 'block' }), false);
   assert.equal(mayDispatch('dispatch', { decision: 'allow' }), true);
 });
+test('only an explicit pre-invoke refusal resolves a journal-free dispatch', () => {
+  const state = { phase: 'dispatching', bench: {}, history: [] };
+  applyReconciliation(state, { journal: null, receiver: { operations: {} }, physicalWrites: [], actions: [] });
+  assert.equal(state.phase, 'dispatching');
+  applyReconciliation(state, { journal: null, receiver: { operations: {} }, physicalWrites: [], actions: [{ action: 'dispatch-refused', result: { notInvoked: true } }] });
+  assert.equal(state.phase, 'refused');
+  assert.equal(maintenanceProjection(state).title, 'The change was not started.');
+});
 test('approved plan digest is stable across property order but binds actual effects', () => {
   assert.equal(planSha256({ b: 2, a: 1 }), planSha256({ a: 1, b: 2 }));
   assert.notEqual(planSha256({ content: 'reviewed' }), planSha256({ content: 'changed' }));

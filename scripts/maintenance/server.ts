@@ -42,6 +42,7 @@ const catalog = 'mg.maintenance.config.v1';
 const manifestHash = sha({ catalog, tool: 'fs-replace@1', path: 'document.txt', acceptance: 'http-station-response-v1' });
 let busy = false;
 async function runtime(run: string, command: string, scenario = 'lost-reply', approvedPlanSha256?: string) {
+  checkedBridge(await (await fetch(bridgeUrl + '/health', { signal: AbortSignal.timeout(3000) })).json());
   const response = await fetch(bridgeUrl + '/action', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-MG-Bridge': '1' }, body: JSON.stringify({ run, command, scenario, approvedPlanSha256 }), signal: AbortSignal.timeout(45_000) });
   const body = await response.json();
   if (!response.ok) throw Error('Ajo adapter failed: ' + body.error);

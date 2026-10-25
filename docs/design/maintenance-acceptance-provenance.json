@@ -1,7 +1,7 @@
 {
   "format": "mg.maintenance-acceptance.provenance.v1",
-  "capturedAt": 1792936465445,
-  "captureSha256": "137e1b4daba6ee6d6efccae0241eb09e36932647fb277f2d8c9de0487fa4c6c6",
+  "capturedAt": 1792938162958,
+  "captureSha256": "3fe793ac19549d7ccc29c72d9652b23385501c85840ef8854c1872808eb88f6d",
   "sources": {
     "ajo": "ec205b9925add515b2b7408cbc8ee73737fcec55",
     "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
@@ -97,7 +97,7 @@
     "ajo": "unchanged OCaml evaluator and POSIX filesystem receiver",
     "ocaml": "5.4.0",
     "nativeBinarySha256": "3919c8e7be930c5273a524e3e98cbd12c759ade0401d2b50f7db3393fa54a110",
-    "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+    "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
     "rpc": "unchanged Raivari RPC execution guard, Bun host",
     "interruption": "injected evaluator exit after receiver commit",
     "acceptance": "separate-process HTTP station request and file readback"
@@ -112,7 +112,7 @@
   "runs": [
     {
       "scenario": "lost-reply",
-      "runId": "ea604784883c4f09bfbe3d596295efe1",
+      "runId": "9732f66bcc304e509a624a5b714525da",
       "phase": "accepted",
       "originalStarts": 1,
       "receiverQueries": 1,
@@ -120,7 +120,7 @@
     },
     {
       "scenario": "acceptance-held",
-      "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+      "runId": "33350d48d05c4564ba0fc8452712d8d4",
       "phase": "held",
       "originalStarts": 1,
       "receiverQueries": 1,

@@ -2,9 +2,6 @@
 import assert from 'node:assert/strict';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
-const exec = promisify(execFile);
 const root = resolve(import.meta.dirname, '../..');
 const origin = process.env.MAINTENANCE_URL || 'http://127.0.0.1:8796';
 async function action(action, runId, ok = true) {
@@ -29,13 +26,16 @@ const recoveredRun = state.runId;
 // A different native plan after approval must be refused before the evaluator starts.
 state = await action('create'); state = await action('approve', state.runId);
 const nativeRoot = process.env.MAINTENANCE_DATA_ROOT || '/tmp/mg-maintenance-20261025/runs';
-const mutate = "import json,sys; from pathlib import Path; p=Path(sys.argv[1])/sys.argv[2]/'bench.json'; r=json.loads(p.read_text()); r['plan']['tree']['children'][0]['payload']['literal']['content'] += '# unreviewed change\\n'; p.write_text(json.dumps(r))";
-const args = ['python3', '-c', mutate, nativeRoot, state.runId];
-await exec(process.platform === 'win32' ? 'wsl.exe' : 'python3', process.platform === 'win32' ? ['-d', 'Ubuntu', '--', ...args] : args.slice(1));
+// Access only this new run; Windows' local WSL share avoids per-probe launcher races.
+const nativePath = process.platform === 'win32' ? '\\\\wsl.localhost\\Ubuntu' + nativeRoot.replaceAll('/', '\\') + '\\' + state.runId + '\\bench.json' : resolve(nativeRoot, state.runId, 'bench.json');
+const altered = JSON.parse(await readFile(nativePath, 'utf8'));
+altered.plan.tree.children[0].payload.literal.content += '# unreviewed change\n';
+await writeFile(nativePath, JSON.stringify(altered));
 await action('dispatch', state.runId, false);
 state = await (await fetch(origin + '/api/maintenance/run/' + state.runId)).json();
 assert.equal(state.bench.journal, null);
 assert.equal(state.bench.physicalWrites.length, 0);
+assert.equal(state.phase, 'refused', 'proven pre-invoke refusal must not remain an uncertain dispatch');
 const mutatedPlanRun = state.runId;
 state = await action('create'); state = await action('approve', state.runId);
 const accountPath = resolve(root, 'artifacts/maintenance/accounts', state.runId + '.json');

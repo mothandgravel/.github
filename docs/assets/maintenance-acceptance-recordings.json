@@ -1,28 +1,28 @@
 {
   "format": "mg.maintenance-acceptance.capture.v1",
-  "capturedAt": 1792936465445,
+  "capturedAt": 1792938162958,
   "method": "HTTP actions against the local Ajo OCaml/filesystem receiver and unchanged Raivari RPC guard; no model requests.",
   "cases": [
     {
       "scenario": "lost-reply",
       "record": {
         "format": "mg.maintenance-acceptance.v1",
-        "capturedAt": 1792936461807,
+        "capturedAt": 1792938160060,
         "evidenceMode": "recorded-runtime",
-        "runId": "ea604784883c4f09bfbe3d596295efe1",
+        "runId": "9732f66bcc304e509a624a5b714525da",
         "scenario": "lost-reply",
         "phase": "accepted",
         "bench": {
           "actions": [
             {
               "action": "check",
-              "at": 1792936458523,
+              "at": 1792938156713,
               "result": {
                 "ok": true,
                 "summary": [
                   "read:receiver/fs-ledger",
                   "read:workspace/document.txt",
-                  "runtime:mea604784883c4f09bfbe3d596295efe1",
+                  "runtime:m9732f66bcc304e509a624a5b714525da",
                   "write:receiver/fs-ledger",
                   "write:workspace/document.txt"
                 ]
@@ -30,21 +30,21 @@
             },
             {
               "action": "dispatch",
-              "at": 1792936459723,
+              "at": 1792938158185,
               "result": {
                 "crashed": true
               }
             },
             {
               "action": "recover",
-              "at": 1792936461074,
+              "at": 1792938159337,
               "result": {
                 "journal": {
                   "bindings": {
                     "apply-h": "apply",
                     "apply-o": {
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
-                      "result_id": "mea604784883c4f09bfbe3d596295efe1:apply:result",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
+                      "result_id": "m9732f66bcc304e509a624a5b714525da:apply:result",
                       "tool_version": "fs-replace@1",
                       "value": {
                         "path": "document.txt",
@@ -273,42 +273,42 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     }
                   ],
@@ -324,7 +324,7 @@
                       },
                       "attempts": 1,
                       "grant": "g-fs-replace",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "parent": null,
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
@@ -336,7 +336,7 @@
                         "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                         "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                       },
-                      "started_at": 1792936459,
+                      "started_at": 1792938157,
                       "state": "SUCCEEDED",
                       "tool": "fs-replace@1"
                     }
@@ -376,7 +376,7 @@
                       "op": "sequence"
                     }
                   },
-                  "session": "mea604784883c4f09bfbe3d596295efe1",
+                  "session": "m9732f66bcc304e509a624a5b714525da",
                   "status": "SUCCEEDED",
                   "usage": {
                     "g-fs-replace": 2
@@ -392,7 +392,7 @@
                 "summary": [
                   "read:receiver/fs-ledger",
                   "read:workspace/document.txt",
-                  "runtime:mea604784883c4f09bfbe3d596295efe1",
+                  "runtime:m9732f66bcc304e509a624a5b714525da",
                   "write:receiver/fs-ledger",
                   "write:workspace/document.txt"
                 ]
@@ -400,27 +400,27 @@
             },
             {
               "action": "verify",
-              "at": 1792936461747,
+              "at": 1792938160012,
               "result": {
-                "at": 1792936461747,
+                "at": 1792938160012,
                 "method": "separate-process-http-station-request-and-file-readback",
                 "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                 "matchesApprovedBytes": true,
                 "httpStatus": 200,
-                "elapsedMs": 24.081,
+                "elapsedMs": 21.404,
                 "attempts": [
                   {
-                    "at": 1792936461747,
+                    "at": 1792938160012,
                     "httpStatus": 200,
-                    "elapsedMs": 24.081,
+                    "elapsedMs": 21.404,
                     "response": {
                       "service": "site-status-relay",
                       "site": "support-site-01",
                       "status": "serving",
                       "configurationSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
-                      "configurationLoadedAt": 1792936459749,
-                      "requestId": "b97146c9-f4f2-4c0c-bcc6-487912613727",
-                      "uptimeSeconds": 3.51
+                      "configurationLoadedAt": 1792938158175,
+                      "requestId": "7608c60d-9c9d-4bd2-9238-c5cae5de4205",
+                      "uptimeSeconds": 3.549
                     }
                   }
                 ],
@@ -430,9 +430,9 @@
                   "site": "support-site-01",
                   "status": "serving",
                   "configurationSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
-                  "configurationLoadedAt": 1792936459749,
-                  "requestId": "b97146c9-f4f2-4c0c-bcc6-487912613727",
-                  "uptimeSeconds": 3.51
+                  "configurationLoadedAt": 1792938158175,
+                  "requestId": "7608c60d-9c9d-4bd2-9238-c5cae5de4205",
+                  "uptimeSeconds": 3.549
                 },
                 "accepted": true,
                 "criterion": "Station request receives HTTP 200 from the separate running relay, which reports the approved configuration digest; disk bytes also match."
@@ -479,30 +479,30 @@
               "op": "sequence"
             }
           },
-          "runId": "ea604784883c4f09bfbe3d596295efe1",
+          "runId": "9732f66bcc304e509a624a5b714525da",
           "scenario": "lost-reply",
-          "session": "mea604784883c4f09bfbe3d596295efe1",
+          "session": "m9732f66bcc304e509a624a5b714525da",
           "targetSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
           "verification": {
-            "at": 1792936461747,
+            "at": 1792938160012,
             "method": "separate-process-http-station-request-and-file-readback",
             "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
             "matchesApprovedBytes": true,
             "httpStatus": 200,
-            "elapsedMs": 24.081,
+            "elapsedMs": 21.404,
             "attempts": [
               {
-                "at": 1792936461747,
+                "at": 1792938160012,
                 "httpStatus": 200,
-                "elapsedMs": 24.081,
+                "elapsedMs": 21.404,
                 "response": {
                   "service": "site-status-relay",
                   "site": "support-site-01",
                   "status": "serving",
                   "configurationSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
-                  "configurationLoadedAt": 1792936459749,
-                  "requestId": "b97146c9-f4f2-4c0c-bcc6-487912613727",
-                  "uptimeSeconds": 3.51
+                  "configurationLoadedAt": 1792938158175,
+                  "requestId": "7608c60d-9c9d-4bd2-9238-c5cae5de4205",
+                  "uptimeSeconds": 3.549
                 }
               }
             ],
@@ -512,9 +512,9 @@
               "site": "support-site-01",
               "status": "serving",
               "configurationSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
-              "configurationLoadedAt": 1792936459749,
-              "requestId": "b97146c9-f4f2-4c0c-bcc6-487912613727",
-              "uptimeSeconds": 3.51
+              "configurationLoadedAt": 1792938158175,
+              "requestId": "7608c60d-9c9d-4bd2-9238-c5cae5de4205",
+              "uptimeSeconds": 3.549
             },
             "accepted": true,
             "criterion": "Station request receives HTTP 200 from the separate running relay, which reports the approved configuration digest; disk bytes also match."
@@ -523,8 +523,8 @@
             "bindings": {
               "apply-h": "apply",
               "apply-o": {
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
-                "result_id": "mea604784883c4f09bfbe3d596295efe1:apply:result",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
+                "result_id": "m9732f66bcc304e509a624a5b714525da:apply:result",
                 "tool_version": "fs-replace@1",
                 "value": {
                   "path": "document.txt",
@@ -753,42 +753,42 @@
             "events": [
               {
                 "effect": "read:receiver/fs-ledger",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "start"
               },
               {
                 "effect": "read:workspace/document.txt",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "start"
               },
               {
                 "effect": "write:receiver/fs-ledger",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "start"
               },
               {
                 "effect": "write:workspace/document.txt",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "start"
               },
               {
                 "effect": "read:receiver/fs-ledger",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "query"
               },
               {
                 "effect": "read:workspace/document.txt",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "query"
               },
               {
                 "effect": "write:receiver/fs-ledger",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "query"
               },
               {
                 "effect": "write:workspace/document.txt",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "query"
               }
             ],
@@ -804,7 +804,7 @@
                 },
                 "attempts": 1,
                 "grant": "g-fs-replace",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "parent": null,
                 "payload": {
                   "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
@@ -816,7 +816,7 @@
                   "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                   "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                 },
-                "started_at": 1792936459,
+                "started_at": 1792938157,
                 "state": "SUCCEEDED",
                 "tool": "fs-replace@1"
               }
@@ -856,7 +856,7 @@
                 "op": "sequence"
               }
             },
-            "session": "mea604784883c4f09bfbe3d596295efe1",
+            "session": "m9732f66bcc304e509a624a5b714525da",
             "status": "SUCCEEDED",
             "usage": {
               "g-fs-replace": 2
@@ -866,37 +866,37 @@
             "events": [
               {
                 "effect": "read:receiver/fs-ledger",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "start"
               },
               {
                 "effect": "write:receiver/fs-ledger",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "start"
               },
               {
                 "effect": "read:workspace/document.txt",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "start"
               },
               {
                 "effect": "write:workspace/document.txt",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "start"
               },
               {
                 "effect": "read:receiver/fs-ledger",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "query"
               },
               {
                 "effect": "write:receiver/fs-ledger",
-                "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                 "phase": "query"
               }
             ],
             "operations": {
-              "mea604784883c4f09bfbe3d596295efe1:apply": {
+              "m9732f66bcc304e509a624a5b714525da:apply": {
                 "payload": {
                   "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
                   "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
@@ -916,13 +916,13 @@
                 "tool": "fs-replace@1",
                 "witness": {
                   "device": 65,
-                  "inode": 267660,
+                  "inode": 287462,
                   "result": {
                     "path": "document.txt",
                     "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                     "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                   },
-                  "stage": "5a638edde4f3f4aec8f53d32328af683c9066e26a33cbe5af961f3ceb941ae4e.stage"
+                  "stage": "f9831e0e2981c3ea94a06b0ef56d7c4f5dff011eb155b90aa7f0327dbbfddf8a.stage"
                 }
               }
             },
@@ -930,7 +930,7 @@
           },
           "physicalWrites": [
             {
-              "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+              "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
               "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
             }
           ],
@@ -939,9 +939,9 @@
         },
         "guardEvents": [
           {
-            "at": 1792936459078,
+            "at": 1792938157286,
             "component": "@navivra/rpc/guard",
-            "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+            "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
             "result": {
               "decision": "block",
               "receipt": {
@@ -949,7 +949,7 @@
                 "decision": "block",
                 "executionState": "not-invoked",
                 "reason": "approval-binding-mismatch",
-                "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                 "protocol": "direct",
                 "tool": {
                   "name": "fs-replace@1",
@@ -959,25 +959,25 @@
                 "inputFingerprint": "sha256-v2:e5061823585dfea687f1a29c88fa05d4f43f5badc2915a90dbfc91f9bee29a86",
                 "evidence": {
                   "approval": "mismatched",
-                  "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                  "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                   "isolation": "not-required",
                   "isolationEvidenceId": null
                 },
                 "handles": {},
                 "runtimeReceipt": "missing",
-                "timestamp": "2026-10-25T13:54:19.078Z"
+                "timestamp": "2026-10-25T14:22:37.286Z"
               }
             }
           },
           {
-            "at": 1792936459339,
+            "at": 1792938157617,
             "component": "@navivra/rpc/guard",
-            "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+            "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
             "result": {
               "decision": "allow",
               "evidence": {
                 "approval": "approved",
-                "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                 "isolation": "not-required",
                 "isolationEvidenceId": null
               }
@@ -985,38 +985,38 @@
           }
         ],
         "approval": {
-          "evidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+          "evidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
           "source": "operator-review",
-          "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+          "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
           "toolCatalogId": "mg.maintenance.config.v1",
           "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
           "inputFingerprint": "sha256-v2:8406b1e60ce1b0c541557fbad9791c618593039a15bbc143fa137b8d1556997b",
           "planSha256": "f1166c79521f176b5ff10605ee87705c4bc06fdae296b953559ab03b727a6b64",
           "outcome": "approved",
-          "reviewedAt": "2026-10-25T13:54:18.817Z",
-          "expiresAt": "2026-10-25T14:04:18.817Z",
+          "reviewedAt": "2026-10-25T14:22:37.002Z",
+          "expiresAt": "2026-10-25T14:32:37.002Z",
           "toolName": "fs-replace@1",
           "subject": "local-bench-operator"
         },
         "history": [
           {
             "action": "create",
-            "at": 1792936458557,
+            "at": 1792938156745,
             "snapshot": {
-              "runId": "ea604784883c4f09bfbe3d596295efe1",
+              "runId": "9732f66bcc304e509a624a5b714525da",
               "scenario": "lost-reply",
               "phase": "prepared",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936458523,
+                    "at": 1792938156713,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mea604784883c4f09bfbe3d596295efe1",
+                        "runtime:m9732f66bcc304e509a624a5b714525da",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -1063,9 +1063,9 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "ea604784883c4f09bfbe3d596295efe1",
+                "runId": "9732f66bcc304e509a624a5b714525da",
                 "scenario": "lost-reply",
-                "session": "mea604784883c4f09bfbe3d596295efe1",
+                "session": "m9732f66bcc304e509a624a5b714525da",
                 "targetSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                 "verification": null,
                 "journal": null,
@@ -1084,7 +1084,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -1179,22 +1179,22 @@
           },
           {
             "action": "approve",
-            "at": 1792936458817,
+            "at": 1792938157003,
             "snapshot": {
-              "runId": "ea604784883c4f09bfbe3d596295efe1",
+              "runId": "9732f66bcc304e509a624a5b714525da",
               "scenario": "lost-reply",
               "phase": "approved",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936458523,
+                    "at": 1792938156713,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mea604784883c4f09bfbe3d596295efe1",
+                        "runtime:m9732f66bcc304e509a624a5b714525da",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -1241,9 +1241,9 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "ea604784883c4f09bfbe3d596295efe1",
+                "runId": "9732f66bcc304e509a624a5b714525da",
                 "scenario": "lost-reply",
-                "session": "mea604784883c4f09bfbe3d596295efe1",
+                "session": "m9732f66bcc304e509a624a5b714525da",
                 "targetSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                 "verification": null,
                 "journal": null,
@@ -1257,16 +1257,16 @@
               },
               "guardEvents": [],
               "approval": {
-                "evidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                "evidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                 "source": "operator-review",
-                "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:8406b1e60ce1b0c541557fbad9791c618593039a15bbc143fa137b8d1556997b",
                 "planSha256": "f1166c79521f176b5ff10605ee87705c4bc06fdae296b953559ab03b727a6b64",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:18.817Z",
-                "expiresAt": "2026-10-25T14:04:18.817Z",
+                "reviewedAt": "2026-10-25T14:22:37.002Z",
+                "expiresAt": "2026-10-25T14:32:37.002Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -1275,7 +1275,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -1370,22 +1370,22 @@
           },
           {
             "action": "changed-input",
-            "at": 1792936459079,
+            "at": 1792938157287,
             "snapshot": {
-              "runId": "ea604784883c4f09bfbe3d596295efe1",
+              "runId": "9732f66bcc304e509a624a5b714525da",
               "scenario": "lost-reply",
               "phase": "approved",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936458523,
+                    "at": 1792938156713,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mea604784883c4f09bfbe3d596295efe1",
+                        "runtime:m9732f66bcc304e509a624a5b714525da",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -1432,9 +1432,9 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "ea604784883c4f09bfbe3d596295efe1",
+                "runId": "9732f66bcc304e509a624a5b714525da",
                 "scenario": "lost-reply",
-                "session": "mea604784883c4f09bfbe3d596295efe1",
+                "session": "m9732f66bcc304e509a624a5b714525da",
                 "targetSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                 "verification": null,
                 "journal": null,
@@ -1448,9 +1448,9 @@
               },
               "guardEvents": [
                 {
-                  "at": 1792936459078,
+                  "at": 1792938157286,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                  "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                   "result": {
                     "decision": "block",
                     "receipt": {
@@ -1458,7 +1458,7 @@
                       "decision": "block",
                       "executionState": "not-invoked",
                       "reason": "approval-binding-mismatch",
-                      "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                       "protocol": "direct",
                       "tool": {
                         "name": "fs-replace@1",
@@ -1468,28 +1468,28 @@
                       "inputFingerprint": "sha256-v2:e5061823585dfea687f1a29c88fa05d4f43f5badc2915a90dbfc91f9bee29a86",
                       "evidence": {
                         "approval": "mismatched",
-                        "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                        "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                         "isolation": "not-required",
                         "isolationEvidenceId": null
                       },
                       "handles": {},
                       "runtimeReceipt": "missing",
-                      "timestamp": "2026-10-25T13:54:19.078Z"
+                      "timestamp": "2026-10-25T14:22:37.286Z"
                     }
                   }
                 }
               ],
               "approval": {
-                "evidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                "evidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                 "source": "operator-review",
-                "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:8406b1e60ce1b0c541557fbad9791c618593039a15bbc143fa137b8d1556997b",
                 "planSha256": "f1166c79521f176b5ff10605ee87705c4bc06fdae296b953559ab03b727a6b64",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:18.817Z",
-                "expiresAt": "2026-10-25T14:04:18.817Z",
+                "reviewedAt": "2026-10-25T14:22:37.002Z",
+                "expiresAt": "2026-10-25T14:32:37.002Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -1498,7 +1498,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -1593,22 +1593,22 @@
           },
           {
             "action": "dispatch-pending",
-            "at": 1792936459339,
+            "at": 1792938157618,
             "snapshot": {
-              "runId": "ea604784883c4f09bfbe3d596295efe1",
+              "runId": "9732f66bcc304e509a624a5b714525da",
               "scenario": "lost-reply",
               "phase": "dispatching",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936458523,
+                    "at": 1792938156713,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mea604784883c4f09bfbe3d596295efe1",
+                        "runtime:m9732f66bcc304e509a624a5b714525da",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -1655,9 +1655,9 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "ea604784883c4f09bfbe3d596295efe1",
+                "runId": "9732f66bcc304e509a624a5b714525da",
                 "scenario": "lost-reply",
-                "session": "mea604784883c4f09bfbe3d596295efe1",
+                "session": "m9732f66bcc304e509a624a5b714525da",
                 "targetSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                 "verification": null,
                 "journal": null,
@@ -1671,9 +1671,9 @@
               },
               "guardEvents": [
                 {
-                  "at": 1792936459078,
+                  "at": 1792938157286,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                  "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                   "result": {
                     "decision": "block",
                     "receipt": {
@@ -1681,7 +1681,7 @@
                       "decision": "block",
                       "executionState": "not-invoked",
                       "reason": "approval-binding-mismatch",
-                      "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                       "protocol": "direct",
                       "tool": {
                         "name": "fs-replace@1",
@@ -1691,25 +1691,25 @@
                       "inputFingerprint": "sha256-v2:e5061823585dfea687f1a29c88fa05d4f43f5badc2915a90dbfc91f9bee29a86",
                       "evidence": {
                         "approval": "mismatched",
-                        "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                        "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                         "isolation": "not-required",
                         "isolationEvidenceId": null
                       },
                       "handles": {},
                       "runtimeReceipt": "missing",
-                      "timestamp": "2026-10-25T13:54:19.078Z"
+                      "timestamp": "2026-10-25T14:22:37.286Z"
                     }
                   }
                 },
                 {
-                  "at": 1792936459339,
+                  "at": 1792938157617,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                  "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                   "result": {
                     "decision": "allow",
                     "evidence": {
                       "approval": "approved",
-                      "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                      "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                       "isolation": "not-required",
                       "isolationEvidenceId": null
                     }
@@ -1717,16 +1717,16 @@
                 }
               ],
               "approval": {
-                "evidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                "evidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                 "source": "operator-review",
-                "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:8406b1e60ce1b0c541557fbad9791c618593039a15bbc143fa137b8d1556997b",
                 "planSha256": "f1166c79521f176b5ff10605ee87705c4bc06fdae296b953559ab03b727a6b64",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:18.817Z",
-                "expiresAt": "2026-10-25T14:04:18.817Z",
+                "reviewedAt": "2026-10-25T14:22:37.002Z",
+                "expiresAt": "2026-10-25T14:32:37.002Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -1735,7 +1735,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -1830,22 +1830,22 @@
           },
           {
             "action": "dispatch",
-            "at": 1792936459781,
+            "at": 1792938158248,
             "snapshot": {
-              "runId": "ea604784883c4f09bfbe3d596295efe1",
+              "runId": "9732f66bcc304e509a624a5b714525da",
               "scenario": "lost-reply",
               "phase": "interrupted",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936458523,
+                    "at": 1792938156713,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mea604784883c4f09bfbe3d596295efe1",
+                        "runtime:m9732f66bcc304e509a624a5b714525da",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -1853,7 +1853,7 @@
                   },
                   {
                     "action": "dispatch",
-                    "at": 1792936459723,
+                    "at": 1792938158185,
                     "result": {
                       "crashed": true
                     }
@@ -1899,9 +1899,9 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "ea604784883c4f09bfbe3d596295efe1",
+                "runId": "9732f66bcc304e509a624a5b714525da",
                 "scenario": "lost-reply",
-                "session": "mea604784883c4f09bfbe3d596295efe1",
+                "session": "m9732f66bcc304e509a624a5b714525da",
                 "targetSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                 "verification": null,
                 "journal": {
@@ -2126,22 +2126,22 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     }
                   ],
@@ -2149,14 +2149,14 @@
                     "apply": {
                       "attempts": 1,
                       "grant": "g-fs-replace",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "parent": null,
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
                         "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                         "path": "document.txt"
                       },
-                      "started_at": 1792936459,
+                      "started_at": 1792938157,
                       "state": "IN_FLIGHT",
                       "tool": "fs-replace@1"
                     }
@@ -2196,7 +2196,7 @@
                       "op": "sequence"
                     }
                   },
-                  "session": "mea604784883c4f09bfbe3d596295efe1",
+                  "session": "m9732f66bcc304e509a624a5b714525da",
                   "status": "RUNNING",
                   "usage": {
                     "g-fs-replace": 1
@@ -2206,27 +2206,27 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     }
                   ],
                   "operations": {
-                    "mea604784883c4f09bfbe3d596295efe1:apply": {
+                    "m9732f66bcc304e509a624a5b714525da:apply": {
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
                         "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
@@ -2246,13 +2246,13 @@
                       "tool": "fs-replace@1",
                       "witness": {
                         "device": 65,
-                        "inode": 267660,
+                        "inode": 287462,
                         "result": {
                           "path": "document.txt",
                           "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                           "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                         },
-                        "stage": "5a638edde4f3f4aec8f53d32328af683c9066e26a33cbe5af961f3ceb941ae4e.stage"
+                        "stage": "f9831e0e2981c3ea94a06b0ef56d7c4f5dff011eb155b90aa7f0327dbbfddf8a.stage"
                       }
                     }
                   },
@@ -2260,7 +2260,7 @@
                 },
                 "physicalWrites": [
                   {
-                    "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                    "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                     "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                   }
                 ],
@@ -2269,9 +2269,9 @@
               },
               "guardEvents": [
                 {
-                  "at": 1792936459078,
+                  "at": 1792938157286,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                  "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                   "result": {
                     "decision": "block",
                     "receipt": {
@@ -2279,7 +2279,7 @@
                       "decision": "block",
                       "executionState": "not-invoked",
                       "reason": "approval-binding-mismatch",
-                      "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                       "protocol": "direct",
                       "tool": {
                         "name": "fs-replace@1",
@@ -2289,25 +2289,25 @@
                       "inputFingerprint": "sha256-v2:e5061823585dfea687f1a29c88fa05d4f43f5badc2915a90dbfc91f9bee29a86",
                       "evidence": {
                         "approval": "mismatched",
-                        "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                        "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                         "isolation": "not-required",
                         "isolationEvidenceId": null
                       },
                       "handles": {},
                       "runtimeReceipt": "missing",
-                      "timestamp": "2026-10-25T13:54:19.078Z"
+                      "timestamp": "2026-10-25T14:22:37.286Z"
                     }
                   }
                 },
                 {
-                  "at": 1792936459339,
+                  "at": 1792938157617,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                  "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                   "result": {
                     "decision": "allow",
                     "evidence": {
                       "approval": "approved",
-                      "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                      "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                       "isolation": "not-required",
                       "isolationEvidenceId": null
                     }
@@ -2315,16 +2315,16 @@
                 }
               ],
               "approval": {
-                "evidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                "evidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                 "source": "operator-review",
-                "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:8406b1e60ce1b0c541557fbad9791c618593039a15bbc143fa137b8d1556997b",
                 "planSha256": "f1166c79521f176b5ff10605ee87705c4bc06fdae296b953559ab03b727a6b64",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:18.817Z",
-                "expiresAt": "2026-10-25T14:04:18.817Z",
+                "reviewedAt": "2026-10-25T14:22:37.002Z",
+                "expiresAt": "2026-10-25T14:32:37.002Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -2333,7 +2333,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -2428,22 +2428,22 @@
           },
           {
             "action": "recover",
-            "at": 1792936461130,
+            "at": 1792938159404,
             "snapshot": {
-              "runId": "ea604784883c4f09bfbe3d596295efe1",
+              "runId": "9732f66bcc304e509a624a5b714525da",
               "scenario": "lost-reply",
               "phase": "recovered",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936458523,
+                    "at": 1792938156713,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mea604784883c4f09bfbe3d596295efe1",
+                        "runtime:m9732f66bcc304e509a624a5b714525da",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -2451,21 +2451,21 @@
                   },
                   {
                     "action": "dispatch",
-                    "at": 1792936459723,
+                    "at": 1792938158185,
                     "result": {
                       "crashed": true
                     }
                   },
                   {
                     "action": "recover",
-                    "at": 1792936461074,
+                    "at": 1792938159337,
                     "result": {
                       "journal": {
                         "bindings": {
                           "apply-h": "apply",
                           "apply-o": {
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
-                            "result_id": "mea604784883c4f09bfbe3d596295efe1:apply:result",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
+                            "result_id": "m9732f66bcc304e509a624a5b714525da:apply:result",
                             "tool_version": "fs-replace@1",
                             "value": {
                               "path": "document.txt",
@@ -2694,42 +2694,42 @@
                         "events": [
                           {
                             "effect": "read:receiver/fs-ledger",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "read:workspace/document.txt",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "write:receiver/fs-ledger",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "write:workspace/document.txt",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "read:receiver/fs-ledger",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "read:workspace/document.txt",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "write:receiver/fs-ledger",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "write:workspace/document.txt",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "query"
                           }
                         ],
@@ -2745,7 +2745,7 @@
                             },
                             "attempts": 1,
                             "grant": "g-fs-replace",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "parent": null,
                             "payload": {
                               "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
@@ -2757,7 +2757,7 @@
                               "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                               "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                             },
-                            "started_at": 1792936459,
+                            "started_at": 1792938157,
                             "state": "SUCCEEDED",
                             "tool": "fs-replace@1"
                           }
@@ -2797,7 +2797,7 @@
                             "op": "sequence"
                           }
                         },
-                        "session": "mea604784883c4f09bfbe3d596295efe1",
+                        "session": "m9732f66bcc304e509a624a5b714525da",
                         "status": "SUCCEEDED",
                         "usage": {
                           "g-fs-replace": 2
@@ -2813,7 +2813,7 @@
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mea604784883c4f09bfbe3d596295efe1",
+                        "runtime:m9732f66bcc304e509a624a5b714525da",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -2860,17 +2860,17 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "ea604784883c4f09bfbe3d596295efe1",
+                "runId": "9732f66bcc304e509a624a5b714525da",
                 "scenario": "lost-reply",
-                "session": "mea604784883c4f09bfbe3d596295efe1",
+                "session": "m9732f66bcc304e509a624a5b714525da",
                 "targetSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                 "verification": null,
                 "journal": {
                   "bindings": {
                     "apply-h": "apply",
                     "apply-o": {
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
-                      "result_id": "mea604784883c4f09bfbe3d596295efe1:apply:result",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
+                      "result_id": "m9732f66bcc304e509a624a5b714525da:apply:result",
                       "tool_version": "fs-replace@1",
                       "value": {
                         "path": "document.txt",
@@ -3099,42 +3099,42 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     }
                   ],
@@ -3150,7 +3150,7 @@
                       },
                       "attempts": 1,
                       "grant": "g-fs-replace",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "parent": null,
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
@@ -3162,7 +3162,7 @@
                         "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                         "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                       },
-                      "started_at": 1792936459,
+                      "started_at": 1792938157,
                       "state": "SUCCEEDED",
                       "tool": "fs-replace@1"
                     }
@@ -3202,7 +3202,7 @@
                       "op": "sequence"
                     }
                   },
-                  "session": "mea604784883c4f09bfbe3d596295efe1",
+                  "session": "m9732f66bcc304e509a624a5b714525da",
                   "status": "SUCCEEDED",
                   "usage": {
                     "g-fs-replace": 2
@@ -3212,37 +3212,37 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     }
                   ],
                   "operations": {
-                    "mea604784883c4f09bfbe3d596295efe1:apply": {
+                    "m9732f66bcc304e509a624a5b714525da:apply": {
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
                         "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
@@ -3262,13 +3262,13 @@
                       "tool": "fs-replace@1",
                       "witness": {
                         "device": 65,
-                        "inode": 267660,
+                        "inode": 287462,
                         "result": {
                           "path": "document.txt",
                           "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                           "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                         },
-                        "stage": "5a638edde4f3f4aec8f53d32328af683c9066e26a33cbe5af961f3ceb941ae4e.stage"
+                        "stage": "f9831e0e2981c3ea94a06b0ef56d7c4f5dff011eb155b90aa7f0327dbbfddf8a.stage"
                       }
                     }
                   },
@@ -3276,7 +3276,7 @@
                 },
                 "physicalWrites": [
                   {
-                    "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                    "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                     "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                   }
                 ],
@@ -3285,9 +3285,9 @@
               },
               "guardEvents": [
                 {
-                  "at": 1792936459078,
+                  "at": 1792938157286,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                  "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                   "result": {
                     "decision": "block",
                     "receipt": {
@@ -3295,7 +3295,7 @@
                       "decision": "block",
                       "executionState": "not-invoked",
                       "reason": "approval-binding-mismatch",
-                      "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                       "protocol": "direct",
                       "tool": {
                         "name": "fs-replace@1",
@@ -3305,25 +3305,25 @@
                       "inputFingerprint": "sha256-v2:e5061823585dfea687f1a29c88fa05d4f43f5badc2915a90dbfc91f9bee29a86",
                       "evidence": {
                         "approval": "mismatched",
-                        "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                        "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                         "isolation": "not-required",
                         "isolationEvidenceId": null
                       },
                       "handles": {},
                       "runtimeReceipt": "missing",
-                      "timestamp": "2026-10-25T13:54:19.078Z"
+                      "timestamp": "2026-10-25T14:22:37.286Z"
                     }
                   }
                 },
                 {
-                  "at": 1792936459339,
+                  "at": 1792938157617,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                  "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                   "result": {
                     "decision": "allow",
                     "evidence": {
                       "approval": "approved",
-                      "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                      "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                       "isolation": "not-required",
                       "isolationEvidenceId": null
                     }
@@ -3331,16 +3331,16 @@
                 }
               ],
               "approval": {
-                "evidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                "evidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                 "source": "operator-review",
-                "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:8406b1e60ce1b0c541557fbad9791c618593039a15bbc143fa137b8d1556997b",
                 "planSha256": "f1166c79521f176b5ff10605ee87705c4bc06fdae296b953559ab03b727a6b64",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:18.817Z",
-                "expiresAt": "2026-10-25T14:04:18.817Z",
+                "reviewedAt": "2026-10-25T14:22:37.002Z",
+                "expiresAt": "2026-10-25T14:32:37.002Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -3349,7 +3349,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -3444,22 +3444,22 @@
           },
           {
             "action": "verify",
-            "at": 1792936461802,
+            "at": 1792938160056,
             "snapshot": {
-              "runId": "ea604784883c4f09bfbe3d596295efe1",
+              "runId": "9732f66bcc304e509a624a5b714525da",
               "scenario": "lost-reply",
               "phase": "accepted",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936458523,
+                    "at": 1792938156713,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mea604784883c4f09bfbe3d596295efe1",
+                        "runtime:m9732f66bcc304e509a624a5b714525da",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -3467,21 +3467,21 @@
                   },
                   {
                     "action": "dispatch",
-                    "at": 1792936459723,
+                    "at": 1792938158185,
                     "result": {
                       "crashed": true
                     }
                   },
                   {
                     "action": "recover",
-                    "at": 1792936461074,
+                    "at": 1792938159337,
                     "result": {
                       "journal": {
                         "bindings": {
                           "apply-h": "apply",
                           "apply-o": {
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
-                            "result_id": "mea604784883c4f09bfbe3d596295efe1:apply:result",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
+                            "result_id": "m9732f66bcc304e509a624a5b714525da:apply:result",
                             "tool_version": "fs-replace@1",
                             "value": {
                               "path": "document.txt",
@@ -3710,42 +3710,42 @@
                         "events": [
                           {
                             "effect": "read:receiver/fs-ledger",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "read:workspace/document.txt",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "write:receiver/fs-ledger",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "write:workspace/document.txt",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "read:receiver/fs-ledger",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "read:workspace/document.txt",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "write:receiver/fs-ledger",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "write:workspace/document.txt",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "phase": "query"
                           }
                         ],
@@ -3761,7 +3761,7 @@
                             },
                             "attempts": 1,
                             "grant": "g-fs-replace",
-                            "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                            "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                             "parent": null,
                             "payload": {
                               "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
@@ -3773,7 +3773,7 @@
                               "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                               "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                             },
-                            "started_at": 1792936459,
+                            "started_at": 1792938157,
                             "state": "SUCCEEDED",
                             "tool": "fs-replace@1"
                           }
@@ -3813,7 +3813,7 @@
                             "op": "sequence"
                           }
                         },
-                        "session": "mea604784883c4f09bfbe3d596295efe1",
+                        "session": "m9732f66bcc304e509a624a5b714525da",
                         "status": "SUCCEEDED",
                         "usage": {
                           "g-fs-replace": 2
@@ -3829,7 +3829,7 @@
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mea604784883c4f09bfbe3d596295efe1",
+                        "runtime:m9732f66bcc304e509a624a5b714525da",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -3837,27 +3837,27 @@
                   },
                   {
                     "action": "verify",
-                    "at": 1792936461747,
+                    "at": 1792938160012,
                     "result": {
-                      "at": 1792936461747,
+                      "at": 1792938160012,
                       "method": "separate-process-http-station-request-and-file-readback",
                       "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                       "matchesApprovedBytes": true,
                       "httpStatus": 200,
-                      "elapsedMs": 24.081,
+                      "elapsedMs": 21.404,
                       "attempts": [
                         {
-                          "at": 1792936461747,
+                          "at": 1792938160012,
                           "httpStatus": 200,
-                          "elapsedMs": 24.081,
+                          "elapsedMs": 21.404,
                           "response": {
                             "service": "site-status-relay",
                             "site": "support-site-01",
                             "status": "serving",
                             "configurationSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
-                            "configurationLoadedAt": 1792936459749,
-                            "requestId": "b97146c9-f4f2-4c0c-bcc6-487912613727",
-                            "uptimeSeconds": 3.51
+                            "configurationLoadedAt": 1792938158175,
+                            "requestId": "7608c60d-9c9d-4bd2-9238-c5cae5de4205",
+                            "uptimeSeconds": 3.549
                           }
                         }
                       ],
@@ -3867,9 +3867,9 @@
                         "site": "support-site-01",
                         "status": "serving",
                         "configurationSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
-                        "configurationLoadedAt": 1792936459749,
-                        "requestId": "b97146c9-f4f2-4c0c-bcc6-487912613727",
-                        "uptimeSeconds": 3.51
+                        "configurationLoadedAt": 1792938158175,
+                        "requestId": "7608c60d-9c9d-4bd2-9238-c5cae5de4205",
+                        "uptimeSeconds": 3.549
                       },
                       "accepted": true,
                       "criterion": "Station request receives HTTP 200 from the separate running relay, which reports the approved configuration digest; disk bytes also match."
@@ -3916,30 +3916,30 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "ea604784883c4f09bfbe3d596295efe1",
+                "runId": "9732f66bcc304e509a624a5b714525da",
                 "scenario": "lost-reply",
-                "session": "mea604784883c4f09bfbe3d596295efe1",
+                "session": "m9732f66bcc304e509a624a5b714525da",
                 "targetSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                 "verification": {
-                  "at": 1792936461747,
+                  "at": 1792938160012,
                   "method": "separate-process-http-station-request-and-file-readback",
                   "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
                   "matchesApprovedBytes": true,
                   "httpStatus": 200,
-                  "elapsedMs": 24.081,
+                  "elapsedMs": 21.404,
                   "attempts": [
                     {
-                      "at": 1792936461747,
+                      "at": 1792938160012,
                       "httpStatus": 200,
-                      "elapsedMs": 24.081,
+                      "elapsedMs": 21.404,
                       "response": {
                         "service": "site-status-relay",
                         "site": "support-site-01",
                         "status": "serving",
                         "configurationSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
-                        "configurationLoadedAt": 1792936459749,
-                        "requestId": "b97146c9-f4f2-4c0c-bcc6-487912613727",
-                        "uptimeSeconds": 3.51
+                        "configurationLoadedAt": 1792938158175,
+                        "requestId": "7608c60d-9c9d-4bd2-9238-c5cae5de4205",
+                        "uptimeSeconds": 3.549
                       }
                     }
                   ],
@@ -3949,9 +3949,9 @@
                     "site": "support-site-01",
                     "status": "serving",
                     "configurationSha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb",
-                    "configurationLoadedAt": 1792936459749,
-                    "requestId": "b97146c9-f4f2-4c0c-bcc6-487912613727",
-                    "uptimeSeconds": 3.51
+                    "configurationLoadedAt": 1792938158175,
+                    "requestId": "7608c60d-9c9d-4bd2-9238-c5cae5de4205",
+                    "uptimeSeconds": 3.549
                   },
                   "accepted": true,
                   "criterion": "Station request receives HTTP 200 from the separate running relay, which reports the approved configuration digest; disk bytes also match."
@@ -3960,8 +3960,8 @@
                   "bindings": {
                     "apply-h": "apply",
                     "apply-o": {
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
-                      "result_id": "mea604784883c4f09bfbe3d596295efe1:apply:result",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
+                      "result_id": "m9732f66bcc304e509a624a5b714525da:apply:result",
                       "tool_version": "fs-replace@1",
                       "value": {
                         "path": "document.txt",
@@ -4190,42 +4190,42 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     }
                   ],
@@ -4241,7 +4241,7 @@
                       },
                       "attempts": 1,
                       "grant": "g-fs-replace",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "parent": null,
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
@@ -4253,7 +4253,7 @@
                         "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                         "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                       },
-                      "started_at": 1792936459,
+                      "started_at": 1792938157,
                       "state": "SUCCEEDED",
                       "tool": "fs-replace@1"
                     }
@@ -4293,7 +4293,7 @@
                       "op": "sequence"
                     }
                   },
-                  "session": "mea604784883c4f09bfbe3d596295efe1",
+                  "session": "m9732f66bcc304e509a624a5b714525da",
                   "status": "SUCCEEDED",
                   "usage": {
                     "g-fs-replace": 2
@@ -4303,37 +4303,37 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                       "phase": "query"
                     }
                   ],
                   "operations": {
-                    "mea604784883c4f09bfbe3d596295efe1:apply": {
+                    "m9732f66bcc304e509a624a5b714525da:apply": {
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = active\n",
                         "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
@@ -4353,13 +4353,13 @@
                       "tool": "fs-replace@1",
                       "witness": {
                         "device": 65,
-                        "inode": 267660,
+                        "inode": 287462,
                         "result": {
                           "path": "document.txt",
                           "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                           "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                         },
-                        "stage": "5a638edde4f3f4aec8f53d32328af683c9066e26a33cbe5af961f3ceb941ae4e.stage"
+                        "stage": "f9831e0e2981c3ea94a06b0ef56d7c4f5dff011eb155b90aa7f0327dbbfddf8a.stage"
                       }
                     }
                   },
@@ -4367,7 +4367,7 @@
                 },
                 "physicalWrites": [
                   {
-                    "operation_id": "mea604784883c4f09bfbe3d596295efe1:apply",
+                    "operation_id": "m9732f66bcc304e509a624a5b714525da:apply",
                     "sha256": "2b6991883bcc2401a9a91a41f68681d097991408058424ab1cc29cfb996c65cb"
                   }
                 ],
@@ -4376,9 +4376,9 @@
               },
               "guardEvents": [
                 {
-                  "at": 1792936459078,
+                  "at": 1792938157286,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                  "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                   "result": {
                     "decision": "block",
                     "receipt": {
@@ -4386,7 +4386,7 @@
                       "decision": "block",
                       "executionState": "not-invoked",
                       "reason": "approval-binding-mismatch",
-                      "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                      "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                       "protocol": "direct",
                       "tool": {
                         "name": "fs-replace@1",
@@ -4396,25 +4396,25 @@
                       "inputFingerprint": "sha256-v2:e5061823585dfea687f1a29c88fa05d4f43f5badc2915a90dbfc91f9bee29a86",
                       "evidence": {
                         "approval": "mismatched",
-                        "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                        "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                         "isolation": "not-required",
                         "isolationEvidenceId": null
                       },
                       "handles": {},
                       "runtimeReceipt": "missing",
-                      "timestamp": "2026-10-25T13:54:19.078Z"
+                      "timestamp": "2026-10-25T14:22:37.286Z"
                     }
                   }
                 },
                 {
-                  "at": 1792936459339,
+                  "at": 1792938157617,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                  "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                   "result": {
                     "decision": "allow",
                     "evidence": {
                       "approval": "approved",
-                      "approvalEvidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                      "approvalEvidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                       "isolation": "not-required",
                       "isolationEvidenceId": null
                     }
@@ -4422,16 +4422,16 @@
                 }
               ],
               "approval": {
-                "evidenceId": "2d68df08-38f7-4473-83f4-60510387024c",
+                "evidenceId": "d6f36c92-f87a-4f10-a64d-fbb1d3e48b32",
                 "source": "operator-review",
-                "operationId": "mea604784883c4f09bfbe3d596295efe1:apply",
+                "operationId": "m9732f66bcc304e509a624a5b714525da:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:8406b1e60ce1b0c541557fbad9791c618593039a15bbc143fa137b8d1556997b",
                 "planSha256": "f1166c79521f176b5ff10605ee87705c4bc06fdae296b953559ab03b727a6b64",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:18.817Z",
-                "expiresAt": "2026-10-25T14:04:18.817Z",
+                "reviewedAt": "2026-10-25T14:22:37.002Z",
+                "expiresAt": "2026-10-25T14:32:37.002Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -4440,7 +4440,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -4539,7 +4539,7 @@
           "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
         },
         "runtimeIdentity": {
-          "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+          "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
           "files": [
             {
               "repo": "ajo",
@@ -4636,22 +4636,22 @@
       "scenario": "acceptance-held",
       "record": {
         "format": "mg.maintenance-acceptance.v1",
-        "capturedAt": 1792936465096,
+        "capturedAt": 1792938162774,
         "evidenceMode": "recorded-runtime",
-        "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+        "runId": "33350d48d05c4564ba0fc8452712d8d4",
         "scenario": "acceptance-held",
         "phase": "held",
         "bench": {
           "actions": [
             {
               "action": "check",
-              "at": 1792936462733,
+              "at": 1792938160912,
               "result": {
                 "ok": true,
                 "summary": [
                   "read:receiver/fs-ledger",
                   "read:workspace/document.txt",
-                  "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                  "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                   "write:receiver/fs-ledger",
                   "write:workspace/document.txt"
                 ]
@@ -4659,21 +4659,21 @@
             },
             {
               "action": "dispatch",
-              "at": 1792936463959,
+              "at": 1792938161819,
               "result": {
                 "crashed": true
               }
             },
             {
               "action": "recover",
-              "at": 1792936464542,
+              "at": 1792938162362,
               "result": {
                 "journal": {
                   "bindings": {
                     "apply-h": "apply",
                     "apply-o": {
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
-                      "result_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply:result",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
+                      "result_id": "m33350d48d05c4564ba0fc8452712d8d4:apply:result",
                       "tool_version": "fs-replace@1",
                       "value": {
                         "path": "document.txt",
@@ -4902,42 +4902,42 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     }
                   ],
@@ -4953,7 +4953,7 @@
                       },
                       "attempts": 1,
                       "grant": "g-fs-replace",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "parent": null,
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
@@ -4965,7 +4965,7 @@
                         "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                         "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                       },
-                      "started_at": 1792936463,
+                      "started_at": 1792938161,
                       "state": "SUCCEEDED",
                       "tool": "fs-replace@1"
                     }
@@ -5005,7 +5005,7 @@
                       "op": "sequence"
                     }
                   },
-                  "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                  "session": "m33350d48d05c4564ba0fc8452712d8d4",
                   "status": "SUCCEEDED",
                   "usage": {
                     "g-fs-replace": 2
@@ -5021,7 +5021,7 @@
                 "summary": [
                   "read:receiver/fs-ledger",
                   "read:workspace/document.txt",
-                  "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                  "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                   "write:receiver/fs-ledger",
                   "write:workspace/document.txt"
                 ]
@@ -5029,27 +5029,27 @@
             },
             {
               "action": "verify",
-              "at": 1792936465027,
+              "at": 1792938162735,
               "result": {
-                "at": 1792936465027,
+                "at": 1792938162735,
                 "method": "separate-process-http-station-request-and-file-readback",
                 "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
                 "matchesApprovedBytes": true,
                 "httpStatus": 503,
-                "elapsedMs": 24.082,
+                "elapsedMs": 15.618,
                 "attempts": [
                   {
-                    "at": 1792936465027,
+                    "at": 1792938162735,
                     "httpStatus": 503,
-                    "elapsedMs": 24.082,
+                    "elapsedMs": 15.618,
                     "response": {
                       "service": "site-status-relay",
                       "site": "support-site-01",
                       "status": "maintenance",
                       "configurationSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
-                      "configurationLoadedAt": 1792936464036,
-                      "requestId": "35cfd6dd-c660-40d1-b8b7-b20077a3b908",
-                      "uptimeSeconds": 2.602
+                      "configurationLoadedAt": 1792938161869,
+                      "requestId": "97c1df74-b6a1-469e-b99f-ca282dd8097a",
+                      "uptimeSeconds": 2.075
                     }
                   }
                 ],
@@ -5059,9 +5059,9 @@
                   "site": "support-site-01",
                   "status": "maintenance",
                   "configurationSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
-                  "configurationLoadedAt": 1792936464036,
-                  "requestId": "35cfd6dd-c660-40d1-b8b7-b20077a3b908",
-                  "uptimeSeconds": 2.602
+                  "configurationLoadedAt": 1792938161869,
+                  "requestId": "97c1df74-b6a1-469e-b99f-ca282dd8097a",
+                  "uptimeSeconds": 2.075
                 },
                 "accepted": false,
                 "criterion": "Station request receives HTTP 200 from the separate running relay, which reports the approved configuration digest; disk bytes also match."
@@ -5108,30 +5108,30 @@
               "op": "sequence"
             }
           },
-          "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+          "runId": "33350d48d05c4564ba0fc8452712d8d4",
           "scenario": "acceptance-held",
-          "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+          "session": "m33350d48d05c4564ba0fc8452712d8d4",
           "targetSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
           "verification": {
-            "at": 1792936465027,
+            "at": 1792938162735,
             "method": "separate-process-http-station-request-and-file-readback",
             "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
             "matchesApprovedBytes": true,
             "httpStatus": 503,
-            "elapsedMs": 24.082,
+            "elapsedMs": 15.618,
             "attempts": [
               {
-                "at": 1792936465027,
+                "at": 1792938162735,
                 "httpStatus": 503,
-                "elapsedMs": 24.082,
+                "elapsedMs": 15.618,
                 "response": {
                   "service": "site-status-relay",
                   "site": "support-site-01",
                   "status": "maintenance",
                   "configurationSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
-                  "configurationLoadedAt": 1792936464036,
-                  "requestId": "35cfd6dd-c660-40d1-b8b7-b20077a3b908",
-                  "uptimeSeconds": 2.602
+                  "configurationLoadedAt": 1792938161869,
+                  "requestId": "97c1df74-b6a1-469e-b99f-ca282dd8097a",
+                  "uptimeSeconds": 2.075
                 }
               }
             ],
@@ -5141,9 +5141,9 @@
               "site": "support-site-01",
               "status": "maintenance",
               "configurationSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
-              "configurationLoadedAt": 1792936464036,
-              "requestId": "35cfd6dd-c660-40d1-b8b7-b20077a3b908",
-              "uptimeSeconds": 2.602
+              "configurationLoadedAt": 1792938161869,
+              "requestId": "97c1df74-b6a1-469e-b99f-ca282dd8097a",
+              "uptimeSeconds": 2.075
             },
             "accepted": false,
             "criterion": "Station request receives HTTP 200 from the separate running relay, which reports the approved configuration digest; disk bytes also match."
@@ -5152,8 +5152,8 @@
             "bindings": {
               "apply-h": "apply",
               "apply-o": {
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
-                "result_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply:result",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
+                "result_id": "m33350d48d05c4564ba0fc8452712d8d4:apply:result",
                 "tool_version": "fs-replace@1",
                 "value": {
                   "path": "document.txt",
@@ -5382,42 +5382,42 @@
             "events": [
               {
                 "effect": "read:receiver/fs-ledger",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "start"
               },
               {
                 "effect": "read:workspace/document.txt",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "start"
               },
               {
                 "effect": "write:receiver/fs-ledger",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "start"
               },
               {
                 "effect": "write:workspace/document.txt",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "start"
               },
               {
                 "effect": "read:receiver/fs-ledger",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "query"
               },
               {
                 "effect": "read:workspace/document.txt",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "query"
               },
               {
                 "effect": "write:receiver/fs-ledger",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "query"
               },
               {
                 "effect": "write:workspace/document.txt",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "query"
               }
             ],
@@ -5433,7 +5433,7 @@
                 },
                 "attempts": 1,
                 "grant": "g-fs-replace",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "parent": null,
                 "payload": {
                   "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
@@ -5445,7 +5445,7 @@
                   "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                   "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                 },
-                "started_at": 1792936463,
+                "started_at": 1792938161,
                 "state": "SUCCEEDED",
                 "tool": "fs-replace@1"
               }
@@ -5485,7 +5485,7 @@
                 "op": "sequence"
               }
             },
-            "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+            "session": "m33350d48d05c4564ba0fc8452712d8d4",
             "status": "SUCCEEDED",
             "usage": {
               "g-fs-replace": 2
@@ -5495,37 +5495,37 @@
             "events": [
               {
                 "effect": "read:receiver/fs-ledger",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "start"
               },
               {
                 "effect": "write:receiver/fs-ledger",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "start"
               },
               {
                 "effect": "read:workspace/document.txt",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "start"
               },
               {
                 "effect": "write:workspace/document.txt",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "start"
               },
               {
                 "effect": "read:receiver/fs-ledger",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "query"
               },
               {
                 "effect": "write:receiver/fs-ledger",
-                "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "phase": "query"
               }
             ],
             "operations": {
-              "mc23c603aefd7418b8fb7ca478fbd4741:apply": {
+              "m33350d48d05c4564ba0fc8452712d8d4:apply": {
                 "payload": {
                   "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
                   "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
@@ -5545,13 +5545,13 @@
                 "tool": "fs-replace@1",
                 "witness": {
                   "device": 65,
-                  "inode": 267698,
+                  "inode": 287500,
                   "result": {
                     "path": "document.txt",
                     "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                     "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                   },
-                  "stage": "3c253c5710b7dd9042d5be7263d97e551110ed61222b488143e4f34513c55037.stage"
+                  "stage": "9483e1c71d734b560cf3bf800ae9b43febea07d3afe51947ced6289c858cead1.stage"
                 }
               }
             },
@@ -5559,7 +5559,7 @@
           },
           "physicalWrites": [
             {
-              "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+              "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
               "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
             }
           ],
@@ -5568,14 +5568,14 @@
         },
         "guardEvents": [
           {
-            "at": 1792936463537,
+            "at": 1792938161398,
             "component": "@navivra/rpc/guard",
-            "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+            "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
             "result": {
               "decision": "allow",
               "evidence": {
                 "approval": "approved",
-                "approvalEvidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                "approvalEvidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                 "isolation": "not-required",
                 "isolationEvidenceId": null
               }
@@ -5583,38 +5583,38 @@
           }
         ],
         "approval": {
-          "evidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+          "evidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
           "source": "operator-review",
-          "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+          "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
           "toolCatalogId": "mg.maintenance.config.v1",
           "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
           "inputFingerprint": "sha256-v2:e733f8c1eff51e87e0d217d5df813c41b2439728c20a97c1d6d45798bb7ead14",
           "planSha256": "169951c067ac40dbcb8d4228306eb0f97dce588c3d015559eef7127e5a2bc6fc",
           "outcome": "approved",
-          "reviewedAt": "2026-10-25T13:54:23.140Z",
-          "expiresAt": "2026-10-25T14:04:23.140Z",
+          "reviewedAt": "2026-10-25T14:22:41.140Z",
+          "expiresAt": "2026-10-25T14:32:41.140Z",
           "toolName": "fs-replace@1",
           "subject": "local-bench-operator"
         },
         "history": [
           {
             "action": "create",
-            "at": 1792936462773,
+            "at": 1792938160938,
             "snapshot": {
-              "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+              "runId": "33350d48d05c4564ba0fc8452712d8d4",
               "scenario": "acceptance-held",
               "phase": "prepared",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936462733,
+                    "at": 1792938160912,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                        "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -5661,9 +5661,9 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+                "runId": "33350d48d05c4564ba0fc8452712d8d4",
                 "scenario": "acceptance-held",
-                "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                "session": "m33350d48d05c4564ba0fc8452712d8d4",
                 "targetSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
                 "verification": null,
                 "journal": null,
@@ -5682,7 +5682,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -5777,22 +5777,22 @@
           },
           {
             "action": "approve",
-            "at": 1792936463140,
+            "at": 1792938161140,
             "snapshot": {
-              "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+              "runId": "33350d48d05c4564ba0fc8452712d8d4",
               "scenario": "acceptance-held",
               "phase": "approved",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936462733,
+                    "at": 1792938160912,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                        "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -5839,9 +5839,9 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+                "runId": "33350d48d05c4564ba0fc8452712d8d4",
                 "scenario": "acceptance-held",
-                "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                "session": "m33350d48d05c4564ba0fc8452712d8d4",
                 "targetSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
                 "verification": null,
                 "journal": null,
@@ -5855,16 +5855,16 @@
               },
               "guardEvents": [],
               "approval": {
-                "evidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                "evidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                 "source": "operator-review",
-                "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:e733f8c1eff51e87e0d217d5df813c41b2439728c20a97c1d6d45798bb7ead14",
                 "planSha256": "169951c067ac40dbcb8d4228306eb0f97dce588c3d015559eef7127e5a2bc6fc",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:23.140Z",
-                "expiresAt": "2026-10-25T14:04:23.140Z",
+                "reviewedAt": "2026-10-25T14:22:41.140Z",
+                "expiresAt": "2026-10-25T14:32:41.140Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -5873,7 +5873,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -5968,22 +5968,22 @@
           },
           {
             "action": "dispatch-pending",
-            "at": 1792936463537,
+            "at": 1792938161398,
             "snapshot": {
-              "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+              "runId": "33350d48d05c4564ba0fc8452712d8d4",
               "scenario": "acceptance-held",
               "phase": "dispatching",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936462733,
+                    "at": 1792938160912,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                        "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -6030,9 +6030,9 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+                "runId": "33350d48d05c4564ba0fc8452712d8d4",
                 "scenario": "acceptance-held",
-                "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                "session": "m33350d48d05c4564ba0fc8452712d8d4",
                 "targetSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
                 "verification": null,
                 "journal": null,
@@ -6046,14 +6046,14 @@
               },
               "guardEvents": [
                 {
-                  "at": 1792936463537,
+                  "at": 1792938161398,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                  "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                   "result": {
                     "decision": "allow",
                     "evidence": {
                       "approval": "approved",
-                      "approvalEvidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                      "approvalEvidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                       "isolation": "not-required",
                       "isolationEvidenceId": null
                     }
@@ -6061,16 +6061,16 @@
                 }
               ],
               "approval": {
-                "evidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                "evidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                 "source": "operator-review",
-                "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:e733f8c1eff51e87e0d217d5df813c41b2439728c20a97c1d6d45798bb7ead14",
                 "planSha256": "169951c067ac40dbcb8d4228306eb0f97dce588c3d015559eef7127e5a2bc6fc",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:23.140Z",
-                "expiresAt": "2026-10-25T14:04:23.140Z",
+                "reviewedAt": "2026-10-25T14:22:41.140Z",
+                "expiresAt": "2026-10-25T14:32:41.140Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -6079,7 +6079,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -6174,22 +6174,22 @@
           },
           {
             "action": "dispatch",
-            "at": 1792936463991,
+            "at": 1792938161869,
             "snapshot": {
-              "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+              "runId": "33350d48d05c4564ba0fc8452712d8d4",
               "scenario": "acceptance-held",
               "phase": "interrupted",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936462733,
+                    "at": 1792938160912,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                        "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -6197,7 +6197,7 @@
                   },
                   {
                     "action": "dispatch",
-                    "at": 1792936463959,
+                    "at": 1792938161819,
                     "result": {
                       "crashed": true
                     }
@@ -6243,9 +6243,9 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+                "runId": "33350d48d05c4564ba0fc8452712d8d4",
                 "scenario": "acceptance-held",
-                "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                "session": "m33350d48d05c4564ba0fc8452712d8d4",
                 "targetSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
                 "verification": null,
                 "journal": {
@@ -6470,22 +6470,22 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     }
                   ],
@@ -6493,14 +6493,14 @@
                     "apply": {
                       "attempts": 1,
                       "grant": "g-fs-replace",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "parent": null,
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
                         "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                         "path": "document.txt"
                       },
-                      "started_at": 1792936463,
+                      "started_at": 1792938161,
                       "state": "IN_FLIGHT",
                       "tool": "fs-replace@1"
                     }
@@ -6540,7 +6540,7 @@
                       "op": "sequence"
                     }
                   },
-                  "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                  "session": "m33350d48d05c4564ba0fc8452712d8d4",
                   "status": "RUNNING",
                   "usage": {
                     "g-fs-replace": 1
@@ -6550,27 +6550,27 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     }
                   ],
                   "operations": {
-                    "mc23c603aefd7418b8fb7ca478fbd4741:apply": {
+                    "m33350d48d05c4564ba0fc8452712d8d4:apply": {
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
                         "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
@@ -6590,13 +6590,13 @@
                       "tool": "fs-replace@1",
                       "witness": {
                         "device": 65,
-                        "inode": 267698,
+                        "inode": 287500,
                         "result": {
                           "path": "document.txt",
                           "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                           "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                         },
-                        "stage": "3c253c5710b7dd9042d5be7263d97e551110ed61222b488143e4f34513c55037.stage"
+                        "stage": "9483e1c71d734b560cf3bf800ae9b43febea07d3afe51947ced6289c858cead1.stage"
                       }
                     }
                   },
@@ -6604,7 +6604,7 @@
                 },
                 "physicalWrites": [
                   {
-                    "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                    "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                     "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                   }
                 ],
@@ -6613,14 +6613,14 @@
               },
               "guardEvents": [
                 {
-                  "at": 1792936463537,
+                  "at": 1792938161398,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                  "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                   "result": {
                     "decision": "allow",
                     "evidence": {
                       "approval": "approved",
-                      "approvalEvidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                      "approvalEvidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                       "isolation": "not-required",
                       "isolationEvidenceId": null
                     }
@@ -6628,16 +6628,16 @@
                 }
               ],
               "approval": {
-                "evidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                "evidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                 "source": "operator-review",
-                "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:e733f8c1eff51e87e0d217d5df813c41b2439728c20a97c1d6d45798bb7ead14",
                 "planSha256": "169951c067ac40dbcb8d4228306eb0f97dce588c3d015559eef7127e5a2bc6fc",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:23.140Z",
-                "expiresAt": "2026-10-25T14:04:23.140Z",
+                "reviewedAt": "2026-10-25T14:22:41.140Z",
+                "expiresAt": "2026-10-25T14:32:41.140Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -6646,7 +6646,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -6741,22 +6741,22 @@
           },
           {
             "action": "recover",
-            "at": 1792936464590,
+            "at": 1792938162393,
             "snapshot": {
-              "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+              "runId": "33350d48d05c4564ba0fc8452712d8d4",
               "scenario": "acceptance-held",
               "phase": "recovered",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936462733,
+                    "at": 1792938160912,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                        "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -6764,21 +6764,21 @@
                   },
                   {
                     "action": "dispatch",
-                    "at": 1792936463959,
+                    "at": 1792938161819,
                     "result": {
                       "crashed": true
                     }
                   },
                   {
                     "action": "recover",
-                    "at": 1792936464542,
+                    "at": 1792938162362,
                     "result": {
                       "journal": {
                         "bindings": {
                           "apply-h": "apply",
                           "apply-o": {
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
-                            "result_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply:result",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
+                            "result_id": "m33350d48d05c4564ba0fc8452712d8d4:apply:result",
                             "tool_version": "fs-replace@1",
                             "value": {
                               "path": "document.txt",
@@ -7007,42 +7007,42 @@
                         "events": [
                           {
                             "effect": "read:receiver/fs-ledger",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "read:workspace/document.txt",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "write:receiver/fs-ledger",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "write:workspace/document.txt",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "read:receiver/fs-ledger",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "read:workspace/document.txt",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "write:receiver/fs-ledger",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "write:workspace/document.txt",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "query"
                           }
                         ],
@@ -7058,7 +7058,7 @@
                             },
                             "attempts": 1,
                             "grant": "g-fs-replace",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "parent": null,
                             "payload": {
                               "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
@@ -7070,7 +7070,7 @@
                               "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                               "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                             },
-                            "started_at": 1792936463,
+                            "started_at": 1792938161,
                             "state": "SUCCEEDED",
                             "tool": "fs-replace@1"
                           }
@@ -7110,7 +7110,7 @@
                             "op": "sequence"
                           }
                         },
-                        "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                        "session": "m33350d48d05c4564ba0fc8452712d8d4",
                         "status": "SUCCEEDED",
                         "usage": {
                           "g-fs-replace": 2
@@ -7126,7 +7126,7 @@
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                        "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -7173,17 +7173,17 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+                "runId": "33350d48d05c4564ba0fc8452712d8d4",
                 "scenario": "acceptance-held",
-                "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                "session": "m33350d48d05c4564ba0fc8452712d8d4",
                 "targetSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
                 "verification": null,
                 "journal": {
                   "bindings": {
                     "apply-h": "apply",
                     "apply-o": {
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
-                      "result_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply:result",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
+                      "result_id": "m33350d48d05c4564ba0fc8452712d8d4:apply:result",
                       "tool_version": "fs-replace@1",
                       "value": {
                         "path": "document.txt",
@@ -7412,42 +7412,42 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     }
                   ],
@@ -7463,7 +7463,7 @@
                       },
                       "attempts": 1,
                       "grant": "g-fs-replace",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "parent": null,
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
@@ -7475,7 +7475,7 @@
                         "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                         "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                       },
-                      "started_at": 1792936463,
+                      "started_at": 1792938161,
                       "state": "SUCCEEDED",
                       "tool": "fs-replace@1"
                     }
@@ -7515,7 +7515,7 @@
                       "op": "sequence"
                     }
                   },
-                  "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                  "session": "m33350d48d05c4564ba0fc8452712d8d4",
                   "status": "SUCCEEDED",
                   "usage": {
                     "g-fs-replace": 2
@@ -7525,37 +7525,37 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     }
                   ],
                   "operations": {
-                    "mc23c603aefd7418b8fb7ca478fbd4741:apply": {
+                    "m33350d48d05c4564ba0fc8452712d8d4:apply": {
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
                         "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
@@ -7575,13 +7575,13 @@
                       "tool": "fs-replace@1",
                       "witness": {
                         "device": 65,
-                        "inode": 267698,
+                        "inode": 287500,
                         "result": {
                           "path": "document.txt",
                           "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                           "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                         },
-                        "stage": "3c253c5710b7dd9042d5be7263d97e551110ed61222b488143e4f34513c55037.stage"
+                        "stage": "9483e1c71d734b560cf3bf800ae9b43febea07d3afe51947ced6289c858cead1.stage"
                       }
                     }
                   },
@@ -7589,7 +7589,7 @@
                 },
                 "physicalWrites": [
                   {
-                    "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                    "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                     "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                   }
                 ],
@@ -7598,14 +7598,14 @@
               },
               "guardEvents": [
                 {
-                  "at": 1792936463537,
+                  "at": 1792938161398,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                  "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                   "result": {
                     "decision": "allow",
                     "evidence": {
                       "approval": "approved",
-                      "approvalEvidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                      "approvalEvidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                       "isolation": "not-required",
                       "isolationEvidenceId": null
                     }
@@ -7613,16 +7613,16 @@
                 }
               ],
               "approval": {
-                "evidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                "evidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                 "source": "operator-review",
-                "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:e733f8c1eff51e87e0d217d5df813c41b2439728c20a97c1d6d45798bb7ead14",
                 "planSha256": "169951c067ac40dbcb8d4228306eb0f97dce588c3d015559eef7127e5a2bc6fc",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:23.140Z",
-                "expiresAt": "2026-10-25T14:04:23.140Z",
+                "reviewedAt": "2026-10-25T14:22:41.140Z",
+                "expiresAt": "2026-10-25T14:32:41.140Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -7631,7 +7631,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -7726,22 +7726,22 @@
           },
           {
             "action": "verify",
-            "at": 1792936465092,
+            "at": 1792938162771,
             "snapshot": {
-              "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+              "runId": "33350d48d05c4564ba0fc8452712d8d4",
               "scenario": "acceptance-held",
               "phase": "held",
               "bench": {
                 "actions": [
                   {
                     "action": "check",
-                    "at": 1792936462733,
+                    "at": 1792938160912,
                     "result": {
                       "ok": true,
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                        "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -7749,21 +7749,21 @@
                   },
                   {
                     "action": "dispatch",
-                    "at": 1792936463959,
+                    "at": 1792938161819,
                     "result": {
                       "crashed": true
                     }
                   },
                   {
                     "action": "recover",
-                    "at": 1792936464542,
+                    "at": 1792938162362,
                     "result": {
                       "journal": {
                         "bindings": {
                           "apply-h": "apply",
                           "apply-o": {
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
-                            "result_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply:result",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
+                            "result_id": "m33350d48d05c4564ba0fc8452712d8d4:apply:result",
                             "tool_version": "fs-replace@1",
                             "value": {
                               "path": "document.txt",
@@ -7992,42 +7992,42 @@
                         "events": [
                           {
                             "effect": "read:receiver/fs-ledger",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "read:workspace/document.txt",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "write:receiver/fs-ledger",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "write:workspace/document.txt",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "start"
                           },
                           {
                             "effect": "read:receiver/fs-ledger",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "read:workspace/document.txt",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "write:receiver/fs-ledger",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "query"
                           },
                           {
                             "effect": "write:workspace/document.txt",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "phase": "query"
                           }
                         ],
@@ -8043,7 +8043,7 @@
                             },
                             "attempts": 1,
                             "grant": "g-fs-replace",
-                            "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                            "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                             "parent": null,
                             "payload": {
                               "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
@@ -8055,7 +8055,7 @@
                               "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                               "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                             },
-                            "started_at": 1792936463,
+                            "started_at": 1792938161,
                             "state": "SUCCEEDED",
                             "tool": "fs-replace@1"
                           }
@@ -8095,7 +8095,7 @@
                             "op": "sequence"
                           }
                         },
-                        "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                        "session": "m33350d48d05c4564ba0fc8452712d8d4",
                         "status": "SUCCEEDED",
                         "usage": {
                           "g-fs-replace": 2
@@ -8111,7 +8111,7 @@
                       "summary": [
                         "read:receiver/fs-ledger",
                         "read:workspace/document.txt",
-                        "runtime:mc23c603aefd7418b8fb7ca478fbd4741",
+                        "runtime:m33350d48d05c4564ba0fc8452712d8d4",
                         "write:receiver/fs-ledger",
                         "write:workspace/document.txt"
                       ]
@@ -8119,27 +8119,27 @@
                   },
                   {
                     "action": "verify",
-                    "at": 1792936465027,
+                    "at": 1792938162735,
                     "result": {
-                      "at": 1792936465027,
+                      "at": 1792938162735,
                       "method": "separate-process-http-station-request-and-file-readback",
                       "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
                       "matchesApprovedBytes": true,
                       "httpStatus": 503,
-                      "elapsedMs": 24.082,
+                      "elapsedMs": 15.618,
                       "attempts": [
                         {
-                          "at": 1792936465027,
+                          "at": 1792938162735,
                           "httpStatus": 503,
-                          "elapsedMs": 24.082,
+                          "elapsedMs": 15.618,
                           "response": {
                             "service": "site-status-relay",
                             "site": "support-site-01",
                             "status": "maintenance",
                             "configurationSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
-                            "configurationLoadedAt": 1792936464036,
-                            "requestId": "35cfd6dd-c660-40d1-b8b7-b20077a3b908",
-                            "uptimeSeconds": 2.602
+                            "configurationLoadedAt": 1792938161869,
+                            "requestId": "97c1df74-b6a1-469e-b99f-ca282dd8097a",
+                            "uptimeSeconds": 2.075
                           }
                         }
                       ],
@@ -8149,9 +8149,9 @@
                         "site": "support-site-01",
                         "status": "maintenance",
                         "configurationSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
-                        "configurationLoadedAt": 1792936464036,
-                        "requestId": "35cfd6dd-c660-40d1-b8b7-b20077a3b908",
-                        "uptimeSeconds": 2.602
+                        "configurationLoadedAt": 1792938161869,
+                        "requestId": "97c1df74-b6a1-469e-b99f-ca282dd8097a",
+                        "uptimeSeconds": 2.075
                       },
                       "accepted": false,
                       "criterion": "Station request receives HTTP 200 from the separate running relay, which reports the approved configuration digest; disk bytes also match."
@@ -8198,30 +8198,30 @@
                     "op": "sequence"
                   }
                 },
-                "runId": "c23c603aefd7418b8fb7ca478fbd4741",
+                "runId": "33350d48d05c4564ba0fc8452712d8d4",
                 "scenario": "acceptance-held",
-                "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                "session": "m33350d48d05c4564ba0fc8452712d8d4",
                 "targetSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
                 "verification": {
-                  "at": 1792936465027,
+                  "at": 1792938162735,
                   "method": "separate-process-http-station-request-and-file-readback",
                   "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
                   "matchesApprovedBytes": true,
                   "httpStatus": 503,
-                  "elapsedMs": 24.082,
+                  "elapsedMs": 15.618,
                   "attempts": [
                     {
-                      "at": 1792936465027,
+                      "at": 1792938162735,
                       "httpStatus": 503,
-                      "elapsedMs": 24.082,
+                      "elapsedMs": 15.618,
                       "response": {
                         "service": "site-status-relay",
                         "site": "support-site-01",
                         "status": "maintenance",
                         "configurationSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
-                        "configurationLoadedAt": 1792936464036,
-                        "requestId": "35cfd6dd-c660-40d1-b8b7-b20077a3b908",
-                        "uptimeSeconds": 2.602
+                        "configurationLoadedAt": 1792938161869,
+                        "requestId": "97c1df74-b6a1-469e-b99f-ca282dd8097a",
+                        "uptimeSeconds": 2.075
                       }
                     }
                   ],
@@ -8231,9 +8231,9 @@
                     "site": "support-site-01",
                     "status": "maintenance",
                     "configurationSha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927",
-                    "configurationLoadedAt": 1792936464036,
-                    "requestId": "35cfd6dd-c660-40d1-b8b7-b20077a3b908",
-                    "uptimeSeconds": 2.602
+                    "configurationLoadedAt": 1792938161869,
+                    "requestId": "97c1df74-b6a1-469e-b99f-ca282dd8097a",
+                    "uptimeSeconds": 2.075
                   },
                   "accepted": false,
                   "criterion": "Station request receives HTTP 200 from the separate running relay, which reports the approved configuration digest; disk bytes also match."
@@ -8242,8 +8242,8 @@
                   "bindings": {
                     "apply-h": "apply",
                     "apply-o": {
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
-                      "result_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply:result",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
+                      "result_id": "m33350d48d05c4564ba0fc8452712d8d4:apply:result",
                       "tool_version": "fs-replace@1",
                       "value": {
                         "path": "document.txt",
@@ -8472,42 +8472,42 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     }
                   ],
@@ -8523,7 +8523,7 @@
                       },
                       "attempts": 1,
                       "grant": "g-fs-replace",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "parent": null,
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
@@ -8535,7 +8535,7 @@
                         "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                         "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                       },
-                      "started_at": 1792936463,
+                      "started_at": 1792938161,
                       "state": "SUCCEEDED",
                       "tool": "fs-replace@1"
                     }
@@ -8575,7 +8575,7 @@
                       "op": "sequence"
                     }
                   },
-                  "session": "mc23c603aefd7418b8fb7ca478fbd4741",
+                  "session": "m33350d48d05c4564ba0fc8452712d8d4",
                   "status": "SUCCEEDED",
                   "usage": {
                     "g-fs-replace": 2
@@ -8585,37 +8585,37 @@
                   "events": [
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "write:workspace/document.txt",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "start"
                     },
                     {
                       "effect": "read:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     },
                     {
                       "effect": "write:receiver/fs-ledger",
-                      "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                      "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                       "phase": "query"
                     }
                   ],
                   "operations": {
-                    "mc23c603aefd7418b8fb7ca478fbd4741:apply": {
+                    "m33350d48d05c4564ba0fc8452712d8d4:apply": {
                       "payload": {
                         "content": "station = support-site-01\nconfiguration = reviewed-02\nservice_mode = maintenance\n",
                         "expected_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
@@ -8635,13 +8635,13 @@
                       "tool": "fs-replace@1",
                       "witness": {
                         "device": 65,
-                        "inode": 267698,
+                        "inode": 287500,
                         "result": {
                           "path": "document.txt",
                           "previous_sha256": "f420d005be6daf8e8d881194a1953dc051302a0651ff316b69c914e8d20de6f8",
                           "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                         },
-                        "stage": "3c253c5710b7dd9042d5be7263d97e551110ed61222b488143e4f34513c55037.stage"
+                        "stage": "9483e1c71d734b560cf3bf800ae9b43febea07d3afe51947ced6289c858cead1.stage"
                       }
                     }
                   },
@@ -8649,7 +8649,7 @@
                 },
                 "physicalWrites": [
                   {
-                    "operation_id": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                    "operation_id": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                     "sha256": "a0afd6aeed8f6059778bea0e5f8cdb821d7fc1be721cf3822082d7edef67a927"
                   }
                 ],
@@ -8658,14 +8658,14 @@
               },
               "guardEvents": [
                 {
-                  "at": 1792936463537,
+                  "at": 1792938161398,
                   "component": "@navivra/rpc/guard",
-                  "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                  "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                   "result": {
                     "decision": "allow",
                     "evidence": {
                       "approval": "approved",
-                      "approvalEvidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                      "approvalEvidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                       "isolation": "not-required",
                       "isolationEvidenceId": null
                     }
@@ -8673,16 +8673,16 @@
                 }
               ],
               "approval": {
-                "evidenceId": "86c75f53-b799-45e9-b52d-02a89f8714b0",
+                "evidenceId": "f96616e9-7bad-471b-8d9f-667dbb753c4c",
                 "source": "operator-review",
-                "operationId": "mc23c603aefd7418b8fb7ca478fbd4741:apply",
+                "operationId": "m33350d48d05c4564ba0fc8452712d8d4:apply",
                 "toolCatalogId": "mg.maintenance.config.v1",
                 "reviewedManifestHash": "2bec31e5e864985cb51e3193bee764a6ba367bbacb5d3acd31e76841c6f287de",
                 "inputFingerprint": "sha256-v2:e733f8c1eff51e87e0d217d5df813c41b2439728c20a97c1d6d45798bb7ead14",
                 "planSha256": "169951c067ac40dbcb8d4228306eb0f97dce588c3d015559eef7127e5a2bc6fc",
                 "outcome": "approved",
-                "reviewedAt": "2026-10-25T13:54:23.140Z",
-                "expiresAt": "2026-10-25T14:04:23.140Z",
+                "reviewedAt": "2026-10-25T14:22:41.140Z",
+                "expiresAt": "2026-10-25T14:32:41.140Z",
                 "toolName": "fs-replace@1",
                 "subject": "local-bench-operator"
               },
@@ -8691,7 +8691,7 @@
                 "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
               },
               "runtimeIdentity": {
-                "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+                "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
                 "files": [
                   {
                     "repo": "ajo",
@@ -8790,7 +8790,7 @@
           "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
         },
         "runtimeIdentity": {
-          "adapterSha256": "34c6e407595d7e0b70b6a104fae44a7fd5b8478a31537f50895b52671aad30b9",
+          "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
           "files": [
             {
               "repo": "ajo",

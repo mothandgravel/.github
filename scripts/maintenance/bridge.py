@@ -9,6 +9,7 @@ import subprocess
 import sys
 import os
 import threading
+import signal
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--ajo-root", required=True)
@@ -62,6 +63,9 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({"error": "another native action is in progress; reconcile after it settles"}, 409)
         try:
             checked_sources()
+            copied_digest = hashlib.sha256(Path(__file__).read_bytes() + b"".join((adapter / name).read_bytes() for name in ("runtime.py", "relay.py", "contracts.py"))).hexdigest()
+            if copied_digest != adapter_digest:
+                raise ValueError("native adapter copy changed since bridge startup")
             if hashlib.sha256(binary.read_bytes()).hexdigest() != binary_hash:
                 raise ValueError("native evaluator bytes changed since bridge startup")
             length = int(self.headers.get("Content-Length", "0"))
@@ -73,10 +77,16 @@ class Handler(BaseHTTPRequestHandler):
             command = [sys.executable, str(adapter / "runtime.py"), "--ajo-root", args.ajo_root, "--hosts", args.hosts, "--data-root", args.data_root, "--run", body["run"], "--command", body["command"], "--scenario", body.get("scenario", "lost-reply")]
             if body["command"] == "dispatch":
                 command += ["--approved-plan-sha256", body.get("approvedPlanSha256", "")]
-            result = subprocess.run(command, text=True, capture_output=True, timeout=40)
-            if result.returncode:
-                raise RuntimeError(result.stderr[-1200:])
-            self.reply(json.loads(result.stdout))
+            process = subprocess.Popen(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+            try:
+                stdout, stderr = process.communicate(timeout=40)
+            except subprocess.TimeoutExpired:
+                os.killpg(process.pid, signal.SIGKILL)
+                process.communicate()
+                raise RuntimeError("native action timed out; reopen its account before continuing")
+            if process.returncode:
+                raise RuntimeError(stderr[-1200:])
+            self.reply(json.loads(stdout))
         except (KeyError, ValueError, OSError, RuntimeError, subprocess.TimeoutExpired) as error:
             self.reply({"error": str(error)}, 400)
         finally:

@@ -76,7 +76,12 @@ def main():
         if args.command == "dispatch" and journal_file.exists():
             raise ValueError("original operation already dispatched; query recovery instead")
         if args.command == "dispatch":
-            require_approved_plan(record, args.approved_plan_sha256)
+            try:
+                require_approved_plan(record, args.approved_plan_sha256)
+            except ValueError as error:
+                record["actions"].append({"action": "dispatch-refused", "at": int(time.time() * 1000), "result": {"notInvoked": True, "reason": str(error)}})
+                durable_json(record_file, record)
+                raise
         if args.command == "recover" and not journal_file.exists():
             raise ValueError("no interrupted operation")
         cmd = {"check": "check", "dispatch": "run", "recover": "resume"}[args.command]
@@ -102,6 +107,8 @@ def main():
                 response = urllib.request.urlopen(f"http://127.0.0.1:{relay['port']}/station-status", timeout=3)
             except urllib.error.HTTPError as error:
                 response = error
+            except urllib.error.URLError:
+                return None, {"status": "relay-unavailable", "configurationSha256": None}, round((time.monotonic() - before) * 1000, 3)
             with response:
                 status = response.status
                 body = json.loads(response.read(65536))
