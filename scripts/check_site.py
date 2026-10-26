@@ -132,6 +132,37 @@ def main() -> int:
     check('id="studio"' in html, "Missing studio introduction")
     check(len(parser.ids) >= 8, "Expected semantic page landmarks")
 
+    # These linked specimens must work on the public static deployment, including
+    # fragments on their destination pages rather than only each page's own anchors.
+    for page_path in ('specimens/maintenance-acceptance/index.html',
+                      'specimens/maintenance-acceptance/tnt/index.html'):
+        page_file = ROOT / page_path
+        check(page_file.is_file(), f'Missing {page_path}')
+        if not page_file.is_file():
+            continue
+        page_html = page_file.read_text(encoding='utf-8')
+        parsed = SiteParser()
+        parsed.feed(page_html)
+        expected_url = 'https://mothandgravel.com/' + page_path.removesuffix('index.html')
+        check(f'<link rel="canonical" href="{expected_url}">' in page_html,
+              f'{page_path} canonical URL missing')
+        check(f'<loc>{expected_url}</loc>' in (ROOT / 'sitemap.xml').read_text(encoding='utf-8'),
+              f'{page_path} missing from sitemap')
+        for relative in re.findall(r'(?:href|src)="([^"]+)"', page_html):
+            url = urlsplit(relative)
+            if url.scheme or url.netloc:
+                continue
+            target = ((ROOT / url.path.lstrip('/')) if url.path.startswith('/') else
+                      page_file.parent / url.path if url.path else page_file).resolve()
+            if target.is_dir():
+                target /= 'index.html'
+            check(target.is_relative_to(ROOT.resolve()), f'{page_path} escapes docs/: {relative}')
+            check(target.is_file(), f'{page_path} broken destination: {relative}')
+            if target.is_file() and url.fragment and target.suffix == '.html':
+                destination = SiteParser()
+                destination.feed(target.read_text(encoding='utf-8'))
+                check(url.fragment in destination.ids, f'{page_path} broken fragment: {relative}')
+
     css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
     check(css.count("{") == css.count("}"), "Unbalanced CSS braces")
     check('data-theme="afterlight"' in css, "Light theme styles missing")

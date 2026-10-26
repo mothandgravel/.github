@@ -38,6 +38,10 @@ jobs:
           node --test scripts/coastal_identity.test.mjs
           node --test scripts/coastal_haxr.test.mjs scripts/coastal_haxr_motion.test.mjs
           node --test scripts/field_power.test.mjs
+          node --test scripts/maintenance_acceptance.test.mjs
+          python3 scripts/maintenance/contracts_test.py
+          python3 scripts/build_maintenance_tnt.py --check
+          node --test scripts/maintenance_tnt.test.mjs
           node --test scripts/datacenter.test.mjs
           node --test scripts/finland_account.test.mjs
           node --test scripts/notes_model.test.mjs
@@ -51,6 +55,12 @@ jobs:
         run: python3 scripts/check_site.py
       - name: Syntax-check browser JavaScript
         run: |
+          node --check docs/assets/maintenance-acceptance.mjs
+          node --check docs/assets/maintenance-acceptance-model.mjs
+          node --check docs/assets/maintenance-tnt.mjs
+          node --check docs/assets/maintenance-tnt-model.mjs
+          node --check docs/assets/maintenance-tnt-weave.mjs
+          node --check scripts/audit_maintenance.mjs
           node --check docs/assets/datacenter.mjs
           node --check docs/assets/datacenter-finland.mjs
           node --check docs/assets/datacenter-households.mjs

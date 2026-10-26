@@ -46,6 +46,8 @@ def build(check=False):
              (ROOT / 'docs/specimens/coastal-watch/radar-replay/index.html', DOMAIN + 'specimens/coastal-watch/radar-replay/', 'The water, twice recorded.', None),
              (ROOT / 'docs/specimens/data-center/index.html', DOMAIN + 'specimens/data-center/', 'Where the power goes.', None),
              (ROOT / 'docs/specimens/field-power/index.html', DOMAIN + 'specimens/field-power/', 'What stays on.', None),
+             (ROOT / 'docs/specimens/maintenance-acceptance/index.html', DOMAIN + 'specimens/maintenance-acceptance/', 'The action may already have happened.', None),
+             (ROOT / 'docs/specimens/maintenance-acceptance/tnt/index.html', DOMAIN + 'specimens/maintenance-acceptance/tnt/', 'The other end is waiting.', None),
              (ROOT / 'docs/specimens/coastal-watch/index.html', DOMAIN + 'specimens/coastal-watch/', 'The water between updates.', None),
              (ROOT / 'docs/specimens/maritime-study/index.html', DOMAIN + 'specimens/maritime-study/', 'The crossing, held still.', None),
              (ROOT / 'docs/investigations/index.html', DOMAIN + 'investigations/', 'Three questions. Still open.', None),

@@ -1,0 +1,130 @@
+{
+  "format": "mg.maintenance-acceptance.provenance.v1",
+  "capturedAt": 1792938162958,
+  "captureSha256": "3fe793ac19549d7ccc29c72d9652b23385501c85840ef8854c1872808eb88f6d",
+  "sources": {
+    "ajo": "ec205b9925add515b2b7408cbc8ee73737fcec55",
+    "rpc": "80ca8c6cc28440e5eab7abccbece7282ecbb56ab"
+  },
+  "files": [
+    {
+      "repo": "ajo",
+      "path": "native/guile/engine.scm",
+      "sha256": "d7f50b5d26459281006271fa66da1a715b3da3856d1b6a62f40e117ba97ef51b"
+    },
+    {
+      "repo": "ajo",
+      "path": "native/ocaml/engine.ml",
+      "sha256": "f7aa590bc826f8e684ae542fe641e77cc29f257e6c9081cddf3e0be893e06000"
+    },
+    {
+      "repo": "ajo",
+      "path": "src/ajo/evaluation/runner.py",
+      "sha256": "c78dd668574527d721c6f0c51722a1625565e1843a67e9ca5c6dd5c0a7aff1ed"
+    },
+    {
+      "repo": "ajo",
+      "path": "src/ajo/evaluation/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "repo": "ajo",
+      "path": "src/ajo/filesystem/receiver.py",
+      "sha256": "1c5638a3ff52eb3be7e9e1c28665ce27cc3f32772626462cc39f96e485b43692"
+    },
+    {
+      "repo": "ajo",
+      "path": "src/ajo/filesystem/supervisor.py",
+      "sha256": "a0037039b43f6441761137de74bb33d49aa17928cfc319406599522f01882aef"
+    },
+    {
+      "repo": "ajo",
+      "path": "src/ajo/filesystem/tools.py",
+      "sha256": "2a6bb9933f8559b7955992a1cbd49c7889a878c2bddac8c586380b0c8e1145d9"
+    },
+    {
+      "repo": "ajo",
+      "path": "src/ajo/filesystem/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "repo": "ajo",
+      "path": "src/ajo/paths.py",
+      "sha256": "f43c1ed0cfadabe6477f0c07d3480a744f7caa64a0143007ab7f62c4f0249e0b"
+    },
+    {
+      "repo": "ajo",
+      "path": "src/ajo/__init__.py",
+      "sha256": "db27166abe97a7abdef4cf9518e5b2eb32adb72e7eb06c68d5e34f64b8b0e5b7"
+    },
+    {
+      "repo": "ajo",
+      "path": "tools/receivers/delivery_receiver.py",
+      "sha256": "9e1ba0059ff4dc13f8a2b8b19dd57e3446b9fe3097b561a1e08b361cb55b6445"
+    },
+    {
+      "repo": "ajo",
+      "path": "tools/receivers/fs_receiver.py",
+      "sha256": "33002b5cd34f06b5fd471c3acdfd98d6340c851b95ac45e6c1eea5ebc1d78cc2"
+    },
+    {
+      "repo": "ajo",
+      "path": "tools/receivers/model_delivery_receiver.py",
+      "sha256": "188e5200c46cc3472dd1db2d2393bb228ca651b8aad6c8ff1b909d5ded5bb8d1"
+    },
+    {
+      "repo": "raivari-rpc",
+      "path": "packages/rpc/src/guard.ts",
+      "sha256": "deb05b4728923722eb9d30f615a118a3e8a2be2b0efdb932e7de44eac066b120"
+    },
+    {
+      "repo": "raivari-rpc",
+      "path": "packages/rpc/src/internal/authorization-deadline.ts",
+      "sha256": "4a8499fff51a536e065d7fce6b1c04a4bddf350deca66b6ebbcf4d3e3f3da7f2"
+    },
+    {
+      "repo": "raivari-rpc",
+      "path": "packages/rpc/src/internal/request-budget.ts",
+      "sha256": "462ab6d2f816e334d36ea0835842968ace5008b641262b88de9617656561261f"
+    },
+    {
+      "repo": "raivari-rpc",
+      "path": "packages/rpc/src/internal/rpc-error.ts",
+      "sha256": "fd443c4921df783c23d6cc180cfe9085ec7912f1ed6994a209dad0365b963308"
+    }
+  ],
+  "runtime": {
+    "ajo": "unchanged OCaml evaluator and POSIX filesystem receiver",
+    "ocaml": "5.4.0",
+    "nativeBinarySha256": "3919c8e7be930c5273a524e3e98cbd12c759ade0401d2b50f7db3393fa54a110",
+    "adapterSha256": "6090c8af22c84cc60dafe6d208aeda9584276d56b067cce0f1ab43a2b02ebcc2",
+    "rpc": "unchanged Raivari RPC execution guard, Bun host",
+    "interruption": "injected evaluator exit after receiver commit",
+    "acceptance": "separate-process HTTP station request and file readback"
+  },
+  "limits": [
+    "Real local HTTP relay and file operation; no physical equipment or deployed-site validation.",
+    "Controlled process exit does not establish power-loss durability.",
+    "Same-host evidence is not independent attestation.",
+    "RPC allowed decision is a preflight result, not a signature or atomic lease.",
+    "Only captured runtime evidence is bundled; private runtime source stays outside the public site."
+  ],
+  "runs": [
+    {
+      "scenario": "lost-reply",
+      "runId": "9732f66bcc304e509a624a5b714525da",
+      "phase": "accepted",
+      "originalStarts": 1,
+      "receiverQueries": 1,
+      "fileReplacements": 1
+    },
+    {
+      "scenario": "acceptance-held",
+      "runId": "33350d48d05c4564ba0fc8452712d8d4",
+      "phase": "held",
+      "originalStarts": 1,
+      "receiverQueries": 1,
+      "fileReplacements": 1
+    }
+  ]
+}
