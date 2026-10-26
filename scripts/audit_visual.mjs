@@ -687,7 +687,7 @@ try {
   });
   try {
     await visitor.goto(origin, { waitUntil: "networkidle" });
-    await visitor.locator('.field-note-routes a[href="./notes/#archive"]').click();
+    await visitor.getByRole('navigation',{name:'Collections',exact:true}).getByRole('link',{name:'Field notes',exact:true}).click();
     await visitor.locator('#archive-status').waitFor({ state: 'visible' });
     await visitor.locator('#archive-query').fill('001');
     await visitor.locator('#archive-controls button[type="submit"]').click();
@@ -699,7 +699,7 @@ try {
     await visitor.locator(".specimens-intro h1").waitFor();
     assert(!visitor.url().includes("/notes/") && new URL(visitor.url()).pathname === "/specimens/",
       "Field Note return link does not navigate to Specimens");
-    await visitor.locator('.field-note-routes a[href="./notes/#archive"]').click();
+    await visitor.getByRole('navigation',{name:'Collections',exact:true}).getByRole('link',{name:'Field notes',exact:true}).click();
     await visitor.locator('#archive-status').waitFor({ state: 'visible' });
     await visitor.locator('#archive-query').fill('002');
     await visitor.locator('#archive-controls button[type="submit"]').click();

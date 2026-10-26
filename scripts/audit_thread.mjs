@@ -162,7 +162,7 @@ try {
     const fallback=await browser.newContext({javaScriptEnabled:mode!=='no-javascript',reducedMotion:'reduce',viewport:{width:320,height:740}});
     if(mode==='blocked-scripts') await fallback.route(/\.(mjs|js)(\?|$)/,r=>r.abort());
     const p=await fallback.newPage();
-    await p.goto(origin+'/');await p.getByRole('link',{name:'Something happened. I can’t tell what.'}).click();
+    await p.goto(origin+'/');await p.locator('main').getByRole('link',{name:'Something happened. I can’t tell what.'}).click();
     await review(p,'thread-'+mode,true,mode!=='no-javascript');
     await p.locator('.thread-map a').nth(1).click();await atFragment(p,'reply',mode+' Ajo');
     await p.getByRole('link',{name:'Bring your version'}).click();

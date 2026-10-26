@@ -159,7 +159,14 @@ el('return-choice-form').addEventListener('submit', event => {
   if (revision !== 'damage-2') { announce('This direction concerns revision 2. Inspect it before keeping a direction.'); (el('inspect-latest') || document.querySelector('input[name="revision"][value="damage-2"]')).focus(); return; }
   const direction = document.querySelector('input[name="return-choice"]:checked')?.value;
   if (!direction) { announce('Choose a direction, or explicitly leave it unresolved.'); document.querySelector('input[name="return-choice"]').focus(); return; }
-  if (record('choices', { direction, reason:el('choice-reason').value, revision:'damage-2' })) el('choice-reason').value = '';
+  if (record('choices', { direction, reason:el('choice-reason').value, revision:'damage-2' })) {
+    el('choice-reason').value = '';
+    // Show and read back the choice that was kept, clear of the sticky masthead.
+    const summary = el('return-choice-record');
+    summary.setAttribute('tabindex', '-1');
+    summary.focus({ preventScroll:true });
+    summary.scrollIntoView({ block:'start', behavior:'instant' });
+  }
 });
 el('export-return').addEventListener('click', () => {
   const text = 'MOTH & GRAVEL / STAGED RETURN / LOCAL DRAFT\n\n' +
