@@ -168,7 +168,7 @@ def main() -> int:
     check('data-theme="afterlight"' in css, "Light theme styles missing")
     check("prefers-reduced-motion" in css, "Reduced-motion support missing")
     check("@media (max-width:660px)" in css, "Mobile layout support missing")
-    check(".has-nav-sheet .main-nav" in css, "Progressive enhancement for mobile navigation missing")
+    check(".studio-index:not([open])>.studio-sheet" in css, "Native disclosure navigation styles missing")
     check('data-theme-label' in html, "Theme control needs a visible label stating the current setting")
     check('src="./assets/nav-mark.svg"' in html, "Official brand symbol missing from masthead")
     try:

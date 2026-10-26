@@ -35,7 +35,7 @@ try{
     assert(!await nav.isVisible() && await page.locator(".collection-nav").isVisible(),label+': collection routes visible while index is closed');
     const before=await menu.boundingBox();await menu.click();await opened(page);
     await page.waitForTimeout(280);
-    assert(await page.evaluate(()=>document.activeElement===document.querySelector('#primary-nav>a')),label+': opening focus does not reach first route');
+    assert(await menu.evaluate(el=>document.activeElement===el),label+': pointer opening should retain trigger focus');
     assert(await nav.evaluate(el=>{const b=el.getBoundingClientRect();return b.left>=0&&b.right<=innerWidth&&b.bottom<=innerHeight;}),label+': sheet clips at viewport');
     const after=await menu.boundingBox();
     assert(['x','y','width','height'].every(key=>Math.abs(before[key]-after[key])<.02),label+': trigger moves on opening');
@@ -47,7 +47,7 @@ try{
     assert(await menu.evaluate(el=>el===document.activeElement),label+': Escape focus not restored');
     await page.locator('#light-switch').focus();await page.keyboard.press('Escape');
     assert(await page.locator('#light-switch').evaluate(el=>el===document.activeElement),label+': closed Escape steals focus');
-    await menu.click();await page.keyboard.press('Shift+Tab');await closed(page,label+' leave by keyboard');
+    await menu.click();await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');await closed(page,label+' leave by keyboard');
     assert(await menu.evaluate(el=>el===document.activeElement),label+': backward keyboard exit is trapped');
     await menu.click();await page.locator('#primary-nav a[href="#ethos"]').click();await closed(page,label+' room selection');
     assert(await page.evaluate(()=>document.activeElement.id==='ethos'),label+': room selection leaves hidden focus');

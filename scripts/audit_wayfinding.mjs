@@ -29,15 +29,20 @@ try {
     assert(await page.locator('#primary-nav').evaluate(el=>{const b=el.getBoundingClientRect();return b.left>=0&&b.right<=innerWidth&&b.bottom<=innerHeight;}),'Sheet fits viewport');
     const open=await page.locator('#menu-toggle').boundingBox();
     assert(['x','y','width','height'].every(k=>Math.abs(closed[k]-open[k])<.1),'Menu trigger remains still');
-    if([375,1440].includes(width))await page.screenshot({path:`${output}/wayfinding-${width}-${theme}-menu.png`});
+    if([320,375,1440].includes(width))await page.screenshot({path:`${output}/wayfinding-${width}-${theme}-menu.png`});
     await page.keyboard.press('Escape');
     assert(await page.locator('#menu-toggle').evaluate(el=>el===document.activeElement),'Escape restores focus');
     assert(!await page.locator('#primary-nav').isVisible(),'Escape closes sheet');
+    await page.locator('#menu-toggle').press('Enter');
+    await page.waitForFunction(()=>document.activeElement===document.querySelector('#primary-nav>a'));
+    await page.keyboard.press('Shift+Tab');
+    assert(await page.locator('#menu-toggle').evaluate(el=>el===document.activeElement),'Backward exit returns to the trigger');
+    assert(!await page.locator('#primary-nav').isVisible(),'Backward exit closes sheet');
     assert(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),'No horizontal overflow');
     await page.addScriptTag({content:axe.source});
     const violations=await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations);
     assert(!violations.length,JSON.stringify(violations));
-    if([375,1440].includes(width))await page.screenshot({path:`${output}/wayfinding-${width}-${theme}-index.png`});
+    if([320,375,1440].includes(width))await page.screenshot({path:`${output}/wayfinding-${width}-${theme}-index.png`});
     assert(!errors.length,errors.join(';'));
     results.push({width,theme,faces});await page.close();
   }
@@ -57,6 +62,15 @@ try {
       assert(new URL(page.url()).pathname==='/specimens/',`${path} reaches actual collection`);
       results.push({path,fallback});await page.close();
     }
+  }
+  for(const path of ['/specimens/maintenance-acceptance/tnt/','/specimens/coastal-watch/radar-replay/']) for(const theme of ['night','afterlight']) {
+    const page=await browser.newPage({viewport:{width:375,height:850},reducedMotion:'reduce'});
+    await page.addInitScript(t=>localStorage.setItem('moth-and-gravel-theme',t),theme);
+    await page.goto(origin+path,{waitUntil:'networkidle'});
+    await page.addScriptTag({content:axe.source});
+    const violations=await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations);
+    assert(!violations.length,`${path} ${theme}: ${JSON.stringify(violations)}`);
+    results.push({path,theme,deepPage:true});await page.close();
   }
   await writeFile(`${output}/wayfinding-audit.json`,JSON.stringify(results,null,2));
   console.log(`Wayfinding: ${results.length} responsive, theme and native fallback cases passed.`);

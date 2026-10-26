@@ -69,7 +69,7 @@ def header(page, nav):
 <p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
 <button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
 <details class="studio-index"><summary class="menu-toggle" id="menu-toggle" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></summary>
-<nav class="main-nav studio-sheet" id="primary-nav" aria-label="Studio index"><div class="nav-sheet-heading"><span class="mono">M+G / THE STUDIO INDEX</span><p>A few ways in.</p></div>{''.join(routes)}<section class="nav-shortcuts" aria-labelledby="shortcut-heading"><h2 class="mono" id="shortcut-heading">Straight to.</h2><div>{shortcuts}</div></section><div class="nav-studio" aria-label="Around the studio">{studio}</div></nav></details>
+<nav class="main-nav studio-sheet" id="primary-nav" aria-label="Studio index"><div class="nav-sheet-heading"><span class="mono">M+G / THE STUDIO INDEX</span><p>A few ways in.</p></div>{''.join(routes)}<section class="nav-shortcuts" aria-labelledby="shortcut-heading"><p class="mono" id="shortcut-heading">Straight to.</p><div>{shortcuts}</div></section><div class="nav-studio">{studio}</div></nav></details>
 </div></header>'''
 
 
@@ -87,7 +87,7 @@ def catalogue(items):
     cards = []
     page = ROOT / 'specimens/index.html'
     for x in items:
-        image = f'<img src="{local("/" + x["image"], page)}" width="{x["width"]}" height="{x["height"]}" alt="{escape(x["alt"], quote=True)}" loading="lazy">' if x.get('image') else '<div class="specimen-trace" aria-label="Two states from the saved lost-query simulator record"><span>01 / REPLY LOST</span><b>Answer missing.</b><span>02 / RESULT QUERIED</span><b>Result found.</b><span>1 application at the receiver / both states</span></div>'
+        image = f'<img src="{local("/" + x["image"], page)}" width="{x["width"]}" height="{x["height"]}" alt="{escape(x["alt"], quote=True)}" loading="{'eager' if x['id']=='009' else 'lazy'}">' if x.get('image') else '<div class="specimen-trace" aria-label="Two states from the saved lost-query simulator record"><span>01 / REPLY LOST</span><b>Answer missing.</b><span>02 / RESULT QUERIED</span><b>Result found.</b><span>1 application at the receiver / both states</span></div>'
         children = ''.join(f'<a href="{local(c["href"], page)}">{escape(c["label"])} ↗</a>' for c in x.get('children', []))
         cards.append(f'''<article class="specimen-entry{' specimen-featured' if x['id']=='009' else ''}" id="specimen-{x['id']}"><div class="specimen-art">{image}<p>{escape(x['boundary'])}</p></div><div class="specimen-copy"><p class="mono">{x['id']} / {escape(x['name'])}{' / EARLIER EXHIBIT' if x.get('exhibit') else ''}</p><h2><a href="{local(x['href'], page)}">{escape(x['title'])}</a></h2><p>{escape(x['summary'])}</p><a class="specimen-open" href="{local(x['href'], page)}">{'Visit the homepage exhibit' if x.get('exhibit') else 'Open the specimen'} <span aria-hidden="true">↗</span></a>{f'<nav class="specimen-rooms" aria-label="Inside {escape(x["name"])}">{children}</nav>' if children else ''}</div></article>''')
     return '\n'.join(cards)
@@ -116,7 +116,7 @@ def build(check=False):
             item = next(x for x in items if str(page.relative_to(ROOT)).replace('\\', '/').startswith(x['href'].lstrip('/')))
             crumbs = '<nav class="collection-context shell" aria-label="Specimen collection"><a href="' + local('/specimens/', page) + '">All specimens ↗</a>'
             if page != ROOT / item['href'].lstrip('/') / 'index.html':
-                crumbs += f'<a href="{local(item["href"], page)}">{escape(item["name"])} / {item["id"]} ↗</a>'
+                crumbs += f'<a href="{local(item["href"], page)}">{item["id"]} / {escape(item["name"])} ↗</a>'
             crumbs += '</nav>'
             text = slot(text, 'specimen-parent', crumbs, lambda s, b: re.sub(r'(<main\b[^>]*>)', lambda m: m[0] + '\n' + b, s, count=1))
             related = [n for n in notes if n.get('specimen') and urlsplit(n['specimen']['href'].removeprefix('../')).path.rstrip('/') == item['href'].strip('/')]

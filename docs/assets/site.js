@@ -91,13 +91,19 @@
   // The authored disclosure works without scripts. Enhancement only manages focus
   // and dismisses this nonmodal index when the visitor leaves it.
   const disclosure = menuButton?.closest("details");
+  let keyboardOpening = false;
   if (disclosure) {
     menuButton.setAttribute("aria-expanded", String(disclosure.open));
+    menuButton.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") keyboardOpening = true;
+    });
+    menuButton.addEventListener("pointerdown", () => { keyboardOpening = false; });
     disclosure.addEventListener("toggle", () => {
       const open = disclosure.open;
       navigation.classList.toggle("is-open", open);
       menuButton.setAttribute("aria-expanded", String(open));
-      if (open) navigation.querySelector("a")?.focus({preventScroll:true});
+      if (open && keyboardOpening) navigation.querySelector("a")?.focus({preventScroll:true});
+      keyboardOpening = false;
     });
   }
 
@@ -139,6 +145,12 @@
 
   navigation?.addEventListener("focusout", event => {
     if (event.relatedTarget && !navigation.contains(event.relatedTarget) && event.relatedTarget !== menuButton) closeMenu();
+  });
+  navigation?.addEventListener("keydown", event => {
+    if (event.key === "Tab" && event.shiftKey && document.activeElement === navigation.querySelector("a")) {
+      event.preventDefault();
+      closeMenu(true);
+    }
   });
   let menuWidth = window.innerWidth;
   window.addEventListener("resize", () => {

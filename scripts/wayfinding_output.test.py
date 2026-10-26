@@ -30,7 +30,7 @@ class Wayfinding(unittest.TestCase):
                 base = 'https://mothandgravel.com/an/unknown/depth/'
             resolved = {urlsplit(urljoin(base, href)).path.removesuffix('index.html') + ('#' + urlsplit(href).fragment if urlsplit(href).fragment else '') for href in Links(header).links}
             self.assertTrue(expected <= resolved, f'{page}: {expected - resolved}')
-            self.assertNotIn('href="/threads/"', text)
+            self.assertNotIn('/threads/', resolved)
 
     def test_generated_slots_have_no_drift(self):
         build(check=True)

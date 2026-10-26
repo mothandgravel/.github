@@ -7,7 +7,7 @@
   ],
   "shortcuts": [
     {"label":"The measured TNT replay","href":"/specimens/maintenance-acceptance/tnt/","hint":"Inside specimen 009 / 1,000 recorded departures."},
-    {"label":"Listen to the field notes","href":"/notes/#listen-archive","hint":"17 published notes / AI-narrated audio."},
+    {"label":"Listen to the field notes","href":"/notes/#listen-archive","hint":"AI-narrated readings, conversations and a narration study."},
     {"label":"Three questions. Still open.","href":"/investigations/","hint":"Freshness, recovery and the promise of a green light."}
   ],
   "studio": [
