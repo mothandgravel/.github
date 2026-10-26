@@ -28,13 +28,7 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v4
       - name: Install media inspection tools for published audio
-        run: |
-          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
-            sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
-            sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y --no-install-recommends ffmpeg
-          fi
-          ffmpeg -version | sed -n '1p'
-          ffprobe -version | sed -n '1p'
+        run: bash scripts/install_audit_media.sh
       - name: Verify generated editorial slots and archive behavior
         run: |
           python3 scripts/build_notes.py --check
@@ -63,6 +57,7 @@ jobs:
       - name: Syntax-check browser JavaScript
         run: |
           bash -n scripts/install_audit_browser.sh
+          bash -n scripts/install_audit_media.sh
           node --check scripts/audit_wayfinding.mjs
           node --check docs/assets/maintenance-acceptance.mjs
           node --check docs/assets/maintenance-acceptance-model.mjs
