@@ -101,6 +101,10 @@ async function assertLandingStyleParity(viewport, label) {
   const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
   try {
   await page.goto(origin, { waitUntil: "networkidle" });
+  const settled = () => page.evaluate(async () => {
+    await document.fonts.ready;
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  });
   const measure = () => page.evaluate(() => {
     const properties = ['display', 'font-size', 'font-family', 'line-height', 'color',
       'background-color', 'padding', 'margin', 'width', 'height', 'grid-template-columns', 'gap'];
@@ -108,14 +112,17 @@ async function assertLandingStyleParity(viewport, label) {
       .map(el => ({ name: el.id || el.className?.baseVal || el.className || el.tagName,
         values: properties.map(property => getComputedStyle(el).getPropertyValue(property)) }));
   });
+  await settled();
   const before = await measure();
   // The authored landing styles are the shared stylesheet followed by the home-only rooms.
   const full = await page.addStyleTag({ url: origin + '/assets/site.css' });
   const home = await page.addStyleTag({ url: origin + '/assets/home.css' });
+  await settled();
   const after = await measure();
   await full.evaluate(el => el.remove());
   await home.evaluate(el => el.remove());
   const changed = before.filter((entry, index) => JSON.stringify(entry.values) !== JSON.stringify(after[index]?.values));
+  if (changed.length) console.log(JSON.stringify({styleParity:label,changes:changed.map(entry=>({before:entry,after:after[before.indexOf(entry)]}))}));
   assert(changed.length === 0, label + ': generated landing styles differ from authored styles on ' + changed.map(e => e.name).join(', '));
   } finally { await page.close(); }
 }
@@ -317,6 +324,7 @@ try {
     if (viewport.width <= 1100) {
       const menu = page.locator("#menu-toggle");
       await menu.click();
+      await page.waitForFunction(()=>document.querySelector('#menu-toggle').getAttribute('aria-expanded')==='true');
       assert(await menu.getAttribute("aria-expanded") === "true", `${viewport.name}: mobile menu failed to open`);
       await snap(page, `${viewport.name}-menu`);
       await page.keyboard.press("Escape");
