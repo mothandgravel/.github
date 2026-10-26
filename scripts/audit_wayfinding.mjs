@@ -25,6 +25,7 @@ try {
     await page.waitForFunction(()=>document.querySelector('#menu-toggle').getAttribute('aria-expanded')==='true');
     const faces=await page.locator('.nav-sheet-label').evaluateAll(els=>els.map(el=>{const s=getComputedStyle(el);return [s.fontFamily,s.fontWeight,s.fontSize,s.lineHeight,s.textTransform].join('|');}));
     assert(faces.length===4 && new Set(faces).size===1,'All four numbered rows share exactly one type treatment');
+    assert(await page.locator('.nav-sheet-label').nth(1).evaluate(el=>el.clientHeight<=parseFloat(getComputedStyle(el).lineHeight)+1),'Field notes fits on one menu line');
     assert(await page.locator('.nav-shortcut').count()===3,'Exactly three curated shortcuts');
     assert(await page.locator('#primary-nav').evaluate(el=>{const b=el.getBoundingClientRect();return b.left>=0&&b.right<=innerWidth&&b.bottom<=innerHeight;}),'Sheet fits viewport');
     const open=await page.locator('#menu-toggle').boundingBox();
@@ -40,7 +41,7 @@ try {
     assert(!await page.locator('#primary-nav').isVisible(),'Backward exit closes sheet');
     assert(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),'No horizontal overflow');
     await page.addScriptTag({content:axe.source});
-    const violations=await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations);
+    const violations=await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}})).violations);
     assert(!violations.length,JSON.stringify(violations));
     if([320,375,1440].includes(width))await page.screenshot({path:`${output}/wayfinding-${width}-${theme}-index.png`});
     assert(!errors.length,errors.join(';'));
@@ -68,7 +69,7 @@ try {
     await page.addInitScript(t=>localStorage.setItem('moth-and-gravel-theme',t),theme);
     await page.goto(origin+path,{waitUntil:'networkidle'});
     await page.addScriptTag({content:axe.source});
-    const violations=await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations);
+    const violations=await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}})).violations);
     assert(!violations.length,`${path} ${theme}: ${JSON.stringify(violations)}`);
     results.push({path,theme,deepPage:true});await page.close();
   }

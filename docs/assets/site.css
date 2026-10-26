@@ -1297,3 +1297,4 @@ main.shell>.collection-context{width:100%}
 .shared-header .studio-sheet .nav-sheet-heading .mono{color:#70542b;font-size:12px}
 .shared-header .studio-sheet .nav-sheet-heading p{font:italic 30px/1.2 var(--serif);margin:0;color:#202222}
 @media(max-width:660px){.shared-header .studio-sheet .nav-sheet-heading p{font-size:26px;margin-top:10px}}
+@media(max-width:365px){.shared-header .studio-sheet .nav-sheet-label{font-size:24px}}
