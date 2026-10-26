@@ -3,6 +3,7 @@ name: Landing design audit
 on:
   pull_request:
     paths:
+      - "scripts/install_audit_browser.sh"
       - "docs/**"
       - "scripts/audit_visual.mjs"
       - "scripts/audit_loose_end.mjs"
@@ -49,7 +50,7 @@ jobs:
       - name: Install pinned browser audit dependencies
         run: |
           npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
-          npx playwright install --with-deps chromium
+          bash scripts/install_audit_browser.sh
       - name: Launch local static site
         run: |
           python3 -m http.server 8793 --bind 127.0.0.1 --directory docs >/tmp/mg-site.log 2>&1 &

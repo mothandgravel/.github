@@ -1246,7 +1246,7 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .journey-footer .footer-mail a {font-size:15px;color:var(--ink);border-bottom-color:var(--gold)}
 .journey-footer .copy-mail {color:var(--secondary);border-color:var(--line)}
 /* Shared, authored wayfinding. The native disclosure remains usable without JS. */
-.shared-header .header-inner{height:82px;display:grid;grid-template-columns:auto 1fr auto auto auto;gap:18px;align-items:center}
+.shared-header .header-inner{margin:0 auto;height:82px;display:grid;grid-template-columns:auto 1fr auto auto auto;gap:18px;align-items:center}
 .shared-header .collection-nav{display:flex;gap:24px;justify-content:center;align-items:center}
 .collection-nav a{display:inline-flex;align-items:center;min-height:44px;font:600 12px var(--body);white-space:nowrap}
 .collection-nav a[aria-current],.shared-footer-nav a[aria-current]{text-decoration:underline;text-underline-offset:7px;text-decoration-thickness:2px;color:var(--gold-bright)}

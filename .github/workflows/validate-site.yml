@@ -62,6 +62,7 @@ jobs:
         run: python3 scripts/check_site.py
       - name: Syntax-check browser JavaScript
         run: |
+          bash -n scripts/install_audit_browser.sh
           node --check scripts/audit_wayfinding.mjs
           node --check docs/assets/maintenance-acceptance.mjs
           node --check docs/assets/maintenance-acceptance-model.mjs

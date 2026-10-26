@@ -3,6 +3,7 @@ name: Site performance and discovery
 on:
   pull_request:
     paths:
+      - "scripts/install_audit_browser.sh"
       - "docs/**"
       - "scripts/**"
       - "field_notes_audio/site.py"
@@ -26,7 +27,7 @@ jobs:
       - name: Install pinned audit tools
         run: |
           npm install --no-save --no-package-lock --ignore-scripts lighthouse@13.5.0 playwright@1.55.1
-          npx playwright install --with-deps chromium
+          bash scripts/install_audit_browser.sh
       - name: Serve the candidate and immutable base revision
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.sha }}
