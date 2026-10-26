@@ -40,6 +40,7 @@ try {
     assert(await page.locator('#menu-toggle').evaluate(el=>el===document.activeElement),'Backward exit returns to the trigger');
     assert(!await page.locator('#primary-nav').isVisible(),'Backward exit closes sheet');
     assert(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),'No horizontal overflow');
+    assert(await page.locator('.specimen-trace').evaluate(el=>{const b=el.getBoundingClientRect();return [...el.children].every(n=>{const r=n.getBoundingClientRect();return r.top>=b.top&&r.bottom<=b.bottom&&r.left>=b.left&&r.right<=b.right;});}),'Both saved Ajo states and the receiver count remain fully visible');
     await page.addScriptTag({content:axe.source});
     const violations=await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}})).violations);
     assert(!violations.length,JSON.stringify(violations));
