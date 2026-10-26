@@ -108,8 +108,8 @@ async function refreshAccount(announce = true) {
 $('ma-refresh').addEventListener('click', () => refreshAccount().catch((error) => say(error.message, true)));
 function updateTabs() { document.querySelectorAll('[data-evidence]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.evidence === kind))); }
 for (const button of document.querySelectorAll('[data-evidence]')) button.addEventListener('click', () => { kind = button.dataset.evidence; $('ma-evidence-drawer').open = true; updateTabs(); render(); });
-$('ma-prev').addEventListener('click', () => { stop(); cursor = Math.max(0, cursor - 1); render(); });
-$('ma-next').addEventListener('click', () => { stop(); cursor = Math.min(record.history.length - 1, cursor + 1); render(); });
+$('ma-prev').addEventListener('click', () => { if (cursor === 0) return; stop(); cursor--; render(); });
+$('ma-next').addEventListener('click', () => { if (cursor === record.history.length - 1) return; stop(); cursor++; render(); });
 $('ma-cursor').addEventListener('input', () => { stop(); cursor = Number($('ma-cursor').value); render(); });
 $('ma-current').addEventListener('click', () => { stop(); cursor = record.history.length - 1; render(); });
 $('ma-play').addEventListener('click', () => {
