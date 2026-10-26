@@ -76,6 +76,7 @@ try {
     await page.locator('#return-choice-form button').click();
     assert.match(await page.locator('.room-direction [data-room-feedback]').innerText(),/Kept in this tab/);
     assert.match(await page.locator('#return-choice-record').innerText(),/revision 2: Keep damage first/);
+    assert.ok(await page.locator('#return-choice-record').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().top>=document.querySelector('.site-header').getBoundingClientRect().bottom),'The kept direction receives focus below the masthead');
     await review(page,'room-return-'+theme+'-'+width);
     assert.deepEqual(errors,[]);
     await context.close();

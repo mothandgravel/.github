@@ -101,6 +101,10 @@ async function assertLandingStyleParity(viewport, label) {
   const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: "reduce" });
   try {
   await page.goto(origin, { waitUntil: "networkidle" });
+  const settled = () => page.evaluate(async () => {
+    await document.fonts.ready;
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  });
   const measure = () => page.evaluate(() => {
     const properties = ['display', 'font-size', 'font-family', 'line-height', 'color',
       'background-color', 'padding', 'margin', 'width', 'height', 'grid-template-columns', 'gap'];
@@ -108,14 +112,17 @@ async function assertLandingStyleParity(viewport, label) {
       .map(el => ({ name: el.id || el.className?.baseVal || el.className || el.tagName,
         values: properties.map(property => getComputedStyle(el).getPropertyValue(property)) }));
   });
+  await settled();
   const before = await measure();
   // The authored landing styles are the shared stylesheet followed by the home-only rooms.
   const full = await page.addStyleTag({ url: origin + '/assets/site.css' });
   const home = await page.addStyleTag({ url: origin + '/assets/home.css' });
+  await settled();
   const after = await measure();
   await full.evaluate(el => el.remove());
   await home.evaluate(el => el.remove());
   const changed = before.filter((entry, index) => JSON.stringify(entry.values) !== JSON.stringify(after[index]?.values));
+  if (changed.length) console.log(JSON.stringify({styleParity:label,changes:changed.map(entry=>({before:entry,after:after[before.indexOf(entry)]}))}));
   assert(changed.length === 0, label + ': generated landing styles differ from authored styles on ' + changed.map(e => e.name).join(', '));
   } finally { await page.close(); }
 }
@@ -207,7 +214,7 @@ try {
         heroHeading: box("#hero-title"),
         heroImage: box(".hero-visual"),
         heroAction: box(".button-brass"),
-        navVisible: getComputedStyle(document.querySelector("#primary-nav")).display !== "none",
+        navVisible: getComputedStyle(document.querySelector(".collection-nav")).display !== "none",
         brandMarkVisible: getComputedStyle(document.querySelector(".brand-stamp")).display !== "none",
         heroHeadingLines: Math.round(document.querySelector("#hero-title").getBoundingClientRect().height /
           parseFloat(getComputedStyle(document.querySelector("#hero-title")).lineHeight)),
@@ -317,6 +324,7 @@ try {
     if (viewport.width <= 1100) {
       const menu = page.locator("#menu-toggle");
       await menu.click();
+      await page.waitForFunction(()=>document.querySelector('#menu-toggle').getAttribute('aria-expanded')==='true');
       assert(await menu.getAttribute("aria-expanded") === "true", `${viewport.name}: mobile menu failed to open`);
       await snap(page, `${viewport.name}-menu`);
       await page.keyboard.press("Escape");
@@ -361,7 +369,7 @@ try {
       documentWidth: document.documentElement.scrollWidth,
       viewportWidth: window.innerWidth,
       articleVisible: Boolean(document.querySelector(".note-prose")),
-      hasWorkbenchReturn: Boolean(document.querySelector('a[href="../#work"]')),
+      hasWorkbenchReturn: Boolean(document.querySelector('a[href="../specimens/"]')),
       headingFits: (() => {
         const el = document.querySelector(".note-heading h1");
         return el.scrollWidth <= el.clientWidth + 2;
@@ -687,7 +695,7 @@ try {
   });
   try {
     await visitor.goto(origin, { waitUntil: "networkidle" });
-    await visitor.locator('.field-note-routes a[href="./notes/#archive"]').click();
+    await visitor.getByRole('navigation',{name:'Collections',exact:true}).getByRole('link',{name:'Field notes',exact:true}).click();
     await visitor.locator('#archive-status').waitFor({ state: 'visible' });
     await visitor.locator('#archive-query').fill('001');
     await visitor.locator('#archive-controls button[type="submit"]').click();
@@ -695,11 +703,11 @@ try {
     await visitor.locator(".note-prose").waitFor();
     assert(visitor.url().includes("/notes/001-curiosity-with-calluses.html"),
       "Workbench Field Note link does not navigate to the published note");
-    await visitor.locator('.note-end a[href="../#work"]').click();
-    await visitor.locator("#work-title").waitFor();
-    assert(!visitor.url().includes("/notes/") && visitor.url().endsWith("#work"),
-      "Field Note return link does not navigate to Workbench");
-    await visitor.locator('.field-note-routes a[href="./notes/#archive"]').click();
+    await visitor.locator('.note-end a[href="../specimens/"]').click();
+    await visitor.locator(".specimens-intro h1").waitFor();
+    assert(!visitor.url().includes("/notes/") && new URL(visitor.url()).pathname === "/specimens/",
+      "Field Note return link does not navigate to Specimens");
+    await visitor.getByRole('navigation',{name:'Collections',exact:true}).getByRole('link',{name:'Field notes',exact:true}).click();
     await visitor.locator('#archive-status').waitFor({ state: 'visible' });
     await visitor.locator('#archive-query').fill('002');
     await visitor.locator('#archive-controls button[type="submit"]').click();
@@ -832,14 +840,10 @@ try {
     reducedMotion: "reduce", deviceScaleFactor: 1,
   });
   await page.goto(origin, { waitUntil: "load" });
-  const noJSNavVisible = await page.locator("#primary-nav").evaluate(
-    element => getComputedStyle(element).display !== "none");
-  const noJSMenuHidden = await page.locator("#menu-toggle").evaluate(
-    element => getComputedStyle(element).display === "none");
-  const noJSThemeHidden = await page.locator("#light-switch").evaluate(
-    element => getComputedStyle(element).display === "none");
-  assert(noJSNavVisible && noJSMenuHidden && noJSThemeHidden,
-    "No-JS mobile navigation is inaccessible or a dead theme toggle is visible");
+  await page.locator('#menu-toggle').click();
+  assert(await page.locator('#primary-nav').isVisible() && !await page.locator('#light-switch').isVisible(),
+    "No-JS disclosure must expose authored routes without a dead theme control");
+  await page.locator('#menu-toggle').click();
   await inspectSpecimens(page, 'no-JavaScript specimens', 'no-js', 390);
   assert(await page.locator('[data-handled]').count() === 0, 'No-JS: material needs a static resting presentation');
   await snap(page, "phone-no-javascript");

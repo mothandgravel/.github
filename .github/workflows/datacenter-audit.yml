@@ -2,6 +2,7 @@ name: Data centre measured account audit
 on:
   pull_request:
     paths:
+      - "scripts/install_audit_browser.sh"
       - "docs/assets/datacenter*"
       - "docs/assets/data-center/**"
       - "docs/specimens/data-center/**"
@@ -29,7 +30,7 @@ jobs:
       - name: Install pinned inspection tools
         run: |
           npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
-          npx playwright install --with-deps chromium
+          bash scripts/install_audit_browser.sh
       - name: Verify measurement and numerical contracts
         run: node --test scripts/datacenter.test.mjs scripts/finland_account.test.mjs
       - name: Start specimen server

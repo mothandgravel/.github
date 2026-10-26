@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 import xml.etree.ElementTree as ET
 from build_discovery import build as build_discovery
 from build_home_styles import build as build_home_styles
+from build_wayfinding import build as build_wayfinding
 from build_audio import build as build_audio
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -141,7 +142,7 @@ def reading_exit(n, notes):
     return f'''<section class="note-end note-related reading-exit" aria-label="After Field Note {n['id']}">
       <p class="reading-end-mark mono">END OF FIELD NOTE / {n['id']}</p>
       <div class="reading-exit-grid{' reading-exit-solo' if not continuation else ''}">{continuation}<nav class="reading-alternatives" aria-label="More from the workbench">{''.join(groups)}
-        <div class="reading-routes"><a href="./">All Field Notes <span aria-hidden="true">↗</span></a>{specimen}<a href="../#work">Working specimens <span aria-hidden="true">↗</span></a></div>
+        <div class="reading-routes"><a href="./">All Field Notes <span aria-hidden="true">↗</span></a>{specimen}<a href="../specimens/">Working specimens <span aria-hidden="true">↗</span></a></div>
       </nav></div>
       <div class="reading-invitation"><div><h2>Something here feels familiar?</h2><p>A rough edge, an unfinished idea, a question that keeps returning.</p></div><a class="editorial-link" href="../questions/">Bring your version <span aria-hidden="true">↗</span></a></div>
     </section>'''
@@ -200,5 +201,6 @@ if __name__ == '__main__':
     parser.add_argument('--check', action='store_true')
     check = parser.parse_args().check
     build(check)
+    build_wayfinding(check)
     build_discovery(check)
     build_home_styles(check)

@@ -3,6 +3,7 @@ name: Field power specimen audit
 on:
   pull_request:
     paths:
+      - "scripts/install_audit_browser.sh"
       - "docs/assets/field-power*"
       - "docs/specimens/field-power/**"
       - "docs/assets/site.css"
@@ -27,7 +28,7 @@ jobs:
       - name: Install pinned browser audit dependencies
         run: |
           npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
-          npx playwright install --with-deps chromium
+          bash scripts/install_audit_browser.sh
       - name: Verify energy and decision contracts
         run: node --test scripts/field_power.test.mjs
       - name: Start specimen server

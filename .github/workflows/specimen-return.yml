@@ -1,7 +1,7 @@
 name: Specimen return prototype
 on:
   pull_request:
-    paths: ["docs/workbench/**", "docs/assets/specimen-*.mjs", "docs/assets/specimen-return.css", "docs/assets/workbench-room.css", "docs/assets/specimens/mending-study.svg", "docs/assets/loose-end-v2.mjs", "scripts/audit_specimen.mjs", "scripts/audit_workbench_finish.mjs", ".github/workflows/specimen-return.yml"]
+    paths: ["scripts/install_audit_browser.sh", "docs/workbench/**", "docs/assets/specimen-*.mjs", "docs/assets/specimen-return.css", "docs/assets/workbench-room.css", "docs/assets/specimens/mending-study.svg", "docs/assets/loose-end-v2.mjs", "scripts/audit_specimen.mjs", "scripts/audit_workbench_finish.mjs", ".github/workflows/specimen-return.yml"]
 permissions:
   contents: read
 jobs:
@@ -15,7 +15,7 @@ jobs:
           node-version: 22
       - run: |
           npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
-          npx playwright install --with-deps chromium
+          bash scripts/install_audit_browser.sh
       - run: |
           node --check docs/assets/specimen-model.mjs
           node --check docs/assets/specimen-return.mjs

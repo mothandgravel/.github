@@ -168,7 +168,7 @@ def main() -> int:
     check('data-theme="afterlight"' in css, "Light theme styles missing")
     check("prefers-reduced-motion" in css, "Reduced-motion support missing")
     check("@media (max-width:660px)" in css, "Mobile layout support missing")
-    check(".has-nav-sheet .main-nav" in css, "Progressive enhancement for mobile navigation missing")
+    check(".studio-index:not([open])>.studio-sheet" in css, "Native disclosure navigation styles missing")
     check('data-theme-label' in html, "Theme control needs a visible label stating the current setting")
     check('src="./assets/nav-mark.svg"' in html, "Official brand symbol missing from masthead")
     try:
@@ -529,7 +529,7 @@ def main() -> int:
         check('page coming' not in published.read_text(encoding='utf-8').lower()
               and 'page is coming' not in published.read_text(encoding='utf-8').lower(),
               f'{published.relative_to(ROOT)} still promises a page that is coming')
-    check('href="./workbench/">Workbench</a>' in html, 'Menu Workbench must lead to the two-room workbench')
+    check('href="./workbench/">Example workbench</a>' in html, 'Example workbench must remain reachable')
     # Made here: the homepage renders it after load from assets/made-here.mjs; the static list on
     # /investigations/ is the no-script route. Both must say the same thing.
     module_items = re.findall(r"\['([^']+)', '(pr|pl|sd|in|)', '([^']+)'\]", (ROOT / 'assets/made-here.mjs').read_text())
@@ -617,7 +617,7 @@ def main() -> int:
         note_parser.feed(note_html)
         check('<html lang="en"' in note_html, "Field Note must declare a language")
         check('<main id="main"' in note_html, "Field Note must have a main landmark")
-        check('href="../#work"' in note_html, "Field Note must return to the workbench")
+        check('href="../specimens/"' in note_html, "Field Note must reach the specimen collection")
         check('rel="canonical"' in note_html, "Field Note is missing its canonical URL")
         check('id="light-switch"' in note_html, "Field Note is missing its functional theme control")
         for relative in re.findall(r'(?:href|src)="(\.\./assets/[^"]+)"', note_html):

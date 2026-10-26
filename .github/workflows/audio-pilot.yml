@@ -3,6 +3,8 @@ name: Validate Field Notes audio
 on:
   push:
     paths:
+      - "scripts/install_audit_media.sh"
+      - "scripts/install_audit_browser.sh"
       - "field_notes_audio/**"
       - "tests/**"
       - "tools/check_audio.py"
@@ -21,6 +23,8 @@ on:
       - ".github/workflows/audio-pilot.yml"
   pull_request:
     paths:
+      - "scripts/install_audit_media.sh"
+      - "scripts/install_audit_browser.sh"
       - "field_notes_audio/**"
       - "tests/**"
       - "tools/check_audio.py"
@@ -53,7 +57,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install audio encoding and inspection tools
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+        run: bash scripts/install_audit_media.sh
       - name: Install the pinned Python quality tool
         run: python3 -m pip install ruff==0.12.12
       - name: Verify Python idioms, source preservation, recovery and media offline
@@ -67,11 +71,11 @@ jobs:
         with:
           node-version: 22
       - name: Install audio fixture and inspection tools
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+        run: bash scripts/install_audit_media.sh
       - name: Install pinned browser audit tools
         run: |
           npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
-          npx playwright install --with-deps chromium
+          bash scripts/install_audit_browser.sh
       - name: Build a complete site with synthetic clips, without Cloud credentials
         run: python3 -m tests.audio.test_release --browser-fixture artifacts/audio-site-qa/docs
       - name: Verify listening, subtitles, queue and accessibility across both themes

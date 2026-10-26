@@ -10,10 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 class LandingElements(HTMLParser):
     def __init__(self):
         super().__init__()
-        # Menu/root classes appear only after enhancement, but their styles must ship.
-        self.classes = {'has-js', 'is-open', 'has-site-controls', 'has-nav-sheet', 'nav-sheet-heading',
-                        'nav-sheet-index', 'nav-sheet-label', 'nav-sheet-hint',
-                        'nav-sheet-foot', 'nav-sheet-invitation', 'nav-sheet-mail'}
+        # Only enhancement state is absent from the authored HTML.
+        self.classes = {'has-js', 'is-open', 'has-site-controls'}
         self.ids = set()
 
     def handle_starttag(self, tag, attrs):

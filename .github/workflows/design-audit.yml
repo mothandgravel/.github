@@ -3,6 +3,7 @@ name: Landing design audit
 on:
   pull_request:
     paths:
+      - "scripts/install_audit_browser.sh"
       - "docs/**"
       - "scripts/audit_visual.mjs"
       - "scripts/audit_loose_end.mjs"
@@ -10,6 +11,7 @@ on:
       - "scripts/audit_handling.mjs"
       - "scripts/audit_moth_volume.mjs"
       - "scripts/audit_rooms.mjs"
+      - "scripts/audit_wayfinding.mjs"
       - "scripts/audit_connection.mjs"
       - "scripts/audit_mapping.mjs"
       - "scripts/audit_coastal_replay.mjs"
@@ -31,9 +33,13 @@ permissions:
   contents: read
 
 jobs:
-  browser-audit:
+  browser-groups:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [navigation, materials, coastal, studio]
     steps:
       - name: Check out branch
         uses: actions/checkout@v4
@@ -44,7 +50,7 @@ jobs:
       - name: Install pinned browser audit dependencies
         run: |
           npm install --no-save --no-package-lock --ignore-scripts playwright@1.55.1 axe-core@4.14.0
-          npx playwright install --with-deps chromium
+          bash scripts/install_audit_browser.sh
       - name: Launch local static site
         run: |
           python3 -m http.server 8793 --bind 127.0.0.1 --directory docs >/tmp/mg-site.log 2>&1 &
@@ -55,31 +61,37 @@ jobs:
           cat /tmp/mg-site.log
           exit 1
       - name: Capture desktop and mobile review / assert interaction health
+        env:
+          AUDIT_GROUP: ${{ matrix.group }}
         run: |
-          node scripts/audit_maintenance.mjs
-          node scripts/audit_reading.mjs
-          node scripts/audit_visual.mjs
-          node scripts/audit_loose_end.mjs
-          node scripts/audit_moth.mjs
-          node scripts/audit_handling.mjs
-          node scripts/audit_moth_volume.mjs
-          node scripts/audit_rooms.mjs
-          node scripts/audit_connection.mjs
-          node scripts/audit_mapping.mjs
-          node scripts/audit_coastal_replay.mjs
-          node scripts/audit_coastal_transport.mjs
-          node scripts/audit_shadow_inquiry.mjs
-          node scripts/audit_coastal_identity.mjs
-          node scripts/audit_coastal_haxr.mjs
-          node scripts/audit_thread.mjs
-          node scripts/audit_studio_note.mjs
-          node scripts/audit_maritime.mjs
-          node scripts/audit_playground.mjs
+          case "$AUDIT_GROUP" in
+            navigation) audits="wayfinding reading visual rooms connection" ;;
+            materials) audits="moth handling moth_volume mapping" ;;
+            coastal) audits="coastal_replay coastal_transport shadow_inquiry coastal_identity coastal_haxr thread" ;;
+            studio) audits="maintenance loose_end studio_note maritime playground" ;;
+            *) exit 2 ;;
+          esac
+          failed=0
+          for audit in $audits; do
+            echo "::group::$audit"
+            node "scripts/audit_$audit.mjs" || failed=1
+            echo "::endgroup::"
+          done
+          exit "$failed"
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: landing-design-review
+          name: landing-design-review-${{ matrix.group }}
           path: artifacts/design-review/
           if-no-files-found: ignore
           retention-days: 14
+  browser-audit:
+    if: always()
+    needs: browser-groups
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require every browser group
+        env:
+          GROUP_RESULT: ${{ needs.browser-groups.result }}
+        run: test "$GROUP_RESULT" = success

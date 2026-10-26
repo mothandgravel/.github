@@ -1,0 +1,132 @@
+[
+  {
+    "id": "009",
+    "name": "Maintenance acceptance",
+    "title": "The action may already have happened.",
+    "href": "/specimens/maintenance-acceptance/",
+    "summary": "A broken connection leaves a completed action in doubt. Look into the interruption, the receipts and the decision to try again.",
+    "image": "assets/tnt/bench-study.webp",
+    "width": 1881,
+    "height": 836,
+    "alt": "AI-generated illustration of two rugged radios and a relay enclosure; hardware details are illustrative.",
+    "boundary": "AI-generated hardware illustration. The TNT room uses published, historical packet observations.",
+    "children": [
+      {
+        "label": "The measured TNT replay",
+        "href": "/specimens/maintenance-acceptance/tnt/"
+      }
+    ]
+  },
+  {
+    "id": "008",
+    "name": "Data center",
+    "title": "Where the power goes.",
+    "href": "/specimens/data-center/",
+    "summary": "Follow the electricity through a room, a shared Finnish grid and the heat that may reach a home. Open the assumptions behind each number.",
+    "image": "assets/specimens/data-center/room-cover.jpg",
+    "width": 1600,
+    "height": 1000,
+    "alt": "Illustrative data center room in the studio’s charcoal and brass palette.",
+    "boundary": "Illustrative room. Published data and explicit scenario assumptions remain separately inspectable."
+  },
+  {
+    "id": "007",
+    "name": "Field power",
+    "title": "What stays on.",
+    "href": "/specimens/field-power/",
+    "summary": "When energy becomes scarce, recovery is a choice. Change the loads and inspect what the site can keep running.",
+    "image": "assets/specimens/field-power/field-power-site.webp",
+    "width": 1200,
+    "height": 676,
+    "alt": "Captured Field power interface with a modelled site, generator, battery and load account.",
+    "boundary": "Captured software study. Inspectable energy model and explicit scenario assumptions."
+  },
+  {
+    "id": "006",
+    "name": "Maritime study",
+    "title": "The crossing, held still.",
+    "href": "/specimens/maritime-study/",
+    "summary": "A crossing between Helsinki and Tallinn, seen from the water and the bridge. Light, weather and instruments belong to the same picture.",
+    "image": "assets/specimens/maritime-study/01-mystar-exterior.jpg",
+    "width": 1427,
+    "height": 875,
+    "alt": "Captured 3D study of MyStar on the Helsinki–Tallinn crossing.",
+    "boundary": "Captured software study. Modelled geometry and conditions are not a navigational reference."
+  },
+  {
+    "id": "005",
+    "name": "Coastal watch",
+    "title": "The water between updates.",
+    "href": "/specimens/coastal-watch/",
+    "summary": "Two stations can receive the same report and still hold different pictures. Follow an interruption, a late observation and the uncertainty between witnesses.",
+    "image": "assets/specimens/coastal-watch/03-coastline-close.jpg",
+    "width": 1275,
+    "height": 884,
+    "alt": "Coastal watch plot showing vessel tracks against a detailed coastline.",
+    "boundary": "Real coastline with synthetic tracks in this capture. Each room names its own recorded, live or authored evidence.",
+    "children": [
+      {
+        "label": "Two shores. Different pictures.",
+        "href": "/specimens/coastal-watch/two-stations/"
+      },
+      {
+        "label": "The second witness.",
+        "href": "/specimens/coastal-watch/shadow-inquiry/"
+      },
+      {
+        "label": "The same ship?",
+        "href": "/specimens/coastal-watch/identity-ledger/"
+      },
+      {
+        "label": "The water, twice recorded.",
+        "href": "/specimens/coastal-watch/radar-replay/"
+      }
+    ]
+  },
+  {
+    "id": "004",
+    "name": "LiveConnect",
+    "title": "The connection came back. Did the picture?",
+    "href": "/specimens/connected-to-what/",
+    "summary": "A healthy connection can carry an old reading. Interrupt the stream and inspect the difference between reachability and freshness.",
+    "image": "assets/specimens/connection-and-reading.svg",
+    "width": 960,
+    "height": 420,
+    "alt": "Diagram separating a connection’s state from the age of its reading.",
+    "boundary": "Authored connection study. Its events and evidence can be inspected."
+  },
+  {
+    "id": "003",
+    "name": "Buggy",
+    "title": "Where are we, according to whom?",
+    "href": "/specimens/whose-map/",
+    "summary": "A camera, a route and a map do not automatically agree. Inspect the captured views and the limits of the comparison.",
+    "image": "assets/specimens/buggy/camera-preview-960.webp",
+    "width": 960,
+    "height": 516,
+    "alt": "Owner-captured camera view from the Buggy mapping study.",
+    "boundary": "Owner captures. Calibration and ground-truth alignment are not established."
+  },
+  {
+    "id": "002",
+    "name": "SkyStack",
+    "title": "The thing you just tried.",
+    "href": "/#specimen-skystack",
+    "summary": "An earlier homepage exhibit: stamp geometry, replay and a question about what the renderer actually drew.",
+    "image": "assets/specimens/sky-stamp-footprints.svg",
+    "width": 640,
+    "height": 420,
+    "alt": "Native footprint plot from the SkyStack renderer study.",
+    "boundary": "Native footprint plot, not a game capture.",
+    "exhibit": true
+  },
+  {
+    "id": "001",
+    "name": "Ajo",
+    "title": "An answer is missing. What now?",
+    "href": "/#specimen-ajo",
+    "summary": "An earlier homepage exhibit: a lost reply, a recovered result and one application at the receiver. Inspect the saved simulator record.",
+    "boundary": "Saved simulator record. This exhibit opens on the homepage.",
+    "exhibit": true
+  }
+]

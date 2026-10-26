@@ -32,24 +32,24 @@ try{
     await page.goto(origin,{waitUntil:'networkidle'});
     const menu=page.locator('#menu-toggle'),nav=page.locator('#primary-nav');
     assert(await menu.isVisible(),label+': no desktop/mobile sheet control');
-    assert(await nav.isVisible()===(width>1100),label+': compact navigation boundary');
+    assert(!await nav.isVisible() && await page.locator(".collection-nav").isVisible(),label+': collection routes visible while index is closed');
     const before=await menu.boundingBox();await menu.click();await opened(page);
     await page.waitForTimeout(280);
-    assert(await page.evaluate(()=>document.activeElement===document.querySelector('#primary-nav>a')),label+': opening focus does not reach first route');
+    assert(await menu.evaluate(el=>document.activeElement===el),label+': pointer opening should retain trigger focus');
     assert(await nav.evaluate(el=>{const b=el.getBoundingClientRect();return b.left>=0&&b.right<=innerWidth&&b.bottom<=innerHeight;}),label+': sheet clips at viewport');
     const after=await menu.boundingBox();
     assert(['x','y','width','height'].every(key=>Math.abs(before[key]-after[key])<.02),label+': trigger moves on opening');
     assert(await nav.locator('.nav-sheet-heading').isVisible(),label+': no composed heading');
-    assert(await nav.locator('.nav-sheet-invitation').getAttribute('href')===origin+'/questions/',label+': question route is wrong');
+    assert(await nav.locator('.nav-shortcut').last().getAttribute('href')==='./investigations/',label+': question route is wrong');
     if([390,1440].includes(width))await page.screenshot({path:join(output,label+'-menu.png')});
     if([320,390,1440].includes(width))await audit(page,label+' open');
     await page.keyboard.press('Escape');await closed(page,label+' Escape');
     assert(await menu.evaluate(el=>el===document.activeElement),label+': Escape focus not restored');
     await page.locator('#light-switch').focus();await page.keyboard.press('Escape');
     assert(await page.locator('#light-switch').evaluate(el=>el===document.activeElement),label+': closed Escape steals focus');
-    await menu.click();await page.keyboard.press('Shift+Tab');await closed(page,label+' leave by keyboard');
-    assert(await page.locator('.brand').evaluate(el=>el===document.activeElement),label+': backward keyboard exit is trapped');
-    await menu.click();await page.locator('#primary-nav>a[href="#ethos"]').click();await closed(page,label+' room selection');
+    await menu.click();await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');await closed(page,label+' leave by keyboard');
+    assert(await menu.evaluate(el=>el===document.activeElement),label+': backward keyboard exit is trapped');
+    await menu.click();await page.locator('#primary-nav a[href="#ethos"]').click();await closed(page,label+' room selection');
     assert(await page.evaluate(()=>document.activeElement.id==='ethos'),label+': room selection leaves hidden focus');
     await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await menu.click();
     await page.evaluate(()=>dispatchEvent(new Event('blur')));await closed(page,label+' blur');
@@ -73,13 +73,13 @@ try{
     const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
     await page.goto(origin+route,{waitUntil:'networkidle'});
     await page.locator('#menu-toggle').click();await opened(page);
-    assert(await page.locator('.nav-sheet-invitation').getAttribute('href')===origin+'/questions/',route+': nested page resolves wrong invitation');
+    assert(await page.locator('.nav-shortcut').last().evaluate(el=>new URL(el.href).pathname)==='/investigations/',route+': nested page resolves wrong invitation');
     assert(await page.locator('#primary-nav').evaluate(el=>el.getAnimations().length===0),route+': reduced sheet animates');
     await audit(page,route+' sheet');
     await page.keyboard.press('Escape');await closed(page,route);
     if(route==='/notes/'){
-      await page.locator('#menu-toggle').click();await page.locator('.nav-sheet-invitation').click();
-      assert(new URL(page.url()).pathname==='/questions/',route+': invitation does not navigate');
+      await page.locator('#menu-toggle').click();await page.locator('.nav-shortcut').last().click();
+      assert(new URL(page.url()).pathname==='/investigations/',route+': invitation does not navigate');
     }
     await page.close();
   }
@@ -90,8 +90,8 @@ try{
     if(['no-js','failed-script'].includes(option)){
       // A failed script must not leave the old has-js mobile navigation hidden.
       if(option==='failed-script')await page.setViewportSize({width:390,height:844});
-      assert(await page.locator('#primary-nav').isVisible(),option+': native routes inaccessible');
-      assert(!(await page.locator('#menu-toggle').isVisible()),option+': dead menu control');
+      await page.locator('#menu-toggle').click();
+      assert(await page.locator('#primary-nav').isVisible(),option+': native disclosure routes inaccessible');
       assert(!(await page.locator('#light-switch').isVisible()),option+': dead theme control');
       await page.close();continue;
     }
