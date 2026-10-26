@@ -51,7 +51,8 @@ def current(href, page):
 
 
 def link(item, page, extra=''):
-    state = ' aria-current="page"' if current(item['href'], page) else ''
+    route = '/' + page.relative_to(ROOT).as_posix().removesuffix('index.html')
+    state = f' aria-current="{"page" if route == item["href"] else "location"}"' if current(item['href'], page) else ''
     return f'<a href="{local(item["href"], page)}"{state}{extra}>{escape(item["label"])}</a>'
 
 
