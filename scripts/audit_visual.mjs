@@ -68,7 +68,7 @@ async function inspectFirstWork(page, label, theme, width) {
 async function inspectSpecimens(page, label, theme, width) {
   const cards = page.locator('.work-card');
   const ids = ['specimen-ajo', 'specimen-skystack', 'specimen-kitronik'];
-  const routes = ['./notes/005-green-light.html', './notes/008-one-undo.html', './notes/006-map-leaves-room.html'];
+  const routes = ['./specimens/maintenance-acceptance/', './notes/008-one-undo.html', './notes/006-map-leaves-room.html'];
   for (let i = 0; i < ids.length; i++) {
     const card = cards.nth(i);
     assert(await card.getAttribute('id') === ids[i], label + ': artifact order/identity changed');

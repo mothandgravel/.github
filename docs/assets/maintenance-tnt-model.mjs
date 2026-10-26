@@ -42,3 +42,17 @@ export function elapsedLabel(us, precise = false) {
   const tail = String(seconds % 60).padStart(2, '0') + (precise ? '.' + String(totalMs % 1000).padStart(3, '0') : '');
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${tail}`;
 }
+
+/** Plot geometry uses a fixed time window, never the selected packet's future receive. */
+export function tntTimeWindow(study, cursorUs, ordinal, scope = 'packet') {
+  const snapshot = tntSnapshot(study, cursorUs, ordinal);
+  const spanUs = 480_000_000;
+  const anchorUs = scope === 'replay' ? snapshot.cursorUs - 300_000_000 : (snapshot.selected.sentUs ?? snapshot.cursorUs);
+  const startUs = scope === 'capture' ? 0 : Math.max(0, Math.min(study.data.endUs - spanUs, anchorUs - 60_000_000));
+  const endUs = scope === 'capture' ? study.data.endUs : Math.min(study.data.endUs, startUs + spanUs);
+  const observations = study.records.filter((record) => record.sentUs <= snapshot.cursorUs).map((record) => {
+    const receivedUs = record.receivedUs !== null && record.receivedUs <= snapshot.cursorUs ? record.receivedUs : null;
+    return { ordinal: record.ordinal, sentUs: record.sentUs, receivedUs, state: packetState(record, snapshot.cursorUs, study.data.endUs) };
+  });
+  return { scope: ['capture', 'replay'].includes(scope) ? scope : 'packet', startUs, endUs, cursorUs: snapshot.cursorUs, ordinal: snapshot.selected.ordinal, observations };
+}

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { createTntStudy, tntSnapshot, exportTntPrefix, elapsedLabel } from '../docs/assets/maintenance-tnt-model.mjs';
+import { createTntStudy, tntSnapshot, exportTntPrefix, elapsedLabel, tntTimeWindow } from '../docs/assets/maintenance-tnt-model.mjs';
 const bytes = await readFile(new URL('../docs/assets/maintenance-tnt.json', import.meta.url));
 const data = JSON.parse(bytes), study = createTntStudy(data);
 const provenance = JSON.parse(await readFile(new URL('../docs/design/maintenance-tnt-provenance.json', import.meta.url)));
@@ -79,4 +79,41 @@ test('replay has recorded bounds and explicit evidence limits', () => {
   assert.equal(elapsedLabel(59_999_999, true), '00:01:00.000');
   assert.equal(elapsedLabel(3_599_999_999, true), '01:00:00.000');
   assert.ok(data.limits.some((text) => text.includes('No application acknowledgement')));
+});
+
+test('time weave exposes exactly the sent prefix and no future receiver endpoints', () => {
+  const packet = study.records.find((r) => r.delayUs === Math.max(...study.records.map((r) => r.delayUs || 0)));
+  for (const at of [0, packet.sentUs, packet.receivedUs - 1, packet.receivedUs, data.endUs]) {
+    const window = tntTimeWindow(study, at, packet.ordinal), snapshot = tntSnapshot(study, at, packet.ordinal);
+    assert.equal(window.observations.length, snapshot.counts.sent);
+    assert.equal(window.observations.filter((r) => r.receivedUs !== null).length, snapshot.counts.received);
+    assert.equal(window.observations.filter((r) => r.state === 'awaiting').length, snapshot.counts.awaiting);
+    assert.equal(window.observations.filter((r) => r.state === 'not-observed').length, snapshot.counts.notObserved);
+    assert.ok(window.observations.every((r) => r.sentUs <= at && (r.receivedUs === null || r.receivedUs <= at)));
+  }
+});
+test('around-packet window never uses a future send or future receive to position its axis', () => {
+  const packet = study.records[500], at = packet.sentUs - 1;
+  const hidden = tntTimeWindow(study, at, packet.ordinal);
+  const altered = structuredClone(data); altered.records[500].receivedUs += 10_000_000; altered.records[500].delayUs += 10_000_000;
+  const changed = tntTimeWindow(createTntStudy(altered), at, packet.ordinal);
+  assert.deepEqual(hidden, changed);
+  assert.equal(hidden.endUs - hidden.startUs, 480_000_000);
+  assert.equal(hidden.observations.some((r) => r.ordinal === packet.ordinal), false);
+});
+test('whole time axis preserves the same evidence prefix and holds missing rows until the end', () => {
+  const at = Math.floor(data.endUs / 2);
+  const fullAxis = tntTimeWindow(study, at, 1, 'capture'), packetAxis = tntTimeWindow(study, at, 1);
+  assert.equal(fullAxis.startUs, 0); assert.equal(fullAxis.endUs, data.endUs);
+  assert.deepEqual(fullAxis.observations, packetAxis.observations);
+  assert.equal(fullAxis.observations.some((r) => r.state === 'not-observed'), false);
+  assert.equal(tntTimeWindow(study, data.endUs, 1).observations.filter((r) => r.state === 'not-observed').length, 73);
+});
+
+test('following the replay clock keeps its line in the window after the selected send leaves view', () => {
+  const at = 1_200_000_000;
+  const window = tntTimeWindow(study, at, 1, 'replay');
+  assert.ok(window.startUs <= at && window.endUs >= at);
+  assert.ok(window.startUs > study.records[0].sentUs);
+  assert.deepEqual(window.observations, tntTimeWindow(study, at, 1, 'packet').observations);
 });

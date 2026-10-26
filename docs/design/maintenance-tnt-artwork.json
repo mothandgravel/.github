@@ -1,0 +1,35 @@
+{
+  "format": "mg.tnt-artwork.v1",
+  "created": "2026-10-26",
+  "method": "Built-in image_gen imagegen tool; new original generated illustrations. WebP encoding with ffmpeg/libwebp quality 88; no visual retouching.",
+  "sourceContext": [
+    "https://github.com/prettore/TNT/blob/e213681d00b9fd4ec8bd96da63209f017a898b65/README.md",
+    "https://github.com/prettore/TNT/blob/e213681d00b9fd4ec8bd96da63209f017a898b65/img/setup.png"
+  ],
+  "limits": [
+    "Not photographs of the TNT experiment.",
+    "The equipment design and rehearsal setting are illustrative, not an exact PR4G model or documented military installation.",
+    "Artwork contains no measured radio/network state. All timing and packet evidence is rendered separately from the pinned CSVs."
+  ],
+  "images": [
+    {
+      "file": "assets/tnt/bench-study.webp",
+      "width": 1881,
+      "height": 836,
+      "bytes": 132936,
+      "sha256": "123595b2f3bb3dbdf237075d2b8725b3f790a3b5e7dcf0692500d50f73e86d94",
+      "sourcePngSha256": "915e6a6b8689fb6e248fe7e0ec2834b3dd0fedd1bde5bddcfdd5db94a804545d",
+      "prompt": "Use case: product-mockup. Asset type: wide cinematic website study image, aspect ratio approximately 2.25:1. Create a genuinely photoreal editorial product photograph of a controlled tactical VHF radio NETWORK TEST BENCH for the independent Finnish software/design studio Moth & Gravel. Informed by the published TNT wired two-radio experiment: two compact horizontal olive-grey military rugged VHF radio enclosures, sender appliance on the left third and receiving appliance on the right third, both at a natural three-quarter angle facing us. Realistically manufactured thick cast metal cases, finned sides, chipped powder coat at exposed edges, recessed small dark unlit green glass displays, brushed fasteners, protected circular connectors, a knurled selector knob, durable carry brackets. Short shielded coax cables run physically to a small central passive patch/relay box on the charcoal tabletop; tidy Ethernet leads continue towards partially cropped Linux bench equipment at the extreme edges. No antennas radiating; this is a wired laboratory test. Rich precise industrial detail and plausible grounded cabling. Center third above the table should be uncluttered dark negative space for a live timing readout overlaid in HTML. Background is a dim research/workshop wall, subtle acoustic panels, no military decorations. Charcoal, desaturated olive and muted warm brass palette. Low warm raking light picks out metal edges, cool subtle window fill, readable shadow detail, natural glass and cable reflections, slight dust, imperfect real surfaces. Full-frame product camera, 50mm lens, objects sharp with restrained background depth of field, physically believable scale. Absolutely no rendered text, no brands, no logos, no flags, no people, no weapons, no glowing sci-fi neon, no HUD, no diagram or infographic. This is an original generated hardware study, not a photograph or exact model of the actual TNT hardware. Make it feel like an expensive design journal photograph, not a generic stock military image."
+    },
+    {
+      "file": "assets/tnt/rehearsal-study.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 214668,
+      "sha256": "ae4bd3347f6a33e631ee689f87efdfc5eadadc07b509fff9b20a7c9392c015da",
+      "sourcePngSha256": "3d4dd61d68f88dcccd65f000b1c3d22a567dbeb3f6f980387bc3cea329e8dbfc",
+      "prompt": "Use case: photorealistic-natural. Asset type: editorial scene photograph for a Finnish software design specimen, landscape 16:9. Photorealistic deployable communications maintenance and mission-rehearsal WORKSPACE at blue hour in a quiet Nordic conifer clearing. View from just inside a weatherproof field shelter: foreground a carefully observed portable charcoal worktable with a rugged open laptop, two real-looking low-profile olive-grey VHF radio / network appliances in ribbed cast-metal housings, robust circular connectors, realistic shielded cabling, a small protected patch panel, a folded paper test sheet with no legible writing. Laptop display is dark and almost blank, reserved for later designed interface overlay; no fake maps or tactical data. Rugged transit case on the floor, practical fabric shelter seams, scuffed aluminium edge, warm small task lamp lights the equipment, soft cool northern evening enters through an open side showing distant unoccupied trees. Calm, exact, attentive atmosphere of technical rehearsal and maintenance, no combat, no soldiers or people, no weapons, no flags, no unit symbols, no logos, no text, no fog machine. Moth & Gravel palette: deep charcoal, restrained olive, warm parchment/brass light. High dynamic range with readable shadows, glass reflections and dense material microtexture, natural film photography, 35mm documentary composition. Premium editorial realism. It is a generated fictional rehearsal illustration; do not purport to document a real NATO, Finnish military or TNT installation."
+    }
+  ],
+  "model": "The built-in image_gen response did not expose a model identifier or version. Prompts and final asset hashes are retained; identical regeneration is not claimed."
+}

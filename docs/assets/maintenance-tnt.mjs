@@ -1,6 +1,8 @@
-import { createTntStudy, tntSnapshot, exportTntPrefix, elapsedLabel } from './maintenance-tnt-model.mjs';
+import { createTntStudy, tntSnapshot, exportTntPrefix, elapsedLabel, tntTimeWindow } from './maintenance-tnt-model.mjs';
+import { drawTntWeave } from './maintenance-tnt-weave.mjs';
 const $ = (id) => document.getElementById(id);
 let study, cursorUs = 0, displayedUs = 0, ordinal = 1, evidenceKind = 'sender', playing = false, stopUs = null, frame = null, previousTime = null, lastRender = 0, evidenceKey = '';
+let weaveScope = 'packet', weaveHits = [];
 const say = (message, error = false) => { $('tn-status').textContent = message; $('tn-status').dataset.error = String(error); };
 const seconds = (us) => (us / 1e6).toFixed(3) + ' s';
 function pause() { playing = false; cancelAnimationFrame(frame); previousTime = null; $('tn-play').textContent = 'Play the capture'; $('tn-play').setAttribute('aria-pressed', 'false'); }
@@ -49,18 +51,27 @@ function showEvidence(snapshot) {
   document.querySelectorAll('[data-evidence]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.evidence === evidenceKind)));
 }
 
+function drawWeave() {
+  const window = tntTimeWindow(study, displayedUs, ordinal, weaveScope);
+  weaveHits = drawTntWeave($('tn-weave-canvas'), window);
+  $('tn-weave-range').textContent = `${weaveScope === 'packet' ? 'AROUND PACKET ' + ordinal : weaveScope === 'replay' ? 'FOLLOWING REPLAY CLOCK' : 'WHOLE TIME AXIS'} / +${elapsedLabel(window.startUs)} → +${elapsedLabel(window.endUs)}`;
+  $('tn-weave-outside').hidden = displayedUs >= window.startUs && displayedUs <= window.endUs;
+  document.querySelectorAll('[data-weave-scope]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.weaveScope === weaveScope)));
+}
+
 function render() {
   if (!study) return;
   const snapshot = tntSnapshot(study, cursorUs, ordinal), selected = snapshot.selected;
   cursorUs = snapshot.cursorUs; displayedUs = snapshot.cursorUs; ordinal = selected.ordinal;
   $('tn-stage').dataset.state = selected.state;
-  $('tn-at').textContent = 'Recorded clock +' + elapsedLabel(cursorUs);
+  $('tn-at').textContent = 'Recorded clock +' + elapsedLabel(cursorUs, true);
   $('tn-send-state').textContent = selected.sender ? 'SENT' : 'NOT YET SENT';
   $('tn-send-time').textContent = selected.sender ? '+' + elapsedLabel(selected.sentUs, true) : 'No sender row at this point';
   $('tn-receive-state').textContent = selected.state === 'received' ? 'RECEIVED' : selected.state === 'not-observed' ? 'NOT OBSERVED' : 'WAITING';
   $('tn-receive-time').textContent = selected.receiver ? '+' + elapsedLabel(selected.receivedUs, true) : selected.state === 'not-observed' ? 'No matching receive row' : 'No receive row at this point';
   $('tn-clock-label').textContent = selected.state === 'received' ? 'RECORDED ONE-WAY DELAY' : selected.state === 'not-observed' ? 'NO RECORDED ARRIVAL' : selected.state === 'unsent' ? 'BEFORE THIS DEPARTURE' : 'ELAPSED SINCE SEND';
-  $('tn-wait').textContent = selected.state === 'not-observed' ? '—' : elapsedLabel(selected.waitingUs, true);
+  $('tn-wait').textContent = selected.state === 'not-observed' ? 'NO ROW' : selected.waitingUs === null ? '—' : (selected.waitingUs / 1e6).toFixed(3);
+  $('tn-wait-unit').textContent = selected.waitingUs === null || selected.state === 'not-observed' ? '' : 'seconds';
   $('tn-state-copy').textContent = selected.state === 'received' ? 'The other end has a matching capture row.' : selected.state === 'not-observed' ? `No measured delay. ${elapsedLabel(selected.waitingUs)} elapsed from send to the last recorded event.` : selected.state === 'unsent' ? 'This packet has not been sent at the selected time.' : 'A send is recorded. An arrival has not been observed yet.';
   $('tn-packet-label').textContent = selected.sender ? `PACKET ${ordinal} / ID ${selected.packetId} / OCCURRENCE ${selected.occurrence}` : `PACKET ${ordinal} / NOT YET SENT`;
   $('tn-count-sent').textContent = snapshot.counts.sent.toLocaleString('en'); $('tn-count-received').textContent = snapshot.counts.received.toLocaleString('en');
@@ -68,12 +79,12 @@ function render() {
   $('tn-count-waiting-label').textContent = snapshot.ended ? 'not observed' : 'awaiting';
   $('tn-cursor').value = Math.round(cursorUs / study.data.endUs * 10000);
   $('tn-cursor').setAttribute('aria-valuetext', '+' + elapsedLabel(cursorUs, true));
-  $('tn-cursor-label').textContent = 'Recorded elapsed time +' + elapsedLabel(cursorUs);
+  $('tn-cursor-label').textContent = 'Recorded elapsed time +' + elapsedLabel(cursorUs, true);
   $('tn-packet').value = ordinal;
   $('tn-prev').setAttribute('aria-disabled', String(ordinal === 1)); $('tn-next').setAttribute('aria-disabled', String(ordinal === study.records.length));
-  $('tn-to-receive').disabled = study.records[ordinal - 1].receivedUs === null;
+  $('tn-to-receive').disabled = false;
   $('tn-selection').textContent = `Packet ${ordinal} of ${study.records.length}. ${selected.sender ? `IPv4 ID ${selected.packetId}, chronological occurrence ${selected.occurrence}. ` : ''}${selected.state === 'received' ? `Recorded delay ${seconds(selected.delayUs)}.` : selected.state === 'not-observed' ? 'No receive row in the complete record.' : selected.state === 'unsent' ? 'Its send event is later in the record. No source identity is included at this point.' : 'Awaiting a receive observation at this point.'}`;
-  drawAtlas(snapshot); showEvidence(snapshot);
+  drawAtlas(snapshot); drawWeave(); showEvidence(snapshot);
 }
 
 function tick(time) {
@@ -88,13 +99,14 @@ function tick(time) {
 function play(until = study.data.endUs) { stopUs = until; playing = true; previousTime = null; $('tn-play').textContent = 'Pause the capture'; $('tn-play').setAttribute('aria-pressed', 'true'); frame = requestAnimationFrame(tick); }
 function selectPacket(value, seek = false) { if (!study) return; pause(); ordinal = Math.max(1, Math.min(study.records.length, Math.trunc(Number(value)) || 1)); if (seek || cursorUs < study.records[ordinal - 1].sentUs) cursorUs = study.records[ordinal - 1].sentUs; render(); say(`Inspecting packet ${ordinal} at recorded +${elapsedLabel(displayedUs)}. Evidence is limited to this replay point.`); }
 
-$('tn-play').addEventListener('click', () => { if (!study) return; if (playing) { pause(); render(); say(`Paused at recorded +${elapsedLabel(displayedUs)}.`); return; } if (cursorUs >= study.data.endUs) cursorUs = 0; play(); say('Playing the recorded clock. Display speed changes no source measurement.'); });
-$('tn-cursor').addEventListener('input', () => { pause(); cursorUs = Number($('tn-cursor').value) / 10000 * study.data.endUs; render(); say(`Recorded point +${elapsedLabel(displayedUs)} selected. Evidence below includes only observations through this point.`); });
+$('tn-play').addEventListener('click', () => { if (!study) return; if (playing) { pause(); cursorUs = displayedUs; render(); say(`Paused at recorded +${elapsedLabel(displayedUs, true)}.`); return; } if (cursorUs >= study.data.endUs) cursorUs = 0; play(); say('Playing the recorded clock. Display speed changes no source measurement.'); });
+$('tn-cursor').addEventListener('input', () => { pause(); cursorUs = Number($('tn-cursor').value) / 10000 * study.data.endUs; render(); });
+$('tn-cursor').addEventListener('change', () => say(`Recorded point +${elapsedLabel(displayedUs, true)} selected. Evidence below includes only observations through this point.`));
 $('tn-packet').addEventListener('change', () => selectPacket($('tn-packet').value));
 $('tn-packet').addEventListener('keydown', (event) => { if (event.key === 'Enter') { event.preventDefault(); selectPacket($('tn-packet').value); } });
 $('tn-prev').addEventListener('click', () => { if (ordinal > 1) selectPacket(ordinal - 1); }); $('tn-next').addEventListener('click', () => { if (ordinal < study.records.length) selectPacket(ordinal + 1); });
 $('tn-to-send').addEventListener('click', () => { pause(); cursorUs = study.records[ordinal - 1].sentUs; render(); say('At the selected packet’s recorded send event. No later receiver row is included.'); });
-$('tn-to-receive').addEventListener('click', () => { pause(); cursorUs = study.records[ordinal - 1].receivedUs; render(); evidenceKind = 'receiver'; evidenceKey = ''; showEvidence(tntSnapshot(study, cursorUs, ordinal)); say('At the selected packet’s recorded receive event.'); });
+$('tn-to-receive').addEventListener('click', () => { pause(); const at = study.records[ordinal - 1].receivedUs; cursorUs = at ?? study.data.endUs; render(); evidenceKind = 'receiver'; evidenceKey = ''; showEvidence(tntSnapshot(study, cursorUs, ordinal)); say(at === null ? 'At the last recorded event. The complete record has no receive row for this packet.' : 'At the selected packet’s recorded receive event.'); });
 $('tn-follow').addEventListener('click', () => {
   if (!study) return; pause();
   const packet = study.records.reduce((best, r) => (r.delayUs ?? -1) > (best.delayUs ?? -1) ? r : best);
@@ -114,13 +126,27 @@ $('tn-atlas').addEventListener('click', (event) => {
 $('tn-export').addEventListener('click', () => {
   if (!study) return;
   pause(); cursorUs = displayedUs; render();
-  const result = exportTntPrefix(study, displayedUs, ordinal), url = URL.createObjectURL(new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' }));
+  const result = exportTntPrefix(study, displayedUs, ordinal), window = tntTimeWindow(study, displayedUs, ordinal, weaveScope);
+  result.view = { weaveScope, startUs: window.startUs, endUs: window.endUs, image: 'Generated editorial illustration; not observation evidence.' };
+  const url = URL.createObjectURL(new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' }));
   const link = document.createElement('a'); link.href = url; link.download = `tnt-packet-${ordinal}-at-${Math.round(cursorUs)}us.json`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   say(`Exported the displayed point +${elapsedLabel(displayedUs)}. Playback is paused; no later events are included.`);
 });
-new ResizeObserver(() => { if (study) drawAtlas(tntSnapshot(study, cursorUs, ordinal)); }).observe($('tn-atlas'));
-new MutationObserver(() => { if (study) drawAtlas(tntSnapshot(study, cursorUs, ordinal)); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-document.addEventListener('visibilitychange', () => { if (document.hidden) { pause(); render(); } });
+for (const button of document.querySelectorAll('[data-weave-scope]')) button.addEventListener('click', () => {
+  if (!study) return;
+  pause(); cursorUs = displayedUs; weaveScope = button.dataset.weaveScope; render();
+  say(`Time weave window changed. Evidence still ends at recorded +${elapsedLabel(displayedUs, true)}; no future links are drawn.`);
+});
+$('tn-weave-canvas').addEventListener('click', (event) => {
+  const box = $('tn-weave-canvas').getBoundingClientRect(), px = event.clientX - box.left, py = event.clientY - box.top;
+  const nearest = weaveHits.map((hit) => ({ ...hit, distance: Math.hypot(hit.x - px, hit.y - py) })).filter((hit) => hit.distance <= 14).sort((a, b) => a.distance - b.distance)[0];
+  if (nearest) selectPacket(nearest.ordinal);
+});
+$('tn-open-image').addEventListener('click', () => { if (study) { pause(); cursorUs = displayedUs; render(); say(`Paused at recorded +${elapsedLabel(displayedUs, true)} while inspecting the generated hardware study.`); } $('tn-image-dialog').showModal(); });
+$('tn-close-image').addEventListener('click', () => $('tn-image-dialog').close());
+new ResizeObserver(() => { if (study) { drawAtlas(tntSnapshot(study, displayedUs, ordinal)); drawWeave(); } }).observe($('tn-atlas'));
+new MutationObserver(() => { if (study) { drawAtlas(tntSnapshot(study, displayedUs, ordinal)); drawWeave(); } }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { pause(); cursorUs = displayedUs; render(); } });
 try {
   const response = await fetch('../../../assets/maintenance-tnt.json'); if (!response.ok) throw Error(`HTTP ${response.status}`);
   study = createTntStudy(await response.json());
