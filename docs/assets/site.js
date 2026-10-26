@@ -116,7 +116,7 @@
   }
 
   navigation?.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
-    if (!navigation.classList.contains("is-open")) return;
+    if (!disclosure?.open) return;
     closeMenu();
     // Move keyboard focus to the selected room, with native anchor scrolling.
     const destination = new URL(link.href);
@@ -130,13 +130,13 @@
 
   document.addEventListener("keydown", event => {
     // This is a nonmodal index: the page remains usable, and leaving it closes it.
-    if (event.key === "Escape" && navigation?.classList.contains("is-open")) {
+    if (event.key === "Escape" && disclosure?.open) {
       closeMenu(true);
     }
   });
 
   document.addEventListener("pointerdown", event => {
-    if (navigation?.classList.contains("is-open") &&
+    if (disclosure?.open &&
         !navigation.contains(event.target) &&
         !menuButton?.contains(event.target)) {
       closeMenu(navigation.contains(document.activeElement));
@@ -156,13 +156,13 @@
   window.addEventListener("resize", () => {
     const changed = menuWidth !== window.innerWidth;
     menuWidth = window.innerWidth;
-    if (changed && navigation?.classList.contains("is-open")) closeMenu(navigation.contains(document.activeElement));
+    if (changed && disclosure?.open) closeMenu(navigation.contains(document.activeElement));
   });
   window.addEventListener("pagehide", () => {
-    if (navigation?.classList.contains("is-open")) closeMenu(navigation.contains(document.activeElement));
+    if (disclosure?.open) closeMenu(navigation.contains(document.activeElement));
   });
   window.addEventListener("blur", () => {
-    if (navigation?.classList.contains("is-open")) closeMenu(navigation.contains(document.activeElement));
+    if (disclosure?.open) closeMenu(navigation.contains(document.activeElement));
   });
 
   document.getElementById("year")?.replaceChildren(document.createTextNode(String(new Date().getFullYear())));
