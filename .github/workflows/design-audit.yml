@@ -57,26 +57,13 @@ jobs:
           exit 1
       - name: Capture desktop and mobile review / assert interaction health
         run: |
-          node scripts/audit_wayfinding.mjs
-          node scripts/audit_maintenance.mjs
-          node scripts/audit_reading.mjs
-          node scripts/audit_visual.mjs
-          node scripts/audit_loose_end.mjs
-          node scripts/audit_moth.mjs
-          node scripts/audit_handling.mjs
-          node scripts/audit_moth_volume.mjs
-          node scripts/audit_rooms.mjs
-          node scripts/audit_connection.mjs
-          node scripts/audit_mapping.mjs
-          node scripts/audit_coastal_replay.mjs
-          node scripts/audit_coastal_transport.mjs
-          node scripts/audit_shadow_inquiry.mjs
-          node scripts/audit_coastal_identity.mjs
-          node scripts/audit_coastal_haxr.mjs
-          node scripts/audit_thread.mjs
-          node scripts/audit_studio_note.mjs
-          node scripts/audit_maritime.mjs
-          node scripts/audit_playground.mjs
+          failed=0
+          for audit in wayfinding maintenance reading visual loose_end moth handling moth_volume rooms connection mapping coastal_replay coastal_transport shadow_inquiry coastal_identity coastal_haxr thread studio_note maritime playground; do
+            echo "::group::$audit"
+            node "scripts/audit_$audit.mjs" || failed=1
+            echo "::endgroup::"
+          done
+          exit "$failed"
       - name: Upload screenshots and measurements
         if: always()
         uses: actions/upload-artifact@v4
