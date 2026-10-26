@@ -51,8 +51,8 @@ try {
       assert.equal(await page.locator('#ma-queries').innerText(), '1');
       assert.equal(await page.locator('#ma-writes').innerText(), '1');
       await page.locator('#ma-steps button').filter({ hasText: 'Dispatch intent saved' }).click();
-      assert.equal(await page.locator('#ma-receiver-state').innerText(), 'UNKNOWN');
-      assert.equal(await page.locator('#ma-receiver-detail').innerText(), 'outcome unresolved');
+      assert.equal(await page.locator('#ma-receiver-state').textContent(), 'UNKNOWN');
+      assert.equal(await page.locator('#ma-receiver-detail').textContent(), 'outcome unresolved');
       const first = page.locator('#ma-steps button').first();
       await first.focus(); await page.keyboard.press('Enter');
       assert.equal(await first.evaluate((el) => el === document.activeElement), true, 'Step focus lost');
