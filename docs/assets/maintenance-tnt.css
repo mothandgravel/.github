@@ -56,7 +56,7 @@
 .tn-readout { display:flex;flex-direction:column;align-items:center;margin:10px -50px 0; }
 .tn-readout>strong { display:block;font:400 clamp(65px,7.4vw,112px)/.95 var(--serif);letter-spacing:-.055em;color:var(--gold-bright);white-space:nowrap;text-shadow:0 3px 22px #000b;font-variant-numeric:tabular-nums; }
 .tn-readout>span { margin-top:11px;font:italic 18px var(--serif);color:#ded4c4; }
-.tn-wait>p { font-size:12px;line-height:1.7;color:var(--secondary);max-width:280px;margin:16px auto;min-height:40px;text-wrap:balance;text-shadow:0 1px 8px #000; }
+.tn-wait>p { font-size:12px;line-height:1.7;color:var(--secondary);max-width:280px;margin:16px auto;min-height:40px;padding:6px 10px;background:#101415c9;text-wrap:balance;text-shadow:0 1px 8px #000; }
 .tn-clock-etch { position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:370px;height:270px;border:1px solid #c5b08b29;border-radius:50%;z-index:-1;pointer-events:none;mask-image:linear-gradient(#000,transparent 78%); }
 .tn-clock-etch::before,.tn-clock-etch::after { content:'';position:absolute;inset:9px;border:1px dashed #c5b08b33;border-radius:50%; }
 .tn-clock-etch::after { inset:19px;border-style:solid;border-color:#c5b08b18; }
@@ -156,7 +156,7 @@
 @media(max-width:1100px) {
   .tn-hero { gap:6%; }.tn-hero h1 { font-size:85px; }
   .tn-totals>div { padding:20px; }.tn-totals>div:last-child strong { font-size:34px; }.tn-totals small { font-size:18px; }
-  .tn-study-head { align-items:start; }.tn-study-head h2 { font-size:36px; }.tn-cues { display:grid;gap:6px; }.tn-cues button { max-width:230px;min-width:205px;padding:9px 13px; }.tn-cues button>span { display:inline;margin-right:10px;font-size:8px; }
+  .tn-study-head { align-items:start; }.tn-study-head h2 { font-size:36px; }.tn-cues { display:grid;gap:6px; }.tn-cues button { max-width:230px;min-width:205px;padding:9px 13px; }.tn-cues button>span { display:block;margin:0 0 6px;font-size:9px; }
   .tn-stage { padding-inline:25px; }.tn-path { gap:10px;min-height:425px;grid-template-columns:1fr 1.7fr 1fr; }.tn-terminal { padding:10px; }.tn-terminal-top { font-size:9px; }.tn-screen strong { font-size:14px; }.tn-screen>span { font-size:9px; }.tn-readout>strong { font-size:78px; }.tn-wait>p { font-size:11px;max-width:230px; }.tn-clock-etch { width:310px;height:240px; }
   .tn-player { gap:15px;padding:20px; }.tn-weave-head { display:block; }.tn-weave-scope { margin-top:20px; }.tn-weave-meta { flex-wrap:wrap;gap:7px; }.tn-weave-foot { gap:20px; }
   .tn-atlas-head { display:block; }.tn-legend { display:flex;flex-wrap:wrap;margin-top:20px; }
