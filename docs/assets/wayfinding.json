@@ -1,0 +1,18 @@
+{
+  "routes": [
+    {"label":"Specimens","href":"/specimens/","hint":"Working pieces you can look into."},
+    {"label":"Field notes","href":"/notes/","hint":"What we noticed while making. Read or listen."},
+    {"label":"Something happened. I can’t tell what.","href":"/threads/something-happened/","hint":"One question through several pieces."},
+    {"label":"Contact","href":"/#contact","hint":"A rough edge, an unfinished idea, a question."}
+  ],
+  "shortcuts": [
+    {"label":"The measured TNT replay","href":"/specimens/maintenance-acceptance/tnt/","hint":"Inside specimen 009 / 1,000 recorded departures."},
+    {"label":"Listen to the field notes","href":"/notes/#listen-archive","hint":"17 published notes / AI-narrated audio."},
+    {"label":"Three questions. Still open.","href":"/investigations/","hint":"Freshness, recovery and the promise of a green light."}
+  ],
+  "studio": [
+    {"label":"What we take on","href":"/#services"},
+    {"label":"The thinking","href":"/#ethos"},
+    {"label":"Example workbench","href":"/workbench/"}
+  ]
+}

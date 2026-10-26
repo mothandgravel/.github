@@ -32,6 +32,7 @@ jobs:
       - name: Verify generated editorial slots and archive behavior
         run: |
           python3 scripts/build_notes.py --check
+          python3 scripts/wayfinding_output.test.py
           python3 scripts/reading_output.test.py
           node --test scripts/coastal_replay.test.mjs scripts/coastal_transport.test.mjs scripts/coastal_guide.test.mjs scripts/coastal_knowledge.test.mjs
           node --test scripts/shadow_inquiry.test.mjs
@@ -55,6 +56,7 @@ jobs:
         run: python3 scripts/check_site.py
       - name: Syntax-check browser JavaScript
         run: |
+          node --check scripts/audit_wayfinding.mjs
           node --check docs/assets/maintenance-acceptance.mjs
           node --check docs/assets/maintenance-acceptance-model.mjs
           node --check docs/assets/maintenance-tnt.mjs

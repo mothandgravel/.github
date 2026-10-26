@@ -88,86 +88,34 @@
 
   root.classList.add("has-site-controls");
 
-  // Keep the authored routes as the source of the index. Without enhancement,
-  // these are still ordinary, visible navigation links on every screen size.
-  if (navigation && menuButton) {
-    const routes = [...navigation.querySelectorAll("a")];
-    // Hints are visual company for each route; the link keeps its plain name.
-    const hints = {
-      "workbench": "An example study. A playground.",
-      "field notes": "Questions worth following.",
-      "the thinking": "Soft wings. Hard ground.",
-      "contact": "Email, or shape a brief first.",
-      "the studio": "Back to the bench.",
-      "bring a question": "Give a question a little shape."
-    };
-    const heading = document.createElement("div");
-    heading.className = "nav-sheet-heading";
-    const index = document.createElement("span");
-    index.className = "mono";
-    index.textContent = "M+G / THE STUDIO INDEX";
-    const title = document.createElement("p");
-    title.textContent = "A few ways in.";
-    heading.append(index, title);
-    navigation.prepend(heading);
-    routes.forEach((link, i) => {
-      const label = link.textContent.trim();
-      const number = document.createElement("span");
-      number.className = "nav-sheet-index mono";
-      number.setAttribute("aria-hidden", "true");
-      number.textContent = String(i + 1).padStart(2, "0");
-      const name = document.createElement("span");
-      name.className = "nav-sheet-label";
-      name.textContent = label;
-      const hint = document.createElement("span");
-      hint.className = "nav-sheet-hint";
-      hint.setAttribute("aria-hidden", "true");
-      hint.textContent = link.dataset.hint || hints[label.toLowerCase()] || "";
-      link.replaceChildren(number, name, hint);
+  // The authored disclosure works without scripts. Enhancement only manages focus
+  // and dismisses this nonmodal index when the visitor leaves it.
+  const disclosure = menuButton?.closest("details");
+  if (disclosure) {
+    menuButton.setAttribute("aria-expanded", String(disclosure.open));
+    disclosure.addEventListener("toggle", () => {
+      const open = disclosure.open;
+      navigation.classList.toggle("is-open", open);
+      menuButton.setAttribute("aria-expanded", String(open));
+      if (open) navigation.querySelector("a")?.focus({preventScroll:true});
     });
-    const foot = document.createElement("div");
-    foot.className = "nav-sheet-foot";
-    const invitation = document.createElement("a");
-    invitation.className = "nav-sheet-invitation";
-    // Every shared masthead already points its brand at the studio's home.
-    const home = new URL(document.querySelector(".brand").getAttribute("href"), location.href);
-    invitation.href = new URL("questions/", home).href;
-    invitation.textContent = "Shape a brief first ↗";
-    const mail = document.querySelector(".header-mail")?.cloneNode(true);
-    if (mail) {
-      mail.className = "nav-sheet-mail";
-      mail.querySelector("a")?.classList.remove("header-mail-link");
-      mail.querySelectorAll("[data-copy-email]").forEach(enableCopy);
-    }
-    const reach = document.createElement("p");
-    reach.className = "mono";
-    reach.textContent = "BASED IN FINLAND / QUESTIONS FROM ANYWHERE";
-    foot.append(...[invitation, mail, reach].filter(Boolean));
-    navigation.append(foot);
-    root.classList.add("has-nav-sheet");
   }
 
   function closeMenu(restoreFocus = false) {
     if (!navigation || !menuButton) return;
+    if (disclosure) disclosure.open = false;
     navigation.classList.remove("is-open");
     menuButton.setAttribute("aria-expanded", "false");
     if (restoreFocus) menuButton.focus({preventScroll:true});
   }
 
-  menuButton?.addEventListener("click", () => {
-    const willOpen = !navigation?.classList.contains("is-open");
-    navigation?.classList.toggle("is-open", willOpen);
-    menuButton.setAttribute("aria-expanded", String(willOpen));
-    if (willOpen) navigation?.querySelector("a")?.focus({preventScroll:true});
-  });
-
   navigation?.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
     if (!navigation.classList.contains("is-open")) return;
     closeMenu();
     // Move keyboard focus to the selected room, with native anchor scrolling.
-    const hash = link.getAttribute("href");
-    if (!hash?.startsWith("#")) return;
-    const target = document.getElementById(hash.slice(1));
+    const destination = new URL(link.href);
+    if (destination.pathname !== location.pathname || !destination.hash) return;
+    const target = document.getElementById(destination.hash.slice(1));
     if (target) {
       target.setAttribute("tabindex", "-1");
       target.focus({ preventScroll: true });

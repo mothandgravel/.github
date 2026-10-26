@@ -143,7 +143,7 @@ try {
   await moving.waitForFunction(()=>document.querySelector('.thread-wire').getAnimations().every(a=>a.playState==='finished'));
   assert(JSON.stringify(before)===JSON.stringify(await label.boundingBox()),'Optional glint never moves the question or its hit area');
   await moving.locator('#menu-toggle').click();
-  assert(await moving.locator('.nav-sheet-invitation').getAttribute('href')===origin+'/questions/','Nested thread masthead resolves the correct question route');
+  assert(await moving.locator('.nav-shortcut').last().evaluate(el=>new URL(el.href).pathname)==='/investigations/','Nested thread masthead resolves the correct question route');
   await moving.keyboard.press('Escape');
   assert(await moving.locator('#menu-toggle').evaluate(el=>el===document.activeElement),'Closing the menu restores keyboard focus');
   await moving.goto(origin+'/notes/');

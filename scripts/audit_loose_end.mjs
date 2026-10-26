@@ -309,7 +309,7 @@ try {
     await page.locator('#question-next').waitFor({state:'visible'});
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     if(mode==='delayed-site-script') assert(await page.evaluate(()=>window.__questionShifts.reduce((sum,value)=>sum+value,0))<=.1,'Deferred navigation must not shift the question entrance');
-    else assert(await page.locator('#primary-nav').isVisible()&&!await page.locator('#menu-toggle').isVisible(),'Blocked site script leaves ordinary navigation and no dead menu');
+    else { await page.locator('#menu-toggle').click(); assert(await page.locator('#primary-nav').isVisible(),'Blocked script leaves a working native menu'); await page.locator('#menu-toggle').click(); }
     await audit(page,'questions-'+mode,true);
     await context.close();
   }
@@ -351,7 +351,7 @@ try {
     assert(!await page.locator('#question-next').isVisible(),fallback+': dead guided controls must stay hidden');
     await page.locator('[data-followup]:has(#materials) summary').click();
     assert(await page.locator('#materials').isVisible(),fallback+': optional material needs a native disclosure');
-    if (fallback==='no-javascript') assert(await page.locator('#primary-nav').isVisible()&&!await page.locator('#menu-toggle').isVisible(), 'Native question navigation has links and no dead menu');
+    if (fallback==='no-javascript') { await page.locator('#menu-toggle').click(); assert(await page.locator('#primary-nav').isVisible(), 'Native question menu exposes authored links'); await page.locator('#menu-toggle').click(); }
     await audit(page,'questions-'+fallback,true);
     await page.goto(origin+'/workbench/');
     assert(await page.locator('[data-surface="item"]').isVisible()&&await page.locator('[data-surface="damage"]').isVisible(),fallback+': both approaches must remain inspectable');

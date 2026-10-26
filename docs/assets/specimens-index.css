@@ -1,0 +1,27 @@
+/* A collection of actual work, with its evidence boundaries left attached. */
+.specimens-intro{padding:80px 0 62px;border-bottom:1px solid var(--line)}
+.specimens-intro h1{font:900 clamp(64px,7vw,116px)/.97 var(--sans);text-transform:uppercase;letter-spacing:-.04em;margin:0 0 45px}
+.specimens-intro h1 em,.specimens-after h2 em{font-family:var(--serif);font-weight:400;text-transform:none;color:var(--gold-bright)}
+.specimens-intro-bottom{display:grid;grid-template-columns:1fr 1fr;gap:9vw;align-items:start}
+.specimens-intro-bottom>p{max-width:47ch;color:var(--secondary);font-size:18px;line-height:1.75;margin:0}
+.specimens-count{font:italic 32px/1.15 var(--serif);margin:0 0 22px}
+.specimen-open{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:48px;padding:12px 0;border-bottom:1px solid var(--gold);font-size:14px;font-weight:700;color:var(--gold-bright);width:fit-content;max-width:100%}
+.specimens-room-note{display:block;color:var(--muted);font:11px/1.6 var(--mono);margin-top:12px}
+.specimens-catalogue{display:grid;grid-template-columns:1fr 1fr;column-gap:54px}
+.specimen-entry{min-width:0;padding:48px 0 50px;border-bottom:1px solid var(--line)}
+.specimen-featured{grid-column:1/-1;display:grid;grid-template-columns:1.2fr 1fr;gap:54px;align-items:center}
+.specimen-art img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;background:var(--surface-2)}
+.specimen-featured .specimen-art img{aspect-ratio:1.7;object-fit:contain;background:#1e211e}
+.specimen-art>p{color:var(--muted);font:11px/1.65 var(--mono);margin:12px 0 24px;max-width:70ch}
+.specimen-copy>.mono{color:var(--gold-bright);font-size:11px;text-transform:uppercase;margin:0 0 16px}
+.specimen-copy h2{font:900 clamp(32px,3.3vw,54px)/1.06 var(--sans);letter-spacing:-.025em;margin:0 0 20px;max-width:22ch}
+.specimen-copy h2 a:hover{color:var(--gold-bright)}
+.specimen-copy>p:not(.mono){color:var(--secondary);font-size:16px;line-height:1.8;max-width:53ch}
+.specimen-rooms{display:grid;margin-top:24px;border-top:1px solid var(--line-soft)}
+.specimen-rooms a{padding:13px 0;min-height:46px;border-bottom:1px solid var(--line-soft);font-size:13px;color:var(--secondary)}
+.specimen-rooms a:hover{color:var(--gold-bright)}
+.specimen-trace{aspect-ratio:16/10;background:var(--surface);border:1px solid var(--line);padding:30px;display:flex;flex-direction:column;justify-content:center;gap:16px;color:var(--gold-bright);overflow:hidden}
+.specimen-trace span{font:11px var(--mono)}.specimen-trace b{font:italic clamp(36px,4vw,64px) var(--serif)}.specimen-trace i{font:40px var(--mono);letter-spacing:.1em;white-space:nowrap}
+.specimens-after{padding:75px 0 90px}.specimens-after h2{font:900 clamp(38px,4vw,64px)/1.05 var(--sans);text-transform:uppercase;letter-spacing:-.02em}
+@media(max-width:900px){.specimens-intro{padding-top:48px}.specimens-catalogue{column-gap:30px}.specimen-featured{gap:30px}.specimens-intro-bottom{gap:35px}}
+@media(max-width:660px){.specimens-intro{padding:38px 0}.specimens-intro .eyebrow{font-size:10px;margin-bottom:22px}.specimens-intro h1{font-size:clamp(45px,11.4vw,74px);margin-bottom:26px}.specimens-intro-bottom{grid-template-columns:1fr;gap:24px}.specimens-intro-bottom>p{font-size:15px;line-height:1.7}.specimens-count{font-size:28px;margin-bottom:12px}.specimens-catalogue{grid-template-columns:1fr}.specimen-featured{display:block}.specimen-entry{padding:32px 0}.specimen-copy h2{font-size:36px}.specimen-copy>p:not(.mono){font-size:15px}.specimens-after{padding:48px 0 64px}}

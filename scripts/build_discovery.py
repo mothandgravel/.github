@@ -35,6 +35,7 @@ def build(check=False):
                'name': 'Moth & Gravel', 'inLanguage': 'en',
                'publisher': {'@id': organization['@id']}}
     pages = [(ROOT / 'docs/index.html', DOMAIN, 'Moth & Gravel — Independent Software & Design Studio', None),
+             (ROOT / 'docs/specimens/index.html', DOMAIN + 'specimens/', 'Specimens — Moth & Gravel', None),
              (ROOT / 'docs/threads/something-happened/index.html', DOMAIN + 'threads/something-happened/', 'Something happened. I can’t tell what.', None),
              (ROOT / 'docs/notes/index.html', DOMAIN + 'notes/', 'Field Notes — Moth & Gravel', None),
              (ROOT / 'docs/questions/index.html', DOMAIN + 'questions/', 'Leave a loose end — Moth & Gravel', None),
@@ -57,7 +58,7 @@ def build(check=False):
              (ROOT / 'docs/workbench/playground/index.html', DOMAIN + 'workbench/playground/', 'The playground', None)]
     pages += [(ROOT / 'docs/notes' / n['slug'], DOMAIN + 'notes/' + n['slug'], n['title'], n) for n in notes]
     for path, url, title, note in pages:
-        page = {'@type': 'CollectionPage' if url.endswith('notes/') else 'WebPage',
+        page = {'@type': 'CollectionPage' if url.endswith(('notes/', 'specimens/')) else 'WebPage',
                 '@id': url + '#page', 'url': url, 'name': title, 'inLanguage': 'en',
                 'isPartOf': {'@id': website['@id']}}
         graph = [organization, website, page]
@@ -91,8 +92,15 @@ def build(check=False):
                     crumbs.append((title, url))
             elif url.endswith('workbench/playground/'):
                 crumbs.append((title, url))
+            elif url.endswith('specimens/'):
+                crumbs.append(('Specimens', url))
+                items = json.loads((ROOT / 'docs/assets/specimens.json').read_text(encoding='utf-8'))
+                graph += [{'@type': 'ItemList', '@id': url + '#entries', 'itemListElement':
+                           [{'@type':'ListItem', 'position':i + 1, 'name':n['name'], 'url': DOMAIN.rstrip('/') + n['href']}
+                            for i, n in enumerate(items)]}]
+                page['mainEntity'] = {'@id': url + '#entries'}
             elif '/specimens/' in url:
-                crumbs += [('Working specimens', DOMAIN + '#work'), (title, url)]
+                crumbs += [('Specimens', DOMAIN + 'specimens/'), (title, url)]
         if len(crumbs) > 1:
             graph += [{'@type': 'BreadcrumbList', 'itemListElement':
                        [{'@type': 'ListItem', 'position': i + 1, 'name': label, 'item': link}

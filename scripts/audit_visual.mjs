@@ -207,7 +207,7 @@ try {
         heroHeading: box("#hero-title"),
         heroImage: box(".hero-visual"),
         heroAction: box(".button-brass"),
-        navVisible: getComputedStyle(document.querySelector("#primary-nav")).display !== "none",
+        navVisible: getComputedStyle(document.querySelector(".collection-nav")).display !== "none",
         brandMarkVisible: getComputedStyle(document.querySelector(".brand-stamp")).display !== "none",
         heroHeadingLines: Math.round(document.querySelector("#hero-title").getBoundingClientRect().height /
           parseFloat(getComputedStyle(document.querySelector("#hero-title")).lineHeight)),
@@ -361,7 +361,7 @@ try {
       documentWidth: document.documentElement.scrollWidth,
       viewportWidth: window.innerWidth,
       articleVisible: Boolean(document.querySelector(".note-prose")),
-      hasWorkbenchReturn: Boolean(document.querySelector('a[href="../#work"]')),
+      hasWorkbenchReturn: Boolean(document.querySelector('a[href="../specimens/"]')),
       headingFits: (() => {
         const el = document.querySelector(".note-heading h1");
         return el.scrollWidth <= el.clientWidth + 2;
@@ -695,10 +695,10 @@ try {
     await visitor.locator(".note-prose").waitFor();
     assert(visitor.url().includes("/notes/001-curiosity-with-calluses.html"),
       "Workbench Field Note link does not navigate to the published note");
-    await visitor.locator('.note-end a[href="../#work"]').click();
-    await visitor.locator("#work-title").waitFor();
-    assert(!visitor.url().includes("/notes/") && visitor.url().endsWith("#work"),
-      "Field Note return link does not navigate to Workbench");
+    await visitor.locator('.note-end a[href="../specimens/"]').click();
+    await visitor.locator(".specimens-intro h1").waitFor();
+    assert(!visitor.url().includes("/notes/") && new URL(visitor.url()).pathname === "/specimens/",
+      "Field Note return link does not navigate to Specimens");
     await visitor.locator('.field-note-routes a[href="./notes/#archive"]').click();
     await visitor.locator('#archive-status').waitFor({ state: 'visible' });
     await visitor.locator('#archive-query').fill('002');
@@ -832,14 +832,10 @@ try {
     reducedMotion: "reduce", deviceScaleFactor: 1,
   });
   await page.goto(origin, { waitUntil: "load" });
-  const noJSNavVisible = await page.locator("#primary-nav").evaluate(
-    element => getComputedStyle(element).display !== "none");
-  const noJSMenuHidden = await page.locator("#menu-toggle").evaluate(
-    element => getComputedStyle(element).display === "none");
-  const noJSThemeHidden = await page.locator("#light-switch").evaluate(
-    element => getComputedStyle(element).display === "none");
-  assert(noJSNavVisible && noJSMenuHidden && noJSThemeHidden,
-    "No-JS mobile navigation is inaccessible or a dead theme toggle is visible");
+  await page.locator('#menu-toggle').click();
+  assert(await page.locator('#primary-nav').isVisible() && !await page.locator('#light-switch').isVisible(),
+    "No-JS disclosure must expose authored routes without a dead theme control");
+  await page.locator('#menu-toggle').click();
   await inspectSpecimens(page, 'no-JavaScript specimens', 'no-js', 390);
   assert(await page.locator('[data-handled]').count() === 0, 'No-JS: material needs a static resting presentation');
   await snap(page, "phone-no-javascript");
