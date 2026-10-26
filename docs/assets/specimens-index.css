@@ -20,7 +20,7 @@
 .specimen-rooms{display:grid;margin-top:24px;border-top:1px solid var(--line-soft)}
 .specimen-rooms a{padding:13px 0;min-height:46px;border-bottom:1px solid var(--line-soft);font-size:13px;color:var(--secondary)}
 .specimen-rooms a:hover{color:var(--gold-bright)}
-.specimen-trace{aspect-ratio:16/10;min-height:260px;background:var(--surface);border:1px solid var(--line);padding:20px;display:flex;flex-direction:column;justify-content:center;gap:10px;color:var(--gold-bright)}
+.specimen-trace{width:100%;aspect-ratio:16/10;min-height:260px;background:var(--surface);border:1px solid var(--line);padding:20px;display:flex;flex-direction:column;justify-content:center;gap:10px;color:var(--gold-bright)}
 .specimen-trace span{font:11px var(--mono)}.specimen-trace b{font:italic clamp(28px,4vw,52px) var(--serif)}
 .specimens-after{padding:75px 0 90px}.specimens-after h2{font:900 clamp(38px,4vw,64px)/1.05 var(--sans);text-transform:uppercase;letter-spacing:-.02em}
 @media(max-width:900px){.specimens-intro{padding-top:48px}.specimens-catalogue{column-gap:30px}.specimen-featured{gap:30px}.specimens-intro-bottom{gap:35px}}
