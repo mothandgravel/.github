@@ -25,3 +25,5 @@
 .specimens-after{padding:75px 0 90px}.specimens-after h2{font:900 clamp(38px,4vw,64px)/1.05 var(--sans);text-transform:uppercase;letter-spacing:-.02em}
 @media(max-width:900px){.specimens-intro{padding-top:48px}.specimens-catalogue{column-gap:30px}.specimen-featured{gap:30px}.specimens-intro-bottom{gap:35px}}
 @media(max-width:660px){.specimens-intro{padding:38px 0}.specimens-intro .eyebrow{font-size:10px;margin-bottom:22px}.specimens-intro h1{font-size:clamp(45px,11.4vw,74px);margin-bottom:26px}.specimens-intro-bottom{grid-template-columns:1fr;gap:24px}.specimens-intro-bottom>p{font-size:15px;line-height:1.7}.specimens-count{font-size:28px;margin-bottom:12px}.specimens-catalogue{grid-template-columns:1fr}.specimen-featured{display:block}.specimen-entry{padding:32px 0}.specimen-copy h2{font-size:36px}.specimen-copy>p:not(.mono){font-size:15px}.specimens-after{padding:48px 0 64px}}
+
+.specimen-art img[src$=".svg"]{object-fit:contain;background:#17191b}

@@ -38,8 +38,8 @@
     "image": "assets/specimens/field-power/field-power-site.webp",
     "width": 1200,
     "height": 676,
-    "alt": "Illustrative field site with equipment shelters, solar panels and a generator.",
-    "boundary": "Illustrative site and inspectable energy model. A scenario, not a field qualification."
+    "alt": "Captured Field power interface with a modelled site, generator, battery and load account.",
+    "boundary": "Captured software study. Inspectable energy model and explicit scenario assumptions."
   },
   {
     "id": "006",
@@ -48,8 +48,8 @@
     "href": "/specimens/maritime-study/",
     "summary": "A crossing between Helsinki and Tallinn, seen from the water and the bridge. Light, weather and instruments belong to the same picture.",
     "image": "assets/specimens/maritime-study/01-mystar-exterior.jpg",
-    "width": 1600,
-    "height": 900,
+    "width": 1427,
+    "height": 875,
     "alt": "Captured 3D study of MyStar on the Helsinki–Tallinn crossing.",
     "boundary": "Captured software study. Modelled geometry and conditions are not a navigational reference."
   },
@@ -90,8 +90,8 @@
     "href": "/specimens/connected-to-what/",
     "summary": "A healthy connection can carry an old reading. Interrupt the stream and inspect the difference between reachability and freshness.",
     "image": "assets/specimens/connection-and-reading.svg",
-    "width": 1200,
-    "height": 560,
+    "width": 960,
+    "height": 420,
     "alt": "Diagram separating a connection’s state from the age of its reading.",
     "boundary": "Authored connection study. Its events and evidence can be inspected."
   },
@@ -103,7 +103,7 @@
     "summary": "A camera, a route and a map do not automatically agree. Inspect the captured views and the limits of the comparison.",
     "image": "assets/specimens/buggy/camera-preview-960.webp",
     "width": 960,
-    "height": 540,
+    "height": 516,
     "alt": "Owner-captured camera view from the Buggy mapping study.",
     "boundary": "Owner captures. Calibration and ground-truth alignment are not established."
   },

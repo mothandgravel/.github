@@ -43,6 +43,7 @@ try {
   }
   for(const path of ['/','/notes/017-the-grid-is-shared.html','/specimens/coastal-watch/radar-replay/','/specimens/maintenance-acceptance/tnt/','/workbench/','/404.html']) {
     for(const fallback of ['no-js','blocked-script']) {
+      console.log(`Native route: ${path} / ${fallback}`);
       const page=await browser.newPage({viewport:{width:375,height:850},javaScriptEnabled:fallback!=='no-js'});
       if(fallback==='blocked-script')await page.route('**/assets/site.js',route=>route.abort());
       await page.goto(origin+path,{waitUntil:'networkidle'});
@@ -50,6 +51,8 @@ try {
       await page.locator('#menu-toggle').click();
       assert(await page.locator('#primary-nav').isVisible(),`${path} native disclosure opens`);
       assert(await page.locator('.nav-shortcut').count()===3,`${path} shortcuts authored`);
+      await page.screenshot({path:`${output}/native-${path.replace(/[^a-z0-9]/gi,'_')}-${fallback}.png`});
+      console.log(await page.locator('#primary-nav>a').first().boundingBox());
       await page.locator('#primary-nav>a').first().click();
       assert(new URL(page.url()).pathname==='/specimens/',`${path} reaches actual collection`);
       results.push({path,fallback});await page.close();

@@ -27,7 +27,7 @@
 .question-error { color:var(--ink);border-left:3px solid var(--gold-bright);padding-left:12px; }
 .choice { display:flex;align-items:center;gap:15px;min-height:56px;border:1px solid var(--line);padding:14px 16px;margin:10px 0;cursor:pointer;font-size:16px; }
 .choice:has(input:checked) { border-color:var(--gold-bright);background:var(--surface-2); }
-.choice input { accent-color:var(--gold-bright);width:20px;height:20px;flex-shrink:0;margin:0; }
+.choice input { accent-color:var(--gold-bright);width:24px;height:24px;flex-shrink:0;margin:0;scroll-margin-top:130px; }
 .choice:focus-within { outline:2px solid var(--gold-bright);outline-offset:3px; }
 .journey-actions { display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:25px; }
 .journey-actions button,.room-card button { cursor:pointer;border:1px solid var(--line); }
