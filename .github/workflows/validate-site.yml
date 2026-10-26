@@ -60,6 +60,7 @@ jobs:
           node --check docs/assets/maintenance-tnt.mjs
           node --check docs/assets/maintenance-tnt-model.mjs
           node --check docs/assets/maintenance-tnt-weave.mjs
+          node --check scripts/audit_maintenance.mjs
           node --check docs/assets/datacenter.mjs
           node --check docs/assets/datacenter-finland.mjs
           node --check docs/assets/datacenter-households.mjs

@@ -21,6 +21,7 @@ on:
       - "scripts/audit_thread.mjs"
       - "scripts/audit_reading.mjs"
       - "scripts/audit_maritime.mjs"
+      - "scripts/audit_maintenance.mjs"
       - "scripts/audit_playground.mjs"
       - "scripts/reading_output.test.py"
       - ".github/workflows/design-audit.yml"
@@ -72,6 +73,7 @@ jobs:
           node scripts/audit_thread.mjs
           node scripts/audit_studio_note.mjs
           node scripts/audit_maritime.mjs
+          node scripts/audit_maintenance.mjs
           node scripts/audit_playground.mjs
       - name: Upload screenshots and measurements
         if: always()

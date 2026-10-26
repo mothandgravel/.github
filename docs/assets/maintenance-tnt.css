@@ -96,6 +96,7 @@
 .tn-weave-meta { display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-top:1px solid var(--line-soft);color:var(--muted);font-size:9px; }
 .tn-weave-meta span:last-child { color:var(--gold-bright); }
 .tn-weave-outside { padding:11px 15px;border-left:2px solid var(--gold);background:var(--gold-dark);color:var(--secondary);font:11px/1.8 var(--mono);margin:0 0 15px; }
+.tn-weave-carry { margin:0;padding:12px 0;color:var(--secondary);font:11px/1.8 var(--mono);overflow-wrap:anywhere;border-bottom:1px solid var(--line-soft); }
 .tn-weave-canvas { display:block;width:100%;height:340px;background:var(--bg);cursor:crosshair; }
 .tn-weave-foot { display:flex;justify-content:space-between;gap:30px;color:var(--muted);font-size:10px;letter-spacing:0;border-top:1px solid var(--line-soft);padding-top:15px; }
 .tn-weave-foot span { max-width:430px; }

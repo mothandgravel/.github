@@ -1,4 +1,4 @@
-import { createTntStudy, tntSnapshot, exportTntPrefix, elapsedLabel, tntTimeWindow } from './maintenance-tnt-model.mjs';
+import { createTntStudy, tntSnapshot, exportTntPrefix, elapsedLabel, tntTimeWindow, tntCarryInLabel } from './maintenance-tnt-model.mjs';
 import { drawTntWeave } from './maintenance-tnt-weave.mjs';
 const $ = (id) => document.getElementById(id);
 let study, cursorUs = 0, displayedUs = 0, ordinal = 1, evidenceKind = 'sender', playing = false, stopUs = null, frame = null, previousTime = null, lastRender = 0, evidenceKey = '';
@@ -54,6 +54,8 @@ function showEvidence(snapshot) {
 function drawWeave() {
   const window = tntTimeWindow(study, displayedUs, ordinal, weaveScope);
   weaveHits = drawTntWeave($('tn-weave-canvas'), window);
+  const carryIn = tntCarryInLabel(window);
+  $('tn-weave-carry').textContent = carryIn; $('tn-weave-carry').hidden = !carryIn;
   const title = weaveScope === 'packet' ? window.anchor === 'replay-before-send' ? `PACKET ${ordinal} NOT YET SENT / AROUND REPLAY POINT` : 'AROUND PACKET ' + ordinal : weaveScope === 'replay' ? 'FOLLOWING REPLAY CLOCK' : 'WHOLE TIME AXIS';
   $('tn-weave-range').textContent = `${title} / +${elapsedLabel(window.startUs)} → +${elapsedLabel(window.endUs)}`;
   $('tn-weave-outside').hidden = displayedUs >= window.startUs && displayedUs <= window.endUs;

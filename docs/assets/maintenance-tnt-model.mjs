@@ -43,6 +43,14 @@ export function elapsedLabel(us, precise = false) {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${tail}`;
 }
 
+export function tntCarryInLabel(window) {
+  const earlier = window.observations.filter((r) => r.sentUs < window.startUs && ['awaiting', 'not-observed'].includes(r.state));
+  if (!earlier.length) return '';
+  const awaiting = earlier.filter((r) => r.state === 'awaiting').length;
+  const absent = earlier.length - awaiting;
+  return `Sent before this window: ${[awaiting && `${awaiting} awaiting a receive observation`, absent && `${absent} without receive rows at capture end`].filter(Boolean).join('; ')}.`;
+}
+
 /** Plot geometry uses a fixed time window, never the selected packet's future receive. */
 export function tntTimeWindow(study, cursorUs, ordinal, scope = 'packet') {
   const snapshot = tntSnapshot(study, cursorUs, ordinal);

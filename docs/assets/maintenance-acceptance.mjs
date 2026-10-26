@@ -1,6 +1,5 @@
-import { maintenanceProjection, maintenanceEvidence, exportMaintenancePrefix } from './maintenance-acceptance-model.mjs';
+import { maintenanceProjection, maintenanceEvidence, exportMaintenancePrefix, maintenanceStepLabel } from './maintenance-acceptance-model.mjs';
 const $ = (id) => document.getElementById(id);
-const names = { create: 'Prepared', approve: 'Approved', dispatch: 'Execution observed', 'dispatch-pending': 'Dispatch intent saved', reconcile: 'Account reopened', recover: 'Receipt recovered', verify: 'Acceptance checked', 'changed-input': 'Changed-input guard check' };
 let bundle, record, cursor = 0, kind = 'receiver', timer = null, local = false, activeRun = null, busy = false;
 const say = (text, error = false) => { $('ma-status').textContent = text; $('ma-status').dataset.error = String(error); };
 const timestamp = (value) => value ? new Date(value).toISOString().replace('T', ' ').replace('.000Z', ' UTC').replace('Z', ' UTC') : '—';
@@ -38,18 +37,18 @@ function render() {
   $('ma-diagram-desc').textContent = `Operator ${p.operator}; receiver ${p.receiverLabel}. ${p.starts} starts, ${p.queries} queries, ${p.writes} replacements. Station ${verification ? `HTTP ${verification.httpStatus}; acceptance ${p.accepted ? 'accepted' : 'held'}` : 'not checked'}.`;
   $('ma-phase-title').textContent = p.title;
   $('ma-phase-copy').textContent = p.copy;
-  $('ma-phase-index').textContent = `${String(cursor + 1).padStart(2, '0')} / ${names[record.history[cursor].action] || p.phase}`;
+  $('ma-phase-index').textContent = `${String(cursor + 1).padStart(2, '0')} / ${maintenanceStepLabel(record.history[cursor])}`;
   $('ma-evidence-note').textContent = evidence.note;
   $('ma-json').textContent = JSON.stringify(evidence.value, null, 2);
   $('ma-evidence-age').textContent = `Snapshot ${timestamp(record.history[cursor].at)}`;
   $('ma-capture').textContent = `${activeRun ? 'Received' : 'Captured'} ${timestamp(record.capturedAt)}`;
   $('ma-mode-label').textContent = activeRun ? 'Local runtime / real file operation' : 'Recorded runtime evidence';
   $('ma-view-label').textContent = `${activeRun ? 'Local' : 'Recorded'} step ${cursor + 1} of ${record.history.length}`;
-  $('ma-cursor-label').textContent = `Step ${cursor + 1} / ${record.history.length} · ${names[record.history[cursor].action]}`;
+  $('ma-cursor-label').textContent = `Step ${cursor + 1} / ${record.history.length} · ${maintenanceStepLabel(record.history[cursor])}`;
   $('ma-cursor').max = record.history.length - 1;
   $('ma-cursor').value = cursor;
-  $('ma-prev').disabled = cursor === 0;
-  $('ma-next').disabled = cursor === record.history.length - 1;
+  $('ma-prev').setAttribute('aria-disabled', String(cursor === 0));
+  $('ma-next').setAttribute('aria-disabled', String(cursor === record.history.length - 1));
   $('ma-export').disabled = false;
   $('ma-current').hidden = !activeRun || cursor === record.history.length - 1;
   $('ma-actions').hidden = !activeRun;
@@ -63,12 +62,18 @@ function render() {
   $('ma-verify').disabled = !current || !['recovered', 'held', 'accepted'].includes(s.phase);
   $('ma-refresh').disabled = busy;
   $('ma-scenario').disabled = busy;
-  $('ma-steps').replaceChildren(...record.history.map((entry, i) => {
-    const li = document.createElement('li'), button = document.createElement('button');
-    button.type = 'button'; button.textContent = `${String(i + 1).padStart(2, '0')} / ${names[entry.action] || entry.action}`;
-    if (i === cursor) button.setAttribute('aria-current', 'step');
-    button.addEventListener('click', () => { stop(); cursor = i; render(); }); li.append(button); return li;
-  }));
+  const steps = $('ma-steps');
+  while (steps.children.length > record.history.length) steps.lastElementChild.remove();
+  record.history.forEach((entry, i) => {
+    let button = steps.children[i]?.firstElementChild;
+    if (!button) {
+      const li = document.createElement('li'); button = document.createElement('button');
+      button.type = 'button'; button.addEventListener('click', () => { stop(); cursor = i; render(); });
+      li.append(button); steps.append(li);
+    }
+    button.textContent = `${String(i + 1).padStart(2, '0')} / ${maintenanceStepLabel(entry)}`;
+    if (i === cursor) button.setAttribute('aria-current', 'step'); else button.removeAttribute('aria-current');
+  });
 }
 function loadRecorded() {
   stop(); activeRun = null;
@@ -127,8 +132,10 @@ try {
   const response = await fetch('../../assets/maintenance-acceptance-recordings.json');
   if (!response.ok) throw Error(`recordings HTTP ${response.status}`);
   bundle = await response.json(); loadRecorded();
-  if (new URLSearchParams(location.search).get('mode') === 'live') {
-    const health = await fetch('/api/maintenance/health');
+} catch (error) { say(`Could not open the recorded evidence: ${error.message}. No outcomes have been substituted.`, true); }
+if (bundle && new URLSearchParams(location.search).get('mode') === 'live') {
+  try {
+    const health = await fetch('/api/maintenance/health', { signal: AbortSignal.timeout(3000) });
     if (!health.ok || (await health.json()).service !== 'maintenance-acceptance') throw Error('local runtime is unavailable');
     local = true; $('ma-connect').textContent = 'Local runtime connected'; $('ma-new').hidden = false;
     let saved; try { saved = sessionStorage.getItem('mg-maintenance-run-v2'); } catch { /* No saved run. */ }
@@ -137,5 +144,8 @@ try {
       if (restored.ok) { record = await restored.json(); activeRun = saved; cursor = record.history.length - 1; $('ma-scenario').value = record.scenario; }
     }
     say(activeRun ? 'Reopened the saved local account. Page reload has sent no action.' : 'Local runtime connected. The diagram still shows a captured run. Start a new local run to create fresh evidence.'); render();
+  } catch {
+    local = false; $('ma-connect').textContent = 'Use the local runtime ↗'; loadRecorded();
+    say('The local runtime or saved account is unavailable. Showing captured runtime evidence. No local action has been sent.');
   }
-} catch (error) { say(`Could not open the requested evidence: ${error.message}. The records are not replaced with synthetic outcomes.`, true); }
+}

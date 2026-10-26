@@ -49,12 +49,6 @@ export function drawTntWeave(canvas, window) {
   }
   ctx.restore(); ctx.globalAlpha = 1; ctx.setLineDash([]);
   const earlier = window.observations.filter((r) => r.sentUs < window.startUs && ['awaiting', 'not-observed'].includes(r.state));
-  if (earlier.length) {
-    const awaiting = earlier.filter((r) => r.state === 'awaiting').length;
-    const label = `${awaiting ? awaiting + ' awaiting' : earlier.length + ' without receive rows'} / sent before window`;
-    ctx.fillStyle = style.backgroundColor; ctx.fillRect(left, top + 42, ctx.measureText(label).width + 16, 24);
-    ctx.fillStyle = muted; ctx.fillText(label, left + 7, top + 58);
-  }
   if (window.cursorUs >= window.startUs && window.cursorUs <= window.endUs) {
     const at = x(window.cursorUs); ctx.strokeStyle = gold; ctx.lineWidth = 1; ctx.setLineDash([2, 5]); ctx.beginPath(); ctx.moveTo(at, top - 15); ctx.lineTo(at, bottom + 15); ctx.stroke(); ctx.setLineDash([]);
     ctx.fillStyle = gold; ctx.textAlign = at > width / 2 ? 'right' : 'left'; ctx.fillText('REPLAY POINT', at + (at > width / 2 ? -7 : 7), 45);

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { maintenanceProjection, maintenanceEvidence, exportMaintenancePrefix } from '../docs/assets/maintenance-acceptance-model.mjs';
+import { maintenanceProjection, maintenanceEvidence, exportMaintenancePrefix, maintenanceStepLabel } from '../docs/assets/maintenance-acceptance-model.mjs';
 import { applyReconciliation, mayDispatch, planSha256 } from './maintenance/state.mjs';
 const bytes = await readFile(new URL('../docs/assets/maintenance-acceptance-recordings.json', import.meta.url));
 const bundle = JSON.parse(bytes);
@@ -14,6 +14,33 @@ test('recordings match their captured provenance and declared component revision
   assert.equal(bundle.cases.length, 2);
 });
 test('public evidence has no nested adapter context', () => assert.equal(bytes.includes('adapter_context'), false));
+test('published adapter identity matches the adapter source bytes', async () => {
+  const files = await Promise.all(['bridge.py', 'runtime.py', 'relay.py', 'contracts.py'].map((name) => readFile(new URL('./maintenance/' + name, import.meta.url))));
+  const observed = createHash('sha256').update(Buffer.concat(files)).digest('hex');
+  for (const { record } of bundle.cases) assert.equal(observed, record.runtimeIdentity.adapterSha256);
+});
+test('a blocked dispatch never claims execution was observed', () => {
+  const prepared = structuredClone(bundle.cases[0].record.history[0].snapshot);
+  prepared.guardEvents = [{ result: { decision: 'block', receipt: { executionState: 'not-invoked', reason: 'approval-expired' } } }];
+  assert.equal(maintenanceStepLabel({ action: 'dispatch', snapshot: prepared }), 'Dispatch refused by guard');
+  assert.equal(maintenanceProjection(prepared).starts, 0);
+  assert.equal(maintenanceProjection(prepared).writes, 0);
+  const observed = bundle.cases[0].record.history.find((entry) => entry.action === 'dispatch');
+  assert.equal(maintenanceStepLabel(observed), 'Execution observed');
+  assert.equal(maintenanceStepLabel({ action: 'dispatch', snapshot: { phase: 'refused' } }), 'Execution plan refused');
+});
+test('an unresolved receiver is unknown until its successful receipt is observed', () => {
+  const state = structuredClone(bundle.cases[0].record.history[0].snapshot);
+  assert.equal(maintenanceProjection(state).receiverLabel, 'UNCHANGED');
+  state.phase = 'dispatching';
+  assert.equal(maintenanceProjection(state).receiverLabel, 'UNKNOWN');
+  state.phase = 'interrupted';
+  state.bench.journal = { status: 'IN_FLIGHT', ops: { apply: { state: 'IN_FLIGHT' } } };
+  assert.equal(maintenanceProjection(state).receiverLabel, 'UNKNOWN');
+  assert.match(maintenanceProjection(state).title, /unknown/);
+  const committed = bundle.cases[0].record.history.find((entry) => entry.action === 'dispatch').snapshot;
+  assert.equal(maintenanceProjection(committed).receiverLabel, 'APPLIED');
+});
 test('captures retain runtime-observed source hashes and approved plan binding', () => {
   for (const { record } of bundle.cases) {
     assert.deepEqual(record.runtimeIdentity.files, provenance.files);

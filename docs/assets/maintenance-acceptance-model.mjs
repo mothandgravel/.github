@@ -1,3 +1,14 @@
+const stepNames = { create: 'Prepared', approve: 'Approved', dispatch: 'Execution observed', 'dispatch-pending': 'Dispatch intent saved', reconcile: 'Account reopened', recover: 'Receipt recovered', verify: 'Acceptance checked', 'changed-input': 'Changed-input guard check' };
+
+export function maintenanceStepLabel(entry) {
+  if (entry.action === 'dispatch') {
+    const snapshot = entry.snapshot, guard = snapshot?.guardEvents?.at(-1)?.result;
+    if (guard && guard.decision !== 'allow') return 'Dispatch refused by guard';
+    if (snapshot?.phase === 'refused') return 'Execution plan refused';
+  }
+  return stepNames[entry.action] || entry.action;
+}
+
 export function maintenanceProjection(snapshot) {
   const bench = snapshot?.bench;
   const operationId = bench ? `${bench.session}:apply` : null;
@@ -26,7 +37,7 @@ export function maintenanceProjection(snapshot) {
     title: descriptions[phase]?.[0] ?? 'An account to inspect.',
     copy: descriptions[phase]?.[1] ?? 'Inspect the underlying record before drawing a conclusion.',
     operator: phase === 'refused' ? 'REFUSED' : ['interrupted', 'dispatching'].includes(phase) ? 'UNKNOWN' : ['recovered', 'accepted', 'held'].includes(phase) ? 'CONFIRMED' : phase === 'approved' ? 'APPROVED' : 'PREPARED',
-    receiverLabel: receiver?.receipt?.status === 'SUCCEEDED' ? 'APPLIED' : 'UNCHANGED',
+    receiverLabel: receiver?.receipt?.status === 'SUCCEEDED' ? 'APPLIED' : receiver?.starts || journalOperation || phase === 'dispatching' || phase === 'interrupted' ? 'UNKNOWN' : 'UNCHANGED',
   };
 }
 

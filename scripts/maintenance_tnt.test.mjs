@@ -2,10 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { createTntStudy, tntSnapshot, exportTntPrefix, elapsedLabel, tntTimeWindow } from '../docs/assets/maintenance-tnt-model.mjs';
+import { createTntStudy, tntSnapshot, exportTntPrefix, elapsedLabel, tntTimeWindow, tntCarryInLabel } from '../docs/assets/maintenance-tnt-model.mjs';
 const bytes = await readFile(new URL('../docs/assets/maintenance-tnt.json', import.meta.url));
 const data = JSON.parse(bytes), study = createTntStudy(data);
 const provenance = JSON.parse(await readFile(new URL('../docs/design/maintenance-tnt-provenance.json', import.meta.url)));
+test('earlier sends retain their awaiting versus absent meaning outside the canvas', () => {
+  const endWindow = tntTimeWindow(study, data.endUs, 1000);
+  assert.equal(tntCarryInLabel(endWindow), 'Sent before this window: 73 without receive rows at capture end.');
+  const beforeEnd = tntTimeWindow(study, data.endUs - 1, 1000);
+  assert.match(tntCarryInLabel(beforeEnd), /73 awaiting a receive observation/);
+  assert.doesNotMatch(tntCarryInLabel(beforeEnd), /capture end/);
+  assert.equal(tntCarryInLabel(tntTimeWindow(study, 0, 1)), '');
+});
 test('derived data and unchanged public source CSVs retain their pinned hashes', async () => {
   assert.equal(createHash('sha256').update(bytes).digest('hex'), provenance.datasetSha256);
   for (const item of Object.values(data.source.files)) {
