@@ -32,9 +32,13 @@ permissions:
   contents: read
 
 jobs:
-  browser-audit:
+  browser-groups:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [navigation, materials, coastal, studio]
     steps:
       - name: Check out branch
         uses: actions/checkout@v4
@@ -56,9 +60,18 @@ jobs:
           cat /tmp/mg-site.log
           exit 1
       - name: Capture desktop and mobile review / assert interaction health
+        env:
+          AUDIT_GROUP: ${{ matrix.group }}
         run: |
+          case "$AUDIT_GROUP" in
+            navigation) audits="wayfinding reading visual rooms connection" ;;
+            materials) audits="moth handling moth_volume mapping" ;;
+            coastal) audits="coastal_replay coastal_transport shadow_inquiry coastal_identity coastal_haxr thread" ;;
+            studio) audits="maintenance loose_end studio_note maritime playground" ;;
+            *) exit 2 ;;
+          esac
           failed=0
-          for audit in wayfinding maintenance reading visual loose_end moth handling moth_volume rooms connection mapping coastal_replay coastal_transport shadow_inquiry coastal_identity coastal_haxr thread studio_note maritime playground; do
+          for audit in $audits; do
             echo "::group::$audit"
             node "scripts/audit_$audit.mjs" || failed=1
             echo "::endgroup::"
@@ -68,7 +81,16 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: landing-design-review
+          name: landing-design-review-${{ matrix.group }}
           path: artifacts/design-review/
           if-no-files-found: ignore
           retention-days: 14
+  browser-audit:
+    if: always()
+    needs: browser-groups
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require every browser group
+        env:
+          GROUP_RESULT: ${{ needs.browser-groups.result }}
+        run: test "$GROUP_RESULT" = success
