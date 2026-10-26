@@ -33,7 +33,7 @@ permissions:
 jobs:
   browser-audit:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out branch
         uses: actions/checkout@v4
@@ -56,6 +56,7 @@ jobs:
           exit 1
       - name: Capture desktop and mobile review / assert interaction health
         run: |
+          node scripts/audit_maintenance.mjs
           node scripts/audit_reading.mjs
           node scripts/audit_visual.mjs
           node scripts/audit_loose_end.mjs
@@ -73,7 +74,6 @@ jobs:
           node scripts/audit_thread.mjs
           node scripts/audit_studio_note.mjs
           node scripts/audit_maritime.mjs
-          node scripts/audit_maintenance.mjs
           node scripts/audit_playground.mjs
       - name: Upload screenshots and measurements
         if: always()
