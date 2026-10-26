@@ -31,7 +31,7 @@ async function accessible(page, label) {
 }
 
 try {
-  for (const width of [320, 375, 768, 1440]) for (const theme of ['night', 'afterlight']) {
+  for (const width of [320, 375, 600, 768, 1440]) for (const theme of ['night', 'afterlight']) {
     const page = await browser.newPage({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
     const errors = [], writes = [];
     page.on('pageerror', (error) => errors.push(error.message));
@@ -50,6 +50,9 @@ try {
       assert.equal(await page.locator('#ma-starts').innerText(), '1');
       assert.equal(await page.locator('#ma-queries').innerText(), '1');
       assert.equal(await page.locator('#ma-writes').innerText(), '1');
+      await page.locator('#ma-steps button').filter({ hasText: 'Dispatch intent saved' }).click();
+      assert.equal(await page.locator('#ma-receiver-state').innerText(), 'UNKNOWN');
+      assert.equal(await page.locator('#ma-receiver-detail').innerText(), 'outcome unresolved');
       const first = page.locator('#ma-steps button').first();
       await first.focus(); await page.keyboard.press('Enter');
       assert.equal(await first.evaluate((el) => el === document.activeElement), true, 'Step focus lost');
@@ -95,7 +98,8 @@ try {
     await within(page, '#tn-weave-carry', '.tn-weave');
     await page.locator('#tn-to-send').click();
     await page.locator('[data-evidence=receiver]').click();
-    assert.doesNotMatch(await page.locator('#tn-json').innerText(), /packet_timestamp/);
+    assert.equal(await page.locator('#tn-row').innerText(), 'NO ROW AT THIS POINT');
+    assert.deepEqual(JSON.parse(await page.locator('#tn-json').innerText()), { state: 'awaiting', evidence: 'No receiver observation is present at this replay point.' });
     const downloadEvent = page.waitForEvent('download');
     await page.locator('#tn-export').click();
     const download = await downloadEvent, exportedPath = `${out}/${label}-prefix.json`;

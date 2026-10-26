@@ -31,7 +31,7 @@ function render() {
   $('ma-mobile-operator').textContent = p.operator; $('ma-mobile-receiver').textContent = p.receiverLabel;
   $('ma-operator-detail').textContent = ['interrupted', 'dispatching'].includes(p.phase) ? 'reply unresolved' : ['prepared', 'refused'].includes(p.phase) ? 'not started' : p.phase === 'approved' ? 'input reviewed' : 'receipt recovered';
   $('ma-receiver-state').textContent = p.receiverLabel;
-  $('ma-receiver-detail').textContent = p.starts ? `${p.starts} start · ${p.queries} q` : 'not started';
+  $('ma-receiver-detail').textContent = p.receiverLabel === 'UNKNOWN' ? 'outcome unresolved' : p.starts ? `${p.starts} start · ${p.queries} q` : 'not started';
   $('ma-link-text').textContent = p.phase === 'interrupted' ? 'NO REPLY' : p.queries ? 'QUERIED' : p.starts ? 'SENT' : 'WAITING';
   $('ma-acceptance-text').textContent = p.accepted === null ? 'STATION / NOT CHECKED' : verification.httpStatus ? `STATION / HTTP ${verification.httpStatus}` : 'STATION / UNAVAILABLE';
   $('ma-diagram-desc').textContent = `Operator ${p.operator}; receiver ${p.receiverLabel}. ${p.starts} starts, ${p.queries} queries, ${p.writes} replacements. Station ${verification ? `HTTP ${verification.httpStatus}; acceptance ${p.accepted ? 'accepted' : 'held'}` : 'not checked'}.`;
