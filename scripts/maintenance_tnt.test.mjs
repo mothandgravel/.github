@@ -99,6 +99,8 @@ test('around-packet window never uses a future send or future receive to positio
   const changed = tntTimeWindow(createTntStudy(altered), at, packet.ordinal);
   assert.deepEqual(hidden, changed);
   assert.equal(hidden.endUs - hidden.startUs, 480_000_000);
+  assert.equal(hidden.anchor, 'replay-before-send');
+  assert.equal(tntTimeWindow(study, packet.sentUs, packet.ordinal).anchor, 'visible-send');
   assert.equal(hidden.observations.some((r) => r.ordinal === packet.ordinal), false);
 });
 test('whole time axis preserves the same evidence prefix and holds missing rows until the end', () => {

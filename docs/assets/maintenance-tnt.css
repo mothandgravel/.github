@@ -78,6 +78,7 @@
 .tn-player select { display:block;margin-top:6px;padding-inline:8px;min-height:38px;background:var(--surface); }
 .tn-player>button { font-size:10px; }
 .tn-scrub { flex:1;min-width:130px; }
+.tn-scrub label { display:inline; }.tn-cursor-readout { display:inline-block;margin-left:8px;color:var(--secondary);font-size:10px;letter-spacing:.01em; }
 .tn-scrub input { width:100%;margin:10px 0 3px;accent-color:var(--gold-bright);cursor:pointer; }
 .tn-scrub>div { display:flex;justify-content:space-between;color:var(--muted);font-size:9px; }
 /* A second instrument, drawn exclusively from visible source events. */

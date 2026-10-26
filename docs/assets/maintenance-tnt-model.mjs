@@ -54,5 +54,6 @@ export function tntTimeWindow(study, cursorUs, ordinal, scope = 'packet') {
     const receivedUs = record.receivedUs !== null && record.receivedUs <= snapshot.cursorUs ? record.receivedUs : null;
     return { ordinal: record.ordinal, sentUs: record.sentUs, receivedUs, state: packetState(record, snapshot.cursorUs, study.data.endUs) };
   });
-  return { scope: ['capture', 'replay'].includes(scope) ? scope : 'packet', startUs, endUs, cursorUs: snapshot.cursorUs, ordinal: snapshot.selected.ordinal, observations };
+  const anchor = scope === 'capture' ? 'whole-record-axis' : scope === 'replay' ? 'replay-clock' : snapshot.selected.sentUs === null ? 'replay-before-send' : 'visible-send';
+  return { scope: ['capture', 'replay'].includes(scope) ? scope : 'packet', anchor, startUs, endUs, cursorUs: snapshot.cursorUs, ordinal: snapshot.selected.ordinal, observations };
 }

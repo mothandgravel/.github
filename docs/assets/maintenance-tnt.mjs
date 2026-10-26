@@ -54,7 +54,8 @@ function showEvidence(snapshot) {
 function drawWeave() {
   const window = tntTimeWindow(study, displayedUs, ordinal, weaveScope);
   weaveHits = drawTntWeave($('tn-weave-canvas'), window);
-  $('tn-weave-range').textContent = `${weaveScope === 'packet' ? 'AROUND PACKET ' + ordinal : weaveScope === 'replay' ? 'FOLLOWING REPLAY CLOCK' : 'WHOLE TIME AXIS'} / +${elapsedLabel(window.startUs)} → +${elapsedLabel(window.endUs)}`;
+  const title = weaveScope === 'packet' ? window.anchor === 'replay-before-send' ? `PACKET ${ordinal} NOT YET SENT / AROUND REPLAY POINT` : 'AROUND PACKET ' + ordinal : weaveScope === 'replay' ? 'FOLLOWING REPLAY CLOCK' : 'WHOLE TIME AXIS';
+  $('tn-weave-range').textContent = `${title} / +${elapsedLabel(window.startUs)} → +${elapsedLabel(window.endUs)}`;
   $('tn-weave-outside').hidden = displayedUs >= window.startUs && displayedUs <= window.endUs;
   document.querySelectorAll('[data-weave-scope]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.weaveScope === weaveScope)));
 }
@@ -79,7 +80,7 @@ function render() {
   $('tn-count-waiting-label').textContent = snapshot.ended ? 'not observed' : 'awaiting';
   $('tn-cursor').value = Math.round(cursorUs / study.data.endUs * 10000);
   $('tn-cursor').setAttribute('aria-valuetext', '+' + elapsedLabel(cursorUs, true));
-  $('tn-cursor-label').textContent = 'Recorded elapsed time +' + elapsedLabel(cursorUs, true);
+  $('tn-cursor-readout').textContent = '+' + elapsedLabel(cursorUs, true);
   $('tn-packet').value = ordinal;
   $('tn-prev').setAttribute('aria-disabled', String(ordinal === 1)); $('tn-next').setAttribute('aria-disabled', String(ordinal === study.records.length));
   $('tn-to-receive').disabled = false;
@@ -97,7 +98,7 @@ function tick(time) {
 }
 
 function play(until = study.data.endUs) { stopUs = until; playing = true; previousTime = null; $('tn-play').textContent = 'Pause the capture'; $('tn-play').setAttribute('aria-pressed', 'true'); frame = requestAnimationFrame(tick); }
-function selectPacket(value, seek = false) { if (!study) return; pause(); ordinal = Math.max(1, Math.min(study.records.length, Math.trunc(Number(value)) || 1)); if (seek || cursorUs < study.records[ordinal - 1].sentUs) cursorUs = study.records[ordinal - 1].sentUs; render(); say(`Inspecting packet ${ordinal} at recorded +${elapsedLabel(displayedUs)}. Evidence is limited to this replay point.`); }
+function selectPacket(value, seek = false) { if (!study) return; pause(); cursorUs = displayedUs; ordinal = Math.max(1, Math.min(study.records.length, Math.trunc(Number(value)) || 1)); if (seek || cursorUs < study.records[ordinal - 1].sentUs) cursorUs = study.records[ordinal - 1].sentUs; render(); say(`Inspecting packet ${ordinal} at recorded +${elapsedLabel(displayedUs, true)}. Evidence is limited to this replay point.`); }
 
 $('tn-play').addEventListener('click', () => { if (!study) return; if (playing) { pause(); cursorUs = displayedUs; render(); say(`Paused at recorded +${elapsedLabel(displayedUs, true)}.`); return; } if (cursorUs >= study.data.endUs) cursorUs = 0; play(); say('Playing the recorded clock. Display speed changes no source measurement.'); });
 $('tn-cursor').addEventListener('input', () => { pause(); cursorUs = Number($('tn-cursor').value) / 10000 * study.data.endUs; render(); });
@@ -127,7 +128,7 @@ $('tn-export').addEventListener('click', () => {
   if (!study) return;
   pause(); cursorUs = displayedUs; render();
   const result = exportTntPrefix(study, displayedUs, ordinal), window = tntTimeWindow(study, displayedUs, ordinal, weaveScope);
-  result.view = { weaveScope, startUs: window.startUs, endUs: window.endUs, image: 'Generated editorial illustration; not observation evidence.' };
+  result.view = { weaveScope, anchor: window.anchor, startUs: window.startUs, endUs: window.endUs, image: 'Generated editorial illustration; not observation evidence.' };
   const url = URL.createObjectURL(new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' }));
   const link = document.createElement('a'); link.href = url; link.download = `tnt-packet-${ordinal}-at-${Math.round(cursorUs)}us.json`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   say(`Exported the displayed point +${elapsedLabel(displayedUs)}. Playback is paused; no later events are included.`);
