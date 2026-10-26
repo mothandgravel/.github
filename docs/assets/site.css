@@ -749,7 +749,6 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 }
 
 /* Field Notes: one editorial feature, a small discoverable stack, a dense archive. */
-.main-nav a[aria-current="page"] { color:var(--gold-bright);text-decoration:underline;text-underline-offset:6px; }
 .field-notes-section { border-top:1px solid var(--line); }
 /* Keep the first paint focused on the masthead and studio introduction.
    Offscreen editions remain searchable and accessible; remember rendered sizes. */
@@ -1238,7 +1237,6 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 }
 @media (min-width:366px) and (max-width:380px) {.brand {gap:6px}.brand-type {font-size:11px}}
 @media (max-width:365px) {.header-mail-link {padding:0 7px}}
-.has-nav-sheet .main-nav.is-open .nav-sheet-mail a {display:inline-flex;align-items:center;min-height:44px;padding:0;border:0;color:#202222;font-size:14px;font-weight:600}
 .footer-mail {display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:26px 0 0}
 .footer-mail a {font-size:clamp(17px,1.8vw,22px);color:#eae5d9;border-bottom:1px solid #a9936f;padding-bottom:2px;overflow-wrap:anywhere}
 .site-footer .copy-mail {color:#eae5d9;border-color:#6b665e}
@@ -1298,3 +1296,6 @@ main.shell>.collection-context{width:100%}
 .shared-header .studio-sheet .nav-sheet-heading p{font:italic 30px/1.2 var(--serif);margin:0;color:#202222}
 @media(max-width:660px){.shared-header .studio-sheet .nav-sheet-heading p{font-size:26px;margin-top:10px}}
 @media(max-width:365px){.shared-header .studio-sheet .nav-sheet-label{font-size:24px}}
+
+.studio-index[open] .menu-toggle{background:var(--gold-bright);border-color:var(--gold-bright);color:var(--accent-ink)}
+.studio-index[open] .menu-bars span{background:var(--accent-ink)}
