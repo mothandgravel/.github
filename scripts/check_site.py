@@ -532,8 +532,8 @@ def main() -> int:
     check('href="./workbench/">Example workbench</a>' in html, 'Example workbench must remain reachable')
     # Made here: the homepage renders it after load from assets/made-here.mjs; the static list on
     # /investigations/ is the no-script route. Both must say the same thing.
-    module_items = re.findall(r"\['([^']+)', '(pr|pl|sd|in|)', '([^']+)'\]", (ROOT / 'assets/made-here.mjs').read_text())
-    index_items = re.findall(r'<li><strong>([^<]+)</strong><span class="status" data-status="(\w+)">([^<]+)</span></li>',
+    module_items = re.findall(r"\['([^']+)', '(pr|pl|sd|in|)', '([^']+)'(?:, '[^']+')?\]", (ROOT / 'assets/made-here.mjs').read_text())
+    index_items = re.findall(r'<li><strong>(?:<a href="[^"]+">)?([^<]+)(?:</a>)?</strong><span class="status" data-status="(\w+)">([^<]+)</span></li>',
                              (ROOT / 'investigations/index.html').read_text())
     kinds = {'pr': 'production', 'pl': 'playable', 'sd': 'study', 'in': 'internal', '': 'prototype'}
     check(len(module_items) == 16 and [(n, kinds[k], t) for n, k, t in module_items] == index_items,
@@ -541,6 +541,25 @@ def main() -> int:
     check('id="made-here" data-made-here' in html and 'href="./investigations/#made-here"' in html
           and "['#questions','./assets/made-here.mjs']" in html, 'Made here must load when its section nears view, with a no-script link')
     check('run.app' not in html, 'The live Cyber Grid is not linked yet')
+    # Sohva Remote: a faithful copy of the app's own site under /sohva/, with its own styles and
+    # masthead. It must stay reachable, keep the not-affiliated line and the privacy contact, link
+    # back to the studio, and carry no organisation name, repository or download link.
+    for page_path, needles in {
+        'sohva/index.html': ['href="privacy/"', 'href="privacy/fi/"', 'not made by or affiliated with Sony', 'href="../">Moth &amp; Gravel</a>'],
+        'sohva/privacy/index.html': ['Effective 27 October 2026.', 'hello@mothandgravel.com', 'READ_PHONE_STATE', 'href="fi/"', 'href="../../">Moth &amp; Gravel</a>'],
+        'sohva/privacy/fi/index.html': ['Voimassa 27.10.2026 alkaen.', 'hello@mothandgravel.com', 'READ_PHONE_STATE', 'href="../../../">Moth &amp; Gravel</a>'],
+    }.items():
+        page_file = ROOT / page_path
+        check(page_file.is_file(), f'Missing {page_path}')
+        if not page_file.is_file():
+            continue
+        page_html = page_file.read_text(encoding='utf-8')
+        url = 'https://mothandgravel.com/' + page_path.removesuffix('index.html')
+        check(f'<loc>{url}</loc>' in sitemap_text and f'href="{url}"' in page_html, f'{page_path} needs its sitemap entry and canonical URL')
+        for needle in needles:
+            check(needle in page_html, f'{page_path} is missing {needle}')
+        check(not re.search(r'digable|navivra|kistradegoods|github\.com|\.apk\b', page_html, re.I),
+              f'{page_path} names an organisation or links a repository or download')
     for page_path, needles in {
         'investigations/index.html': ['href="./how-old/"', 'href="./take-it-back/"', 'href="./green-light/"'],
         'investigations/how-old/index.html': ['data-toy="week"', 'assets/playground.mjs', 'assets/thread.css', 'STANDING INVESTIGATION / 01'],
@@ -561,7 +580,7 @@ def main() -> int:
               f'{page_path} needs canonical, social preview and structured data')
         for needle in needles:
             check(needle in page_html, f'{page_path} is missing {needle}')
-        check(not re.search(r'navivra|kistradegoods|digablesolutions|vesuno|run\.app', page_html, re.I),
+        check(not re.search(r'navivra|kistradegoods|digable|vesuno|run\.app|fi\.digable', page_html, re.I),
               f'{page_path} names an organisation, a private project or the unlinked game')
         parsed = SiteParser()
         parsed.feed(page_html)

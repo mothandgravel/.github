@@ -40,15 +40,18 @@ async function makeBrief(page, text = 'A screen that helps someone find their fo
 try {
   for (const viewport of viewports) for (const theme of ['night','afterlight']) {
     const context = await browser.newContext({viewport,reducedMotion:'reduce'});
+    await context.addInitScript(theme=>localStorage.setItem('moth-and-gravel-theme',theme),theme);
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror',e=>errors.push(e.message));
     page.on('request',r=>{if(r.url().includes('private-prototype-marker')) errors.push('Existing material was fetched without an action');});
     await page.goto(origin+'/questions/');
-    if (theme==='afterlight') await page.locator('#light-switch').click();
+    assert(await page.locator('html').getAttribute('data-theme')===theme,'The reviewed appearance matches its actual theme');
     await page.locator('#question-progress').waitFor({state:'visible'});
     assert(await page.locator('.question-boundary').isVisible(), 'Local-only boundary is visible before the first answer');
     assert(await page.locator('#question-meter').evaluate(el=>el.value===1&&el.max===6), 'Progress starts at one of six');
+    assert(await page.locator('[data-question-number]').innerText()==='01','The folio begins at the real first step');
+    assert(await page.locator('.question-preview-fallback').isHidden(),'The native preview fallback does not compete with the explicit carry action');
     const contrast = await page.evaluate(() => {
       const link = document.querySelector('.journey-aside a');
       const foreground=getComputedStyle(link).color, background=getComputedStyle(document.body).backgroundColor;
@@ -79,6 +82,7 @@ try {
     }
     await next(page);
     assert(await page.locator('#question-meter').evaluate(el=>el.value===6), 'Review completes the progress meter');
+    assert(await page.locator('[data-question-number]').innerText()==='06','The folio follows the actual review step');
     const fullBrief=await page.locator('#brief-text').inputValue();
     assert(withFollowups ? fullBrief.includes('USD 2,000–4,000')&&fullBrief.includes('private-prototype-marker') : !fullBrief.includes('Working budget\n'), 'Optional follow-ups must be included only when answered');
     await audit(page,`brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
@@ -91,14 +95,16 @@ try {
     const downloadPromise = page.waitForEvent('download');
     await page.locator('#download-brief').click();
     const download = await downloadPromise;
-    assert((await page.locator('.brief-keep [data-room-feedback]').innerText()).includes('prepared for download'), 'Download confirmation stays beside the keep actions');
-    assert(await page.locator('.brief-keep [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Download confirmation is within the visible viewport');
+    assert((await page.locator('.brief-keep > [data-room-feedback]').innerText()).includes('prepared for download'), 'Download confirmation stays beside the keep actions');
+    assert(await page.locator('.brief-keep > [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Download confirmation is within the visible viewport');
     assert(await page.locator('[role="status"]').count()===1, 'Feedback has one live announcement channel');
     const downloaded = await readFile(await download.path(),'utf8');
     assert(downloaded.includes('find their footing'),'Download must include the visitor’s actual answers');
     assert(!withFollowups||downloaded.includes('private-prototype-marker'),'Download must retain the material at the end of the brief');
     await page.locator('#carry-question').click();
     await page.locator('#your-question').waitFor({state:'visible'});
+    await page.waitForFunction(()=>{const r=document.getElementById('your-question').getBoundingClientRect();return r.top<innerHeight&&r.bottom>0;});
+    assert(new URL(page.url()).hash==='#your-question','The explicit carry arrives at the visitor’s own brief');
     assert((await page.locator('#your-question').innerText()).includes('find their footing'),'Question handoff lost the visitor’s words');
     await page.locator('#your-question summary').filter({hasText:'Open your original answers'}).click();
     assert(!withFollowups||(await page.locator('#your-question dl').innerText()).includes('USD 2,000–4,000'),'Workbench must carry optional commercial context literally');
@@ -137,6 +143,54 @@ try {
     await context.close();
   }
 
+  // Exercise the actual lazy-loaded inbox UI against a wholly intercepted
+  // endpoint and a local challenge fixture. No enquiry reaches a real service.
+  for(const width of [1440,320]) for(const theme of ['night','afterlight']) {
+    const fixture=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
+    await fixture.addInitScript(theme=>{
+      localStorage.setItem('moth-and-gravel-theme',theme);
+      window.turnstile={render:(holder,options)=>{
+        const panel=document.createElement('div');
+        panel.dataset.challengeFixture='true';
+        panel.style.width=options.size==='compact'?'150px':'300px';
+        panel.style.height=options.size==='compact'?'140px':'65px';
+        panel.textContent='Privacy check fixture';
+        holder.append(panel);
+        options.callback('fixture-token');return 'fixture-widget';
+      },remove:()=>document.querySelectorAll('[data-challenge-fixture]').forEach(el=>el.remove()),reset:()=>{}};
+    },theme);
+    const deliveries=[];
+    await fixture.route('**/assets/enquiry-config.json',route=>route.fulfill({json:{enabled:true,endpoint:'https://studio-inbox.invalid/enquiries',turnstileSiteKey:'public-fixture-key'}}));
+    await fixture.route('https://studio-inbox.invalid/**',route=>{
+      if(route.request().method()==='POST') deliveries.push(JSON.parse(route.request().postData()));
+      return route.fulfill({status:200,headers:{'access-control-allow-origin':'*','access-control-allow-headers':'content-type','access-control-allow-methods':'POST, OPTIONS'},json:{ok:true}});
+    });
+    const p=await fixture.newPage();
+    await p.goto(origin+'/questions/');
+    const opening=await p.locator('.question-boundary').innerText();
+    await makeBrief(p,'A fictional report that left its reader uncertain.');
+    await p.locator('.enquiry-identity').waitFor({state:'visible'});
+    await p.waitForFunction(()=>getComputedStyle(document.querySelector('.enquiry-check')).containerType==='inline-size');
+    assert(await p.locator('.question-boundary').innerText()===opening,'The sending boundary stays true and unchanged when the inbox form loads');
+    assert(await p.locator('#brief-text').evaluate(el=>Boolean(el.compareDocumentPosition(document.querySelector('.enquiry-identity')) & Node.DOCUMENT_POSITION_FOLLOWING)),'The visitor reads the finished brief before signing it');
+    const literal='My edited brief.\nKeep the line break, the “words”, and <this text>.';
+    await p.locator('#brief-text').fill(literal);
+    const sendBeforeCheck=await p.locator('#enquiry-form button').evaluate(el=>el.getBoundingClientRect().top+scrollY);
+    await p.locator('#enquiry-name').fill('A fictional visitor');
+    await p.locator('[data-challenge-fixture]').waitFor({state:'visible'});
+    const sendAfterCheck=await p.locator('#enquiry-form button').evaluate(el=>el.getBoundingClientRect().top+scrollY);
+    assert(Math.abs(sendAfterCheck-sendBeforeCheck)<1,'The privacy-check footprint is reserved before signing moves the view');
+    await p.locator('#enquiry-email').fill('visitor@example.test');
+    assert(deliveries.length===0,'Editing and signing never sends the brief automatically');
+    await audit(p,`brief-sign-${theme}-${width}`,true);
+    await p.locator('#enquiry-form button[type="submit"]').click();
+    await p.locator('.enquiry-sent').waitFor({state:'visible'});
+    assert(deliveries.length===1&&deliveries[0].brief===literal,'Explicit fixture delivery preserves the visitor’s exact edited words');
+    assert(await p.locator('#brief-text').inputValue()===literal,'The kept brief is unchanged after fixture delivery');
+    await audit(p,`brief-fixture-sent-${theme}-${width}`);
+    await fixture.close();
+  }
+
   const context = await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
   const page = await context.newPage();
   const requests = [];
@@ -150,7 +204,7 @@ try {
   await page.locator('#making').fill(hostile+' edited');
   await next(page);await next(page);await next(page);await next(page);
   assert(await page.locator('#brief-text').inputValue()==='My edited brief. private-marker-983','Returning from answers must preserve manual brief edits');
-  assert((await page.locator('.brief-keep [data-room-feedback]').innerText()).includes('edits. They were kept'), 'Preserved edits are explained beside the brief');
+  assert((await page.locator('.brief-document [data-room-feedback]').innerText()).includes('edits. They were kept'), 'Preserved edits are explained beside the brief');
   await page.locator('#carry-question').click();
   await page.locator('#your-question').waitFor({state:'visible'});
   await page.locator('#your-question summary').filter({hasText:'Your edited brief'}).click();
@@ -201,16 +255,16 @@ try {
   const beforeCopy=await blockedPage.locator('#brief-text').inputValue();
   await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__copiedBrief=text;}},configurable:true}));
   await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
-  await blockedPage.locator('.brief-keep [data-room-feedback]').filter({hasText:'Brief copied'}).waitFor({state:'visible'});
+  await blockedPage.locator('.brief-keep > [data-room-feedback]').filter({hasText:'Brief copied'}).waitFor({state:'visible'});
   assert(await blockedPage.evaluate(()=>window.__copiedBrief)===beforeCopy, 'Copy keeps the exact editable brief');
   await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw new Error('Clipboard denied');}},configurable:true}));
   // Programmatic clicks model browsers that do not focus a clicked button.
   await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
-  await blockedPage.locator('.brief-keep [data-room-feedback]').filter({hasText:'Select and copy'}).waitFor({state:'visible'});
-  assert(await blockedPage.locator('.brief-keep [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Clipboard recovery stays in view');
+  await blockedPage.locator('.brief-document [data-room-feedback]').filter({hasText:'Select and copy'}).waitFor({state:'visible'});
+  assert(await blockedPage.locator('.brief-document [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Clipboard recovery stays in view');
   assert(await blockedPage.locator('#brief-text').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().bottom>document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().top<innerHeight), 'Denied clipboard selects a visible editable brief');
   await blockedPage.locator('#rebuild-brief').evaluate(el=>el.click());
-  assert((await blockedPage.locator('.brief-keep [data-room-feedback]').innerText()).includes('rebuilt'), 'Rebuild feedback is independent of click focus');
+  assert((await blockedPage.locator('.brief-keep > [data-room-feedback]').innerText()).includes('rebuilt'), 'Rebuild feedback is independent of click focus');
   await blockedPage.locator('#carry-question').evaluate(el=>el.click());
   assert((await blockedPage.locator('.brief-preview [data-room-feedback]').innerText()).includes('cannot carry'), 'Blocked handoff explains recovery beside its action');
   assert(blockedPage.url().endsWith('/questions/'),'Failed handoff must retain the visitor’s brief');
@@ -257,7 +311,7 @@ try {
   await latestCopy.evaluate(()=>window.__copyRequests[0].reject(new Error('Superseded')));
   assert(await latestCopy.locator('#draft-status').innerText()==='','An older copy must not interrupt the newest copy');
   await latestCopy.evaluate(()=>window.__copyRequests[1].resolve());
-  assert((await latestCopy.locator('.brief-keep [data-room-feedback]').innerText()).includes('Brief copied'),'The newest copy still reports success');
+  assert((await latestCopy.locator('.brief-keep > [data-room-feedback]').innerText()).includes('Brief copied'),'The newest copy still reports success');
   results.push({label:'latest-copy-owns-feedback',passed:true});await latestCopy.close();
 
   // Poison the formerly published module URL, as a browser cache could retain it.
@@ -268,7 +322,7 @@ try {
   const cachedPage=await cached.newPage();await cachedPage.goto(origin+'/questions/');await makeBrief(cachedPage);
   await cachedPage.locator('#rebuild-brief').evaluate(el=>el.click());
   assert(!staleRequested,'The new question sheet must request a fresh feedback module URL');
-  assert((await cachedPage.locator('.brief-keep [data-room-feedback]').innerText()).includes('rebuilt'),'A prior module cache must not hide local feedback');
+  assert((await cachedPage.locator('.brief-keep > [data-room-feedback]').innerText()).includes('rebuilt'),'A prior module cache must not hide local feedback');
   results.push({label:'stale-module-cache',passed:true});await cached.close();
 
   for(const theme of ['night','afterlight']) {

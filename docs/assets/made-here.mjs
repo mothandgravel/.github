@@ -21,7 +21,7 @@ export const MADE_HERE = [
   ['Luotsi', 'in', 'Internal tool'],
   ['Vahti', 'in', 'Internal tool'],
   ['Verstas', '', 'Prototype'],
-  ['Sohva Remote', '', 'In preparation for Google Play'],
+  ['Sohva Remote', '', 'In preparation for Google Play', './sohva/'],
 ];
 
 // Shape, not only colour, separates the statuses: filled circle, filled square, dashed circle, square.
@@ -34,7 +34,7 @@ const roll = document.querySelector('[data-made-here]');
 if (roll && !roll.querySelector('ul')) {
   const list = document.createElement('ul');
   list.style.cssText = 'margin:6px 0 22px;padding:0;list-style:none;columns:3 260px;column-gap:36px';
-  const rows = MADE_HERE.map(([name, kind, status]) => {
+  const rows = MADE_HERE.map(([name, kind, status, href]) => {
     const item = document.createElement('li');
     const label = document.createElement('span');
     const mark = document.createElement('span');
@@ -43,7 +43,9 @@ if (roll && !roll.querySelector('ul')) {
     label.style.cssText = 'display:flex;align-items:center;gap:8px;font:600 11px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:'
       + (kind === 'pr' ? 'var(--gold-bright)' : kind === 'pl' ? 'var(--ink)' : 'var(--secondary)');
     label.append(mark, status);
-    const named = document.createElement('span');
+    // A thing with a page of its own links to it; the rest are plain names.
+    const named = document.createElement(href ? 'a' : 'span');
+    if (href) { named.href = href; named.style.color = 'var(--gold-bright)'; named.style.borderBottom = '1px solid var(--line)'; }
     named.style.whiteSpace = 'nowrap';
     named.textContent = name;
     label.style.minWidth = '0';
