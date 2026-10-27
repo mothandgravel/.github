@@ -23,6 +23,8 @@ class Wayfinding(unittest.TestCase):
         registry = json.loads((ROOT / 'assets/wayfinding.json').read_text())
         expected = {x['href'] for group in registry.values() for x in group}
         for page in ROOT.rglob('*.html'):
+            if page.relative_to(ROOT).parts[0] == 'sohva':
+                continue  # the app's own site, with its own masthead
             text = page.read_text()
             header = text.split('<!-- shared-header:start -->')[1].split('<!-- shared-header:end -->')[0]
             base = 'https://mothandgravel.com/' + page.relative_to(ROOT).as_posix()

@@ -30,6 +30,8 @@ try {
       ['maritime-study', new URL('/specimens/maritime-study/', candidate).href, 3],
       ['editorial-thread', new URL('/threads/something-happened/', candidate).href, 3],
       ['questions-index', new URL('/investigations/', candidate).href, 3],
+      ['sohva-landing', new URL('/sohva/', candidate).href, 3],
+      ['sohva-privacy', new URL('/sohva/privacy/', candidate).href, 3],
       ['how-old-question', new URL('/investigations/how-old/', candidate).href, 3],
       ['take-it-back-question', new URL('/investigations/take-it-back/', candidate).href, 3],
       ['green-light-question', new URL('/investigations/green-light/', candidate).href, 3],
@@ -79,7 +81,7 @@ for (const profile of ['mobile', 'desktop']) for (const name of [...new Set(runs
     scores: Object.fromEntries(Object.keys(group[0].scores).map(k => [k, median(group.map(r => r.scores[k]))])),
     rangeFcp: [Math.min(...group.map(r => r.fcp)), Math.max(...group.map(r => r.fcp))] };
   summaries.push(summary);
-  if (['candidate','mapping-study','maritime-study','editorial-thread','questions-index','how-old-question','take-it-back-question','green-light-question','playground','workbench-first','workbench-return','notes-archive','notes-reading','question-sheet'].includes(name)) {
+  if (['candidate','mapping-study','maritime-study','editorial-thread','questions-index','sohva-landing','sohva-privacy','how-old-question','take-it-back-question','green-light-question','playground','workbench-first','workbench-return','notes-archive','notes-reading','question-sheet'].includes(name)) {
     // Mobile first paint for the homepage, question sheet and notes archive is one step higher.
     // main already measured within one 75 ms step of the old limits (1,000 / 1,800 ms) and has
     // breached the homepage budget on its own. The increase pays for the contact route, the email
@@ -87,9 +89,13 @@ for (const profile of ['mobile', 'desktop']) for (const name of [...new Set(runs
     // A note page with a listening edition carries the player, its stylesheet and module, and the
     // inline timed transcript (note 013: 18.9 KB -> 45.1 KB of HTML). CI measured 1,877 ms mobile FCP
     // against 1,729 ms without the player; 2,000 ms leaves about one 120 ms step of headroom.
-    const mobileFcp = { 'candidate': 1100, 'question-sheet': 1900, 'notes-archive': 1900, 'notes-reading': 2000 };
+    // The Sohva Remote pages are a faithful copy of the app's own site, with its render-blocking web
+    // font. Measured in CI on 27 Oct (median of three, mobile): FCP and LCP 2422 ms (landing) and
+    // 2423 ms (privacy); desktop 664 ms. Their mobile budgets sit one step above those numbers.
+    const mobileFcp = { 'candidate': 1100, 'question-sheet': 1900, 'notes-archive': 1900, 'notes-reading': 2000, 'sohva-landing': 2600, 'sohva-privacy': 2600 };
+    const mobileLcp = { 'sohva-landing': 2600, 'sohva-privacy': 2600 };
     const fcpBudget = (profile === 'mobile' && mobileFcp[name]) || (name === 'candidate' ? 1000 : 1800);
-    for (const [key, maximum] of [['fcp', fcpBudget], ['lcp', 2500], ['tbt', 200], ['cls', 0.1]])
+    for (const [key, maximum] of [['fcp', fcpBudget], ['lcp', (profile === 'mobile' && mobileLcp[name]) || 2500], ['tbt', 200], ['cls', 0.1]])
       if (summary[key] > maximum) failures.push(`${name}/${profile}: ${key} ${summary[key]} exceeds ${maximum}`);
     if (summary.scores.performance < 0.9) failures.push(`${name}/${profile}: performance below 90`);
     if (!name.startsWith('workbench-') && summary.scores.seo < 0.95) failures.push(`${name}/${profile}: technical SEO below 95`);

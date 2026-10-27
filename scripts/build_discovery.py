@@ -59,7 +59,7 @@ def build(check=False):
     pages += [(ROOT / 'docs/notes' / n['slug'], DOMAIN + 'notes/' + n['slug'], n['title'], n) for n in notes]
     for path, url, title, note in pages:
         page = {'@type': 'CollectionPage' if url.endswith(('notes/', 'specimens/')) else 'WebPage',
-                '@id': url + '#page', 'url': url, 'name': title, 'inLanguage': 'en',
+                '@id': url + '#page', 'url': url, 'name': title, 'inLanguage': 'fi' if url.endswith('/fi/') else 'en',
                 'isPartOf': {'@id': website['@id']}}
         graph = [organization, website, page]
         if note:
