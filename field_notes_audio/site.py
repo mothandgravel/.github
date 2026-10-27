@@ -167,11 +167,7 @@ def validate_recording_media(root: Path, e: dict, resolver=None) -> None:
         for n in json.loads((root / "docs/assets/notes.json").read_text(encoding="utf-8"))
     }
     duration = e["duration_seconds"]
-    if (
-        type(duration) not in (int, float)
-        or not math.isfinite(duration)
-        or not 0 < duration <= 1200
-    ):
+    if type(duration) not in (int, float) or not math.isfinite(duration) or not 0 < duration:
         raise ValueError("Invalid measured episode duration")
     if not e.get("source_sha256"):
         raise ValueError("Published audio needs source fingerprints")
