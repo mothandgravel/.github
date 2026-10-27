@@ -532,16 +532,19 @@ def main() -> int:
     check('href="./workbench/">Example workbench</a>' in html, 'Example workbench must remain reachable')
     # Made here: the homepage renders it after load from assets/made-here.mjs; the static list on
     # /investigations/ is the no-script route. Both must say the same thing.
-    module_items = re.findall(r"\['([^']+)', '(pr|pl|sd|in|)', '([^']+)'\]", (ROOT / 'assets/made-here.mjs').read_text())
-    index_items = re.findall(r'<li><strong>([^<]+)</strong><span class="status" data-status="(\w+)">([^<]+)</span></li>',
+    module_items = re.findall(r"\['([^']+)', '(pr|pl|sd|in|)', '([^']+)'(?:, '[^']+')?\]", (ROOT / 'assets/made-here.mjs').read_text())
+    index_items = re.findall(r'<li><strong>(?:<a href="[^"]+">)?([^<]+)(?:</a>)?</strong><span class="status" data-status="(\w+)">([^<]+)</span></li>',
                              (ROOT / 'investigations/index.html').read_text())
     kinds = {'pr': 'production', 'pl': 'playable', 'sd': 'study', 'in': 'internal', '': 'prototype'}
-    check(len(module_items) == 15 and [(n, kinds[k], t) for n, k, t in module_items] == index_items,
-          'Made here must list the same fifteen things and statuses on the homepage and the questions index')
+    check(len(module_items) == 16 and [(n, kinds[k], t) for n, k, t in module_items] == index_items,
+          'Made here must list the same sixteen things and statuses on the homepage and the questions index')
     check('id="made-here" data-made-here' in html and 'href="./investigations/#made-here"' in html
           and "['#questions','./assets/made-here.mjs']" in html, 'Made here must load when its section nears view, with a no-script link')
     check('run.app' not in html, 'The live Cyber Grid is not linked yet')
     for page_path, needles in {
+        'sohva/index.html': ['href="./privacy/"', 'href="./privacy/fi/"', 'not made by or affiliated with Sony', 'Coming to Google Play'],
+        'sohva/privacy/index.html': ['Privacy policy', 'hello@mothandgravel.com', 'READ_PHONE_STATE', 'href="./fi/"'],
+        'sohva/privacy/fi/index.html': ['Tietosuojaseloste', 'hello@mothandgravel.com', 'READ_PHONE_STATE', 'lang="fi"'],
         'investigations/index.html': ['href="./how-old/"', 'href="./take-it-back/"', 'href="./green-light/"'],
         'investigations/how-old/index.html': ['data-toy="week"', 'assets/playground.mjs', 'assets/thread.css', 'STANDING INVESTIGATION / 01'],
         'investigations/take-it-back/index.html': ['data-toy="stamp"', 'assets/playground.mjs', 'assets/thread.css', 'STANDING INVESTIGATION / 02'],
@@ -561,7 +564,7 @@ def main() -> int:
               f'{page_path} needs canonical, social preview and structured data')
         for needle in needles:
             check(needle in page_html, f'{page_path} is missing {needle}')
-        check(not re.search(r'navivra|kistradegoods|digablesolutions|vesuno|run\.app', page_html, re.I),
+        check(not re.search(r'navivra|kistradegoods|digable|vesuno|run\.app|fi\.digable', page_html, re.I),
               f'{page_path} names an organisation, a private project or the unlinked game')
         parsed = SiteParser()
         parsed.feed(page_html)

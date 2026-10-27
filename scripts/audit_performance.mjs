@@ -30,6 +30,8 @@ try {
       ['maritime-study', new URL('/specimens/maritime-study/', candidate).href, 3],
       ['editorial-thread', new URL('/threads/something-happened/', candidate).href, 3],
       ['questions-index', new URL('/investigations/', candidate).href, 3],
+      ['sohva-landing', new URL('/sohva/', candidate).href, 3],
+      ['sohva-privacy', new URL('/sohva/privacy/', candidate).href, 3],
       ['how-old-question', new URL('/investigations/how-old/', candidate).href, 3],
       ['take-it-back-question', new URL('/investigations/take-it-back/', candidate).href, 3],
       ['green-light-question', new URL('/investigations/green-light/', candidate).href, 3],
@@ -79,7 +81,7 @@ for (const profile of ['mobile', 'desktop']) for (const name of [...new Set(runs
     scores: Object.fromEntries(Object.keys(group[0].scores).map(k => [k, median(group.map(r => r.scores[k]))])),
     rangeFcp: [Math.min(...group.map(r => r.fcp)), Math.max(...group.map(r => r.fcp))] };
   summaries.push(summary);
-  if (['candidate','mapping-study','maritime-study','editorial-thread','questions-index','how-old-question','take-it-back-question','green-light-question','playground','workbench-first','workbench-return','notes-archive','notes-reading','question-sheet'].includes(name)) {
+  if (['candidate','mapping-study','maritime-study','editorial-thread','questions-index','sohva-landing','sohva-privacy','how-old-question','take-it-back-question','green-light-question','playground','workbench-first','workbench-return','notes-archive','notes-reading','question-sheet'].includes(name)) {
     // Mobile first paint for the homepage, question sheet and notes archive is one step higher.
     // main already measured within one 75 ms step of the old limits (1,000 / 1,800 ms) and has
     // breached the homepage budget on its own. The increase pays for the contact route, the email

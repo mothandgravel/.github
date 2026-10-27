@@ -1,0 +1,44 @@
+/* Sohva Remote: the app's landing and privacy pages, in the studio's own design system. */
+.sohva-main {padding:38px 0 90px}
+.sohva-top {display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;padding-bottom:18px;border-bottom:1px solid var(--line);color:var(--gold-bright)}
+.sohva-top a {color:var(--gold-bright);border-bottom:1px solid var(--line)}
+.sohva-hero {display:grid;grid-template-columns:1.25fr .75fr;gap:48px;align-items:center;padding:50px 0 40px}
+.sohva-hero h1 {margin:0 0 20px;font:900 clamp(46px,6vw,92px)/.95 var(--sans);font-stretch:condensed;text-transform:uppercase;letter-spacing:-.03em}
+.sohva-hero h1 em {font-family:var(--serif);font-weight:400;font-style:italic;text-transform:none;color:var(--gold-bright);letter-spacing:-.05em}
+.sohva-hero p {margin:0 0 16px;font-size:19px;color:var(--secondary);max-width:46ch}
+.sohva-hero figure,.sohva-feature figure {margin:0}
+.sohva-hero img,.sohva-feature img {display:block;width:100%;height:auto;border:1px solid var(--line);background:#000}
+.sohva-hero figcaption,.sohva-feature figcaption {margin-top:10px;font-size:13px;color:var(--muted)}
+.sohva-facts {display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
+.sohva-facts li {padding:4px 10px;border:1px solid var(--line-soft);font:600 12px/1.6 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--secondary)}
+.sohva-facts li:first-child {border-color:var(--gold-bright);color:var(--gold-bright)}
+.sohva-section {margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
+.sohva-section > h2 {margin:0 0 10px;font:400 clamp(30px,3.2vw,46px)/1.05 var(--serif)}
+.sohva-section > p {margin:0 0 18px;color:var(--secondary);max-width:62ch}
+.sohva-features {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:22px 0 0;padding:0;list-style:none}
+.sohva-features li {padding:22px;border:1px solid var(--line);background:var(--surface)}
+.sohva-features h3 {margin:0 0 8px;font:800 20px/1.2 var(--sans);font-stretch:condensed;text-transform:uppercase}
+.sohva-features p {margin:0;color:var(--secondary)}
+.sohva-feature {display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;margin-top:24px}
+.sohva-feature h3 {margin:0 0 8px;font:400 28px/1.15 var(--serif)}
+.sohva-feature p {margin:0 0 10px;color:var(--secondary)}
+.sohva-feature figure {max-width:380px;justify-self:center;width:100%}
+.sohva-steps {counter-reset:step;margin:18px 0 0;padding:0;list-style:none;display:grid;gap:14px}
+.sohva-steps li {counter-increment:step;display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--line-soft)}
+.sohva-steps li::before {content:counter(step,decimal-leading-zero);font:600 13px var(--mono);color:var(--gold-bright)}
+.sohva-steps h3 {margin:0 0 4px;font-size:18px}
+.sohva-steps p {margin:0;color:var(--secondary)}
+.sohva-faq details {border-bottom:1px solid var(--line-soft)}
+.sohva-faq summary {min-height:44px;padding:14px 0;cursor:pointer;font-weight:600;font-size:17px}
+.sohva-faq summary:focus-visible {outline:2px solid var(--gold-bright);outline-offset:4px}
+.sohva-faq details p {margin:0 0 16px;color:var(--secondary);max-width:68ch}
+.sohva-faq a,.sohva-doc a,.sohva-section > p a {color:var(--gold-bright);border-bottom:1px solid var(--line)}
+.sohva-legal {margin-top:56px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.sohva-doc {max-width:72ch;padding:44px 0 20px}
+.sohva-doc h1 {margin:0 0 12px;font:900 clamp(40px,5vw,72px)/1 var(--sans);font-stretch:condensed;text-transform:uppercase;letter-spacing:-.02em}
+.sohva-doc .meta {font:600 12px/1.7 var(--mono);letter-spacing:.08em;color:var(--gold-bright);text-transform:uppercase}
+.sohva-doc .lede {font:400 21px/1.5 var(--serif);color:var(--ink)}
+.sohva-doc h2 {margin:34px 0 10px;font:800 22px/1.2 var(--sans);font-stretch:condensed;text-transform:uppercase}
+.sohva-doc p,.sohva-doc li {color:var(--secondary);font-size:17px;line-height:1.7}
+.sohva-doc code {font-family:var(--mono);font-size:.88em}
+@media (max-width:900px) {.sohva-hero,.sohva-feature {grid-template-columns:1fr}.sohva-features {grid-template-columns:1fr}.sohva-hero figure {max-width:360px}}

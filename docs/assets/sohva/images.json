@@ -1,0 +1,11 @@
+{
+  "page": "/sohva/",
+  "images": [
+    {"file": "remote-keys-1080.webp", "sha256": "15cf98061fd2270e228883625506d0a71298063def6711e8c6f5abf320a64019", "repository": "sohva-remote (private repository)", "commit": "9f1a4e4b22a0449af2c752933f03d89126c666e6", "path": "site/img/remote.png", "blob_sha": "4cdfb955d776ab077786ba7e33b16ff2e1e13096", "derivation": "cropped to 1080 x 1480 from y 885, below the status bar, the now-playing card and the app shortcut row; WebP"},
+    {"file": "remote-keys-540.webp", "sha256": "a4495f6609d40b150ab1aaf6f5138bbcfc3c77ff45162807e88ca4afd3d9f7f3", "repository": "sohva-remote (private repository)", "commit": "9f1a4e4b22a0449af2c752933f03d89126c666e6", "path": "site/img/remote.png", "blob_sha": "4cdfb955d776ab077786ba7e33b16ff2e1e13096", "derivation": "the same crop scaled to 540 wide; WebP"},
+    {"file": "dpad.webp", "sha256": "e1410a396196f0ea879d78529938b605783210495bfb2e1242f8ede7dfbca009", "repository": "sohva-remote (private repository)", "commit": "9f1a4e4b22a0449af2c752933f03d89126c666e6", "path": "site/img/crops/dpad.webp", "blob_sha": "fbecc7c811a122ef84e88153d8b2f263f8c1539a", "derivation": "copied unchanged"},
+    {"file": "controls.webp", "sha256": "8ede5b7f5b3ba521a30ffecdc674bae42660944fbccd40d2f9321ecaff239187", "repository": "sohva-remote (private repository)", "commit": "9f1a4e4b22a0449af2c752933f03d89126c666e6", "path": "site/img/crops/controls.webp", "blob_sha": "2936012cf0c1dd5eea8d2852f98873ba73a98319", "derivation": "copied unchanged"}
+  ],
+  "review": "each image checked at full resolution: no broadcaster, programme, TV, input-device, Wi-Fi or app-brand names, no status bar, no organisation name",
+  "not_ported": "screenshots showing channel, programme or device names (the card, inputs, channels, scenes, timers, tablet and gallery images) and the lifestyle photographs, whose source is not recorded"
+}

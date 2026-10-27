@@ -61,9 +61,8 @@
    into a box reserved per column layout (measured), so nothing moves; without scripts it is a link to the same list. */
 .made-roll {margin-top:46px}
 .made-roll h3 {margin:0;font:inherit}
-.has-js .made-roll {min-height:335px}
-@media (max-width:1013px) {.has-js .made-roll {min-height:366px}}
-@media (max-width:923px) {.has-js .made-roll {min-height:473px}}
+.has-js .made-roll {min-height:375px}
+@media (max-width:923px) {.has-js .made-roll {min-height:494px}}
 @media (max-width:660px) {.has-js .made-roll {min-height:622px}}
-@media (max-width:593px) {.has-js .made-roll {min-height:1078px}}
-@media (max-width:418px) {.has-js .made-roll {min-height:1103px}}
+@media (max-width:593px) {.has-js .made-roll {min-height:1143px}}
+@media (max-width:418px) {.has-js .made-roll {min-height:1168px}}

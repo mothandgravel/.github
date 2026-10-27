@@ -52,6 +52,9 @@ def build(check=False):
              (ROOT / 'docs/specimens/coastal-watch/index.html', DOMAIN + 'specimens/coastal-watch/', 'The water between updates.', None),
              (ROOT / 'docs/specimens/maritime-study/index.html', DOMAIN + 'specimens/maritime-study/', 'The crossing, held still.', None),
              (ROOT / 'docs/investigations/index.html', DOMAIN + 'investigations/', 'Three questions. Still open.', None),
+             (ROOT / 'docs/sohva/index.html', DOMAIN + 'sohva/', 'Sohva Remote', None),
+             (ROOT / 'docs/sohva/privacy/index.html', DOMAIN + 'sohva/privacy/', 'Sohva Remote privacy policy', None),
+             (ROOT / 'docs/sohva/privacy/fi/index.html', DOMAIN + 'sohva/privacy/fi/', 'Sohva Remote: tietosuojaseloste', None),
              (ROOT / 'docs/investigations/how-old/index.html', DOMAIN + 'investigations/how-old/', 'How old is what I’m seeing?', None),
              (ROOT / 'docs/investigations/take-it-back/index.html', DOMAIN + 'investigations/take-it-back/', 'Did it happen, and can I take it back?', None),
              (ROOT / 'docs/investigations/green-light/index.html', DOMAIN + 'investigations/green-light/', 'What does a green light promise?', None),
@@ -59,7 +62,7 @@ def build(check=False):
     pages += [(ROOT / 'docs/notes' / n['slug'], DOMAIN + 'notes/' + n['slug'], n['title'], n) for n in notes]
     for path, url, title, note in pages:
         page = {'@type': 'CollectionPage' if url.endswith(('notes/', 'specimens/')) else 'WebPage',
-                '@id': url + '#page', 'url': url, 'name': title, 'inLanguage': 'en',
+                '@id': url + '#page', 'url': url, 'name': title, 'inLanguage': 'fi' if url.endswith('/fi/') else 'en',
                 'isPartOf': {'@id': website['@id']}}
         graph = [organization, website, page]
         if note:
