@@ -59,6 +59,7 @@ try {
       await nav.nth(i).focus();await page.keyboard.press('Enter');
       await atFragment(page,id,`keyboard-${theme}-${width}-${id}`);
       assert(await page.evaluate(()=>document.activeElement.id)===id,'Keyboard focus follows the selected stop');
+      assert(await page.locator('#'+id).evaluate(el=>parseFloat(getComputedStyle(el).outlineOffset)>=6),'Return target has a deliberate focus ring outside the margin');
     }
     const motion=await page.locator('.thread-wire').first().evaluate(el=>getComputedStyle(el).animationName);
     assert(motion==='none','Reduced motion keeps thread still');
@@ -66,6 +67,9 @@ try {
       await page.locator('a[href="../../specimens/connected-to-what/"]').click();
       await page.locator('#inspection-controls').waitFor({state:'visible'});
       assert((await page.locator('.thread-context').innerText()).includes(thread.stops[0].label),'Specimen arrival names the same reading stop');
+      assert((await page.locator('.thread-context-title').innerText()).includes(thread.name),'Arrival visibly names the thread');
+      assert((await page.locator('.thread-context-back').innerText()).includes('RETURN TO STOP 01'),'Return link has an explicit verb');
+      assert(await page.locator('.connection-meta').evaluate(el=>Boolean(el.compareDocumentPosition(document.querySelector('.thread-context')) & Node.DOCUMENT_POSITION_FOLLOWING)),'The specimen identity precedes thread context');
       await page.locator('#inspection-age').fill('18');
       assert((await page.locator('#measurement-state').innerText()).toLowerCase().includes('stale'),'Clock retains stale distinction');
       await page.getByRole('link',{name:'Next: no answer. Do we try again?'}).click();
@@ -73,6 +77,7 @@ try {
       await page.getByRole('link',{name:'Open Ajo’s working record'}).click();
       await atFragment(page,'specimen-ajo','Ajo native record');
       assert((await page.locator('#specimen-ajo .thread-context').innerText()).includes(thread.stops[1].label),'Homepage exhibit has static reply context');
+      assert(await page.locator('#specimen-ajo .thread-context a').evaluateAll(links=>{const boxes=links.map(link=>link.getBoundingClientRect());return Math.abs(boxes[0].left-boxes[1].left)<1&&boxes[1].top>=boxes[0].bottom;}),'Homepage return and continuation have a full-width stacked layout');
       await page.locator('#specimen-ajo summary').focus();await page.keyboard.press('Enter');
       assert(await page.locator('#specimen-ajo details').getAttribute('open')!==null,'Ajo record opens with keyboard');
       await page.getByRole('link',{name:'Continue the thread: a light’s promise'}).click();

@@ -1,6 +1,7 @@
 /* One thread: an editorial route, the evidence beside it, and a way back. */
 .thread-main { padding-block: 30px 80px; }
 .thread-meta { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:18px; color:var(--gold-bright); }
+.thread-meta { letter-spacing:.06em; }
 .thread-meta a { min-height:36px; display:inline-flex; align-items:center; }
 .thread-heading { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:6vw; align-items:end; padding:48px 0 40px; }
 .thread-heading h1 { font:900 clamp(48px,6.1vw,90px)/.99 var(--sans); letter-spacing:-.035em; text-transform:uppercase; margin:0; }
@@ -9,7 +10,7 @@
 .thread-heading p { color:var(--secondary); font-size:clamp(16px,1.4vw,20px); line-height:1.75; max-width:39ch; margin-bottom:18px; }
 .thread-heading .thread-invitation { color:var(--muted); font-size:13px; line-height:1.7; margin:22px 0 0; max-width:42ch; }
 .thread-intro .editorial-link { font-size:14px; }
-.thread-map { border:1px solid var(--line); padding:26px; background:var(--material-grain),radial-gradient(ellipse at 15% 0%,#dfc19510,transparent 70%),var(--surface); }
+.thread-map { border:1px solid var(--line); padding:26px; background:var(--material-grain),radial-gradient(ellipse at 15% 0%,#dfc19510,transparent 70%),var(--surface-2); }
 .thread-map-heading { display:flex; justify-content:space-between; gap:20px; align-items:baseline; margin-bottom:22px; }
 .thread-map-heading p { margin:0; color:var(--secondary); font-size:13px; }
 .thread-map-heading .mono { color:var(--gold-bright); font-size:12px; }
@@ -28,6 +29,7 @@
 .thread-map a:focus-visible { outline-color:#70542b; outline-offset:-6px; }
 .thread-caption { font-size:13px; line-height:1.7; color:var(--muted); margin:20px 0 0; }
 .thread-stop { display:grid; grid-template-columns:180px minmax(0,1fr); gap:6vw; padding-block:64px; border-bottom:1px solid var(--line); scroll-margin-top:24px; }
+.thread-stop:focus,.thread-ending:focus { outline:1px solid var(--gold); outline-offset:8px; }
 .thread-margin { align-self:start; position:sticky; top:112px; border-top:1px solid var(--gold); padding-top:18px; color:var(--muted); font-size:14px; }
 .thread-stop-number { display:block; font:400 84px/.95 var(--serif); letter-spacing:-.08em; color:var(--gold-bright); margin-bottom:20px; }
 .thread-margin .mono { color:var(--gold-bright); font-size:12px; }
@@ -65,11 +67,14 @@
 .thread-trace-states p { font-size:15px; line-height:1.8; color:var(--secondary); margin:0; }
 .thread-trace-states .thread-query-boundary { font-size:13px; color:var(--gold-bright); margin:0 0 16px; }
 .thread-trace figcaption { grid-column:1/-1; }
-.thread-signal-plate picture,.thread-signal-plate img { display:block; width:100%; height:auto; }
-.thread-signal-plate>.thread-plate-heading { margin:0; }
-.thread-signal-questions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin:0; border-top:1px solid var(--line); }
+.thread-signal-plate { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); }
+.thread-signal-plate picture { display:flex; align-items:center; background:#202222; min-width:0; }
+.thread-signal-plate img { display:block; width:100%; height:auto; }
+.thread-signal-plate>.thread-plate-heading { margin:0; grid-column:1/-1; }
+.thread-signal-plate figcaption { grid-column:1/-1; }
+.thread-signal-questions { display:grid; grid-template-columns:minmax(0,1fr); margin:0; border-left:1px solid var(--line); }
 .thread-signal-questions>div { min-width:0; padding:22px; }
-.thread-signal-questions>div+div { border-left:1px solid var(--line); }
+.thread-signal-questions>div+div { border-top:1px solid var(--line); }
 .thread-signal-questions dt { font:12px var(--mono); color:var(--gold-bright); text-transform:uppercase; margin-bottom:14px; }
 .thread-signal-questions dd { margin:0; font:400 clamp(22px,2.1vw,30px)/1.25 var(--serif); color:var(--ink); }
 .thread-copy blockquote { font:italic clamp(28px,3.5vw,44px)/1.3 var(--serif); color:var(--gold-bright); margin:34px 0; max-width:28ch; }
@@ -106,7 +111,7 @@
   .thread-heading { grid-template-columns:1fr; gap:26px; }
   .thread-heading p { max-width:60ch; }
   .thread-stop { grid-template-columns:minmax(0,1fr); gap:26px; }
-  .thread-margin { position:static; display:grid; grid-template-columns:64px minmax(0,1fr); gap:4px 20px; align-items:start; }
+  .thread-margin { position:static; display:grid; grid-template-columns:64px minmax(0,1fr); gap:4px 20px; align-items:start; border-top:0; padding-top:0; }
   .thread-stop-number { grid-row:1/4; font-size:58px; margin:0; }
   .thread-margin p { margin:0; }
   .thread-margin a { margin:0; }
@@ -126,7 +131,7 @@
   .thread-map li+li::before { top:-18px; left:50%; width:0; height:18px; border-left:1px solid var(--gold); }
   .thread-main .thread-map a { display:grid; grid-template-columns:52px minmax(0,1fr); gap:10px 12px; padding:18px; }
   .thread-map .mono { grid-column:1/-1; }
-  .thread-map svg { grid-column:1; grid-row:2/4; width:52px; margin:0; }
+  .thread-map svg { grid-column:1; grid-row:2/4; width:52px; margin:0; stroke-width:3.5; }
   .thread-map strong { grid-column:2; font-size:24px; margin:0; }
   .thread-map a>span:last-child { grid-column:2; font-size:12px; margin:0; }
   .thread-stop { padding-block:44px; }
@@ -137,7 +142,8 @@
   .thread-trace-count>strong { font-size:120px; }
   .thread-trace-states>div { padding:24px; }
   .thread-reading-facts>div { padding:16px; }
-  .thread-signal-questions { grid-template-columns:minmax(0,1fr); }
+  .thread-signal-plate { grid-template-columns:minmax(0,1fr); }
+  .thread-signal-questions { grid-template-columns:minmax(0,1fr); border-left:0; border-top:1px solid var(--line); }
   .thread-signal-questions>div+div { border-left:0; border-top:1px solid var(--line); }
   .thread-signal-questions>div { display:grid; grid-template-columns:80px minmax(0,1fr); gap:16px; }
   .thread-signal-questions dt { margin:6px 0 0; }

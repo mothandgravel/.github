@@ -99,7 +99,7 @@ def thread_context(thread, stop, index, page):
     current_stop = local(thread['href'] + '#' + stop['id'], page)
     continuation = local(thread['href'] + '#' + stop['next'], page)
     next_number = f'{index + 2:02} / ' if index + 1 < total else ''
-    return f'''<nav class="thread-context" aria-label="{escape(thread['name'], quote=True)} / stop {index + 1} of {total}"><div><p class="mono">THREAD 01 / STOP {index + 1:02} OF {total:02}</p><a class="thread-context-back" href="{current_stop}">{escape(stop['label'])} <span aria-hidden="true">↗</span></a></div><a class="thread-context-next" href="{continuation}"><span class="mono">CONTINUE THE THREAD</span><strong>{next_number}{escape(stop['nextLabel'])} <span aria-hidden="true">→</span></strong></a></nav>'''
+    return f'''<nav class="thread-context" aria-label="{escape(thread['name'], quote=True)} / stop {index + 1} of {total}"><p class="thread-context-title"><span class="mono">IN THREAD 01</span>{escape(thread['name'])}</p><a class="thread-context-back" href="{current_stop}"><span class="mono">RETURN TO STOP {index + 1:02} OF {total:02}</span><strong>{escape(stop['label'])}&#160;<span aria-hidden="true">↗</span></strong></a><a class="thread-context-next" href="{continuation}"><span class="mono">CONTINUE THE THREAD</span><strong>{next_number}{escape(stop['nextLabel'])}&#160;<span aria-hidden="true">→</span></strong></a></nav>'''
 
 
 def build(check=False):
@@ -147,7 +147,8 @@ def build(check=False):
                     return result
                 text = slot(text, 'thread-context-' + stop['id'], context, add_to_exhibit)
             else:
-                text = slot(text, 'thread-context', context, lambda source, block: re.sub(r'(<main\b[^>]*>)', lambda match: match[0] + '\n' + block, source, count=1))
+                text = slot(text, 'thread-context', context, lambda source, block: source.replace('<!-- thread-context-anchor -->', block))
+                assert '<!-- thread-context:start -->' in text, f'Place thread-context-anchor after the piece identity: {page}'
         if page == ROOT / 'specimens/index.html':
             text = slot(text, 'specimen-catalogue', catalogue(items), lambda s, b: s.replace('<!-- catalogue -->', b))
         elif 'specimens' in page.relative_to(ROOT).parts:

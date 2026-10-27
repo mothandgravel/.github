@@ -49,10 +49,15 @@ class Wayfinding(unittest.TestCase):
         for name, slot, current, continuation in pieces:
             text = (ROOT / name).read_text(encoding='utf-8')
             content = text.split('<!-- ' + slot + ':start -->')[1].split('<!-- ' + slot + ':end -->')[0]
+            self.assertIn(thread['name'].replace('&', '&amp;'), content)
+            self.assertIn('RETURN TO STOP', content)
             base = 'https://mothandgravel.com/' + name
             resolved = [urljoin(base, href) for href in Links(content).links]
             self.assertEqual(resolved, ['https://mothandgravel.com' + thread['href'] + '#' + current,
                                         'https://mothandgravel.com' + thread['href'] + '#' + continuation])
+            if name != 'index.html':
+                identity = 'connection-meta' if name.startswith('specimens/') else 'note-meta'
+                self.assertLess(text.index('class="' + identity), text.index('<!-- ' + slot + ':start -->'))
         self.assertEqual([s['label'] for s in thread['stops']],
                          ['The ageing reading', 'The missing reply', 'The reassuring signal'])
 
