@@ -1,3 +1,3 @@
-# Evidence: Sohva Remote pages (27 Oct 2026)
+# Evidence: Sohva Remote pages, faithful port (27 Oct 2026)
 
-/sohva/, /sohva/privacy/, /sohva/privacy/fi/ and the Made here list, at 1440 and 390 in Night and Afterlight.
+Side by side, original (left, sohva-remote efd1b06 site/ served locally) and the port under /sohva/ (right), full page at 1440 and 390. Page heights match exactly at every width.
