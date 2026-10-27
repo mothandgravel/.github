@@ -281,7 +281,10 @@ login. `--no-open` prevents launching the listening page. `--wait 0` submits or
 checks once and returns; other wait limits accept 0–3600 seconds.
 
 The caption default is Chirp 3, with word offsets and native Google SRT/WebVTT
-outputs. Recordings must fit within 20 minutes and 100 MB. `--model long
+outputs. One caption job takes up to 20 minutes, so a longer recording is split
+locally at a pause into parts of at most 19 minutes (or at 19:00 with a 5-second
+overlap). Each part is its own paid job with its own spend-guard attempt, and the parts
+are joined into one set of captions. The MP3 must stay within 100 MB. `--model long
 --location global --no-diarize` is an optional caption alternative. Transcription
 and private storage have separate charges from synthesis.
 
