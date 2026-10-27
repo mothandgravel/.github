@@ -9,7 +9,7 @@ import shutil
 from dataclasses import replace
 from pathlib import Path
 
-from field_notes_audio import audio, captions, judge, spend_guard
+from field_notes_audio import audio, captions, judge, long_captions, spend_guard
 from field_notes_audio.locks import run_lock
 from field_notes_audio.production import sources
 from field_notes_audio.storage import digest_file, read_object
@@ -147,12 +147,25 @@ class PreparationJobs:
         if (directory / "episode.mp3").exists():
             args = self._caption_args(plan, config, directory / "episode.mp3")
             directory2 = captions.recording_plan(args)[0]
-            state_path = sources.private_path(
-                self.root, str((directory2 / "state.json").relative_to(self.root))
-            )
-            state = read_object(state_path) if state_path.exists() else {}
-            captions_status = state.get("status", "not submitted")
-            caption_state = "Matching caption state: " + captions_status + "."
+            sources.private_path(self.root, str(directory2.relative_to(self.root)))
+            if long_captions.is_split(directory2):
+                # Captioned in parts: each part keeps its own receipt.
+                state = long_captions.part_states(args, directory2)
+                captions_status = state["status"]
+                caption_state = (
+                    "Matching caption state: "
+                    + captions_status
+                    + " ("
+                    + ", ".join(f"part {p['index']} {p['status']}" for p in state["parts"])
+                    + ")."
+                )
+            else:
+                state_path = sources.private_path(
+                    self.root, str((directory2 / "state.json").relative_to(self.root))
+                )
+                state = read_object(state_path) if state_path.exists() else {}
+                captions_status = state.get("status", "not submitted")
+                caption_state = "Matching caption state: " + captions_status + "."
             if state.get("status") in {"requesting", "uncertain", "failed"}:
                 blockers.append(
                     "Caption work needs explicit recovery; a new submission is not authorized by Resume."
@@ -492,24 +505,43 @@ class PreparationJobs:
                 or set(receipt) != {"operation", "fingerprint", "audio_sha256"}
                 or receipt["fingerprint"] != caption_plan["fingerprint"]
                 or receipt["audio_sha256"] != caption_plan["audio_sha256"]
+                or (isinstance(receipt["operation"], list) and not receipt["operation"])
             ):
                 raise ValueError("Saved caption Resume identity disagrees with this narration")
             if receipt is not None:
-                captions.operation_url(receipt["operation"], config["location"], config["project"])
+                # A recording captioned in parts saves one operation per unfinished part.
+                saved = receipt["operation"]
+                for name in saved if isinstance(saved, list) else [saved]:
+                    captions.operation_url(name, config["location"], config["project"])
             completed = captions.run(
                 caption_args, expected_operation=receipt["operation"] if receipt else None
             )
             if completed is None:
                 if stopped():
                     raise StopRequested
-                state = read_object(cap_directory / "state.json")
-                captions.operation_url(
-                    state.get("operation"), config["location"], config["project"]
-                )
+                if long_captions.is_split(cap_directory):
+                    running = [
+                        p["operation"]
+                        for p in long_captions.part_states(caption_args, cap_directory)["parts"]
+                        if p["status"] == "running"
+                    ]
+                    if not running:
+                        raise ValueError(
+                            "No caption part is running; check the part states before Resume"
+                        )
+                    for name in running:
+                        captions.operation_url(name, config["location"], config["project"])
+                    operation = running
+                else:
+                    state = read_object(cap_directory / "state.json")
+                    captions.operation_url(
+                        state.get("operation"), config["location"], config["project"]
+                    )
+                    operation = state["operation"]
                 raise CaptionsPending(
                     "Captions are still running. Resume polls the saved operation without resynthesis or a new submission.",
                     {
-                        "operation": state["operation"],
+                        "operation": operation,
                         "fingerprint": caption_plan["fingerprint"],
                         "audio_sha256": caption_plan["audio_sha256"],
                     },

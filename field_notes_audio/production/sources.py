@@ -154,6 +154,8 @@ def adopt(root: Path, plan: dict, directory: Path) -> Path:
         raise ValueError("Caption cues belong to another recording")
     data["cues.json"] = (json.dumps(cues["cues"], ensure_ascii=False, indent=2) + "\n").encode()
     duration = captions.probe_audio(source)
+    if duration > captions.CAPTION_LIMIT_SECONDS and not capmeta.get("parts"):
+        raise ValueError("A recording over one caption job must be captioned in parts")
     token = identity(
         {
             "plan": plan["fingerprint"],

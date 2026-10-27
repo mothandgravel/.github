@@ -151,8 +151,6 @@ def finish_audio(source: Path, directory: Path, settings: dict) -> dict:
     intro = settings["intro_seconds"]
     outro = settings["outro_seconds"]
     total = intro + voice_duration + outro
-    if total > 1200:
-        raise ValueError("Finished editions must remain within the 20-minute collection limit")
     inputs = ["-i", str(voice)]
     delay = round(intro * 1000)
     filters = [f"[0:a]adelay={delay}:all=1,apad,atrim=duration={total}[voice]"]

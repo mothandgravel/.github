@@ -217,7 +217,7 @@ class LongCaptionTests(unittest.TestCase):
         self.assertAlmostEqual(offsets[2], 2205, delta=1)
         self.assertEqual([p["end_seconds"] for p in meta["parts"][:2]], offsets[1:])
         self.assertEqual(
-            meta["parts"][2]["end_seconds"], round(captions.probe_audio(self.audio, limit=None), 3)
+            meta["parts"][2]["end_seconds"], round(captions.probe_audio(self.audio), 3)
         )
         expected = [
             (f"{word}{n}", round(offsets[n - 1] + local, 3))

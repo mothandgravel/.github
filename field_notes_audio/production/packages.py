@@ -109,7 +109,7 @@ def _snapshot(entry: dict, output: Path, full_video: bool, inspect_video: bool) 
         raise ValueError("Invalid finished-audio pace")
     for field in ("timeline_duration_seconds", "duration_seconds"):
         value = state.get(field)
-        if type(value) not in (int, float) or not math.isfinite(value) or not 0 < value <= 1200:
+        if type(value) not in (int, float) or not math.isfinite(value) or not 0 < value:
             raise ValueError("Invalid finished-audio duration")
     if (
         state.get("episode") != source["id"]
@@ -121,11 +121,7 @@ def _snapshot(entry: dict, output: Path, full_video: bool, inspect_video: bool) 
     ):
         raise ValueError("Finished audio belongs to a different source or latest pointer")
     duration = state.get("duration_seconds")
-    if (
-        type(duration) not in (int, float)
-        or not math.isfinite(duration)
-        or not 0 < duration <= 1200
-    ):
+    if type(duration) not in (int, float) or not math.isfinite(duration) or not 0 < duration:
         raise ValueError("Invalid finished-audio duration")
     if (
         abs(captions.probe_audio(finished / "episode.mp3") - duration)

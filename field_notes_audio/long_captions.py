@@ -291,15 +291,29 @@ def run(
     plan: dict,
     metadata: dict,
     script: str,
-    expected_operation: str | None = None,
+    expected_operation: str | list[str] | None = None,
 ) -> Path | None:
+    """Caption every part. ``expected_operation`` (Studio Resume) lists the saved part
+    operations to poll; Resume then reuses completed parts and never submits a part."""
     duration, audio_hash = plan["duration_seconds"], plan["audio_sha256"]
     episode = metadata.get("id") or "recording-" + audio_hash[:12]
     source = args.audio.resolve(strict=True)
+    resume = None
     if expected_operation is not None:
-        raise ValueError(
-            "This recording is captioned in parts; resume it with the captions command."
-        )
+        if (
+            not isinstance(expected_operation, list)
+            or not expected_operation
+            or not all(isinstance(o, str) for o in expected_operation)
+        ):
+            raise ValueError(
+                "The saved caption receipt is for one job, but this recording is captioned in "
+                "parts. Resume will not create a new submission."
+            )
+        if not (directory / "parts" / "split.json").exists():
+            raise ValueError(
+                "The saved caption parts disappeared. Resume will not create a new submission."
+            )
+        resume = set(expected_operation)
     report(
         f"Caption existing recording: {duration / 60:.2f} minutes; longer than one caption "
         f"job, so it is split locally into parts of at most {PART_SECONDS // 60} minutes."
@@ -319,8 +333,22 @@ def run(
             flush=True,
         )
         finished, pending = [], []
+        states = {s["index"]: s for s in part_states(args, directory)["parts"]}
+        if resume is not None and not resume <= {s["operation"] for s in states.values()}:
+            raise ValueError(
+                "The saved caption receipt changed or disappeared. Resume will not create a "
+                "new submission."
+            )
         for part in parts:
             raise_if_stopped(args)
+            expected = None
+            if resume is not None and states[part["index"]]["status"] != "complete":
+                expected = states[part["index"]]["operation"]
+                if expected not in resume:
+                    raise ValueError(
+                        f"Part {part['index']} has no saved operation in this Resume receipt. "
+                        "Resume will not create a new submission."
+                    )
             report(f"Part {part['index']} of {len(parts)}", flush=True)
             part_args = argparse.Namespace(
                 **{
@@ -330,7 +358,7 @@ def run(
                 }
             )
             # One ordinary caption job per part: its own receipt and spend-guard attempt.
-            completed = captions.run(part_args, episode=episode)
+            completed = captions.run(part_args, expected_operation=expected, episode=episode)
             if completed is None:
                 pending.append(part["index"])
             finished.append(completed)
@@ -377,4 +405,43 @@ def run(
             aliases,
             extra={"parts": receipts},
         )
+        # Studio adoption reads this; the part receipts stay in their own folders.
+        write_json(
+            directory / "state.json",
+            {
+                "status": "complete",
+                "audio_sha256": audio_hash,
+                "parts": [r["operation"] for r in receipts],
+            },
+        )
         return directory
+
+
+def part_states(args: argparse.Namespace, directory: Path) -> dict:
+    """Each part's saved caption state from ``parts/split.json``, and their overall status.
+
+    Overall: any uncertain, failed or rejected part wins, then running, then not submitted;
+    complete only when every part is complete.
+    """
+    manifest = read_object(directory / "parts" / "split.json")
+    parts = []
+    for part in manifest["parts"]:
+        fingerprint = captions.caption_request(args, part["sha256"])[2]
+        state_path = directory / "parts" / "captions" / fingerprint[:16] / "state.json"
+        state = read_object(state_path) if state_path.exists() else {}
+        parts.append(
+            {
+                "index": part["index"],
+                "status": state.get("status", "not submitted"),
+                "operation": state.get("operation"),
+                "state": state_path,
+            }
+        )
+    order = ("requesting", "uncertain", "failed", "rejected", "running", "not submitted")
+    present = {p["status"] for p in parts}
+    status = next((s for s in order if s in present), "complete")
+    return {"status": status, "parts": parts}
+
+
+def is_split(directory: Path) -> bool:
+    return (directory / "parts" / "split.json").is_file()

@@ -146,10 +146,11 @@ def poll_operation(url: str, project: str, auth: str) -> dict:
             time.sleep(2**attempt)
 
 
+# One Speech-to-Text caption job; longer recordings are captioned in parts.
 CAPTION_LIMIT_SECONDS = 1200
 
 
-def probe_audio(path: Path, limit: float | None = CAPTION_LIMIT_SECONDS) -> float:
+def probe_audio(path: Path) -> float:
     if not shutil.which("ffprobe"):
         raise ValueError("Captioning requires ffprobe, included with FFmpeg")
     result = subprocess.run(
@@ -171,8 +172,8 @@ def probe_audio(path: Path, limit: float | None = CAPTION_LIMIT_SECONDS) -> floa
         raise ValueError("The input could not be read as audio")
     info = json.loads(result.stdout)
     duration = float(info["format"]["duration"])
-    if not math.isfinite(duration) or duration <= 0 or (limit is not None and duration > limit):
-        raise ValueError("This caption pilot accepts recordings up to 20 minutes")
+    if not math.isfinite(duration) or duration <= 0:
+        raise ValueError("The input has no measurable audio duration")
     if not any(s.get("codec_type") == "audio" for s in info.get("streams", [])):
         raise ValueError("The input has no audio stream")
     return duration
@@ -647,6 +648,18 @@ def write_result(
     )
 
 
+def caption_request(args: argparse.Namespace, audio_hash: str) -> tuple[str, dict, str]:
+    """The input URI, recognition request and its fingerprint for this audio."""
+    uri = f"gs://{args.bucket}/field-notes-input/{audio_hash}.mp3"
+    payload = recognition_request(uri, args.model, args.language, args.diarize)
+    fingerprint = digest(
+        json.dumps(
+            {"request": payload, "project": args.project, "location": args.location}, sort_keys=True
+        ).encode()
+    )
+    return uri, payload, fingerprint
+
+
 def recording_plan(args: argparse.Namespace) -> tuple[Path, dict, bytes, dict, str]:
     if not re.fullmatch(r"[a-z][a-z0-9-]{4,28}[a-z0-9]", args.project):
         raise ValueError("Provide the Google Cloud project ID")
@@ -688,16 +701,9 @@ def recording_plan(args: argparse.Namespace) -> tuple[Path, dict, bytes, dict, s
         raise ValueError(
             "The neighboring input script differs from the script recorded in episode metadata"
         )
-    object_name = f"field-notes-input/{audio_hash}.mp3"
-    uri = f"gs://{args.bucket}/{object_name}"
-    payload = recognition_request(uri, args.model, args.language, args.diarize)
-    fingerprint = digest(
-        json.dumps(
-            {"request": payload, "project": args.project, "location": args.location}, sort_keys=True
-        ).encode()
-    )
+    uri, payload, fingerprint = caption_request(args, audio_hash)
     directory = path.parent / "captions" / fingerprint[:16]
-    duration = probe_audio(path, limit=None)
+    duration = probe_audio(path)
     plan = {
         "audio_sha256": audio_hash,
         "audio_uri": uri,
