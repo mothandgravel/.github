@@ -124,6 +124,13 @@ try {
         || chapter.mismatchedPreview
         || JSON.stringify(chapter.peers) !== JSON.stringify(peers)) fail(label + ' chapter integrity', chapter);
       if (width === 390 && theme === 'night') {
+        const destinations = await page.locator('.question-bridge a,.question-shelf a').evaluateAll(links =>
+          [...new Set(links.map(a => { const url = new URL(a.href); return url.origin + url.pathname; }))]);
+        for (const url of destinations) {
+          if (new URL(url).origin !== new URL(origin).origin) fail(label + ' unexpected external connection', url);
+          const response = await page.request.head(url);
+          if (response.status() !== 200) fail(label + ' connection response', { url, status: response.status() });
+        }
         for (const id of ['shelf-notes', 'shelf-specimens']) {
           await page.locator(`.question-paths a[href="#${id}"]`).focus(); await page.keyboard.press('Enter');
           await page.waitForFunction(id => {
