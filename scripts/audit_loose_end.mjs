@@ -149,7 +149,15 @@ try {
     const fixture=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
     await fixture.addInitScript(theme=>{
       localStorage.setItem('moth-and-gravel-theme',theme);
-      window.turnstile={render:(_holder,options)=>{options.callback('fixture-token');return 'fixture-widget';},remove:()=>{},reset:()=>{}};
+      window.turnstile={render:(holder,options)=>{
+        const panel=document.createElement('div');
+        panel.dataset.challengeFixture='true';
+        panel.style.width=options.size==='compact'?'150px':'300px';
+        panel.style.height=options.size==='compact'?'140px':'65px';
+        panel.textContent='Privacy check fixture';
+        holder.append(panel);
+        options.callback('fixture-token');return 'fixture-widget';
+      },remove:()=>document.querySelectorAll('[data-challenge-fixture]').forEach(el=>el.remove()),reset:()=>{}};
     },theme);
     const deliveries=[];
     await fixture.route('**/assets/enquiry-config.json',route=>route.fulfill({json:{enabled:true,endpoint:'https://studio-inbox.invalid/enquiries',turnstileSiteKey:'public-fixture-key'}}));
@@ -162,11 +170,16 @@ try {
     const opening=await p.locator('.question-boundary').innerText();
     await makeBrief(p,'A fictional report that left its reader uncertain.');
     await p.locator('.enquiry-identity').waitFor({state:'visible'});
+    await p.waitForFunction(()=>getComputedStyle(document.querySelector('.enquiry-check')).containerType==='inline-size');
     assert(await p.locator('.question-boundary').innerText()===opening,'The sending boundary stays true and unchanged when the inbox form loads');
     assert(await p.locator('#brief-text').evaluate(el=>Boolean(el.compareDocumentPosition(document.querySelector('.enquiry-identity')) & Node.DOCUMENT_POSITION_FOLLOWING)),'The visitor reads the finished brief before signing it');
     const literal='My edited brief.\nKeep the line break, the “words”, and <this text>.';
     await p.locator('#brief-text').fill(literal);
+    const sendBeforeCheck=await p.locator('#enquiry-form button').evaluate(el=>el.getBoundingClientRect().top+scrollY);
     await p.locator('#enquiry-name').fill('A fictional visitor');
+    await p.locator('[data-challenge-fixture]').waitFor({state:'visible'});
+    const sendAfterCheck=await p.locator('#enquiry-form button').evaluate(el=>el.getBoundingClientRect().top+scrollY);
+    assert(Math.abs(sendAfterCheck-sendBeforeCheck)<1,'The privacy-check footprint is reserved before signing moves the view');
     await p.locator('#enquiry-email').fill('visitor@example.test');
     assert(deliveries.length===0,'Editing and signing never sends the brief automatically');
     await audit(p,`brief-sign-${theme}-${width}`,true);

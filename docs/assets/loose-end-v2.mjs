@@ -40,6 +40,14 @@ function download(text, name) {
 }
 
 if (intake) {
+  // Reading context belongs to this page visit, never to the visitor's draft.
+  // Keep it available while writing after an explicit thread entrance.
+  const threadContext = document.getElementById('signals-context');
+  const retainThreadContext = () => {
+    if (threadContext && location.hash === '#signals-context') threadContext.dataset.threadEntry = 'true';
+  };
+  retainThreadContext();
+  window.addEventListener('hashchange', retainThreadContext);
   const panels = [...intake.querySelectorAll('[data-step]')];
   const controls = document.getElementById('journey-controls');
   const back = document.getElementById('question-back');

@@ -7,6 +7,13 @@ beside its progress text, and an original SVG drawing. The optional thread
 arrival keeps three prompts beside an explicit writing and return route. Its
 words never enter the visitor's answers or brief.
 
+An explicit thread entrance keeps those prompts available for this page visit
+after the writing link is followed. That view marker is not saved to the draft;
+ordinary entry and an ordinary return from the workbench keep their own opening.
+The real inbox form reserves its documented widget footprint before signing, so
+the Send control does not move when verification renders. Its integration test
+inserts a dimensioned challenge fixture to check this.
+
 The opening delivery explanation now stays true whether the inbox form loads
 or the mail-app fallback remains. The visitor reads and edits the brief before
 the Sign and send section asks for a name and email. Copy and download remain

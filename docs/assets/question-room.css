@@ -23,6 +23,7 @@
 .question-room #brief-text { field-sizing:content;min-height:360px;max-height:1000px; }
 .question-room .question-sheet legend,.question-room .question-sheet h2 { font-size:clamp(30px,3.1vw,43px); }
 .question-room .question-sheet legend:focus,.question-room .question-sheet h2:focus { outline-width:1px;outline-offset:8px; }
+.question-room .question-housekeeping .quiet-button { border:0;padding-inline:0;text-decoration:underline;text-underline-offset:4px; }
 .question-room summary { scroll-margin:32px 0 24px; }
 .question-room textarea { background:var(--bg);box-shadow:inset 1px 2px 4px #0000000a; }
 .question-room #brief-text { min-height:440px;font-size:16px; }
@@ -81,7 +82,7 @@ html:is(:not(.has-js),.site-script-unavailable) .question-room .header-actions {
 .question-room .brief-keep>.brief-revise>.quiet-button { width:auto; }
 
 /* The arrival is a prompt beside the sheet, never a prefabricated answer. */
-.question-room .journey-thread:target { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:36px;border:0;border-block:1px solid var(--gold);background:transparent;padding:26px 0;margin-bottom:30px; }
+.question-room .journey-thread:is(:target,[data-thread-entry="true"]) { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:36px;border:0;border-block:1px solid var(--gold);background:transparent;padding:26px 0;margin-bottom:30px; }
 .question-room .journey-thread:focus { outline:1px solid var(--gold);outline-offset:8px;border-block-color:transparent; }
 .thread-arrival-heading h2 { font-size:32px;margin-bottom:12px;max-width:16ch; }
 .question-room .thread-arrival-heading .thread-arrival-name { color:var(--secondary);max-width:32ch;line-height:1.7;font-size:13px;margin:0; }
@@ -99,7 +100,7 @@ html:is(:not(.has-js),.site-script-unavailable) .question-room .header-actions {
 .question-route p { font-size:14px;margin:8px 0 0; }
 .question-other-routes { border-top:1px solid var(--line);margin-top:22px;padding-top:12px; }
 .question-other-routes summary { cursor:pointer;min-height:44px;font-size:14px;color:var(--gold-bright); }
-@media(max-width:900px) { .question-room .journey-thread:target { grid-template-columns:1fr;gap:20px; }.thread-arrival-heading h2 { max-width:none; }.question-room .thread-arrival-heading .thread-arrival-name { max-width:none; }.question-room .journey-aside { display:grid;grid-template-columns:1fr 1fr;gap:0 30px;max-width:none; }.question-room .journey-aside>.mono,.question-room .journey-aside>h2 { grid-column:1/-1; }.question-route { grid-row:3/span 2; } }
+@media(max-width:900px) { .question-room .journey-thread:is(:target,[data-thread-entry="true"]) { grid-template-columns:1fr;gap:20px; }.thread-arrival-heading h2 { max-width:none; }.question-room .thread-arrival-heading .thread-arrival-name { max-width:none; }.question-room .journey-aside { display:grid;grid-template-columns:1fr 1fr;gap:0 30px;max-width:none; }.question-room .journey-aside>.mono,.question-room .journey-aside>h2 { grid-column:1/-1; }.question-route { grid-row:3/span 2; } }
 @media(max-width:760px) { .question-room .journey-heading { display:block;padding-top:34px; }.question-hero-art { display:none; }.question-introduction { max-width:42ch; } }
 @media(max-width:660px) { .question-position { grid-template-columns:50px minmax(0,1fr);gap:8px 14px;padding-bottom:20px; }.question-folio-index { font-size:48px; }.brief-preview { grid-template-columns:1fr;gap:10px; }.brief-preview-mark { display:none; }.question-room .question-sheet legend,.question-room .question-sheet h2 { font-size:30px; }.thread-arrival-prompts ol { grid-template-columns:1fr;gap:0; }.thread-arrival-prompts li { display:grid;grid-template-columns:25px 1fr;gap:10px;padding:12px 0;font-size:20px; }.thread-arrival-prompts li::before { margin:0;padding-top:4px; }.question-room .journey-aside { display:block; }.question-room .question-sheet .choice { min-height:60px; } }
 @media print { .question-room .journey-heading { display:block; }.question-hero-art,.question-room .journey-thread { display:none!important; }.question-room .question-sheet { border:0;box-shadow:none; }.question-position { display:none; } }

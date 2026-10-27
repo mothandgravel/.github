@@ -104,7 +104,9 @@ try {
       assert(await page.evaluate(()=>sessionStorage.getItem('mg-loose-end-v1'))===null,'Prompt creates no draft');
       await review(page,`thread-prompt-${theme}-${width}`,true);
       await page.getByRole('link',{name:'Write your version below'}).focus();
-      await page.keyboard.press('Enter');await page.keyboard.press('Tab');
+      await page.keyboard.press('Enter');
+      assert(await page.locator('#signals-context').isVisible(),'Thread prompts remain available while the visitor writes');
+      await page.keyboard.press('Tab');
       assert(await page.evaluate(()=>document.activeElement.name)==='intent','Keyboard handoff reaches the visitor’s answers');
       await page.locator('#question-next').click();
       await page.locator('#making').fill('People cannot tell whether their export finished.');

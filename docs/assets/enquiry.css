@@ -10,8 +10,13 @@
 .question-sheet .enquiry-identity input[aria-invalid="true"] { border-color:var(--gold-bright);box-shadow:inset 3px 0 var(--gold-bright); }
 .question-room .enquiry-identity .question-error { margin:10px 0 0;font-size:14px;line-height:1.7; }
 .enquiry-trap { position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden; }
-.enquiry-challenge { max-width:100%; }
-.enquiry-challenge:not(:empty) { margin-top:22px;min-height:65px; }
+.question-room .enquiry-check { container-type:inline-size;margin-top:22px;padding:16px;background:#1d2021;border:1px solid #827153;color:#eee7d8; }
+.question-room .enquiry-check>.mono { color:#dfc195;font-size:12px;margin:0 0 14px; }
+.question-room .enquiry-check>.question-help { color:#c6c0b6;font-size:13px;margin:12px 0 0; }
+/* Match the documented normal (300x65) and compact (150x140) footprints.
+   https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/widget-configurations/ */
+.enquiry-challenge { max-width:100%;min-height:140px; }
+@container (min-width:300px) { .enquiry-challenge { min-height:65px; } }
 .question-room .enquiry-send button[type="submit"] { font-size:14px;min-height:54px;min-width:9em;justify-content:flex-start; }
 .question-room .enquiry-send button[disabled] { opacity:.65;cursor:progress; }
 .question-room .enquiry-send .question-feedback a { color:var(--ink); }

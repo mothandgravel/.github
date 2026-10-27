@@ -46,6 +46,10 @@ try {
     await page.locator('#inspect-note-surface').click();
     assert.ok(await page.locator('input[name="surface"][value="damage"]').isChecked(),'The margin returns to its exact inspected sketch');
     assert.ok(await page.locator('input[name="surface"][value="damage"]').evaluate(el=>el===document.activeElement),'The inspection return moves keyboard focus to the selected sketch control');
+    await page.locator('#inspection-note-mark').waitFor({state:'visible',timeout:5000}).catch(async()=>{
+      const state=await page.locator('#inspection-note-mark').evaluate(el=>({hidden:el.hidden,visible:el.dataset.visible,visibility:getComputedStyle(el).visibility,display:getComputedStyle(el).display,box:el.getBoundingClientRect().toJSON()}));
+      throw new Error(`Note pin did not become visible at ${width}/${theme}: ${JSON.stringify(state)}`);
+    });
     assert.ok(await page.locator('#inspection-note-mark').isVisible(),'The pin appears only beside the note’s actual sketch');
     assert.ok(Math.abs(beforeNoteReturn.height-(await page.locator('.artifact-view').boundingBox()).height)<1,'Showing the note pin cannot move or resize the comparison');
     assert.match(await page.locator('#annotation-record').innerText(),/^Start with the damage:/,'Inspecting never rewrites the observation');

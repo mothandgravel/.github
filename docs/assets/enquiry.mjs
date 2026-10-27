@@ -47,7 +47,7 @@ function build() {
   const form = document.createElement('form');
   form.id = 'enquiry-form'; form.className = 'enquiry-send'; form.noValidate = true; form.setAttribute('aria-label', 'Send the brief to Moth & Gravel');
   // Visible feedback only; announcements go through the page's single live region.
-  form.innerHTML = `<div class="enquiry-challenge" id="enquiry-challenge"></div>
+  form.innerHTML = `<div class="enquiry-check"><p class="mono">PRIVACY CHECK</p><div class="enquiry-challenge" id="enquiry-challenge"></div><p class="question-help">Required before sending. Loads when you start signing.</p></div>
     <div class="journey-actions brief-send"><button class="button button-brass" type="submit" aria-describedby="enquiry-help">Send to Moth &amp; Gravel</button></div>
     <p class="question-feedback" id="enquiry-status"></p>`;
   return { identity, form };
