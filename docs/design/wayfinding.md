@@ -25,6 +25,10 @@ link, such as note 015's, is not relabelled as a specimen.
   for the Field notes index. The browser uses the same identities and destinations.
   Paired introductions select the latest linked note from two distinct families
   other than the featured family. Existing evidence captions accompany captures.
+  A note's optional `archivePreview` can select its own existing capture and
+  caption in place of the specimen's family image. Index verbs address a first
+  visit; article endings retain their authored return wording. The recent stack
+  and full archive both retain specimen and investigation routes with distinct labels.
   If either catalogue fails, the complete authored archive remains available.
 - `scripts/build_wayfinding.py` generates bounded masthead, footer, collection,
   parent and related-reading slots. It validates destinations and fragments.

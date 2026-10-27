@@ -376,6 +376,13 @@
     "specimen": {
       "href": "../specimens/coastal-watch/",
       "label": "Return to Coastal watch"
+    },
+    "archivePreview": {
+      "image": "assets/specimens/coastal-watch/04-stream-interrupted.jpg",
+      "width": 1275,
+      "height": 884,
+      "alt": "Coastal watch retaining its last position after the stream disconnects.",
+      "boundary": "Captured software study with synthetic tracks. The connection is interrupted; the last position remains."
     }
   },
   {
@@ -447,6 +454,13 @@
     "specimen": {
       "href": "../specimens/maritime-study/",
       "label": "Return to the maritime study"
+    },
+    "archivePreview": {
+      "image": "assets/specimens/maritime-study/12-bridge-night-current.jpg",
+      "width": 1265,
+      "height": 712,
+      "alt": "The night bridge study with dimmed navigation instruments, a fixed position and unavailable inputs left blank.",
+      "boundary": "Captured fixed-position bridge study. Borrowed weather; no live voyage."
     }
   },
   {

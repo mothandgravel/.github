@@ -8,7 +8,7 @@
 .notes-index-hero .notes-introduction > p { color: var(--secondary); max-width: 43ch; font-size: 17px; line-height: 1.75; margin-bottom: 20px; }
 .notes-index .notes-wayfinding { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; margin: 0; }
 .notes-index .notes-wayfinding a { font-size: 13px; gap: 7px 8px; }
-.notes-index .notes-wayfinding .mono { font-size: 11px; grid-column: 1/-1; }
+.notes-index .notes-wayfinding .mono { font-size: 12px; grid-column: 1/-1; }
 .notes-index .collection-count { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; padding-top: 20px; border-top: 1px solid var(--line); }
 .notes-index .collection-count a { min-height: 32px; display: inline-flex; align-items: center; }
 .notes-index .archive-feature { display: grid; grid-template-columns: minmax(0,.84fr) minmax(0,1.16fr); border-color: var(--gold); background: var(--material-grain),var(--surface); }
@@ -20,10 +20,10 @@
 .archive-feature-art { min-width: 0; display: flex; align-items: center; background: #192021; border-left: 1px solid var(--line); }
 .archive-feature-art .editorial-art { width: 100%; height: auto; aspect-ratio: auto; border: 0; }
 .archive-feature-art .editorial-cover img { object-fit: contain; height: auto; }
-.notes-index .archive-specimen { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 5px 16px; min-height: 44px; padding: 10px 0; margin-top: 12px; color: var(--gold-bright); font-size: 13px; line-height: 1.6; border-top: 1px solid var(--line-soft); }
-.archive-specimen .mono { font-size: 10px; letter-spacing: .08em; white-space: nowrap; }
-.archive-specimen:hover > span:last-child { text-decoration: underline; text-underline-offset: 4px; }
-.archive-feature .archive-specimen { display: grid; gap: 4px; width: 100%; margin-top: 22px; padding: 16px 0 0; }
+.notes-index .archive-relation { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 5px 16px; min-height: 44px; padding: 10px 0; margin-top: 12px; color: var(--gold-bright); font-size: 13px; line-height: 1.6; border-top: 1px solid var(--line-soft); }
+.archive-relation .mono { font-size: 12px; letter-spacing: .08em; white-space: nowrap; }
+.archive-relation:hover > span:last-child { text-decoration: underline; text-underline-offset: 4px; }
+.archive-feature .archive-relation { display: grid; gap: 4px; width: 100%; margin-top: 22px; padding: 16px 0 0; }
 .notes-index #reading-selection > .editorial-stack { margin-top: 28px; }
 .notes-index #reading-selection > .editorial-stack::before,.notes-index #reading-selection > .editorial-stack::after { display: none; }
 .notes-index #reading-selection > .editorial-stack summary { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 30px; padding: 22px 28px; min-height: 0; }
@@ -42,7 +42,7 @@
 .note-pair figure { margin: 0 0 24px; }
 .note-pair img { display: block; width: 100%; height: auto; aspect-ratio: 1.7; object-fit: contain; background: #17191b; border: 1px solid var(--line); }
 .note-pair figcaption { margin-top: 10px; color: var(--muted); font-size: 12px; line-height: 1.6; }
-.note-pair-copy > .mono { color: var(--gold-bright); font-size: 11px; margin-bottom: 14px; }
+.note-pair-copy > .mono { color: var(--gold-bright); font-size: 12px; margin-bottom: 14px; }
 .note-pair h3 { font: 900 clamp(27px,2.6vw,38px)/1.1 var(--sans); letter-spacing: -.025em; margin: 0 0 15px; }
 .note-pair h3 a { display: inline-block; min-height: 44px; }
 .note-pair-copy > p:not(.mono) { color: var(--secondary); font-size: 15px; line-height: 1.75; max-width: 55ch; }
@@ -97,6 +97,6 @@
   .archive-feature .note-feature-copy > p:not(.editorial-meta) { font-size: 15px; }
   .notes-index .notes-index-list .archive-entry { display: block; }
   .notes-index .notes-index-list .archive-entry > .editorial-meta { padding-top: 0; }
-  .notes-index .archive-specimen { display: grid; gap: 5px; }
-  .notes-index .collection-count { font-size: 11px; }
+  .notes-index .archive-relation { display: grid; gap: 5px; }
+  .notes-index .collection-count { font-size: 12px; }
 }

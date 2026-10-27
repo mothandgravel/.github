@@ -66,7 +66,7 @@ class ReadingOutputTests(unittest.TestCase):
         self.assertIn('SPECIMEN 006', html)
         self.assertIn('SPECIMEN 005', html)
         self.assertIn('synthetic tracks', html)
-        self.assertIn('not a navigational reference', html)
+        self.assertIn('no live voyage', html)
         self.assertNotIn('object-fit', html)
         for note in notes:
             output = row(note, './', specimens=specimens)
@@ -77,6 +77,10 @@ class ReadingOutputTests(unittest.TestCase):
             else:
                 self.assertNotIn('archive-specimen', output)
         self.assertNotIn('archive-specimen', row(next(n for n in notes if n['id'] == '015'), './', specimens=specimens))
+        investigation = row(next(n for n in notes if n['id'] == '015'), './', specimens=specimens)
+        self.assertIn('INVESTIGATION', investigation)
+        self.assertIn('../investigations/take-it-back/', Links(investigation).hrefs)
+        self.assertNotIn('Return to ', row(next(n for n in notes if n['id'] == '012'), './', specimens=specimens))
 
     def test_optional_choice_uses_first_relation_and_summary(self):
         case = self.cases['fallback']

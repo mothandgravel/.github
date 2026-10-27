@@ -25,7 +25,7 @@ def specimen_for(note, specimens):
     if not href:
         return None
     target = urlsplit(urljoin('https://mothandgravel.com/notes/', href))
-    if target.netloc != 'mothandgravel.com':
+    if target.scheme != 'https' or target.netloc != 'mothandgravel.com':
         return None
     for item in specimens:
         family = urlsplit(item['href'])
@@ -36,11 +36,18 @@ def specimen_for(note, specimens):
     return None
 
 
-def specimen_route(note, specimens):
+def archive_route(note, specimens):
     item = specimen_for(note, specimens)
-    if not item:
+    relation = note.get('specimen', {})
+    target = urlsplit(urljoin('https://mothandgravel.com/notes/', relation.get('href', '')))
+    if item:
+        kind, kicker = 'specimen', 'SPECIMEN ' + item['id']
+    elif target.scheme == 'https' and target.netloc == 'mothandgravel.com' and target.path.startswith('/investigations/'):
+        kind, kicker = 'investigation', 'INVESTIGATION'
+    else:
         return ''
-    return f'<a class="archive-specimen" href="{escape(note["specimen"]["href"], quote=True)}"><span class="mono">SPECIMEN {item["id"]}</span><span>{escape(note["specimen"]["label"])} <span aria-hidden="true">↗</span></span></a>'
+    label = re.sub(r'^Return to ', 'Open ', relation['label'])
+    return f'<a class="archive-relation archive-{kind}" href="{escape(relation["href"], quote=True)}"><span class="mono">{kicker}</span><span>{escape(label)} <span aria-hidden="true">↗</span></span></a>'
 
 
 def load_notes():
@@ -64,6 +71,12 @@ def load_notes():
             for key in ('small', 'large'):
                 assert re.fullmatch(r'[a-z0-9-]+\.webp', n['cover'][key])
                 assert (ROOT / 'docs/assets/notes' / n['cover'][key]).is_file()
+        if n.get('archivePreview'):
+            preview = n['archivePreview']
+            image = (ROOT / 'docs' / preview['image']).resolve()
+            assert image.is_relative_to((ROOT / 'docs/assets').resolve()) and image.is_file()
+            assert preview['alt'].strip() and preview['boundary'].strip()
+            assert preview['width'] > 0 and preview['height'] > 0
         date.fromisoformat(n["date"])
         assert n["title"] and n["summary"]
         assert n["visual"] in ("foundations", "themes", "forms")
@@ -101,17 +114,17 @@ def feature(n, prefix, heading):
 def row(n, prefix, heading=3, specimens=None):
     return f'''<article class="archive-entry notes-index-entry" data-note-id="{n['id']}">
       <div class="editorial-meta mono">{n['id']} / {escape(n['type'].upper())}</div>
-      <div><h{heading}><a href="{prefix}{n['slug']}">{escape(n['title'])} <span aria-hidden="true">↗</span></a></h{heading}><p>{escape(n['summary'])}</p><p class="archive-topics mono">{' · '.join(map(escape, n['topics']))}</p>{specimen_route(n, specimens) if specimens is not None else ''}</div>
+      <div><h{heading}><a href="{prefix}{n['slug']}">{escape(n['title'])} <span aria-hidden="true">↗</span></a></h{heading}><p>{escape(n['summary'])}</p><p class="archive-topics mono">{' · '.join(map(escape, n['topics']))}</p>{archive_route(n, specimens) if specimens is not None else ''}</div>
     </article>'''
 
 
-def stack(notes, prefix):
+def stack(notes, prefix, specimens=None):
     count = len(notes)
     if not count:
         return ''
     return f'''<details class="editorial-stack">
       <summary><span class="mono">RECENT WRITING / {count:02d}</span><strong>Lift the stack.</strong><span class="stack-hint">Open {count} {'note' if count == 1 else 'notes'} <span aria-hidden="true">↗</span></span></summary>
-      <div class="stack-entries">{''.join(row(n, prefix) for n in notes)}</div>
+      <div class="stack-entries">{''.join(row(n, prefix, specimens=specimens) for n in notes)}</div>
     </details>'''
 
 
@@ -122,7 +135,7 @@ def archive_feature(note, specimens):
         <h2><a href="./{note['slug']}">{escape(note['title'])}</a></h2>
         <p>{escape(note['summary'])}</p>
         <a class="editorial-link" href="./{note['slug']}">Read field note {note['id']} <span aria-hidden="true">↗</span></a>
-        {specimen_route(note, specimens)}
+        {archive_route(note, specimens)}
       </div>
       <div class="archive-feature-art">{visual(note, '../assets/notes/')}</div>
     </article>'''
@@ -136,8 +149,9 @@ def archive_connections(notes, featured, specimens):
         if not item or item['id'] in seen or not item.get('image'):
             continue
         seen.add(item['id'])
+        image = note.get('archivePreview', item)
         pairs.append(f'''<article class="note-pair">
-          <figure><img src="../{item['image']}" alt="{escape(item['alt'], quote=True)}" width="{item['width']}" height="{item['height']}" loading="lazy" decoding="async"><figcaption>{escape(item['boundary'])}</figcaption></figure>
+          <figure><img src="../{image['image']}" alt="{escape(image['alt'], quote=True)}" width="{image['width']}" height="{image['height']}" loading="lazy" decoding="async"><figcaption>{escape(image['boundary'])}</figcaption></figure>
           <div class="note-pair-copy"><p class="mono">FIELD NOTE {note['id']} / SPECIMEN {item['id']}</p>
           <h3><a href="./{note['slug']}">{escape(note['title'])} <span aria-hidden="true">↗</span></a></h3>
           <p>{escape(note['summary'])}</p>
@@ -246,7 +260,7 @@ def build(check=False):
     recent = [n for n in notes if n['id'] != featured['id']][:3]
     replace_slot(ROOT / 'docs/index.html', 'home-notes', '<div class="editorial-selection">' + feature(featured, './notes/', 3) + stack(recent, './notes/') + '</div>', check)
     index = ROOT / 'docs/notes/index.html'
-    replace_slot(index, 'collection-notes', archive_feature(featured, specimens) + stack(recent, './'), check)
+    replace_slot(index, 'collection-notes', archive_feature(featured, specimens) + stack(recent, './', specimens), check)
     replace_slot(index, 'notes-connections', archive_connections(notes, featured, specimens), check)
     replace_slot(index, 'archive', ''.join(row(n, './', specimens=specimens) for n in notes), check)
     replace_slot(index, 'note-count', f'<span>{len(notes)} published {"note" if len(notes) == 1 else "notes"}</span>', check)

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { queryNotes, specimenFor } from '../docs/assets/notes-model.mjs';
+import { queryNotes, specimenFor, relationshipFor } from '../docs/assets/notes-model.mjs';
 import { readFile } from 'node:fs/promises';
 
 const notes = Array.from({ length: 500 }, (_, i) => ({
@@ -46,4 +46,9 @@ test('specimen routes retain the actual destination and do not relabel investiga
   assert.equal(specimenFor({specimen:{href:'../specimens/coastal-watch-alike/'}}, specimens), null);
   assert.equal(specimenFor({specimen:{href:'../#contact'}}, specimens), null);
   assert.equal(specimenFor({}, specimens), null);
+  const relation = id => relationshipFor(catalog.find(n => n.id === id), specimens);
+  assert.equal(relation('012').label, 'Open Coastal watch');
+  assert.equal(relation('016').label, 'Open the recorded account');
+  assert.equal(relation('015').kind, 'investigation');
+  assert.equal(relation('015').kicker, 'INVESTIGATION');
 });

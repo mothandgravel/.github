@@ -10,6 +10,17 @@ export function specimenFor(note, specimens) {
   }) || null;
 }
 
+export function relationshipFor(note, specimens) {
+  if (!note.specimen?.href) return null;
+  const specimen = specimenFor(note, specimens);
+  const target = new URL(note.specimen.href, 'https://mothandgravel.com/notes/');
+  const label = note.specimen.label.replace(/^Return to /, 'Open ');
+  if (specimen) return { kind: 'specimen', kicker: `SPECIMEN ${specimen.id}`, label };
+  if (target.origin === 'https://mothandgravel.com' && target.pathname.startsWith('/investigations/'))
+    return { kind: 'investigation', kicker: 'INVESTIGATION', label };
+  return null;
+}
+
 export function queryNotes(notes, { q = '', topic = '', sort = 'newest', page = 1 } = {}) {
   const words = q.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   const filtered = notes.filter(n => (!topic || (n.topics || []).includes(topic)) && words.every(word =>

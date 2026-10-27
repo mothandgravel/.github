@@ -1,4 +1,4 @@
-import { queryNotes, PAGE_SIZE, specimenFor } from './notes-model.mjs';
+import { queryNotes, PAGE_SIZE, relationshipFor } from './notes-model.mjs';
 
 const form = document.querySelector('#archive-controls');
 if (form) {
@@ -51,14 +51,14 @@ if (form) {
         const arrow = element('span', ' ↗'); arrow.setAttribute('aria-hidden', 'true');
         link.append(arrow); heading.append(link);
         body.append(heading, element('p', n.summary), element('p', n.topics.join(' · '), 'archive-topics mono'));
-        const specimen = specimenFor(n, specimens);
-        if (specimen) {
-          const route = element('a', '', 'archive-specimen');
+        const relation = relationshipFor(n, specimens);
+        if (relation) {
+          const route = element('a', '', `archive-relation archive-${relation.kind}`);
           route.href = n.specimen.href;
-          const action = element('span', n.specimen.label);
+          const action = element('span', relation.label);
           const marker = element('span', ' ↗'); marker.setAttribute('aria-hidden', 'true');
           action.append(marker);
-          route.append(element('span', `SPECIMEN ${specimen.id}`, 'mono'), action);
+          route.append(element('span', relation.kicker, 'mono'), action);
           body.append(route);
         }
         article.append(meta, body); fragment.append(article);

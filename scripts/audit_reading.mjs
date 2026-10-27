@@ -9,7 +9,9 @@ const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 const notes = JSON.parse(await readFile('docs/assets/notes.json', 'utf8'));
 const specimens = JSON.parse(await readFile('docs/assets/specimens.json', 'utf8'));
-const { specimenFor } = await import('../docs/assets/notes-model.mjs');
+const { specimenFor, relationshipFor } = await import('../docs/assets/notes-model.mjs');
+const featured = notes.find(n => n.featured) || notes[0];
+const recentRelationships = [...notes].sort((a,b) => Number(b.id)-Number(a.id)).filter(n => n.id !== featured.id).slice(0,3).filter(note => relationshipFor(note,specimens)).length;
 const browser = await launchAuditBrowser({ headless: true });
 const results = [], failures = [];
 let assertions = 0;
@@ -50,6 +52,9 @@ try {
     await review(page, `reading-entrance-${width}-${theme}`, [1440, 390, 320].includes(width));
     assert(await page.locator('.archive-feature').evaluate(el => el.compareDocumentPosition(document.querySelector('#listen-archive')) & Node.DOCUMENT_POSITION_FOLLOWING), 'Writing precedes the listening edition');
     assert(await page.locator('.note-pair').count() === 2, 'Two distinct note-to-specimen introductions');
+    assert(await page.locator('.stack-entries .archive-relation').count() === recentRelationships, 'Recent stack retains each authored relationship');
+    assert(await page.locator('#archive-results [data-note-id="015"] .archive-investigation').count() === 1, 'Investigation keeps its own route and identity');
+    assert(!await page.locator('#archive-results .archive-relation').filter({hasText:'Return to '}).count(), 'Archive route labels address a first visit');
     for (const note of notes) {
       const route = page.locator(`#archive-results [data-note-id="${note.id}"] .archive-specimen`);
       const specimen = specimenFor(note, specimens);
