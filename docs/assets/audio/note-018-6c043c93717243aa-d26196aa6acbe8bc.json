@@ -1,0 +1,482 @@
+[
+  {
+    "start": 0.24,
+    "end": 7.0,
+    "text": "Moth and Gravel. Field Note 18.\nThe card says what the TV said.",
+    "speakers": []
+  },
+  {
+    "start": 7.6,
+    "end": 13.04,
+    "text": "An AI narrated edition of the\npublished note. Sofa Remote is a",
+    "speakers": []
+  },
+  {
+    "start": 13.04,
+    "end": 17.08,
+    "text": "phone remote for one kind of\ntelevision. At the top of its",
+    "speakers": []
+  },
+  {
+    "start": 17.08,
+    "end": 22.92,
+    "text": "screen sits a card. On or off,\nthe channel, the program and its",
+    "speakers": []
+  },
+  {
+    "start": 22.92,
+    "end": 29.04,
+    "text": "times, the volume. It looks like\na window onto the TV. It is not",
+    "speakers": []
+  },
+  {
+    "start": 29.08,
+    "end": 34.68,
+    "text": "One. The phone cannot see the\nTV. Everything on the card is",
+    "speakers": []
+  },
+  {
+    "start": 34.68,
+    "end": 39.04,
+    "text": "something the TV said when it\nwas last asked. That would",
+    "speakers": []
+  },
+  {
+    "start": 39.04,
+    "end": 43.04,
+    "text": "hardly matter if the phone were\nthe only remote in the room. It",
+    "speakers": []
+  },
+  {
+    "start": 43.04,
+    "end": 48.76,
+    "text": "never is. The TV has its own\nremote. A games console can take",
+    "speakers": []
+  },
+  {
+    "start": 48.76,
+    "end": 53.6,
+    "text": "the screen back over HDMI. A\nsound bar can move the volume.",
+    "speakers": []
+  },
+  {
+    "start": 54.24,
+    "end": 58.2,
+    "text": "Any of them can make the card\nwrong without telling the phone.",
+    "speakers": []
+  },
+  {
+    "start": 59.04,
+    "end": 64.52,
+    "text": "A claim with an age. The first\nversion asked about power only",
+    "speakers": []
+  },
+  {
+    "start": 64.52,
+    "end": 69.44,
+    "text": "when it believed the TV was off.\nOn the second day, testing on a",
+    "speakers": []
+  },
+  {
+    "start": 69.44,
+    "end": 74.16,
+    "text": "tablet, we switched the TV off\nwith its own remote. The app",
+    "speakers": []
+  },
+  {
+    "start": 74.16,
+    "end": 80.04,
+    "text": "kept showing it on. The fix was\nto keep asking. While the remote",
+    "speakers": []
+  },
+  {
+    "start": 80.04,
+    "end": 85.32,
+    "text": "is on screen, it asks the TV's\npower every 5 seconds in every",
+    "speakers": []
+  },
+  {
+    "start": 85.32,
+    "end": 89.36,
+    "text": "state and reconnects when the\nanswer differs from the card.",
+    "speakers": []
+  },
+  {
+    "start": 90.28,
+    "end": 94.64,
+    "text": "Switching the TV on and off with\nits own remote then showed up in",
+    "speakers": []
+  },
+  {
+    "start": 94.64,
+    "end": 99.6,
+    "text": "the app within about 4 seconds.\nThe program line has the same",
+    "speakers": []
+  },
+  {
+    "start": 99.6,
+    "end": 104.36,
+    "text": "problem in a quieter form.\nBroadcast data often switches",
+    "speakers": []
+  },
+  {
+    "start": 104.36,
+    "end": 109.64,
+    "text": "late, so the TV can report a\nprogram after it has ended. The",
+    "speakers": []
+  },
+  {
+    "start": 109.64,
+    "end": 114.28,
+    "text": "card asks again just after the\nprogram should end, and if the",
+    "speakers": []
+  },
+  {
+    "start": 114.28,
+    "end": 119.24,
+    "text": "old one is still reported, every\n20 seconds for up to 15 minutes.",
+    "speakers": []
+  },
+  {
+    "start": 119.96,
+    "end": 124.12,
+    "text": "None of this makes the card\ncurrent. It keeps the card's age",
+    "speakers": []
+  },
+  {
+    "start": 124.12,
+    "end": 129.36,
+    "text": "short and its errors temporary.\n5 seconds is a choice between a",
+    "speakers": []
+  },
+  {
+    "start": 129.36,
+    "end": 133.92,
+    "text": "phone that asks too often and a\npicture that stays wrong for too",
+    "speakers": []
+  },
+  {
+    "start": 133.92,
+    "end": 137.8,
+    "text": "long. Can't reach is a\nconclusion.",
+    "speakers": []
+  },
+  {
+    "start": 138.84,
+    "end": 143.76,
+    "text": "Silence from the TV is harder to\nread. The first request after",
+    "speakers": []
+  },
+  {
+    "start": 143.76,
+    "end": 148.0,
+    "text": "the app opens can fail simply\nbecause the phone's Wi-Fi is",
+    "speakers": []
+  },
+  {
+    "start": 148.0,
+    "end": 153.28,
+    "text": "still waking up. So before the\napp says it cannot reach the TV,",
+    "speakers": []
+  },
+  {
+    "start": 153.48,
+    "end": 159.24,
+    "text": "it asks once more, 2 seconds\nlater. When it does say so, it",
+    "speakers": []
+  },
+  {
+    "start": 159.24,
+    "end": 163.72,
+    "text": "names only a cause it can see\nfrom the phone. These are its",
+    "speakers": []
+  },
+  {
+    "start": 163.72,
+    "end": 169.44,
+    "text": "words with the TV's name where\nwe write the TV. With can't",
+    "speakers": []
+  },
+  {
+    "start": 169.44,
+    "end": 174.6,
+    "text": "reach the TV, this device isn't\nconnected to a network. Can't",
+    "speakers": []
+  },
+  {
+    "start": 174.6,
+    "end": 179.72,
+    "text": "reach the TV, this device is on\nmobile data. Connect it to your",
+    "speakers": []
+  },
+  {
+    "start": 179.72,
+    "end": 186.56,
+    "text": "home Wi-Fi. Can't reach the TV,\na VPN is on. Turn it off or",
+    "speakers": []
+  },
+  {
+    "start": 186.56,
+    "end": 192.68,
+    "text": "allow local network access in\nthe VPN app. Can't reach the TV,",
+    "speakers": []
+  },
+  {
+    "start": 193.12,
+    "end": 196.8,
+    "text": "check that it's plugged in and\non the same network as this",
+    "speakers": []
+  },
+  {
+    "start": 196.8,
+    "end": 201.64,
+    "text": "device. The app does not guess\nthat the TV is broken or",
+    "speakers": []
+  },
+  {
+    "start": 201.64,
+    "end": 207.24,
+    "text": "unplugged at the wall. It cannot\nsee either. When no cause on the",
+    "speakers": []
+  },
+  {
+    "start": 207.24,
+    "end": 212.04,
+    "text": "phone explains the silence, the\nlast message says what to check,",
+    "speakers": []
+  },
+  {
+    "start": 212.28,
+    "end": 219.32,
+    "text": "not what happened. Reads retry,\nkeypresses never do. Asking",
+    "speakers": []
+  },
+  {
+    "start": 219.32,
+    "end": 225.12,
+    "text": "twice is safe, pressing twice is\nnot. The project's own rules put",
+    "speakers": []
+  },
+  {
+    "start": 225.12,
+    "end": 231.44,
+    "text": "it plainly. Never retry a failed\nkeypress automatically. A read",
+    "speakers": []
+  },
+  {
+    "start": 231.44,
+    "end": 236.0,
+    "text": "that fails can be asked again. A\nkey that may already have",
+    "speakers": []
+  },
+  {
+    "start": 236.0,
+    "end": 240.64,
+    "text": "reached the TV cannot be sent\nagain without the risk of doing",
+    "speakers": []
+  },
+  {
+    "start": 240.64,
+    "end": 246.48,
+    "text": "it twice. Power is where that\nbites. The TV takes seconds to",
+    "speakers": []
+  },
+  {
+    "start": 246.48,
+    "end": 251.32,
+    "text": "switch, so a second tap on power\nsoon after the first is almost",
+    "speakers": []
+  },
+  {
+    "start": 251.32,
+    "end": 256.2,
+    "text": "always a double tap or an\nimpatient retry. Sending it",
+    "speakers": []
+  },
+  {
+    "start": 256.2,
+    "end": 260.4,
+    "text": "would switch the TV straight\nback. The remote lets one power",
+    "speakers": []
+  },
+  {
+    "start": 260.4,
+    "end": 264.56,
+    "text": "toggle through every 4 seconds\nand ignores the rest.",
+    "speakers": []
+  },
+  {
+    "start": 265.64,
+    "end": 270.12,
+    "text": "Ad break follows the same rule\nfrom the other side. One tap",
+    "speakers": []
+  },
+  {
+    "start": 270.16,
+    "end": 274.76,
+    "text": "mutes the TV for 3 minutes and\nbrings the sound back by itself.",
+    "speakers": []
+  },
+  {
+    "start": 275.04,
+    "end": 279.76,
+    "text": "It never toggles. It unmutes\nonly a mute it made and still",
+    "speakers": []
+  },
+  {
+    "start": 279.76,
+    "end": 285.12,
+    "text": "holds. A mute by hand, an unmute\nwith the TV's own remote, or a",
+    "speakers": []
+  },
+  {
+    "start": 285.12,
+    "end": 288.52,
+    "text": "phone call that takes the mute\nover is left alone.",
+    "speakers": []
+  },
+  {
+    "start": 290.24,
+    "end": 297.24,
+    "text": "2 days, 1 TV. The first commit\nwas on the 25th of October. Most",
+    "speakers": []
+  },
+  {
+    "start": 297.24,
+    "end": 301.44,
+    "text": "of what this note describes was\nfixed on the 26th on real",
+    "speakers": []
+  },
+  {
+    "start": 301.44,
+    "end": 305.76,
+    "text": "hardware after the code had\nalready passed its tests against",
+    "speakers": []
+  },
+  {
+    "start": 305.76,
+    "end": 310.72,
+    "text": "simulated TVs. Each of these\nfaults appeared only with a real",
+    "speakers": []
+  },
+  {
+    "start": 310.72,
+    "end": 315.76,
+    "text": "TV in the room. The power state\nwent stale after the TV's own",
+    "speakers": []
+  },
+  {
+    "start": 315.76,
+    "end": 320.84,
+    "text": "remote was used. Without exact\nalarms, Android ended an ad",
+    "speakers": []
+  },
+  {
+    "start": 320.84,
+    "end": 324.76,
+    "text": "break about 2 minutes late, so\nthe app now says so when a break",
+    "speakers": []
+  },
+  {
+    "start": 324.76,
+    "end": 329.32,
+    "text": "starts. Every install made its\nfast key certificate with the",
+    "speakers": []
+  },
+  {
+    "start": 329.32,
+    "end": 333.72,
+    "text": "same subject and serial number,\nso pairing a tablet quietly",
+    "speakers": []
+  },
+  {
+    "start": 333.72,
+    "end": 338.48,
+    "text": "unpaired the phone. A scene\nswitched channel and a games",
+    "speakers": []
+  },
+  {
+    "start": 338.48,
+    "end": 342.8,
+    "text": "console took the screen back a\nmoment later. Scenes now look",
+    "speakers": []
+  },
+  {
+    "start": 342.8,
+    "end": 347.72,
+    "text": "again 4 seconds later and switch\nonce more. The tests were",
+    "speakers": []
+  },
+  {
+    "start": 347.72,
+    "end": 350.36,
+    "text": "useful. They could not have\nfound these.",
+    "speakers": []
+  },
+  {
+    "start": 351.64,
+    "end": 358.12,
+    "text": "Study scope, 1 TV, 2 days. What\nthis remote has been tried on.",
+    "speakers": []
+  },
+  {
+    "start": 358.76,
+    "end": 363.08,
+    "text": "Sofa Remote is our own Android\napp in preparation for Google",
+    "speakers": []
+  },
+  {
+    "start": 363.08,
+    "end": 367.68,
+    "text": "Play. It has not been released.\nIt was built and tried over 2",
+    "speakers": []
+  },
+  {
+    "start": 367.68,
+    "end": 374.4,
+    "text": "days with 1 TV, a 2018 Sony\nBravia running Android TV, plus",
+    "speakers": []
+  },
+  {
+    "start": 374.44,
+    "end": 379.12,
+    "text": "a phone and a tablet. Other\nBravia models with IP control",
+    "speakers": []
+  },
+  {
+    "start": 379.12,
+    "end": 383.44,
+    "text": "should work, but are unverified.\nThe timings come from the",
+    "speakers": []
+  },
+  {
+    "start": 383.44,
+    "end": 388.36,
+    "text": "project commit history and its\nown testing on that TV, not from",
+    "speakers": []
+  },
+  {
+    "start": 388.36,
+    "end": 394.96,
+    "text": "a measured study. Sony, Bravia,\nAndroid TV, and PlayStation are",
+    "speakers": []
+  },
+  {
+    "start": 394.96,
+    "end": 399.0,
+    "text": "named only as the hardware it\nworks with. The app is not",
+    "speakers": []
+  },
+  {
+    "start": 399.0,
+    "end": 403.4,
+    "text": "affiliated with them. You have\nbeen listening to Moth and",
+    "speakers": []
+  },
+  {
+    "start": 403.4,
+    "end": 408.36,
+    "text": "Gravel Field Notes. The written\nedition is at mothandgravel.com.",
+    "speakers": []
+  }
+]

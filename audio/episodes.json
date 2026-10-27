@@ -479,5 +479,30 @@
       "kind": "note",
       "note_id": "017"
     }
+  },
+  {
+    "id": "note-018",
+    "title": "The card says what the TV said.",
+    "format": "narration",
+    "script": "scripts/note-018.txt",
+    "language": "en-US",
+    "notes": [
+      "018"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "018": "bda2bf9e8c5a23bf618a178033960401fbc3e5fa37a826b5936a6e30b98eccff"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "018"
+    }
   }
 ]

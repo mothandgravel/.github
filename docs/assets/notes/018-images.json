@@ -1,0 +1,70 @@
+{
+  "note": "018",
+  "captures": [
+    {
+      "files": [
+        "018-remote-keys-1080.webp",
+        "018-remote-keys-540.webp"
+      ],
+      "sha256": {
+        "018-remote-keys-1080.webp": "15cf98061fd2270e228883625506d0a71298063def6711e8c6f5abf320a64019",
+        "018-remote-keys-540.webp": "a4495f6609d40b150ab1aaf6f5138bbcfc3c77ff45162807e88ca4afd3d9f7f3"
+      },
+      "repository": "sohva-remote (private repository)",
+      "path": "site/img/remote.png",
+      "blob_sha": "4cdfb955d776ab077786ba7e33b16ff2e1e13096",
+      "source_sha256": "9f118e8adb2b1dbc44a7bb3457e85f7e90a8a1cb79706737fb373087eefe4ddd",
+      "source_dimensions": [
+        1080,
+        2520
+      ],
+      "commit": "5b7ca146b8e1580eb585b18f1b1387e9dedae793",
+      "derivation": "cropped to 1080 x 1480 from y 885 (below the status bar, the now-playing card and the app shortcut row), then encoded to WebP at 1080 and 540 wide; no other change",
+      "kind": "the app's own screenshot of its remote screen",
+      "review": "crop checked at full resolution: no broadcaster, programme, TV, input-device, Wi-Fi or app-brand names, no status bar, no organisation name"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "sohva-remote (private repository)",
+      "head": "acbd5ba415f25af5d8d11a8333032299fd45564c",
+      "commits": {
+        "3115074": "power asked every 5 s in every state; on/off by the TV's own remote shown within about 4 s; ad break about 2 min late without exact alarms",
+        "5b18907": "power asked once more, 2 s later, before Can't reach",
+        "a8cf355": "programme re-read every 20 s for up to 15 min when the TV reports it late",
+        "6d5a656": "card shows the programme on now and asks again after it ends",
+        "b675dab": "ad break unmutes only a mute it made and still holds",
+        "f5408df": "per-install fast-keys certificate after a shared one unpaired other devices",
+        "1ce4a6b": "scenes check 4 s later and switch again when HDMI-CEC takes the screen"
+      }
+    },
+    {
+      "repository": "sohva-remote (private repository)",
+      "path": "AGENTS.md",
+      "blob_sha": "4fe53365bc8894690f473ffc0c619f019cdbd5cf",
+      "scope": "protocol rules: reads may retry, never retry a failed key press automatically"
+    },
+    {
+      "repository": "sohva-remote (private repository)",
+      "path": "app/src/main/res/values/strings.xml",
+      "blob_sha": "1f74375d87d7244a6d45baf6b14da990a50056d4",
+      "scope": "state_unreachable, state_unreachable_offline, state_unreachable_mobile, state_unreachable_vpn; quoted with the TV-name placeholder written as 'the TV'"
+    },
+    {
+      "repository": "sohva-remote (private repository)",
+      "path": "app/src/main/java/.../data/PowerGuard.kt",
+      "blob_sha": "d3acdfb4d61ca8c3202896d37ff388bf2fd515e1",
+      "scope": "one power toggle per 4 s window"
+    },
+    {
+      "repository": "sohva-remote (private repository)",
+      "path": "app/src/main/java/.../data/AdBreak.kt",
+      "blob_sha": "8e28b4b40d6147beba5ba904b210ee5d83ae037e",
+      "scope": "ad break mute and restore"
+    }
+  ],
+  "source_readback_date": "2026-10-27",
+  "release_status": "in preparation for Google Play; not released",
+  "tested_on": "one TV (a 2018 Sony Bravia, Android TV), a phone and a tablet, over two days",
+  "not_established": "No measured latency study; other TV models unverified; no Can't reach screenshot exists, so its messages are quoted from strings.xml, not captured; not affiliated with Sony."
+}

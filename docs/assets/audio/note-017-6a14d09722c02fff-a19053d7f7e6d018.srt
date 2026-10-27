@@ -1,0 +1,1382 @@
+1
+00:00:00,000 --> 00:00:06,520
+Moth and Gravel. Field Note 17.
+The Grid is Shared. An AI
+
+2
+00:00:06,520 --> 00:00:11,160
+narrated edition of the
+published note. A cattle, a hot
+
+3
+00:00:11,160 --> 00:00:15,880
+water tank, a room of servers.
+Very different work carried
+
+4
+00:00:15,880 --> 00:00:19,760
+through the same electricity
+system. Finland's appeal to a
+
+5
+00:00:19,760 --> 00:00:24,640
+data center developer is easy to
+put on a slide. A cool climate,
+
+6
+00:00:24,880 --> 00:00:29,480
+clean electricity, room to
+build. At home, the question
+
+7
+00:00:29,480 --> 00:00:34,040
+arrives in smaller print. The
+price on a contract renewal. The
+
+8
+00:00:34,040 --> 00:00:38,400
+network charge. The housing
+company's heating budget. We
+
+9
+00:00:38,400 --> 00:00:42,760
+wanted to follow the connection
+that far. The resulting Finnish
+
+10
+00:00:42,760 --> 00:00:47,160
+account opens three records.
+Household electricity prices,
+
+11
+00:00:47,520 --> 00:00:52,760
+national power flows, and heat
+delivered in Mansala. Each keeps
+
+12
+00:00:52,760 --> 00:00:56,800
+its own date and boundary. Put
+them beside one another and the
+
+13
+00:00:56,800 --> 00:01:00,600
+public question becomes more
+precise. Who pays for the
+
+14
+00:01:00,600 --> 00:01:05,360
+connection? Who can change their
+demand? And who receives the
+
+15
+00:01:05,360 --> 00:01:10,800
+useful heat? The bill has three
+parts. The price discussed in an
+
+16
+00:01:10,800 --> 00:01:14,400
+electricity market headline is
+only part of what a household
+
+17
+00:01:14,400 --> 00:01:19,280
+pays. There is the electricity
+sold, the network service, and
+
+18
+00:01:19,280 --> 00:01:24,240
+tax. A resident can choose an
+electricity seller. The local
+
+19
+00:01:24,240 --> 00:01:29,040
+distribution network comes with
+the address. KKV's consumer
+
+20
+00:01:29,080 --> 00:01:33,960
+guidance makes that distinction
+explicit. Our first account uses
+
+21
+00:01:33,960 --> 00:01:40,880
+Statistics Finland's table 13
+RB. Take January 2024, consumer
+
+22
+00:01:40,880 --> 00:01:49,040
+band C for annual use between
+2500 and 4999 kilowatt hours.
+
+23
+00:01:49,680 --> 00:01:54,120
+Choose an illustrative 3000
+kilowatt hours a year and hold
+
+24
+00:01:54,120 --> 00:01:59,720
+that month's published rates
+constant. January 2024 rates.
+
+25
+00:02:00,440 --> 00:02:07,560
+Band C. An assumed 3000 kilowatt
+hour year. Energy excluding tax.
+
+26
+00:02:08,000 --> 00:02:15,600
+10.880 cents per kilowatt hour.
+Annualized, 326 Euros and 40
+
+27
+00:02:15,600 --> 00:02:23,160
+cents. Network excluding tax.
+7.532 cents per kilowatt hour.
+
+28
+00:02:23,760 --> 00:02:30,920
+Annualized, 225 Euros and 96
+cents. Tax including excise and
+
+29
+00:02:30,920 --> 00:02:39,160
+VAT. 7.213 cents per kilowatt
+hour. Annualized, 216 Euros and
+
+30
+00:02:39,160 --> 00:02:42,720
+39 cents. Published total
+including
+
+31
+00:02:42,720 --> 00:02:51,800
+tax.
+
+32
+00:02:51,800 --> 00:02:57,880
+cents. The arithmetic is annual
+KWH multiplied by cents per
+
+33
+00:02:57,880 --> 00:03:03,800
+kilowatt hour divided by 100.
+The already included tax, we add
+
+34
+00:03:03,800 --> 00:03:08,320
+neither another layer of VAT nor
+separate fixed charges to this
+
+35
+00:03:08,320 --> 00:03:15,000
+published unit price statistic.
+768 Euros and 75 cents is an
+
+36
+00:03:15,000 --> 00:03:19,720
+illustration at one month's
+national consumer band rates. It
+
+37
+00:03:19,720 --> 00:03:23,840
+is neither a measured household
+bill nor the cost of consuming
+
+38
+00:03:23,840 --> 00:03:28,360
+electricity throughout 2024 at
+the prices that actually
+
+39
+00:03:28,360 --> 00:03:32,760
+occurred. The distinction
+matters before we ask a future
+
+40
+00:03:32,760 --> 00:03:37,400
+price to explain anything. A
+simple sensitivity is useful
+
+41
+00:03:37,400 --> 00:03:43,040
+here. If a VAT inclusive retail
+energy rate were 1 cent per
+
+42
+00:03:43,040 --> 00:03:47,760
+kilowatt hour higher, a home
+using 20,000 kilowatt hours
+
+43
+00:03:47,960 --> 00:03:52,680
+would pay 200 Euros more over a
+year with use and every other
+
+44
+00:03:52,680 --> 00:03:57,600
+charge held constant. At 3000
+kilowatt hours, the difference
+
+45
+00:03:57,600 --> 00:04:02,320
+would be 30 Euros. These are
+conditional multiplications. We
+
+46
+00:04:02,320 --> 00:04:06,640
+have supplied no evidence that
+data centers cause that 1 cent
+
+47
+00:04:06,640 --> 00:04:12,160
+change. Additional demand has to
+meet electricity available at
+
+48
+00:04:12,160 --> 00:04:17,160
+the same time and through a
+network able to carry it. Its
+
+49
+00:04:17,160 --> 00:04:22,040
+effect on prices depends on the
+supply response, whether
+
+50
+00:04:22,360 --> 00:04:29,080
+imports, outages, location, and
+the load's ability to move. New
+
+51
+00:04:29,080 --> 00:04:34,040
+demand can support new
+generation investment. A promise
+
+52
+00:04:34,040 --> 00:04:39,760
+of future generation still needs
+a commissioning date. Fingrid
+
+53
+00:04:39,800 --> 00:04:45,360
+reported in August 2026 that
+data center projects with signed
+
+54
+00:04:45,360 --> 00:04:50,000
+connection agreements had a
+planned final combined capacity
+
+55
+00:04:50,200 --> 00:04:54,720
+of nearly 5 gigawatts including
+distribution network
+
+56
+00:04:54,720 --> 00:04:59,880
+connections. That is a project
+capacity figure. It does not
+
+57
+00:04:59,880 --> 00:05:05,400
+mean 5 gigawatts was already
+drawing power continuously. To
+
+58
+00:05:05,400 --> 00:05:10,440
+see why the distinction matters,
+assume a whole facility load of
+
+59
+00:05:10,440 --> 00:05:17,160
+100 megawatts operating
+constantly for an ordinary 8760
+
+60
+00:05:17,160 --> 00:05:26,320
+hour year. It consumes 876,000
+megawatt hours or 0.876 terawatt
+
+61
+00:05:26,320 --> 00:05:32,400
+hours. This is arithmetic, not a
+surveyed Finnish facility. A
+
+62
+00:05:32,400 --> 00:05:37,680
+nameplate, an annual energy
+total, and the demand on a cold
+
+63
+00:05:37,680 --> 00:05:42,400
+evening are three different
+descriptions. The Ministry of
+
+64
+00:05:42,400 --> 00:05:46,480
+Economic Affairs and
+Employment's October 2026
+
+65
+00:05:46,520 --> 00:05:51,040
+account acknowledges both the
+opportunity for new production
+
+66
+00:05:51,240 --> 00:05:56,600
+and regional network scarcity.
+National abundance does not
+
+67
+00:05:56,600 --> 00:06:01,920
+establish room at a particular
+substation. Our grid view
+
+68
+00:06:01,960 --> 00:06:09,440
+replays two recorded weeks, one
+in January and one in July 2024
+
+69
+00:06:09,720 --> 00:06:15,760
+from Energiateollisuus hourly
+data. Consumption reconciles
+
+70
+00:06:15,760 --> 00:06:22,000
+with domestic production plus
+imports and signed exports. Wind
+
+71
+00:06:22,000 --> 00:06:29,080
+is already inside production.
+The source clock stays at UTC +2
+
+72
+00:06:29,360 --> 00:06:35,160
+including July. Adding a chosen
+facility draw makes an extra
+
+73
+00:06:35,160 --> 00:06:40,080
+requirement visible beside the
+historical hour. We hold
+
+74
+00:06:40,080 --> 00:06:45,320
+historical supply fixed. The
+dashed line cannot tell us which
+
+75
+00:06:45,320 --> 00:06:49,720
+plant would respond, what the
+market would charge, or whether
+
+76
+00:06:49,720 --> 00:06:54,360
+a connection would be permitted.
+Exporting electricity in a
+
+77
+00:06:54,360 --> 00:06:59,600
+recorded hour is also no proof
+of spare network capacity at a
+
+78
+00:06:59,600 --> 00:07:05,240
+proposed site. This is where an
+annual renewable energy claim
+
+79
+00:07:05,240 --> 00:07:09,400
+needs another question. What
+happens in the hours the
+
+80
+00:07:09,400 --> 00:07:14,960
+contracted generation is absent?
+A useful answer specifies
+
+81
+00:07:14,960 --> 00:07:20,560
+timing, balancing, transmission,
+and the demand that can actually
+
+82
+00:07:20,560 --> 00:07:26,800
+be deferred. Flexibility belongs
+to someone. Households will
+
+83
+00:07:26,800 --> 00:07:32,320
+adjust can sound painless at the
+scale of a national chart. At
+
+84
+00:07:32,320 --> 00:07:36,920
+home, it means deciding when the
+water heats, whether the car can
+
+85
+00:07:36,920 --> 00:07:41,120
+wait, whether a room can be
+cooler. A home with a
+
+86
+00:07:41,120 --> 00:07:45,800
+controllable heat pump, an
+insulated envelope, and money
+
+87
+00:07:45,800 --> 00:07:50,040
+for improvements has options
+that a tenant may be unable to
+
+88
+00:07:50,040 --> 00:07:55,560
+buy or install. A low bill
+achieved by giving something up
+
+89
+00:07:55,640 --> 00:07:59,720
+deserves a different label from
+the same bill achieved by better
+
+90
+00:07:59,720 --> 00:08:05,080
+equipment. There is Finnish
+research on this uneven room to
+
+91
+00:08:05,080 --> 00:08:11,400
+move. Lassi Alvik, Tomas
+KariAho, Matti Lisk
+
+92
+00:08:12,720 --> 00:08:18,840
+and Ivo Vevilainens 2025 working
+paper on the European energy
+
+93
+00:08:18,840 --> 00:08:23,840
+crisis uses the timing of
+expiring two year fixed price
+
+94
+00:08:23,840 --> 00:08:28,760
+contracts to study Finnish
+households during 2022.
+
+95
+00:08:29,920 --> 00:08:33,760
+The authors find that lower
+income households have fewer
+
+96
+00:08:33,760 --> 00:08:38,560
+ways to adjust with greater
+financial distress and cuts in
+
+97
+00:08:38,560 --> 00:08:42,560
+other spending. This is a
+working paper about a particular
+
+98
+00:08:42,560 --> 00:08:45,920
+price shock. It does not
+estimate the future household
+
+99
+00:08:45,920 --> 00:08:49,560
+effect of Finnish data centers.
+It does give us a reason to
+
+100
+00:08:49,560 --> 00:08:53,400
+distrust the idea of one
+representative household with an
+
+101
+00:08:53,400 --> 00:08:58,360
+unlimited ability to shift
+demand. A fixed price contract
+
+102
+00:08:58,400 --> 00:09:02,680
+can delay exposure to energy
+price changes until renewal. A
+
+103
+00:09:02,680 --> 00:09:06,440
+spot priced contract exposes the
+resident sooner to the timing of
+
+104
+00:09:06,440 --> 00:09:11,120
+use. Neither makes the network
+charge disappear. The same
+
+105
+00:09:11,120 --> 00:09:14,440
+wholesale price development can
+therefore reach two neighbors in
+
+106
+00:09:14,440 --> 00:09:18,720
+different months with different
+consequences. For a large new
+
+107
+00:09:18,720 --> 00:09:21,720
+consumer, we would want
+flexibility described just as
+
+108
+00:09:21,720 --> 00:09:26,840
+concretely. How many megawatts
+can stop? For how long? With how
+
+109
+00:09:26,840 --> 00:09:31,160
+much notice? What happens when
+the work resumes? Who verifies
+
+110
+00:09:31,160 --> 00:09:35,800
+delivery? An interruptible
+commitment has public value only
+
+111
+00:09:35,800 --> 00:09:39,720
+to the extent that it can be
+used when the system needs it. A
+
+112
+00:09:39,720 --> 00:09:43,640
+demonstration on an easy day
+leaves that question open.
+
+113
+00:09:45,440 --> 00:09:49,400
+The cable has an account too. A
+new connection can bring
+
+114
+00:09:49,400 --> 00:09:53,240
+investment, work, and demand for
+electricity that helps finance
+
+115
+00:09:53,240 --> 00:09:57,960
+production. It can also require
+reinforcement. The household
+
+116
+00:09:57,960 --> 00:10:01,880
+question is how the costs and
+benefits are divided across the
+
+117
+00:10:01,880 --> 00:10:05,600
+connection charge, network
+tariffs, the developer, and any
+
+118
+00:10:05,600 --> 00:10:10,000
+public support. We cannot infer
+that division from the size of a
+
+119
+00:10:10,000 --> 00:10:13,520
+building or from a national
+consumption trace. It needs the
+
+120
+00:10:13,520 --> 00:10:17,280
+applicable connection terms, the
+reinforcement plan, and the
+
+121
+00:10:17,280 --> 00:10:21,200
+regulated network account. A
+claim that households will pay
+
+122
+00:10:21,200 --> 00:10:24,400
+for everything is as incomplete
+as a claim that they will pay
+
+123
+00:10:24,400 --> 00:10:29,960
+for nothing. According to KKV,
+the energy authority supervises
+
+124
+00:10:29,960 --> 00:10:34,200
+network pricing as a whole over
+four year periods using a
+
+125
+00:10:34,200 --> 00:10:38,640
+reasonable return framework.
+This is not a cap on each
+
+126
+00:10:38,640 --> 00:10:43,000
+individual tariff. The existence
+of supervision does not remove
+
+127
+00:10:43,000 --> 00:10:46,680
+the need to inspect how a
+particular expansion is funded.
+
+128
+00:10:47,000 --> 00:10:50,320
+For a municipality considering a
+project, we would put the dates
+
+129
+00:10:50,320 --> 00:10:55,160
+beside the money. When does the
+facility start using power? When
+
+130
+00:10:55,160 --> 00:10:55,240
+is the reinforcement available?
+Who bears a delay? Which
+
+131
+00:10:55,240 --> 00:10:58,960
+25.625 cents per kilowatt hour.
+Annualized, 768 Euros and 75
+
+132
+00:10:59,920 --> 00:11:03,680
+spending is committed if the
+campus is built in phases or
+
+133
+00:11:03,680 --> 00:11:07,520
+remains smaller than announced?
+Those are terms a resident
+
+134
+00:11:07,520 --> 00:11:10,880
+should be able to understand
+without becoming an electricity
+
+135
+00:11:10,880 --> 00:11:15,120
+market analyst. They are also
+terms a project can publish
+
+136
+00:11:15,160 --> 00:11:18,480
+before asking its neighbors to
+trust a distant benefit.
+
+137
+00:11:20,080 --> 00:11:24,560
+Follow the heat to a building.
+Heat recovery is the most
+
+138
+00:11:24,560 --> 00:11:28,800
+tangible part of the promise.
+Somewhere, a radiator becomes
+
+139
+00:11:28,800 --> 00:11:33,400
+warm. To follow that promise, we
+need a pipe, an operating
+
+140
+00:11:33,400 --> 00:11:38,440
+system, and a measured delivery.
+The 2024 district heating
+
+141
+00:11:38,440 --> 00:11:43,160
+statistics give us a reported
+Nivosa Vesi Yalampo account for
+
+142
+00:11:43,160 --> 00:11:44,960
+Mansala covering several
+
+143
+00:11:44,960 --> 00:11:50,800
+networks. On the supply side,
+31.5 gigawatt hours of other net
+
+144
+00:11:50,800 --> 00:11:55,120
+heat production and 22.7
+gigawatt hours in a combined
+
+145
+00:11:55,120 --> 00:12:01,040
+recovery heat pump category make
+54.2 gigawatt hours. On the
+
+146
+00:12:01,040 --> 00:12:07,040
+other side, Nivosa Mansala 2024.
+Thermal energy in gigawatt
+
+147
+00:12:07,040 --> 00:12:13,280
+hours. Residential buildings,
+16.0 gigawatt hours. Industry,
+
+148
+00:12:13,680 --> 00:12:20,600
+0.4 gigawatt hours. Other
+customers, 32.1 gigawatt hours.
+
+149
+00:12:20,960 --> 00:12:27,040
+All customer use, 48.5 gigawatt
+hours. Network losses and meter
+
+150
+00:12:27,040 --> 00:12:33,680
+differences, 5.7. Total supplied
+heat, 54.2 gigawatt hours.
+
+151
+00:12:34,720 --> 00:12:45,360
+16.0 + 0.4 + 32.1 = 48.5. Add
+5.7 and the account returns to
+
+152
+00:12:45,360 --> 00:12:50,920
+54.2. The 115 residential
+customers reported alongside
+
+153
+00:12:50,920 --> 00:12:55,880
+these figures are building
+accounts, not 115 households.
+
+154
+00:12:57,360 --> 00:13:01,720
+The recovery category does not
+isolate pure server waste heat.
+
+155
+00:13:02,320 --> 00:13:05,480
+Nor does the table allocate
+particular heat sources to
+
+156
+00:13:05,480 --> 00:13:10,440
+particular homes. We can say
+that residential buildings used
+
+157
+00:13:10,440 --> 00:13:15,680
+16.0 gigawatt hours. We cannot
+say that data center heat
+
+158
+00:13:15,720 --> 00:13:19,720
+supplied that entire amount. A
+heat pump adds its own
+
+159
+00:13:19,720 --> 00:13:23,920
+electricity to the recovered
+heat. Distribution then has its
+
+160
+00:13:23,920 --> 00:13:27,880
+own losses. Thermal kilowatt
+hours delivered and electrical
+
+161
+00:13:27,880 --> 00:13:31,560
+kilowatt hours consumed must
+keep their separate meters.
+
+162
+00:13:32,160 --> 00:13:35,520
+Subtracting one from the other
+would conceal the system we are
+
+163
+00:13:35,520 --> 00:13:40,840
+trying to understand. There is a
+seasonal question too. Useful
+
+164
+00:13:40,840 --> 00:13:44,640
+heat depends on temperature,
+demand, and the alternative
+
+165
+00:13:44,640 --> 00:13:48,800
+source it displaces. A
+year-round server load does not
+
+166
+00:13:48,800 --> 00:13:53,280
+come with year-round winter
+heating demand. Storage, hot
+
+167
+00:13:53,280 --> 00:13:57,600
+water, and other users may help,
+but their capacity and operation
+
+168
+00:13:57,600 --> 00:14:02,640
+need evidence of their own. A
+percentage needs an address. The
+
+169
+00:14:02,640 --> 00:14:08,680
+Nivosa report for 2025 records
+company-wide heat sales of 43.1
+
+170
+00:14:08,680 --> 00:14:12,880
+gigawatt hours. A separate
+origin disclosure gives
+
+171
+00:14:12,880 --> 00:14:17,600
+recovered surplus heat a 41%
+share in the central Mansala
+
+172
+00:14:17,600 --> 00:14:22,520
+network that year. The
+boundaries differ. Multiplying
+
+173
+00:14:22,520 --> 00:14:28,080
+43.1 by 41% would produce a neat
+number with no matching
+
+174
+00:14:28,080 --> 00:14:31,840
+published account bill behind
+it. We leave that multiplication
+
+175
+00:14:31,840 --> 00:14:36,880
+undone. Commissioning language
+needs the same care. Fortum's
+
+176
+00:14:36,880 --> 00:14:41,440
+May 2026 announcement says its
+plants at the Espoo and
+
+177
+00:14:41,440 --> 00:14:45,400
+Kirkkonummi data center sites
+had begun producing heat from
+
+178
+00:14:45,400 --> 00:14:49,360
+ambient air and electric
+boilers. The release schedules
+
+179
+00:14:49,360 --> 00:14:53,120
+data center waste heat
+integration to begin in stages
+
+180
+00:14:53,160 --> 00:14:59,240
+in 2027. A plant operating at a
+data center site does not by
+
+181
+00:14:59,240 --> 00:15:02,440
+itself means server heat has
+already reached a home.
+
+182
+00:15:03,520 --> 00:15:07,760
+Even a measured heat benefit has
+a distribution question. It
+
+183
+00:15:07,760 --> 00:15:11,960
+reaches properties connected to
+the relevant network. Living
+
+184
+00:15:11,960 --> 00:15:16,680
+nearby does not make a detached
+home part of that system. For a
+
+185
+00:15:16,680 --> 00:15:20,640
+housing company or tenant, a
+lower production cost still
+
+186
+00:15:20,640 --> 00:15:24,320
+needs a route through the heat
+tariff, building costs, and
+
+187
+00:15:24,320 --> 00:15:28,640
+household charges. There is
+something concrete to inspect in
+
+188
+00:15:28,640 --> 00:15:34,120
+Mansala. Nivosa reports a 15%
+cut in the summer energy charge
+
+189
+00:15:34,360 --> 00:15:39,400
+from the 1st of May 2025 and a
+5% cut in the winter energy
+
+190
+00:15:39,400 --> 00:15:42,680
+charge from the 1st of January
+2026.
+
+191
+00:15:43,760 --> 00:15:47,560
+These are particular tariff
+components and dates. They are
+
+192
+00:15:47,560 --> 00:15:52,040
+neither equivalent cuts to every
+customer's total annual bill nor
+
+193
+00:15:52,040 --> 00:15:56,360
+proof that recovered heat alone
+caused the reductions. The
+
+194
+00:15:56,360 --> 00:16:00,720
+useful promise would name the
+network, the delivered quantity,
+
+195
+00:16:00,920 --> 00:16:04,320
+the season, the alternative heat
+source, and the tariff
+
+196
+00:16:04,320 --> 00:16:08,680
+consequence. Then a resident can
+follow it beyond a rendering of
+
+197
+00:16:08,680 --> 00:16:14,840
+a pipe. Rules, with something to
+inspect, Finland is not starting
+
+198
+00:16:14,840 --> 00:16:19,360
+from an absence of rules. As
+checked on the 23rd of October
+
+199
+00:16:19,360 --> 00:16:23,800
+2026, the tax administration
+says data center electricity
+
+200
+00:16:23,920 --> 00:16:28,400
+moved from tax class two to
+class one on the 1st of July
+
+201
+00:16:28,400 --> 00:16:33,080
+2026. That change is separate
+from both the household's
+
+202
+00:16:33,080 --> 00:16:36,800
+historical price record and a
+forecast of future market
+
+203
+00:16:36,800 --> 00:16:41,720
+prices. The energy efficiency
+amendment effective from January
+
+204
+00:16:41,720 --> 00:16:48,320
+2026 also contains heat reuse
+duties. Section 29E applies
+
+205
+00:16:48,320 --> 00:16:52,600
+above 1 megawatt of total power.
+For existing centers with no
+
+206
+00:16:52,600 --> 00:16:56,640
+reuse, technical or economic
+infeasibility must be
+
+207
+00:16:56,640 --> 00:17:00,360
+demonstrated through a
+cost-benefit analysis. The first
+
+208
+00:17:00,360 --> 00:17:03,680
+notification under that
+provision is due by the 31st of
+
+209
+00:17:03,680 --> 00:17:08,960
+December 2027. Related
+provisions address analysis for
+
+210
+00:17:08,960 --> 00:17:13,920
+new or substantially refurbished
+centers. This is more specific
+
+211
+00:17:13,920 --> 00:17:18,000
+than a universal percentage of
+heat that every site must sell.
+
+212
+00:17:18,840 --> 00:17:24,720
+EU regulation 2024/1364
+establishes reporting for data
+
+213
+00:17:24,720 --> 00:17:29,080
+centers with at least 500
+kilowatts of installed IT power.
+
+214
+00:17:29,840 --> 00:17:33,720
+Its public database information
+is aggregated. Individual
+
+215
+00:17:33,720 --> 00:17:37,640
+facility submissions are kept
+confidential. A reporting
+
+216
+00:17:37,640 --> 00:17:40,360
+requirement does not
+automatically give a neighbor
+
+217
+00:17:40,400 --> 00:17:44,240
+the local account we have been
+following. Our interest is in
+
+218
+00:17:44,240 --> 00:17:47,800
+what can be checked afterwards.
+A connection agreement should
+
+219
+00:17:47,800 --> 00:17:51,560
+remain distinguishable from a
+working load. An offered
+
+220
+00:17:51,560 --> 00:17:55,160
+interruption should leave a
+delivery record. A heat
+
+221
+00:17:55,160 --> 00:17:59,200
+agreement should lead to a
+delivered energy account. A
+
+222
+00:17:59,200 --> 00:18:03,440
+claimed household saving should
+identify the charge that changed
+
+223
+00:18:03,440 --> 00:18:06,840
+and the homes that can receive
+it. These are design
+
+224
+00:18:06,840 --> 00:18:10,800
+requirements as much as research
+questions. Dates beside
+
+225
+00:18:10,800 --> 00:18:15,200
+percentages, units beside
+numbers, assumptions that remain
+
+226
+00:18:15,200 --> 00:18:19,160
+attached when an account is
+exported. A missing residential
+
+227
+00:18:19,160 --> 00:18:23,000
+breakdown shown as missing
+without a reassuring estimate
+
+228
+00:18:23,000 --> 00:18:27,400
+quietly taking its place. The
+room of servers can be useful.
+
+229
+00:18:27,720 --> 00:18:31,640
+The recovered heat can be
+useful. The people outside
+
+230
+00:18:31,640 --> 00:18:34,960
+should be able to inspect the
+terms on which those things
+
+231
+00:18:34,960 --> 00:18:39,920
+become useful to them. The grid
+is shared. The account should be
+
+232
+00:18:39,920 --> 00:18:46,640
+readable from home. Method,
+sources, limits. Three records,
+
+233
+00:18:47,000 --> 00:18:52,840
+separate boundaries, written and
+checked the 23rd of October
+2026.
+
+234
+00:18:53,520 --> 00:18:57,280
+The working specimen opens the
+source records and exports the
+
+235
+00:18:57,280 --> 00:19:01,480
+selection with its assumptions,
+source locations, and hashes.
+
+236
+00:19:01,960 --> 00:19:05,080
+The provenance manifest and
+reproduction instructions
+
+237
+00:19:05,200 --> 00:19:09,400
+preserve the numerical method.
+This note estimates no causal
+
+238
+00:19:09,400 --> 00:19:12,960
+effect of data centers on
+finished prices, network
+
+239
+00:19:12,960 --> 00:19:18,400
+tariffs, or household welfare.
+Prices, Statistics Finland,
+
+240
+00:19:18,520 --> 00:19:24,360
+energy prices, table 13 RB,
+pinned API response, updated the
+
+241
+00:19:24,360 --> 00:19:30,680
+24th of September 2026.
+Excerpted January 2024 to June
+
+242
+00:19:30,720 --> 00:19:37,800
+2026. The worked example selects
+January 2024, band C, and an
+
+243
+00:19:37,800 --> 00:19:42,600
+authored 3000 kilowatt hours
+annual use. Every displayed
+
+244
+00:19:42,600 --> 00:19:45,840
+amount is calculated from the
+published rate at its stated
+
+245
+00:19:45,840 --> 00:19:49,920
+precision. Annualization holds
+that single monthly rate
+
+246
+00:19:49,920 --> 00:19:56,440
+constant. Credit, Statistics
+Finland, CCBY4.0, excerpt and
+
+247
+00:19:56,440 --> 00:20:02,480
+illustration by Moth and Gravel
+Grid. Energia Teollisuus ER R
+
+248
+00:20:03,360 --> 00:20:08,880
+Hourly Electricity Workbook,
+Worksheet 2024. The specimen
+
+249
+00:20:08,880 --> 00:20:13,000
+retains the first to the seventh
+of January and the first to the
+
+250
+00:20:13,000 --> 00:20:20,280
+seventh of July, 168 hours each.
+Source slots 1 to 24 are
+
+251
+00:20:20,280 --> 00:20:25,120
+interpreted as hour ending
+intervals in fixed UTC + 2.
+
+252
+00:20:25,960 --> 00:20:31,440
+Energy sums hourly mean MW
+multiplied by 1 hour. This
+
+253
+00:20:31,440 --> 00:20:35,280
+differs from the point sample
+integration in the separate US
+
+254
+00:20:35,280 --> 00:20:40,720
+facility study. National flows
+establish neither local headroom
+
+255
+00:20:40,840 --> 00:20:44,760
+nor a future dispatch response.
+Heat.
+
+256
+00:20:45,880 --> 00:20:52,680
+Energia Teollisuus ER R District
+Heating Workbook, 2024 updated
+
+257
+00:20:52,680 --> 00:20:55,080
+the 12th of June 2026.
+
+258
+00:20:56,120 --> 00:21:06,600
+Nivas's row identifier 114, tau
+1 row 148, and tau 5 row 138.
+
+259
+00:21:07,520 --> 00:21:12,600
+The cells contain rounded
+thermal GWH. Exact arithmetic
+
+260
+00:21:12,600 --> 00:21:17,120
+here means arithmetic at that
+published precision, not extra
+
+261
+00:21:17,120 --> 00:21:21,440
+measurement accuracy. Heat
+production electricity is
+
+262
+00:21:21,440 --> 00:21:26,040
+unreported in this row. We
+derive no heat pump efficiency.
+
+263
+00:21:26,720 --> 00:21:33,920
+Nivas's 2025 report, PDF pages 3
+and 6, and its 2025 central
+
+264
+00:21:33,920 --> 00:21:38,000
+network origin disclosure have
+separately stated scopes.
+
+265
+00:21:38,680 --> 00:21:42,560
+Original workbooks and report
+remain with their publishers.
+
+266
+00:21:44,080 --> 00:21:51,360
+Households and policy. Alwick,
+Karjalainen, Liski, and
+
+267
+00:21:51,360 --> 00:21:56,320
+Vihvilainen Household Level
+Responses to the European Energy
+
+268
+00:21:56,320 --> 00:22:05,240
+Crisis. MIT CEEPR Working Paper,
+2025-08, April 2025.
+
+269
+00:22:06,040 --> 00:22:10,880
+Evidence about the 2022 crisis,
+not a data center scenario.
+
+270
+00:22:11,640 --> 00:22:16,880
+Consumer, tax, legislative and
+operator sources are linked at
+
+271
+00:22:16,880 --> 00:22:21,120
+the claims they support. Policy
+status is dated above.
+
+272
+00:22:21,840 --> 00:22:25,720
+Proposals, targets, and
+connection capacities are not
+
+273
+00:22:25,720 --> 00:22:30,960
+treated as observed deliveries.
+The earlier field note 016
+
+274
+00:22:31,160 --> 00:22:36,080
+follows recorded power inside a
+US facility. No finished
+
+275
+00:22:36,080 --> 00:22:40,000
+household price or local heat
+figure is inferred from that
+
+276
+00:22:40,000 --> 00:22:44,960
+room. You have been listening to
+Moth and Gravel Field Notes. The
+
+277
+00:22:44,960 --> 00:22:47,920
+written edition is at
+mothandgravel.com.

@@ -1,0 +1,1664 @@
+[
+  {
+    "start": 0.0,
+    "end": 6.52,
+    "text": "Moth and Gravel. Field Note 17.\nThe Grid is Shared. An AI",
+    "speakers": []
+  },
+  {
+    "start": 6.52,
+    "end": 11.16,
+    "text": "narrated edition of the\npublished note. A cattle, a hot",
+    "speakers": []
+  },
+  {
+    "start": 11.16,
+    "end": 15.88,
+    "text": "water tank, a room of servers.\nVery different work carried",
+    "speakers": []
+  },
+  {
+    "start": 15.88,
+    "end": 19.76,
+    "text": "through the same electricity\nsystem. Finland's appeal to a",
+    "speakers": []
+  },
+  {
+    "start": 19.76,
+    "end": 24.64,
+    "text": "data center developer is easy to\nput on a slide. A cool climate,",
+    "speakers": []
+  },
+  {
+    "start": 24.88,
+    "end": 29.48,
+    "text": "clean electricity, room to\nbuild. At home, the question",
+    "speakers": []
+  },
+  {
+    "start": 29.48,
+    "end": 34.04,
+    "text": "arrives in smaller print. The\nprice on a contract renewal. The",
+    "speakers": []
+  },
+  {
+    "start": 34.04,
+    "end": 38.4,
+    "text": "network charge. The housing\ncompany's heating budget. We",
+    "speakers": []
+  },
+  {
+    "start": 38.4,
+    "end": 42.76,
+    "text": "wanted to follow the connection\nthat far. The resulting Finnish",
+    "speakers": []
+  },
+  {
+    "start": 42.76,
+    "end": 47.16,
+    "text": "account opens three records.\nHousehold electricity prices,",
+    "speakers": []
+  },
+  {
+    "start": 47.52,
+    "end": 52.76,
+    "text": "national power flows, and heat\ndelivered in Mansala. Each keeps",
+    "speakers": []
+  },
+  {
+    "start": 52.76,
+    "end": 56.8,
+    "text": "its own date and boundary. Put\nthem beside one another and the",
+    "speakers": []
+  },
+  {
+    "start": 56.8,
+    "end": 60.6,
+    "text": "public question becomes more\nprecise. Who pays for the",
+    "speakers": []
+  },
+  {
+    "start": 60.6,
+    "end": 65.36,
+    "text": "connection? Who can change their\ndemand? And who receives the",
+    "speakers": []
+  },
+  {
+    "start": 65.36,
+    "end": 70.8,
+    "text": "useful heat? The bill has three\nparts. The price discussed in an",
+    "speakers": []
+  },
+  {
+    "start": 70.8,
+    "end": 74.4,
+    "text": "electricity market headline is\nonly part of what a household",
+    "speakers": []
+  },
+  {
+    "start": 74.4,
+    "end": 79.28,
+    "text": "pays. There is the electricity\nsold, the network service, and",
+    "speakers": []
+  },
+  {
+    "start": 79.28,
+    "end": 84.24,
+    "text": "tax. A resident can choose an\nelectricity seller. The local",
+    "speakers": []
+  },
+  {
+    "start": 84.24,
+    "end": 89.04,
+    "text": "distribution network comes with\nthe address. KKV's consumer",
+    "speakers": []
+  },
+  {
+    "start": 89.08,
+    "end": 93.96,
+    "text": "guidance makes that distinction\nexplicit. Our first account uses",
+    "speakers": []
+  },
+  {
+    "start": 93.96,
+    "end": 100.88,
+    "text": "Statistics Finland's table 13\nRB. Take January 2024, consumer",
+    "speakers": []
+  },
+  {
+    "start": 100.88,
+    "end": 109.04,
+    "text": "band C for annual use between\n2500 and 4999 kilowatt hours.",
+    "speakers": []
+  },
+  {
+    "start": 109.68,
+    "end": 114.12,
+    "text": "Choose an illustrative 3000\nkilowatt hours a year and hold",
+    "speakers": []
+  },
+  {
+    "start": 114.12,
+    "end": 119.72,
+    "text": "that month's published rates\nconstant. January 2024 rates.",
+    "speakers": []
+  },
+  {
+    "start": 120.44,
+    "end": 127.56,
+    "text": "Band C. An assumed 3000 kilowatt\nhour year. Energy excluding tax.",
+    "speakers": []
+  },
+  {
+    "start": 128.0,
+    "end": 135.6,
+    "text": "10.880 cents per kilowatt hour.\nAnnualized, 326 Euros and 40",
+    "speakers": []
+  },
+  {
+    "start": 135.6,
+    "end": 143.16,
+    "text": "cents. Network excluding tax.\n7.532 cents per kilowatt hour.",
+    "speakers": []
+  },
+  {
+    "start": 143.76,
+    "end": 150.92,
+    "text": "Annualized, 225 Euros and 96\ncents. Tax including excise and",
+    "speakers": []
+  },
+  {
+    "start": 150.92,
+    "end": 159.16,
+    "text": "VAT. 7.213 cents per kilowatt\nhour. Annualized, 216 Euros and",
+    "speakers": []
+  },
+  {
+    "start": 159.16,
+    "end": 162.72,
+    "text": "39 cents. Published total\nincluding",
+    "speakers": []
+  },
+  {
+    "start": 162.72,
+    "end": 171.8,
+    "text": "tax.",
+    "speakers": []
+  },
+  {
+    "start": 171.8,
+    "end": 177.88,
+    "text": "cents. The arithmetic is annual\nKWH multiplied by cents per",
+    "speakers": []
+  },
+  {
+    "start": 177.88,
+    "end": 183.8,
+    "text": "kilowatt hour divided by 100.\nThe already included tax, we add",
+    "speakers": []
+  },
+  {
+    "start": 183.8,
+    "end": 188.32,
+    "text": "neither another layer of VAT nor\nseparate fixed charges to this",
+    "speakers": []
+  },
+  {
+    "start": 188.32,
+    "end": 195.0,
+    "text": "published unit price statistic.\n768 Euros and 75 cents is an",
+    "speakers": []
+  },
+  {
+    "start": 195.0,
+    "end": 199.72,
+    "text": "illustration at one month's\nnational consumer band rates. It",
+    "speakers": []
+  },
+  {
+    "start": 199.72,
+    "end": 203.84,
+    "text": "is neither a measured household\nbill nor the cost of consuming",
+    "speakers": []
+  },
+  {
+    "start": 203.84,
+    "end": 208.36,
+    "text": "electricity throughout 2024 at\nthe prices that actually",
+    "speakers": []
+  },
+  {
+    "start": 208.36,
+    "end": 212.76,
+    "text": "occurred. The distinction\nmatters before we ask a future",
+    "speakers": []
+  },
+  {
+    "start": 212.76,
+    "end": 217.4,
+    "text": "price to explain anything. A\nsimple sensitivity is useful",
+    "speakers": []
+  },
+  {
+    "start": 217.4,
+    "end": 223.04,
+    "text": "here. If a VAT inclusive retail\nenergy rate were 1 cent per",
+    "speakers": []
+  },
+  {
+    "start": 223.04,
+    "end": 227.76,
+    "text": "kilowatt hour higher, a home\nusing 20,000 kilowatt hours",
+    "speakers": []
+  },
+  {
+    "start": 227.96,
+    "end": 232.68,
+    "text": "would pay 200 Euros more over a\nyear with use and every other",
+    "speakers": []
+  },
+  {
+    "start": 232.68,
+    "end": 237.6,
+    "text": "charge held constant. At 3000\nkilowatt hours, the difference",
+    "speakers": []
+  },
+  {
+    "start": 237.6,
+    "end": 242.32,
+    "text": "would be 30 Euros. These are\nconditional multiplications. We",
+    "speakers": []
+  },
+  {
+    "start": 242.32,
+    "end": 246.64,
+    "text": "have supplied no evidence that\ndata centers cause that 1 cent",
+    "speakers": []
+  },
+  {
+    "start": 246.64,
+    "end": 252.16,
+    "text": "change. Additional demand has to\nmeet electricity available at",
+    "speakers": []
+  },
+  {
+    "start": 252.16,
+    "end": 257.16,
+    "text": "the same time and through a\nnetwork able to carry it. Its",
+    "speakers": []
+  },
+  {
+    "start": 257.16,
+    "end": 262.04,
+    "text": "effect on prices depends on the\nsupply response, whether",
+    "speakers": []
+  },
+  {
+    "start": 262.36,
+    "end": 269.08,
+    "text": "imports, outages, location, and\nthe load's ability to move. New",
+    "speakers": []
+  },
+  {
+    "start": 269.08,
+    "end": 274.04,
+    "text": "demand can support new\ngeneration investment. A promise",
+    "speakers": []
+  },
+  {
+    "start": 274.04,
+    "end": 279.76,
+    "text": "of future generation still needs\na commissioning date. Fingrid",
+    "speakers": []
+  },
+  {
+    "start": 279.8,
+    "end": 285.36,
+    "text": "reported in August 2026 that\ndata center projects with signed",
+    "speakers": []
+  },
+  {
+    "start": 285.36,
+    "end": 290.0,
+    "text": "connection agreements had a\nplanned final combined capacity",
+    "speakers": []
+  },
+  {
+    "start": 290.2,
+    "end": 294.72,
+    "text": "of nearly 5 gigawatts including\ndistribution network",
+    "speakers": []
+  },
+  {
+    "start": 294.72,
+    "end": 299.88,
+    "text": "connections. That is a project\ncapacity figure. It does not",
+    "speakers": []
+  },
+  {
+    "start": 299.88,
+    "end": 305.4,
+    "text": "mean 5 gigawatts was already\ndrawing power continuously. To",
+    "speakers": []
+  },
+  {
+    "start": 305.4,
+    "end": 310.44,
+    "text": "see why the distinction matters,\nassume a whole facility load of",
+    "speakers": []
+  },
+  {
+    "start": 310.44,
+    "end": 317.16,
+    "text": "100 megawatts operating\nconstantly for an ordinary 8760",
+    "speakers": []
+  },
+  {
+    "start": 317.16,
+    "end": 326.32,
+    "text": "hour year. It consumes 876,000\nmegawatt hours or 0.876 terawatt",
+    "speakers": []
+  },
+  {
+    "start": 326.32,
+    "end": 332.4,
+    "text": "hours. This is arithmetic, not a\nsurveyed Finnish facility. A",
+    "speakers": []
+  },
+  {
+    "start": 332.4,
+    "end": 337.68,
+    "text": "nameplate, an annual energy\ntotal, and the demand on a cold",
+    "speakers": []
+  },
+  {
+    "start": 337.68,
+    "end": 342.4,
+    "text": "evening are three different\ndescriptions. The Ministry of",
+    "speakers": []
+  },
+  {
+    "start": 342.4,
+    "end": 346.48,
+    "text": "Economic Affairs and\nEmployment's October 2026",
+    "speakers": []
+  },
+  {
+    "start": 346.52,
+    "end": 351.04,
+    "text": "account acknowledges both the\nopportunity for new production",
+    "speakers": []
+  },
+  {
+    "start": 351.24,
+    "end": 356.6,
+    "text": "and regional network scarcity.\nNational abundance does not",
+    "speakers": []
+  },
+  {
+    "start": 356.6,
+    "end": 361.92,
+    "text": "establish room at a particular\nsubstation. Our grid view",
+    "speakers": []
+  },
+  {
+    "start": 361.96,
+    "end": 369.44,
+    "text": "replays two recorded weeks, one\nin January and one in July 2024",
+    "speakers": []
+  },
+  {
+    "start": 369.72,
+    "end": 375.76,
+    "text": "from Energiateollisuus hourly\ndata. Consumption reconciles",
+    "speakers": []
+  },
+  {
+    "start": 375.76,
+    "end": 382.0,
+    "text": "with domestic production plus\nimports and signed exports. Wind",
+    "speakers": []
+  },
+  {
+    "start": 382.0,
+    "end": 389.08,
+    "text": "is already inside production.\nThe source clock stays at UTC +2",
+    "speakers": []
+  },
+  {
+    "start": 389.36,
+    "end": 395.16,
+    "text": "including July. Adding a chosen\nfacility draw makes an extra",
+    "speakers": []
+  },
+  {
+    "start": 395.16,
+    "end": 400.08,
+    "text": "requirement visible beside the\nhistorical hour. We hold",
+    "speakers": []
+  },
+  {
+    "start": 400.08,
+    "end": 405.32,
+    "text": "historical supply fixed. The\ndashed line cannot tell us which",
+    "speakers": []
+  },
+  {
+    "start": 405.32,
+    "end": 409.72,
+    "text": "plant would respond, what the\nmarket would charge, or whether",
+    "speakers": []
+  },
+  {
+    "start": 409.72,
+    "end": 414.36,
+    "text": "a connection would be permitted.\nExporting electricity in a",
+    "speakers": []
+  },
+  {
+    "start": 414.36,
+    "end": 419.6,
+    "text": "recorded hour is also no proof\nof spare network capacity at a",
+    "speakers": []
+  },
+  {
+    "start": 419.6,
+    "end": 425.24,
+    "text": "proposed site. This is where an\nannual renewable energy claim",
+    "speakers": []
+  },
+  {
+    "start": 425.24,
+    "end": 429.4,
+    "text": "needs another question. What\nhappens in the hours the",
+    "speakers": []
+  },
+  {
+    "start": 429.4,
+    "end": 434.96,
+    "text": "contracted generation is absent?\nA useful answer specifies",
+    "speakers": []
+  },
+  {
+    "start": 434.96,
+    "end": 440.56,
+    "text": "timing, balancing, transmission,\nand the demand that can actually",
+    "speakers": []
+  },
+  {
+    "start": 440.56,
+    "end": 446.8,
+    "text": "be deferred. Flexibility belongs\nto someone. Households will",
+    "speakers": []
+  },
+  {
+    "start": 446.8,
+    "end": 452.32,
+    "text": "adjust can sound painless at the\nscale of a national chart. At",
+    "speakers": []
+  },
+  {
+    "start": 452.32,
+    "end": 456.92,
+    "text": "home, it means deciding when the\nwater heats, whether the car can",
+    "speakers": []
+  },
+  {
+    "start": 456.92,
+    "end": 461.12,
+    "text": "wait, whether a room can be\ncooler. A home with a",
+    "speakers": []
+  },
+  {
+    "start": 461.12,
+    "end": 465.8,
+    "text": "controllable heat pump, an\ninsulated envelope, and money",
+    "speakers": []
+  },
+  {
+    "start": 465.8,
+    "end": 470.04,
+    "text": "for improvements has options\nthat a tenant may be unable to",
+    "speakers": []
+  },
+  {
+    "start": 470.04,
+    "end": 475.56,
+    "text": "buy or install. A low bill\nachieved by giving something up",
+    "speakers": []
+  },
+  {
+    "start": 475.64,
+    "end": 479.72,
+    "text": "deserves a different label from\nthe same bill achieved by better",
+    "speakers": []
+  },
+  {
+    "start": 479.72,
+    "end": 485.08,
+    "text": "equipment. There is Finnish\nresearch on this uneven room to",
+    "speakers": []
+  },
+  {
+    "start": 485.08,
+    "end": 491.4,
+    "text": "move. Lassi Alvik, Tomas\nKariAho, Matti Lisk",
+    "speakers": []
+  },
+  {
+    "start": 492.72,
+    "end": 498.84,
+    "text": "and Ivo Vevilainens 2025 working\npaper on the European energy",
+    "speakers": []
+  },
+  {
+    "start": 498.84,
+    "end": 503.84,
+    "text": "crisis uses the timing of\nexpiring two year fixed price",
+    "speakers": []
+  },
+  {
+    "start": 503.84,
+    "end": 508.76,
+    "text": "contracts to study Finnish\nhouseholds during 2022.",
+    "speakers": []
+  },
+  {
+    "start": 509.92,
+    "end": 513.76,
+    "text": "The authors find that lower\nincome households have fewer",
+    "speakers": []
+  },
+  {
+    "start": 513.76,
+    "end": 518.56,
+    "text": "ways to adjust with greater\nfinancial distress and cuts in",
+    "speakers": []
+  },
+  {
+    "start": 518.56,
+    "end": 522.56,
+    "text": "other spending. This is a\nworking paper about a particular",
+    "speakers": []
+  },
+  {
+    "start": 522.56,
+    "end": 525.92,
+    "text": "price shock. It does not\nestimate the future household",
+    "speakers": []
+  },
+  {
+    "start": 525.92,
+    "end": 529.56,
+    "text": "effect of Finnish data centers.\nIt does give us a reason to",
+    "speakers": []
+  },
+  {
+    "start": 529.56,
+    "end": 533.4,
+    "text": "distrust the idea of one\nrepresentative household with an",
+    "speakers": []
+  },
+  {
+    "start": 533.4,
+    "end": 538.36,
+    "text": "unlimited ability to shift\ndemand. A fixed price contract",
+    "speakers": []
+  },
+  {
+    "start": 538.4,
+    "end": 542.68,
+    "text": "can delay exposure to energy\nprice changes until renewal. A",
+    "speakers": []
+  },
+  {
+    "start": 542.68,
+    "end": 546.44,
+    "text": "spot priced contract exposes the\nresident sooner to the timing of",
+    "speakers": []
+  },
+  {
+    "start": 546.44,
+    "end": 551.12,
+    "text": "use. Neither makes the network\ncharge disappear. The same",
+    "speakers": []
+  },
+  {
+    "start": 551.12,
+    "end": 554.44,
+    "text": "wholesale price development can\ntherefore reach two neighbors in",
+    "speakers": []
+  },
+  {
+    "start": 554.44,
+    "end": 558.72,
+    "text": "different months with different\nconsequences. For a large new",
+    "speakers": []
+  },
+  {
+    "start": 558.72,
+    "end": 561.72,
+    "text": "consumer, we would want\nflexibility described just as",
+    "speakers": []
+  },
+  {
+    "start": 561.72,
+    "end": 566.84,
+    "text": "concretely. How many megawatts\ncan stop? For how long? With how",
+    "speakers": []
+  },
+  {
+    "start": 566.84,
+    "end": 571.16,
+    "text": "much notice? What happens when\nthe work resumes? Who verifies",
+    "speakers": []
+  },
+  {
+    "start": 571.16,
+    "end": 575.8,
+    "text": "delivery? An interruptible\ncommitment has public value only",
+    "speakers": []
+  },
+  {
+    "start": 575.8,
+    "end": 579.72,
+    "text": "to the extent that it can be\nused when the system needs it. A",
+    "speakers": []
+  },
+  {
+    "start": 579.72,
+    "end": 583.64,
+    "text": "demonstration on an easy day\nleaves that question open.",
+    "speakers": []
+  },
+  {
+    "start": 585.44,
+    "end": 589.4,
+    "text": "The cable has an account too. A\nnew connection can bring",
+    "speakers": []
+  },
+  {
+    "start": 589.4,
+    "end": 593.24,
+    "text": "investment, work, and demand for\nelectricity that helps finance",
+    "speakers": []
+  },
+  {
+    "start": 593.24,
+    "end": 597.96,
+    "text": "production. It can also require\nreinforcement. The household",
+    "speakers": []
+  },
+  {
+    "start": 597.96,
+    "end": 601.88,
+    "text": "question is how the costs and\nbenefits are divided across the",
+    "speakers": []
+  },
+  {
+    "start": 601.88,
+    "end": 605.6,
+    "text": "connection charge, network\ntariffs, the developer, and any",
+    "speakers": []
+  },
+  {
+    "start": 605.6,
+    "end": 610.0,
+    "text": "public support. We cannot infer\nthat division from the size of a",
+    "speakers": []
+  },
+  {
+    "start": 610.0,
+    "end": 613.52,
+    "text": "building or from a national\nconsumption trace. It needs the",
+    "speakers": []
+  },
+  {
+    "start": 613.52,
+    "end": 617.28,
+    "text": "applicable connection terms, the\nreinforcement plan, and the",
+    "speakers": []
+  },
+  {
+    "start": 617.28,
+    "end": 621.2,
+    "text": "regulated network account. A\nclaim that households will pay",
+    "speakers": []
+  },
+  {
+    "start": 621.2,
+    "end": 624.4,
+    "text": "for everything is as incomplete\nas a claim that they will pay",
+    "speakers": []
+  },
+  {
+    "start": 624.4,
+    "end": 629.96,
+    "text": "for nothing. According to KKV,\nthe energy authority supervises",
+    "speakers": []
+  },
+  {
+    "start": 629.96,
+    "end": 634.2,
+    "text": "network pricing as a whole over\nfour year periods using a",
+    "speakers": []
+  },
+  {
+    "start": 634.2,
+    "end": 638.64,
+    "text": "reasonable return framework.\nThis is not a cap on each",
+    "speakers": []
+  },
+  {
+    "start": 638.64,
+    "end": 643.0,
+    "text": "individual tariff. The existence\nof supervision does not remove",
+    "speakers": []
+  },
+  {
+    "start": 643.0,
+    "end": 646.68,
+    "text": "the need to inspect how a\nparticular expansion is funded.",
+    "speakers": []
+  },
+  {
+    "start": 647.0,
+    "end": 650.32,
+    "text": "For a municipality considering a\nproject, we would put the dates",
+    "speakers": []
+  },
+  {
+    "start": 650.32,
+    "end": 655.16,
+    "text": "beside the money. When does the\nfacility start using power? When",
+    "speakers": []
+  },
+  {
+    "start": 655.16,
+    "end": 655.24,
+    "text": "is the reinforcement available?\nWho bears a delay? Which",
+    "speakers": []
+  },
+  {
+    "start": 655.24,
+    "end": 658.96,
+    "text": "25.625 cents per kilowatt hour.\nAnnualized, 768 Euros and 75",
+    "speakers": []
+  },
+  {
+    "start": 659.92,
+    "end": 663.68,
+    "text": "spending is committed if the\ncampus is built in phases or",
+    "speakers": []
+  },
+  {
+    "start": 663.68,
+    "end": 667.52,
+    "text": "remains smaller than announced?\nThose are terms a resident",
+    "speakers": []
+  },
+  {
+    "start": 667.52,
+    "end": 670.88,
+    "text": "should be able to understand\nwithout becoming an electricity",
+    "speakers": []
+  },
+  {
+    "start": 670.88,
+    "end": 675.12,
+    "text": "market analyst. They are also\nterms a project can publish",
+    "speakers": []
+  },
+  {
+    "start": 675.16,
+    "end": 678.48,
+    "text": "before asking its neighbors to\ntrust a distant benefit.",
+    "speakers": []
+  },
+  {
+    "start": 680.08,
+    "end": 684.56,
+    "text": "Follow the heat to a building.\nHeat recovery is the most",
+    "speakers": []
+  },
+  {
+    "start": 684.56,
+    "end": 688.8,
+    "text": "tangible part of the promise.\nSomewhere, a radiator becomes",
+    "speakers": []
+  },
+  {
+    "start": 688.8,
+    "end": 693.4,
+    "text": "warm. To follow that promise, we\nneed a pipe, an operating",
+    "speakers": []
+  },
+  {
+    "start": 693.4,
+    "end": 698.44,
+    "text": "system, and a measured delivery.\nThe 2024 district heating",
+    "speakers": []
+  },
+  {
+    "start": 698.44,
+    "end": 703.16,
+    "text": "statistics give us a reported\nNivosa Vesi Yalampo account for",
+    "speakers": []
+  },
+  {
+    "start": 703.16,
+    "end": 704.96,
+    "text": "Mansala covering several",
+    "speakers": []
+  },
+  {
+    "start": 704.96,
+    "end": 710.8,
+    "text": "networks. On the supply side,\n31.5 gigawatt hours of other net",
+    "speakers": []
+  },
+  {
+    "start": 710.8,
+    "end": 715.12,
+    "text": "heat production and 22.7\ngigawatt hours in a combined",
+    "speakers": []
+  },
+  {
+    "start": 715.12,
+    "end": 721.04,
+    "text": "recovery heat pump category make\n54.2 gigawatt hours. On the",
+    "speakers": []
+  },
+  {
+    "start": 721.04,
+    "end": 727.04,
+    "text": "other side, Nivosa Mansala 2024.\nThermal energy in gigawatt",
+    "speakers": []
+  },
+  {
+    "start": 727.04,
+    "end": 733.28,
+    "text": "hours. Residential buildings,\n16.0 gigawatt hours. Industry,",
+    "speakers": []
+  },
+  {
+    "start": 733.68,
+    "end": 740.6,
+    "text": "0.4 gigawatt hours. Other\ncustomers, 32.1 gigawatt hours.",
+    "speakers": []
+  },
+  {
+    "start": 740.96,
+    "end": 747.04,
+    "text": "All customer use, 48.5 gigawatt\nhours. Network losses and meter",
+    "speakers": []
+  },
+  {
+    "start": 747.04,
+    "end": 753.68,
+    "text": "differences, 5.7. Total supplied\nheat, 54.2 gigawatt hours.",
+    "speakers": []
+  },
+  {
+    "start": 754.72,
+    "end": 765.36,
+    "text": "16.0 + 0.4 + 32.1 = 48.5. Add\n5.7 and the account returns to",
+    "speakers": []
+  },
+  {
+    "start": 765.36,
+    "end": 770.92,
+    "text": "54.2. The 115 residential\ncustomers reported alongside",
+    "speakers": []
+  },
+  {
+    "start": 770.92,
+    "end": 775.88,
+    "text": "these figures are building\naccounts, not 115 households.",
+    "speakers": []
+  },
+  {
+    "start": 777.36,
+    "end": 781.72,
+    "text": "The recovery category does not\nisolate pure server waste heat.",
+    "speakers": []
+  },
+  {
+    "start": 782.32,
+    "end": 785.48,
+    "text": "Nor does the table allocate\nparticular heat sources to",
+    "speakers": []
+  },
+  {
+    "start": 785.48,
+    "end": 790.44,
+    "text": "particular homes. We can say\nthat residential buildings used",
+    "speakers": []
+  },
+  {
+    "start": 790.44,
+    "end": 795.68,
+    "text": "16.0 gigawatt hours. We cannot\nsay that data center heat",
+    "speakers": []
+  },
+  {
+    "start": 795.72,
+    "end": 799.72,
+    "text": "supplied that entire amount. A\nheat pump adds its own",
+    "speakers": []
+  },
+  {
+    "start": 799.72,
+    "end": 803.92,
+    "text": "electricity to the recovered\nheat. Distribution then has its",
+    "speakers": []
+  },
+  {
+    "start": 803.92,
+    "end": 807.88,
+    "text": "own losses. Thermal kilowatt\nhours delivered and electrical",
+    "speakers": []
+  },
+  {
+    "start": 807.88,
+    "end": 811.56,
+    "text": "kilowatt hours consumed must\nkeep their separate meters.",
+    "speakers": []
+  },
+  {
+    "start": 812.16,
+    "end": 815.52,
+    "text": "Subtracting one from the other\nwould conceal the system we are",
+    "speakers": []
+  },
+  {
+    "start": 815.52,
+    "end": 820.84,
+    "text": "trying to understand. There is a\nseasonal question too. Useful",
+    "speakers": []
+  },
+  {
+    "start": 820.84,
+    "end": 824.64,
+    "text": "heat depends on temperature,\ndemand, and the alternative",
+    "speakers": []
+  },
+  {
+    "start": 824.64,
+    "end": 828.8,
+    "text": "source it displaces. A\nyear-round server load does not",
+    "speakers": []
+  },
+  {
+    "start": 828.8,
+    "end": 833.28,
+    "text": "come with year-round winter\nheating demand. Storage, hot",
+    "speakers": []
+  },
+  {
+    "start": 833.28,
+    "end": 837.6,
+    "text": "water, and other users may help,\nbut their capacity and operation",
+    "speakers": []
+  },
+  {
+    "start": 837.6,
+    "end": 842.64,
+    "text": "need evidence of their own. A\npercentage needs an address. The",
+    "speakers": []
+  },
+  {
+    "start": 842.64,
+    "end": 848.68,
+    "text": "Nivosa report for 2025 records\ncompany-wide heat sales of 43.1",
+    "speakers": []
+  },
+  {
+    "start": 848.68,
+    "end": 852.88,
+    "text": "gigawatt hours. A separate\norigin disclosure gives",
+    "speakers": []
+  },
+  {
+    "start": 852.88,
+    "end": 857.6,
+    "text": "recovered surplus heat a 41%\nshare in the central Mansala",
+    "speakers": []
+  },
+  {
+    "start": 857.6,
+    "end": 862.52,
+    "text": "network that year. The\nboundaries differ. Multiplying",
+    "speakers": []
+  },
+  {
+    "start": 862.52,
+    "end": 868.08,
+    "text": "43.1 by 41% would produce a neat\nnumber with no matching",
+    "speakers": []
+  },
+  {
+    "start": 868.08,
+    "end": 871.84,
+    "text": "published account bill behind\nit. We leave that multiplication",
+    "speakers": []
+  },
+  {
+    "start": 871.84,
+    "end": 876.88,
+    "text": "undone. Commissioning language\nneeds the same care. Fortum's",
+    "speakers": []
+  },
+  {
+    "start": 876.88,
+    "end": 881.44,
+    "text": "May 2026 announcement says its\nplants at the Espoo and",
+    "speakers": []
+  },
+  {
+    "start": 881.44,
+    "end": 885.4,
+    "text": "Kirkkonummi data center sites\nhad begun producing heat from",
+    "speakers": []
+  },
+  {
+    "start": 885.4,
+    "end": 889.36,
+    "text": "ambient air and electric\nboilers. The release schedules",
+    "speakers": []
+  },
+  {
+    "start": 889.36,
+    "end": 893.12,
+    "text": "data center waste heat\nintegration to begin in stages",
+    "speakers": []
+  },
+  {
+    "start": 893.16,
+    "end": 899.24,
+    "text": "in 2027. A plant operating at a\ndata center site does not by",
+    "speakers": []
+  },
+  {
+    "start": 899.24,
+    "end": 902.44,
+    "text": "itself means server heat has\nalready reached a home.",
+    "speakers": []
+  },
+  {
+    "start": 903.52,
+    "end": 907.76,
+    "text": "Even a measured heat benefit has\na distribution question. It",
+    "speakers": []
+  },
+  {
+    "start": 907.76,
+    "end": 911.96,
+    "text": "reaches properties connected to\nthe relevant network. Living",
+    "speakers": []
+  },
+  {
+    "start": 911.96,
+    "end": 916.68,
+    "text": "nearby does not make a detached\nhome part of that system. For a",
+    "speakers": []
+  },
+  {
+    "start": 916.68,
+    "end": 920.64,
+    "text": "housing company or tenant, a\nlower production cost still",
+    "speakers": []
+  },
+  {
+    "start": 920.64,
+    "end": 924.32,
+    "text": "needs a route through the heat\ntariff, building costs, and",
+    "speakers": []
+  },
+  {
+    "start": 924.32,
+    "end": 928.64,
+    "text": "household charges. There is\nsomething concrete to inspect in",
+    "speakers": []
+  },
+  {
+    "start": 928.64,
+    "end": 934.12,
+    "text": "Mansala. Nivosa reports a 15%\ncut in the summer energy charge",
+    "speakers": []
+  },
+  {
+    "start": 934.36,
+    "end": 939.4,
+    "text": "from the 1st of May 2025 and a\n5% cut in the winter energy",
+    "speakers": []
+  },
+  {
+    "start": 939.4,
+    "end": 942.68,
+    "text": "charge from the 1st of January\n2026.",
+    "speakers": []
+  },
+  {
+    "start": 943.76,
+    "end": 947.56,
+    "text": "These are particular tariff\ncomponents and dates. They are",
+    "speakers": []
+  },
+  {
+    "start": 947.56,
+    "end": 952.04,
+    "text": "neither equivalent cuts to every\ncustomer's total annual bill nor",
+    "speakers": []
+  },
+  {
+    "start": 952.04,
+    "end": 956.36,
+    "text": "proof that recovered heat alone\ncaused the reductions. The",
+    "speakers": []
+  },
+  {
+    "start": 956.36,
+    "end": 960.72,
+    "text": "useful promise would name the\nnetwork, the delivered quantity,",
+    "speakers": []
+  },
+  {
+    "start": 960.92,
+    "end": 964.32,
+    "text": "the season, the alternative heat\nsource, and the tariff",
+    "speakers": []
+  },
+  {
+    "start": 964.32,
+    "end": 968.68,
+    "text": "consequence. Then a resident can\nfollow it beyond a rendering of",
+    "speakers": []
+  },
+  {
+    "start": 968.68,
+    "end": 974.84,
+    "text": "a pipe. Rules, with something to\ninspect, Finland is not starting",
+    "speakers": []
+  },
+  {
+    "start": 974.84,
+    "end": 979.36,
+    "text": "from an absence of rules. As\nchecked on the 23rd of October",
+    "speakers": []
+  },
+  {
+    "start": 979.36,
+    "end": 983.8,
+    "text": "2026, the tax administration\nsays data center electricity",
+    "speakers": []
+  },
+  {
+    "start": 983.92,
+    "end": 988.4,
+    "text": "moved from tax class two to\nclass one on the 1st of July",
+    "speakers": []
+  },
+  {
+    "start": 988.4,
+    "end": 993.08,
+    "text": "2026. That change is separate\nfrom both the household's",
+    "speakers": []
+  },
+  {
+    "start": 993.08,
+    "end": 996.8,
+    "text": "historical price record and a\nforecast of future market",
+    "speakers": []
+  },
+  {
+    "start": 996.8,
+    "end": 1001.72,
+    "text": "prices. The energy efficiency\namendment effective from January",
+    "speakers": []
+  },
+  {
+    "start": 1001.72,
+    "end": 1008.32,
+    "text": "2026 also contains heat reuse\nduties. Section 29E applies",
+    "speakers": []
+  },
+  {
+    "start": 1008.32,
+    "end": 1012.6,
+    "text": "above 1 megawatt of total power.\nFor existing centers with no",
+    "speakers": []
+  },
+  {
+    "start": 1012.6,
+    "end": 1016.64,
+    "text": "reuse, technical or economic\ninfeasibility must be",
+    "speakers": []
+  },
+  {
+    "start": 1016.64,
+    "end": 1020.36,
+    "text": "demonstrated through a\ncost-benefit analysis. The first",
+    "speakers": []
+  },
+  {
+    "start": 1020.36,
+    "end": 1023.68,
+    "text": "notification under that\nprovision is due by the 31st of",
+    "speakers": []
+  },
+  {
+    "start": 1023.68,
+    "end": 1028.96,
+    "text": "December 2027. Related\nprovisions address analysis for",
+    "speakers": []
+  },
+  {
+    "start": 1028.96,
+    "end": 1033.92,
+    "text": "new or substantially refurbished\ncenters. This is more specific",
+    "speakers": []
+  },
+  {
+    "start": 1033.92,
+    "end": 1038.0,
+    "text": "than a universal percentage of\nheat that every site must sell.",
+    "speakers": []
+  },
+  {
+    "start": 1038.84,
+    "end": 1044.72,
+    "text": "EU regulation 2024/1364\nestablishes reporting for data",
+    "speakers": []
+  },
+  {
+    "start": 1044.72,
+    "end": 1049.08,
+    "text": "centers with at least 500\nkilowatts of installed IT power.",
+    "speakers": []
+  },
+  {
+    "start": 1049.84,
+    "end": 1053.72,
+    "text": "Its public database information\nis aggregated. Individual",
+    "speakers": []
+  },
+  {
+    "start": 1053.72,
+    "end": 1057.64,
+    "text": "facility submissions are kept\nconfidential. A reporting",
+    "speakers": []
+  },
+  {
+    "start": 1057.64,
+    "end": 1060.36,
+    "text": "requirement does not\nautomatically give a neighbor",
+    "speakers": []
+  },
+  {
+    "start": 1060.4,
+    "end": 1064.24,
+    "text": "the local account we have been\nfollowing. Our interest is in",
+    "speakers": []
+  },
+  {
+    "start": 1064.24,
+    "end": 1067.8,
+    "text": "what can be checked afterwards.\nA connection agreement should",
+    "speakers": []
+  },
+  {
+    "start": 1067.8,
+    "end": 1071.56,
+    "text": "remain distinguishable from a\nworking load. An offered",
+    "speakers": []
+  },
+  {
+    "start": 1071.56,
+    "end": 1075.16,
+    "text": "interruption should leave a\ndelivery record. A heat",
+    "speakers": []
+  },
+  {
+    "start": 1075.16,
+    "end": 1079.2,
+    "text": "agreement should lead to a\ndelivered energy account. A",
+    "speakers": []
+  },
+  {
+    "start": 1079.2,
+    "end": 1083.44,
+    "text": "claimed household saving should\nidentify the charge that changed",
+    "speakers": []
+  },
+  {
+    "start": 1083.44,
+    "end": 1086.84,
+    "text": "and the homes that can receive\nit. These are design",
+    "speakers": []
+  },
+  {
+    "start": 1086.84,
+    "end": 1090.8,
+    "text": "requirements as much as research\nquestions. Dates beside",
+    "speakers": []
+  },
+  {
+    "start": 1090.8,
+    "end": 1095.2,
+    "text": "percentages, units beside\nnumbers, assumptions that remain",
+    "speakers": []
+  },
+  {
+    "start": 1095.2,
+    "end": 1099.16,
+    "text": "attached when an account is\nexported. A missing residential",
+    "speakers": []
+  },
+  {
+    "start": 1099.16,
+    "end": 1103.0,
+    "text": "breakdown shown as missing\nwithout a reassuring estimate",
+    "speakers": []
+  },
+  {
+    "start": 1103.0,
+    "end": 1107.4,
+    "text": "quietly taking its place. The\nroom of servers can be useful.",
+    "speakers": []
+  },
+  {
+    "start": 1107.72,
+    "end": 1111.64,
+    "text": "The recovered heat can be\nuseful. The people outside",
+    "speakers": []
+  },
+  {
+    "start": 1111.64,
+    "end": 1114.96,
+    "text": "should be able to inspect the\nterms on which those things",
+    "speakers": []
+  },
+  {
+    "start": 1114.96,
+    "end": 1119.92,
+    "text": "become useful to them. The grid\nis shared. The account should be",
+    "speakers": []
+  },
+  {
+    "start": 1119.92,
+    "end": 1126.64,
+    "text": "readable from home. Method,\nsources, limits. Three records,",
+    "speakers": []
+  },
+  {
+    "start": 1127.0,
+    "end": 1132.84,
+    "text": "separate boundaries, written and\nchecked the 23rd of October\n2026.",
+    "speakers": []
+  },
+  {
+    "start": 1133.52,
+    "end": 1137.28,
+    "text": "The working specimen opens the\nsource records and exports the",
+    "speakers": []
+  },
+  {
+    "start": 1137.28,
+    "end": 1141.48,
+    "text": "selection with its assumptions,\nsource locations, and hashes.",
+    "speakers": []
+  },
+  {
+    "start": 1141.96,
+    "end": 1145.08,
+    "text": "The provenance manifest and\nreproduction instructions",
+    "speakers": []
+  },
+  {
+    "start": 1145.2,
+    "end": 1149.4,
+    "text": "preserve the numerical method.\nThis note estimates no causal",
+    "speakers": []
+  },
+  {
+    "start": 1149.4,
+    "end": 1152.96,
+    "text": "effect of data centers on\nfinished prices, network",
+    "speakers": []
+  },
+  {
+    "start": 1152.96,
+    "end": 1158.4,
+    "text": "tariffs, or household welfare.\nPrices, Statistics Finland,",
+    "speakers": []
+  },
+  {
+    "start": 1158.52,
+    "end": 1164.36,
+    "text": "energy prices, table 13 RB,\npinned API response, updated the",
+    "speakers": []
+  },
+  {
+    "start": 1164.36,
+    "end": 1170.68,
+    "text": "24th of September 2026.\nExcerpted January 2024 to June",
+    "speakers": []
+  },
+  {
+    "start": 1170.72,
+    "end": 1177.8,
+    "text": "2026. The worked example selects\nJanuary 2024, band C, and an",
+    "speakers": []
+  },
+  {
+    "start": 1177.8,
+    "end": 1182.6,
+    "text": "authored 3000 kilowatt hours\nannual use. Every displayed",
+    "speakers": []
+  },
+  {
+    "start": 1182.6,
+    "end": 1185.84,
+    "text": "amount is calculated from the\npublished rate at its stated",
+    "speakers": []
+  },
+  {
+    "start": 1185.84,
+    "end": 1189.92,
+    "text": "precision. Annualization holds\nthat single monthly rate",
+    "speakers": []
+  },
+  {
+    "start": 1189.92,
+    "end": 1196.44,
+    "text": "constant. Credit, Statistics\nFinland, CCBY4.0, excerpt and",
+    "speakers": []
+  },
+  {
+    "start": 1196.44,
+    "end": 1202.48,
+    "text": "illustration by Moth and Gravel\nGrid. Energia Teollisuus ER R",
+    "speakers": []
+  },
+  {
+    "start": 1203.36,
+    "end": 1208.88,
+    "text": "Hourly Electricity Workbook,\nWorksheet 2024. The specimen",
+    "speakers": []
+  },
+  {
+    "start": 1208.88,
+    "end": 1213.0,
+    "text": "retains the first to the seventh\nof January and the first to the",
+    "speakers": []
+  },
+  {
+    "start": 1213.0,
+    "end": 1220.28,
+    "text": "seventh of July, 168 hours each.\nSource slots 1 to 24 are",
+    "speakers": []
+  },
+  {
+    "start": 1220.28,
+    "end": 1225.12,
+    "text": "interpreted as hour ending\nintervals in fixed UTC + 2.",
+    "speakers": []
+  },
+  {
+    "start": 1225.96,
+    "end": 1231.44,
+    "text": "Energy sums hourly mean MW\nmultiplied by 1 hour. This",
+    "speakers": []
+  },
+  {
+    "start": 1231.44,
+    "end": 1235.28,
+    "text": "differs from the point sample\nintegration in the separate US",
+    "speakers": []
+  },
+  {
+    "start": 1235.28,
+    "end": 1240.72,
+    "text": "facility study. National flows\nestablish neither local headroom",
+    "speakers": []
+  },
+  {
+    "start": 1240.84,
+    "end": 1244.76,
+    "text": "nor a future dispatch response.\nHeat.",
+    "speakers": []
+  },
+  {
+    "start": 1245.88,
+    "end": 1252.68,
+    "text": "Energia Teollisuus ER R District\nHeating Workbook, 2024 updated",
+    "speakers": []
+  },
+  {
+    "start": 1252.68,
+    "end": 1255.08,
+    "text": "the 12th of June 2026.",
+    "speakers": []
+  },
+  {
+    "start": 1256.12,
+    "end": 1266.6,
+    "text": "Nivas's row identifier 114, tau\n1 row 148, and tau 5 row 138.",
+    "speakers": []
+  },
+  {
+    "start": 1267.52,
+    "end": 1272.6,
+    "text": "The cells contain rounded\nthermal GWH. Exact arithmetic",
+    "speakers": []
+  },
+  {
+    "start": 1272.6,
+    "end": 1277.12,
+    "text": "here means arithmetic at that\npublished precision, not extra",
+    "speakers": []
+  },
+  {
+    "start": 1277.12,
+    "end": 1281.44,
+    "text": "measurement accuracy. Heat\nproduction electricity is",
+    "speakers": []
+  },
+  {
+    "start": 1281.44,
+    "end": 1286.04,
+    "text": "unreported in this row. We\nderive no heat pump efficiency.",
+    "speakers": []
+  },
+  {
+    "start": 1286.72,
+    "end": 1293.92,
+    "text": "Nivas's 2025 report, PDF pages 3\nand 6, and its 2025 central",
+    "speakers": []
+  },
+  {
+    "start": 1293.92,
+    "end": 1298.0,
+    "text": "network origin disclosure have\nseparately stated scopes.",
+    "speakers": []
+  },
+  {
+    "start": 1298.68,
+    "end": 1302.56,
+    "text": "Original workbooks and report\nremain with their publishers.",
+    "speakers": []
+  },
+  {
+    "start": 1304.08,
+    "end": 1311.36,
+    "text": "Households and policy. Alwick,\nKarjalainen, Liski, and",
+    "speakers": []
+  },
+  {
+    "start": 1311.36,
+    "end": 1316.32,
+    "text": "Vihvilainen Household Level\nResponses to the European Energy",
+    "speakers": []
+  },
+  {
+    "start": 1316.32,
+    "end": 1325.24,
+    "text": "Crisis. MIT CEEPR Working Paper,\n2025-08, April 2025.",
+    "speakers": []
+  },
+  {
+    "start": 1326.04,
+    "end": 1330.88,
+    "text": "Evidence about the 2022 crisis,\nnot a data center scenario.",
+    "speakers": []
+  },
+  {
+    "start": 1331.64,
+    "end": 1336.88,
+    "text": "Consumer, tax, legislative and\noperator sources are linked at",
+    "speakers": []
+  },
+  {
+    "start": 1336.88,
+    "end": 1341.12,
+    "text": "the claims they support. Policy\nstatus is dated above.",
+    "speakers": []
+  },
+  {
+    "start": 1341.84,
+    "end": 1345.72,
+    "text": "Proposals, targets, and\nconnection capacities are not",
+    "speakers": []
+  },
+  {
+    "start": 1345.72,
+    "end": 1350.96,
+    "text": "treated as observed deliveries.\nThe earlier field note 016",
+    "speakers": []
+  },
+  {
+    "start": 1351.16,
+    "end": 1356.08,
+    "text": "follows recorded power inside a\nUS facility. No finished",
+    "speakers": []
+  },
+  {
+    "start": 1356.08,
+    "end": 1360.0,
+    "text": "household price or local heat\nfigure is inferred from that",
+    "speakers": []
+  },
+  {
+    "start": 1360.0,
+    "end": 1364.96,
+    "text": "room. You have been listening to\nMoth and Gravel Field Notes. The",
+    "speakers": []
+  },
+  {
+    "start": 1364.96,
+    "end": 1367.92,
+    "text": "written edition is at\nmothandgravel.com.",
+    "speakers": []
+  }
+]

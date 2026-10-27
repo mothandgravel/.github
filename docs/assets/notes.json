@@ -570,5 +570,36 @@
       "href": "../specimens/data-center/#fi-account",
       "label": "Inspect the Finnish account"
     }
+  },
+  {
+    "id": "018",
+    "slug": "018-the-card-says-what-the-tv-said.html",
+    "title": "The card says what the TV said.",
+    "summary": "A phone remote shows the TV’s power, channel and volume. Each of them is something the TV said, a few seconds ago, while other remotes in the room kept changing it.",
+    "date": "2026-10-27",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "Sohva Remote",
+    "thread": "",
+    "related": [
+      "012",
+      "007",
+      "015"
+    ],
+    "supersedes": [],
+    "visual": "forms",
+    "featured": false,
+    "nextReading": {
+      "id": "012",
+      "bridge": "A remote keeps its card current by asking again. Coastal watch asks what a picture should say when nobody can be asked."
+    },
+    "specimen": {
+      "href": "../investigations/how-old/",
+      "label": "Follow the question: how old is it?"
+    }
   }
 ]
