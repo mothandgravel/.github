@@ -94,8 +94,32 @@ def catalogue(items):
     return '\n'.join(cards)
 
 
+def thread_context(thread, stop, index, page):
+    total = len(thread['stops'])
+    current_stop = local(thread['href'] + '#' + stop['id'], page)
+    continuation = local(thread['href'] + '#' + stop['next'], page)
+    next_number = f'{index + 2:02} / ' if index + 1 < total else ''
+    return f'''<nav class="thread-context" aria-label="{escape(thread['name'], quote=True)} / stop {index + 1} of {total}"><p class="thread-context-title"><span class="mono">IN THREAD 01</span>{escape(thread['name'])}</p><a class="thread-context-back" href="{current_stop}"><span class="mono">RETURN TO STOP {index + 1:02} OF {total:02}</span><strong>{escape(stop['label'])}&#160;<span aria-hidden="true">↗</span></strong></a><a class="thread-context-next" href="{continuation}"><span class="mono">CONTINUE THE THREAD</span><strong>{next_number}{escape(stop['nextLabel'])}&#160;<span aria-hidden="true">→</span></strong></a></nav>'''
+
+
 def build(check=False):
     nav, items, notes = load('wayfinding.json'), load('specimens.json'), load('notes.json')
+    thread = load('thread.json')
+    stops = []
+    for index, stop in enumerate(thread['stops']):
+        destination(thread['href'] + '#' + stop['id'])
+        destination(thread['href'] + '#' + stop['next'])
+        if stop['kind'] == 'specimen':
+            target = next(item['href'] for item in items if item['id'] == stop['ref'])
+        else:
+            assert stop['kind'] == 'note', stop
+            target = '/notes/' + next(note['slug'] for note in notes if note['id'] == stop['ref'])
+        destination(target)
+        url = urlsplit(target)
+        path = ROOT / url.path.lstrip('/')
+        if path.is_dir():
+            path /= 'index.html'
+        stops.append((path, url.fragment, index, stop))
     assert [x['id'] for x in items] == [f'{i:03}' for i in range(9, 0, -1)]
     assert len(nav['routes']) == 4 and len(nav['shortcuts']) == 3
     for item in nav['routes'] + nav['shortcuts'] + nav['studio'] + items + [c for x in items for c in x.get('children', [])]:
@@ -111,6 +135,20 @@ def build(check=False):
         footer = '<nav class="shared-footer-nav shell" aria-label="Explore the studio">' + ''.join(link(x, page) for x in nav['routes']) + link({'label':'Example workbench','href':'/workbench/'}, page) + '</nav>'
         text = slot(text, 'shared-footer', footer, lambda s, b: s.replace('</footer>', b + '\n</footer>'))
         assert '<!-- shared-footer:start -->' in text, f'Missing footer: {page}'
+        for destination_page, fragment, index, stop in stops:
+            if page != destination_page:
+                continue
+            context = thread_context(thread, stop, index, page)
+            if fragment:
+                def add_to_exhibit(source, block):
+                    pattern = r'(<article\b[^>]*\bid="' + re.escape(fragment) + r'"[^>]*>\s*<div class="work-card-top[^>]*>.*?</div>)'
+                    result, count = re.subn(pattern, lambda match: match[0] + '\n' + block, source, count=1, flags=re.S)
+                    assert count == 1, f'Missing thread exhibit: {fragment}'
+                    return result
+                text = slot(text, 'thread-context-' + stop['id'], context, add_to_exhibit)
+            else:
+                text = slot(text, 'thread-context', context, lambda source, block: source.replace('<!-- thread-context-anchor -->', block))
+                assert '<!-- thread-context:start -->' in text, f'Place thread-context-anchor after the piece identity: {page}'
         if page == ROOT / 'specimens/index.html':
             text = slot(text, 'specimen-catalogue', catalogue(items), lambda s, b: s.replace('<!-- catalogue -->', b))
         elif 'specimens' in page.relative_to(ROOT).parts:

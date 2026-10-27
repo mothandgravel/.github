@@ -1,0 +1,9 @@
+{
+  "name": "Something happened. I can’t tell what.",
+  "href": "/threads/something-happened/",
+  "stops": [
+    {"id":"reading","label":"The ageing reading","kind":"specimen","ref":"004","next":"reply","nextLabel":"The missing reply"},
+    {"id":"reply","label":"The missing reply","kind":"specimen","ref":"001","next":"promise","nextLabel":"The reassuring signal"},
+    {"id":"promise","label":"The reassuring signal","kind":"note","ref":"005","next":"your-question","nextLabel":"Your end of the thread"}
+  ]
+}
