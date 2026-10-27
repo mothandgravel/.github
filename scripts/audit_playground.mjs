@@ -25,7 +25,7 @@ const pages = [
 ];
 const results = [];
 try {
-  for (const target of pages) for (const width of (target.name === 'investigations' ? [320, 390, 768, 1024, 1440] : [320, 390, 1440])) for (const theme of ['night', 'afterlight']) {
+  for (const target of pages) for (const width of (target.name === 'investigations' ? [320, 390, 430, 768, 1024, 1440] : [320, 390, 1440])) for (const theme of ['night', 'afterlight']) {
     const label = `${target.name}-${width}-${theme}`;
     const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     const errors = [], toyRequests = [];
@@ -186,6 +186,10 @@ try {
   if (!(await still.locator('#made-here a[href="./investigations/#made-here"]').isVisible())) fail('no-script', 'Made here link missing on home');
   await still.goto(origin + '/investigations/');
   if (await still.locator('#made-here li').count() !== 16) fail('no-script', 'Made here list missing on the index');
+  for (const path of ['/notes/', '/specimens/', '/questions/']) {
+    const response = await still.request.head(origin + path);
+    if (response.status() !== 200) fail('index exit destination', { path, status: response.status() });
+  }
   for (const slug of ['how-old', 'take-it-back', 'green-light']) {
     const link = still.locator(`.question-title a[href="./${slug}/"]`);
     await link.focus(); await still.keyboard.press('Enter');

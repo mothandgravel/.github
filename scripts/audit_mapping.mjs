@@ -86,6 +86,9 @@ try {
       check(JSON.stringify(restored)===JSON.stringify(savedViews),label+': Back from '+destination+' restores selection, crop and caption together');
     };
     await page.getByRole('link',{name:'Return to the mapping Field Note'}).click();
+    // URL changes can precede the destination section's first layout on a busy runner.
+    await page.waitForURL('**/notes/006-map-leaves-room.html#bench-captures');
+    await page.locator('#bench-captures').waitFor({state:'visible'});
     check(new URL(page.url()).hash==='#bench-captures',label+': visual addendum route');
     check(await page.locator('#bench-captures').isVisible(),label+': addendum not reached');
     await page.locator('#bench-captures img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
