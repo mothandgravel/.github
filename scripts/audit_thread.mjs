@@ -59,7 +59,19 @@ try {
       await nav.nth(i).focus();await page.keyboard.press('Enter');
       await atFragment(page,id,`keyboard-${theme}-${width}-${id}`);
       assert(await page.evaluate(()=>document.activeElement.id)===id,'Keyboard focus follows the selected stop');
-      assert(await page.locator('#'+id).evaluate(el=>parseFloat(getComputedStyle(el).outlineOffset)>=6),'Return target has a deliberate focus ring outside the margin');
+      // Native fragment navigation can update URL/focus before Chromium has
+      // resolved the target style. Wait for the same visible requirement we
+      // assert, rather than sampling that intermediate navigation frame.
+      await page.waitForFunction(id=>{
+        const style=getComputedStyle(document.getElementById(id));
+        return parseFloat(style.outlineOffset)>=6&&style.outlineStyle==='solid';
+      },id,{timeout:5000}).catch(()=>{});
+      const ring=await page.locator('#'+id).evaluate(el=>({
+        offset:getComputedStyle(el).outlineOffset,style:getComputedStyle(el).outlineStyle,
+        target:el.matches(':target'),focused:el===document.activeElement,hash:location.hash
+      }));
+      assert(parseFloat(ring.offset)>=6&&ring.style==='solid',
+        `Return target has a deliberate focus ring outside the margin (${theme}/${width}/${id}): ${JSON.stringify(ring)}`);
     }
     const motion=await page.locator('.thread-wire').first().evaluate(el=>getComputedStyle(el).animationName);
     assert(motion==='none','Reduced motion keeps thread still');
