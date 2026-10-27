@@ -69,7 +69,7 @@
 .workbench-room #annotation-context,.workbench-room #return-note-anchor { font-size:14px;color:var(--gold-bright); }
 .room-direction-scope { border-left:2px solid var(--gold);padding-left:15px; }
 .workbench-room button:disabled { opacity:.6;cursor:default; }
-.workbench-room section[id] { scroll-margin-top:110px; }
+.workbench-room section[id] { scroll-margin-top:24px; }
 .workbench-room section[id]:focus-visible { outline:2px solid var(--gold);outline-offset:6px; }
 .workbench-room .room-marker { display:inline-flex;gap:8px;align-items:center;min-height:30px;font:12px/1.6 var(--mono);color:var(--gold-bright);margin:12px 0 0; }
 .room-marker::before { content:"";width:6px;height:6px;border:1px solid currentColor;border-radius:50%; }
@@ -92,7 +92,7 @@
 /* A route through the study; these are invitations, not completion states. */
 .bench-route { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--gold);margin:0 0 34px; }
 .workbench-room .bench-route a { display:grid;grid-template-columns:44px minmax(0,1fr) 12px;gap:16px;align-items:start;padding:24px 24px 24px 0;text-decoration:none; }
-.bench-route a+a { border-left:1px solid var(--line);padding-left:24px; }
+.workbench-room .bench-route a+a { border-left:1px solid var(--line);padding-left:24px; }
 .bench-route-number { font:400 42px/1 var(--serif);letter-spacing:-.07em;color:var(--gold-bright); }
 .bench-route .mono { display:block;font-size:12px;color:var(--gold-bright);margin-bottom:7px; }
 .bench-route strong { display:block;font:400 23px/1.2 var(--serif);color:var(--ink);margin-bottom:9px; }
@@ -125,8 +125,8 @@
 .workbench-room.room-return .inspection-switch { grid-template-columns:1fr; }
 .workbench-room.room-return .inspection-switch .choice { min-height:56px; }
 .workbench-room :is(#bench-marks,#your-question,#return-brief):target { outline:1px solid var(--gold);outline-offset:8px; }
-@media(max-width:1100px) { .workbench-room .bench-route a { grid-template-columns:32px minmax(0,1fr);gap:12px;padding-right:18px; }.bench-route-arrow { display:none; }.bench-route-number { font-size:34px; }.bench-route a+a { padding-left:18px; }.bench-route strong { font-size:22px; } }
-@media(max-width:760px) { .bench-route { grid-template-columns:1fr; }.workbench-room .bench-route a { grid-template-columns:34px minmax(0,1fr) 12px;padding:18px 0;gap:16px; }.bench-route a+a { border-left:0;border-top:1px solid var(--line); }.bench-route-arrow { display:block; }.bench-route a>span>span:last-child { display:none; }.bench-route .mono { margin-bottom:4px; }.bench-route strong { font-size:22px;margin-bottom:0; }.workbench-room :is(#your-question,#return-brief) { padding:24px 20px; }.workbench-room .artifact-view .inspection-switch { grid-template-columns:1fr; }.workbench-room .inspection-switch .choice { min-height:56px; } }
+@media(max-width:1100px) { .workbench-room .bench-route a { grid-template-columns:32px minmax(0,1fr);gap:12px;padding-right:18px; }.bench-route-arrow { display:none; }.bench-route-number { font-size:34px; }.workbench-room .bench-route a+a { padding-left:18px; }.bench-route strong { font-size:22px; } }
+@media(max-width:760px) { .bench-route { grid-template-columns:1fr; }.workbench-room .bench-route a { grid-template-columns:34px minmax(0,1fr) 12px;padding:18px 0;gap:16px; }.workbench-room .bench-route a+a { border-left:0;border-top:1px solid var(--line);padding-left:0; }.bench-route-arrow { display:block; }.bench-route a>span>span:last-child { display:none; }.bench-route .mono { margin-bottom:4px; }.bench-route strong { font-size:22px;margin-bottom:0; }.workbench-room :is(#your-question,#return-brief) { padding:24px 20px; }.workbench-room .artifact-view .inspection-switch { grid-template-columns:1fr; }.workbench-room .inspection-switch .choice { min-height:56px; } }
 @media print { .bench-route,.inspection-label { display:none; }.workbench-room :is(#your-question,#return-brief,.room-marks) { background:white;box-shadow:none; } }
 .workbench-room .inspection-note-mark { visibility:hidden;color:#dfc195;font-size:12px;line-height:1.8;min-height:22px;margin:0 0 10px;display:flex;gap:10px;align-items:center; }
 .workbench-room .inspection-note-mark[data-visible="true"] { visibility:visible; }

@@ -4,7 +4,8 @@ const intake = document.getElementById('loose-end');
 const status = document.getElementById('draft-status');
 function announce(message, source = document.activeElement) {
   status.textContent = message;
-  const feedback = source?.closest('[data-feedback-scope]')?.querySelector('[data-room-feedback]') || intake?.querySelector('#question-guidance');
+  const scope = source?.closest('[data-feedback-scope]');
+  const feedback = (scope && [...scope.querySelectorAll('[data-room-feedback]')].find(el=>el.closest('[data-feedback-scope]')===scope)) || intake?.querySelector('#question-guidance');
   if (feedback) {
     feedback.textContent = message;
     if (intake && source?.tagName === 'BUTTON') feedback.scrollIntoView({ block: 'nearest', behavior: 'instant' });
@@ -154,7 +155,11 @@ if (intake) {
     } catch {
       if (!isCurrent()) return;
       brief.focus({ preventScroll: true }); brief.select();
-      announce('Select and copy the brief here, or use Download.', source);
+      announce('Select and copy the brief here, or use Download.', brief);
+      // Keep the selected words and their recovery instruction together, even
+      // when a long brief puts the delivery controls below another viewport.
+      const recovery = brief.closest('.brief-document')?.querySelector('[data-room-feedback]');
+      (recovery || brief).scrollIntoView({ block: 'end', behavior: 'instant' });
     }
   });
   document.getElementById('carry-question').addEventListener('click', event => {

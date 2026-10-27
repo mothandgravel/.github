@@ -95,8 +95,8 @@ try {
     const downloadPromise = page.waitForEvent('download');
     await page.locator('#download-brief').click();
     const download = await downloadPromise;
-    assert((await page.locator('.brief-keep [data-room-feedback]').innerText()).includes('prepared for download'), 'Download confirmation stays beside the keep actions');
-    assert(await page.locator('.brief-keep [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Download confirmation is within the visible viewport');
+    assert((await page.locator('.brief-keep > [data-room-feedback]').innerText()).includes('prepared for download'), 'Download confirmation stays beside the keep actions');
+    assert(await page.locator('.brief-keep > [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Download confirmation is within the visible viewport');
     assert(await page.locator('[role="status"]').count()===1, 'Feedback has one live announcement channel');
     const downloaded = await readFile(await download.path(),'utf8');
     assert(downloaded.includes('find their footing'),'Download must include the visitor’s actual answers');
@@ -191,7 +191,7 @@ try {
   await page.locator('#making').fill(hostile+' edited');
   await next(page);await next(page);await next(page);await next(page);
   assert(await page.locator('#brief-text').inputValue()==='My edited brief. private-marker-983','Returning from answers must preserve manual brief edits');
-  assert((await page.locator('.brief-keep [data-room-feedback]').innerText()).includes('edits. They were kept'), 'Preserved edits are explained beside the brief');
+  assert((await page.locator('.brief-document [data-room-feedback]').innerText()).includes('edits. They were kept'), 'Preserved edits are explained beside the brief');
   await page.locator('#carry-question').click();
   await page.locator('#your-question').waitFor({state:'visible'});
   await page.locator('#your-question summary').filter({hasText:'Your edited brief'}).click();
@@ -242,16 +242,16 @@ try {
   const beforeCopy=await blockedPage.locator('#brief-text').inputValue();
   await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__copiedBrief=text;}},configurable:true}));
   await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
-  await blockedPage.locator('.brief-keep [data-room-feedback]').filter({hasText:'Brief copied'}).waitFor({state:'visible'});
+  await blockedPage.locator('.brief-keep > [data-room-feedback]').filter({hasText:'Brief copied'}).waitFor({state:'visible'});
   assert(await blockedPage.evaluate(()=>window.__copiedBrief)===beforeCopy, 'Copy keeps the exact editable brief');
   await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw new Error('Clipboard denied');}},configurable:true}));
   // Programmatic clicks model browsers that do not focus a clicked button.
   await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
-  await blockedPage.locator('.brief-keep [data-room-feedback]').filter({hasText:'Select and copy'}).waitFor({state:'visible'});
-  assert(await blockedPage.locator('.brief-keep [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Clipboard recovery stays in view');
+  await blockedPage.locator('.brief-document [data-room-feedback]').filter({hasText:'Select and copy'}).waitFor({state:'visible'});
+  assert(await blockedPage.locator('.brief-document [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Clipboard recovery stays in view');
   assert(await blockedPage.locator('#brief-text').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().bottom>document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().top<innerHeight), 'Denied clipboard selects a visible editable brief');
   await blockedPage.locator('#rebuild-brief').evaluate(el=>el.click());
-  assert((await blockedPage.locator('.brief-keep [data-room-feedback]').innerText()).includes('rebuilt'), 'Rebuild feedback is independent of click focus');
+  assert((await blockedPage.locator('.brief-keep > [data-room-feedback]').innerText()).includes('rebuilt'), 'Rebuild feedback is independent of click focus');
   await blockedPage.locator('#carry-question').evaluate(el=>el.click());
   assert((await blockedPage.locator('.brief-preview [data-room-feedback]').innerText()).includes('cannot carry'), 'Blocked handoff explains recovery beside its action');
   assert(blockedPage.url().endsWith('/questions/'),'Failed handoff must retain the visitor’s brief');
@@ -298,7 +298,7 @@ try {
   await latestCopy.evaluate(()=>window.__copyRequests[0].reject(new Error('Superseded')));
   assert(await latestCopy.locator('#draft-status').innerText()==='','An older copy must not interrupt the newest copy');
   await latestCopy.evaluate(()=>window.__copyRequests[1].resolve());
-  assert((await latestCopy.locator('.brief-keep [data-room-feedback]').innerText()).includes('Brief copied'),'The newest copy still reports success');
+  assert((await latestCopy.locator('.brief-keep > [data-room-feedback]').innerText()).includes('Brief copied'),'The newest copy still reports success');
   results.push({label:'latest-copy-owns-feedback',passed:true});await latestCopy.close();
 
   // Poison the formerly published module URL, as a browser cache could retain it.
@@ -309,7 +309,7 @@ try {
   const cachedPage=await cached.newPage();await cachedPage.goto(origin+'/questions/');await makeBrief(cachedPage);
   await cachedPage.locator('#rebuild-brief').evaluate(el=>el.click());
   assert(!staleRequested,'The new question sheet must request a fresh feedback module URL');
-  assert((await cachedPage.locator('.brief-keep [data-room-feedback]').innerText()).includes('rebuilt'),'A prior module cache must not hide local feedback');
+  assert((await cachedPage.locator('.brief-keep > [data-room-feedback]').innerText()).includes('rebuilt'),'A prior module cache must not hide local feedback');
   results.push({label:'stale-module-cache',passed:true});await cached.close();
 
   for(const theme of ['night','afterlight']) {
