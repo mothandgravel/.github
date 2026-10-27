@@ -18,14 +18,14 @@ const axeRun = async (page) => {
 const pages = [
   { name: 'home-questions', path: '/', toys: [] },
   { name: 'investigations', path: '/investigations/', toys: [] },
-  { name: 'how-old', path: '/investigations/how-old/', toys: ['week'] },
-  { name: 'take-it-back', path: '/investigations/take-it-back/', toys: ['stamp'] },
-  { name: 'green-light', path: '/investigations/green-light/', toys: ['grid'] },
+  { name: 'how-old', path: '/investigations/how-old/', toys: ['week'], projects: ['raivari', 'liveconnect', 'decision-docket', 'mapping-buggy', 'vahti'] },
+  { name: 'take-it-back', path: '/investigations/take-it-back/', toys: ['stamp'], projects: ['ajo', 'skystack-builder', 'decision-docket', 'raivari-rpc', 'paja', 'luotsi', 'verstas'] },
+  { name: 'green-light', path: '/investigations/green-light/', toys: ['grid'], projects: ['geaidnu', 'flutter-test-rs', 'decision-docket', 'cyber-grid'] },
   { name: 'playground', path: '/workbench/playground/', toys: ['grid', 'stamp', 'week'] },
 ];
 const results = [];
 try {
-  for (const target of pages) for (const width of (target.name === 'investigations' ? [320, 390, 430, 768, 1024, 1440] : [320, 390, 1440])) for (const theme of ['night', 'afterlight']) {
+  for (const target of pages) for (const width of (target.name === 'investigations' || target.projects ? [320, 390, 430, 768, 1024, 1440] : [320, 390, 1440])) for (const theme of ['night', 'afterlight']) {
     const label = `${target.name}-${width}-${theme}`;
     const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     const errors = [], toyRequests = [];
@@ -95,6 +95,59 @@ try {
     if (target.toys.includes('grid')) await page.locator('#toy-grid [data-ask]').click();
     if (target.toys.includes('stamp')) await page.locator('#toy-stamp .stamp-cell').nth(26).click();
     if (target.toys.includes('week')) await page.locator('#toy-week input[value="ring"]').check();
+    if (target.projects) {
+      const chapter = await page.evaluate(() => {
+        const inside = (a, b) => { const x = a.getBoundingClientRect(), y = b.getBoundingClientRect();
+          return y.left >= x.left - 1 && y.right <= x.right + 1 && y.top >= x.top - 1 && y.bottom <= x.bottom + 1; };
+        return {
+          projects: [...document.querySelectorAll('.made-stop')].map(el => el.id),
+          paths: [...document.querySelectorAll('.question-paths a')].map(a => a.getAttribute('href')),
+          clipped: [...document.querySelectorAll('.question-kicker,.thread-heading h1,.thread-margin>p,.thread-margin .status,.question-bridge a,.question-peers a')]
+            .filter(el => el.scrollWidth > el.clientWidth + 1 || !inside(el.parentElement, el)).map(el => el.textContent),
+          // A document can hide horizontal overflow while its narrow project folios still overlap.
+          crossedFolios: [...document.querySelectorAll('.thread-margin')].filter(el => {
+            const [a,b] = [...el.children].map(child => child.getBoundingClientRect());
+            return a.right > b.left + 1 && b.right > a.left + 1 && a.bottom > b.top + 1 && b.bottom > a.top + 1;
+          }).map(el => el.textContent),
+          featured: [...document.querySelectorAll('.question-feature>a')].map(a => new URL(a.href).pathname + new URL(a.href).hash),
+          // A saved Ajo trace must not borrow SkyStack's footprint preview.
+          mismatchedPreview: [...document.querySelectorAll('.question-feature>a')].some(a =>
+            new URL(a.href).hash === '#specimen-ajo' && (!a.querySelector('.question-trace') || a.querySelector('img'))),
+          peers: [...document.querySelectorAll('.question-peers>a')].map(a => new URL(a.href).pathname),
+          lists: [...document.querySelectorAll('.room-tabs,.question-shelf ul')].every(el => el.getAttribute('role') === 'list'),
+        };
+      });
+      const peers = pages.filter(p => p.projects && p.name !== target.name).map(p => p.path);
+      if (JSON.stringify(chapter.projects) !== JSON.stringify(target.projects)
+        || JSON.stringify(chapter.paths) !== JSON.stringify([`#${target.toys[0]}`, '#shelf-notes', '#shelf-specimens'])
+        || chapter.clipped.length || chapter.crossedFolios.length || !chapter.lists || chapter.featured.length !== 2
+        || chapter.mismatchedPreview
+        || JSON.stringify(chapter.peers) !== JSON.stringify(peers)) fail(label + ' chapter integrity', chapter);
+      if (width === 390 && theme === 'night') {
+        for (const id of ['shelf-notes', 'shelf-specimens']) {
+          await page.locator(`.question-paths a[href="#${id}"]`).focus(); await page.keyboard.press('Enter');
+          await page.waitForFunction(id => {
+            const target = document.getElementById(id), box = target.getBoundingClientRect();
+            return document.activeElement === target && box.top >= document.querySelector('.site-header').getBoundingClientRect().bottom - 1 && box.top < innerHeight - 24;
+          }, id);
+          const link = page.locator(`[aria-labelledby="${id}"] .question-feature>a`);
+          const destination = await link.getAttribute('href');
+          const expected = new URL(destination, page.url());
+          await link.focus(); await page.keyboard.press('Enter');
+          await page.waitForURL(expected.href);
+          await page.waitForLoadState('domcontentloaded');
+          if (expected.hash) await page.locator(expected.hash).waitFor({ state: 'visible' });
+          else if (await page.locator('h1').count() !== 1) fail(label + ' connection destination', expected.href);
+          await page.goBack();
+          await page.locator('.question-paths').waitFor({ state: 'visible' });
+          if (new URL(page.url()).pathname !== target.path) fail(label + ' connection return', page.url());
+        }
+        for (const toy of target.toys) {
+          await page.locator(`#toy-${toy}`).scrollIntoViewIfNeeded();
+          await page.locator(`#toy-${toy}[data-loaded="ready"]`).waitFor({ timeout: 5000 });
+        }
+      }
+    }
     const check = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth > innerWidth + 1,
       headings: document.querySelectorAll('h1').length,
@@ -103,7 +156,7 @@ try {
       leaks: /navivra|kistradegoods|digablesolutions|vesuno|run\.app/i.test(document.documentElement.outerHTML),
     }));
     if (check.overflow || check.headings !== 1 || check.animating || check.leaks || errors.length) fail(label, { check, errors });
-    if (width !== 320 || target.name === 'investigations') {
+    if (width !== 320 || target.name === 'investigations' || target.projects) {
       // Axe runs on the page at rest at its top: anything scrolled under the sticky header would
       // otherwise read as an obscured target.
       await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
