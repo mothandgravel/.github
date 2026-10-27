@@ -127,7 +127,9 @@ def build(check=False):
     for item in items:
         if item.get('image'):
             assert (ROOT / item['image']).is_file(), item['image']
-    pages = sorted(ROOT.rglob('*.html'))
+    # The Sohva Remote pages are a faithful copy of the app's own site, with its own masthead and
+    # footer; the studio navigation is not written into them.
+    pages = sorted(p for p in ROOT.rglob('*.html') if p.relative_to(ROOT).parts[0] != 'sohva')
     for page in pages:
         old = page.read_text(encoding='utf-8')
         text = slot(old, 'shared-header', header(page, nav), lambda s, b: re.sub(r'<header\b[^>]*class="site-header[^\"]*".*?</header>', lambda _: b, s, count=1, flags=re.S))

@@ -1,131 +1,482 @@
 <!doctype html>
-<html lang="en" data-theme="night">
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#17191b">
-  <meta name="color-scheme" content="dark light">
-  <meta name="description" content="Sohva Remote: a quick, ad-free phone remote for Sony Bravia TVs, made by Moth &amp; Gravel. Home network only, no ads, no account. Coming to Google Play.">
-  <meta name="robots" content="index, follow">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Moth &amp; Gravel">
-  <meta property="og:title" content="Sohva Remote — Moth &amp; Gravel">
-  <meta property="og:description" content="Sohva Remote: a quick, ad-free phone remote for Sony Bravia TVs, made by Moth &amp; Gravel. Home network only, no ads, no account. Coming to Google Play.">
-  <meta property="og:url" content="https://mothandgravel.com/sohva/">
-  <meta property="og:image" content="https://mothandgravel.com/assets/social-cover.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Moth &amp; Gravel — drawn to light, built for rough ground. A moth-and-stone emblem on a charcoal field.">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://mothandgravel.com/assets/social-cover.png">
-  <link rel="canonical" href="https://mothandgravel.com/sohva/">
-  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="../assets/site.css">
-  <link rel="stylesheet" href="../assets/sohva.css">
-  <script>document.documentElement.classList.add("has-js")</script>
-  <script src="../assets/site.js" defer></script>
-  <title>Sohva Remote — Moth &amp; Gravel</title>
-<!-- discovery:start -->
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Organization","ProfessionalService"],"@id":"https://mothandgravel.com/#studio","name":"Moth & Gravel","url":"https://mothandgravel.com/","description":"An independent software and design studio based in Finland. Interface design and software engineering for cloud, mobile and connected-device products, with an invitation to questions from anywhere.","logo":"https://mothandgravel.com/assets/nav-mark.svg","image":"https://mothandgravel.com/assets/social-cover.png","email":"hello@mothandgravel.com","contactPoint":{"@type":"ContactPoint","contactType":"new enquiries","email":"hello@mothandgravel.com","availableLanguage":["en"],"url":"https://mothandgravel.com/#contact"},"knowsAbout":["Interface design","Software engineering","Prototyping","Cloud services","Mobile software","Connected devices","Telemetry"],"location":{"@type":"Place","name":"Finland"},"founder":{"@type":"Person","name":"slideep"},"sameAs":["https://github.com/mothandgravel"]},{"@type":"WebSite","@id":"https://mothandgravel.com/#website","url":"https://mothandgravel.com/","name":"Moth & Gravel","inLanguage":"en","publisher":{"@id":"https://mothandgravel.com/#studio"}},{"@type":"WebPage","@id":"https://mothandgravel.com/sohva/#page","url":"https://mothandgravel.com/sohva/","name":"Sohva Remote","inLanguage":"en","isPartOf":{"@id":"https://mothandgravel.com/#website"}}]}</script>
-<!-- discovery:end -->
-<script>(()=>{let t;try{t=localStorage.getItem("moth-and-gravel-theme")}catch(_){}const d=document.documentElement,c=t==="afterlight"||t==="night"?t:"system";d.dataset.themeChoice=c;d.dataset.theme=c!=="system"?c:matchMedia("(prefers-color-scheme: light)").matches?"afterlight":"night"})()</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sohva Remote: a phone remote for Sony Bravia TVs</title>
+<meta name="description" content="Sohva Remote is a fast, ad-free phone remote for Sony Bravia TVs. It works on your home network only: no cloud, no account.">
+<link rel="canonical" href="https://mothandgravel.com/sohva/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Moth &amp; Gravel">
+<meta name="keywords" content="Sony Bravia remote, Android TV remote app, TV remote for Android, kaukosäädin, Sony Bravia kaukosäädin, ad-free TV remote">
+<link rel="sitemap" type="application/xml" href="../sitemap.xml">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<!-- Share card. Crawlers need absolute URLs; these point at the Moth &amp; Gravel site. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sohva Remote">
+<meta property="og:url" content="https://mothandgravel.com/sohva/">
+<meta property="og:title" content="Sohva Remote">
+<meta property="og:description" content="A fast, ad-free phone remote for Sony Bravia TVs. Home network only: no cloud, no account.">
+<meta property="og:image" content="https://mothandgravel.com/sohva/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Sohva Remote: your TV, from the sofa. A living room in the evening, with the app's remote screen.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mothandgravel.com/sohva/img/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/photos/hero-sofa-1024.webp" imagesrcset="img/photos/hero-sofa-640.webp 640w, img/photos/hero-sofa-1024.webp 1024w, img/photos/hero-sofa-1440.webp 1440w, img/photos/hero-sofa-1664.webp 1664w" imagesizes="100vw" fetchpriority="high">
+<link rel="stylesheet" href="css/site.css">
+<script src="js/site.js" defer></script>
+<script type="application/ld+json" id="structured-data">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://mothandgravel.com/sohva/#app",
+      "name": "Sohva Remote",
+      "alternateName": "Sohva Remote for Sony Bravia TVs",
+      "description": "A fast, ad-free Android phone remote for Sony Bravia TVs that works on the home network only. Not affiliated with Sony.",
+      "applicationCategory": "UtilitiesApplication",
+      "applicationSubCategory": "TV remote control",
+      "operatingSystem": "Android 8.0 or newer",
+      "softwareVersion": "1.5.2",
+      "inLanguage": [
+        "en",
+        "fi"
+      ],
+      "isAccessibleForFree": true,
+      "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "url": "https://mothandgravel.com/sohva/",
+      "image": "https://mothandgravel.com/sohva/img/og.jpg",
+      "screenshot": [
+        "https://mothandgravel.com/sohva/img/remote.png",
+        "https://mothandgravel.com/sohva/img/scenes.png",
+        "https://mothandgravel.com/sohva/img/timers.png",
+        "https://mothandgravel.com/sohva/img/channels.png",
+        "https://mothandgravel.com/sohva/img/inputs-apps.png",
+        "https://mothandgravel.com/sohva/img/tablet.png",
+        "https://mothandgravel.com/sohva/img/tablet-upright.png"
+      ],
+      "featureList": [
+        "Fast keys over the TV's Android TV Remote protocol: D-pad, volume and channels in tens of milliseconds",
+        "Touchpad mode: swipe to move, tap for OK, rest the finger to keep moving",
+        "Swipe the card to change channel; jump back to the previous channel",
+        "Ad break: mute the commercials with one tap; the sound comes back by itself",
+        "The TV's inputs, installed apps and channel list; pin apps as one-tap buttons and launcher shortcuts",
+        "Type or dictate into the TV's search box; voice commands in Finnish and English",
+        "Scenes and scheduled scenes (they act only while the TV is on)",
+        "Sleep timer that fades the sound over a minute; wake-up TV at a set time",
+        "Quick Settings tiles, home-screen widget, remote in notifications and on the lock screen",
+        "Mute the TV during phone calls; the phone's volume buttons control the TV",
+        "English or Finnish, chosen in the app whatever the phone's language",
+        "Phones and tablets: on a tablet the More tabs sit beside the remote",
+        "Home network only: no ads, no account, no cloud, no analytics"
+      ],
+      "author": {
+        "@id": "https://mothandgravel.com/sohva/#publisher"
+      },
+      "publisher": {
+        "@id": "https://mothandgravel.com/sohva/#publisher"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://mothandgravel.com/sohva/#publisher",
+      "name": "Moth & Gravel",
+      "url": "https://mothandgravel.com/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://mothandgravel.com/sohva/#site",
+      "url": "https://mothandgravel.com/sohva/",
+      "name": "Sohva Remote",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://mothandgravel.com/sohva/#publisher"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://mothandgravel.com/sohva/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which TVs does it work with?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It's built and tested on a Sony KD-65XF9005 with Android TV. Other Bravia TVs with IP control should work too."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What do I need to set on the TV?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open Settings › Network › Home network setup › IP control. Set Authentication to \"Normal and Pre-Shared Key\" and Remote start to On. Then open the app and type the PIN the TV shows."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. There are no ads and no paywall: every feature is there from the first launch."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work away from home?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The phone talks to the TV directly over your home network, so both need to be on the same Wi-Fi. Nothing goes through the internet, which is also why it's fast."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work on a tablet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. On a tablet on its side, the inputs, channels, timers and scenes stay open beside the remote; held upright, they sit between the channel card and the remote. The remote keeps the size it has on a phone."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When will it be on Google Play?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It's on its way. It will install on Android 8.0 or newer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it made by Sony?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Sohva Remote is an independent app made by Moth & Gravel. It isn't made by or affiliated with Sony. \"Sohva\" is Finnish for sofa."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it store about me?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only what it needs to reach your TV, kept on the phone: the TV's address, the pairing keys and your settings. See the privacy policy."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
-<body class="sohva-page">
-  <a class="skip-link" href="#main">Skip to Sohva Remote</a>
-  <!-- shared-header:start -->
-<header class="site-header shared-header" id="top"><div class="header-inner shell">
-<a class="brand" href="../" title="Moth &amp; Gravel home"><span class="brand-stamp" aria-hidden="true"><img src="../assets/nav-mark.svg" width="44" height="44" alt=""></span><span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span></a>
-<nav class="collection-nav" aria-label="Collections"><a href="../specimens/">Specimens</a><a href="../notes/">Field notes</a><a href="../#contact" class="collection-contact">Contact</a></nav>
-<p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
-<button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
-<details class="studio-index"><summary class="menu-toggle" id="menu-toggle" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></summary>
-<nav class="main-nav studio-sheet" id="primary-nav" aria-label="Studio index"><div class="nav-sheet-heading"><span class="mono">M+G / THE STUDIO INDEX</span><p>A few ways in.</p></div><a href="../specimens/"><span class="nav-sheet-index mono" aria-hidden="true">01</span><span class="nav-sheet-label">Specimens</span><span class="nav-sheet-hint">Working pieces you can look into.</span></a><a href="../notes/"><span class="nav-sheet-index mono" aria-hidden="true">02</span><span class="nav-sheet-label">Field notes</span><span class="nav-sheet-hint">What we noticed while making. Read or listen.</span></a><a href="../threads/something-happened/"><span class="nav-sheet-index mono" aria-hidden="true">03</span><span class="nav-sheet-label">Something happened. I can’t tell what.</span><span class="nav-sheet-hint">One question through several pieces.</span></a><a href="../#contact"><span class="nav-sheet-index mono" aria-hidden="true">04</span><span class="nav-sheet-label">Contact</span><span class="nav-sheet-hint">A rough edge, an unfinished idea, a question.</span></a><section class="nav-shortcuts" aria-labelledby="shortcut-heading"><p class="mono" id="shortcut-heading">Straight to.</p><div><a class="nav-shortcut" href="../specimens/maintenance-acceptance/tnt/"><strong>The measured TNT replay ↗</strong><span>Inside specimen 009 / 1,000 recorded departures.</span></a><a class="nav-shortcut" href="../notes/#listen-archive"><strong>Listen to the field notes ↗</strong><span>AI-narrated readings, conversations and a narration study.</span></a><a class="nav-shortcut" href="../investigations/"><strong>Three questions. Still open. ↗</strong><span>Freshness, recovery and the promise of a green light.</span></a></div></section><div class="nav-studio"><a href="../#services">What we take on</a><a href="../#ethos">The thinking</a><a href="../workbench/">Example workbench</a></div></nav></details>
-</div></header>
-<!-- shared-header:end -->
-  <main id="main" class="sohva-main shell">
-    <div class="sohva-top mono"><span>MADE HERE / SOHVA REMOTE</span><a href="../investigations/#made-here">Everything made here ↗</a></div>
-    <section class="sohva-hero" aria-labelledby="sohva-title">
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="mark" href="#main" aria-label="Sohva Remote, top of page">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="none" stroke="#ffb547" stroke-width="2"/><circle cx="14" cy="14" r="5.5" fill="#ffb547"/></svg>
+      Sohva Remote
+    </a>
+    <nav class="site-nav" aria-label="Site">
+      <a class="nav-link" href="#remote">Features</a>
+      <a class="nav-link" href="#evening">A weekday</a>
+      <a class="nav-link" href="#privacy">Privacy</a>
+      <a class="nav-link" href="#faq">FAQ</a>
+      <a class="button primary small" href="#get">Get the app</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <section class="hero" aria-labelledby="hero-title">
+    <figure class="hero-photo" aria-hidden="true">
+      <img src="img/photos/hero-sofa-1024.webp" srcset="img/photos/hero-sofa-640.webp 640w, img/photos/hero-sofa-1024.webp 1024w, img/photos/hero-sofa-1440.webp 1440w, img/photos/hero-sofa-1664.webp 1664w" sizes="100vw" width="1664" height="936" fetchpriority="high" alt="">
+    </figure>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1 class="display" id="hero-title">Your TV, from the sofa.</h1>
+        <p class="lede">A quick, ad-free phone remote for Sony Bravia TVs. It talks to the TV over your home network only, so every press lands at once and nothing leaves the house.</p>
+        <div class="actions">
+          <a class="soon" href="#faq-play">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg>
+            Coming to Google Play
+          </a>
+        </div>
+        <ul class="facts" aria-label="At a glance">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>No ads</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>No account</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Home network only</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Android 8.0+</li>
+        </ul>
+      </div>
+      <div class="hero-device">
+        <div class="device">
+          <div class="device-screen">
+            <img src="img/remote-540.webp" srcset="img/remote-540.webp 540w, img/remote-1080.webp 1080w" sizes="(min-width: 900px) 290px, 78vw" width="540" height="1260" alt="The remote screen: the channel card showing Yle Teema &amp; Fem HD at volume 30 with the programme on now, the Ad break button and pinned apps, the D-pad, and volume and channel controls">
+          </div>
+        </div>
+        <p class="callout c1" aria-hidden="true"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 13.9 9l6.6 1.9-6.6 1.9L12 19.4l-1.9-6.6L3.5 10.9 10.1 9z"/></svg></i><span><b>Emmerdale</b>MTV3 at 18.30</span></p>
+        <p class="callout c2 green" aria-hidden="true"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M7 6.5a7.5 7.5 0 1 0 10 0"/></svg></i><span><b>Wake-up</b>Mon to Fri, 06.15</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="remote" aria-labelledby="remote-title">
+    <div class="section-head split">
+      <h2 class="h2" id="remote-title">A remote that keeps up with your thumb.</h2>
+      <p class="lede">Everything the plastic remote does, without aiming it at the TV, plus the bits it never could.</p>
+    </div>
+    <div class="bento">
+      <article class="tile keys reveal">
+        <h3 class="h3">Fast keys</h3>
+        <p>The D-pad, volume and channels go over the Android TV Remote protocol, so a press lands before your thumb is off the screen.</p>
+        <p class="stat"><b>Tens</b><span>of milliseconds, press to TV</span></p>
+        <div class="media"><img src="img/crops/dpad.webp" width="600" height="600" loading="lazy" alt="The app's round D-pad with a large amber OK button"></div>
+      </article>
+      <article class="tile card reveal">
+        <h3 class="h3">Swipe the card to change channel</h3>
+        <p>The card shows what's on and the volume. Swipe it for the next channel, and jump back to the previous one with a tap. When the commercials start, tap Ad break: the sound goes off and comes back by itself.</p>
+        <div class="media"><img src="img/crops/card.webp" width="720" height="551" loading="lazy" alt="The channel card: Yle Teema &amp; Fem HD at volume 30 with the programme on now, inputs TV, PlayStation 5 and HT-XF9000, and below it the Ad break button and pinned apps"></div>
+      </article>
+      <article class="tile pad-tile reveal">
+        <h3 class="h3">Touchpad mode</h3>
+        <p>Swipe to move, tap for OK. Rest your finger after a swipe and it keeps moving.</p>
+        <div class="pad-demo" aria-hidden="true">
+          <div class="pad-row"><span></span><span></span><span></span><span></span><span></span><i class="focus"></i></div>
+          <div class="pad"><i class="trail"></i><i class="finger"></i></div>
+        </div>
+      </article>
+      <article class="tile voice reveal">
+        <h3 class="h3">Type and talk</h3>
+        <p>Type or dictate into the TV's search, or just say it.</p>
+        <ul class="say">
+          <li lang="fi">"kanava 3"</li>
+          <li>"volume 20"</li>
+          <li>"Netflix"</li>
+        </ul>
+        <p class="say-note">Voice commands in Finnish and English. The whole app is in both, too, and you can pick either, whatever your phone's language.</p>
+      </article>
+      <article class="tile apps reveal">
+        <div class="copy">
+          <h3 class="h3">Every input, app and channel</h3>
+          <p>Inputs and installed apps with their icons, and the full channel list. Long-press an app to pin it under the remote as a one-tap button.</p>
+        </div>
+        <div class="media"><img src="img/crops/inputs.webp" width="640" height="569" loading="lazy" alt="The inputs list: TV, PlayStation 5, HT-XF9000, HDMI 3/ARC and screen mirroring, each with an icon"></div>
+      </article>
+      <article class="tile pins reveal">
+        <h3 class="h3">Your phone's own buttons</h3>
+        <p>The phone's volume buttons change the TV volume while the app is open. Pinned apps also show up when you long-press the Sohva icon on your home screen.</p>
+        <div class="media"><img src="img/crops/controls.webp" width="720" height="340" loading="lazy" alt="Volume and channel rockers, a mute button and media keys from the remote screen"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section evening" id="evening" aria-labelledby="evening-title">
+    <div class="wrap">
+      <div class="section-head split">
+        <h2 class="h2" id="evening-title">A weekday evening, set up once.</h2>
+        <p class="lede">This is the real weekday of the family that made the app. Three scenes switch channels at the right times while the TV is on; the sleep timer and wake-up handle both ends of the day, even with the app closed.</p>
+      </div>
+      <div class="guide-body">
+        <div>
+          <p class="guide-status" id="guide-status" role="status" hidden></p>
+          <ol class="slots">
+            <li class="slot" data-start="18:30" data-end="19:00"><time datetime="18:30">18.30</time><span class="what">Emmerdale <span class="chan">MTV3</span></span><span class="how">The Emmerdale scene switches to MTV3</span></li>
+            <li class="slot" data-start="19:00" data-end="20:30"><time datetime="19:00">19.00</time><span class="what">Seitsemän Uutiset <span class="chan">MTV3</span></span><span class="how">News MTV3 makes sure it's MTV3</span></li>
+            <li class="slot" data-start="20:30" data-end="22:00"><time datetime="20:30">20.30</time><span class="what">Yle Uutiset <span class="chan">Yle TV1</span></span><span class="how">News Yle TV1 switches to Yle TV1</span></li>
+            <li class="slot" data-start="22:00" data-end="23:30"><time datetime="22:00">22.00</time><span class="what">Kymmenen Uutiset <span class="chan">MTV3</span></span><span class="how">News MTV3 switches back to MTV3</span></li>
+            <li class="slot night" data-start="23:30" data-screen="timers"><time datetime="23:30">23.30</time><span class="what">Lights out</span><span class="how">The sleep timer fades the sound over a minute, then turns the TV off</span></li>
+            <li class="slot morning" data-start="06:15" data-screen="timers"><time datetime="06:15">06.15</time><span class="what">Good morning</span><span class="how">Wake-up turns the TV on to the morning channel</span></li>
+          </ol>
+          <p class="guide-note">A scheduled scene never turns the TV on by itself. If nobody is watching at 20.30, the TV stays off.</p>
+        </div>
+        <figure class="guide-phone" data-screen="scenes">
+          <div class="device">
+            <div class="device-screen">
+              <img src="img/scenes-540.webp" srcset="img/scenes-540.webp 540w, img/scenes-1080.webp 1080w" sizes="290px" width="540" height="1260" loading="lazy" alt="The Scenes tab: Emmerdale on MTV3 HD, Mon–Fri 18.30; News MTV3 on MTV3 HD, Mon–Fri 19.00 and 22.00; News Yle TV1 on Yle TV1 HD, Mon–Fri 20.30">
+              <img src="img/timers-540.webp" srcset="img/timers-540.webp 540w, img/timers-1080.webp 1080w" sizes="290px" width="540" height="1260" loading="lazy" alt="The Timers tab: sleep timer choices from 15 to 120 minutes, and wake-up at 6.15 Monday to Friday, turning to Nelonen HD">
+            </div>
+          </div>
+          <figcaption id="guide-caption">The same evening in the Scenes tab</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap band-wrap section" aria-labelledby="morning-title">
+    <div class="band reveal">
+      <img src="img/photos/morning-1024.webp" srcset="img/photos/morning-640.webp 640w, img/photos/morning-1024.webp 1024w, img/photos/morning-1664.webp 1664w" sizes="(min-width: 1216px) 1136px, 100vw" width="1664" height="936" loading="lazy" alt="">
+      <div class="band-text">
+        <h2 class="h2" id="morning-title"><time datetime="06:15">06.15</time>, still dark, and the TV is already on.</h2>
+        <p>Wake-up turns the TV on at a set time, to the channel and volume you picked, even with the app closed. The coffee is still your job.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="extras-title">
+    <div class="extras">
+      <figure class="photo reveal">
+        <img src="img/photos/hand-phone-800.webp" srcset="img/photos/hand-phone-480.webp 480w, img/photos/hand-phone-800.webp 800w, img/photos/hand-phone-1120.webp 1120w" sizes="(min-width: 1216px) 500px, (min-width: 900px) 42vw, 100vw" width="1120" height="1400" loading="lazy" alt="A hand under a knitted blanket holding a phone with Sohva Remote open, the TV glowing in the background">
+      </figure>
       <div>
-        <h1 id="sohva-title">Your TV,<br><em>from the sofa.</em></h1>
-        <p>A quick, ad-free phone remote for Sony Bravia TVs. It talks to the TV over your home network only, and nothing leaves the house.</p>
-        <ul class="sohva-facts" aria-label="At a glance"><li>Coming to Google Play</li><li>No ads</li><li>No account</li><li>Home network only</li><li>Android 8.0+</li></ul>
+        <h2 class="h2" id="extras-title">Most of the time, you won't even open it.</h2>
+        <ul class="extra-list">
+          <li><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="3.5"/></svg></span><div><b>Quick Settings tiles</b><span>Power, mute, guide and your first scene, from the notification shade.</span></div></li>
+          <li><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="12" rx="3.5"/><path d="M8 12h.01M12 12h.01M16 12h.01" stroke-linecap="round" stroke-width="2.6"/></svg></span><div><b>Home-screen widget</b><span>Volume, channel and mute, right on the home screen.</span></div></li>
+          <li><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 14 9l5.5.5-4.2 3.6 1.3 5.4L12 15.6l-4.6 2.9 1.3-5.4-4.2-3.6L10 9z"/></svg></span><div><b>Launcher shortcuts</b><span>Long-press the app icon to open a pinned TV app directly.</span></div></li>
+          <li><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h3.5l1.5 4-2 1.5a10 10 0 0 0 6 6l1.5-2 4 1.5V19a1.5 1.5 0 0 1-1.5 1.5A15.5 15.5 0 0 1 3.5 6 1.5 1.5 0 0 1 5 4.5z"/><path d="m4 4 16 16"/></svg></span><div><b>Mute during calls</b><span>The TV goes quiet when the phone rings and comes back after.</span></div></li>
+          <li><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.5 1.5M9.5 2.5h5"/></svg></span><div><b>Sleep timer and wake-up</b><span>The sound fades over a minute before the TV turns off, and the volume is back next time.</span></div></li>
+        </ul>
       </div>
-      <figure><picture><source srcset="../assets/sohva/remote-keys-540.webp 540w, ../assets/sohva/remote-keys-1080.webp 1080w" sizes="(max-width:900px) 360px, 34vw"><img src="../assets/sohva/remote-keys-1080.webp" width="1080" height="1480" fetchpriority="high" decoding="async" alt="The remote screen’s keys: a round direction pad with an amber OK button, captioned Back, Home, Guide and Options keys, a Mute button, playback keys, and rockers for volume and channel."></picture><figcaption>The remote’s keys. Screenshots are cropped so no channel, programme or device names appear.</figcaption></figure>
-    </section>
+    </div>
+  </section>
 
-    <section class="sohva-section" id="remote" aria-labelledby="remote-title">
-      <h2 id="remote-title">A remote that keeps up with your thumb.</h2>
-      <p>Everything the plastic remote does, without aiming it at the TV, plus the bits it never could.</p>
-      <div class="sohva-feature">
-        <div><h3>Fast keys</h3><p>The D-pad, volume and channels go over the Android TV Remote protocol, after a second, one-time pairing.</p>
-        <h3>Swipe the card to change channel</h3><p>The card shows what’s on and the volume. Swipe it for the next channel, and jump back to the previous one with a tap. When the commercials start, tap Ad break: the sound goes off and comes back by itself.</p></div>
-        <figure><img src="../assets/sohva/dpad.webp" width="600" height="600" loading="lazy" decoding="async" alt="The app’s round D-pad with a large amber OK button."></figure>
+  <section class="wrap section" id="tablet" aria-labelledby="tablet-title">
+    <div class="section-head split">
+      <h2 class="h2" id="tablet-title">On a tablet, nothing hides behind a tab.</h2>
+      <p class="lede">Turn the tablet on its side and the inputs, channels, timers and scenes stay open beside the remote. Held upright, they sit between the channel card and the remote. The buttons keep their phone size, so your thumb still finds them.</p>
+    </div>
+    <div class="tablets reveal">
+      <figure class="tablet wide">
+        <div class="tablet-screen"><img src="img/tablet-960.webp" srcset="img/tablet-960.webp 960w, img/tablet-1920.webp 1920w" sizes="(min-width: 1216px) 880px, (min-width: 900px) 72vw, 100vw" width="960" height="600" loading="lazy" alt="Sohva Remote on a tablet on its side: tabs for sources, channels, keys, timers, scenes and settings down the left, the channel card and the inputs in two columns in the middle, and the D-pad, volume and channel controls on the right"></div>
+      </figure>
+      <figure class="tablet tall">
+        <div class="tablet-screen"><img src="img/tablet-upright-400.webp" srcset="img/tablet-upright-400.webp 400w, img/tablet-upright-800.webp 800w" sizes="240px" width="400" height="640" loading="lazy" alt="Sohva Remote on an upright tablet: the channel card at the top, the channel list in the middle and the remote below"></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="screens-title">
+    <div class="gallery-head">
+      <h2 class="h2" id="screens-title">Every screen.</h2>
+      <div class="gallery-nav" hidden>
+        <button type="button" data-dir="-1" aria-label="Previous screenshots" aria-controls="strip"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 6-6 6 6 6"/></svg></button>
+        <button type="button" data-dir="1" aria-label="Next screenshots" aria-controls="strip"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 6 6 6-6 6"/></svg></button>
       </div>
-      <ul class="sohva-features">
-        <li><h3>Touchpad mode</h3><p>Swipe to move, tap for OK. Rest your finger after a swipe and it keeps moving.</p></li>
-        <li><h3>Type and talk</h3><p>Type or dictate into the TV’s search, or just say it: “kanava 3”, “volume 20”. Voice commands in Finnish and English. The whole app is in both, too, and you can pick either, whatever your phone’s language.</p></li>
-        <li><h3>Every input, app and channel</h3><p>Inputs and installed apps with their icons, and the full channel list. Long-press an app to pin it under the remote as a one-tap button.</p></li>
-      </ul>
-      <div class="sohva-feature">
-        <div><h3>Your phone’s own buttons</h3><p>The phone’s volume buttons change the TV volume while the app is open. Pinned apps also show up when you long-press the Sohva icon on your home screen.</p></div>
-        <figure><img src="../assets/sohva/controls.webp" width="720" height="340" loading="lazy" decoding="async" alt="Volume and channel rockers, a mute button and media keys from the remote screen."></figure>
+    </div>
+    <ul class="strip" id="strip" tabindex="0" aria-label="Screenshots, scroll sideways for more">
+      <li><figure><div class="device"><div class="device-screen"><img src="img/remote-540.webp" srcset="img/remote-540.webp 540w, img/remote-1080.webp 1080w" sizes="240px" width="540" height="1260" loading="lazy" alt="Remote screen with the channel card, the Ad break button, D-pad and volume and channel controls"></div></div><figcaption><b>The remote</b><span>Card, scenes, D-pad</span></figcaption></figure></li>
+      <li><figure><div class="device"><div class="device-screen"><img src="img/inputs-apps-540.webp" srcset="img/inputs-apps-540.webp 540w, img/inputs-apps-1080.webp 1080w" sizes="240px" width="540" height="1260" loading="lazy" alt="The TV's inputs and installed apps, each with its icon"></div></div><figcaption><b>Inputs and apps</b><span>With their icons</span></figcaption></figure></li>
+      <li><figure><div class="device"><div class="device-screen"><img src="img/channels-540.webp" srcset="img/channels-540.webp 540w, img/channels-1080.webp 1080w" sizes="240px" width="540" height="1260" loading="lazy" alt="The channel list, with Nelonen HD ticked"></div></div><figcaption><b>Channels</b><span>The full list</span></figcaption></figure></li>
+      <li><figure><div class="device"><div class="device-screen"><img src="img/scenes-540.webp" srcset="img/scenes-540.webp 540w, img/scenes-1080.webp 1080w" sizes="240px" width="540" height="1260" loading="lazy" alt="Scenes with their weekday schedules"></div></div><figcaption><b>Scenes</b><span>One tap, or on a schedule</span></figcaption></figure></li>
+      <li><figure><div class="device"><div class="device-screen"><img src="img/timers-540.webp" srcset="img/timers-540.webp 540w, img/timers-1080.webp 1080w" sizes="240px" width="540" height="1260" loading="lazy" alt="Sleep timer and wake-up settings"></div></div><figcaption><b>Timers</b><span>Sleep and wake-up</span></figcaption></figure></li>
+    </ul>
+  </section>
+
+  <section class="wrap section" id="privacy" aria-labelledby="privacy-title">
+    <div class="promise reveal">
+      <div>
+        <h2 class="h2" id="privacy-title">A remote, and nothing else.</h2>
+        <p class="lede">Most remote apps make you sit through an ad to turn the volume down. Sohva Remote has no ads, no account and no servers of its own. The phone talks to the TV, and that's it.</p>
+        <figure class="lan" aria-hidden="true">
+          <svg viewBox="0 0 420 170" fill="none">
+            <path d="M20 78 210 12l190 66v84H20z" stroke="#3a3a41" stroke-width="2" stroke-linejoin="round"/>
+            <rect x="60" y="80" width="40" height="70" rx="8" stroke="#f2f2f2" stroke-width="2.5"/>
+            <circle cx="80" cy="115" r="7" fill="#ffb547"/>
+            <rect x="270" y="78" width="100" height="58" rx="6" stroke="#f2f2f2" stroke-width="2.5"/>
+            <path d="M305 148h30M320 136v12" stroke="#f2f2f2" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M112 115h146" stroke="#ffb547" stroke-width="2.5" stroke-dasharray="2 9" stroke-linecap="round"/>
+            <text x="185" y="104" fill="#a3a3a8" font-family="inherit" font-size="13" text-anchor="middle">home network</text>
+          </svg>
+        </figure>
       </div>
-    </section>
+      <div>
+        <dl>
+          <div><dt><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>No ads, no paywall</dt><dd>Every feature is there from the first launch.</dd></div>
+          <div><dt><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>No account, no cloud</dt><dd>The phone talks to the TV on your network. Nothing goes to the internet.</dd></div>
+          <div><dt><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>No analytics</dt><dd>The app collects no data about you or what you watch.</dd></div>
+          <div><dt><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Pair once</dt><dd>Type the PIN the TV shows. If the TV gets a new address, the app finds it again.</dd></div>
+        </dl>
+        <p class="more">The details are in the <a href="privacy/">privacy policy</a> (<a href="privacy/fi/" hreflang="fi" lang="fi">suomeksi</a>).</p>
+      </div>
+    </div>
+  </section>
 
-    <section class="sohva-section" id="evening" aria-labelledby="evening-title">
-      <h2 id="evening-title">A weekday evening, set up once.</h2>
-      <p>Scenes switch channels at the right times while the TV is on; the sleep timer and wake-up handle both ends of the day, even with the app closed. A scheduled scene never turns the TV on by itself. If nobody is watching at 20.30, the TV stays off.</p>
-      <p>Wake-up turns the TV on at a set time, to the channel and volume you picked, even with the app closed. The coffee is still your job.</p>
-      <h2>Most of the time, you won’t even open it.</h2>
-      <ul class="sohva-features">
-        <li><h3>Quick Settings tiles</h3><p>Power, mute, guide and your first scene, from the notification shade.</p></li>
-        <li><h3>Home-screen widget</h3><p>Volume, channel and mute, right on the home screen.</p></li>
-        <li><h3>Launcher shortcuts</h3><p>Long-press the app icon to open a pinned TV app directly.</p></li>
-        <li><h3>Mute during calls</h3><p>The TV goes quiet when the phone rings and comes back after.</p></li>
-        <li><h3>Sleep timer and wake-up</h3><p>The sound fades over a minute before the TV turns off, and the volume is back next time.</p></li>
-        <li><h3>On a tablet</h3><p>Turn the tablet on its side and the inputs, channels, timers and scenes stay open beside the remote. Held upright, they sit between the channel card and the remote. The buttons keep their phone size, so your thumb still finds them.</p></li>
-      </ul>
-    </section>
-
-    <section class="sohva-section" id="privacy" aria-labelledby="privacy-title">
-      <h2 id="privacy-title">A remote, and nothing else.</h2>
-      <p>Sohva Remote has no ads, no account and no servers of its own. The phone talks to the TV, and that’s it.</p>
-      <ul class="sohva-features">
-        <li><h3>No ads, no paywall</h3><p>Every feature is there from the first launch.</p></li>
-        <li><h3>No account, no cloud</h3><p>The phone talks to the TV on your network. Nothing goes to the internet.</p></li>
-        <li><h3>No analytics</h3><p>The app collects no data about you or what you watch.</p></li>
-        <li><h3>Pair once</h3><p>Type the PIN the TV shows. If the TV gets a new address, the app finds it again.</p></li>
-      </ul>
-      <p>The details are in the <a href="./privacy/">privacy policy</a> (<a href="./privacy/fi/" hreflang="fi">suomeksi</a>).</p>
-    </section>
-
-    <section class="sohva-section" id="get" aria-labelledby="get-title">
-      <h2 id="get-title">Get Sohva Remote.</h2>
-      <p>It’s coming to Google Play, for Android 8.0 or newer. Free, with no ads. Phone and TV need to be on the same home network.</p>
-      <ol class="sohva-steps">
-        <li><div><h3>Allow remote control on the TV</h3><p>Settings › Network › Home network setup › IP control: set Authentication to “Normal and Pre-Shared Key” and Remote start to On.</p></div></li>
-        <li><div><h3>Install the app</h3><p>Install Sohva Remote from Google Play once it’s out.</p></div></li>
+  <section class="wrap section" id="get" aria-labelledby="get-title">
+    <div class="get-card">
+      <div>
+        <h2 class="h2" id="get-title">Get Sohva Remote.</h2>
+        <p class="lede">It's coming to Google Play, for Android 8.0 or newer.</p>
+        <p class="get-meta">Free, with no ads. Phone and TV need to be on the same home network.</p>
+      </div>
+      <ol class="steps">
+        <li><div><h3>Allow remote control on the TV</h3><p>Settings › Network › Home network setup › IP control: set Authentication to "Normal and Pre-Shared Key" and Remote start to On.</p></div></li>
+        <li><div><h3>Install the app</h3><p>Install Sohva Remote from Google Play once it's out, or build it yourself from the source with <code>./gradlew assembleRelease</code>.</p></div></li>
         <li><div><h3>Pair with the PIN</h3><p>Open the app on the same Wi-Fi. It finds the TV; type the PIN the TV shows.</p></div></li>
       </ol>
-    </section>
+    </div>
+  </section>
 
-    <section class="sohva-section sohva-faq" id="faq" aria-labelledby="faq-title">
-      <h2 id="faq-title">Questions.</h2>
-      <p>The short answers to what people ask first.</p>
-      <details><summary>Which TVs does it work with?</summary><p>It’s built and tested on a Sony KD-65XF9005 with Android TV. Other Bravia TVs with IP control should work too.</p></details>
-      <details><summary>What do I need to set on the TV?</summary><p>Open Settings › Network › Home network setup › IP control. Set Authentication to “Normal and Pre-Shared Key” and Remote start to On. Then open the app and type the PIN the TV shows.</p></details>
-      <details><summary>Is it free?</summary><p>Yes. There are no ads and no paywall: every feature is there from the first launch.</p></details>
-      <details><summary>Does it work away from home?</summary><p>No. The phone talks to the TV directly over your home network, so both need to be on the same Wi-Fi. Nothing goes through the internet.</p></details>
-      <details><summary>Does it work on a tablet?</summary><p>Yes. On a tablet on its side, the inputs, channels, timers and scenes stay open beside the remote; held upright, they sit between the channel card and the remote. The remote keeps the size it has on a phone.</p></details>
-      <details id="faq-play"><summary>When will it be on Google Play?</summary><p>It’s on its way. It will install on Android 8.0 or newer.</p></details>
-      <details><summary>Is it made by Sony?</summary><p>No. Sohva Remote is an independent app made by Moth &amp; Gravel. It isn’t made by or affiliated with Sony. “Sohva” is Finnish for sofa.</p></details>
-      <details><summary>What does it store about me?</summary><p>Only what it needs to reach your TV, kept on the phone: the TV’s address, the pairing keys and your settings. See the <a href="./privacy/">privacy policy</a>.</p></details>
-    </section>
-    <p class="sohva-legal">Sohva Remote is made by Moth &amp; Gravel. It’s an independent app, not made by or affiliated with Sony. Free software under the <a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener noreferrer">GPL-3.0</a>.</p>
-  </main>
-  <footer class="shell journey-footer"><a href="../">Moth &amp; Gravel / Independent works</a><p class="footer-mail"><a href="mailto:hello@mothandgravel.com?subject=Hello%2C%20Moth%20%26%20Gravel">hello@mothandgravel.com</a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p><span class="mono">DRAWN TO LIGHT. BUILT FOR ROUGH GROUND.</span><!-- shared-footer:start -->
-<nav class="shared-footer-nav shell" aria-label="Explore the studio"><a href="../specimens/">Specimens</a><a href="../notes/">Field notes</a><a href="../threads/something-happened/">Something happened. I can’t tell what.</a><a href="../#contact">Contact</a><a href="../workbench/">Example workbench</a></nav>
-<!-- shared-footer:end -->
+  <section class="wrap section" id="faq" aria-labelledby="faq-title">
+    <div class="faq">
+      <div>
+        <h2 class="h2" id="faq-title">Questions.</h2>
+        <p class="lede">The short answers to what people ask first.</p>
+      </div>
+      <div class="faq-list">
+        <details>
+          <summary>Which TVs does it work with?</summary>
+          <div><p>It's built and tested on a Sony KD-65XF9005 with Android TV. Other Bravia TVs with IP control should work too.</p></div>
+        </details>
+        <details>
+          <summary>What do I need to set on the TV?</summary>
+          <div><p>Open <strong>Settings › Network › Home network setup › IP control</strong>. Set <strong>Authentication</strong> to "Normal and Pre-Shared Key" and <strong>Remote start</strong> to On. Then open the app and type the PIN the TV shows.</p></div>
+        </details>
+        <details>
+          <summary>Is it free?</summary>
+          <div><p>Yes. There are no ads and no paywall: every feature is there from the first launch.</p></div>
+        </details>
+        <details>
+          <summary>Does it work away from home?</summary>
+          <div><p>No. The phone talks to the TV directly over your home network, so both need to be on the same Wi-Fi. Nothing goes through the internet, which is also why it's fast.</p></div>
+        </details>
+        <details>
+          <summary>Does it work on a tablet?</summary>
+          <div><p>Yes. On a tablet on its side, the inputs, channels, timers and scenes stay open beside the remote; held upright, they sit between the channel card and the remote. The remote keeps the size it has on a phone.</p></div>
+        </details>
+        <details id="faq-play">
+          <summary>When will it be on Google Play?</summary>
+          <div><p>It's on its way. It will install on Android 8.0 or newer.</p></div>
+        </details>
+        <details>
+          <summary>Is it made by Sony?</summary>
+          <div><p>No. Sohva Remote is an independent app made by Moth & Gravel. It isn't made by or affiliated with Sony. "Sohva" is Finnish for sofa.</p></div>
+        </details>
+        <details>
+          <summary>What does it store about me?</summary>
+          <div><p>Only what it needs to reach your TV, kept on the phone: the TV's address, the pairing keys and your settings. See the <a href="privacy/">privacy policy</a>.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-brand">
+      <a class="mark" href="#main" aria-label="Sohva Remote, top of page">
+        <svg width="24" height="24" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="none" stroke="#ffb547" stroke-width="2"/><circle cx="14" cy="14" r="5.5" fill="#ffb547"/></svg>
+        Sohva Remote
+      </a>
+      <p>Sohva Remote is made by Moth &amp; Gravel. It's an independent app, not made by or affiliated with Sony. Free software under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a>.</p>
+    </div>
+    <nav aria-label="Footer">
+      <a href="privacy/">Privacy</a>
+      <a href="privacy/fi/" hreflang="fi" lang="fi">Tietosuoja</a>
+      <a href="../">Moth &amp; Gravel</a>
+    </nav>
+  </div>
 </footer>
 </body>
 </html>

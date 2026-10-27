@@ -541,10 +541,26 @@ def main() -> int:
     check('id="made-here" data-made-here' in html and 'href="./investigations/#made-here"' in html
           and "['#questions','./assets/made-here.mjs']" in html, 'Made here must load when its section nears view, with a no-script link')
     check('run.app' not in html, 'The live Cyber Grid is not linked yet')
+    # Sohva Remote: a faithful copy of the app's own site under /sohva/, with its own styles and
+    # masthead. It must stay reachable, keep the not-affiliated line and the privacy contact, link
+    # back to the studio, and carry no organisation name, repository or download link.
     for page_path, needles in {
-        'sohva/index.html': ['href="./privacy/"', 'href="./privacy/fi/"', 'not made by or affiliated with Sony', 'Coming to Google Play'],
-        'sohva/privacy/index.html': ['Privacy policy', 'hello@mothandgravel.com', 'READ_PHONE_STATE', 'href="./fi/"'],
-        'sohva/privacy/fi/index.html': ['Tietosuojaseloste', 'hello@mothandgravel.com', 'READ_PHONE_STATE', 'lang="fi"'],
+        'sohva/index.html': ['href="privacy/"', 'href="privacy/fi/"', 'not made by or affiliated with Sony', 'href="../">Moth &amp; Gravel</a>'],
+        'sohva/privacy/index.html': ['Effective 27 October 2026.', 'hello@mothandgravel.com', 'READ_PHONE_STATE', 'href="fi/"', 'href="../../">Moth &amp; Gravel</a>'],
+        'sohva/privacy/fi/index.html': ['Voimassa 27.10.2026 alkaen.', 'hello@mothandgravel.com', 'READ_PHONE_STATE', 'href="../../../">Moth &amp; Gravel</a>'],
+    }.items():
+        page_file = ROOT / page_path
+        check(page_file.is_file(), f'Missing {page_path}')
+        if not page_file.is_file():
+            continue
+        page_html = page_file.read_text(encoding='utf-8')
+        url = 'https://mothandgravel.com/' + page_path.removesuffix('index.html')
+        check(f'<loc>{url}</loc>' in sitemap_text and f'href="{url}"' in page_html, f'{page_path} needs its sitemap entry and canonical URL')
+        for needle in needles:
+            check(needle in page_html, f'{page_path} is missing {needle}')
+        check(not re.search(r'digable|navivra|kistradegoods|github\.com|\.apk\b', page_html, re.I),
+              f'{page_path} names an organisation or links a repository or download')
+    for page_path, needles in {
         'investigations/index.html': ['href="./how-old/"', 'href="./take-it-back/"', 'href="./green-light/"'],
         'investigations/how-old/index.html': ['data-toy="week"', 'assets/playground.mjs', 'assets/thread.css', 'STANDING INVESTIGATION / 01'],
         'investigations/take-it-back/index.html': ['data-toy="stamp"', 'assets/playground.mjs', 'assets/thread.css', 'STANDING INVESTIGATION / 02'],
