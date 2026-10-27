@@ -65,7 +65,7 @@
       entries.forEach(function (e) { if (e.isIntersecting) visible.add(e.target); else visible.delete(e.target); });
       var timers = visible.size > 0;
       phone.dataset.screen = timers ? 'timers' : 'scenes';
-      if (caption) caption.textContent = timers ? 'Sleep timer and wake-up in the Timers tab' : 'The same evening in the Scenes tab';
+      if (caption) caption.textContent = timers ? 'Sleep timer and wake-up in the Timers tab' : 'Scenes in the Scenes tab';
     }, { rootMargin: '-40% 0px -40% 0px' });
     timerRows.forEach(function (r) { io.observe(r); });
   })();

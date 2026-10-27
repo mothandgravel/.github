@@ -1,0 +1,88 @@
+{
+  "page": "/sohva/",
+  "photos": [
+    {
+      "file": "img/photos/hand-phone-1120.webp",
+      "sha256": "b8aa1883dc7bd9d34358f27d5901edbcce97f628d92197f62d3cc00d16f17817",
+      "dimensions": [
+        1120,
+        1400
+      ]
+    },
+    {
+      "file": "img/photos/hand-phone-480.webp",
+      "sha256": "50f8fb40e45e8e9a7877c4aea6dd05508834b0d490158c145d602845ed09ac63",
+      "dimensions": [
+        480,
+        600
+      ]
+    },
+    {
+      "file": "img/photos/hand-phone-800.webp",
+      "sha256": "39c89098d7d262611e90047215095395d17b6f0622e7cf092ea6aef464fb7e89",
+      "dimensions": [
+        800,
+        1000
+      ]
+    },
+    {
+      "file": "img/photos/hero-sofa-1024.webp",
+      "sha256": "e886844218f957825e1a37d87ae559d9d2cc7f95be3a3dde44d923e28c317246",
+      "dimensions": [
+        1024,
+        576
+      ]
+    },
+    {
+      "file": "img/photos/hero-sofa-1440.webp",
+      "sha256": "74b35a0b0ccb99c213306bd3587c2b7fb9d733af215dd2ca8509668fb57d3a7b",
+      "dimensions": [
+        1440,
+        810
+      ]
+    },
+    {
+      "file": "img/photos/hero-sofa-1664.webp",
+      "sha256": "cee2d6c389a5fa7692fab5d9fc34eb22d1e23518969752542d10b835c8b6ef41",
+      "dimensions": [
+        1664,
+        936
+      ]
+    },
+    {
+      "file": "img/photos/hero-sofa-640.webp",
+      "sha256": "116557ee5e5a981f554bb439f5f7cdd6f615ed92c20f4ba749e0d3e838705692",
+      "dimensions": [
+        640,
+        360
+      ]
+    },
+    {
+      "file": "img/photos/morning-1024.webp",
+      "sha256": "9079369b7b1c8ffd521e8d1152066d9cdefe249a3ea26a88b517ef804d99e1aa",
+      "dimensions": [
+        1024,
+        576
+      ]
+    },
+    {
+      "file": "img/photos/morning-1664.webp",
+      "sha256": "a2cd557e3f9185370a751e2372a56b67c96cdddbab2163532e75bd2b3ca211f4",
+      "dimensions": [
+        1664,
+        936
+      ]
+    },
+    {
+      "file": "img/photos/morning-640.webp",
+      "sha256": "b75547d1ced1fe4c8d452ecc0fa2fb8536e3c895dba4acfd7dad3bc3cf67e24e",
+      "dimensions": [
+        640,
+        360
+      ]
+    }
+  ],
+  "kind": "AI-generated illustrations made for the owner; not photographs of real people, homes or use of the app",
+  "source": "sohva-remote (private repository), commit efd1b06, site/img/photos/, copied unchanged",
+  "recorded": "2026-10-27"
+}
