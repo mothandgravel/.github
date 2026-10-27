@@ -1,5 +1,26 @@
 # The room, properly handled
 
+## Continuing from the question sheet
+
+The October 27 pass distinguishes the visitor's carried brief and local margin
+with paper, while the fictional sketches stay on a dark inspection mount.
+Native Look, Notice and Leave a direction links provide a route through the
+first visit. The explicit carry lands on the visitor's own brief, with separate
+links to inspect the fictional study or revise their words. The study does not
+adapt to that brief.
+
+The sketch controls now share their mount. A saved observation has an explicit
+inspection return: it selects and focuses its original sketch without changing
+the note. A pin appears only on that sketch; its reserved slot prevents the
+comparison from shifting. The first visit's working doubt precedes the draft
+direction. Clear has its own housekeeping scope, after its explanation.
+
+The return visit presents Changed, Kept and Still open beside its opening,
+with the carried brief collapsed separately. Its fixed drawings, revision guard
+and local-note history retain their contracts. Export adds an explicit section
+label before the unchanged carried brief. Neither visit claims a studio response
+to the visitor's actual words or a usability result.
+
 ## The quality gap
 
 The workbench and staged return already supported comparison, revision-anchored observations and local draft directions. The live review found that those capabilities were presented as similarly weighted boxes: the specimen was small, the local record was distant, and the second visit felt like another demonstration. The next finish pass concentrates on the experience of inspecting and returning.

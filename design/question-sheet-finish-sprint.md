@@ -1,5 +1,30 @@
 # A question with a little shape
 
+## Continuing the thread
+
+The October 27 pass gives the question sheet a paper folio, a real stage number
+beside its progress text, and an original SVG drawing. The optional thread
+arrival keeps three prompts beside an explicit writing and return route. Its
+words never enter the visitor's answers or brief.
+
+The opening delivery explanation now stays true whether the inbox form loads
+or the mail-app fallback remains. The visitor reads and edits the brief before
+the Sign and send section asks for a name and email. Copy and download remain
+quiet alternatives; the fictional workbench is explicitly optional. Its native
+fallback link is hidden only when the guided module actually starts.
+
+An explicit carry now lands at the visitor's brief on the workbench. The text,
+storage keys, six-step history and mail-link bounds retain their contracts.
+Current and cached-page modules still tolerate the optional folio decoration.
+The inbox module updates misleading legacy copy only on older cached HTML.
+
+The browser audit exercises the actual lazy-loaded inbox UI against an
+intercepted `.invalid` endpoint and a challenge fixture. It checks that signing
+follows the edited brief, the introduction stays unchanged, no delivery happens
+while editing, and explicit fixture delivery preserves literal text. This
+provides browser integration evidence; it sends no real enquiry and does not
+establish live inbox delivery or human comprehension.
+
 The question sheet already asks the right things. Its presentation made two
 moments harder to read: the local-only boundary moved below the form on narrow
 screens, and the finished brief presented keeping, revising and exploring as

@@ -29,7 +29,7 @@ let enquiry = null;
 function loadEnquiry() {
   enquiry ??= fetch(new URL('./enquiry-config.json', import.meta.url), { cache: 'no-cache' })
     .then(response => response.ok ? response.json() : null)
-    .then(config => config?.enabled === true ? import('./enquiry.mjs?v=2').then(module => module.start(config)) : null)
+    .then(config => config?.enabled === true ? import('./enquiry.mjs?v=3').then(module => module.start(config)) : null)
     .catch(() => null);
 }
 function download(text, name) {
@@ -102,6 +102,8 @@ if (intake) {
     }
     panels.forEach((panel, i) => { panel.hidden = i !== step; });
     progress.textContent = `${step + 1} / ${panels.length} — ${panels[step].dataset.title}`;
+    const folio = intake.querySelector('[data-question-number]');
+    if (folio) folio.textContent = String(step + 1).padStart(2, '0');
     const meter = document.getElementById('question-meter');
     if (meter) { meter.max = panels.length; meter.value = step + 1; }
     intake.querySelectorAll('[data-room-feedback]').forEach(el => { el.textContent = ''; });
@@ -162,7 +164,7 @@ if (intake) {
       saved.setItem(draftKey, JSON.stringify({ version: 1, answers: answers(), brief: brief.value.slice(0, briefLimit) }));
       // New handoff replaces the room's previous experimental annotations.
       saved.removeItem(roomKey);
-      location.assign('../workbench/');
+      location.assign('../workbench/#your-question');
     } catch { announce('This browser cannot carry a draft between pages. Download your brief, or open the example workbench below.', event.currentTarget); }
   });
   document.getElementById('clear-draft').addEventListener('click', event => {
@@ -177,6 +179,8 @@ if (intake) {
   });
   controls.hidden = false;
   document.querySelectorAll('[data-enhance]').forEach(el => { el.hidden = false; });
+  const previewFallback = intake.querySelector('.question-preview-fallback');
+  if (previewFallback) previewFallback.hidden = true;
   show(0, false, false);
 }
 
@@ -216,7 +220,22 @@ if (room) {
     if (updateChoice) room.querySelectorAll('input[name="choice"]').forEach(el => { el.checked = el.value === state.choice; });
     document.getElementById('recorded-choice').textContent = state.choice ? 'Your draft choice: ' + surfaces[state.choice] + '. The studio has not received this.' : 'No draft choice recorded.';
     document.getElementById('annotation-record').textContent = state.note ? surfaces[state.noteSurface] + ': ' + state.note : 'No observation pinned yet.';
+    const noteLink = document.getElementById('inspect-note-surface');
+    if (noteLink) noteLink.hidden = !state.note;
+    const noteMark = document.getElementById('inspection-note-mark');
+    if (noteMark) {
+      const matches = Boolean(state.note) && state.noteSurface === state.surface;
+      noteMark.dataset.visible = String(matches);
+      noteMark.setAttribute('aria-hidden', String(!matches));
+    }
   }
+  document.getElementById('inspect-note-surface')?.addEventListener('click', () => {
+    state.surface = state.noteSurface;
+    paint();
+    const target = room.querySelector(`input[name="surface"][value="${state.surface}"]`);
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: 'center', behavior: 'instant' });
+  });
   room.querySelectorAll('input[name="surface"]').forEach(el => el.addEventListener('change', () => { state.surface = el.value; paint(); }));
   let annotationSurface = state.surface;
   document.getElementById('mark-wrong').addEventListener('click', () => {
@@ -245,7 +264,7 @@ if (room) {
     announce(kept ? 'Draft choice recorded in this tab. Nothing was sent.' : 'Draft choice recorded for this visit only. Download it to keep it.');
   });
   document.getElementById('download-room').addEventListener('click', () => {
-    download((draft ? document.getElementById('carried-brief').textContent + '\n\n' : '') +
+    download((draft ? 'YOUR CARRIED BRIEF — SEPARATE FROM THE FICTIONAL STUDY\n\n' + document.getElementById('carried-brief').textContent + '\n\n' : '') +
       'WORKBENCH EXAMPLE — LOCAL DRAFT\n\nExample question: How do you begin a repair note?\nObservation: ' +
       (state.note ? surfaces[state.noteSurface] + ': ' + state.note : 'Still open.') + '\nDraft choice: ' + (surfaces[state.choice] || 'Still open.') + '\n\nNothing has been sent to the studio.\n', 'moth-and-gravel-workbench-draft.txt');
     announce('Workbench draft prepared for download. Nothing was sent.');

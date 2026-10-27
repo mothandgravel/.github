@@ -41,6 +41,15 @@ try {
     assert.match(await page.locator('#annotation-context').innerText(),/Attached to: Start with the damage/);
     await page.locator('#pin-observation').click();
     assert.match(await page.locator('#annotation-record').innerText(),/^Start with the damage:/);
+    assert.ok(await page.locator('#inspection-note-mark').isHidden(),'A saved note cannot mark a different inspected sketch');
+    const beforeNoteReturn=await page.locator('.artifact-view').boundingBox();
+    await page.locator('#inspect-note-surface').click();
+    assert.ok(await page.locator('input[name="surface"][value="damage"]').isChecked(),'The margin returns to its exact inspected sketch');
+    assert.ok(await page.locator('input[name="surface"][value="damage"]').evaluate(el=>el===document.activeElement),'The inspection return moves keyboard focus to the selected sketch control');
+    assert.ok(await page.locator('#inspection-note-mark').isVisible(),'The pin appears only beside the note’s actual sketch');
+    assert.ok(Math.abs(beforeNoteReturn.height-(await page.locator('.artifact-view').boundingBox()).height)<1,'Showing the note pin cannot move or resize the comparison');
+    assert.match(await page.locator('#annotation-record').innerText(),/^Start with the damage:/,'Inspecting never rewrites the observation');
+    assert.ok(await page.locator('.room-doubt').evaluate(el=>Boolean(el.compareDocumentPosition(document.querySelector('#bench-direction')) & Node.DOCUMENT_POSITION_FOLLOWING)),'The working doubt is available before a direction is chosen');
     assert.match(await page.locator('.room-specimen [data-room-feedback]').innerText(),/Observation pinned/);
     assert.ok(await page.locator('#draft-status').evaluate(el=>el.offsetWidth<=1&&getComputedStyle(el).display!=='none'),'The shared live status stays available without a duplicate visible message');
     await review(page,'room-first-'+theme+'-'+width);
@@ -49,7 +58,7 @@ try {
     assert.equal(await page.locator('#annotation').inputValue(),'Unrecorded words must stay here.','The current-visit link must not reload and discard an open note');
     await page.locator('#cancel-observation').click();
     await page.locator('.room-visits a[href="return/"]').click();await page.locator('#open-return-note').waitFor({state:'visible'});
-    assert.match(await page.locator('.room-visits [aria-current="page"]').innerText(),/What shifted/);
+    assert.match(await page.locator('.room-visits [aria-current="page"]').innerText(),/The return visit/);
     const heights=[];
     for(const revision of ['damage-2','damage-1','item-1']) {
       await page.locator('input[name="revision"][value="'+revision+'"]').check();

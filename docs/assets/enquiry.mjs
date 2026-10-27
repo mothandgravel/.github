@@ -8,12 +8,15 @@ const TURNSTILE = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=
 export const isLive = config => config?.enabled === true && /^https:\/\//.test(config.endpoint) &&
   typeof config.turnstileSiteKey === 'string' && Boolean(config.turnstileSiteKey);
 
-// With the form on, the page must not promise that nothing leaves it on its own.
+// The opening copy is true with either delivery route. Only the brief's mail
+// help changes once direct inbox sending is available.
 function honestCopy() {
+  // Previously cached HTML described only the mail-app route. Bring that older
+  // copy up to date; current pages already use this route-neutral introduction.
   const boundary = document.querySelector('.question-boundary');
-  if (boundary) boundary.innerHTML = '<strong>A brief to send or keep.</strong> Send to Moth &amp; Gravel delivers it to the studio inbox with your name and email, or you can email it from your own mail app. Only your starting question needs an answer. The rest can stay open.';
-  const aside = [...document.querySelectorAll('.journey-aside p')].find(p => p.textContent.includes('nothing leaves this page'));
-  if (aside) aside.textContent = 'Your answers stay in this page until you press Send to Moth & Gravel, which delivers the brief, your name and your email to the studio inbox. You can email it from your own mail app instead. Carrying it to the preview keeps a draft in this browser tab.';
+  if (boundary?.textContent.includes('Your mail app sends it;')) boundary.innerHTML = '<strong>A brief to send or keep.</strong> Only your starting question needs an answer. The rest can stay open. Nothing is sent to the studio until you choose to send it.';
+  const legacyAside = [...document.querySelectorAll('.journey-aside p')].find(p => p.textContent.includes('nothing leaves this page'));
+  if (legacyAside) legacyAside.textContent = 'Your brief is yours to edit, send or keep. Carrying it to the example workbench keeps a draft in this browser tab. Nothing is sent by that handoff.';
   const help = document.getElementById('send-help');
   if (help) help.textContent = `Opens your mail app, addressed to ${INBOX}, with the brief written in.`;
   // #first-work-next already names "Send to Moth & Gravel" or copying into an email, which stays true.
@@ -30,16 +33,16 @@ function loadTurnstile() {
   });
 }
 
-// Who is writing comes before the brief, like any message; the check and Send follow it. Keeping
-// these blocks apart keeps the brief close to its Copy/Download feedback on a small screen.
+// Read the finished words first. Signing and delivery follow the editable brief;
+// the name and email still belong to the same form through their form attribute.
 function build() {
   const identity = document.createElement('div');
   identity.className = 'enquiry-identity';
-  identity.innerHTML = `<p class="question-help" id="enquiry-help">Send to Moth &amp; Gravel delivers your brief below to ${INBOX} with your name and email, so we can reply. Nothing is published.</p>
-    <label for="enquiry-name">Your name</label><input id="enquiry-name" name="name" type="text" form="enquiry-form" autocomplete="name" maxlength="120" required aria-describedby="enquiry-name-error">
-    <p id="enquiry-name-error" class="question-error" hidden>Add the name we should use when we reply.</p>
-    <label for="enquiry-email">Your email</label><input id="enquiry-email" name="email" type="email" form="enquiry-form" autocomplete="email" maxlength="254" required spellcheck="false" aria-describedby="enquiry-email-error">
-    <p id="enquiry-email-error" class="question-error" hidden>Add an email address we can reply to, like name@example.com.</p>
+  identity.innerHTML = `<p class="mono enquiry-sign-heading">SIGN AND SEND / TO THE STUDIO</p><p class="question-help" id="enquiry-help">Send to Moth &amp; Gravel delivers your edited brief to ${INBOX} with your name and email, so we can reply. Nothing is published.</p>
+    <div class="enquiry-field"><label for="enquiry-name">Your name</label><input id="enquiry-name" name="name" type="text" form="enquiry-form" autocomplete="name" maxlength="120" required aria-describedby="enquiry-name-error">
+    <p id="enquiry-name-error" class="question-error" hidden>Add the name we should use when we reply.</p></div>
+    <div class="enquiry-field"><label for="enquiry-email">Your email</label><input id="enquiry-email" name="email" type="email" form="enquiry-form" autocomplete="email" maxlength="254" required spellcheck="false" aria-describedby="enquiry-email-error">
+    <p id="enquiry-email-error" class="question-error" hidden>Add an email address we can reply to, like name@example.com.</p></div>
     <div class="enquiry-trap" aria-hidden="true"><label for="enquiry-website">Leave this empty</label><input id="enquiry-website" name="website" type="text" form="enquiry-form" tabindex="-1" autocomplete="off"></div>`;
   const form = document.createElement('form');
   form.id = 'enquiry-form'; form.className = 'enquiry-send'; form.noValidate = true; form.setAttribute('aria-label', 'Send the brief to Moth & Gravel');
@@ -57,11 +60,10 @@ export function start(config) {
   if (!brief || !mailRow || !isLive(config) || !globalThis.crypto?.randomUUID || document.querySelector('.enquiry-send')) return;
 
   const link = document.createElement('link');
-  link.rel = 'stylesheet'; link.href = new URL('./enquiry.css?v=2', import.meta.url).href;
+  link.rel = 'stylesheet'; link.href = new URL('./enquiry.css?v=3', import.meta.url).href;
   document.head.append(link);
   const { identity, form } = build();
-  (document.querySelector('label[for="brief-text"]') || brief).before(identity);
-  mailRow.before(form);
+  mailRow.before(identity, form);
   // The mail route stays, demoted to a quiet fallback; the existing module keeps its href current.
   mailRow.classList.add('enquiry-fallback');
   mail.className = 'enquiry-mail-link';

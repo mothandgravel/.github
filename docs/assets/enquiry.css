@@ -1,5 +1,8 @@
 /* With private sending on, Send is the one primary action on the kept brief; email becomes a quiet text route. */
-.question-room .enquiry-identity { margin-bottom:8px; }
+.question-room .enquiry-identity { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px;margin:28px 0 8px;padding-top:22px;border-top:1px solid var(--line); }
+.enquiry-identity>.mono,.enquiry-identity>.question-help { grid-column:1/-1; }
+.enquiry-sign-heading { color:var(--gold-bright);font-size:12px;margin-bottom:14px; }
+.enquiry-field { min-width:0; }
 .question-room .enquiry-identity>.question-help { margin:0;max-width:62ch; }
 .question-room .enquiry-send { margin-top:0; }
 .question-sheet .enquiry-identity input { display:block;width:100%;min-height:48px;border:1px solid var(--gold);border-radius:0;background:var(--bg);color:var(--ink);padding:11px 15px;font:400 16px/1.5 var(--body);box-shadow:inset 1px 2px 4px #0000000a; }
@@ -18,5 +21,5 @@
 .question-room .enquiry-send~#send-help { margin-top:4px; }
 .enquiry-sent { font:400 24px/1.4 var(--serif);color:var(--ink);margin:0;padding:4px 0; }
 .enquiry-sent:focus { outline:2px solid var(--gold-bright);outline-offset:6px; }
-@media(max-width:660px) { .question-room .enquiry-send button[type="submit"] { width:100%; } }
+@media(max-width:660px) { .question-room .enquiry-identity { grid-template-columns:1fr; }.question-room .enquiry-send button[type="submit"] { width:100%; } }
 @media print { .enquiry-identity,.enquiry-send { display:none!important; } }
