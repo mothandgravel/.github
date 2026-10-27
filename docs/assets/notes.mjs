@@ -1,10 +1,14 @@
-import { queryNotes, PAGE_SIZE } from './notes-model.mjs';
+import { queryNotes, PAGE_SIZE, relationshipFor } from './notes-model.mjs';
 
 const form = document.querySelector('#archive-controls');
 if (form) {
   try {
-    const response = await fetch(new URL('./notes.json', import.meta.url));
-    if (!response.ok) throw new Error('Catalog unavailable');
+    const [response, specimensResponse] = await Promise.all([
+      fetch(new URL('./notes.json', import.meta.url)),
+      fetch(new URL('./specimens.json', import.meta.url)),
+    ]);
+    if (!response.ok || !specimensResponse.ok) throw new Error('Catalog unavailable');
+    const specimens = await specimensResponse.json();
     const notes = (await response.json()).map(n => ({ ...n, topics: n.topics || [] }));
     const results = document.querySelector('#archive-results');
     const status = document.querySelector('#archive-status');
@@ -47,6 +51,16 @@ if (form) {
         const arrow = element('span', ' ↗'); arrow.setAttribute('aria-hidden', 'true');
         link.append(arrow); heading.append(link);
         body.append(heading, element('p', n.summary), element('p', n.topics.join(' · '), 'archive-topics mono'));
+        const relation = relationshipFor(n, specimens);
+        if (relation) {
+          const route = element('a', '', `archive-relation archive-${relation.kind}`);
+          route.href = n.specimen.href;
+          const action = element('span', relation.label);
+          const marker = element('span', ' ↗'); marker.setAttribute('aria-hidden', 'true');
+          action.append(marker);
+          route.append(element('span', relation.kicker, 'mono'), action);
+          body.append(route);
+        }
         article.append(meta, body); fragment.append(article);
       }
       if (!view.total) fragment.append(element('p', 'No notes match. Try another word or clear the filters.', 'archive-empty'));

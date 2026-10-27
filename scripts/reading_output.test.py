@@ -6,7 +6,7 @@ import json
 import sys
 import unittest
 
-from build_notes import load_notes, reading_exit
+from build_notes import load_notes, reading_exit, specimen_for, row, archive_feature, archive_connections, ROOT
 from check_site import SiteParser
 
 
@@ -55,6 +55,32 @@ class Links(HTMLParser):
 class ReadingOutputTests(unittest.TestCase):
     def setUp(self):
         self.cases = {case['case']: case for case in fixtures()}
+
+    def test_archive_connections_resolve_existing_specimens_and_keep_evidence_captions(self):
+        notes = load_notes()
+        specimens = json.loads((ROOT / 'docs/assets/specimens.json').read_text(encoding='utf-8'))
+        featured = next(n for n in notes if n['featured'])
+        self.assertIn('SPECIMEN 008', archive_feature(featured, specimens))
+        self.assertIn('../specimens/data-center/#fi-account', Links(archive_feature(featured, specimens)).hrefs)
+        html = archive_connections(notes, featured, specimens)
+        self.assertIn('SPECIMEN 006', html)
+        self.assertIn('SPECIMEN 005', html)
+        self.assertIn('synthetic tracks', html)
+        self.assertIn('no live voyage', html)
+        self.assertNotIn('object-fit', html)
+        for note in notes:
+            output = row(note, './', specimens=specimens)
+            item = specimen_for(note, specimens)
+            if item:
+                self.assertIn(note['specimen']['href'], Links(output).hrefs)
+                self.assertIn('SPECIMEN ' + item['id'], output)
+            else:
+                self.assertNotIn('archive-specimen', output)
+        self.assertNotIn('archive-specimen', row(next(n for n in notes if n['id'] == '015'), './', specimens=specimens))
+        investigation = row(next(n for n in notes if n['id'] == '015'), './', specimens=specimens)
+        self.assertIn('INVESTIGATION', investigation)
+        self.assertIn('../investigations/take-it-back/', Links(investigation).hrefs)
+        self.assertNotIn('Return to ', row(next(n for n in notes if n['id'] == '012'), './', specimens=specimens))
 
     def test_optional_choice_uses_first_relation_and_summary(self):
         case = self.cases['fallback']

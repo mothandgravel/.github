@@ -5,6 +5,12 @@ Seven have standalone family pages; Ajo and SkyStack remain homepage exhibits.
 The five additional rooms belong to their parent specimens. TNT is inside 009.
 The one published thread is named directly in the menu; there is no Threads archive.
 
+The Field notes index leads with the featured writing and its existing specimen
+relationship, then introduces two other specimen families. The complete archive
+and listening edition keep their direct fragment routes. Search results and
+the static fallback retain the same labelled specimen links. An investigation
+link, such as note 015's, is not relabelled as a specimen.
+
 ## Authoring
 
 - `assets/specimens.json` holds identities, destinations, descriptions, existing
@@ -15,6 +21,15 @@ The one published thread is named directly in the menu; there is no Threads arch
   different catalogues; a count from one must not describe the other.
 - Published notes supply related-note links through their existing `specimen`
   relationship in `assets/notes.json`.
+- `build_notes.py` resolves those relationships against `assets/specimens.json`
+  for the Field notes index. The browser uses the same identities and destinations.
+  Paired introductions select the latest linked note from two distinct families
+  other than the featured family. Existing evidence captions accompany captures.
+  A note's optional `archivePreview` can select its own existing capture and
+  caption in place of the specimen's family image. Index verbs address a first
+  visit; article endings retain their authored return wording. The recent stack
+  and full archive both retain specimen and investigation routes with distinct labels.
+  If either catalogue fails, the complete authored archive remains available.
 - `scripts/build_wayfinding.py` generates bounded masthead, footer, collection,
   parent and related-reading slots. It validates destinations and fragments.
 

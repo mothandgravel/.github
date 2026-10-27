@@ -171,6 +171,10 @@
     "nextReading": {
       "id": "007",
       "bridge": "A map leaves room for what the robot has not established. Its live readings need room for age and uncertainty too."
+    },
+    "specimen": {
+      "href": "../specimens/whose-map/",
+      "label": "Open the Buggy mapping study"
     }
   },
   {
@@ -201,6 +205,10 @@
     "nextReading": {
       "id": "006",
       "bridge": "Once a reading has a time, it needs a place. Follow the same little robot into the gaps in its map."
+    },
+    "specimen": {
+      "href": "../specimens/whose-map/",
+      "label": "Open the Buggy mapping study"
     }
   },
   {
@@ -231,6 +239,10 @@
     "nextReading": {
       "id": "004",
       "bridge": "One gesture should remain one dependable action. So should the place where the next gesture lands."
+    },
+    "specimen": {
+      "href": "../#specimen-skystack",
+      "label": "Open the SkyStack exhibit"
     }
   },
   {
@@ -262,6 +274,10 @@
     "nextReading": {
       "id": "011",
       "bridge": "A dependable place to stand changes how you look. Now bring a new model into that place and see what its neighbours reveal."
+    },
+    "specimen": {
+      "href": "../#specimen-skystack",
+      "label": "Open the SkyStack exhibit"
     }
   },
   {
@@ -292,6 +308,10 @@
     "nextReading": {
       "id": "005",
       "bridge": "Two pictures can almost agree without establishing the whole answer. A reassuring light can borrow the same confidence."
+    },
+    "specimen": {
+      "href": "../#specimen-skystack",
+      "label": "Open the SkyStack exhibit"
     }
   },
   {
@@ -322,6 +342,10 @@
     "nextReading": {
       "id": "009",
       "bridge": "The model asks whether it belongs. Step back to the camera, the player and the ground that make that judgement possible."
+    },
+    "specimen": {
+      "href": "../#specimen-skystack",
+      "label": "Open the SkyStack exhibit"
     }
   },
   {
@@ -352,6 +376,13 @@
     "specimen": {
       "href": "../specimens/coastal-watch/",
       "label": "Return to Coastal watch"
+    },
+    "archivePreview": {
+      "image": "assets/specimens/coastal-watch/04-stream-interrupted.jpg",
+      "width": 1275,
+      "height": 884,
+      "alt": "Coastal watch retaining its last position after the stream disconnects.",
+      "boundary": "Captured software study with synthetic tracks. The connection is interrupted; the last position remains."
     }
   },
   {
@@ -423,6 +454,13 @@
     "specimen": {
       "href": "../specimens/maritime-study/",
       "label": "Return to the maritime study"
+    },
+    "archivePreview": {
+      "image": "assets/specimens/maritime-study/12-bridge-night-current.jpg",
+      "width": 1265,
+      "height": 712,
+      "alt": "The night bridge study with dimmed navigation instruments, a fixed position and unavailable inputs left blank.",
+      "boundary": "Captured fixed-position bridge study. Borrowed weather; no live voyage."
     }
   },
   {
