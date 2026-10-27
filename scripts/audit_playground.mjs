@@ -25,7 +25,7 @@ const pages = [
 ];
 const results = [];
 try {
-  for (const target of pages) for (const width of [320, 390, 1440]) for (const theme of ['night', 'afterlight']) {
+  for (const target of pages) for (const width of (target.name === 'investigations' ? [320, 390, 768, 1024, 1440] : [320, 390, 1440])) for (const theme of ['night', 'afterlight']) {
     const label = `${target.name}-${width}-${theme}`;
     const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     const errors = [], toyRequests = [];
@@ -49,6 +49,37 @@ try {
       if (made.items !== 16 || made.height > made.reserve + 0.5) fail(label + ' made here', made);
     } else if (target.name === 'playground' && width === 1440 && toyRequests.some(url => /playground\/(stamp|week)\.mjs/.test(url)))
       fail(label, { eagerToys: toyRequests });
+    if (target.name === 'investigations') {
+      const index = await page.evaluate(() => {
+        const rows = [...document.querySelectorAll('.question-index>li')];
+        const labels = [...document.querySelectorAll('.question-made>li')];
+        const contains = (outer, inner) => {
+          const a = outer.getBoundingClientRect(), b = inner.getBoundingClientRect();
+          return b.left >= a.left - 1 && b.right <= a.right + 1 && b.top >= a.top - 1 && b.bottom <= a.bottom + 1;
+        };
+        return {
+          rows: rows.length,
+          projects: rows.map(row => row.querySelectorAll('.question-made>li').length),
+          // A nested project label used to inherit the outer question's three-column grid.
+          // Check actual text fit, rather than merely asserting the replacement CSS selector.
+          stretchedLabels: labels.filter(item => {
+            const text = document.createRange(); text.selectNodeContents(item);
+            return item.getBoundingClientRect().width > text.getBoundingClientRect().width + 20
+              || text.getClientRects().length !== 1 || item.scrollWidth > item.clientWidth;
+          }).map(item => item.textContent),
+          escapedContent: rows.flatMap(row => [...row.querySelectorAll('h2,.question-detail,.question-made>li')]
+            .filter(item => !contains(row, item)).map(item => item.textContent)),
+          register: document.querySelectorAll('#made-here li').length,
+          clippedRegister: [...document.querySelectorAll('#made-here li')].filter(item =>
+            [...item.children].some(child => !contains(item, child) || child.scrollWidth > child.clientWidth)
+          ).map(item => item.textContent),
+          exits: [...document.querySelectorAll('.investigation-exits a')].map(a => new URL(a.href).pathname),
+        };
+      });
+      if (index.rows !== 3 || JSON.stringify(index.projects) !== '[5,7,4]' || index.register !== 16
+        || index.stretchedLabels.length || index.escapedContent.length || index.clippedRegister.length
+        || JSON.stringify(index.exits) !== '["/notes/","/specimens/","/questions/"]') fail(label + ' index integrity', index);
+    }
     for (const toy of target.toys) {
       await page.locator(`#toy-${toy}`).scrollIntoViewIfNeeded();
       await page.locator(`#toy-${toy}[data-loaded="ready"]`).waitFor({ timeout: 5000 });
@@ -69,7 +100,7 @@ try {
       leaks: /navivra|kistradegoods|digablesolutions|vesuno|run\.app/i.test(document.documentElement.outerHTML),
     }));
     if (check.overflow || check.headings !== 1 || check.animating || check.leaks || errors.length) fail(label, { check, errors });
-    if (width !== 320) {
+    if (width !== 320 || target.name === 'investigations') {
       // Axe runs on the page at rest at its top: anything scrolled under the sticky header would
       // otherwise read as an obscured target.
       await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
@@ -152,6 +183,13 @@ try {
   if (!(await still.locator('#made-here a[href="./investigations/#made-here"]').isVisible())) fail('no-script', 'Made here link missing on home');
   await still.goto(origin + '/investigations/');
   if (await still.locator('#made-here li').count() !== 16) fail('no-script', 'Made here list missing on the index');
+  for (const slug of ['how-old', 'take-it-back', 'green-light']) {
+    const link = still.locator(`.question-title a[href="./${slug}/"]`);
+    await link.focus(); await still.keyboard.press('Enter');
+    await still.waitForURL(origin + `/investigations/${slug}/`);
+    if (await still.locator('h1').count() !== 1) fail('no-script index journey', slug);
+    await still.goBack();
+  }
   await quiet.close();
   await writeFile(`${output}/playground-audit.json`, JSON.stringify({ results, verdicts }, null, 2));
   console.log(`Playground: ${results.length} page/width/theme checks, zero axe violations, no toys on home, Made here in its reserved box, lazy toys, keyboard play, reduced motion and no-script fallbacks pass.`);

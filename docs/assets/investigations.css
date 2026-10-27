@@ -1,0 +1,97 @@
+/* The index is a reading room. Its three marks are diagrams of questions, not live signals. */
+.questions-room .room-main {padding-top:30px}
+.questions-room .room-head {grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:64px;padding:54px 0 42px}
+.questions-room .room-head h1 {font-size:clamp(54px,6.35vw,94px);line-height:.96}
+.questions-room .room-head h1 em {display:inline-block;margin-top:8px;font-size:.93em}
+.investigation-intro {padding-bottom:6px}
+.questions-room .investigation-intro>p {max-width:43ch;font-size:18px;line-height:1.65}
+.questions-room .investigation-intro .investigation-invitation {margin:22px 0 0;padding-top:16px;border-top:1px solid var(--line-soft);font-size:14px;color:var(--muted)}
+.questions-room .question-index {margin:0;border-top:1px solid var(--gold)}
+.questions-room .question-index>li {position:relative;grid-template-columns:104px minmax(0,.92fr) minmax(0,1fr);gap:36px;align-items:start;padding:38px 0 40px;border-bottom:1px solid var(--line)}
+.question-folio {display:grid;gap:22px;color:var(--gold-bright)}
+.question-folio>span {font:400 52px/.9 var(--serif);letter-spacing:-.055em}
+.question-folio svg {display:block;width:96px;height:64px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.question-folio .signal-faint {opacity:.45}
+.question-folio .signal-fill {fill:currentColor;stroke:none}
+.question-title .mono {display:block;font-size:11px;letter-spacing:.13em;margin-bottom:14px}
+.questions-room .question-index h2 {font-size:clamp(30px,2.9vw,43px);line-height:1.1;max-width:21ch;text-wrap:balance}
+.question-title a {text-decoration:none;text-underline-offset:5px;text-decoration-thickness:1px}
+.question-title a:hover {text-decoration:underline}
+.questions-room .question-index p {font-size:16px;line-height:1.65;margin:0 0 18px;max-width:52ch}
+.questions-room .question-made {gap:7px;margin:0 0 16px;max-width:52ch}
+.questions-room .question-made>li {display:block;font-size:12px;line-height:1.4;padding:5px 8px;color:var(--secondary);border:1px solid var(--line-soft);background:var(--surface)}
+.question-detail .line-link {display:inline-flex;align-items:center;min-height:44px;padding:4px 0;font-size:14px}
+.questions-room .made-list {margin-top:66px;padding:30px 32px 32px;border:1px solid var(--line);background:var(--surface);scroll-margin-top:140px}
+.made-heading {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:40px;align-items:end;margin-bottom:26px}
+.made-heading .mono {font-size:11px;letter-spacing:.13em;color:var(--gold-bright);margin:0 0 12px}
+.questions-room .made-heading h2 {font:400 clamp(29px,3vw,42px)/1.1 var(--serif);letter-spacing:-.025em;color:var(--ink);margin:0;max-width:23ch}
+.questions-room .made-heading>p {font-size:15px;line-height:1.65;max-width:48ch;margin:0}
+.questions-room .made-list ul {columns:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 36px;margin:0 0 22px;border-top:1px solid var(--line)}
+.questions-room .made-list li {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:baseline;padding:15px 0}
+.questions-room .made-list li strong {font-size:14px;font-weight:500;white-space:normal;overflow-wrap:anywhere}
+.questions-room .made-list li .status {font-size:11px;letter-spacing:.025em;text-align:left;align-items:baseline}
+.questions-room .made-list .status::before {width:7px;height:7px;position:relative;top:1px}
+.questions-room .made-list>.line-link {display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.investigation-exits {display:grid;grid-template-columns:minmax(0,1.1fr) repeat(2,minmax(0,1fr));gap:32px;margin-top:42px;padding-top:26px;border-top:1px solid var(--line)}
+.investigation-exits>div {min-width:0}
+.investigation-exits .mono {font-size:11px;letter-spacing:.1em;color:var(--gold-bright);margin:0 0 12px}
+.investigation-exits a {display:inline-flex;align-items:center;min-height:44px;font:400 26px/1.15 var(--serif);text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+.investigation-exits a:hover {color:var(--gold-bright)}
+.investigation-exits p {font-size:14px;line-height:1.6;color:var(--secondary);max-width:33ch;margin:8px 0 0}
+@media(max-width:1100px) {
+  .questions-room .room-head {gap:36px}
+  .questions-room .question-index>li {grid-template-columns:76px minmax(0,.9fr) minmax(0,1fr);gap:26px}
+  .question-folio svg {width:72px;height:48px}
+  .questions-room .made-list li {grid-template-columns:minmax(0,1fr);gap:6px}
+}
+@media(max-width:900px) {
+  .questions-room .room-head {grid-template-columns:minmax(0,1fr);gap:28px;padding:40px 0 34px}
+  .questions-room .room-head h1 {font-size:clamp(52px,8.3vw,75px)}
+  .questions-room .investigation-intro>p {max-width:60ch}
+  .questions-room .investigation-intro .investigation-invitation {max-width:none;margin-top:18px}
+  .questions-room .question-index>li {grid-template-columns:76px minmax(0,1fr);gap:20px 26px}
+  .question-folio {grid-row:1/3;gap:24px}
+  .question-title .mono {margin-bottom:10px}
+  .questions-room .question-index h2 {font-size:36px;max-width:25ch}
+  .question-detail {grid-column:2}
+  .made-heading {grid-template-columns:minmax(0,1fr);gap:18px}
+  .questions-room .made-heading>p {max-width:65ch}
+  .investigation-exits {gap:24px}
+  .investigation-exits a {font-size:23px}
+}
+@media(max-width:660px) {
+  .questions-room .room-main {padding-top:24px;padding-bottom:56px}
+  .questions-room .room-head {padding:30px 0;gap:22px}
+  .questions-room .room-head h1 {font-size:clamp(36px,10vw,62px)}
+  .questions-room .room-head h1 em {margin-top:6px;font-size:1.02em}
+  .questions-room .investigation-intro>p {font-size:16px;margin-bottom:0}
+  .questions-room .investigation-intro .investigation-invitation {font-size:13px;margin-top:16px;padding-top:14px}
+  .questions-room .question-index>li {grid-template-columns:48px minmax(0,1fr);gap:20px 16px;padding:28px 0 30px}
+  .question-folio {grid-row:auto;gap:14px}
+  .question-folio>span {font-size:40px}
+  .question-folio svg {width:48px;height:32px;stroke-width:2}
+  .question-title .mono {font-size:10px;margin-bottom:10px}
+  .questions-room .question-index h2 {font-size:29px;max-width:none}
+  .question-detail {grid-column:1/-1}
+  .questions-room .question-index p {font-size:15px;margin-bottom:16px}
+  .questions-room .question-made {margin-bottom:10px}
+  .questions-room .made-list {margin-top:38px;padding:22px 20px}
+  .made-heading {gap:16px;margin-bottom:22px}
+  .questions-room .made-heading h2 {font-size:30px}
+  .questions-room .made-heading>p {font-size:14px}
+  .questions-room .made-list ul {grid-template-columns:minmax(0,1fr);margin-bottom:16px}
+  .questions-room .made-list li {grid-template-columns:minmax(0,1fr) minmax(0,.95fr);gap:12px;padding:14px 0}
+  .questions-room .made-list li strong {font-size:13px}
+  .questions-room .made-list li .status {font-size:11px;line-height:1.5;letter-spacing:0}
+  .investigation-exits {grid-template-columns:minmax(0,1fr);gap:22px;margin-top:32px}
+  .investigation-exits>div+div {border-top:1px solid var(--line-soft);padding-top:22px}
+  .investigation-exits .mono {margin-bottom:4px}
+  .investigation-exits a {font-size:26px}
+  .investigation-exits p {max-width:45ch;margin-top:4px}
+}
+@media print {
+  .questions-room .site-header,.questions-room footer,.investigation-exits {display:none}
+  .questions-room .room-main {width:100%;margin:0}
+  .questions-room .question-index>li {break-inside:avoid}
+  .questions-room .made-list {background:none}
+}
