@@ -536,8 +536,8 @@ def main() -> int:
     index_items = re.findall(r'<li><strong>([^<]+)</strong><span class="status" data-status="(\w+)">([^<]+)</span></li>',
                              (ROOT / 'investigations/index.html').read_text())
     kinds = {'pr': 'production', 'pl': 'playable', 'sd': 'study', 'in': 'internal', '': 'prototype'}
-    check(len(module_items) == 15 and [(n, kinds[k], t) for n, k, t in module_items] == index_items,
-          'Made here must list the same fifteen things and statuses on the homepage and the questions index')
+    check(len(module_items) == 16 and [(n, kinds[k], t) for n, k, t in module_items] == index_items,
+          'Made here must list the same sixteen things and statuses on the homepage and the questions index')
     check('id="made-here" data-made-here' in html and 'href="./investigations/#made-here"' in html
           and "['#questions','./assets/made-here.mjs']" in html, 'Made here must load when its section nears view, with a no-script link')
     check('run.app' not in html, 'The live Cyber Grid is not linked yet')

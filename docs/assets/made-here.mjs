@@ -21,6 +21,7 @@ export const MADE_HERE = [
   ['Luotsi', 'in', 'Internal tool'],
   ['Vahti', 'in', 'Internal tool'],
   ['Verstas', '', 'Prototype'],
+  ['Sohva Remote', '', 'In preparation for Google Play'],
 ];
 
 // Shape, not only colour, separates the statuses: filled circle, filled square, dashed circle, square.
