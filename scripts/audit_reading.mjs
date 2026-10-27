@@ -8,6 +8,8 @@ import { execFileSync } from 'node:child_process';
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 const notes = JSON.parse(await readFile('docs/assets/notes.json', 'utf8'));
+const specimens = JSON.parse(await readFile('docs/assets/specimens.json', 'utf8'));
+const { specimenFor } = await import('../docs/assets/notes-model.mjs');
 const browser = await launchAuditBrowser({ headless: true });
 const results = [], failures = [];
 let assertions = 0;
@@ -46,6 +48,15 @@ try {
     await page.goto(origin + '/notes/');
     await page.locator('#archive-controls').waitFor({ state: 'visible' });
     await review(page, `reading-entrance-${width}-${theme}`, [1440, 390, 320].includes(width));
+    assert(await page.locator('.archive-feature').evaluate(el => el.compareDocumentPosition(document.querySelector('#listen-archive')) & Node.DOCUMENT_POSITION_FOLLOWING), 'Writing precedes the listening edition');
+    assert(await page.locator('.note-pair').count() === 2, 'Two distinct note-to-specimen introductions');
+    for (const note of notes) {
+      const route = page.locator(`#archive-results [data-note-id="${note.id}"] .archive-specimen`);
+      const specimen = specimenFor(note, specimens);
+      assert(await route.count() === (specimen ? 1 : 0), `${note.id}: only actual specimen relationships are labelled`);
+      if (specimen) assert(await route.getAttribute('href') === note.specimen.href && (await route.innerText()).includes(specimen.id), `${note.id}: destination and identity survive enhancement`);
+    }
+    assert(await page.locator('.note-pair img').evaluateAll(images => images.every(img => getComputedStyle(img).objectFit === 'contain')), 'Paired evidence captures remain uncropped');
     for (const [fragment, focus] of [['reading-selection', true], ['archive-title', true], ['listen-archive', false]]) {
       const link = page.locator(`.notes-wayfinding a[href="#${fragment}"]`);
       await link.focus(); await page.keyboard.press('Enter');
@@ -84,6 +95,13 @@ try {
   await page.goto(origin + '/notes/012-the-picture-stays.html');
   await page.locator('.reading-exit a[href="../specimens/coastal-watch/"]').click();
   assert(new URL(page.url()).pathname === '/specimens/coastal-watch/', 'Source specimen return survives the new ending');
+  await page.goto(origin + '/notes/?q=coastal#archive');
+  await page.locator('#archive-controls').waitFor({ state: 'visible' });
+  await page.locator('#archive-results [data-note-id="012"] .archive-specimen').click();
+  assert(new URL(page.url()).pathname === '/specimens/coastal-watch/', 'Archive relationship opens the actual Coastal watch specimen');
+  await page.goBack();
+  await page.locator('#archive-controls').waitFor({ state: 'visible' });
+  assert(await page.locator('#archive-query').inputValue() === 'coastal', 'Specimen return preserves the archive question');
   await page.goto(origin + '/notes/013-work-outlives-the-window.html');
   const saved = JSON.stringify({ version: 1, answers: { making: 'An existing unfinished question', difficulty: 'Keep these exact words.' } });
   await page.evaluate(({ key, saved }) => sessionStorage.setItem(key, saved), { key: draftKey, saved });
@@ -113,6 +131,7 @@ try {
   const fallback = await browser.newPage({ viewport: { width: 320, height: 900 }, javaScriptEnabled: false });
   await fallback.goto(origin + '/notes/');
   assert(await fallback.locator('#archive-fallback article').count() === notes.length, 'No-script archive retains the whole collection');
+  assert(await fallback.locator('#archive-fallback .archive-specimen').count() === notes.filter(note => specimenFor(note, specimens)).length, 'No-script archive keeps the same specimen relationships');
   await fallback.locator('.notes-wayfinding a[href="#reading-selection"]').click();
   assert(new URL(fallback.url()).hash === '#reading-selection', 'Reading entrance needs no script');
   for (const note of notes) {
@@ -127,6 +146,12 @@ try {
   await denied.goto(origin + '/notes/', { waitUntil: 'networkidle' });
   assert(await denied.locator('#archive-fallback article').count() === notes.length && await denied.locator('#archive-controls').isHidden(), 'Failed catalog leaves the complete static reading route');
   await denied.close();
+  const deniedSpecimens = await browser.newPage({ viewport: { width: 320, height: 900 } });
+  await deniedSpecimens.route('**/assets/specimens.json', route => route.abort());
+  await deniedSpecimens.goto(origin + '/notes/', { waitUntil: 'networkidle' });
+  assert(await deniedSpecimens.locator('#archive-fallback article').count() === notes.length && await deniedSpecimens.locator('#archive-controls').isHidden(), 'Failed specimen catalogue preserves the complete static archive');
+  assert(await deniedSpecimens.locator('#archive-fallback .archive-specimen').count() === notes.filter(note => specimenFor(note, specimens)).length, 'Failed catalogue preserves authored specimen routes');
+  await deniedSpecimens.close();
   // Render actual generator output for valid authoring states absent from today's
   // catalog. The fixture-only relationships never enter published pages or audio.
   const fixtures = JSON.parse(execFileSync('python3', ['scripts/reading_output.test.py', '--fixtures'], { encoding: 'utf8' }));

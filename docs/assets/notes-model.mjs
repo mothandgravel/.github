@@ -1,4 +1,15 @@
 export const PAGE_SIZE = 20;
+export function specimenFor(note, specimens) {
+  if (!note.specimen?.href) return null;
+  const target = new URL(note.specimen.href, 'https://mothandgravel.com/notes/');
+  if (target.origin !== 'https://mothandgravel.com') return null;
+  return specimens.find(item => {
+    const family = new URL(item.href, target.origin);
+    return family.pathname !== '/' ? target.pathname.startsWith(family.pathname) :
+      target.pathname === '/' && target.hash === family.hash;
+  }) || null;
+}
+
 export function queryNotes(notes, { q = '', topic = '', sort = 'newest', page = 1 } = {}) {
   const words = q.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   const filtered = notes.filter(n => (!topic || (n.topics || []).includes(topic)) && words.every(word =>

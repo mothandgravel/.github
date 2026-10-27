@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { queryNotes } from '../docs/assets/notes-model.mjs';
+import { queryNotes, specimenFor } from '../docs/assets/notes-model.mjs';
+import { readFile } from 'node:fs/promises';
 
 const notes = Array.from({ length: 500 }, (_, i) => ({
   id: String(i + 1).padStart(3, '0'), title: `Note ${i + 1}`, summary: i % 2 ? 'bone and brass' : 'making',
@@ -29,4 +30,20 @@ test('a note without optional topic/project metadata remains searchable', () => 
   const minimal = { id: '501', title: 'An observation', summary: 'Making', date: '2026-10-13', type: 'Note' };
   assert.equal(queryNotes([minimal], { q: 'observation' }).total, 1);
   assert.equal(queryNotes([minimal], { topic: 'Interface' }).total, 0);
+});
+
+test('specimen routes retain the actual destination and do not relabel investigations', async () => {
+  const catalog = JSON.parse(await readFile(new URL('../docs/assets/notes.json', import.meta.url), 'utf8'));
+  const specimens = JSON.parse(await readFile(new URL('../docs/assets/specimens.json', import.meta.url), 'utf8'));
+  const resolved = id => specimenFor(catalog.find(n => n.id === id), specimens)?.id;
+  assert.equal(resolved('017'), '008');
+  assert.equal(resolved('014'), '006');
+  assert.equal(resolved('012'), '005');
+  assert.equal(resolved('006'), '003');
+  assert.equal(resolved('008'), '002');
+  assert.equal(resolved('015'), undefined);
+  assert.equal(specimenFor({specimen:{href:'https://elsewhere.example/specimens/coastal-watch/'}}, specimens), null);
+  assert.equal(specimenFor({specimen:{href:'../specimens/coastal-watch-alike/'}}, specimens), null);
+  assert.equal(specimenFor({specimen:{href:'../#contact'}}, specimens), null);
+  assert.equal(specimenFor({}, specimens), null);
 });

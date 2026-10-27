@@ -13,13 +13,38 @@ from build_discovery import build as build_discovery
 from build_home_styles import build as build_home_styles
 from build_wayfinding import build as build_wayfinding
 from build_audio import build as build_audio
+from urllib.parse import urlsplit, urljoin
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "docs/assets/notes.json"
 
 
+def specimen_for(note, specimens):
+    """Resolve an authored relationship; an investigation is not a specimen."""
+    href = note.get('specimen', {}).get('href')
+    if not href:
+        return None
+    target = urlsplit(urljoin('https://mothandgravel.com/notes/', href))
+    if target.netloc != 'mothandgravel.com':
+        return None
+    for item in specimens:
+        family = urlsplit(item['href'])
+        if (family.path != '/' and target.path.startswith(family.path)) or (
+            family.path == '/' and target.path == '/' and target.fragment == family.fragment
+        ):
+            return item
+    return None
+
+
+def specimen_route(note, specimens):
+    item = specimen_for(note, specimens)
+    if not item:
+        return ''
+    return f'<a class="archive-specimen" href="{escape(note["specimen"]["href"], quote=True)}"><span class="mono">SPECIMEN {item["id"]}</span><span>{escape(note["specimen"]["label"])} <span aria-hidden="true">↗</span></span></a>'
+
+
 def load_notes():
-    notes = json.loads(CATALOG.read_text())
+    notes = json.loads(CATALOG.read_text(encoding='utf-8'))
     ids = {n["id"] for n in notes}
     assert len(ids) == len(notes), "Duplicate note identifier"
     for n in notes:
@@ -73,10 +98,10 @@ def feature(n, prefix, heading):
     </article>'''
 
 
-def row(n, prefix, heading=3):
+def row(n, prefix, heading=3, specimens=None):
     return f'''<article class="archive-entry notes-index-entry" data-note-id="{n['id']}">
       <div class="editorial-meta mono">{n['id']} / {escape(n['type'].upper())}</div>
-      <div><h{heading}><a href="{prefix}{n['slug']}">{escape(n['title'])} <span aria-hidden="true">↗</span></a></h{heading}><p>{escape(n['summary'])}</p><p class="archive-topics mono">{' · '.join(map(escape, n['topics']))}</p></div>
+      <div><h{heading}><a href="{prefix}{n['slug']}">{escape(n['title'])} <span aria-hidden="true">↗</span></a></h{heading}><p>{escape(n['summary'])}</p><p class="archive-topics mono">{' · '.join(map(escape, n['topics']))}</p>{specimen_route(n, specimens) if specimens is not None else ''}</div>
     </article>'''
 
 
@@ -90,15 +115,50 @@ def stack(notes, prefix):
     </details>'''
 
 
+def archive_feature(note, specimens):
+    return f'''<article class="note-feature archive-feature">
+      <div class="note-feature-copy">
+        <p class="editorial-meta mono">FEATURED / FIELD NOTE {note['id']}</p>
+        <h2><a href="./{note['slug']}">{escape(note['title'])}</a></h2>
+        <p>{escape(note['summary'])}</p>
+        <a class="editorial-link" href="./{note['slug']}">Read field note {note['id']} <span aria-hidden="true">↗</span></a>
+        {specimen_route(note, specimens)}
+      </div>
+      <div class="archive-feature-art">{visual(note, '../assets/notes/')}</div>
+    </article>'''
+
+
+def archive_connections(notes, featured, specimens):
+    seen = {specimen_for(featured, specimens)['id']} if specimen_for(featured, specimens) else set()
+    pairs = []
+    for note in notes:
+        item = specimen_for(note, specimens)
+        if not item or item['id'] in seen or not item.get('image'):
+            continue
+        seen.add(item['id'])
+        pairs.append(f'''<article class="note-pair">
+          <figure><img src="../{item['image']}" alt="{escape(item['alt'], quote=True)}" width="{item['width']}" height="{item['height']}" loading="lazy" decoding="async"><figcaption>{escape(item['boundary'])}</figcaption></figure>
+          <div class="note-pair-copy"><p class="mono">FIELD NOTE {note['id']} / SPECIMEN {item['id']}</p>
+          <h3><a href="./{note['slug']}">{escape(note['title'])} <span aria-hidden="true">↗</span></a></h3>
+          <p>{escape(note['summary'])}</p>
+          <a class="pair-specimen" href="{escape(note['specimen']['href'], quote=True)}"><span>Open specimen {item['id']} / {escape(item['name'])}</span><span aria-hidden="true">↗</span></a></div>
+        </article>''')
+        if len(pairs) == 2:
+            break
+    if not pairs:
+        return ''
+    return '<section class="notes-connections" aria-labelledby="notes-connections-title"><div class="notes-section-heading"><div><p class="eyebrow">FROM THE SAME WORK</p><h2 id="notes-connections-title">Read it. <em>Then try it.</em></h2></div><p>A field note follows a question. A specimen gives you something to look into. Here, the two meet.</p></div><div class="note-pairs">' + ''.join(pairs) + '</div></section>'
+
+
 def replace_slot(path, name, content, check):
-    old = path.read_text()
+    old = path.read_text(encoding='utf-8')
     pattern = rf"(<!-- {name}:start -->).*?(<!-- {name}:end -->)"
     new, count = re.subn(pattern, lambda m: m[1] + '\n' + content + '\n' + m[2], old, flags=re.S)
     assert count == 1, f"Missing/duplicate slot {name} in {path}"
     if check:
         assert new == old, f"Stale editorial output: run python3 scripts/build_notes.py ({path})"
-    else:
-        path.write_text(new)
+    elif new != old:
+        path.write_text(new, encoding='utf-8', newline='\n')
 
 
 def reading_exit(n, notes):
@@ -150,6 +210,7 @@ def reading_exit(n, notes):
 
 def build(check=False):
     notes = load_notes()
+    specimens = json.loads((ROOT / 'docs/assets/specimens.json').read_text(encoding='utf-8'))
     # The published catalog is also the feed: unpublished research never enters it.
     ET.register_namespace('atom', 'http://www.w3.org/2005/Atom')
     rss = ET.Element('rss', version='2.0')
@@ -183,13 +244,11 @@ def build(check=False):
         feed_path.write_text(feed)
     featured = next((n for n in notes if n['featured']), notes[0])
     recent = [n for n in notes if n['id'] != featured['id']][:3]
-    for path, name, prefix, heading in (
-        (ROOT / 'docs/index.html', 'home-notes', './notes/', 3),
-        (ROOT / 'docs/notes/index.html', 'collection-notes', './', 2),
-    ):
-        replace_slot(path, name, '<div class="editorial-selection">' + feature(featured, prefix, heading) + stack(recent, prefix) + '</div>', check)
+    replace_slot(ROOT / 'docs/index.html', 'home-notes', '<div class="editorial-selection">' + feature(featured, './notes/', 3) + stack(recent, './notes/') + '</div>', check)
     index = ROOT / 'docs/notes/index.html'
-    replace_slot(index, 'archive', ''.join(row(n, './') for n in notes), check)
+    replace_slot(index, 'collection-notes', archive_feature(featured, specimens) + stack(recent, './'), check)
+    replace_slot(index, 'notes-connections', archive_connections(notes, featured, specimens), check)
+    replace_slot(index, 'archive', ''.join(row(n, './', specimens=specimens) for n in notes), check)
     replace_slot(index, 'note-count', f'<span>{len(notes)} published {"note" if len(notes) == 1 else "notes"}</span>', check)
     for n in notes:
         replace_slot(ROOT / 'docs/notes' / n['slug'], 'related-notes', reading_exit(n, notes), check)
