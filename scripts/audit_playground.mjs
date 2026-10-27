@@ -64,7 +64,10 @@ try {
           // Check actual text fit, rather than merely asserting the replacement CSS selector.
           stretchedLabels: labels.filter(item => {
             const text = document.createRange(); text.selectNodeContents(item);
-            return item.getBoundingClientRect().width > text.getBoundingClientRect().width + 20
+            const style = getComputedStyle(item);
+            const inset = ['paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth']
+              .reduce((sum, key) => sum + parseFloat(style[key]), 0);
+            return item.getBoundingClientRect().width > text.getBoundingClientRect().width + inset + 1
               || text.getClientRects().length !== 1 || item.scrollWidth > item.clientWidth;
           }).map(item => item.textContent),
           escapedContent: rows.flatMap(row => [...row.querySelectorAll('h2,.question-detail,.question-made>li')]
@@ -190,6 +193,9 @@ try {
     if (await still.locator('h1').count() !== 1) fail('no-script index journey', slug);
     await still.goBack();
   }
+  await still.locator('#made-here a[href="../sohva/"]').focus(); await still.keyboard.press('Enter');
+  await still.waitForURL(origin + '/sohva/');
+  if (await still.locator('h1').count() !== 1) fail('no-script register journey', 'Sohva Remote did not open');
   await quiet.close();
   await writeFile(`${output}/playground-audit.json`, JSON.stringify({ results, verdicts }, null, 2));
   console.log(`Playground: ${results.length} page/width/theme checks, zero axe violations, no toys on home, Made here in its reserved box, lazy toys, keyboard play, reduced motion and no-script fallbacks pass.`);
