@@ -4,7 +4,8 @@ const intake = document.getElementById('loose-end');
 const status = document.getElementById('draft-status');
 function announce(message, source = document.activeElement) {
   status.textContent = message;
-  const feedback = source?.closest('[data-feedback-scope]')?.querySelector('[data-room-feedback]') || intake?.querySelector('#question-guidance');
+  const scope = source?.closest('[data-feedback-scope]');
+  const feedback = (scope && [...scope.querySelectorAll('[data-room-feedback]')].find(el=>el.closest('[data-feedback-scope]')===scope)) || intake?.querySelector('#question-guidance');
   if (feedback) {
     feedback.textContent = message;
     if (intake && source?.tagName === 'BUTTON') feedback.scrollIntoView({ block: 'nearest', behavior: 'instant' });
@@ -29,7 +30,7 @@ let enquiry = null;
 function loadEnquiry() {
   enquiry ??= fetch(new URL('./enquiry-config.json', import.meta.url), { cache: 'no-cache' })
     .then(response => response.ok ? response.json() : null)
-    .then(config => config?.enabled === true ? import('./enquiry.mjs?v=2').then(module => module.start(config)) : null)
+    .then(config => config?.enabled === true ? import('./enquiry.mjs?v=3').then(module => module.start(config)) : null)
     .catch(() => null);
 }
 function download(text, name) {
@@ -39,6 +40,14 @@ function download(text, name) {
 }
 
 if (intake) {
+  // Reading context belongs to this page visit, never to the visitor's draft.
+  // Keep it available while writing after an explicit thread entrance.
+  const threadContext = document.getElementById('signals-context');
+  const retainThreadContext = () => {
+    if (threadContext && location.hash === '#signals-context') threadContext.dataset.threadEntry = 'true';
+  };
+  retainThreadContext();
+  window.addEventListener('hashchange', retainThreadContext);
   const panels = [...intake.querySelectorAll('[data-step]')];
   const controls = document.getElementById('journey-controls');
   const back = document.getElementById('question-back');
@@ -63,6 +72,13 @@ if (intake) {
   });
   let guidedHistory = true;
   try { history.replaceState({ mgLooseEnd: true, step: 0 }, ''); } catch { guidedHistory = false; }
+  // Native writing/skip links add a fragment entry without the guided state.
+  // Bind that entry to the view it already shows, so one guided Back press can
+  // reach the preceding question without consuming an unrecognised entry.
+  window.addEventListener('hashchange', () => {
+    if (!guidedHistory || (history.state?.mgLooseEnd === true && history.state.step === step)) return;
+    try { history.replaceState({ mgLooseEnd: true, step }, ''); } catch { guidedHistory = false; }
+  });
   const answers = () => normalizeDraft(Object.fromEntries(fields.map(key => [key, key === 'intent' ?
     intake.querySelector('input[name="intent"]:checked')?.value : document.getElementById(key).value])));
   const saved = readDraft(storage());
@@ -102,6 +118,8 @@ if (intake) {
     }
     panels.forEach((panel, i) => { panel.hidden = i !== step; });
     progress.textContent = `${step + 1} / ${panels.length} — ${panels[step].dataset.title}`;
+    const folio = intake.querySelector('[data-question-number]');
+    if (folio) folio.textContent = String(step + 1).padStart(2, '0');
     const meter = document.getElementById('question-meter');
     if (meter) { meter.max = panels.length; meter.value = step + 1; }
     intake.querySelectorAll('[data-room-feedback]').forEach(el => { el.textContent = ''; });
@@ -152,7 +170,11 @@ if (intake) {
     } catch {
       if (!isCurrent()) return;
       brief.focus({ preventScroll: true }); brief.select();
-      announce('Select and copy the brief here, or use Download.', source);
+      announce('Select and copy the brief here, or use Download.', brief);
+      // Keep the selected words and their recovery instruction together, even
+      // when a long brief puts the delivery controls below another viewport.
+      const recovery = brief.closest('.brief-document')?.querySelector('[data-room-feedback]');
+      (recovery || brief).scrollIntoView({ block: 'end', behavior: 'instant' });
     }
   });
   document.getElementById('carry-question').addEventListener('click', event => {
@@ -162,7 +184,7 @@ if (intake) {
       saved.setItem(draftKey, JSON.stringify({ version: 1, answers: answers(), brief: brief.value.slice(0, briefLimit) }));
       // New handoff replaces the room's previous experimental annotations.
       saved.removeItem(roomKey);
-      location.assign('../workbench/');
+      location.assign('../workbench/#your-question');
     } catch { announce('This browser cannot carry a draft between pages. Download your brief, or open the example workbench below.', event.currentTarget); }
   });
   document.getElementById('clear-draft').addEventListener('click', event => {
@@ -177,6 +199,8 @@ if (intake) {
   });
   controls.hidden = false;
   document.querySelectorAll('[data-enhance]').forEach(el => { el.hidden = false; });
+  const previewFallback = intake.querySelector('.question-preview-fallback');
+  if (previewFallback) previewFallback.hidden = true;
   show(0, false, false);
 }
 
@@ -216,7 +240,22 @@ if (room) {
     if (updateChoice) room.querySelectorAll('input[name="choice"]').forEach(el => { el.checked = el.value === state.choice; });
     document.getElementById('recorded-choice').textContent = state.choice ? 'Your draft choice: ' + surfaces[state.choice] + '. The studio has not received this.' : 'No draft choice recorded.';
     document.getElementById('annotation-record').textContent = state.note ? surfaces[state.noteSurface] + ': ' + state.note : 'No observation pinned yet.';
+    const noteLink = document.getElementById('inspect-note-surface');
+    if (noteLink) noteLink.hidden = !state.note;
+    const noteMark = document.getElementById('inspection-note-mark');
+    if (noteMark) {
+      const matches = Boolean(state.note) && state.noteSurface === state.surface;
+      noteMark.dataset.visible = String(matches);
+      noteMark.setAttribute('aria-hidden', String(!matches));
+    }
   }
+  document.getElementById('inspect-note-surface')?.addEventListener('click', () => {
+    state.surface = state.noteSurface;
+    paint();
+    const target = room.querySelector(`input[name="surface"][value="${state.surface}"]`);
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: 'center', behavior: 'instant' });
+  });
   room.querySelectorAll('input[name="surface"]').forEach(el => el.addEventListener('change', () => { state.surface = el.value; paint(); }));
   let annotationSurface = state.surface;
   document.getElementById('mark-wrong').addEventListener('click', () => {
@@ -245,7 +284,7 @@ if (room) {
     announce(kept ? 'Draft choice recorded in this tab. Nothing was sent.' : 'Draft choice recorded for this visit only. Download it to keep it.');
   });
   document.getElementById('download-room').addEventListener('click', () => {
-    download((draft ? document.getElementById('carried-brief').textContent + '\n\n' : '') +
+    download((draft ? 'YOUR CARRIED BRIEF — SEPARATE FROM THE FICTIONAL STUDY\n\n' + document.getElementById('carried-brief').textContent + '\n\n' : '') +
       'WORKBENCH EXAMPLE — LOCAL DRAFT\n\nExample question: How do you begin a repair note?\nObservation: ' +
       (state.note ? surfaces[state.noteSurface] + ': ' + state.note : 'Still open.') + '\nDraft choice: ' + (surfaces[state.choice] || 'Still open.') + '\n\nNothing has been sent to the studio.\n', 'moth-and-gravel-workbench-draft.txt');
     announce('Workbench draft prepared for download. Nothing was sent.');
