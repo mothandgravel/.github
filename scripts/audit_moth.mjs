@@ -24,7 +24,13 @@ const quiet = async (page,label) => {
   assert(await room(page).locator('.moth-traveller').isHidden(),label+': stranded traveller');
   assert(await room(page).locator('.moth-shadow').isHidden(),label+': stranded shadow');
   assert(await room(page).getAttribute('data-moth-phase')===null,label+': stale phase');
-  await page.waitForTimeout(220);
+  // Idle precedes the source mark's fade back in. Observe its completion
+  // instead of assuming a 220ms wall-clock pause includes a rendered frame.
+  await page.waitForFunction(()=>{
+    const room=document.querySelector('#moth-interlude');
+    return Number(getComputedStyle(room.querySelector('.moth-source img')).opacity)===1&&
+      room.getAnimations({subtree:true}).length===0;
+  },null,{timeout:5000}).catch(()=>{});
   assert(await room(page).locator('.moth-source img').evaluate(el=>Number(getComputedStyle(el).opacity)===1),label+': mark not restored');
 };
 
