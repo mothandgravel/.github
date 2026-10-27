@@ -146,7 +146,10 @@ def poll_operation(url: str, project: str, auth: str) -> dict:
             time.sleep(2**attempt)
 
 
-def probe_audio(path: Path) -> float:
+CAPTION_LIMIT_SECONDS = 1200
+
+
+def probe_audio(path: Path, limit: float | None = CAPTION_LIMIT_SECONDS) -> float:
     if not shutil.which("ffprobe"):
         raise ValueError("Captioning requires ffprobe, included with FFmpeg")
     result = subprocess.run(
@@ -168,7 +171,7 @@ def probe_audio(path: Path) -> float:
         raise ValueError("The input could not be read as audio")
     info = json.loads(result.stdout)
     duration = float(info["format"]["duration"])
-    if not math.isfinite(duration) or not 0 < duration <= 1200:
+    if not math.isfinite(duration) or duration <= 0 or (limit is not None and duration > limit):
         raise ValueError("This caption pilot accepts recordings up to 20 minutes")
     if not any(s.get("codec_type") == "audio" for s in info.get("streams", [])):
         raise ValueError("The input has no audio stream")
@@ -534,6 +537,19 @@ def export_result(
     directory: Path, operation: dict, plan: dict, script: str, aliases: list[str]
 ) -> None:
     recognized = extract_recognition(operation, plan["audio_uri"], plan["duration_seconds"])
+    write_result(directory, recognized, plan, operation["name"], script, aliases)
+
+
+def write_result(
+    directory: Path,
+    recognized: dict,
+    plan: dict,
+    operation_name: str,
+    script: str,
+    aliases: list[str],
+    extra: dict | None = None,
+) -> None:
+    """Write one recognition (single job or joined parts) in the caption output format."""
     (directory / "captions.srt").write_text(recognized["srt"], encoding="utf-8")
     (directory / "captions.vtt").write_text(recognized["vtt"], encoding="utf-8")
     (directory / "transcript.txt").write_text(recognized["transcript"] + "\n", encoding="utf-8")
@@ -571,7 +587,7 @@ def export_result(
             "version": 1,
             "audio_sha256": plan["audio_sha256"],
             "script_sha256": digest(script.strip().encode()) if script else None,
-            "operation": operation["name"],
+            "operation": operation_name,
             "model": plan["model"],
             "location": plan["location"],
             "language": plan.get("language", "en-US"),
@@ -594,6 +610,7 @@ def export_result(
                     "cues.json",
                 )
             },
+            **(extra or {}),
         },
     )
     timing_notice = ""
@@ -680,7 +697,7 @@ def recording_plan(args: argparse.Namespace) -> tuple[Path, dict, bytes, dict, s
         ).encode()
     )
     directory = path.parent / "captions" / fingerprint[:16]
-    duration = probe_audio(path)
+    duration = probe_audio(path, limit=None)
     plan = {
         "audio_sha256": audio_hash,
         "audio_uri": uri,
@@ -702,9 +719,22 @@ def caption_log_root(directory: Path) -> Path:
     return spend_guard.log_root(directory, audio_module.ROOT / "artifacts/audio")
 
 
-def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> Path | None:
+def run(
+    args: argparse.Namespace,
+    *,
+    expected_operation: str | None = None,
+    episode: str | None = None,
+) -> Path | None:
+    """Caption one recording. ``episode`` names the spend-guard episode for a split part."""
     directory, plan, content, metadata, script = recording_plan(args)
     duration = plan["duration_seconds"]
+    if duration > CAPTION_LIMIT_SECONDS:
+        from field_notes_audio import long_captions
+
+        if episode is not None:
+            raise ValueError("A caption part must not exceed the caption job limit")
+        return long_captions.run(args, directory, plan, metadata, script, expected_operation)
+    episode = episode or metadata.get("id") or "recording-" + plan["audio_sha256"][:12]
     audio_hash, uri, payload = plan["audio_sha256"], plan["audio_uri"], plan["request"]
     object_name = f"field-notes-input/{audio_hash}.mp3"
     report(
@@ -735,11 +765,7 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
             raise ValueError(
                 "A previous transcription submission has no saved acknowledgement, so billing "
                 "is unknown. "
-                + spend_guard.describe(
-                    caption_log_root(directory),
-                    metadata.get("id") or "recording-" + audio_hash[:12],
-                    "captions",
-                )
+                + spend_guard.describe(caption_log_root(directory), episode, "captions")
                 + " Stop and wait before another paid try. Only if you accept another "
                 "possible charge, run the same command with --retry-uncertain once by hand."
             )
@@ -758,7 +784,6 @@ def run(args: argparse.Namespace, *, expected_operation: str | None = None) -> P
             operation = read_object(directory / "operation.json")
         else:
             if not state.get("operation"):
-                episode = metadata.get("id") or "recording-" + audio_hash[:12]
                 audio_root = caption_log_root(directory)
                 retry = (
                     getattr(args, "retry_hint", "") or "run the same command with --retry-uncertain"
