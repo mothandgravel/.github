@@ -29,7 +29,7 @@
 .thread-map a:focus-visible { outline-color:#70542b; outline-offset:-6px; }
 .thread-caption { font-size:13px; line-height:1.7; color:var(--muted); margin:20px 0 0; }
 .thread-stop { display:grid; grid-template-columns:180px minmax(0,1fr); gap:6vw; padding-block:64px; border-bottom:1px solid var(--line); scroll-margin-top:24px; }
-.thread-stop:focus,.thread-ending:focus { outline:1px solid var(--gold); outline-offset:8px; }
+.thread-stop:target,.thread-stop:focus,.thread-ending:target,.thread-ending:focus { outline:1px solid var(--gold); outline-offset:8px; }
 .thread-margin { align-self:start; position:sticky; top:112px; border-top:1px solid var(--gold); padding-top:18px; color:var(--muted); font-size:14px; }
 .thread-stop-number { display:block; font:400 84px/.95 var(--serif); letter-spacing:-.08em; color:var(--gold-bright); margin-bottom:20px; }
 .thread-margin .mono { color:var(--gold-bright); font-size:12px; }
