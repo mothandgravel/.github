@@ -30,6 +30,68 @@
     }
   },
   {
+    "id": "workbench-001",
+    "title": "What does the interface let you believe?",
+    "kind": "conversation",
+    "description": "A listening edition from the Moth & Gravel workbench.",
+    "note_id": null,
+    "slug": null,
+    "language": "en-US",
+    "audio": "assets/audio/workbench-001-5c5cdda3f0895d22.mp3",
+    "bytes": 6102764,
+    "audio_sha256": "5c5cdda3f0895d22d835b8bb382d78d543ede0deb7dfff2fb43e29ed5141a6c8",
+    "script_sha256": "4d05d083cc1809ebb49f0a658fbe14024efa51d3a51521c3b093aef2e5989a0b",
+    "source_sha256": {
+      "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86",
+      "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2",
+      "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
+    },
+    "duration_seconds": 508.473,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.srt",
+    "vtt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.vtt",
+    "transcript": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.txt",
+    "cues": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.json",
+    "files_sha256": {
+      "srt": "84792b10eecb9ab5720cb81656c11f665411960dcf1b294638ca27f4b318c467",
+      "vtt": "c0678968ccf040676e2a8445c9198350241385709877b7158eac7773d2cfa85c",
+      "transcript": "cf3149f0bb49ecd5cfc10dfb12d07dd68fc7082796eb4207859414697a408b76",
+      "cues": "ec50e71051293e788040b553927b6c9b66b30262cda880e227a0b2a59e76922d"
+    }
+  },
+  {
+    "id": "note-001-brisk",
+    "title": "Curiosity with calluses. — brisk narration comparison",
+    "kind": "comparison",
+    "description": "A listening edition from the Moth & Gravel workbench.",
+    "note_id": null,
+    "slug": null,
+    "language": "en-US",
+    "audio": "assets/audio/note-001-brisk-6d6fabd422aafba0.mp3",
+    "bytes": 1950956,
+    "audio_sha256": "6d6fabd422aafba036bdf0678f6e2be3175df636fd8df3d5ff7eaf02898059b5",
+    "script_sha256": "eff44a6f4df4c4b1b3c1a647d0ec2e04b488002f028e298464bf0d7a2f7e1f1c",
+    "source_sha256": {
+      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
+    },
+    "duration_seconds": 162.491,
+    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.srt",
+    "vtt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.vtt",
+    "transcript": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.txt",
+    "cues": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.json",
+    "files_sha256": {
+      "srt": "60b3115929b459b97a28842edb6e67155cb9121e1559e82170a9c8327f918c56",
+      "vtt": "e2088543f8fb55faaa5996f70764f8bd08f432b35f4bc264c2da0dc68cae4b57",
+      "transcript": "c329e63f0f0d58a1032dd9d60d6c27d0df77b821e183ed85596a7afc6b5d3766",
+      "cues": "b02a242248f8b2a0cd10d2bdc1cee8a1f4ed3f39cf836efa133c93ff7056da21"
+    }
+  },
+  {
     "id": "note-002",
     "title": "Afterlight / Nightfall.",
     "kind": "note",
@@ -786,65 +848,93 @@
     }
   },
   {
-    "id": "workbench-001",
-    "title": "What does the interface let you believe?",
-    "kind": "conversation",
-    "description": "A listening edition from the Moth & Gravel workbench.",
-    "note_id": null,
-    "slug": null,
+    "id": "note-016",
+    "title": "The number got better.",
+    "kind": "note",
+    "description": "The ratio fell. The load did not. A recorded week of facility power, and the boundaries a useful number needs to keep.",
+    "note_id": "016",
+    "slug": "016-the-number-got-better.html",
     "language": "en-US",
-    "audio": "assets/audio/workbench-001-5c5cdda3f0895d22.mp3",
-    "bytes": 6102764,
-    "audio_sha256": "5c5cdda3f0895d22d835b8bb382d78d543ede0deb7dfff2fb43e29ed5141a6c8",
-    "script_sha256": "4d05d083cc1809ebb49f0a658fbe14024efa51d3a51521c3b093aef2e5989a0b",
+    "audio": "assets/audio/note-016-648aa471dfe6197a.mp3",
+    "bytes": 6524396,
+    "audio_sha256": "648aa471dfe6197a0b298247a0ad953c4c1d48da947c888110c6a8fb9e35af22",
+    "script_sha256": "74f10ac27f09b484b81f494cbd2e844c84dd6a43ed92fd5b926c74cce51c7464",
     "source_sha256": {
-      "005": "c1b7d2d58a121a54b8ea89b06120f71b21194f61952399c5c52250ac96ea3a86",
-      "006": "826210fc694051d55315f6db3c1acbcb26c55a32d6846a4242e2c03e562cd9e2",
-      "007": "f73b42ae0e7a5c1730da079bcbf8c64d3b878e75333733f3d291658037bff09f"
+      "016": "ed437d875241c2e4e00b2167a9d3d1c03640759589ec6802c05935b50258e9b6"
     },
-    "duration_seconds": 508.473,
-    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "duration_seconds": 543.622,
+    "published_at": "2026-10-27T11:41:11.197231+00:00",
     "review_status": "pending",
     "narration": "AI-narrated",
-    "srt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.srt",
-    "vtt": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.vtt",
-    "transcript": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.txt",
-    "cues": "assets/audio/workbench-001-5c5cdda3f0895d22-db36f6b7b344a8a6.json",
+    "srt": "assets/audio/note-016-648aa471dfe6197a-a4925311214d6f69.srt",
+    "vtt": "assets/audio/note-016-648aa471dfe6197a-a4925311214d6f69.vtt",
+    "transcript": "assets/audio/note-016-648aa471dfe6197a-a4925311214d6f69.txt",
+    "cues": "assets/audio/note-016-648aa471dfe6197a-a4925311214d6f69.json",
     "files_sha256": {
-      "srt": "84792b10eecb9ab5720cb81656c11f665411960dcf1b294638ca27f4b318c467",
-      "vtt": "c0678968ccf040676e2a8445c9198350241385709877b7158eac7773d2cfa85c",
-      "transcript": "cf3149f0bb49ecd5cfc10dfb12d07dd68fc7082796eb4207859414697a408b76",
-      "cues": "ec50e71051293e788040b553927b6c9b66b30262cda880e227a0b2a59e76922d"
+      "srt": "9e2860bd32f59e5003fc7722e55192f8d9ee861d3a3351307a43feb6d9701d2e",
+      "vtt": "3cb610a776986b9e81d6b0a01cb9b1278a1cd2e3b0c9a5a9a543229f31dbde34",
+      "transcript": "314123f66c74e3aa75cc265730a711590e0e275eac5432fdb68489b9c61cf5e4",
+      "cues": "8cfda14eef4dca014267b5d99f0bbb860b5c5b988edb3a8d141717da3939bee6"
     }
   },
   {
-    "id": "note-001-brisk",
-    "title": "Curiosity with calluses. — brisk narration comparison",
-    "kind": "comparison",
-    "description": "A listening edition from the Moth & Gravel workbench.",
-    "note_id": null,
-    "slug": null,
+    "id": "note-017",
+    "title": "The grid is shared.",
+    "kind": "note",
+    "description": "A household bill, a shared electricity system and heat at home. Following Finland’s data-centre promise to the people outside the room.",
+    "note_id": "017",
+    "slug": "017-the-grid-is-shared.html",
     "language": "en-US",
-    "audio": "assets/audio/note-001-brisk-6d6fabd422aafba0.mp3",
-    "bytes": 1950956,
-    "audio_sha256": "6d6fabd422aafba036bdf0678f6e2be3175df636fd8df3d5ff7eaf02898059b5",
-    "script_sha256": "eff44a6f4df4c4b1b3c1a647d0ec2e04b488002f028e298464bf0d7a2f7e1f1c",
+    "audio": "assets/audio/note-017-6a14d09722c02fff.mp3",
+    "bytes": 16416044,
+    "audio_sha256": "6a14d09722c02fffcdf427322bf4f2bed3ee273b4c6fc8ae68d26c8318111ffc",
+    "script_sha256": "ea1b8cc00c57450fc88afea3dd93ecc0143079689e507a64c02d21dab0757224",
     "source_sha256": {
-      "001": "079561601a286a21be8633b142af6ee8b3d1736b0591b00a3b90e9e831522cc6"
+      "017": "200da46fce62b41a84538f78624670696df41bc5df3eecdf89e8b36a788abb48"
     },
-    "duration_seconds": 162.491,
-    "published_at": "2026-10-13T22:04:17.406795+00:00",
+    "duration_seconds": 1367.906,
+    "published_at": "2026-10-27T11:41:11.197231+00:00",
     "review_status": "pending",
     "narration": "AI-narrated",
-    "srt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.srt",
-    "vtt": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.vtt",
-    "transcript": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.txt",
-    "cues": "assets/audio/note-001-brisk-6d6fabd422aafba0-adf92900b3e101eb.json",
+    "srt": "assets/audio/note-017-6a14d09722c02fff-a19053d7f7e6d018.srt",
+    "vtt": "assets/audio/note-017-6a14d09722c02fff-a19053d7f7e6d018.vtt",
+    "transcript": "assets/audio/note-017-6a14d09722c02fff-a19053d7f7e6d018.txt",
+    "cues": "assets/audio/note-017-6a14d09722c02fff-a19053d7f7e6d018.json",
     "files_sha256": {
-      "srt": "60b3115929b459b97a28842edb6e67155cb9121e1559e82170a9c8327f918c56",
-      "vtt": "e2088543f8fb55faaa5996f70764f8bd08f432b35f4bc264c2da0dc68cae4b57",
-      "transcript": "c329e63f0f0d58a1032dd9d60d6c27d0df77b821e183ed85596a7afc6b5d3766",
-      "cues": "b02a242248f8b2a0cd10d2bdc1cee8a1f4ed3f39cf836efa133c93ff7056da21"
+      "srt": "2222a7b6723e84117234b93b7c927aebb6bb0cc4153dc5ddc80313f36ce29acb",
+      "vtt": "afcfe86d7b1fe6185d6060b25ff1f730639421a0b931182c20ffdf6bb29e4141",
+      "transcript": "4591bb9af061626b6fd9696d00da4024d1bbc2470d1de7921bd0537b3f632585",
+      "cues": "877a2150c6e718f423883ca49b9851ca4acb9fe0e07047b9c2ec7be8fd29b4a0"
+    }
+  },
+  {
+    "id": "note-018",
+    "title": "The card says what the TV said.",
+    "kind": "note",
+    "description": "A phone remote shows the TV’s power, channel and volume. Each of them is something the TV said, a few seconds ago, while other remotes in the room kept changing it.",
+    "note_id": "018",
+    "slug": "018-the-card-says-what-the-tv-said.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-018-6c043c93717243aa.mp3",
+    "bytes": 4900652,
+    "audio_sha256": "6c043c93717243aaff993b263f06d00b7200da5c2c85bd608e515093376aa2e1",
+    "script_sha256": "7e400a53e866f9e20c45eac288d82bb0a93e045bada66456197f0a58db25638a",
+    "source_sha256": {
+      "018": "bda2bf9e8c5a23bf618a178033960401fbc3e5fa37a826b5936a6e30b98eccff"
+    },
+    "duration_seconds": 408.302,
+    "published_at": "2026-10-27T11:41:11.197231+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-018-6c043c93717243aa-d26196aa6acbe8bc.srt",
+    "vtt": "assets/audio/note-018-6c043c93717243aa-d26196aa6acbe8bc.vtt",
+    "transcript": "assets/audio/note-018-6c043c93717243aa-d26196aa6acbe8bc.txt",
+    "cues": "assets/audio/note-018-6c043c93717243aa-d26196aa6acbe8bc.json",
+    "files_sha256": {
+      "srt": "756b4002a0fed3b61ec87aa5cb983840bff90e285e49a63535ad0c699f05294e",
+      "vtt": "e72f71842af0e05695252d65ce4cddc2497ee08153d30520ffd4ebf895bc0fff",
+      "transcript": "a9f2c5e42de5b680f91dcc6be22c40bd58b67094cc5cd713d154d0bff386e2b3",
+      "cues": "ce78a84f877b56f52fb4aeb8f2d7858a5b3e5a45857401204627bdd7b255630d"
     }
   }
 ]

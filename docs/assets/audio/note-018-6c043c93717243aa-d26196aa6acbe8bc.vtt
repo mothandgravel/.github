@@ -1,0 +1,402 @@
+WEBVTT
+
+1
+00:00:00.240 --> 00:00:07.000
+Moth and Gravel. Field Note 18.
+The card says what the TV said.
+
+2
+00:00:07.600 --> 00:00:13.040
+An AI narrated edition of the
+published note. Sofa Remote is a
+
+3
+00:00:13.040 --> 00:00:17.080
+phone remote for one kind of
+television. At the top of its
+
+4
+00:00:17.080 --> 00:00:22.920
+screen sits a card. On or off,
+the channel, the program and its
+
+5
+00:00:22.920 --> 00:00:29.040
+times, the volume. It looks like
+a window onto the TV. It is not
+
+6
+00:00:29.080 --> 00:00:34.680
+One. The phone cannot see the
+TV. Everything on the card is
+
+7
+00:00:34.680 --> 00:00:39.040
+something the TV said when it
+was last asked. That would
+
+8
+00:00:39.040 --> 00:00:43.040
+hardly matter if the phone were
+the only remote in the room. It
+
+9
+00:00:43.040 --> 00:00:48.760
+never is. The TV has its own
+remote. A games console can take
+
+10
+00:00:48.760 --> 00:00:53.600
+the screen back over HDMI. A
+sound bar can move the volume.
+
+11
+00:00:54.240 --> 00:00:58.200
+Any of them can make the card
+wrong without telling the phone.
+
+12
+00:00:59.040 --> 00:01:04.520
+A claim with an age. The first
+version asked about power only
+
+13
+00:01:04.520 --> 00:01:09.440
+when it believed the TV was off.
+On the second day, testing on a
+
+14
+00:01:09.440 --> 00:01:14.160
+tablet, we switched the TV off
+with its own remote. The app
+
+15
+00:01:14.160 --> 00:01:20.040
+kept showing it on. The fix was
+to keep asking. While the remote
+
+16
+00:01:20.040 --> 00:01:25.320
+is on screen, it asks the TV's
+power every 5 seconds in every
+
+17
+00:01:25.320 --> 00:01:29.360
+state and reconnects when the
+answer differs from the card.
+
+18
+00:01:30.280 --> 00:01:34.640
+Switching the TV on and off with
+its own remote then showed up in
+
+19
+00:01:34.640 --> 00:01:39.600
+the app within about 4 seconds.
+The program line has the same
+
+20
+00:01:39.600 --> 00:01:44.360
+problem in a quieter form.
+Broadcast data often switches
+
+21
+00:01:44.360 --> 00:01:49.640
+late, so the TV can report a
+program after it has ended. The
+
+22
+00:01:49.640 --> 00:01:54.280
+card asks again just after the
+program should end, and if the
+
+23
+00:01:54.280 --> 00:01:59.240
+old one is still reported, every
+20 seconds for up to 15 minutes.
+
+24
+00:01:59.960 --> 00:02:04.120
+None of this makes the card
+current. It keeps the card's age
+
+25
+00:02:04.120 --> 00:02:09.360
+short and its errors temporary.
+5 seconds is a choice between a
+
+26
+00:02:09.360 --> 00:02:13.920
+phone that asks too often and a
+picture that stays wrong for too
+
+27
+00:02:13.920 --> 00:02:17.800
+long. Can't reach is a
+conclusion.
+
+28
+00:02:18.840 --> 00:02:23.760
+Silence from the TV is harder to
+read. The first request after
+
+29
+00:02:23.760 --> 00:02:28.000
+the app opens can fail simply
+because the phone's Wi-Fi is
+
+30
+00:02:28.000 --> 00:02:33.280
+still waking up. So before the
+app says it cannot reach the TV,
+
+31
+00:02:33.480 --> 00:02:39.240
+it asks once more, 2 seconds
+later. When it does say so, it
+
+32
+00:02:39.240 --> 00:02:43.720
+names only a cause it can see
+from the phone. These are its
+
+33
+00:02:43.720 --> 00:02:49.440
+words with the TV's name where
+we write the TV. With can't
+
+34
+00:02:49.440 --> 00:02:54.600
+reach the TV, this device isn't
+connected to a network. Can't
+
+35
+00:02:54.600 --> 00:02:59.720
+reach the TV, this device is on
+mobile data. Connect it to your
+
+36
+00:02:59.720 --> 00:03:06.560
+home Wi-Fi. Can't reach the TV,
+a VPN is on. Turn it off or
+
+37
+00:03:06.560 --> 00:03:12.680
+allow local network access in
+the VPN app. Can't reach the TV,
+
+38
+00:03:13.120 --> 00:03:16.800
+check that it's plugged in and
+on the same network as this
+
+39
+00:03:16.800 --> 00:03:21.640
+device. The app does not guess
+that the TV is broken or
+
+40
+00:03:21.640 --> 00:03:27.240
+unplugged at the wall. It cannot
+see either. When no cause on the
+
+41
+00:03:27.240 --> 00:03:32.040
+phone explains the silence, the
+last message says what to check,
+
+42
+00:03:32.280 --> 00:03:39.320
+not what happened. Reads retry,
+keypresses never do. Asking
+
+43
+00:03:39.320 --> 00:03:45.120
+twice is safe, pressing twice is
+not. The project's own rules put
+
+44
+00:03:45.120 --> 00:03:51.440
+it plainly. Never retry a failed
+keypress automatically. A read
+
+45
+00:03:51.440 --> 00:03:56.000
+that fails can be asked again. A
+key that may already have
+
+46
+00:03:56.000 --> 00:04:00.640
+reached the TV cannot be sent
+again without the risk of doing
+
+47
+00:04:00.640 --> 00:04:06.480
+it twice. Power is where that
+bites. The TV takes seconds to
+
+48
+00:04:06.480 --> 00:04:11.320
+switch, so a second tap on power
+soon after the first is almost
+
+49
+00:04:11.320 --> 00:04:16.200
+always a double tap or an
+impatient retry. Sending it
+
+50
+00:04:16.200 --> 00:04:20.400
+would switch the TV straight
+back. The remote lets one power
+
+51
+00:04:20.400 --> 00:04:24.560
+toggle through every 4 seconds
+and ignores the rest.
+
+52
+00:04:25.640 --> 00:04:30.120
+Ad break follows the same rule
+from the other side. One tap
+
+53
+00:04:30.160 --> 00:04:34.760
+mutes the TV for 3 minutes and
+brings the sound back by itself.
+
+54
+00:04:35.040 --> 00:04:39.760
+It never toggles. It unmutes
+only a mute it made and still
+
+55
+00:04:39.760 --> 00:04:45.120
+holds. A mute by hand, an unmute
+with the TV's own remote, or a
+
+56
+00:04:45.120 --> 00:04:48.520
+phone call that takes the mute
+over is left alone.
+
+57
+00:04:50.240 --> 00:04:57.240
+2 days, 1 TV. The first commit
+was on the 25th of October. Most
+
+58
+00:04:57.240 --> 00:05:01.440
+of what this note describes was
+fixed on the 26th on real
+
+59
+00:05:01.440 --> 00:05:05.760
+hardware after the code had
+already passed its tests against
+
+60
+00:05:05.760 --> 00:05:10.720
+simulated TVs. Each of these
+faults appeared only with a real
+
+61
+00:05:10.720 --> 00:05:15.760
+TV in the room. The power state
+went stale after the TV's own
+
+62
+00:05:15.760 --> 00:05:20.840
+remote was used. Without exact
+alarms, Android ended an ad
+
+63
+00:05:20.840 --> 00:05:24.760
+break about 2 minutes late, so
+the app now says so when a break
+
+64
+00:05:24.760 --> 00:05:29.320
+starts. Every install made its
+fast key certificate with the
+
+65
+00:05:29.320 --> 00:05:33.720
+same subject and serial number,
+so pairing a tablet quietly
+
+66
+00:05:33.720 --> 00:05:38.480
+unpaired the phone. A scene
+switched channel and a games
+
+67
+00:05:38.480 --> 00:05:42.800
+console took the screen back a
+moment later. Scenes now look
+
+68
+00:05:42.800 --> 00:05:47.720
+again 4 seconds later and switch
+once more. The tests were
+
+69
+00:05:47.720 --> 00:05:50.360
+useful. They could not have
+found these.
+
+70
+00:05:51.640 --> 00:05:58.120
+Study scope, 1 TV, 2 days. What
+this remote has been tried on.
+
+71
+00:05:58.760 --> 00:06:03.080
+Sofa Remote is our own Android
+app in preparation for Google
+
+72
+00:06:03.080 --> 00:06:07.680
+Play. It has not been released.
+It was built and tried over 2
+
+73
+00:06:07.680 --> 00:06:14.400
+days with 1 TV, a 2018 Sony
+Bravia running Android TV, plus
+
+74
+00:06:14.440 --> 00:06:19.120
+a phone and a tablet. Other
+Bravia models with IP control
+
+75
+00:06:19.120 --> 00:06:23.440
+should work, but are unverified.
+The timings come from the
+
+76
+00:06:23.440 --> 00:06:28.360
+project commit history and its
+own testing on that TV, not from
+
+77
+00:06:28.360 --> 00:06:34.960
+a measured study. Sony, Bravia,
+Android TV, and PlayStation are
+
+78
+00:06:34.960 --> 00:06:39.000
+named only as the hardware it
+works with. The app is not
+
+79
+00:06:39.000 --> 00:06:43.400
+affiliated with them. You have
+been listening to Moth and
+
+80
+00:06:43.400 --> 00:06:48.360
+Gravel Field Notes. The written
+edition is at mothandgravel.com.
+
