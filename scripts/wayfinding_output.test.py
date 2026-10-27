@@ -41,6 +41,21 @@ class Wayfinding(unittest.TestCase):
         self.assertEqual(sum(len(x.get('children', [])) for x in items), 5)
         self.assertEqual(len(items), 9)
 
+    def test_thread_context_returns_each_piece_to_its_actual_stop(self):
+        thread = json.loads((ROOT / 'assets/thread.json').read_text(encoding='utf-8'))
+        pieces = [('specimens/connected-to-what/index.html', 'thread-context', 'reading', 'reply'),
+                  ('index.html', 'thread-context-reply', 'reply', 'promise'),
+                  ('notes/005-green-light.html', 'thread-context', 'promise', 'your-question')]
+        for name, slot, current, continuation in pieces:
+            text = (ROOT / name).read_text(encoding='utf-8')
+            content = text.split('<!-- ' + slot + ':start -->')[1].split('<!-- ' + slot + ':end -->')[0]
+            base = 'https://mothandgravel.com/' + name
+            resolved = [urljoin(base, href) for href in Links(content).links]
+            self.assertEqual(resolved, ['https://mothandgravel.com' + thread['href'] + '#' + current,
+                                        'https://mothandgravel.com' + thread['href'] + '#' + continuation])
+        self.assertEqual([s['label'] for s in thread['stops']],
+                         ['The ageing reading', 'The missing reply', 'The reassuring signal'])
+
 
 if __name__ == '__main__':
     unittest.main()

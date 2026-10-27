@@ -5,6 +5,15 @@ Seven have standalone family pages; Ajo and SkyStack remain homepage exhibits.
 The five additional rooms belong to their parent specimens. TNT is inside 009.
 The one published thread is named directly in the menu; there is no Threads archive.
 
+Thread 01 keeps three stable stops: the ageing reading, the missing reply and
+the reassuring signal. `assets/thread.json` resolves its existing specimen and
+note IDs into native arrival context on each piece. Ajo remains inside its
+homepage exhibit. The context returns to the current stop or continues to the
+next one; existing continuation links at the end of each piece remain available.
+Each thread handoff states whether it opens a specimen or a written field note.
+The diagrams, authored sample, saved simulator stages and AI-generated editorial
+cover retain distinct captions. None of these static plates presents a live state.
+
 The Field notes index leads with the featured writing and its existing specimen
 relationship, then introduces two other specimen families. The complete archive
 and listening edition keep their direct fragment routes. Search results and

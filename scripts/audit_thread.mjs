@@ -6,6 +6,7 @@ import { join } from 'node:path';
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 const route = '/threads/something-happened/';
+const thread = JSON.parse(await readFile('docs/assets/thread.json','utf8'));
 await mkdir(output, { recursive:true });
 const browser = await launchAuditBrowser({headless:true});
 const results = [], failures = [];
@@ -42,13 +43,18 @@ async function atFragment(page, id, label) {
 try {
   for (const width of [1440,1024,768,390,320]) for (const theme of ['night','afterlight']) {
     const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});
+    await context.addInitScript(value=>localStorage.setItem('moth-and-gravel-theme',value),theme);
     const page=await context.newPage(), errors=[];
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto(origin+route);
-    if(theme==='afterlight') await page.locator('#light-switch').click();
+    assert(await page.locator('html').getAttribute('data-theme')===theme,'The actual theme matches the reviewed theme');
     await review(page,`thread-${theme}-${width}`,width===1440||width===390||width===320);
     const nav=page.locator('.thread-map a');
     assert(await nav.count()===3,'Three distinct stops');
+    assert(await page.locator('.thread-handoff').count()===3,'Each stop has a distinct inspect/read and continuation handoff');
+    assert((await page.locator('#reply .thread-trace-count').innerText()).includes('In both saved stages.'),'Receiver count is explicitly unchanged');
+    assert((await page.locator('#reply .thread-query-boundary').innerText()).includes('No second operation attempt.'),'Result query is not presented as another operation attempt');
+    assert((await page.locator('#promise .thread-signal-plate figcaption').innerText()).includes('AI-generated'),'Reused editorial art keeps its AI disclosure');
     for(const [i,id] of ['reading','reply','promise'].entries()) {
       await nav.nth(i).focus();await page.keyboard.press('Enter');
       await atFragment(page,id,`keyboard-${theme}-${width}-${id}`);
@@ -59,17 +65,20 @@ try {
     if([1440,320].includes(width)) {
       await page.locator('a[href="../../specimens/connected-to-what/"]').click();
       await page.locator('#inspection-controls').waitFor({state:'visible'});
+      assert((await page.locator('.thread-context').innerText()).includes(thread.stops[0].label),'Specimen arrival names the same reading stop');
       await page.locator('#inspection-age').fill('18');
       assert((await page.locator('#measurement-state').innerText()).toLowerCase().includes('stale'),'Clock retains stale distinction');
       await page.getByRole('link',{name:'Next: no answer. Do we try again?'}).click();
       await atFragment(page,'reply','Return from LiveConnect');
       await page.getByRole('link',{name:'Open Ajo’s working record'}).click();
       await atFragment(page,'specimen-ajo','Ajo native record');
+      assert((await page.locator('#specimen-ajo .thread-context').innerText()).includes(thread.stops[1].label),'Homepage exhibit has static reply context');
       await page.locator('#specimen-ajo summary').focus();await page.keyboard.press('Enter');
       assert(await page.locator('#specimen-ajo details').getAttribute('open')!==null,'Ajo record opens with keyboard');
       await page.getByRole('link',{name:'Continue the thread: a light’s promise'}).click();
       await atFragment(page,'promise','Return from Ajo');
       await page.getByRole('link',{name:'Read “A green light should mean something.”'}).click();
+      assert((await page.locator('.thread-context').innerText()).includes(thread.stops[2].label),'Written note names the same signal stop');
       await page.getByRole('link',{name:'Where does your surface say too much?'}).click();
       await atFragment(page,'your-question','Return from note');
       await page.getByRole('link',{name:'Bring your version'}).click();
@@ -98,6 +107,23 @@ try {
     assert(!errors.length,JSON.stringify({width,theme,errors}));
     await context.close();
   }
+  // Follow both links in each new arrival context, independent of the older
+  // continuation links near the end of the pieces.
+  const arrivals=await browser.newContext({viewport:{width:390,height:900},reducedMotion:'reduce'});
+  const arrivalPage=await arrivals.newPage();
+  for (const [path,current,next] of [
+    ['/specimens/connected-to-what/','reading','reply'],
+    ['/#specimen-ajo','reply','promise'],
+    ['/notes/005-green-light.html','promise','your-question']
+  ]) {
+    await arrivalPage.goto(origin+path);
+    await arrivalPage.locator('.thread-context-back').click();
+    await atFragment(arrivalPage,current,'Arrival context returns to '+current);
+    await arrivalPage.goto(origin+path);
+    await arrivalPage.locator('.thread-context-next').click();
+    await atFragment(arrivalPage,next,'Arrival context continues to '+next);
+  }
+  await arrivals.close();
 
   // Existing local material survives the editorial detour byte for byte.
   const context=await browser.newContext({reducedMotion:'reduce',viewport:{width:390,height:844}});

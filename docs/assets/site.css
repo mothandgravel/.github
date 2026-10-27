@@ -1299,3 +1299,16 @@ main.shell>.collection-context{width:100%}
 
 .studio-index[open] .menu-toggle{background:var(--gold-bright);border-color:var(--gold-bright);color:var(--accent-ink)}
 .studio-index[open] .menu-bars span{background:var(--accent-ink)}
+
+/* Native context when a thread opens one of its actual pieces. */
+.thread-context{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.7fr);gap:20px 30px;align-items:center;margin:24px 0;padding:20px 24px;border:1px solid var(--line);border-left:3px solid var(--gold);background:var(--surface)}
+.thread-context>div{min-width:0}
+.thread-context .mono{display:block;font:12px/1.6 var(--mono);letter-spacing:.04em;color:var(--muted);margin:0 0 8px}
+.thread-context a{min-height:44px;display:flex;flex-direction:column;justify-content:center;align-items:start;font:16px/1.5 var(--body);color:var(--gold-bright)}
+.thread-context .thread-context-back{gap:8px;flex-direction:row;justify-content:flex-start;align-items:center}
+.thread-context-next{border-left:1px solid var(--line);padding-left:24px}
+.thread-context-next strong{font:600 14px/1.5 var(--body)}
+.thread-context-next .mono{font-size:12px;margin-bottom:4px}
+.thread-context a:hover{text-decoration:underline;text-underline-offset:4px}
+.work-card>.thread-context{margin:0;padding:18px 24px;border-inline:0;border-top:0}
+@media(max-width:660px){.thread-context{grid-template-columns:minmax(0,1fr);gap:12px;padding:16px 18px}.thread-context-next{border-left:0;border-top:1px solid var(--line);padding:12px 0 0}.work-card>.thread-context{padding:16px 20px}}
