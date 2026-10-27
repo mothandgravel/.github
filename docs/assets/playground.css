@@ -335,6 +335,7 @@
   .question-page .question-peers strong {font-size:27px}
 }
 @media(max-width:360px) {
+  .question-page .thread-heading h1 {font-size:clamp(30px,9.4vw,34px)}
   .question-page .thread-heading h1 br {display:none}
   .question-page .question-paths a {grid-template-columns:64px minmax(0,1fr);gap:10px;padding-inline:16px}
   .question-page .question-paths strong {font-size:20px}
