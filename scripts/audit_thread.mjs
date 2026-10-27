@@ -110,6 +110,12 @@ try {
       assert(await page.evaluate(()=>document.activeElement.name)==='intent','Keyboard handoff reaches the visitor’s answers');
       await page.locator('#question-next').click();
       await page.locator('#making').fill('People cannot tell whether their export finished.');
+      await page.locator('#question-back').click();
+      await page.waitForFunction(()=>document.querySelector('#question-progress').textContent.startsWith('1 /'),null,{timeout:5000});
+      assert(await page.locator('input[name="intent"]').first().isVisible(),'One guided Back press returns from the thread entrance to the first question');
+      await page.goForward();
+      await page.locator('#making').waitFor({state:'visible'});
+      assert(await page.locator('#making').inputValue()==='People cannot tell whether their export finished.','Native Forward preserves the exact question after guided Back');
       for(let i=0;i<4;i++) await page.locator('#question-next').click();
       const brief=await page.locator('#brief-text').inputValue();
       assert(brief.includes('export finished')&&!brief.includes('LiveConnect')&&!brief.includes('What did the surface say?'),'Brief contains only visitor’s words');

@@ -14,6 +14,12 @@ The real inbox form reserves its documented widget footprint before signing, so
 the Send control does not move when verification renders. Its integration test
 inserts a dimensioned challenge fixture to check this.
 
+Native fragment entries are bound to the guided view they already display.
+This fixes a reproduced double-press Back after the thread's writing link while
+retaining the fragment entry, ordinary browser Back/Forward and literal answers.
+The thread audit checks a single guided Back followed by native Forward before
+continuing to the brief and workbench.
+
 The opening delivery explanation now stays true whether the inbox form loads
 or the mail-app fallback remains. The visitor reads and edits the brief before
 the Sign and send section asks for a name and email. Copy and download remain

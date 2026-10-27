@@ -72,6 +72,13 @@ if (intake) {
   });
   let guidedHistory = true;
   try { history.replaceState({ mgLooseEnd: true, step: 0 }, ''); } catch { guidedHistory = false; }
+  // Native writing/skip links add a fragment entry without the guided state.
+  // Bind that entry to the view it already shows, so one guided Back press can
+  // reach the preceding question without consuming an unrecognised entry.
+  window.addEventListener('hashchange', () => {
+    if (!guidedHistory || (history.state?.mgLooseEnd === true && history.state.step === step)) return;
+    try { history.replaceState({ mgLooseEnd: true, step }, ''); } catch { guidedHistory = false; }
+  });
   const answers = () => normalizeDraft(Object.fromEntries(fields.map(key => [key, key === 'intent' ?
     intake.querySelector('input[name="intent"]:checked')?.value : document.getElementById(key).value])));
   const saved = readDraft(storage());
