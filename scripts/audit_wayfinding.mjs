@@ -15,7 +15,7 @@ try {
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     const response=await page.goto(origin+'/specimens/',{waitUntil:'networkidle'});
     assert(response.status()===200,'Collection must return 200');
-    assert(await page.locator('.specimen-entry').count()===9,'Nine existing specimen identities');
+    assert(await page.locator('.specimen-entry').count()===10,'Ten specimen identities, including Sohva');
     const links=page.locator('.collection-nav a');
     for(let i=0;i<2;i++)assert(await links.nth(i).isVisible(),'Persistent collection link');
     assert(await links.first().getAttribute('aria-current')==='page','Current collection state');

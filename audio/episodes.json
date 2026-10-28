@@ -479,5 +479,30 @@
       "kind": "note",
       "note_id": "017"
     }
+  },
+  {
+    "id": "note-018",
+    "title": "Leave the evening alone.",
+    "format": "narration",
+    "script": "scripts/note-018.txt",
+    "language": "en-US",
+    "notes": [
+      "018"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "018": "6a30c877b37998870d6133958c10aa8df163a4f61ea5878b15aeaccb9a4fbcbf"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "018"
+    }
   }
 ]
