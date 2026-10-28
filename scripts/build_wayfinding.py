@@ -87,10 +87,10 @@ def catalogue(items):
     cards = []
     page = ROOT / 'specimens/index.html'
     for x in items:
-        loading = 'eager' if x['id'] == '009' else 'lazy'
+        loading = 'eager' if x == items[0] else 'lazy'
         image = f'<img src="{local("/" + x["image"], page)}" width="{x["width"]}" height="{x["height"]}" alt="{escape(x["alt"], quote=True)}" loading="{loading}">' if x.get('image') else '<div class="specimen-trace" aria-label="Two states from the saved lost-query simulator record"><span>01 / REPLY LOST</span><b>Answer missing.</b><span>02 / RESULT QUERIED</span><b>Result found.</b><span>1 application at the receiver / both states</span></div>'
         children = ''.join(f'<a href="{local(c["href"], page)}">{escape(c["label"])} ↗</a>' for c in x.get('children', []))
-        cards.append(f'''<article class="specimen-entry{' specimen-featured' if x['id']=='009' else ''}" id="specimen-{x['id']}"><div class="specimen-art">{image}<p>{escape(x['boundary'])}</p></div><div class="specimen-copy"><p class="mono">{x['id']} / {escape(x['name'])}{' / EARLIER EXHIBIT' if x.get('exhibit') else ''}</p><h2><a href="{local(x['href'], page)}">{escape(x['title'])}</a></h2><p>{escape(x['summary'])}</p><a class="specimen-open" href="{local(x['href'], page)}">{'Visit the homepage exhibit' if x.get('exhibit') else 'Open the specimen'} <span aria-hidden="true">↗</span></a>{f'<nav class="specimen-rooms" aria-label="Inside {escape(x["name"])}">{children}</nav>' if children else ''}</div></article>''')
+        cards.append(f'''<article class="specimen-entry{' specimen-featured' if x == items[0] else ''}" id="specimen-{x['id']}"><div class="specimen-art">{image}<p>{escape(x['boundary'])}</p></div><div class="specimen-copy"><p class="mono">{x['id']} / {escape(x['name'])}{' / EARLIER EXHIBIT' if x.get('exhibit') else ''}</p><h2><a href="{local(x['href'], page)}">{escape(x['title'])}</a></h2><p>{escape(x['summary'])}</p><a class="specimen-open" href="{local(x['href'], page)}">{'Visit the homepage exhibit' if x.get('exhibit') else 'Open the specimen'} <span aria-hidden="true">↗</span></a>{f'<nav class="specimen-rooms" aria-label="Inside {escape(x["name"])}">{children}</nav>' if children else ''}</div></article>''')
     return '\n'.join(cards)
 
 
@@ -120,7 +120,7 @@ def build(check=False):
         if path.is_dir():
             path /= 'index.html'
         stops.append((path, url.fragment, index, stop))
-    assert [x['id'] for x in items] == [f'{i:03}' for i in range(9, 0, -1)]
+    assert [x['id'] for x in items] == [f'{i:03}' for i in range(len(items), 0, -1)]
     assert len(nav['routes']) == 4 and len(nav['shortcuts']) == 3
     for item in nav['routes'] + nav['shortcuts'] + nav['studio'] + items + [c for x in items for c in x.get('children', [])]:
         destination(item['href'])

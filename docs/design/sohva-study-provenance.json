@@ -1,0 +1,77 @@
+{
+  "study": "Sohva / An evening in miniature",
+  "checked": "2026-10-28",
+  "sourceRepository": "https://github.com/digablesolutions/sohva-remote",
+  "sourceRevision": "16e47c351f6cf875627aa8ba940707940674c972",
+  "rules": [
+    {
+      "source": "app/src/main/java/com/mothandgravel/sohva/data/AdBreak.kt",
+      "lines": [
+        31,
+        63
+      ],
+      "decision": "Restore only a break-owned mute; an existing or subsequently personal mute is not the break to undo."
+    },
+    {
+      "source": "app/src/main/java/com/mothandgravel/sohva/data/WakeUpAlarm.kt",
+      "lines": [
+        247,
+        260
+      ],
+      "decision": "Scheduled scenes pass onlyIfOn; wake-up does not."
+    },
+    {
+      "source": "app/src/main/java/com/mothandgravel/sohva/data/TvController.kt",
+      "lines": [
+        765,
+        777
+      ],
+      "decision": "An onlyIfOn plan skips unless isOn() returns true."
+    },
+    {
+      "source": "app/src/main/java/com/mothandgravel/sohva/data/TvController.kt",
+      "lines": [
+        638,
+        678
+      ],
+      "constantsAt": [
+        1105,
+        1108
+      ],
+      "decision": "Six integer volume steps towards max(start / 3, 4), then power off; retain previous volume subject to later choices."
+    }
+  ],
+  "browserModel": "docs/assets/sohva-evening-model.mjs",
+  "boundary": "Authored JavaScript reductions, not extracted Kotlin, device telemetry, a protocol test or a usability result. Example channels and levels. No real time, network, audio, Android alarms or persistence.",
+  "omissions": [
+    "Ad-break channel return, call handover, persistence and retry logic.",
+    "Unknown or unreachable TV states; a plan applying assumes a successful connection.",
+    "Sleep cancellation, real volume readback, service-start failure and conditional later restoration."
+  ],
+  "assets": [
+    {
+      "file": "docs/assets/specimens/sohva/evening-plate.svg",
+      "kind": "Authored SVG illustration",
+      "origin": "Created for this study; invented room, no physical capture.",
+      "sha256": "8d00a4a8b79be84934fb326ecfec9df315d4a1a354374370c473f139a3754ed0"
+    },
+    {
+      "file": "docs/sohva/img/remote-540.webp",
+      "kind": "Published app screenshot",
+      "origin": "Existing product-site asset from PR 90; no screenshot newly captured for this study.",
+      "sha256": "266e96d181eb8832d3aa7f022244060c8fbae2fd61cf586db16434390b5dd215"
+    },
+    {
+      "file": "docs/sohva/img/crops/card.webp",
+      "kind": "Published app screenshot crop",
+      "origin": "Existing product-site crop from PR 90.",
+      "sha256": "88ff23410153f011b00645abcbc3727b66a78235cb3eca63a921671b4b91ae7e"
+    },
+    {
+      "file": "docs/assets/notes/018-cover-social.jpg",
+      "kind": "Existing product-site promotional artwork",
+      "origin": "Byte-for-byte copy of docs/sohva/img/og.jpg; no new photography claimed.",
+      "sha256": "27066eb528908a0cc1c2a186d9cf8e3c94740da35dbf866efc06e5f5c18e8192"
+    }
+  ]
+}

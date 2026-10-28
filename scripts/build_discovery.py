@@ -51,6 +51,7 @@ def build(check=False):
              (ROOT / 'docs/specimens/maintenance-acceptance/tnt/index.html', DOMAIN + 'specimens/maintenance-acceptance/tnt/', 'The other end is waiting.', None),
              (ROOT / 'docs/specimens/coastal-watch/index.html', DOMAIN + 'specimens/coastal-watch/', 'The water between updates.', None),
              (ROOT / 'docs/specimens/maritime-study/index.html', DOMAIN + 'specimens/maritime-study/', 'The crossing, held still.', None),
+             (ROOT / 'docs/specimens/sohva/index.html', DOMAIN + 'specimens/sohva/', 'A little less to do.', None),
              (ROOT / 'docs/investigations/index.html', DOMAIN + 'investigations/', 'Three questions. Still open.', None),
              (ROOT / 'docs/investigations/how-old/index.html', DOMAIN + 'investigations/how-old/', 'How old is what I’m seeing?', None),
              (ROOT / 'docs/investigations/take-it-back/index.html', DOMAIN + 'investigations/take-it-back/', 'Did it happen, and can I take it back?', None),

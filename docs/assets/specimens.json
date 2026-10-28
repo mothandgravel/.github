@@ -1,5 +1,17 @@
 [
   {
+    "id": "010",
+    "name": "Sohva Remote",
+    "title": "A little less to do.",
+    "href": "/specimens/sohva/",
+    "summary": "An evening in miniature. Try a mute with an owner, a scene that leaves standby alone, and the last minute before the television goes dark.",
+    "image": "assets/specimens/sohva/evening-plate.svg",
+    "width": 1600,
+    "height": 1000,
+    "alt": "An authored charcoal and brass drawing of a sofa, a phone and a television casting light into the room.",
+    "boundary": "Authored room illustration. Interactive reductions of selected app rules; no television is connected."
+  },
+  {
     "id": "009",
     "name": "Maintenance acceptance",
     "title": "The action may already have happened.",

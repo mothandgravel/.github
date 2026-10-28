@@ -570,5 +570,42 @@
       "href": "../specimens/data-center/#fi-account",
       "label": "Inspect the Finnish account"
     }
+  },
+  {
+    "id": "018",
+    "slug": "018-leave-the-evening-alone.html",
+    "title": "Leave the evening alone.",
+    "summary": "A sofa, a phone and a television that has been loud enough. A Sohva Remote study in small courtesies, remembered choices and the useful art of leaving things alone.",
+    "date": "2026-10-28",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "Sohva Remote",
+    "related": [
+      "002",
+      "008",
+      "013"
+    ],
+    "visual": "forms",
+    "featured": false,
+    "socialImage": "assets/notes/018-cover-social.jpg",
+    "nextReading": {
+      "id": "008",
+      "bridge": "A remote should remember which mute it made. A staircase asks the same care of an undo: how much of the work belongs to one action?"
+    },
+    "specimen": {
+      "href": "../specimens/sohva/",
+      "label": "Return to the little room"
+    },
+    "archivePreview": {
+      "image": "assets/specimens/sohva/evening-plate.svg",
+      "width": 1600,
+      "height": 1000,
+      "alt": "An authored charcoal and brass drawing of a sofa, a phone and a television in the evening.",
+      "boundary": "Authored room illustration. The companion study reduces selected rules from the app source; no TV is connected."
+    }
   }
 ]
