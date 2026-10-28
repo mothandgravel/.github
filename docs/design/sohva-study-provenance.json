@@ -50,12 +50,6 @@
   ],
   "assets": [
     {
-      "file": "docs/assets/specimens/sohva/evening-plate.svg",
-      "kind": "Authored SVG illustration",
-      "origin": "Created for this study; invented room, no physical capture.",
-      "sha256": "8d00a4a8b79be84934fb326ecfec9df315d4a1a354374370c473f139a3754ed0"
-    },
-    {
       "file": "docs/sohva/img/remote-540.webp",
       "kind": "Published app screenshot",
       "origin": "Existing product-site asset from PR 90; no screenshot newly captured for this study.",
@@ -72,6 +66,48 @@
       "kind": "Existing product-site promotional artwork",
       "origin": "Byte-for-byte copy of docs/sohva/img/og.jpg; no new photography claimed.",
       "sha256": "27066eb528908a0cc1c2a186d9cf8e3c94740da35dbf866efc06e5f5c18e8192"
+    },
+    {
+      "file": "docs/assets/specimens/sohva/evening-room.webp",
+      "kind": "AI-generated 3D-style interior illustration",
+      "origin": "Built-in image_gen output, encoded as WebP at native dimensions. Referenced the existing landing-page room and couch; no physical room capture or live 3D geometry is claimed.",
+      "sha256": "15a139a28e1c5552535c8e9268b25657fa2a9f8550b39e0bef9baa36f18e2682"
+    },
+    {
+      "file": "docs/assets/specimens/sohva/evening-room-792.webp",
+      "kind": "Responsive derivative of the AI-generated room",
+      "origin": "Same generated artwork, resized to 792 by 496 and encoded as WebP.",
+      "sha256": "b36f33a5fcc8358796f3ed0ad9b7b7d33f4ca8b78d3ac6be86abd4e92d31350e"
+    },
+    {
+      "file": "docs/sohva/img/photos/morning-1664.webp",
+      "kind": "Existing landing-page imagery",
+      "origin": "Reference for the soft couch, knit throw, oak furniture and amber/blue lighting; its already blurred TV picture is also clipped into the interactive television.",
+      "sha256": "a2cd557e3f9185370a751e2372a56b67c96cdddbab2163532e75bd2b3ca211f4"
+    },
+    {
+      "file": "docs/sohva/img/photos/hero-sofa-1664.webp",
+      "kind": "Existing landing-page imagery",
+      "origin": "Reference for the couch upholstery, depth, arm proportions, cushions and warm room atmosphere.",
+      "sha256": "cee2d6c389a5fa7692fab5d9fc34eb22d1e23518969752542d10b835c8b6ef41"
+    },
+    {
+      "file": "docs/sohva/img/photos/hand-phone-1120.webp",
+      "kind": "Existing landing-page imagery",
+      "origin": "Reference for textile texture, coffee table, sofa and evening lighting.",
+      "sha256": "b8aa1883dc7bd9d34358f27d5901edbcce97f628d92197f62d3cc00d16f17817"
     }
-  ]
+  ],
+  "roomRendering": {
+    "method": "Built-in image_gen; reference-guided 3D-style raster illustration with SVG television compositing.",
+    "references": [
+      "docs/sohva/img/photos/morning-1664.webp",
+      "docs/sohva/img/photos/hero-sofa-1664.webp",
+      "docs/sohva/img/photos/hand-phone-1120.webp"
+    ],
+    "composition": "Deep, soft grey-beige upholstered sofa and chunky knit throw on the left; oak coffee table and media console; warm amber practical lamps, plants and cool blue-hour window. The television is blank in the base render.",
+    "interaction": "The illustration stays fixed. A clipped television picture and subtle cool light spill respond to the existing on/standby state. Practical lamp and candle light remain on. This is not a real-time 3D scene.",
+    "tool": "image_gen built-in",
+    "promptFile": "docs/design/sohva-room-generation.txt"
+  }
 }

@@ -49,7 +49,7 @@ if (root) {
     }
     const result = runPlan({ on, plan });
     draw({ on: result.on, volume: result.volume ?? 0, clock, title: 'Channel 1', detail: result.applied ? 'Sound on · 18' : 'Left in standby' });
-    say(result.applied ? (plan === 'wake' && !on ? 'A morning, expressly asked for.' : 'The evening carries on.') : 'The room stays dark.',
+    say(result.applied ? (plan === 'wake' && !on ? 'A morning, expressly asked for.' : 'The evening carries on.') : 'The television stays off.',
       result.applied ? 'The saved plan selects Channel 1 at volume 18. These are example settings.' : 'A scheduled scene acts only while the TV is on. It does not wake the room to keep an appointment.');
   }
   function renderSleep(announce = true) {

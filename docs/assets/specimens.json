@@ -5,11 +5,11 @@
     "title": "A little less to do.",
     "href": "/specimens/sohva/",
     "summary": "An evening in miniature. Try a mute with an owner, a scene that leaves standby alone, and the last minute before the television goes dark.",
-    "image": "assets/specimens/sohva/evening-plate.svg",
-    "width": 1600,
-    "height": 1000,
-    "alt": "An authored charcoal and brass drawing of a sofa, a phone and a television casting light into the room.",
-    "boundary": "Authored room illustration. Interactive reductions of selected app rules; no television is connected."
+    "image": "assets/specimens/sohva/evening-room.webp",
+    "width": 1584,
+    "height": 992,
+    "alt": "AI-rendered living room with a soft grey-beige sofa, knitted throw, oak furniture, amber lamps and a blue-hour window.",
+    "boundary": "AI-rendered room based on Sohva’s landing-page imagery. Selected app rules are reduced in the companion study; no TV is connected."
   },
   {
     "id": "009",
