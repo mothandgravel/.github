@@ -482,7 +482,7 @@
   },
   {
     "id": "note-018",
-    "title": "The card says what the TV said.",
+    "title": "Leave the evening alone.",
     "format": "narration",
     "script": "scripts/note-018.txt",
     "language": "en-US",
@@ -497,12 +497,37 @@
     ],
     "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
     "source_sha256": {
-      "018": "bda2bf9e8c5a23bf618a178033960401fbc3e5fa37a826b5936a6e30b98eccff"
+      "018": "6a30c877b37998870d6133958c10aa8df163a4f61ea5878b15aeaccb9a4fbcbf"
     },
     "target_wpm": 140,
     "publication": {
       "kind": "note",
       "note_id": "018"
+    }
+  },
+  {
+    "id": "note-019",
+    "title": "The card says what the TV said.",
+    "format": "narration",
+    "script": "scripts/note-019.txt",
+    "language": "en-US",
+    "notes": [
+      "019"
+    ],
+    "speakers": [
+      {
+        "alias": "Narrator",
+        "voice": "Charon"
+      }
+    ],
+    "prompt": "Read the supplied script verbatim as a thoughtful independent studio essay. Calm, warm, precise English; an unhurried pace around 140 words per minute. Let short sentences breathe. Understated curiosity and dry warmth. No music, invented words, extra introductions or sound effects. The title is Moth and Gravel. Keep the delivery consistent across sections.",
+    "source_sha256": {
+      "019": "1b8c04db84e698f74949f2a382d3fdd9a1df39fd0708b1ad16e64caa65376048"
+    },
+    "target_wpm": 140,
+    "publication": {
+      "kind": "note",
+      "note_id": "019"
     }
   }
 ]

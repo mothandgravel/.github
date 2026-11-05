@@ -46,6 +46,7 @@ jobs:
           node --test scripts/datacenter.test.mjs
           node --test scripts/finland_account.test.mjs
           node --test scripts/notes_model.test.mjs
+          node --test scripts/sohva_evening.test.mjs
           node --test scripts/field_listen_model.test.mjs
           node --test scripts/loose_end_model.test.mjs
           python3 tools/graphics/build_moth_model.py --check
@@ -59,6 +60,9 @@ jobs:
           bash -n scripts/install_audit_browser.sh
           bash -n scripts/install_audit_media.sh
           node --check scripts/audit_wayfinding.mjs
+          node --check scripts/audit_sohva.mjs
+          node --check docs/assets/sohva-evening.mjs
+          node --check docs/assets/sohva-evening-model.mjs
           node --check docs/assets/maintenance-acceptance.mjs
           node --check docs/assets/maintenance-acceptance-model.mjs
           node --check docs/assets/maintenance-tnt.mjs

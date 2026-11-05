@@ -1,14 +1,14 @@
 {
-  "note": "018",
+  "note": "019",
   "captures": [
     {
       "files": [
-        "018-remote-keys-1080.webp",
-        "018-remote-keys-540.webp"
+        "019-remote-keys-1080.webp",
+        "019-remote-keys-540.webp"
       ],
       "sha256": {
-        "018-remote-keys-1080.webp": "15cf98061fd2270e228883625506d0a71298063def6711e8c6f5abf320a64019",
-        "018-remote-keys-540.webp": "a4495f6609d40b150ab1aaf6f5138bbcfc3c77ff45162807e88ca4afd3d9f7f3"
+        "019-remote-keys-1080.webp": "15cf98061fd2270e228883625506d0a71298063def6711e8c6f5abf320a64019",
+        "019-remote-keys-540.webp": "a4495f6609d40b150ab1aaf6f5138bbcfc3c77ff45162807e88ca4afd3d9f7f3"
       },
       "repository": "sohva-remote (private repository)",
       "path": "site/img/remote.png",

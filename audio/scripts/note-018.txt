@@ -1,73 +1,83 @@
-Moth and Gravel. Field Note 18. The card says what the TV said.
+Moth and Gravel. Field Note 18. Leave the evening alone.
 
 An AI-narrated edition of the published note.
 
-Sohva Remote is a phone remote for one kind of television. At the top of its screen sits a card: on or off, the channel, the programme and its times, the volume.
+The remote has gone into the sofa. The phone is on the armrest. The television is explaining a car at a volume no car has ever needed.
 
-It looks like a window onto the TV. It is not one. The phone cannot see the TV. Everything on the card is something the TV said when it was last asked.
+This seems like a reasonable place to begin making software.
 
-That would hardly matter if the phone were the only remote in the room. It never is. The TV has its own remote. A games console can take the screen back over HDMI. A soundbar can move the volume. Any of them can make the card wrong without telling the phone.
+Sohva is our Android remote for Sony Bravia TVs. The name is Finnish for sofa. It finds the television on the home network, pairs with a PIN and puts the ordinary controls on the phone: a directional ring, a large amber OK, volume, channels, the way back.
 
-A claim with an age
+There are more capable things in the world. We were interested in making this one considerate.
 
-The first version asked about power only when it believed the TV was off. On the second day, testing on a tablet, we switched the TV off with its own remote. The app kept showing it on.
+The bright thing is across the room
 
-The fix was to keep asking. While the remote is on screen, it asks the TV’s power every five seconds, in every state, and reconnects when the answer differs from the card. Switching the TV on or off with its own remote then showed up in the app within about four seconds.
+A remote lives beside the thing you meant to look at. Every moment spent reading it is a small diversion from the programme, the conversation, or whatever you had finally sat down to stop doing.
 
-The programme line has the same problem in a quieter form. Broadcast data often switches late, so the TV can report a programme after it has ended. The card asks again just after the programme should end and, if the old one is still reported, every 20 seconds for up to 15 minutes.
+So the centre of Sohva’s screen is a place for a thumb. A round directional control, with OK in warm amber. Below it, volume and channel have their own broad rockers. The card above says what is on. More holds the things you need less often.
 
-None of this makes the card current. It keeps the card’s age short and its errors temporary. Five seconds is a choice between a phone that asks too often and a picture that stays wrong for too long.
+It still asks you to look. Glass has no raised edges to find in the dark, and a drawn button cannot pretend otherwise. Letting the phone’s own volume buttons control the TV is one useful concession to that fact.
 
-“Can’t reach” is a conclusion
+A published app capture. The current programme, the level and a few familiar ways out. See the whole remote
 
-Silence from the TV is harder to read. The first request after the app opens can fail simply because the phone’s Wi-Fi is still waking up. So before the app says it cannot reach the TV, it asks once more, two seconds later.
+Three minutes of quiet
 
-When it does say so, it names only a cause it can see from the phone. These are its own words, with the TV’s name where we write “the TV”:
+The Ad break button mutes the commercials and brings the sound back after three minutes. There is an extra minute for a longer break. It is an appealingly ordinary feature: a small arrangement with your future self.
 
-Can’t reach the TV: this device isn’t connected to a network.
+But a timer that remembers a time also has to remember whose decision it is carrying.
 
-Can’t reach the TV: this device is on mobile data. Connect it to your home Wi-Fi.
+If the television was already muted, the end of an ad break should not suddenly fill the room. If you bring the sound back yourself, a later mute is yours too. The break has lost its claim on it.
 
-Can’t reach the TV: a VPN is on. Turn it off, or allow local network access in the VPN app.
+In Sohva’s source, that claim has a name: mutedByUs . A small piece of state that gives the feature some manners. The break only unmutes a mute it made and still holds. A phone call can take that responsibility over as well.
 
-Can’t reach the TV. Check that it’s plugged in and on the same network as this device.
+The timer remembers when. The useful part remembers whose.
 
-The app does not guess that the TV is broken or unplugged at the wall. It cannot see either. When no cause on the phone explains the silence, the last message says what to check, not what happened.
+This is where a domestic tool becomes interesting to us. The difficult bit is rarely the countdown. It is the other person in the room, changing their mind.
 
-Reads retry. Key presses never do.
+A habit is not permission to wake the house
 
-Asking twice is safe. Pressing twice is not.
+Perhaps the news belongs on Channel 1 at eight. A saved scene can choose that channel and a comfortable level. Put it on a schedule, and the evening can keep its shape without another trip through a menu.
 
-The project’s own rules put it plainly: never retry a failed key press automatically. A read that fails can be asked again. A key that may already have reached the TV cannot be sent again without the risk of doing it twice.
+But eight o’clock arrives whether anyone is watching or not.
 
-Power is where that bites. The TV takes seconds to switch, so a second tap on Power soon after the first is almost always a double tap or an impatient retry. Sending it would switch the TV straight back. The remote lets one power toggle through every four seconds and ignores the rest.
+A scheduled scene in Sohva only acts while the television is on. If it is in standby, the scene leaves it there. The clock has kept an appointment; it has not been given permission to start an evening.
 
-Ad break follows the same rule from the other side. One tap mutes the TV for three minutes and brings the sound back by itself. It never toggles: it unmutes only a mute it made and still holds. A mute by hand, an unmute with the TV’s own remote, or a phone call that takes the mute over is left alone.
+A wake-up has that permission. It is a separate setting, with days, a time, a destination and a level. The distinction costs a little explanation. It also means an empty room can remain an empty room.
 
-Two days, one TV
+There is a larger design question folded into this tiny one. When we save a preference, how far are we asking a tool to carry it? Across a change of channel? Across a closed app? Into a house that has gone to bed?
 
-The first commit was on 25 October. Most of what this note describes was fixed on the 26th, on real hardware, after the code had already passed its tests against simulated TVs.
+The last minute
 
-Each of these faults appeared only with a real TV in the room:
+The sleep timer has a gentler finish. Over its final minute, the sound comes down in six steps towards a lower level. Then the television switches off.
 
-the power state went stale after the TV’s own remote was used;
+The old level is kept for when the app next sees the television on. Even this is conditional. If someone has already changed the level, their choice stays. A remembered evening should not overrule the next one.
 
-without exact alarms, Android ended an ad break about two minutes late, so the app now says so when a break starts;
+That is a surprisingly good brief for a piece of software: help this moment end, and leave the next one room.
 
-every install made its fast-keys certificate with the same subject and serial number, so pairing a tablet quietly unpaired the phone;
+As far as the house
 
-a scene switched channel, and a games console took the screen back a moment later; scenes now look again four seconds later and switch once more.
+Sohva’s TV-control traffic stays on the local network. No account to make, no advertising to sit through, no cloud service between the button and the television. A phone and a TV, with a fairly modest thing to say to one another.
 
-The tests were useful. They could not have found these.
+There are still conditions. Both devices need to be on the same network. Pairing needs the television’s permission. Standby needs Remote start. If the connection fails, the useful answer is a next step, not a reassuring dot.
 
-STUDY SCOPE / ONE TV, TWO DAYS
+“Local” also needs its edges left visible. Voice input uses Android’s speech recognizer, whose processing depends on that service. A simple sentence about where TV commands go should not quietly become a promise about every service on the phone.
 
-What this remote has been tried on.
+A small thing, made properly
 
-Sohva Remote is our own Android app, in preparation for Google Play. It has not been released. It was built and tried over two days with one TV, a 2018 Sony Bravia running Android TV, plus a phone and a tablet. Other Bravia models with IP control should work, but are unverified.
+There is an interactive room beside this note. It lets you start an ad break with a TV that was already muted, ask a scheduled scene to find a room in standby, and move through the last minute of the evening.
 
-The timings come from the project’s commit history and its own testing on that TV, not from a measured study. Sony, Bravia, Android TV and PlayStation are named only as the hardware it works with; the app is not affiliated with them.
+It is a browser sketch of selected rules, with example channels and a clock you move yourself. The app’s real screens are shown alongside it. It cannot tell us whether a tired hand finds the right control, or whether another person understands the timer without an explanation. Those questions need an evening of their own.
 
-Read the image and source provenance
+For now, we have a useful object and a way to look closely at three of its choices. The scale is small. The attention need not be.
+
+Put the phone down. The programme is back.
+
+ON THE BENCH / SOHVA REMOTE
+
+The app and the little room.
+
+This note reads Sohva source revision 16e47c3 and the published app screens. The companion specimen is an authored reduction, with its omissions recorded beside the controls. It makes no device connection and establishes no new usability or latency result.
+
+The app is built and tested on a Sony KD-65XF9005; compatibility with other Bravias is not established by this study. Android 8.0 or newer. Google Play release is in preparation. Independent software, not made by or affiliated with Sony. Product details · Privacy · Source record.
 
 You have been listening to Moth and Gravel Field Notes. The written edition is at moth and gravel dot com.

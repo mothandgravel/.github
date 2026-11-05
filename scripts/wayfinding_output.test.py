@@ -41,7 +41,7 @@ class Wayfinding(unittest.TestCase):
         items = json.loads((ROOT / 'assets/specimens.json').read_text())
         self.assertEqual(sum(bool(x.get('exhibit')) for x in items), 2)
         self.assertEqual(sum(len(x.get('children', [])) for x in items), 5)
-        self.assertEqual(len(items), 9)
+        self.assertEqual(len(items), 10)
 
     def test_thread_context_returns_each_piece_to_its_actual_stop(self):
         thread = json.loads((ROOT / 'assets/thread.json').read_text(encoding='utf-8'))

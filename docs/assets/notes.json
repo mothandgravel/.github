@@ -573,10 +573,47 @@
   },
   {
     "id": "018",
-    "slug": "018-the-card-says-what-the-tv-said.html",
+    "slug": "018-leave-the-evening-alone.html",
+    "title": "Leave the evening alone.",
+    "summary": "A sofa, a phone and a television that has been loud enough. A Sohva Remote study in small courtesies, remembered choices and the useful art of leaving things alone.",
+    "date": "2026-10-28",
+    "type": "Design study",
+    "topics": [
+      "Interface",
+      "Interaction",
+      "Making"
+    ],
+    "project": "Sohva Remote",
+    "related": [
+      "002",
+      "008",
+      "013"
+    ],
+    "visual": "forms",
+    "featured": false,
+    "socialImage": "assets/notes/018-cover-social.jpg",
+    "nextReading": {
+      "id": "008",
+      "bridge": "A remote should remember which mute it made. A staircase asks the same care of an undo: how much of the work belongs to one action?"
+    },
+    "specimen": {
+      "href": "../specimens/sohva/",
+      "label": "Return to the little room"
+    },
+    "archivePreview": {
+      "image": "assets/specimens/sohva/evening-room.webp",
+      "width": 1584,
+      "height": 992,
+      "alt": "AI-rendered living room with a soft grey-beige sofa, knitted throw, oak furniture, amber lamps and a blue-hour window.",
+      "boundary": "AI-rendered room based on Sohva’s landing-page imagery. Selected app rules are reduced in the companion study; no TV is connected."
+    }
+  },
+  {
+    "id": "019",
+    "slug": "019-the-card-says-what-the-tv-said.html",
     "title": "The card says what the TV said.",
     "summary": "A phone remote shows the TV’s power, channel and volume. Each of them is something the TV said, a few seconds ago, while other remotes in the room kept changing it.",
-    "date": "2026-10-27",
+    "date": "2026-11-05",
     "type": "Design study",
     "topics": [
       "Interface",
@@ -586,6 +623,7 @@
     "project": "Sohva Remote",
     "thread": "",
     "related": [
+      "018",
       "012",
       "007",
       "015"
@@ -598,8 +636,8 @@
       "bridge": "A remote keeps its card current by asking again. Coastal watch asks what a picture should say when nobody can be asked."
     },
     "specimen": {
-      "href": "../investigations/how-old/",
-      "label": "Follow the question: how old is it?"
+      "href": "../specimens/sohva/",
+      "label": "Inspect the little room"
     }
   }
 ]

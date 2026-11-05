@@ -12,6 +12,7 @@ on:
       - "scripts/audit_moth_volume.mjs"
       - "scripts/audit_rooms.mjs"
       - "scripts/audit_wayfinding.mjs"
+      - "scripts/audit_sohva.mjs"
       - "scripts/audit_connection.mjs"
       - "scripts/audit_mapping.mjs"
       - "scripts/audit_coastal_replay.mjs"
@@ -68,7 +69,7 @@ jobs:
             navigation) audits="wayfinding reading visual rooms connection" ;;
             materials) audits="moth handling moth_volume mapping" ;;
             coastal) audits="coastal_replay coastal_transport shadow_inquiry coastal_identity coastal_haxr thread" ;;
-            studio) audits="maintenance loose_end studio_note maritime playground" ;;
+            studio) audits="maintenance loose_end studio_note maritime playground sohva" ;;
             *) exit 2 ;;
           esac
           failed=0

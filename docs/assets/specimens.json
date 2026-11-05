@@ -1,5 +1,17 @@
 [
   {
+    "id": "010",
+    "name": "Sohva Remote",
+    "title": "A little less to do.",
+    "href": "/specimens/sohva/",
+    "summary": "An evening in miniature. Try a mute with an owner, a scene that leaves standby alone, and the last minute before the television goes dark.",
+    "image": "assets/specimens/sohva/evening-room.webp",
+    "width": 1584,
+    "height": 992,
+    "alt": "AI-rendered living room with a soft grey-beige sofa, knitted throw, oak furniture, amber lamps and a blue-hour window.",
+    "boundary": "AI-rendered room based on Sohva’s landing-page imagery. Selected app rules are reduced in the companion study; no TV is connected."
+  },
+  {
     "id": "009",
     "name": "Maintenance acceptance",
     "title": "The action may already have happened.",

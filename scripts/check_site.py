@@ -596,8 +596,30 @@ def main() -> int:
           'Home names an organisation or a private project')
     for data_file in sorted((ROOT / 'assets').rglob('*.json')) + sorted((ROOT / 'design').glob('*.json')):
         if data_file.name == 'notes.json' or data_file.parent.name == 'notes' or data_file.parent.name == 'design':
-            check(not re.search(r'navivra|kistradegoods|digablesolutions|vesuno', data_file.read_text(encoding='utf-8'), re.I),
+            public_data = data_file.read_text(encoding='utf-8')
+            # The requested Sohva study explicitly cites this public source repository.
+            # Keep the other identity guards, including the separate product-site guard, intact.
+            if data_file == ROOT / 'design/sohva-study-provenance.json':
+                public_data = public_data.replace('https://github.com/digablesolutions/sohva-remote', '')
+            check(not re.search(r'navivra|kistradegoods|digablesolutions|vesuno', public_data, re.I),
                   f'{data_file.relative_to(ROOT)} names an organisation or the unlinked game')
+    sohva_record = json.loads((ROOT / 'design/sohva-study-provenance.json').read_text(encoding='utf-8'))
+    for asset in sohva_record['assets']:
+        path = ROOT.parent / asset['file']
+        check(path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest() == asset['sha256'],
+              f'Sohva media differs from its recorded source: {asset["file"]}')
+    sohva_page = ROOT / 'specimens/sohva/index.html'
+    sohva_html = sohva_page.read_text(encoding='utf-8')
+    sohva_parser = SiteParser()
+    sohva_parser.feed(sohva_html)
+    check(sohva_html.count('<h1') == 1 and '<main id="main"' in sohva_html, 'Sohva study needs its heading and landmark')
+    for anchor in sohva_parser.anchors:
+        check(anchor in sohva_parser.ids, f'Sohva study broken anchor #{anchor}')
+    for relative in re.findall(r'(?:href|src)="(\.\.?/[^"]+)"', sohva_html):
+        path = (sohva_page.parent / urlsplit(relative).path).resolve()
+        check(path.is_relative_to(ROOT.resolve()) and (path.is_file() or (path.is_dir() and (path / 'index.html').is_file())),
+              f'Sohva study broken destination {relative}')
+    check('https://mothandgravel.com/specimens/sohva/' in sitemap_text, 'Sohva study missing from sitemap')
     for toy in ('stamp', 'grid', 'week'):
         check((ROOT / f'assets/playground/{toy}.mjs').is_file(), f'Missing playground toy {toy}')
     check('playground' not in re.sub(r'href="[^"]*"', '', html.split('<!-- home-style:end -->')[0]),
