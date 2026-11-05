@@ -22,3 +22,8 @@ docs/assets/maintenance-tnt.json -text
 docs/assets/tnt/source/*.csv -text
 docs/assets/tnt/LICENSE.txt text eol=lf
 docs/design/maintenance-tnt-provenance.json text eol=lf
+# Published caption/transcript bytes are bound by the audio manifest SHA-256.
+docs/assets/audio/*.srt -text
+docs/assets/audio/*.vtt -text
+docs/assets/audio/*.txt -text
+docs/assets/audio/*.json -text

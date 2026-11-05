@@ -1,0 +1,490 @@
+WEBVTT
+
+1
+00:00:00.280 --> 00:00:07.920
+Moth and Gravel. Field Note 16.
+The number got better. An AI
+
+2
+00:00:07.920 --> 00:00:10.400
+narrated edition of the
+published note.
+
+3
+00:00:13.120 --> 00:00:18.040
+A room full of computers is
+doing its work. Fans turn, water
+
+4
+00:00:18.040 --> 00:00:23.200
+moves. Somewhere above the room,
+a number gets better. It would
+
+5
+00:00:23.200 --> 00:00:28.280
+make a reassuring green tile. We
+open the account underneath it.
+
+6
+00:00:29.800 --> 00:00:34.760
+2 hours from the same week. The
+material is a public record from
+
+7
+00:00:34.760 --> 00:00:39.800
+the Energy Systems Integration
+Facility. 5 power channels, a
+
+8
+00:00:39.800 --> 00:00:45.000
+published efficiency ratio, and
+a separate weather file. Strewen
+
+9
+00:00:45.000 --> 00:00:48.480
+Clark and Justin Strelka
+published the data set through
+
+10
+00:00:48.480 --> 00:00:52.560
+what is now the National
+Laboratory of the Rockies. We
+
+11
+00:00:52.560 --> 00:00:57.400
+pinned the source files and kept
+1 week, the 14th to the 20th of
+
+12
+00:00:57.400 --> 00:01:04.160
+July 2025, open on the bench. 2
+hours in that week make a useful
+
+13
+00:01:04.160 --> 00:01:09.360
+pair. During the first, the
+facility's estimated mean demand
+
+14
+00:01:09.360 --> 00:01:18.800
+is 2.683 MW. During the second,
+it is 2.953 MW. Demand rises by
+
+15
+00:01:18.800 --> 00:01:28.440
+10.077% The period efficiency
+ratio falls from 1.063015
+
+16
+00:01:28.720 --> 00:01:31.840
+to 1.052937.
+
+17
+00:01:38.200 --> 00:01:43.200
+Source clock hours. Energy
+estimated from recorded power.
+
+18
+00:01:44.040 --> 00:01:50.280
+Account A. The 14th of July,
+2300 to the following midnight.
+
+19
+00:01:51.000 --> 00:01:57.240
+Facility energy 2682.661 kWh.
+
+20
+00:01:58.280 --> 00:02:07.280
+IT energy 2523.635 kWh. Period
+PUE
+
+21
+00:02:07.760 --> 00:02:11.000
+1.063015.
+
+22
+00:02:12.240 --> 00:02:19.600
+Account B. The 18th of July,
+9:00 to 10:00. Facility energy
+
+23
+00:02:19.800 --> 00:02:31.720
+2952.992 kWh. IT energy 2804.
+.529 kWh.
+
+24
+00:02:32.240 --> 00:02:42.800
+Period PUE 1.052937. PUE is
+facility energy divided by IT
+
+25
+00:02:42.800 --> 00:02:48.800
+energy. A smaller overhead
+relative to IT can sit beside a
+
+26
+00:02:48.800 --> 00:02:54.280
+larger absolute load. Both
+numbers can be right. Nothing in
+
+27
+00:02:54.280 --> 00:02:58.840
+these 2 hours tells us that 1
+caused the other. We have no
+
+28
+00:02:58.840 --> 00:03:02.440
+account of useful computing
+work, no controlled
+
+29
+00:03:02.440 --> 00:03:07.120
+intervention, and no grounds to
+call 1 hour a better service.
+
+30
+00:03:07.800 --> 00:03:12.360
+The pair shows why 1 ratio
+cannot carry the whole account.
+
+31
+00:03:13.040 --> 00:03:17.840
+Keep the units attached. The
+file contains power in
+
+32
+00:03:17.840 --> 00:03:23.760
+kilowatts. Energy needs time. We
+treat each reported power as a
+
+33
+00:03:23.760 --> 00:03:28.280
+point sample. The publisher does
+not specify the instrument's
+
+34
+00:03:28.280 --> 00:03:32.840
+averaging window. Between
+neighboring readings, we draw a
+
+35
+00:03:32.840 --> 00:03:37.520
+straight line, clip it at the
+hour boundary, and integrate the
+
+36
+00:03:37.520 --> 00:03:41.920
+trapezoid underneath it. The
+result is an estimate in
+
+37
+00:03:41.920 --> 00:03:47.880
+kilowatt hours. Every component
+uses the same valid intervals.
+
+38
+00:03:48.360 --> 00:03:53.640
+Missing or negative components
+leave time uncovered. A gap over
+
+39
+00:03:53.640 --> 00:03:59.520
+90 seconds also stays uncovered.
+We do not fill silence with zero
+
+40
+00:03:59.520 --> 00:04:03.840
+demand. The selected week has
+complete coverage under that
+
+41
+00:04:03.840 --> 00:04:08.240
+rule. The larger archive has
+missing values and outlying
+
+42
+00:04:08.240 --> 00:04:13.560
+ratios worth inspecting. The
+hourly ratio divides the two
+
+43
+00:04:13.560 --> 00:04:17.920
+energy totals. Averaging the
+sample ratios would answer
+
+44
+00:04:17.920 --> 00:04:22.400
+another question. It produces a
+nearby number here, but
+
+45
+00:04:22.400 --> 00:04:27.120
+proximity is a poor reason to
+lose the definition. The
+
+46
+00:04:27.120 --> 00:04:32.160
+publisher's time stamps carry no
+time zone. We preserve their
+
+47
+00:04:32.160 --> 00:04:36.720
+clock, including microseconds,
+without quietly turning it into
+
+48
+00:04:36.720 --> 00:04:40.840
+finished time. Weather is
+matched only to an earlier
+
+49
+00:04:40.840 --> 00:04:45.560
+reading on that same source
+clock within 90 seconds. The
+
+50
+00:04:45.560 --> 00:04:48.960
+alignment of the two
+instruments' clocks remains
+
+51
+00:04:48.960 --> 00:04:54.680
+unverified. A room with its own
+label. We wanted somewhere to
+
+52
+00:04:54.680 --> 00:04:59.600
+look while keeping that account
+in view. A graphite cabinet
+
+53
+00:04:59.600 --> 00:05:04.600
+door, a water connection above
+it, a working light reflected in
+
+54
+00:05:04.600 --> 00:05:09.760
+the floor. The room is authored
+in meters, with constructed
+
+55
+00:05:09.760 --> 00:05:15.560
+racks, server faces, valves, and
+overhead services. Its lighting
+
+56
+00:05:15.560 --> 00:05:20.680
+and surfaces can be inspected.
+Selecting a system opens its
+
+57
+00:05:20.680 --> 00:05:25.600
+facility level meter boundary
+beside the geometry. The data
+
+58
+00:05:25.600 --> 00:05:30.080
+does not tell us how many racks
+to draw, where they stood, or
+
+59
+00:05:30.080 --> 00:05:34.720
+what each consumed. The room
+makes no such claim. Its
+
+60
+00:05:34.720 --> 00:05:39.040
+geometry remains an
+interpretation. The account
+
+61
+00:05:39.200 --> 00:05:43.600
+remains recorded. More
+convincing materials should make
+
+62
+00:05:43.600 --> 00:05:48.920
+that distinction easier to read,
+not easier to overlook. A
+
+63
+00:05:48.920 --> 00:05:54.520
+reserve is a choice. A separate
+branch lets the recorded hour
+
+64
+00:05:54.520 --> 00:05:59.000
+meet a chosen grid cap and
+battery. At the second hour
+
+65
+00:05:59.040 --> 00:06:06.560
+demand, a 2.5 MW cap leaves work
+for the reserve. A 500 kWh
+
+66
+00:06:06.560 --> 00:06:13.200
+battery starts at 80%, keeps 10%
+in reserve, and delivers 92% of
+
+67
+00:06:13.200 --> 00:06:18.400
+the energy it discharges. With
+the branch's 1 MW output limit,
+
+68
+00:06:18.640 --> 00:06:26.520
+it supplies 322 kWh. Conversion
+loss is 28 kWh. The remaining
+
+69
+00:06:26.520 --> 00:06:34.080
+accounting shortfall is about
+130.992 kWh. Those assumptions
+
+70
+00:06:34.120 --> 00:06:39.240
+are ours. They model neither a
+generator starting nor a server
+
+71
+00:06:39.240 --> 00:06:44.560
+failing. There is no cooling
+response, charging, or workload
+
+72
+00:06:44.560 --> 00:06:49.120
+rescheduling hidden behind the
+button. Change a choice, and the
+
+73
+00:06:49.120 --> 00:06:54.080
+branch must be calculated again.
+Export it, and the assumptions
+
+74
+00:06:54.080 --> 00:06:58.240
+travel with it. A useful number
+should be able to make that
+
+75
+00:06:58.240 --> 00:07:03.480
+journey from a reassuring tile,
+through its arithmetic, back to
+
+76
+00:07:03.480 --> 00:07:08.640
+what was observed, and what
+somebody chose. Method, sources,
+
+77
+00:07:08.800 --> 00:07:14.600
+limits. What this account can
+support. Source. Clark and
+
+78
+00:07:14.600 --> 00:07:25.840
+Strelka. ESIF Facility PUE data
+set. DOI 10.779/3015212.
+
+79
+00:07:26.360 --> 00:07:33.720
+Credit, DOE/ NREL/ Alliance.
+Source use implies no
+
+80
+00:07:33.720 --> 00:07:37.520
+endorsement. The complete
+publisher notice accompanies the
+
+81
+00:07:37.520 --> 00:07:42.480
+extract and every exported
+inspection. The replay retains
+
+82
+00:07:42.480 --> 00:07:47.720
+10,080 observations and 1 power
+observation on either side of
+
+83
+00:07:47.720 --> 00:07:52.120
+the week for boundary
+interpolation. Every hour covers
+
+84
+00:07:52.120 --> 00:07:58.160
+3,600 seconds under the stated
+validity rule. JavaScript energy
+
+85
+00:07:58.160 --> 00:08:02.280
+integrals are checked against a
+separate Python implementation
+
+86
+00:08:02.520 --> 00:08:06.160
+using 50 digit decimal
+arithmetic. This checks
+
+87
+00:08:06.160 --> 00:08:10.720
+numerical implementation, not
+meter calibration. No
+
+88
+00:08:10.720 --> 00:08:14.600
+calibration uncertainty was
+supplied. The publisher's
+
+89
+00:08:14.600 --> 00:08:19.360
+measurement boundaries include
+attributed shared loads. We use
+
+90
+00:08:19.360 --> 00:08:23.040
+the published channels without
+adding that allowance again.
+
+91
+00:08:23.720 --> 00:08:28.480
+Undocumented heat reuse fields
+stay raw. We derive no heat
+
+92
+00:08:28.480 --> 00:08:33.080
+recovery quantity from them. For
+the larger question, Berkeley
+
+93
+00:08:33.080 --> 00:08:38.920
+Lab's 2025 DOE data center load
+flexibility workshop summary and
+
+94
+00:08:38.920 --> 00:08:42.960
+LUMI's job energy accounting
+limits describe different
+
+95
+00:08:42.960 --> 00:08:47.320
+boundaries around flexibility
+and workload energy. Neither
+
+96
+00:08:47.320 --> 00:08:51.680
+supplies measurements for this
+room. Inspect the source hashes
+
+97
+00:08:51.840 --> 00:08:57.040
+and numerical method. Complete
+publisher notice. You have been
+
+98
+00:08:57.040 --> 00:09:03.680
+listening to Moth and Gravel
+Field Notes. The written edition
+is at mothandgravel.com.
+

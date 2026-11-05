@@ -1,0 +1,590 @@
+[
+  {
+    "start": 0.28,
+    "end": 7.92,
+    "text": "Moth and Gravel. Field Note 16.\nThe number got better. An AI",
+    "speakers": []
+  },
+  {
+    "start": 7.92,
+    "end": 10.4,
+    "text": "narrated edition of the\npublished note.",
+    "speakers": []
+  },
+  {
+    "start": 13.12,
+    "end": 18.04,
+    "text": "A room full of computers is\ndoing its work. Fans turn, water",
+    "speakers": []
+  },
+  {
+    "start": 18.04,
+    "end": 23.2,
+    "text": "moves. Somewhere above the room,\na number gets better. It would",
+    "speakers": []
+  },
+  {
+    "start": 23.2,
+    "end": 28.28,
+    "text": "make a reassuring green tile. We\nopen the account underneath it.",
+    "speakers": []
+  },
+  {
+    "start": 29.8,
+    "end": 34.76,
+    "text": "2 hours from the same week. The\nmaterial is a public record from",
+    "speakers": []
+  },
+  {
+    "start": 34.76,
+    "end": 39.8,
+    "text": "the Energy Systems Integration\nFacility. 5 power channels, a",
+    "speakers": []
+  },
+  {
+    "start": 39.8,
+    "end": 45.0,
+    "text": "published efficiency ratio, and\na separate weather file. Strewen",
+    "speakers": []
+  },
+  {
+    "start": 45.0,
+    "end": 48.48,
+    "text": "Clark and Justin Strelka\npublished the data set through",
+    "speakers": []
+  },
+  {
+    "start": 48.48,
+    "end": 52.56,
+    "text": "what is now the National\nLaboratory of the Rockies. We",
+    "speakers": []
+  },
+  {
+    "start": 52.56,
+    "end": 57.4,
+    "text": "pinned the source files and kept\n1 week, the 14th to the 20th of",
+    "speakers": []
+  },
+  {
+    "start": 57.4,
+    "end": 64.16,
+    "text": "July 2025, open on the bench. 2\nhours in that week make a useful",
+    "speakers": []
+  },
+  {
+    "start": 64.16,
+    "end": 69.36,
+    "text": "pair. During the first, the\nfacility's estimated mean demand",
+    "speakers": []
+  },
+  {
+    "start": 69.36,
+    "end": 78.8,
+    "text": "is 2.683 MW. During the second,\nit is 2.953 MW. Demand rises by",
+    "speakers": []
+  },
+  {
+    "start": 78.8,
+    "end": 88.44,
+    "text": "10.077% The period efficiency\nratio falls from 1.063015",
+    "speakers": []
+  },
+  {
+    "start": 88.72,
+    "end": 91.84,
+    "text": "to 1.052937.",
+    "speakers": []
+  },
+  {
+    "start": 98.2,
+    "end": 103.2,
+    "text": "Source clock hours. Energy\nestimated from recorded power.",
+    "speakers": []
+  },
+  {
+    "start": 104.04,
+    "end": 110.28,
+    "text": "Account A. The 14th of July,\n2300 to the following midnight.",
+    "speakers": []
+  },
+  {
+    "start": 111.0,
+    "end": 117.24,
+    "text": "Facility energy 2682.661 kWh.",
+    "speakers": []
+  },
+  {
+    "start": 118.28,
+    "end": 127.28,
+    "text": "IT energy 2523.635 kWh. Period\nPUE",
+    "speakers": []
+  },
+  {
+    "start": 127.76,
+    "end": 131.0,
+    "text": "1.063015.",
+    "speakers": []
+  },
+  {
+    "start": 132.24,
+    "end": 139.6,
+    "text": "Account B. The 18th of July,\n9:00 to 10:00. Facility energy",
+    "speakers": []
+  },
+  {
+    "start": 139.8,
+    "end": 151.72,
+    "text": "2952.992 kWh. IT energy 2804.\n.529 kWh.",
+    "speakers": []
+  },
+  {
+    "start": 152.24,
+    "end": 162.8,
+    "text": "Period PUE 1.052937. PUE is\nfacility energy divided by IT",
+    "speakers": []
+  },
+  {
+    "start": 162.8,
+    "end": 168.8,
+    "text": "energy. A smaller overhead\nrelative to IT can sit beside a",
+    "speakers": []
+  },
+  {
+    "start": 168.8,
+    "end": 174.28,
+    "text": "larger absolute load. Both\nnumbers can be right. Nothing in",
+    "speakers": []
+  },
+  {
+    "start": 174.28,
+    "end": 178.84,
+    "text": "these 2 hours tells us that 1\ncaused the other. We have no",
+    "speakers": []
+  },
+  {
+    "start": 178.84,
+    "end": 182.44,
+    "text": "account of useful computing\nwork, no controlled",
+    "speakers": []
+  },
+  {
+    "start": 182.44,
+    "end": 187.12,
+    "text": "intervention, and no grounds to\ncall 1 hour a better service.",
+    "speakers": []
+  },
+  {
+    "start": 187.8,
+    "end": 192.36,
+    "text": "The pair shows why 1 ratio\ncannot carry the whole account.",
+    "speakers": []
+  },
+  {
+    "start": 193.04,
+    "end": 197.84,
+    "text": "Keep the units attached. The\nfile contains power in",
+    "speakers": []
+  },
+  {
+    "start": 197.84,
+    "end": 203.76,
+    "text": "kilowatts. Energy needs time. We\ntreat each reported power as a",
+    "speakers": []
+  },
+  {
+    "start": 203.76,
+    "end": 208.28,
+    "text": "point sample. The publisher does\nnot specify the instrument's",
+    "speakers": []
+  },
+  {
+    "start": 208.28,
+    "end": 212.84,
+    "text": "averaging window. Between\nneighboring readings, we draw a",
+    "speakers": []
+  },
+  {
+    "start": 212.84,
+    "end": 217.52,
+    "text": "straight line, clip it at the\nhour boundary, and integrate the",
+    "speakers": []
+  },
+  {
+    "start": 217.52,
+    "end": 221.92,
+    "text": "trapezoid underneath it. The\nresult is an estimate in",
+    "speakers": []
+  },
+  {
+    "start": 221.92,
+    "end": 227.88,
+    "text": "kilowatt hours. Every component\nuses the same valid intervals.",
+    "speakers": []
+  },
+  {
+    "start": 228.36,
+    "end": 233.64,
+    "text": "Missing or negative components\nleave time uncovered. A gap over",
+    "speakers": []
+  },
+  {
+    "start": 233.64,
+    "end": 239.52,
+    "text": "90 seconds also stays uncovered.\nWe do not fill silence with zero",
+    "speakers": []
+  },
+  {
+    "start": 239.52,
+    "end": 243.84,
+    "text": "demand. The selected week has\ncomplete coverage under that",
+    "speakers": []
+  },
+  {
+    "start": 243.84,
+    "end": 248.24,
+    "text": "rule. The larger archive has\nmissing values and outlying",
+    "speakers": []
+  },
+  {
+    "start": 248.24,
+    "end": 253.56,
+    "text": "ratios worth inspecting. The\nhourly ratio divides the two",
+    "speakers": []
+  },
+  {
+    "start": 253.56,
+    "end": 257.92,
+    "text": "energy totals. Averaging the\nsample ratios would answer",
+    "speakers": []
+  },
+  {
+    "start": 257.92,
+    "end": 262.4,
+    "text": "another question. It produces a\nnearby number here, but",
+    "speakers": []
+  },
+  {
+    "start": 262.4,
+    "end": 267.12,
+    "text": "proximity is a poor reason to\nlose the definition. The",
+    "speakers": []
+  },
+  {
+    "start": 267.12,
+    "end": 272.16,
+    "text": "publisher's time stamps carry no\ntime zone. We preserve their",
+    "speakers": []
+  },
+  {
+    "start": 272.16,
+    "end": 276.72,
+    "text": "clock, including microseconds,\nwithout quietly turning it into",
+    "speakers": []
+  },
+  {
+    "start": 276.72,
+    "end": 280.84,
+    "text": "finished time. Weather is\nmatched only to an earlier",
+    "speakers": []
+  },
+  {
+    "start": 280.84,
+    "end": 285.56,
+    "text": "reading on that same source\nclock within 90 seconds. The",
+    "speakers": []
+  },
+  {
+    "start": 285.56,
+    "end": 288.96,
+    "text": "alignment of the two\ninstruments' clocks remains",
+    "speakers": []
+  },
+  {
+    "start": 288.96,
+    "end": 294.68,
+    "text": "unverified. A room with its own\nlabel. We wanted somewhere to",
+    "speakers": []
+  },
+  {
+    "start": 294.68,
+    "end": 299.6,
+    "text": "look while keeping that account\nin view. A graphite cabinet",
+    "speakers": []
+  },
+  {
+    "start": 299.6,
+    "end": 304.6,
+    "text": "door, a water connection above\nit, a working light reflected in",
+    "speakers": []
+  },
+  {
+    "start": 304.6,
+    "end": 309.76,
+    "text": "the floor. The room is authored\nin meters, with constructed",
+    "speakers": []
+  },
+  {
+    "start": 309.76,
+    "end": 315.56,
+    "text": "racks, server faces, valves, and\noverhead services. Its lighting",
+    "speakers": []
+  },
+  {
+    "start": 315.56,
+    "end": 320.68,
+    "text": "and surfaces can be inspected.\nSelecting a system opens its",
+    "speakers": []
+  },
+  {
+    "start": 320.68,
+    "end": 325.6,
+    "text": "facility level meter boundary\nbeside the geometry. The data",
+    "speakers": []
+  },
+  {
+    "start": 325.6,
+    "end": 330.08,
+    "text": "does not tell us how many racks\nto draw, where they stood, or",
+    "speakers": []
+  },
+  {
+    "start": 330.08,
+    "end": 334.72,
+    "text": "what each consumed. The room\nmakes no such claim. Its",
+    "speakers": []
+  },
+  {
+    "start": 334.72,
+    "end": 339.04,
+    "text": "geometry remains an\ninterpretation. The account",
+    "speakers": []
+  },
+  {
+    "start": 339.2,
+    "end": 343.6,
+    "text": "remains recorded. More\nconvincing materials should make",
+    "speakers": []
+  },
+  {
+    "start": 343.6,
+    "end": 348.92,
+    "text": "that distinction easier to read,\nnot easier to overlook. A",
+    "speakers": []
+  },
+  {
+    "start": 348.92,
+    "end": 354.52,
+    "text": "reserve is a choice. A separate\nbranch lets the recorded hour",
+    "speakers": []
+  },
+  {
+    "start": 354.52,
+    "end": 359.0,
+    "text": "meet a chosen grid cap and\nbattery. At the second hour",
+    "speakers": []
+  },
+  {
+    "start": 359.04,
+    "end": 366.56,
+    "text": "demand, a 2.5 MW cap leaves work\nfor the reserve. A 500 kWh",
+    "speakers": []
+  },
+  {
+    "start": 366.56,
+    "end": 373.2,
+    "text": "battery starts at 80%, keeps 10%\nin reserve, and delivers 92% of",
+    "speakers": []
+  },
+  {
+    "start": 373.2,
+    "end": 378.4,
+    "text": "the energy it discharges. With\nthe branch's 1 MW output limit,",
+    "speakers": []
+  },
+  {
+    "start": 378.64,
+    "end": 386.52,
+    "text": "it supplies 322 kWh. Conversion\nloss is 28 kWh. The remaining",
+    "speakers": []
+  },
+  {
+    "start": 386.52,
+    "end": 394.08,
+    "text": "accounting shortfall is about\n130.992 kWh. Those assumptions",
+    "speakers": []
+  },
+  {
+    "start": 394.12,
+    "end": 399.24,
+    "text": "are ours. They model neither a\ngenerator starting nor a server",
+    "speakers": []
+  },
+  {
+    "start": 399.24,
+    "end": 404.56,
+    "text": "failing. There is no cooling\nresponse, charging, or workload",
+    "speakers": []
+  },
+  {
+    "start": 404.56,
+    "end": 409.12,
+    "text": "rescheduling hidden behind the\nbutton. Change a choice, and the",
+    "speakers": []
+  },
+  {
+    "start": 409.12,
+    "end": 414.08,
+    "text": "branch must be calculated again.\nExport it, and the assumptions",
+    "speakers": []
+  },
+  {
+    "start": 414.08,
+    "end": 418.24,
+    "text": "travel with it. A useful number\nshould be able to make that",
+    "speakers": []
+  },
+  {
+    "start": 418.24,
+    "end": 423.48,
+    "text": "journey from a reassuring tile,\nthrough its arithmetic, back to",
+    "speakers": []
+  },
+  {
+    "start": 423.48,
+    "end": 428.64,
+    "text": "what was observed, and what\nsomebody chose. Method, sources,",
+    "speakers": []
+  },
+  {
+    "start": 428.8,
+    "end": 434.6,
+    "text": "limits. What this account can\nsupport. Source. Clark and",
+    "speakers": []
+  },
+  {
+    "start": 434.6,
+    "end": 445.84,
+    "text": "Strelka. ESIF Facility PUE data\nset. DOI 10.779/3015212.",
+    "speakers": []
+  },
+  {
+    "start": 446.36,
+    "end": 453.72,
+    "text": "Credit, DOE/ NREL/ Alliance.\nSource use implies no",
+    "speakers": []
+  },
+  {
+    "start": 453.72,
+    "end": 457.52,
+    "text": "endorsement. The complete\npublisher notice accompanies the",
+    "speakers": []
+  },
+  {
+    "start": 457.52,
+    "end": 462.48,
+    "text": "extract and every exported\ninspection. The replay retains",
+    "speakers": []
+  },
+  {
+    "start": 462.48,
+    "end": 467.72,
+    "text": "10,080 observations and 1 power\nobservation on either side of",
+    "speakers": []
+  },
+  {
+    "start": 467.72,
+    "end": 472.12,
+    "text": "the week for boundary\ninterpolation. Every hour covers",
+    "speakers": []
+  },
+  {
+    "start": 472.12,
+    "end": 478.16,
+    "text": "3,600 seconds under the stated\nvalidity rule. JavaScript energy",
+    "speakers": []
+  },
+  {
+    "start": 478.16,
+    "end": 482.28,
+    "text": "integrals are checked against a\nseparate Python implementation",
+    "speakers": []
+  },
+  {
+    "start": 482.52,
+    "end": 486.16,
+    "text": "using 50 digit decimal\narithmetic. This checks",
+    "speakers": []
+  },
+  {
+    "start": 486.16,
+    "end": 490.72,
+    "text": "numerical implementation, not\nmeter calibration. No",
+    "speakers": []
+  },
+  {
+    "start": 490.72,
+    "end": 494.6,
+    "text": "calibration uncertainty was\nsupplied. The publisher's",
+    "speakers": []
+  },
+  {
+    "start": 494.6,
+    "end": 499.36,
+    "text": "measurement boundaries include\nattributed shared loads. We use",
+    "speakers": []
+  },
+  {
+    "start": 499.36,
+    "end": 503.04,
+    "text": "the published channels without\nadding that allowance again.",
+    "speakers": []
+  },
+  {
+    "start": 503.72,
+    "end": 508.48,
+    "text": "Undocumented heat reuse fields\nstay raw. We derive no heat",
+    "speakers": []
+  },
+  {
+    "start": 508.48,
+    "end": 513.08,
+    "text": "recovery quantity from them. For\nthe larger question, Berkeley",
+    "speakers": []
+  },
+  {
+    "start": 513.08,
+    "end": 518.92,
+    "text": "Lab's 2025 DOE data center load\nflexibility workshop summary and",
+    "speakers": []
+  },
+  {
+    "start": 518.92,
+    "end": 522.96,
+    "text": "LUMI's job energy accounting\nlimits describe different",
+    "speakers": []
+  },
+  {
+    "start": 522.96,
+    "end": 527.32,
+    "text": "boundaries around flexibility\nand workload energy. Neither",
+    "speakers": []
+  },
+  {
+    "start": 527.32,
+    "end": 531.68,
+    "text": "supplies measurements for this\nroom. Inspect the source hashes",
+    "speakers": []
+  },
+  {
+    "start": 531.84,
+    "end": 537.04,
+    "text": "and numerical method. Complete\npublisher notice. You have been",
+    "speakers": []
+  },
+  {
+    "start": 537.04,
+    "end": 543.68,
+    "text": "listening to Moth and Gravel\nField Notes. The written edition\nis at mothandgravel.com.",
+    "speakers": []
+  }
+]

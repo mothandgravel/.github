@@ -18,7 +18,7 @@ const axeRun = async (page) => {
 const pages = [
   { name: 'home-questions', path: '/', toys: [] },
   { name: 'investigations', path: '/investigations/', toys: [] },
-  { name: 'how-old', path: '/investigations/how-old/', toys: ['week'], projects: ['raivari', 'liveconnect', 'decision-docket', 'mapping-buggy', 'vahti'] },
+  { name: 'how-old', path: '/investigations/how-old/', toys: ['week'], projects: ['raivari', 'liveconnect', 'decision-docket', 'mapping-buggy', 'vahti', 'sohva-remote'] },
   { name: 'take-it-back', path: '/investigations/take-it-back/', toys: ['stamp'], projects: ['ajo', 'skystack-builder', 'decision-docket', 'raivari-rpc', 'paja', 'luotsi', 'verstas'] },
   { name: 'green-light', path: '/investigations/green-light/', toys: ['grid'], projects: ['geaidnu', 'flutter-test-rs', 'decision-docket', 'cyber-grid'] },
   { name: 'playground', path: '/workbench/playground/', toys: ['grid', 'stamp', 'week'] },

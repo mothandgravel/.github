@@ -846,5 +846,35 @@
       "transcript": "c329e63f0f0d58a1032dd9d60d6c27d0df77b821e183ed85596a7afc6b5d3766",
       "cues": "b02a242248f8b2a0cd10d2bdc1cee8a1f4ed3f39cf836efa133c93ff7056da21"
     }
+  },
+  {
+    "id": "note-016",
+    "title": "The number got better.",
+    "kind": "note",
+    "description": "The ratio fell. The load did not. A recorded week of facility power, and the boundaries a useful number needs to keep.",
+    "note_id": "016",
+    "slug": "016-the-number-got-better.html",
+    "language": "en-US",
+    "audio": "assets/audio/note-016-648aa471dfe6197a.mp3",
+    "bytes": 6524396,
+    "audio_sha256": "648aa471dfe6197a0b298247a0ad953c4c1d48da947c888110c6a8fb9e35af22",
+    "script_sha256": "74f10ac27f09b484b81f494cbd2e844c84dd6a43ed92fd5b926c74cce51c7464",
+    "source_sha256": {
+      "016": "ed437d875241c2e4e00b2167a9d3d1c03640759589ec6802c05935b50258e9b6"
+    },
+    "duration_seconds": 543.622,
+    "published_at": "2026-10-27T11:41:11.197231+00:00",
+    "review_status": "pending",
+    "narration": "AI-narrated",
+    "srt": "assets/audio/note-016-648aa471dfe6197a-a4925311214d6f69.srt",
+    "vtt": "assets/audio/note-016-648aa471dfe6197a-a4925311214d6f69.vtt",
+    "transcript": "assets/audio/note-016-648aa471dfe6197a-a4925311214d6f69.txt",
+    "cues": "assets/audio/note-016-648aa471dfe6197a-a4925311214d6f69.json",
+    "files_sha256": {
+      "srt": "9e2860bd32f59e5003fc7722e55192f8d9ee861d3a3351307a43feb6d9701d2e",
+      "vtt": "3cb610a776986b9e81d6b0a01cb9b1278a1cd2e3b0c9a5a9a543229f31dbde34",
+      "transcript": "314123f66c74e3aa75cc265730a711590e0e275eac5432fdb68489b9c61cf5e4",
+      "cues": "8cfda14eef4dca014267b5d99f0bbb860b5c5b988edb3a8d141717da3939bee6"
+    }
   }
 ]
