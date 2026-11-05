@@ -876,35 +876,5 @@
       "transcript": "314123f66c74e3aa75cc265730a711590e0e275eac5432fdb68489b9c61cf5e4",
       "cues": "8cfda14eef4dca014267b5d99f0bbb860b5c5b988edb3a8d141717da3939bee6"
     }
-  },
-  {
-    "id": "note-017",
-    "title": "The grid is shared.",
-    "kind": "note",
-    "description": "A household bill, a shared electricity system and heat at home. Following Finland’s data-centre promise to the people outside the room.",
-    "note_id": "017",
-    "slug": "017-the-grid-is-shared.html",
-    "language": "en-US",
-    "audio": "assets/audio/note-017-6a14d09722c02fff.mp3",
-    "bytes": 16416044,
-    "audio_sha256": "6a14d09722c02fffcdf427322bf4f2bed3ee273b4c6fc8ae68d26c8318111ffc",
-    "script_sha256": "ea1b8cc00c57450fc88afea3dd93ecc0143079689e507a64c02d21dab0757224",
-    "source_sha256": {
-      "017": "200da46fce62b41a84538f78624670696df41bc5df3eecdf89e8b36a788abb48"
-    },
-    "duration_seconds": 1367.906,
-    "published_at": "2026-10-27T11:41:11.197231+00:00",
-    "review_status": "pending",
-    "narration": "AI-narrated",
-    "srt": "assets/audio/note-017-6a14d09722c02fff-a19053d7f7e6d018.srt",
-    "vtt": "assets/audio/note-017-6a14d09722c02fff-a19053d7f7e6d018.vtt",
-    "transcript": "assets/audio/note-017-6a14d09722c02fff-a19053d7f7e6d018.txt",
-    "cues": "assets/audio/note-017-6a14d09722c02fff-a19053d7f7e6d018.json",
-    "files_sha256": {
-      "srt": "2222a7b6723e84117234b93b7c927aebb6bb0cc4153dc5ddc80313f36ce29acb",
-      "vtt": "afcfe86d7b1fe6185d6060b25ff1f730639421a0b931182c20ffdf6bb29e4141",
-      "transcript": "4591bb9af061626b6fd9696d00da4024d1bbc2470d1de7921bd0537b3f632585",
-      "cues": "877a2150c6e718f423883ca49b9851ca4acb9fe0e07047b9c2ec7be8fd29b4a0"
-    }
   }
 ]
