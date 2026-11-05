@@ -67,7 +67,8 @@ class ReadingOutputTests(unittest.TestCase):
         self.assertIn('SPECIMEN 006', html)
         self.assertIn('no TV is connected', html)
         self.assertIn('no live voyage', html)
-        earlier = archive_connections([n for n in notes if n['id'] != '018'], featured, specimens)
+        # Freeze the pre-Sohva catalog; later Sohva notes also share specimen 010.
+        earlier = archive_connections([n for n in notes if int(n['id']) < 18], featured, specimens)
         self.assertIn('SPECIMEN 005', earlier)
         self.assertIn('synthetic tracks', earlier)
         self.assertNotIn('object-fit', html)
