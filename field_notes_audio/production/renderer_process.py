@@ -6,6 +6,8 @@ so rewording a message here must not re-render finished videos.
 
 from __future__ import annotations
 
+import codecs
+import io
 import os
 import re
 import subprocess
@@ -17,6 +19,8 @@ from pathlib import Path
 # Studio splits job errors on this exact text (field_notes_studio.readiness_models).
 DETAILS_MARK = "\n\nDetails:\n"
 TAIL_CHARS = 1500
+STDERR_CHUNK_BYTES = 4096
+STDERR_TAIL_CHUNKS = 200
 SAVED = "Your audio and captions are saved; choose Make it again to retry the video only."
 _ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 # Remotion's own text: "Timeout (30000ms) exceeded rendering the component at frame N".
@@ -84,12 +88,10 @@ def _failure(returncode: int | None, stderr: str, empty: str) -> RenderFailed:
 
 
 def run_renderer(command: list[str], cwd: Path, timeout: float = 3600) -> None:
-    lines: deque[str] = deque(maxlen=200)  # bounded; the last ~200 lines are all we show
+    chunks: deque[str] = deque(maxlen=STDERR_TAIL_CHUNKS)
 
     try:
-        process = subprocess.Popen(
-            command, cwd=cwd, stderr=subprocess.PIPE, text=True, errors="replace"
-        )
+        process = subprocess.Popen(command, cwd=cwd, stderr=subprocess.PIPE)
     except FileNotFoundError as exc:
         raise RenderFailed(
             f"The video renderer stopped: Node is missing; install Node 22 or newer and check "
@@ -97,9 +99,19 @@ def run_renderer(command: list[str], cwd: Path, timeout: float = 3600) -> None:
         ) from None
 
     def drain() -> None:
-        for line in process.stderr:
-            lines.append(line)
-            print(line, end="", file=sys.stderr, flush=True)
+        decoder = io.IncrementalNewlineDecoder(
+            codecs.getincrementaldecoder("utf-8")(errors="replace"), translate=True
+        )
+        with process.stderr:
+            while chunk := process.stderr.read1(STDERR_CHUNK_BYTES):
+                text = decoder.decode(chunk)
+                chunks.append(text)
+                print(text, end="", file=sys.stderr, flush=True)
+            # An incomplete final character is replaced, as text-mode stderr was.
+            text = decoder.decode(b"", final=True)
+            if text:
+                chunks.append(text)
+                print(text, end="", file=sys.stderr, flush=True)
 
     reader = threading.Thread(target=drain, daemon=True, name="renderer-stderr")
     reader.start()
@@ -109,11 +121,11 @@ def run_renderer(command: list[str], cwd: Path, timeout: float = 3600) -> None:
         process.kill()
         process.wait()
         reader.join(timeout=5)
-        raise _failure(None, "".join(lines), "The renderer ran for over an hour.") from None
+        raise _failure(None, "".join(chunks), "The renderer ran for over an hour.") from None
     reader.join(timeout=5)
     if returncode:
         raise _failure(
             returncode,
-            "".join(lines),
+            "".join(chunks),
             f"Renderer exited with status {returncode} and printed nothing.",
         )
