@@ -45,6 +45,7 @@ def build(check=False):
              (ROOT / 'docs/specimens/coastal-watch/shadow-inquiry/index.html', DOMAIN + 'specimens/coastal-watch/shadow-inquiry/', 'The second witness.', None),
              (ROOT / 'docs/specimens/coastal-watch/identity-ledger/index.html', DOMAIN + 'specimens/coastal-watch/identity-ledger/', 'The same ship?', None),
              (ROOT / 'docs/specimens/coastal-watch/radar-replay/index.html', DOMAIN + 'specimens/coastal-watch/radar-replay/', 'The water, twice recorded.', None),
+             (ROOT / 'docs/specimens/coastal-watch/source-notebook/index.html', DOMAIN + 'specimens/coastal-watch/source-notebook/', 'The day, as recorded.', None),
              (ROOT / 'docs/specimens/data-center/index.html', DOMAIN + 'specimens/data-center/', 'Where the power goes.', None),
              (ROOT / 'docs/specimens/field-power/index.html', DOMAIN + 'specimens/field-power/', 'What stays on.', None),
              (ROOT / 'docs/specimens/maintenance-acceptance/index.html', DOMAIN + 'specimens/maintenance-acceptance/', 'The action may already have happened.', None),

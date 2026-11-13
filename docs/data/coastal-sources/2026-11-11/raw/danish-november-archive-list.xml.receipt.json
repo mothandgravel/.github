@@ -1,0 +1,17 @@
+{
+  "id": "danish-november-archive-list.xml",
+  "url": "http://aisdata.ais.dk.s3.eu-central-1.amazonaws.com/?list-type=2&prefix=aisdk-2026-11-&max-keys=40",
+  "retrievedAt": "2026-11-13T05:11:47.355334+00:00",
+  "status": 200,
+  "finalUrl": "http://aisdata.ais.dk.s3.eu-central-1.amazonaws.com/?list-type=2&prefix=aisdk-2026-11-&max-keys=40",
+  "contentType": "application/xml",
+  "serverDate": "Fri, 13 Nov 2026 05:11:48 GMT",
+  "lastModified": null,
+  "etag": null,
+  "bytes": 3378,
+  "wireBytes": 3378,
+  "wireSha256": "cd3a362091dfe87a5241f58d872ac2eaeb3e76670b8a583fe1d425d238025b80",
+  "contentEncoding": null,
+  "sha256": "cd3a362091dfe87a5241f58d872ac2eaeb3e76670b8a583fe1d425d238025b80",
+  "file": "danish-november-archive-list.xml"
+}

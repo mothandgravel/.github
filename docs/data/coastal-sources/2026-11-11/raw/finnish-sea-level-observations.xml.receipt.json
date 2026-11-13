@@ -1,0 +1,14 @@
+{
+  "id": "finnish-sea-level-observations.xml",
+  "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Amareograph%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&timestep=60",
+  "retrievedAt": "2026-11-13T04:50:48.754914+00:00",
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Amareograph%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&timestep=60",
+  "contentType": "text/xml; charset=UTF-8",
+  "serverDate": "Fri, 13 Nov 2026 04:50:49 GMT",
+  "lastModified": "Fri, 13 Nov 2026 04:50:49 GMT",
+  "etag": null,
+  "bytes": 445976,
+  "sha256": "0c69a3018735a790517ee528a10d4c428f14cc9fffb7f67a52042edde3b8655f",
+  "file": "finnish-sea-level-observations.xml"
+}

@@ -1,0 +1,13 @@
+# 11 November source follow-up
+
+The public Coastal watch notebook is a **saved 13 November retrieval**, not a live data service. Its observations belong to the Finnish calendar day 11 November 2026. Updating a source check must not overwrite that evidence or silently change the public page.
+
+Run `python scripts/monitor_coastal_sources.py` from the checkout. It appends timestamped captures under `artifacts/research/2026-11-13-november11/updates/`, preserves raw bodies and HTTP receipts, and compares semantic values to the preceding successful retrieval. The first run compares to the saved research/public bundle. Conditional ETag/Last-Modified requests are used when available. A changed response timestamp alone is not a new observation. Failed requests and incomplete/paginated responses remain unknown; they are not empty data.
+
+The seven checks cover the three FMI measurement queries, the two existing broad regional Copernicus catalogue queries, the Danish November AIS file listing, and the Helsinki seismic calendar. Requests are capped at 2 MB compressed and decoded, with at most three concurrent requests. A Danish directory entry is availability metadata, not a position recording or established Gulf of Finland coverage. No AIS ZIP, imagery raster, seismic waveform or military movement reconstruction is part of this follow-up.
+
+We have not established a guaranteed publication schedule. In the saved Danish listing, files labelled 1–10 November have object LastModified dates of 4–13 November around 00:16–00:23 UTC. This suggests a roughly three-calendar-day publication pattern for those objects; it is not a promised release time or per-message receiving clock. FMI HTTP dates describe the response; the first publication of each station measurement remains unknown. Copernicus created/published fields are distinct from acquisition times. Seismic review can lag measurement.
+
+The requested follow-up is bounded: every four hours through **14 November 2026 at 20:00 Europe/Helsinki (18:00 UTC)**, then stop. Scheduled checks require the desktop app and machine to remain running. Keep all checks silent, including during the standing 23:00–05:00 Helsinki quiet hours.
+
+For a meaningful change, inspect the saved summary and provider payload; explain whether measurements changed, gaps filled, catalogue records appeared, or a dated archive link became available. Preserve the earlier packet. Prepare any public-data revision separately with source hashes, comparison, tests and review; do not silently overwrite the published snapshot or invent original station delivery receipts. Stop at the deadline even if a provider has not published the requested day.

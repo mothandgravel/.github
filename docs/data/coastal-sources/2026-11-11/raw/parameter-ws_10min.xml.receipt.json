@@ -1,0 +1,14 @@
+{
+  "id": "parameter-ws_10min.xml",
+  "url": "https://opendata.fmi.fi/meta?observableProperty=observation&param=ws_10min&language=eng",
+  "retrievedAt": "2026-11-13T04:53:57.437148+00:00",
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/meta?observableProperty=observation&param=ws_10min&language=eng",
+  "contentType": "text/xml; charset=UTF-8",
+  "serverDate": "Fri, 13 Nov 2026 04:53:57 GMT",
+  "lastModified": "Fri, 13 Nov 2026 04:53:57 GMT",
+  "etag": null,
+  "bytes": 823,
+  "sha256": "e7d09cf16de0805818b50be04b6378e70b6bdd5427de0a59819018eba2146ea1",
+  "file": "parameter-ws_10min.xml"
+}

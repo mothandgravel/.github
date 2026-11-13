@@ -1,0 +1,17 @@
+{
+  "id": "mystar-requested-day.json",
+  "url": "https://meri.digitraffic.fi/api/ais/v1/locations?mmsi=276859000&from=1794348000000&to=1794434399999",
+  "retrievedAt": "2026-11-13T04:55:04.840575+00:00",
+  "status": 200,
+  "finalUrl": "https://meri.digitraffic.fi/api/ais/v1/locations?mmsi=276859000&from=1794348000000&to=1794434399999",
+  "contentType": "application/json;charset=UTF-8",
+  "serverDate": "Fri, 13 Nov 2026 04:55:05 GMT",
+  "lastModified": "Thu, 01 Jan 1970 00:00:00 GMT",
+  "etag": "\"02ddfa8c771b781e3691941a2531d7245\"",
+  "bytes": 100,
+  "wireBytes": 100,
+  "wireSha256": "18b296cfe5ef311511f415350d3c1f28458902fcc42eef5cc2f2ec828945881c",
+  "contentEncoding": null,
+  "sha256": "18b296cfe5ef311511f415350d3c1f28458902fcc42eef5cc2f2ec828945881c",
+  "file": "mystar-requested-day.json"
+}

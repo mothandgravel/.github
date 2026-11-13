@@ -1,0 +1,14 @@
+{
+  "id": "parameter-WLEVN2K_PT1S_INSTANT.xml",
+  "url": "https://opendata.fmi.fi/meta?observableProperty=forecast&param=WLEVN2K_PT1S_INSTANT&language=eng",
+  "retrievedAt": "2026-11-13T04:53:57.956720+00:00",
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/meta?observableProperty=forecast&param=WLEVN2K_PT1S_INSTANT&language=eng",
+  "contentType": "text/xml; charset=UTF-8",
+  "serverDate": "Fri, 13 Nov 2026 04:53:58 GMT",
+  "lastModified": "Fri, 13 Nov 2026 04:53:58 GMT",
+  "etag": null,
+  "bytes": 602,
+  "sha256": "cb8acc67453d4aea26e59b64d7a0a517a043f717202584590c514f2951436183",
+  "file": "parameter-WLEVN2K_PT1S_INSTANT.xml"
+}

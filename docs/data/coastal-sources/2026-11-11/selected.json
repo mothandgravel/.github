@@ -1,0 +1,990 @@
+{
+  "format": "mg.coastal-environment-archive.v1",
+  "dateLocal": "2026-11-11",
+  "timezone": "Europe/Helsinki",
+  "windowStartUtc": "2026-11-10T22:00:00Z",
+  "windowEndUtcExclusive": "2026-11-11T22:00:00Z",
+  "sampleIntervalMinutes": 60,
+  "limits": [
+    "Station observations, not measurements at the reported incident location.",
+    "Hourly requested samples; wind represents the preceding 10-minute average, not an hourly mean.",
+    "NaN is retained as null plus the original text; it is not zero.",
+    "Response time and HTTP Last-Modified are not the first publication time.",
+    "No military vessel/aircraft tracks or strike attribution are reconstructed."
+  ],
+  "series": [
+    {
+      "id": "100996:ws_10min",
+      "stationId": "100996",
+      "station": "Helsinki Harmaja",
+      "latitude": 60.10512,
+      "longitude": 24.97539,
+      "parameter": "ws_10min",
+      "unit": "m/s",
+      "label": "Wind speed",
+      "parameterMetadata": "https://opendata.fmi.fi/meta?observableProperty=observation&param=ws_10min&language=eng",
+      "sourceFile": "harmaja-weather.xml",
+      "sourceSha256": "35324d60139491f95dbbf4716432f90f1515e8838b4c210b0aee120f97920232",
+      "retrievedAt": "2026-11-13T04:50:48.753584+00:00",
+      "responseTime": "2026-11-13T04:50:49Z",
+      "resultTime": "2026-11-11T21:59:59Z",
+      "publicationTime": null,
+      "points": [
+        {
+          "observedAt": "2026-11-10T22:00:00Z",
+          "value": 9.9,
+          "rawValue": "9.9"
+        },
+        {
+          "observedAt": "2026-11-10T23:00:00Z",
+          "value": 8.8,
+          "rawValue": "8.8"
+        },
+        {
+          "observedAt": "2026-11-11T00:00:00Z",
+          "value": 8.6,
+          "rawValue": "8.6"
+        },
+        {
+          "observedAt": "2026-11-11T01:00:00Z",
+          "value": 7.2,
+          "rawValue": "7.2"
+        },
+        {
+          "observedAt": "2026-11-11T02:00:00Z",
+          "value": 5.7,
+          "rawValue": "5.7"
+        },
+        {
+          "observedAt": "2026-11-11T03:00:00Z",
+          "value": 3.5,
+          "rawValue": "3.5"
+        },
+        {
+          "observedAt": "2026-11-11T04:00:00Z",
+          "value": 6.4,
+          "rawValue": "6.4"
+        },
+        {
+          "observedAt": "2026-11-11T05:00:00Z",
+          "value": 4.8,
+          "rawValue": "4.8"
+        },
+        {
+          "observedAt": "2026-11-11T06:00:00Z",
+          "value": 5.2,
+          "rawValue": "5.2"
+        },
+        {
+          "observedAt": "2026-11-11T07:00:00Z",
+          "value": 6.0,
+          "rawValue": "6.0"
+        },
+        {
+          "observedAt": "2026-11-11T08:00:00Z",
+          "value": 7.1,
+          "rawValue": "7.1"
+        },
+        {
+          "observedAt": "2026-11-11T09:00:00Z",
+          "value": 6.5,
+          "rawValue": "6.5"
+        },
+        {
+          "observedAt": "2026-11-11T10:00:00Z",
+          "value": 6.7,
+          "rawValue": "6.7"
+        },
+        {
+          "observedAt": "2026-11-11T11:00:00Z",
+          "value": 6.1,
+          "rawValue": "6.1"
+        },
+        {
+          "observedAt": "2026-11-11T12:00:00Z",
+          "value": 6.0,
+          "rawValue": "6.0"
+        },
+        {
+          "observedAt": "2026-11-11T13:00:00Z",
+          "value": 5.5,
+          "rawValue": "5.5"
+        },
+        {
+          "observedAt": "2026-11-11T14:00:00Z",
+          "value": 5.6,
+          "rawValue": "5.6"
+        },
+        {
+          "observedAt": "2026-11-11T15:00:00Z",
+          "value": 6.1,
+          "rawValue": "6.1"
+        },
+        {
+          "observedAt": "2026-11-11T16:00:00Z",
+          "value": 5.2,
+          "rawValue": "5.2"
+        },
+        {
+          "observedAt": "2026-11-11T17:00:00Z",
+          "value": 5.6,
+          "rawValue": "5.6"
+        },
+        {
+          "observedAt": "2026-11-11T18:00:00Z",
+          "value": 6.1,
+          "rawValue": "6.1"
+        },
+        {
+          "observedAt": "2026-11-11T19:00:00Z",
+          "value": 5.6,
+          "rawValue": "5.6"
+        },
+        {
+          "observedAt": "2026-11-11T20:00:00Z",
+          "value": 6.3,
+          "rawValue": "6.3"
+        },
+        {
+          "observedAt": "2026-11-11T21:00:00Z",
+          "value": 5.0,
+          "rawValue": "5.0"
+        }
+      ]
+    },
+    {
+      "id": "100996:wg_10min",
+      "stationId": "100996",
+      "station": "Helsinki Harmaja",
+      "latitude": 60.10512,
+      "longitude": 24.97539,
+      "parameter": "wg_10min",
+      "unit": "m/s",
+      "label": "Gust speed",
+      "parameterMetadata": "https://opendata.fmi.fi/meta?observableProperty=observation&param=wg_10min&language=eng",
+      "sourceFile": "harmaja-weather.xml",
+      "sourceSha256": "35324d60139491f95dbbf4716432f90f1515e8838b4c210b0aee120f97920232",
+      "retrievedAt": "2026-11-13T04:50:48.753584+00:00",
+      "responseTime": "2026-11-13T04:50:49Z",
+      "resultTime": "2026-11-11T21:59:59Z",
+      "publicationTime": null,
+      "points": [
+        {
+          "observedAt": "2026-11-10T22:00:00Z",
+          "value": 11.7,
+          "rawValue": "11.7"
+        },
+        {
+          "observedAt": "2026-11-10T23:00:00Z",
+          "value": 10.8,
+          "rawValue": "10.8"
+        },
+        {
+          "observedAt": "2026-11-11T00:00:00Z",
+          "value": 10.4,
+          "rawValue": "10.4"
+        },
+        {
+          "observedAt": "2026-11-11T01:00:00Z",
+          "value": 8.8,
+          "rawValue": "8.8"
+        },
+        {
+          "observedAt": "2026-11-11T02:00:00Z",
+          "value": 7.0,
+          "rawValue": "7.0"
+        },
+        {
+          "observedAt": "2026-11-11T03:00:00Z",
+          "value": 4.6,
+          "rawValue": "4.6"
+        },
+        {
+          "observedAt": "2026-11-11T04:00:00Z",
+          "value": 7.4,
+          "rawValue": "7.4"
+        },
+        {
+          "observedAt": "2026-11-11T05:00:00Z",
+          "value": 6.2,
+          "rawValue": "6.2"
+        },
+        {
+          "observedAt": "2026-11-11T06:00:00Z",
+          "value": 6.2,
+          "rawValue": "6.2"
+        },
+        {
+          "observedAt": "2026-11-11T07:00:00Z",
+          "value": 7.3,
+          "rawValue": "7.3"
+        },
+        {
+          "observedAt": "2026-11-11T08:00:00Z",
+          "value": 8.7,
+          "rawValue": "8.7"
+        },
+        {
+          "observedAt": "2026-11-11T09:00:00Z",
+          "value": 8.2,
+          "rawValue": "8.2"
+        },
+        {
+          "observedAt": "2026-11-11T10:00:00Z",
+          "value": 7.8,
+          "rawValue": "7.8"
+        },
+        {
+          "observedAt": "2026-11-11T11:00:00Z",
+          "value": 7.5,
+          "rawValue": "7.5"
+        },
+        {
+          "observedAt": "2026-11-11T12:00:00Z",
+          "value": 7.5,
+          "rawValue": "7.5"
+        },
+        {
+          "observedAt": "2026-11-11T13:00:00Z",
+          "value": 6.5,
+          "rawValue": "6.5"
+        },
+        {
+          "observedAt": "2026-11-11T14:00:00Z",
+          "value": 7.1,
+          "rawValue": "7.1"
+        },
+        {
+          "observedAt": "2026-11-11T15:00:00Z",
+          "value": 7.2,
+          "rawValue": "7.2"
+        },
+        {
+          "observedAt": "2026-11-11T16:00:00Z",
+          "value": 6.8,
+          "rawValue": "6.8"
+        },
+        {
+          "observedAt": "2026-11-11T17:00:00Z",
+          "value": 6.8,
+          "rawValue": "6.8"
+        },
+        {
+          "observedAt": "2026-11-11T18:00:00Z",
+          "value": 7.5,
+          "rawValue": "7.5"
+        },
+        {
+          "observedAt": "2026-11-11T19:00:00Z",
+          "value": 6.7,
+          "rawValue": "6.7"
+        },
+        {
+          "observedAt": "2026-11-11T20:00:00Z",
+          "value": 7.3,
+          "rawValue": "7.3"
+        },
+        {
+          "observedAt": "2026-11-11T21:00:00Z",
+          "value": 6.4,
+          "rawValue": "6.4"
+        }
+      ]
+    },
+    {
+      "id": "100996:vis",
+      "stationId": "100996",
+      "station": "Helsinki Harmaja",
+      "latitude": 60.10512,
+      "longitude": 24.97539,
+      "parameter": "vis",
+      "unit": "m",
+      "label": "Horizontal visibility",
+      "parameterMetadata": "https://opendata.fmi.fi/meta?observableProperty=observation&param=vis&language=eng",
+      "sourceFile": "harmaja-weather.xml",
+      "sourceSha256": "35324d60139491f95dbbf4716432f90f1515e8838b4c210b0aee120f97920232",
+      "retrievedAt": "2026-11-13T04:50:48.753584+00:00",
+      "responseTime": "2026-11-13T04:50:49Z",
+      "resultTime": "2026-11-11T21:59:59Z",
+      "publicationTime": null,
+      "points": [
+        {
+          "observedAt": "2026-11-10T22:00:00Z",
+          "value": 20000.0,
+          "rawValue": "20000.0"
+        },
+        {
+          "observedAt": "2026-11-10T23:00:00Z",
+          "value": 19794.0,
+          "rawValue": "19794.0"
+        },
+        {
+          "observedAt": "2026-11-11T00:00:00Z",
+          "value": 15591.0,
+          "rawValue": "15591.0"
+        },
+        {
+          "observedAt": "2026-11-11T01:00:00Z",
+          "value": 14997.0,
+          "rawValue": "14997.0"
+        },
+        {
+          "observedAt": "2026-11-11T02:00:00Z",
+          "value": 18492.0,
+          "rawValue": "18492.0"
+        },
+        {
+          "observedAt": "2026-11-11T03:00:00Z",
+          "value": 19276.0,
+          "rawValue": "19276.0"
+        },
+        {
+          "observedAt": "2026-11-11T04:00:00Z",
+          "value": 19839.0,
+          "rawValue": "19839.0"
+        },
+        {
+          "observedAt": "2026-11-11T05:00:00Z",
+          "value": 18498.0,
+          "rawValue": "18498.0"
+        },
+        {
+          "observedAt": "2026-11-11T06:00:00Z",
+          "value": 19205.0,
+          "rawValue": "19205.0"
+        },
+        {
+          "observedAt": "2026-11-11T07:00:00Z",
+          "value": 19219.0,
+          "rawValue": "19219.0"
+        },
+        {
+          "observedAt": "2026-11-11T08:00:00Z",
+          "value": 16379.0,
+          "rawValue": "16379.0"
+        },
+        {
+          "observedAt": "2026-11-11T09:00:00Z",
+          "value": 17042.0,
+          "rawValue": "17042.0"
+        },
+        {
+          "observedAt": "2026-11-11T10:00:00Z",
+          "value": 17626.0,
+          "rawValue": "17626.0"
+        },
+        {
+          "observedAt": "2026-11-11T11:00:00Z",
+          "value": 17841.0,
+          "rawValue": "17841.0"
+        },
+        {
+          "observedAt": "2026-11-11T12:00:00Z",
+          "value": 19172.0,
+          "rawValue": "19172.0"
+        },
+        {
+          "observedAt": "2026-11-11T13:00:00Z",
+          "value": 18873.0,
+          "rawValue": "18873.0"
+        },
+        {
+          "observedAt": "2026-11-11T14:00:00Z",
+          "value": 16929.0,
+          "rawValue": "16929.0"
+        },
+        {
+          "observedAt": "2026-11-11T15:00:00Z",
+          "value": 17234.0,
+          "rawValue": "17234.0"
+        },
+        {
+          "observedAt": "2026-11-11T16:00:00Z",
+          "value": 18782.0,
+          "rawValue": "18782.0"
+        },
+        {
+          "observedAt": "2026-11-11T17:00:00Z",
+          "value": 15876.0,
+          "rawValue": "15876.0"
+        },
+        {
+          "observedAt": "2026-11-11T18:00:00Z",
+          "value": 14446.0,
+          "rawValue": "14446.0"
+        },
+        {
+          "observedAt": "2026-11-11T19:00:00Z",
+          "value": 19022.0,
+          "rawValue": "19022.0"
+        },
+        {
+          "observedAt": "2026-11-11T20:00:00Z",
+          "value": 19195.0,
+          "rawValue": "19195.0"
+        },
+        {
+          "observedAt": "2026-11-11T21:00:00Z",
+          "value": 18023.0,
+          "rawValue": "18023.0"
+        }
+      ]
+    },
+    {
+      "id": "134221:WaveHs",
+      "stationId": "134221",
+      "station": "Suomenlahti aaltopoiju",
+      "latitude": 59.965,
+      "longitude": 25.235,
+      "parameter": "WaveHs",
+      "unit": "m",
+      "label": "Wave height",
+      "parameterMetadata": "https://opendata.fmi.fi/meta?observableProperty=observation&param=WaveHs&language=eng",
+      "sourceFile": "finnish-wave-observations.xml",
+      "sourceSha256": "461f94c61ec636ac1e2550a806fb535d85d8d7d95f08ce0174be56a1fbab8696",
+      "retrievedAt": "2026-11-13T04:50:48.754256+00:00",
+      "responseTime": "2026-11-13T04:50:49Z",
+      "resultTime": "2026-11-11T21:59:59Z",
+      "publicationTime": null,
+      "points": [
+        {
+          "observedAt": "2026-11-10T22:00:00Z",
+          "value": 1.2,
+          "rawValue": "1.2"
+        },
+        {
+          "observedAt": "2026-11-10T23:00:00Z",
+          "value": 1.1,
+          "rawValue": "1.1"
+        },
+        {
+          "observedAt": "2026-11-11T00:00:00Z",
+          "value": 1.0,
+          "rawValue": "1.0"
+        },
+        {
+          "observedAt": "2026-11-11T01:00:00Z",
+          "value": 0.9,
+          "rawValue": "0.9"
+        },
+        {
+          "observedAt": "2026-11-11T02:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T03:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T04:00:00Z",
+          "value": 0.6,
+          "rawValue": "0.6"
+        },
+        {
+          "observedAt": "2026-11-11T05:00:00Z",
+          "value": 0.6,
+          "rawValue": "0.6"
+        },
+        {
+          "observedAt": "2026-11-11T06:00:00Z",
+          "value": 0.6,
+          "rawValue": "0.6"
+        },
+        {
+          "observedAt": "2026-11-11T07:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T08:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T09:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T10:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T11:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T12:00:00Z",
+          "value": 0.6,
+          "rawValue": "0.6"
+        },
+        {
+          "observedAt": "2026-11-11T13:00:00Z",
+          "value": 0.6,
+          "rawValue": "0.6"
+        },
+        {
+          "observedAt": "2026-11-11T14:00:00Z",
+          "value": 0.6,
+          "rawValue": "0.6"
+        },
+        {
+          "observedAt": "2026-11-11T15:00:00Z",
+          "value": 0.5,
+          "rawValue": "0.5"
+        },
+        {
+          "observedAt": "2026-11-11T16:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T17:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T18:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T19:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T20:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T21:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        }
+      ]
+    },
+    {
+      "id": "108495:WaveHs",
+      "stationId": "108495",
+      "station": "Loviisa Orrengrund aaltopoiju",
+      "latitude": 60.2333,
+      "longitude": 26.3916,
+      "parameter": "WaveHs",
+      "unit": "m",
+      "label": "Wave height",
+      "parameterMetadata": "https://opendata.fmi.fi/meta?observableProperty=observation&param=WaveHs&language=eng",
+      "sourceFile": "finnish-wave-observations.xml",
+      "sourceSha256": "461f94c61ec636ac1e2550a806fb535d85d8d7d95f08ce0174be56a1fbab8696",
+      "retrievedAt": "2026-11-13T04:50:48.754256+00:00",
+      "responseTime": "2026-11-13T04:50:49Z",
+      "resultTime": "2026-11-11T21:59:59Z",
+      "publicationTime": null,
+      "points": [
+        {
+          "observedAt": "2026-11-10T22:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-10T23:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T00:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T01:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T02:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T03:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T04:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T05:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T06:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T07:00:00Z",
+          "value": 0.5,
+          "rawValue": "0.5"
+        },
+        {
+          "observedAt": "2026-11-11T08:00:00Z",
+          "value": 0.6,
+          "rawValue": "0.6"
+        },
+        {
+          "observedAt": "2026-11-11T09:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T10:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T11:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T12:00:00Z",
+          "value": 0.7,
+          "rawValue": "0.7"
+        },
+        {
+          "observedAt": "2026-11-11T13:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T14:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T15:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T16:00:00Z",
+          "value": 0.5,
+          "rawValue": "0.5"
+        },
+        {
+          "observedAt": "2026-11-11T17:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T18:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T19:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T20:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        },
+        {
+          "observedAt": "2026-11-11T21:00:00Z",
+          "value": null,
+          "rawValue": "NaN"
+        }
+      ]
+    },
+    {
+      "id": "132310:WLEVN2K_PT1S_INSTANT",
+      "stationId": "132310",
+      "station": "Helsinki Kaivopuisto",
+      "latitude": 60.15363,
+      "longitude": 24.95622,
+      "parameter": "WLEVN2K_PT1S_INSTANT",
+      "unit": "mm",
+      "label": "Water level (N2000)",
+      "parameterMetadata": "https://opendata.fmi.fi/meta?observableProperty=forecast&param=WLEVN2K_PT1S_INSTANT&language=eng",
+      "sourceFile": "finnish-sea-level-observations.xml",
+      "sourceSha256": "0c69a3018735a790517ee528a10d4c428f14cc9fffb7f67a52042edde3b8655f",
+      "retrievedAt": "2026-11-13T04:50:48.754914+00:00",
+      "responseTime": "2026-11-13T04:50:49Z",
+      "resultTime": "2026-11-11T21:59:59Z",
+      "publicationTime": null,
+      "points": [
+        {
+          "observedAt": "2026-11-10T22:00:00Z",
+          "value": 142.0,
+          "rawValue": "142.0"
+        },
+        {
+          "observedAt": "2026-11-10T23:00:00Z",
+          "value": 144.0,
+          "rawValue": "144.0"
+        },
+        {
+          "observedAt": "2026-11-11T00:00:00Z",
+          "value": 138.0,
+          "rawValue": "138.0"
+        },
+        {
+          "observedAt": "2026-11-11T01:00:00Z",
+          "value": 144.0,
+          "rawValue": "144.0"
+        },
+        {
+          "observedAt": "2026-11-11T02:00:00Z",
+          "value": 141.0,
+          "rawValue": "141.0"
+        },
+        {
+          "observedAt": "2026-11-11T03:00:00Z",
+          "value": 151.0,
+          "rawValue": "151.0"
+        },
+        {
+          "observedAt": "2026-11-11T04:00:00Z",
+          "value": 153.0,
+          "rawValue": "153.0"
+        },
+        {
+          "observedAt": "2026-11-11T05:00:00Z",
+          "value": 141.0,
+          "rawValue": "141.0"
+        },
+        {
+          "observedAt": "2026-11-11T06:00:00Z",
+          "value": 129.0,
+          "rawValue": "129.0"
+        },
+        {
+          "observedAt": "2026-11-11T07:00:00Z",
+          "value": 117.0,
+          "rawValue": "117.0"
+        },
+        {
+          "observedAt": "2026-11-11T08:00:00Z",
+          "value": 104.0,
+          "rawValue": "104.0"
+        },
+        {
+          "observedAt": "2026-11-11T09:00:00Z",
+          "value": 81.0,
+          "rawValue": "81.0"
+        },
+        {
+          "observedAt": "2026-11-11T10:00:00Z",
+          "value": 76.0,
+          "rawValue": "76.0"
+        },
+        {
+          "observedAt": "2026-11-11T11:00:00Z",
+          "value": 72.0,
+          "rawValue": "72.0"
+        },
+        {
+          "observedAt": "2026-11-11T12:00:00Z",
+          "value": 65.0,
+          "rawValue": "65.0"
+        },
+        {
+          "observedAt": "2026-11-11T13:00:00Z",
+          "value": 79.0,
+          "rawValue": "79.0"
+        },
+        {
+          "observedAt": "2026-11-11T14:00:00Z",
+          "value": 91.0,
+          "rawValue": "91.0"
+        },
+        {
+          "observedAt": "2026-11-11T15:00:00Z",
+          "value": 105.0,
+          "rawValue": "105.0"
+        },
+        {
+          "observedAt": "2026-11-11T16:00:00Z",
+          "value": 132.0,
+          "rawValue": "132.0"
+        },
+        {
+          "observedAt": "2026-11-11T17:00:00Z",
+          "value": 156.0,
+          "rawValue": "156.0"
+        },
+        {
+          "observedAt": "2026-11-11T18:00:00Z",
+          "value": 176.0,
+          "rawValue": "176.0"
+        },
+        {
+          "observedAt": "2026-11-11T19:00:00Z",
+          "value": 197.0,
+          "rawValue": "197.0"
+        },
+        {
+          "observedAt": "2026-11-11T20:00:00Z",
+          "value": 197.0,
+          "rawValue": "197.0"
+        },
+        {
+          "observedAt": "2026-11-11T21:00:00Z",
+          "value": 211.0,
+          "rawValue": "211.0"
+        }
+      ]
+    },
+    {
+      "id": "132310:WATLEV",
+      "stationId": "132310",
+      "station": "Helsinki Kaivopuisto",
+      "latitude": 60.15363,
+      "longitude": 24.95622,
+      "parameter": "WATLEV",
+      "unit": "mm",
+      "label": "Water level (theoretical mean water)",
+      "parameterMetadata": "https://opendata.fmi.fi/meta?observableProperty=forecast&param=WATLEV&language=eng",
+      "sourceFile": "finnish-sea-level-observations.xml",
+      "sourceSha256": "0c69a3018735a790517ee528a10d4c428f14cc9fffb7f67a52042edde3b8655f",
+      "retrievedAt": "2026-11-13T04:50:48.754914+00:00",
+      "responseTime": "2026-11-13T04:50:49Z",
+      "resultTime": "2026-11-11T21:59:59Z",
+      "publicationTime": null,
+      "points": [
+        {
+          "observedAt": "2026-11-10T22:00:00Z",
+          "value": -69.0,
+          "rawValue": "-69.0"
+        },
+        {
+          "observedAt": "2026-11-10T23:00:00Z",
+          "value": -67.0,
+          "rawValue": "-67.0"
+        },
+        {
+          "observedAt": "2026-11-11T00:00:00Z",
+          "value": -73.0,
+          "rawValue": "-73.0"
+        },
+        {
+          "observedAt": "2026-11-11T01:00:00Z",
+          "value": -67.0,
+          "rawValue": "-67.0"
+        },
+        {
+          "observedAt": "2026-11-11T02:00:00Z",
+          "value": -70.0,
+          "rawValue": "-70.0"
+        },
+        {
+          "observedAt": "2026-11-11T03:00:00Z",
+          "value": -60.0,
+          "rawValue": "-60.0"
+        },
+        {
+          "observedAt": "2026-11-11T04:00:00Z",
+          "value": -58.0,
+          "rawValue": "-58.0"
+        },
+        {
+          "observedAt": "2026-11-11T05:00:00Z",
+          "value": -70.0,
+          "rawValue": "-70.0"
+        },
+        {
+          "observedAt": "2026-11-11T06:00:00Z",
+          "value": -82.0,
+          "rawValue": "-82.0"
+        },
+        {
+          "observedAt": "2026-11-11T07:00:00Z",
+          "value": -94.0,
+          "rawValue": "-94.0"
+        },
+        {
+          "observedAt": "2026-11-11T08:00:00Z",
+          "value": -107.0,
+          "rawValue": "-107.0"
+        },
+        {
+          "observedAt": "2026-11-11T09:00:00Z",
+          "value": -130.0,
+          "rawValue": "-130.0"
+        },
+        {
+          "observedAt": "2026-11-11T10:00:00Z",
+          "value": -135.0,
+          "rawValue": "-135.0"
+        },
+        {
+          "observedAt": "2026-11-11T11:00:00Z",
+          "value": -139.0,
+          "rawValue": "-139.0"
+        },
+        {
+          "observedAt": "2026-11-11T12:00:00Z",
+          "value": -146.0,
+          "rawValue": "-146.0"
+        },
+        {
+          "observedAt": "2026-11-11T13:00:00Z",
+          "value": -132.0,
+          "rawValue": "-132.0"
+        },
+        {
+          "observedAt": "2026-11-11T14:00:00Z",
+          "value": -120.0,
+          "rawValue": "-120.0"
+        },
+        {
+          "observedAt": "2026-11-11T15:00:00Z",
+          "value": -106.0,
+          "rawValue": "-106.0"
+        },
+        {
+          "observedAt": "2026-11-11T16:00:00Z",
+          "value": -79.0,
+          "rawValue": "-79.0"
+        },
+        {
+          "observedAt": "2026-11-11T17:00:00Z",
+          "value": -55.0,
+          "rawValue": "-55.0"
+        },
+        {
+          "observedAt": "2026-11-11T18:00:00Z",
+          "value": -35.0,
+          "rawValue": "-35.0"
+        },
+        {
+          "observedAt": "2026-11-11T19:00:00Z",
+          "value": -14.0,
+          "rawValue": "-14.0"
+        },
+        {
+          "observedAt": "2026-11-11T20:00:00Z",
+          "value": -14.0,
+          "rawValue": "-14.0"
+        },
+        {
+          "observedAt": "2026-11-11T21:00:00Z",
+          "value": 0.0,
+          "rawValue": "0.0"
+        }
+      ]
+    }
+  ]
+}
