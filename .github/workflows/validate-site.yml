@@ -39,8 +39,10 @@ jobs:
           node --test scripts/coastal_identity.test.mjs
           node --test scripts/coastal_haxr.test.mjs scripts/coastal_haxr_motion.test.mjs
           python3 scripts/check_coastal_sources.py
+          python3 scripts/build_coastal_archives.py --check
           python3 scripts/monitor_coastal_sources.test.py
           node --test scripts/coastal_sources.test.mjs
+          node --test scripts/coastal_archives.test.mjs
           node --test scripts/field_power.test.mjs
           node --test scripts/maintenance_acceptance.test.mjs
           python3 scripts/maintenance/contracts_test.py
@@ -85,6 +87,9 @@ jobs:
           node --check docs/assets/field-power-scene.mjs
           node --check scripts/audit_field_power.mjs
           node --check docs/assets/coastal-replay.mjs
+          node --check docs/assets/coastal-archives.mjs
+          node --check docs/assets/coastal-archives-model.mjs
+          node --check scripts/audit_coastal_archives.mjs
           node --check docs/assets/coastal-replay-model.mjs
           node --check scripts/audit_coastal_replay.mjs
           node --check scripts/audit_coastal_transport.mjs

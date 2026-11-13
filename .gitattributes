@@ -31,3 +31,6 @@ docs/assets/audio/*.json -text
 # Their original line endings and publisher whitespace are evidence, not formatting.
 docs/data/coastal-sources/** -text -whitespace
 docs/design/coastal-source-notebook-provenance.json text eol=lf
+# Four additional archives: provider bytes, masks and derived rasters stay exact.
+docs/data/coastal-archives/** -text -whitespace
+docs/design/coastal-archives-provenance.json text eol=lf

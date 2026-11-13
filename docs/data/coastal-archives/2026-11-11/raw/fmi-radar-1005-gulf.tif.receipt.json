@@ -1,0 +1,16 @@
+{
+  "url": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A05%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+  "requestedAt": "2026-11-13T16:14:56.905116+00:00",
+  "file": "fmi-radar-1005-gulf.tif",
+  "status": 200,
+  "finalUrl": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A05%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+  "serverDate": "Fri, 13 Nov 2026 16:14:57 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "image/geotiff",
+  "contentRange": null,
+  "completedAt": "2026-11-13T16:14:57.322740+00:00",
+  "bytes": 440484,
+  "sha256": "3a74c48a859ae490cc5500af1c5b9ba5ce70c0760ae63277a3c19740da8ec8fb",
+  "wireSha256": "bef71fb9a4e4176d390ed2e993b376dffba2b6f8db80b73c0e46e8e1ccb7ea10"
+}

@@ -12,7 +12,8 @@ try{
     await page.addInitScript(t=>localStorage.setItem('moth-and-gravel-theme',t),theme);
     await page.goto(origin+'/specimens/coastal-watch/source-notebook/');
     await page.locator('#cs-workbench').waitFor({state:'visible'});
-    assert.equal(await page.locator('#cs-observed').textContent(),'2026-11-10T22:00:00Z');
+    await page.locator('#ca-desk').waitFor({state:'visible'});
+    assert.equal(await page.locator('#cs-observed').textContent(),'2026-11-11T10:00:00Z');
     assert.equal(await page.locator('audio,video').count(),0);
     await page.locator('#cs-try-gap').click();
     assert.equal(await page.locator('#cs-count').textContent(),'5/24');

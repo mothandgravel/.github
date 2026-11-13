@@ -1,0 +1,16 @@
+{
+  "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi%3A%3Aradar%3A%3Acomposite%3A%3Adbz&starttime=2026-11-11T10%3A00%3A00Z&endtime=2026-11-11T10%3A15%3A00Z",
+  "requestedAt": "2026-11-13T16:13:53.335326+00:00",
+  "file": "fmi-weather-radar-2026-11-11.xml",
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi%3A%3Aradar%3A%3Acomposite%3A%3Adbz&starttime=2026-11-11T10%3A00%3A00Z&endtime=2026-11-11T10%3A15%3A00Z",
+  "serverDate": "Fri, 13 Nov 2026 16:13:53 GMT",
+  "lastModified": "Fri, 13 Nov 2026 16:13:53 GMT",
+  "etag": null,
+  "contentType": "text/xml; charset=UTF-8",
+  "contentRange": null,
+  "completedAt": "2026-11-13T16:13:53.724618+00:00",
+  "bytes": 30707,
+  "sha256": "aac422bde54f58d5eecd9cb273f7f5949068408a2c1315e29b9e50a4e9ae7cec",
+  "wireSha256": "57c93c47bc500e44085042b047bc1fdbbd8054baafeaf3b3b92f230bd1255c7e"
+}
