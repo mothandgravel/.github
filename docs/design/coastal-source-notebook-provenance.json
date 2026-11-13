@@ -21,6 +21,8 @@
     "2026-11-13T04:55:04.841521+00:00",
     "2026-11-13T04:55:05.446922+00:00"
   ],
+  "retrievalClock": "The original capture script recorded its timestamp at request start. Download completion was not recorded. This is not a station receiver clock.",
+  "missingMetadata": "Absent optical cloud-cover attributes remain null; no cloud statistics are inferred for radar products.",
   "claims": "Environmental station context and archive availability. Not an incident reconstruction, military track, radar association or operationally validated tool.",
   "coastline": {
     "file": "assets/coastal-replay-land.json",
@@ -41,8 +43,8 @@
     },
     {
       "path": "data/coastal-sources/2026-11-11/manifest.json",
-      "bytes": 33396,
-      "sha256": "49c5ef968909cdad73172b79877e8addd9691db951adebd06ce918fb95c22f69"
+      "bytes": 33568,
+      "sha256": "52133887dd3e9d24a48e6238f0feaeabd10ad7bd9f85a8d7ba86b65d1b140545"
     },
     {
       "path": "data/coastal-sources/2026-11-11/raw/danish-november-archive-list.xml",

@@ -3,6 +3,7 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 
@@ -41,10 +42,18 @@ def build(source):
     def dump(name,value):
         (out/name).write_text(json.dumps(value,ensure_ascii=False,indent=2,allow_nan=False)+'\n',encoding='utf-8',newline='\n')
     dump('selected.json',{k:v for k,v in bundle.items() if k!='series'} | {'series':selected})
+    catalogues=json.loads(json.dumps(research['catalogues']))
+    for catalogue in catalogues:
+        features=json.loads((source/catalogue['file']).read_text(encoding='utf-8'))['features']
+        clouds=[f['properties'].get('eo:cloud_cover') for f in features]
+        clouds=[v for v in clouds if isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v)]
+        catalogue['cloudMin']=min(clouds) if clouds else None
+        catalogue['cloudMax']=max(clouds) if clouds else None
     manifest={
         'schema':'mg.coastal-sources.v1','dateLocal':bundle['dateLocal'],'timezone':bundle['timezone'],
         'windowStartUtc':bundle['windowStartUtc'],'windowEndUtcExclusive':bundle['windowEndUtcExclusive'],
-        'counts':research['counts'],'receipts':receipts,'catalogues':research['catalogues'],
+        'counts':research['counts'],'receipts':receipts,'catalogues':catalogues,
+        'retrievalClock':'The original capture script recorded its timestamp at request start. Download completion was not recorded. This is not a station receiver clock.',
         'danishArchive':research['danishArchive'],'seismology':research['seismology'],
         'aisProbe':{'requestedDayFixes':0,'controlDate':'2026-11-13','controlFixes':1,
                     'datedResponse':'raw/mystar-requested-day.json','datedReceipt':'raw/mystar-requested-day.json.receipt.json',
@@ -64,6 +73,8 @@ def build(source):
         'source':'Finnish Meteorological Institute / Copernicus Data Space / public archive metadata',
         'dataDirectory':'data/coastal-sources/2026-11-11/','transformation':'Saved provider payloads; FMI WaterML pairs normalized to JSON and CSV. Seven channels selected for display. No interpolation or zero filling. Source timestamps retained.',
         'originalReceiptTimes':[receipts[n]['retrievedAt'] for n in sorted(receipts)],
+        'retrievalClock':manifest['retrievalClock'],
+        'missingMetadata':'Absent optical cloud-cover attributes remain null; no cloud statistics are inferred for radar products.',
         'claims':'Environmental station context and archive availability. Not an incident reconstruction, military track, radar association or operationally validated tool.',
         'coastline':{'file':'assets/coastal-replay-land.json','source':'Natural Earth 1:10m land','license':'Public domain','meaning':'Context map, not a nautical chart. Station coordinates come from FMI.'},
         'files':inventory,

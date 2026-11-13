@@ -225,8 +225,8 @@
       "file": "sentinel-1-grd-day-catalogue.json",
       "products": 9,
       "datatakes": 3,
-      "cloudMin": 100,
-      "cloudMax": 0,
+      "cloudMin": null,
+      "cloudMax": null,
       "productsMetadata": [
         {
           "id": "S1D_IW_GRDH_1SDV_20261111T161250_20261111T161315_005422_00A58C_EF9D_COG",
@@ -552,6 +552,7 @@
       ]
     }
   ],
+  "retrievalClock": "The original capture script recorded its timestamp at request start. Download completion was not recorded. This is not a station receiver clock.",
   "danishArchive": {
     "listingFile": "danish-november-archive-list.xml",
     "latestListedDate": "2026-11-10",

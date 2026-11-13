@@ -31,7 +31,8 @@ try{
     await page.locator('.cs-receipt summary').click();
     const receipt=JSON.parse(await page.locator('#cs-receipt-json').textContent());
     assert.equal(receipt.originalReceiverTime,null);assert.equal(receipt.firstPublication,null);
-    assert.equal(receipt.unit,'mm');assert.match(receipt.retrievedAt,/^2026-11-13/);
+    assert.equal(receipt.unit,'mm');assert.match(receipt.requestStartedAt,/^2026-11-13/);
+    assert.equal(receipt.downloadCompletedAt,null);assert.match(receipt.retrievalTimeMeaning,/request start/);
     for(const id of ['cs-raw-link','cs-http-link','cs-parameter-link']){
       const response=await page.request.get(await page.locator('#'+id).getAttribute('href'));assert.equal(response.status(),200);
     }

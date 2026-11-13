@@ -62,4 +62,8 @@ for s in selected['series']:
 assert manifest['danishArchive']['studyDateListed'] is False
 assert manifest['danishArchive']['latestListedDate']=='2026-11-10'
 assert [c['products'] for c in manifest['catalogues']]==[9,17]
+assert manifest['catalogues'][0]['cloudMin'] is None and manifest['catalogues'][0]['cloudMax'] is None
+optical=json.loads((DATA/'raw/sentinel-2-l2a-day-catalogue.json').read_text(encoding='utf-8'))
+clouds=[f['properties']['eo:cloud_cover'] for f in optical['features']]
+assert manifest['catalogues'][1]['cloudMin']==min(clouds) and manifest['catalogues'][1]['cloudMax']==max(clouds)
 print('Coastal sources: all 2,400 pairs and CSV rows exact; 525 nulls, 20 zeros preserved; 7 verified-unit channels; all file hashes match.')
