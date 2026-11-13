@@ -15,11 +15,16 @@ try {
     await page.locator('#ca-desk').waitFor({state: 'visible'});
     assert.equal(await page.locator('audio,video').count(), 0);
     assert.equal(await page.locator('#ca-local').textContent(), '12:00');
+    const axis = await page.locator('#ca-minute').boundingBox(), noon = await page.locator('.ca-ticks>span').nth(2).boundingBox();
+    assert.ok(Math.abs(noon.x + noon.width / 2 - axis.x - axis.width / 2) < 2, 'Noon label aligns with range');
+    const ribbonX = await page.locator('#ca-radar-ribbon .ca-ribbon-cursor').evaluate(el => el.getBoundingClientRect().x);
+    assert.ok(Math.abs(ribbonX - axis.x - axis.width / 2) < 2, 'Ribbon and browse axis align');
     assert.match(await page.locator('#ca-receipt-clock').textContent(), /2026-11-11T10:00:00Z/);
     await page.locator('#ca-minute').focus(); await page.keyboard.press('ArrowLeft');
     assert.equal(await page.locator('#ca-local').textContent(), '11:59');
     assert.equal(await page.locator('#ca-radar-empty').isVisible(), true);
     assert.equal(await page.locator('#ca-weather-map image').getAttribute('visibility'), 'hidden');
+    assert.equal(await page.locator('#ca-weather-map').getAttribute('aria-busy'), 'false');
     assert.equal(await page.locator('#ca-original').isVisible(), false);
     await page.locator('#ca-find-radar').click();
     assert.equal(await page.locator('.ca-scan[aria-pressed=true]').evaluate(el => el === document.activeElement), true);
@@ -44,6 +49,7 @@ try {
     assert.match(await page.locator('#ca-pixel-value').textContent(), /0–1099/);
     await page.locator('#ca-pixel-x').fill('400');
     await page.locator('#ca-play').click();
+    assert.equal(await page.locator('#ca-pixel-value').getAttribute('aria-live'), 'off');
     await page.waitForFunction(() => /End of the preserved strip/.test(document.getElementById('ca-replay-status').textContent));
     assert.equal(await page.locator('#ca-play').getAttribute('aria-pressed'), 'false');
     assert.equal(await page.locator('#ca-local').textContent(), '12:15');
@@ -112,11 +118,14 @@ try {
   await page.route('**/coastal-archives/2026-11-11/notebook.json', route => notebookAvailable ? route.continue() : route.fulfill({status: 503, body: 'Test archive temporarily unavailable'}));
   await page.route('**/fmi-radar-1000-gulf.png', route => imageAvailable ? route.continue() : route.fulfill({status: 404, body: 'Test image unavailable'}));
   await page.route('**/fmi-radar-1000-gulf.bin', route => pixelsAvailable ? route.continue() : route.fulfill({status: 503, body: 'Test pixel file unavailable'}));
+  await page.route('**/fmi-radar-1005-gulf.bin', route => route.fulfill({status: 503, body: 'Test next-scan pixel file unavailable'}));
   await page.goto(origin + '/specimens/coastal-watch/source-notebook/#ca-study');
   await page.locator('#ca-retry').waitFor({state: 'visible'});
   assert.match(await page.locator('#ca-loading').textContent(), /could not open/);
   notebookAvailable = true; await page.locator('#ca-retry').click();
   await page.locator('#ca-radar-error').waitFor({state: 'visible'});
+  assert.equal(await page.locator('#ca-minute').evaluate(el => document.activeElement === el), true);
+  assert.equal(await page.locator('.ca-scan[data-preview-error=true]').count(), 1);
   assert.match(await page.locator('#ca-radar-image-status').textContent(), /could not be opened/);
   assert.equal(await page.locator('#ca-weather-map image').getAttribute('visibility'), 'hidden');
   assert.match(await page.locator('#ca-receipt-clock').textContent(), /2026-11-11T10:00:00Z/);
@@ -128,6 +137,12 @@ try {
   assert.match(await page.locator('#ca-pixel-value').textContent(), /No cell value inferred/);
   pixelsAvailable = true; await page.locator('#ca-retry-pixel').click();
   await page.waitForFunction(() => /Code/.test(document.getElementById('ca-pixel-value').textContent));
+  assert.equal(await page.locator('#ca-pixel-x').evaluate(el => document.activeElement === el), true);
+  await page.locator('.ca-scan').nth(1).click();
+  await page.locator('#ca-retry-pixel').waitFor({state: 'visible'});
+  await page.locator('.ca-scan').nth(0).click();
+  await page.waitForFunction(() => /10:00 UTC.*cell centre/.test(document.getElementById('ca-pixel-value').textContent));
+  assert.equal(await page.locator('#ca-retry-pixel').isVisible(), false);
   await page.locator('#ca-receipt-details summary').click();
   await page.addScriptTag({content: axe.source});
   for (const state of ['details-open', 'empty-radar', 'before-first-report']) {
@@ -138,5 +153,10 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, state);
   }
   await writeFile(`${out}/failure-recovery.json`, JSON.stringify({notebookRetry: true, imageFailureDistinctFromMask: true, pixelRetry: true, absentStatesAndOpenDetailsWcag: true}, null, 2));
+  await page.setViewportSize({width: 844, height: 390});
+  assert.equal(await page.locator('.ca-clockbar').evaluate(el => getComputedStyle(el).position), 'static');
+  await page.locator('[data-view=reports]').click(); await page.locator('#ca-report-next').click();
+  assert.equal(await page.locator('#ca-report-next').evaluate(el => document.activeElement === el), true);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await page.close(); console.log('Four archives: failed notebook/image/pixel downloads recover without fabricated values; absent states and open receipts pass WCAG');
 } finally { await browser.close(); }

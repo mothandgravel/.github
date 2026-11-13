@@ -69,7 +69,7 @@ test('provider-masked radar zero has no physical reflectivity value', () => {
 test('METAR reading preserves bounds, variable winds, gusts and negative temperatures', () => {
   const decoded = reportFields('EETN 111020Z VRB05G12KT 9999 BKN020 M02/M04 Q1007');
   assert.equal(decoded.visibility, '≥10 km');
-  assert.equal(decoded.wind, 'Variable / 5 kt · gust 12');
+  assert.equal(decoded.wind, 'Variable / 5 kt · gust 12 kt');
   assert.equal(decoded.temperature, '-2 °C');
   assert.equal(decoded.pressure, '1007 hPa');
   assert.equal(decoded.clouds, 'BKN020');

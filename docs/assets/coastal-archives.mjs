@@ -22,7 +22,7 @@ async function json(url) {
   if (!r.ok) throw Error(`Archive HTTP ${r.status}`);
   return r.json();
 }
-let data, mapImage, inspection, timer = null, pixelRequest = 0, imageRequest = 0, resizeRequest;
+let data, mapImage, inspection, timer = null, pixelRequest = 0, imageRequest = 0, resizeRequest, lastPixelKey = null;
 const pixelCache = new Map(), imageCache = new Map(), cards = new Map();
 const currentUtc = () => utcAtMinute(state.minute);
 const currentGauge = () => data.gauges.find(s => s.stationCode === state.station && s.parameter === state.parameter);
@@ -55,15 +55,16 @@ function buildMap(land) {
   target.replaceChildren(svg('title', {id: 'ca-weather-title'}, 'Saved Gulf of Finland weather-radar frame'), svg('desc', {id: 'ca-weather-desc'}, 'A geographic crop of weather reflectivity. Masked cells are not evidence of dry weather.'));
   const defs = svg('defs'), pattern = svg('pattern', {id: 'ca-mask', width: 9, height: 9, patternUnits: 'userSpaceOnUse'});
   pattern.append(svg('path', {d: 'M-1 1L1 -1M0 9L9 0M8 10L10 8', stroke: 'currentColor', 'stroke-width': .6, opacity: .12}));
-  defs.append(pattern); target.append(defs, svg('rect', {width: 1100, height: 400, fill: 'url(#ca-mask)'}));
+  defs.append(pattern); target.append(defs, svg('rect', {width: 1100, height: 400, fill: 'var(--cs-water)'}));
   const paths = land?.polygons.map(poly => poly.map(ring => ring.map(([lon, lat], i) => `${i ? 'L' : 'M'}${x(lon).toFixed(2)} ${y(lat).toFixed(2)}`).join(' ') + 'Z').join(' ')) ?? [];
   for (const d of paths) target.append(svg('path', {d, class: 'ca-map-land'}));
+  target.append(svg('rect', {width: 1100, height: 400, fill: 'url(#ca-mask)'}));
   mapImage = svg('image', {x: 0, y: 0, width: 1100, height: 400, preserveAspectRatio: 'none'}); target.append(mapImage);
   for (const d of paths) target.append(svg('path', {d, class: 'ca-map-coast'}));
   for (const lon of [24, 25, 26, 27, 28]) target.append(svg('line', {x1: x(lon), x2: x(lon), y1: 0, y2: 400, class: 'ca-map-grid'}), svg('text', {x: x(lon) + 5, y: 390, class: 'ca-map-note'}, lon + '°E'));
   for (const lat of [59.5, 60, 60.5]) target.append(svg('line', {x1: 0, x2: 1100, y1: y(lat), y2: y(lat), class: 'ca-map-grid'}));
   for (const [name, lon, lat] of [['HELSINKI', 24.94, 60.17], ['TALLINN', 24.75, 59.44]]) target.append(svg('circle', {cx: x(lon), cy: y(lat), r: 4, class: 'ca-map-spot'}), svg('text', {x: x(lon) + 12, y: y(lat) - 10, class: 'ca-map-label'}, name));
-  target.append(svg('text', {x: 720, y: 235, class: 'ca-map-label'}, 'GULF OF FINLAND'), svg('text', {x: 18, y: 23, class: 'ca-map-note'}, land ? 'EPSG:4326 / CONTEXT COASTLINE · NATURAL EARTH' : 'EPSG:4326 / COASTLINE UNAVAILABLE'));
+  target.append(svg('text', {x: 650, y: 235, class: 'ca-map-label', 'text-anchor': 'middle'}, 'GULF OF FINLAND'), svg('text', {x: 18, y: 23, class: 'ca-map-note ca-map-context'}, land ? 'EPSG:4326 / CONTEXT COASTLINE · NATURAL EARTH' : 'EPSG:4326 / COASTLINE UNAVAILABLE'));
   if (!land) text('ca-weather-desc', 'Saved weather-radar crop. The contextual coastline could not be loaded. Coordinates remain EPSG:4326.');
 }
 
@@ -93,12 +94,19 @@ function renderRadar() {
     text('ca-weather-title', `Weather-radar reflectivity / ${frame.observedAt}`);
     showRadarImage(frame);
   } else text('ca-weather-title', 'No preserved weather-radar frame at browse time');
-  if (!frame) { ++imageRequest; text('ca-radar-image-status', 'No selected scan image.'); }
+  if (!frame) { ++imageRequest; $('ca-weather-map').setAttribute('aria-busy', 'false'); text('ca-radar-image-status', 'No selected scan image.'); }
   text('ca-radar-clock', frame ? `SCAN ${clock(frame.observedAt)} UTC / ${clock(frame.observedAt, 'Europe/Helsinki')} EET\n${state.minute - minuteAtUtc(frame.observedAt)} min before browse time · station receipt unknown` : 'NO FRAME SELECTED / OUTSIDE THE CAPTURE');
   const index = data.frames.indexOf(frame);
   setDisabled('ca-step-back', index <= 0); setDisabled('ca-step-next', index < 0 || index === data.frames.length - 1);
   for (const b of $('ca-frames').children) b.setAttribute('aria-pressed', String(b.dataset.frame === frame?.id));
-  if (document.querySelector('.ca-pixel-details').open) inspectPixel();
+  if (document.querySelector('.ca-pixel-details').open) inspectPixel(false);
+  mapTypography();
+}
+
+function mapTypography() {
+  const width = $('ca-weather-map').getBoundingClientRect().width;
+  if (!width) return;
+  for (const node of $('ca-weather-map').querySelectorAll('text')) node.style.fontSize = `${11 * 1100 / width}px`;
 }
 
 async function showRadarImage(frame) {
@@ -126,13 +134,17 @@ async function showRadarImage(frame) {
   } finally { if (serial === imageRequest) $('ca-weather-map').setAttribute('aria-busy', 'false'); }
 }
 
-async function inspectPixel() {
+async function inspectPixel(announce = true) {
   const restoreFocus = document.activeElement === $('ca-retry-pixel');
   const serial = ++pixelRequest, frame = frameAt(data.frames, currentUtc());
+  $('ca-pixel-value').setAttribute('aria-live', announce === false ? 'off' : 'polite');
   $('ca-retry-pixel').hidden = true;
-  if (!frame) { text('ca-pixel-value', 'No selected frame. No cell value inferred.'); return; }
+  if (!frame) { lastPixelKey = null; text('ca-pixel-value', 'No selected frame. No cell value inferred.'); return; }
   const x = $('ca-pixel-x').valueAsNumber, y = $('ca-pixel-y').valueAsNumber;
-  if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || x > 1099 || y < 0 || y > 399) { text('ca-pixel-value', 'Choose a whole column 0–1099 and row 0–399.'); return; }
+  if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || x > 1099 || y < 0 || y > 399) { lastPixelKey = null; text('ca-pixel-value', 'Choose a whole column 0–1099 and row 0–399.'); return; }
+  const key = `${frame.id}:${x}:${y}`;
+  if (announce === false && key === lastPixelKey) return;
+  lastPixelKey = null;
   text('ca-pixel-value', 'Opening the preserved pixel codes…');
   try {
     if (!pixelCache.has(frame.id)) pixelCache.set(frame.id, fetch(new URL(frame.pixels, root)).then(async r => { if (!r.ok) throw Error('Pixel download failed'); const bytes = new Uint8Array(await r.arrayBuffer()); if (bytes.length !== 440000) throw Error('Pixel length differs'); return bytes; }).catch(error => { pixelCache.delete(frame.id); throw error; }));
@@ -140,6 +152,7 @@ async function inspectPixel() {
     if (serial !== pixelRequest || state.view !== 'radar') return;
     const code = pixels[y * 1100 + x], value = radarValue(code), lon = 23 + (x + .5) * .005, lat = 61 - (y + .5) * .005;
     text('ca-pixel-value', `${clock(frame.observedAt)} UTC · cell centre ${lon.toFixed(4)}° E, ${lat.toFixed(4)}° N\n${value === null ? 'Code 0 / provider no-data. Physical value unknown.' : `Code ${code} × 0.5 − 32 = ${value} dBZ`}`);
+    lastPixelKey = key;
     if (restoreFocus) $('ca-pixel-x').focus({preventScroll: true});
   } catch { if (serial === pixelRequest) { text('ca-pixel-value', 'Pixel codes could not be opened. No cell value inferred. Keep the original GeoTIFF below.'); $('ca-retry-pixel').hidden = false; if (restoreFocus) $('ca-retry-pixel').focus(); } }
 }
@@ -276,7 +289,7 @@ async function start() {
     const land = await json(new URL('./coastal-replay-land.json', import.meta.url)).catch(() => null);
     for (const id of ['ca-frames', 'ca-gauge-cards', 'ca-image-plates']) $(id).replaceChildren(); cards.clear();
     buildMap(land); buildFrames(); buildGauges(); buildImages(); reportOptions();
-    for (const b of document.querySelectorAll('[data-view]')) b.onclick = () => { if (timer !== null) stopReplay('Stepping paused.'); state.view = b.dataset.view; ++pixelRequest; ++imageRequest; if (state.view === 'radar') text('ca-replay-status', `${data.frames.length} saved scans. Choose a frame or step through the strip.`); render(true); };
+    for (const b of document.querySelectorAll('[data-view]')) b.onclick = () => { if (timer !== null) stopReplay('Stepping paused.'); state.view = b.dataset.view; ++pixelRequest; ++imageRequest; $('ca-weather-map').setAttribute('aria-busy', 'false'); if (state.view === 'radar') text('ca-replay-status', `${data.frames.length} saved scans. Choose a frame or step through the strip.`); render(true); };
     $('ca-minute').addEventListener('input', () => setMinute(Number($('ca-minute').value)));
     $('ca-minute').addEventListener('change', () => render(true));
     $('ca-parameter').addEventListener('change', () => { state.parameter = $('ca-parameter').value; render(true); });
@@ -296,8 +309,8 @@ async function start() {
     $('ca-retry-pixel').addEventListener('click', inspectPixel);
     document.addEventListener('visibilitychange', () => { if (document.hidden) stopReplay('Stepping stopped while the page was away.'); });
     window.addEventListener('pagehide', () => stopReplay());
-    window.addEventListener('resize', () => { cancelAnimationFrame(resizeRequest); resizeRequest = requestAnimationFrame(() => { if (state.view === 'gauges') renderGauges(); }); });
-    document.addEventListener('coastal-fmi-hour', e => { if (Number.isFinite(Date.parse(e.detail.utc))) setMinute(minuteAtUtc(e.detail.utc)); });
+    window.addEventListener('resize', () => { cancelAnimationFrame(resizeRequest); resizeRequest = requestAnimationFrame(() => { if (state.view === 'gauges') renderGauges(); if (state.view === 'radar') mapTypography(); }); });
+    document.addEventListener('coastal-fmi-hour', e => { const minute = minuteAtUtc(e.detail.utc); if (Number.isInteger(minute) && minute >= 0 && minute <= 1439) setMinute(minute); });
     $('ca-export').addEventListener('click', () => { const url = URL.createObjectURL(new Blob([JSON.stringify(inspection, null, 2) + '\n'], {type: 'application/json'})); const a = element('a'); a.href = url; a.download = `coastal-watch-${state.view}-2026-11-11.json`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); });
     $('ca-desk').hidden = false; $('ca-loading').hidden = true; setMinute(state.minute);
     if (restoreFocus) $('ca-minute').focus();

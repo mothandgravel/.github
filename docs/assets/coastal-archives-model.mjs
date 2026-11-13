@@ -67,7 +67,7 @@ export function reportFields(raw) {
   const pressure = raw.match(/\bQ(\d{4})\b/), visibility = raw.match(/(?:^|\s)(\d{4})(?=\s|$)/);
   const signed = token => Number(token.replace('M', '-'));
   return {
-    wind: wind ? `${wind[1] === 'VRB' ? 'Variable' : wind[1] + '°'} / ${Number(wind[2])} ${wind[4] === 'KT' ? 'kt' : 'm/s'}${wind[3] ? ' · gust ' + Number(wind[3]) : ''}` : 'Not decoded',
+    wind: wind ? `${wind[1] === 'VRB' ? 'Variable' : wind[1] + '°'} / ${Number(wind[2])} ${wind[4] === 'KT' ? 'kt' : 'm/s'}${wind[3] ? ' · gust ' + Number(wind[3]) + ' ' + (wind[4] === 'KT' ? 'kt' : 'm/s') : ''}` : 'Not decoded',
     temperature: temperature ? `${signed(temperature[1])} °C` : 'Not decoded',
     pressure: pressure ? `${Number(pressure[1])} hPa` : 'Not decoded',
     visibility: /\bCAVOK\b/.test(raw) ? 'CAVOK · ≥10 km' : visibility ? visibility[1] === '9999' ? '≥10 km' : `${Number(visibility[1])} m` : 'Not decoded',
