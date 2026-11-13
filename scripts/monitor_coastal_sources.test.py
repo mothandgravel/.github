@@ -1,13 +1,51 @@
 """A new HTTP response is not necessarily new evidence."""
 import json
+from contextlib import redirect_stdout
+from io import BytesIO,StringIO
 from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
+from urllib.error import HTTPError
 import xml.etree.ElementTree as ET
+import monitor_coastal_sources as monitor
 from monitor_coastal_sources import meaning,semantic_hash
 
 DATA=Path(__file__).resolve().parents[1]/'docs/data/coastal-sources/2026-11-11/raw'
 
 class SourceChanges(unittest.TestCase):
+    def configuration(self,root,name,baseline=None):
+        data=root/'data';(data/'raw').mkdir(parents=True)
+        (data/'manifest.json').write_text(json.dumps({'receipts':{name:{'url':'https://example.test/source','status':200}}}))
+        if baseline is not None:(data/'raw'/name).write_bytes(baseline)
+        return data
+
+    def test_deadline_sends_no_requests(self):
+        with TemporaryDirectory() as temp,patch.object(monitor,'urlopen') as request,redirect_stdout(StringIO()):
+            result=monitor.check(Path(temp)/'unused','2000-01-01T00:00:00Z')
+            self.assertEqual(result['status'],'stopped');request.assert_not_called()
+
+    def test_304_without_a_baseline_is_unknown(self):
+        with TemporaryDirectory() as temp,redirect_stdout(StringIO()):
+            root=Path(temp);name='unknown-baseline.xml';data=self.configuration(root,name)
+            with patch.object(monitor,'DATA',data),patch.object(monitor,'NAMES',[name]),patch.object(monitor,'urlopen',side_effect=HTTPError('https://example.test/source',304,'Not modified',{},None)):
+                result=monitor.check(root/'updates','2999-01-01T00:00:00Z')
+            self.assertEqual(result['unknownOrFailed'],[name]);self.assertIsNone(result['records'][0]['changed'])
+
+    def test_change_remains_visible_against_the_published_packet(self):
+        original=(DATA/'harmaja-weather.xml').read_bytes();changed=ET.fromstring(original)
+        changed.find('.//{http://www.opengis.net/waterml/2.0}value').text='0.0'
+        payload=ET.tostring(changed)
+        class Response(BytesIO):
+            status=200;url='https://example.test/source';headers={}
+        with TemporaryDirectory() as temp,redirect_stdout(StringIO()):
+            root=Path(temp);name='harmaja-weather.xml';data=self.configuration(root,name,original)
+            with patch.object(monitor,'DATA',data),patch.object(monitor,'NAMES',[name]),patch.object(monitor,'urlopen',side_effect=lambda *a,**k:Response(payload)):
+                first=monitor.check(root/'updates','2999-01-01T00:00:00Z')
+                second=monitor.check(root/'updates','2999-01-01T00:00:00Z')
+            self.assertEqual(first['changed'],[name]);self.assertEqual(second['changed'],[])
+            self.assertEqual(first['differsFromPublished'],[name]);self.assertEqual(second['differsFromPublished'],[name])
+
     def test_response_clock_changes_do_not_change_measurements(self):
         original=(DATA/'harmaja-weather.xml').read_bytes();changed=ET.fromstring(original)
         changed.attrib['timeStamp']='2026-11-14T00:00:00Z'

@@ -1,4 +1,5 @@
 const finite = value => typeof value === 'number' && Number.isFinite(value);
+export const CHANNELS={wind:'100996:ws_10min',gust:'100996:wg_10min',visibility:'100996:vis',gulf:'134221:WaveHs',loviisa:'108495:WaveHs',level:'132310:WLEVN2K_PT1S_INSTANT',mean:'132310:WATLEV'};
 export function readSources(payload) {
   if (payload?.format !== 'mg.coastal-environment-archive.v1' || payload.timezone !== 'Europe/Helsinki') throw Error('Unrecognised source record');
   const start=Date.parse(payload.windowStartUtc),end=Date.parse(payload.windowEndUtcExclusive);
@@ -14,6 +15,7 @@ export function readSources(payload) {
       prior=t;
     }
   }
+  if(ids.size!==Object.keys(CHANNELS).length||Object.values(CHANNELS).some(id=>!ids.has(id))) throw Error('Unexpected channel set');
   return payload;
 }
 export function sampleAt(series, utc) {

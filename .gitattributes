@@ -27,3 +27,7 @@ docs/assets/audio/*.srt -text
 docs/assets/audio/*.vtt -text
 docs/assets/audio/*.txt -text
 docs/assets/audio/*.json -text
+# Saved provider payloads and derived exports are bound by SHA-256 receipts.
+# Their original line endings and publisher whitespace are evidence, not formatting.
+docs/data/coastal-sources/** -text -whitespace
+docs/design/coastal-source-notebook-provenance.json text eol=lf
