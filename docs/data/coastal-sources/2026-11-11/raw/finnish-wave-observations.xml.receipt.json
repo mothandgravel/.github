@@ -1,0 +1,14 @@
+{
+  "id": "finnish-wave-observations.xml",
+  "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&timestep=60",
+  "retrievedAt": "2026-11-13T04:50:48.754256+00:00",
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&timestep=60",
+  "contentType": "text/xml; charset=UTF-8",
+  "serverDate": "Fri, 13 Nov 2026 04:50:49 GMT",
+  "lastModified": "Fri, 13 Nov 2026 04:50:49 GMT",
+  "etag": null,
+  "bytes": 471151,
+  "sha256": "461f94c61ec636ac1e2550a806fb535d85d8d7d95f08ce0174be56a1fbab8696",
+  "file": "finnish-wave-observations.xml"
+}

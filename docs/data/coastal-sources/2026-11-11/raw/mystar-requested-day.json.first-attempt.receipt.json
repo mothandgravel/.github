@@ -1,0 +1,7 @@
+{
+  "id": "mystar-requested-day.json",
+  "url": "https://meri.digitraffic.fi/api/ais/v1/locations?mmsi=276859000&from=1794348000000&to=1794434399999",
+  "retrievedAt": "2026-11-13T04:53:57.985881+00:00",
+  "status": 406,
+  "error": "HTTP Error 406: Not Acceptable"
+}

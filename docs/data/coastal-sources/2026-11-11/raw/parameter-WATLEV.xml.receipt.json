@@ -1,0 +1,14 @@
+{
+  "id": "parameter-WATLEV.xml",
+  "url": "https://opendata.fmi.fi/meta?observableProperty=forecast&param=WATLEV&language=eng",
+  "retrievedAt": "2026-11-13T04:53:57.821772+00:00",
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/meta?observableProperty=forecast&param=WATLEV&language=eng",
+  "contentType": "text/xml; charset=UTF-8",
+  "serverDate": "Fri, 13 Nov 2026 04:53:57 GMT",
+  "lastModified": "Fri, 13 Nov 2026 04:53:57 GMT",
+  "etag": null,
+  "bytes": 580,
+  "sha256": "f8b34b9ea0773d631f285b809e47250e69fa771224c8fc6c5fc14fae0082c7b2",
+  "file": "parameter-WATLEV.xml"
+}

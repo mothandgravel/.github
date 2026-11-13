@@ -1,0 +1,14 @@
+{
+  "id": "seismo-calendar.html",
+  "url": "https://www.seismo.helsinki.fi/bulletin/list/norBull.html",
+  "retrievedAt": "2026-11-13T04:50:02.140801+00:00",
+  "status": 200,
+  "finalUrl": "https://www.seismo.helsinki.fi/bulletin/list/norBull.html",
+  "contentType": "text/html; charset=UTF-8",
+  "serverDate": "Fri, 13 Nov 2026 04:50:02 GMT",
+  "lastModified": "Thu, 12 Nov 2026 13:10:04 GMT",
+  "etag": "\"588d-6601407a69182\"",
+  "bytes": 22669,
+  "sha256": "0172b899b1812699dd7fdafc15a276052446722650fd90710b4fc7bcec110604",
+  "file": "seismo-calendar.html"
+}

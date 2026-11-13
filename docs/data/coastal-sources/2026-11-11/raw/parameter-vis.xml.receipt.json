@@ -1,0 +1,14 @@
+{
+  "id": "parameter-vis.xml",
+  "url": "https://opendata.fmi.fi/meta?observableProperty=observation&param=vis&language=eng",
+  "retrievedAt": "2026-11-13T04:53:57.805293+00:00",
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/meta?observableProperty=observation&param=vis&language=eng",
+  "contentType": "text/xml; charset=UTF-8",
+  "serverDate": "Fri, 13 Nov 2026 04:53:57 GMT",
+  "lastModified": "Fri, 13 Nov 2026 04:53:57 GMT",
+  "etag": null,
+  "bytes": 826,
+  "sha256": "008ec20eb56b3a4524c3378ebdeade134acc1cc1979dc5d562f445306e3e692b",
+  "file": "parameter-vis.xml"
+}

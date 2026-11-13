@@ -1,0 +1,195 @@
+{
+  "title": "The day, as recorded.",
+  "date": "2026-11-11",
+  "format": "mg.coastal-source-notebook.v1",
+  "source": "Finnish Meteorological Institute / Copernicus Data Space / public archive metadata",
+  "dataDirectory": "data/coastal-sources/2026-11-11/",
+  "transformation": "Saved provider payloads; FMI WaterML pairs normalized to JSON and CSV. Seven channels selected for display. No interpolation or zero filling. Source timestamps retained.",
+  "originalReceiptTimes": [
+    "2026-11-13T05:11:47.355334+00:00",
+    "2026-11-13T04:50:48.754914+00:00",
+    "2026-11-13T04:50:48.754256+00:00",
+    "2026-11-13T04:50:48.753584+00:00",
+    "2026-11-13T04:55:04.840575+00:00",
+    "2026-11-13T04:53:57.821772+00:00",
+    "2026-11-13T04:53:57.956720+00:00",
+    "2026-11-13T04:53:57.805690+00:00",
+    "2026-11-13T04:53:57.805293+00:00",
+    "2026-11-13T04:53:57.437645+00:00",
+    "2026-11-13T04:53:57.437148+00:00",
+    "2026-11-13T04:50:02.140801+00:00",
+    "2026-11-13T04:55:04.841521+00:00",
+    "2026-11-13T04:55:05.446922+00:00"
+  ],
+  "retrievalClock": "The original capture script recorded its timestamp at request start. Download completion was not recorded. This is not a station receiver clock.",
+  "missingMetadata": "Absent optical cloud-cover attributes remain null; no cloud statistics are inferred for radar products.",
+  "claims": "Environmental station context and archive availability. Not an incident reconstruction, military track, radar association or operationally validated tool.",
+  "coastline": {
+    "file": "assets/coastal-replay-land.json",
+    "source": "Natural Earth 1:10m land",
+    "license": "Public domain",
+    "meaning": "Context map, not a nautical chart. Station coordinates come from FMI."
+  },
+  "files": [
+    {
+      "path": "data/coastal-sources/2026-11-11/environment-observations.csv",
+      "bytes": 541419,
+      "sha256": "1d0a2730c776daa9afc12b44212cd8ef05aaba32e13bb1d3848f309c98993ceb"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/environment-observations.json",
+      "bytes": 381799,
+      "sha256": "facdf1aff60af06593cb7c42aa58954d2160899546f3222e400caf6f392652dd"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/manifest.json",
+      "bytes": 33568,
+      "sha256": "52133887dd3e9d24a48e6238f0feaeabd10ad7bd9f85a8d7ba86b65d1b140545"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/danish-november-archive-list.xml",
+      "bytes": 3378,
+      "sha256": "cd3a362091dfe87a5241f58d872ac2eaeb3e76670b8a583fe1d425d238025b80"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/danish-november-archive-list.xml.receipt.json",
+      "bytes": 761,
+      "sha256": "947466605ebf74906dd39f1ed65f8f3493338365caa8f3202eef3dc8717b4ad3"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/finnish-sea-level-observations.xml",
+      "bytes": 445976,
+      "sha256": "0c69a3018735a790517ee528a10d4c428f14cc9fffb7f67a52042edde3b8655f"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/finnish-sea-level-observations.xml.receipt.json",
+      "bytes": 919,
+      "sha256": "1c85b6c4f19f34c11165dae3c70cdbe39af6d36ea807a6abb4ebbc04c540fa71"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/finnish-wave-observations.xml",
+      "bytes": 471151,
+      "sha256": "461f94c61ec636ac1e2550a806fb535d85d8d7d95f08ce0174be56a1fbab8696"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/finnish-wave-observations.xml.receipt.json",
+      "bytes": 897,
+      "sha256": "f3e2dbcb047a92a39f36d2ae90eed5e74ad6d61081f570e40dfdd44315c084aa"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/harmaja-weather.xml",
+      "bytes": 142452,
+      "sha256": "35324d60139491f95dbbf4716432f90f1515e8838b4c210b0aee120f97920232"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/harmaja-weather.xml.receipt.json",
+      "bytes": 911,
+      "sha256": "742ca9a1adb01e5ec51f98d36c6246fbe9c8cb6c96886322625d502df41fda41"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/mystar-requested-day.json",
+      "bytes": 100,
+      "sha256": "18b296cfe5ef311511f415350d3c1f28458902fcc42eef5cc2f2ec828945881c"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/mystar-requested-day.json.first-attempt.receipt.json",
+      "bytes": 274,
+      "sha256": "d839e62c6d7f8c2d157e94f69820816a89434f83a72e334d713dd3cf02b20606"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/mystar-requested-day.json.receipt.json",
+      "bytes": 824,
+      "sha256": "b32d3d7c1719c136e0380577abdab0b98cba3919275a1c7eaf1c5114b25e489c"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-vis.xml",
+      "bytes": 826,
+      "sha256": "008ec20eb56b3a4524c3378ebdeade134acc1cc1979dc5d562f445306e3e692b"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-vis.xml.receipt.json",
+      "bytes": 598,
+      "sha256": "fd3727b4cfa4ac8fc39da7d550e245f1c7b4831bd0ac25871232761cbcce8475"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-WATLEV.xml",
+      "bytes": 580,
+      "sha256": "f8b34b9ea0773d631f285b809e47250e69fa771224c8fc6c5fc14fae0082c7b2"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-WATLEV.xml.receipt.json",
+      "bytes": 604,
+      "sha256": "965d872ff11fd1a3ecc7c998c15982a97722abdfa04b7d09c7c7d79bfe0e8db0"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-WaveHs.xml",
+      "bytes": 820,
+      "sha256": "93e4e524ee9a915057e5c646e95233b4d400652d6470165aec8be69f307a1bdb"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-WaveHs.xml.receipt.json",
+      "bytes": 610,
+      "sha256": "22bbfaa2ff36909d1dbc235fffcf7908516e99edc8b069f40f8c41c287f4e476"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-wg_10min.xml",
+      "bytes": 823,
+      "sha256": "5ef5ef7f5ce1fd585453396566e2782fb1200ee220376da2a5d23fa7cf0d1d96"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-wg_10min.xml.receipt.json",
+      "bytes": 618,
+      "sha256": "5a55eecfb48fd9b489624ab12aca9e8899b2107062c72bfbf00de33756f813f3"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-WLEVN2K_PT1S_INSTANT.xml",
+      "bytes": 602,
+      "sha256": "cb8acc67453d4aea26e59b64d7a0a517a043f717202584590c514f2951436183"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-WLEVN2K_PT1S_INSTANT.xml.receipt.json",
+      "bytes": 660,
+      "sha256": "a8667d1dabe417637f5c97d8baf3bd13c5c642ca6a7250b0e99813db523256cd"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-ws_10min.xml",
+      "bytes": 823,
+      "sha256": "e7d09cf16de0805818b50be04b6378e70b6bdd5427de0a59819018eba2146ea1"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/parameter-ws_10min.xml.receipt.json",
+      "bytes": 618,
+      "sha256": "e23f5ea4d13792f2d5f50ec2e11d4ac52df8f4ec32f249ef666c2d42e1e4192d"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/seismo-calendar.html.receipt.json",
+      "bytes": 577,
+      "sha256": "fb3a35cd8502974db34bcf0dfe48c06e1a3a752d1817846bbafc487f738da337"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/sentinel-1-grd-day-catalogue.json",
+      "bytes": 33631,
+      "sha256": "3486279e381bca35622fa45c1b9cab7a748a23356d451a7cc85aa8e15a569084"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/sentinel-1-grd-day-catalogue.json.receipt.json",
+      "bytes": 998,
+      "sha256": "7cd85d88b295b41656bb38aa8759b61f314e853eca7f6f1736554b07b01142d5"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/sentinel-2-l2a-day-catalogue.json",
+      "bytes": 66326,
+      "sha256": "2a93a1f75baf6527e6568241ec9e7cc37f609ebd4306011023ac85b7f04152bb"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/raw/sentinel-2-l2a-day-catalogue.json.receipt.json",
+      "bytes": 998,
+      "sha256": "edac194e4e0fa7038ce28960aab63357a2dad09e94403302fa698a380b69ac4e"
+    },
+    {
+      "path": "data/coastal-sources/2026-11-11/selected.json",
+      "bytes": 26452,
+      "sha256": "39351d800cb9fae7aa475a4be88faca76fc99340288797dfe43bfe6b08ccfd08"
+    }
+  ]
+}

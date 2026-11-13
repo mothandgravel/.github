@@ -1,0 +1,14 @@
+{
+  "id": "parameter-WaveHs.xml",
+  "url": "https://opendata.fmi.fi/meta?observableProperty=observation&param=WaveHs&language=eng",
+  "retrievedAt": "2026-11-13T04:53:57.805690+00:00",
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/meta?observableProperty=observation&param=WaveHs&language=eng",
+  "contentType": "text/xml; charset=UTF-8",
+  "serverDate": "Fri, 13 Nov 2026 04:53:57 GMT",
+  "lastModified": "Fri, 13 Nov 2026 04:53:57 GMT",
+  "etag": null,
+  "bytes": 820,
+  "sha256": "93e4e524ee9a915057e5c646e95233b4d400652d6470165aec8be69f307a1bdb",
+  "file": "parameter-WaveHs.xml"
+}

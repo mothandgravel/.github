@@ -40,7 +40,9 @@ class Wayfinding(unittest.TestCase):
     def test_collection_keeps_exhibits_and_rooms_distinct(self):
         items = json.loads((ROOT / 'assets/specimens.json').read_text())
         self.assertEqual(sum(bool(x.get('exhibit')) for x in items), 2)
-        self.assertEqual(sum(len(x.get('children', [])) for x in items), 5)
+        self.assertEqual(sum(len(x.get('children', [])) for x in items), 6)
+        coastal = next(x for x in items if x['id'] == '005')
+        self.assertIn('/specimens/coastal-watch/source-notebook/', [x['href'] for x in coastal['children']])
         self.assertEqual(len(items), 10)
 
     def test_thread_context_returns_each_piece_to_its_actual_stop(self):
