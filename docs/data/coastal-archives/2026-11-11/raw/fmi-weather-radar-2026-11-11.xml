@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection
+    timeStamp="2026-11-13T16:13:53Z"
+    numberMatched="4"
+    numberReturned="4"
+        xmlns:wfs="http://www.opengis.net/wfs/2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:om="http://www.opengis.net/om/2.0"
+    xmlns:omso="http://inspire.ec.europa.eu/schemas/omso/3.0"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:gmd="http://www.isotc211.org/2005/gmd"
+    xmlns:swe="http://www.opengis.net/swe/2.0"
+    xmlns:gmlcov="http://www.opengis.net/gmlcov/1.0"
+    xmlns:inspire="urn:x-inspire:specification:gmlas:BaseTypes:3.2"
+    xmlns:sam="http://www.opengis.net/sampling/2.0"
+    xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" 
+    xmlns:target="http://xml.fmi.fi/namespace/om/atmosphericfeatures/1.1"
+    xsi:schemaLocation="
+    http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd
+    http://www.opengis.net/gmlcov/1.0 http://schemas.opengis.net/gmlcov/1.0/gmlcovAll.xsd
+    http://www.opengis.net/sampling/2.0 http://schemas.opengis.net/sampling/2.0/samplingFeature.xsd
+    http://www.opengis.net/samplingSpatial/2.0 http://schemas.opengis.net/samplingSpatial/2.0/spatialSamplingFeature.xsd
+    http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd
+    http://inspire.ec.europa.eu/schemas/omso/3.0 https://inspire.ec.europa.eu/schemas/omso/3.0/SpecialisedObservations.xsd
+    http://www.isotc211.org/2005/gmd http://schemas.opengis.net/iso/19139/20070417/gmd/gmd.xsd
+    http://xml.fmi.fi/namespace/om/atmosphericfeatures/1.1 https://xml.fmi.fi/schema/om/atmosphericfeatures/1.1/atmosphericfeatures.xsd">
+
+    
+    <wfs:member>
+        <omso:GridSeriesObservation gml:id="WFS-MCtqYywz.k8qMHaSy..NKwFN6MSJTowumbbpdOuWHJh5OnWPft4b.enpldOsmL1CysWXPp3Wqv4VatgljhNbFv67smndnhb_GBy6BFt2vH.YAxSCwSiErWEEHNpkOy_cFSCD81XuJpKl5BMbHy51qRaFOO6dM2DZuxsu7Jaq_hVq2SGSEzNGXTn0dJyUSmZsw.cvLnXJz679um_kxer.Xryy5s2nc2OeXZlx9MuSdh25a9QmTBk2YsWLFiwYML.bbpXcsOTDyXaeWnmux79vDfz09Mq6HBoUJN.NJnX40mdVqTV3TTmbnPpv5ZcnHrl5eb.nJXpm26XTrlhyYeTp1j37eG_np6ZXTrJi9MrvpydNE6KowA--">
+
+	                <om:phenomenonTime>
+                <gml:TimeInstant gml:id="weather-0-phenomenon-time">
+                    <gml:timePosition>2026-11-11T10:00:00Z</gml:timePosition>
+                </gml:TimeInstant>                   
+            </om:phenomenonTime>            
+            <om:resultTime>
+                <gml:TimeInstant gml:id="result-time-0">
+                    <gml:timePosition>2026-11-11T10:00:00Z</gml:timePosition>
+                </gml:TimeInstant>        
+            </om:resultTime>                      
+
+            <om:procedure xlink:href="http://xml.fmi.fi/inspire/process/suomi_dbz_eureffin"/>
+	    
+
+
+
+
+            <om:parameter>
+	             <om:NamedValue>
+                        <om:name xlink:href="https://inspire.ec.europa.eu/codeList/ProcessParameterValue/value/radar/linearTransformationGain"/>
+                        <om:value>
+                                <gml:Measure uom="double">0.5</gml:Measure>
+                        </om:value>
+                     </om:NamedValue>
+                 </om:parameter>
+            <om:parameter>
+                     <om:NamedValue>
+                        <om:name xlink:href="https://inspire.ec.europa.eu/codeList/ProcessParameterValue/value/radar/linearTransformationOffset"/>
+                        <om:value>
+                                <gml:Measure uom="double">-32</gml:Measure>
+                        </om:value>
+                     </om:NamedValue>
+                 </om:parameter>
+
+	    <om:observedProperty xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz"/>
+	     <om:featureOfInterest>                
+                <sams:SF_SpatialSamplingFeature gml:id="sampling-feature-0">
+                    <sam:sampledFeature>
+                        <target:SurfaceWeatherTargetArea gml:id="sampled-feature-surface-0">
+                            <target:geometry>
+                                <gml:Polygon  gml:id="sampled-feature-surface-polygon-0" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2" axisLabels="Easting Northing">
+                                    <gml:exterior>
+                                        <gml:LinearRing>
+                                            <gml:coordinates>
+                                                -196593.004000 8084432.005000 1044176.941000 8084432.005000 1044176.941000 6255329.699000 -196593.004000 6255329.699000 -196593.004000 8084432.005000 
+                                            </gml:coordinates>
+                                        </gml:LinearRing>
+                                    </gml:exterior>
+                                </gml:Polygon>
+                            </target:geometry>
+
+                            <target:observableProperty xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz"/>
+                        </target:SurfaceWeatherTargetArea>                        
+                    </sam:sampledFeature>                                    
+                    <sams:shape>                        
+                        <gml:Polygon gml:id="sampling-feature-polygon-0" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2" axisLabels="Easting Northing">
+                            <gml:exterior>
+                                <gml:LinearRing>                                    
+                                    <gml:coordinates>
+                                        -196593.004000 8084432.005000 1044176.941000 8084432.005000 1044176.941000 6255329.699000 -196593.004000 6255329.699000 -196593.004000 8084432.005000 
+                                    </gml:coordinates>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>        
+                    </sams:shape>            
+                </sams:SF_SpatialSamplingFeature>
+            </om:featureOfInterest>
+           
+                        <om:result>        
+                <gmlcov:RectifiedGridCoverage gml:id="grid-coverage-0">
+                    <gml:domainSet>
+                        <gml:RectifiedGrid gml:id="grid-0" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" dimension="2">
+                            <gml:limits>
+                                <gml:GridEnvelope>
+                                    <gml:low>0 0</gml:low>
+					    <gml:high>4963 7316</gml:high>
+                                </gml:GridEnvelope>
+                            </gml:limits>                          
+                            <gml:axisLabels>Easting Northing</gml:axisLabels>
+                            <gml:origin>
+                                <gml:Point gml:id="origin-point-0" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2">
+                                   <!-- Upper right corner -->
+                                    <gml:pos>-196593.004 8084432.005</gml:pos>
+                                </gml:Point>
+                            </gml:origin>
+                            <!-- Vector with dx and dy in the returned grid. -->
+                            <gml:offsetVector>250.004018739 0</gml:offsetVector>
+                            <gml:offsetVector>0 -250.013983871</gml:offsetVector>
+                        </gml:RectifiedGrid>
+                    </gml:domainSet>
+                    <gml:rangeSet>           
+                        <gml:File>
+                            <gml:rangeParameters/>
+                            <gml:fileReference>https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&amp;version=1.3.0&amp;request=GetMap&amp;layers=Radar:suomi_dbz_eureffin&amp;styles=raster&amp;bbox=-196593.004,6255329.699,1044176.941,8084432.005&amp;srs=EPSG:3067&amp;format=image%2Fgeotiff&amp;time=2026-11-11T10:00:00Z&amp;width=4963&amp;height=7316</gml:fileReference>     
+                            <gml:fileStructure/>
+                            <gml:mimeType>image/geotiff</gml:mimeType>
+                        </gml:File>
+                    </gml:rangeSet>
+                    <gml:coverageFunction>
+                        <gml:CoverageMappingRule>
+                            <gml:ruleDefinition>Linear</gml:ruleDefinition>
+                        </gml:CoverageMappingRule>
+                    </gml:coverageFunction>
+                    <gmlcov:rangeType>
+                        <swe:DataRecord>
+                            <swe:field name="dbz" xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz&amp;"/>
+                        </swe:DataRecord>
+                    </gmlcov:rangeType>              
+                </gmlcov:RectifiedGridCoverage>
+            </om:result>
+
+        </omso:GridSeriesObservation>
+    </wfs:member>
+    <wfs:member>
+        <omso:GridSeriesObservation gml:id="WFS-dUNtHCArnvjyHMLuCWATa7wjBDCJTowumbbpdOuWHJh5OnWPft4b.enpldOsmL1CysWXPp3Wqv4VatgljhNbFv67smndnhb_GBy6BFt2vH.YAxSCwSiErWEEHNpkOy_cFSCD81XuJpKl5BMbHy51qRaFOO6dM2DZuxsu7Jaq_hVq2SGSEzNGXTn0dJyUSmZsw.cvLnXJz679um_kxer.Xryy5s2nc2OeXZlx9MuSdh25a9QmTBk2YsWLFiwYNb.bbpXcsOTDyXaeWnmux79vDfz09Mq6HBoUJN.NJnX40mdVqTV3TTmbnPpv5ZcnHrl5eb.nJXpm26XTrlhyYeTp1j37eG_np6ZXTrJi9MrvpydNE6KowA--">
+
+	                <om:phenomenonTime>
+                <gml:TimeInstant gml:id="weather-1-phenomenon-time">
+                    <gml:timePosition>2026-11-11T10:05:00Z</gml:timePosition>
+                </gml:TimeInstant>                   
+            </om:phenomenonTime>            
+            <om:resultTime>
+                <gml:TimeInstant gml:id="result-time-1">
+                    <gml:timePosition>2026-11-11T10:05:00Z</gml:timePosition>
+                </gml:TimeInstant>        
+            </om:resultTime>                      
+
+            <om:procedure xlink:href="http://xml.fmi.fi/inspire/process/suomi_dbz_eureffin"/>
+	    
+
+
+
+
+            <om:parameter>
+	             <om:NamedValue>
+                        <om:name xlink:href="https://inspire.ec.europa.eu/codeList/ProcessParameterValue/value/radar/linearTransformationGain"/>
+                        <om:value>
+                                <gml:Measure uom="double">0.5</gml:Measure>
+                        </om:value>
+                     </om:NamedValue>
+                 </om:parameter>
+            <om:parameter>
+                     <om:NamedValue>
+                        <om:name xlink:href="https://inspire.ec.europa.eu/codeList/ProcessParameterValue/value/radar/linearTransformationOffset"/>
+                        <om:value>
+                                <gml:Measure uom="double">-32</gml:Measure>
+                        </om:value>
+                     </om:NamedValue>
+                 </om:parameter>
+
+	    <om:observedProperty xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz"/>
+	     <om:featureOfInterest>                
+                <sams:SF_SpatialSamplingFeature gml:id="sampling-feature-1">
+                    <sam:sampledFeature>
+                        <target:SurfaceWeatherTargetArea gml:id="sampled-feature-surface-1">
+                            <target:geometry>
+                                <gml:Polygon  gml:id="sampled-feature-surface-polygon-1" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2" axisLabels="Easting Northing">
+                                    <gml:exterior>
+                                        <gml:LinearRing>
+                                            <gml:coordinates>
+                                                -196593.004000 8084432.005000 1044176.941000 8084432.005000 1044176.941000 6255329.699000 -196593.004000 6255329.699000 -196593.004000 8084432.005000 
+                                            </gml:coordinates>
+                                        </gml:LinearRing>
+                                    </gml:exterior>
+                                </gml:Polygon>
+                            </target:geometry>
+
+                            <target:observableProperty xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz"/>
+                        </target:SurfaceWeatherTargetArea>                        
+                    </sam:sampledFeature>                                    
+                    <sams:shape>                        
+                        <gml:Polygon gml:id="sampling-feature-polygon-1" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2" axisLabels="Easting Northing">
+                            <gml:exterior>
+                                <gml:LinearRing>                                    
+                                    <gml:coordinates>
+                                        -196593.004000 8084432.005000 1044176.941000 8084432.005000 1044176.941000 6255329.699000 -196593.004000 6255329.699000 -196593.004000 8084432.005000 
+                                    </gml:coordinates>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>        
+                    </sams:shape>            
+                </sams:SF_SpatialSamplingFeature>
+            </om:featureOfInterest>
+           
+                        <om:result>        
+                <gmlcov:RectifiedGridCoverage gml:id="grid-coverage-1">
+                    <gml:domainSet>
+                        <gml:RectifiedGrid gml:id="grid-1" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" dimension="2">
+                            <gml:limits>
+                                <gml:GridEnvelope>
+                                    <gml:low>0 0</gml:low>
+					    <gml:high>4963 7316</gml:high>
+                                </gml:GridEnvelope>
+                            </gml:limits>                          
+                            <gml:axisLabels>Easting Northing</gml:axisLabels>
+                            <gml:origin>
+                                <gml:Point gml:id="origin-point-1" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2">
+                                   <!-- Upper right corner -->
+                                    <gml:pos>-196593.004 8084432.005</gml:pos>
+                                </gml:Point>
+                            </gml:origin>
+                            <!-- Vector with dx and dy in the returned grid. -->
+                            <gml:offsetVector>250.004018739 0</gml:offsetVector>
+                            <gml:offsetVector>0 -250.013983871</gml:offsetVector>
+                        </gml:RectifiedGrid>
+                    </gml:domainSet>
+                    <gml:rangeSet>           
+                        <gml:File>
+                            <gml:rangeParameters/>
+                            <gml:fileReference>https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&amp;version=1.3.0&amp;request=GetMap&amp;layers=Radar:suomi_dbz_eureffin&amp;styles=raster&amp;bbox=-196593.004,6255329.699,1044176.941,8084432.005&amp;srs=EPSG:3067&amp;format=image%2Fgeotiff&amp;time=2026-11-11T10:05:00Z&amp;width=4963&amp;height=7316</gml:fileReference>     
+                            <gml:fileStructure/>
+                            <gml:mimeType>image/geotiff</gml:mimeType>
+                        </gml:File>
+                    </gml:rangeSet>
+                    <gml:coverageFunction>
+                        <gml:CoverageMappingRule>
+                            <gml:ruleDefinition>Linear</gml:ruleDefinition>
+                        </gml:CoverageMappingRule>
+                    </gml:coverageFunction>
+                    <gmlcov:rangeType>
+                        <swe:DataRecord>
+                            <swe:field name="dbz" xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz&amp;"/>
+                        </swe:DataRecord>
+                    </gmlcov:rangeType>              
+                </gmlcov:RectifiedGridCoverage>
+            </om:result>
+
+        </omso:GridSeriesObservation>
+    </wfs:member>
+    <wfs:member>
+        <omso:GridSeriesObservation gml:id="WFS-RDqB1qWSwwpNfVOaoBVoTA1Z6zSJTowumbbpdOuWHJh5OnWPft4b.enpldOsmL1CysWXPp3Wqv4VatgljhNbFv67smndnhb_GBy6BFt2vH.YAxSCwSiErWEEHNpkOy_cFSCD81XuJpKl5BMbHy51qRaFOO6dM2DZuxsu7Jaq_hVq2SGSEzNGXTn0dJyUSmZsw.cvLnXJz679um_kxer.Xryy5s2nc2OeXZlx9MuSdh25a9QmTBk2YsWLFiwYsL.bbpXcsOTDyXaeWnmux79vDfz09Mq6HBoUJN.NJnX40mdVqTV3TTmbnPpv5ZcnHrl5eb.nJXpm26XTrlhyYeTp1j37eG_np6ZXTrJi9MrvpydNE6KowA--">
+
+	                <om:phenomenonTime>
+                <gml:TimeInstant gml:id="weather-2-phenomenon-time">
+                    <gml:timePosition>2026-11-11T10:10:00Z</gml:timePosition>
+                </gml:TimeInstant>                   
+            </om:phenomenonTime>            
+            <om:resultTime>
+                <gml:TimeInstant gml:id="result-time-2">
+                    <gml:timePosition>2026-11-11T10:10:00Z</gml:timePosition>
+                </gml:TimeInstant>        
+            </om:resultTime>                      
+
+            <om:procedure xlink:href="http://xml.fmi.fi/inspire/process/suomi_dbz_eureffin"/>
+	    
+
+
+
+
+            <om:parameter>
+	             <om:NamedValue>
+                        <om:name xlink:href="https://inspire.ec.europa.eu/codeList/ProcessParameterValue/value/radar/linearTransformationGain"/>
+                        <om:value>
+                                <gml:Measure uom="double">0.5</gml:Measure>
+                        </om:value>
+                     </om:NamedValue>
+                 </om:parameter>
+            <om:parameter>
+                     <om:NamedValue>
+                        <om:name xlink:href="https://inspire.ec.europa.eu/codeList/ProcessParameterValue/value/radar/linearTransformationOffset"/>
+                        <om:value>
+                                <gml:Measure uom="double">-32</gml:Measure>
+                        </om:value>
+                     </om:NamedValue>
+                 </om:parameter>
+
+	    <om:observedProperty xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz"/>
+	     <om:featureOfInterest>                
+                <sams:SF_SpatialSamplingFeature gml:id="sampling-feature-2">
+                    <sam:sampledFeature>
+                        <target:SurfaceWeatherTargetArea gml:id="sampled-feature-surface-2">
+                            <target:geometry>
+                                <gml:Polygon  gml:id="sampled-feature-surface-polygon-2" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2" axisLabels="Easting Northing">
+                                    <gml:exterior>
+                                        <gml:LinearRing>
+                                            <gml:coordinates>
+                                                -196593.004000 8084432.005000 1044176.941000 8084432.005000 1044176.941000 6255329.699000 -196593.004000 6255329.699000 -196593.004000 8084432.005000 
+                                            </gml:coordinates>
+                                        </gml:LinearRing>
+                                    </gml:exterior>
+                                </gml:Polygon>
+                            </target:geometry>
+
+                            <target:observableProperty xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz"/>
+                        </target:SurfaceWeatherTargetArea>                        
+                    </sam:sampledFeature>                                    
+                    <sams:shape>                        
+                        <gml:Polygon gml:id="sampling-feature-polygon-2" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2" axisLabels="Easting Northing">
+                            <gml:exterior>
+                                <gml:LinearRing>                                    
+                                    <gml:coordinates>
+                                        -196593.004000 8084432.005000 1044176.941000 8084432.005000 1044176.941000 6255329.699000 -196593.004000 6255329.699000 -196593.004000 8084432.005000 
+                                    </gml:coordinates>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>        
+                    </sams:shape>            
+                </sams:SF_SpatialSamplingFeature>
+            </om:featureOfInterest>
+           
+                        <om:result>        
+                <gmlcov:RectifiedGridCoverage gml:id="grid-coverage-2">
+                    <gml:domainSet>
+                        <gml:RectifiedGrid gml:id="grid-2" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" dimension="2">
+                            <gml:limits>
+                                <gml:GridEnvelope>
+                                    <gml:low>0 0</gml:low>
+					    <gml:high>4963 7316</gml:high>
+                                </gml:GridEnvelope>
+                            </gml:limits>                          
+                            <gml:axisLabels>Easting Northing</gml:axisLabels>
+                            <gml:origin>
+                                <gml:Point gml:id="origin-point-2" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2">
+                                   <!-- Upper right corner -->
+                                    <gml:pos>-196593.004 8084432.005</gml:pos>
+                                </gml:Point>
+                            </gml:origin>
+                            <!-- Vector with dx and dy in the returned grid. -->
+                            <gml:offsetVector>250.004018739 0</gml:offsetVector>
+                            <gml:offsetVector>0 -250.013983871</gml:offsetVector>
+                        </gml:RectifiedGrid>
+                    </gml:domainSet>
+                    <gml:rangeSet>           
+                        <gml:File>
+                            <gml:rangeParameters/>
+                            <gml:fileReference>https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&amp;version=1.3.0&amp;request=GetMap&amp;layers=Radar:suomi_dbz_eureffin&amp;styles=raster&amp;bbox=-196593.004,6255329.699,1044176.941,8084432.005&amp;srs=EPSG:3067&amp;format=image%2Fgeotiff&amp;time=2026-11-11T10:10:00Z&amp;width=4963&amp;height=7316</gml:fileReference>     
+                            <gml:fileStructure/>
+                            <gml:mimeType>image/geotiff</gml:mimeType>
+                        </gml:File>
+                    </gml:rangeSet>
+                    <gml:coverageFunction>
+                        <gml:CoverageMappingRule>
+                            <gml:ruleDefinition>Linear</gml:ruleDefinition>
+                        </gml:CoverageMappingRule>
+                    </gml:coverageFunction>
+                    <gmlcov:rangeType>
+                        <swe:DataRecord>
+                            <swe:field name="dbz" xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz&amp;"/>
+                        </swe:DataRecord>
+                    </gmlcov:rangeType>              
+                </gmlcov:RectifiedGridCoverage>
+            </om:result>
+
+        </omso:GridSeriesObservation>
+    </wfs:member>
+    <wfs:member>
+        <omso:GridSeriesObservation gml:id="WFS-DbbbJc0FJmpEmLDVSQYG.G63glGJTowumbbpdOuWHJh5OnWPft4b.enpldOsmL1CysWXPp3Wqv4VatgljhNbFv67smndnhb_GBy6BFt2vH.YAxSCwSiErWEEHNpkOy_cFSCD81XuJpKl5BMbHy51qRaFOO6dM2DZuxsu7Jaq_hVq2SGSEzNGXTn0dJyUSmZsw.cvLnXJz679um_kxer.Xryy5s2nc2OeXZlx9MuSdh25a9QmTBk2YsWLFiwYtb.bbpXcsOTDyXaeWnmux79vDfz09Mq6HBoUJN.NJnX40mdVqTV3TTmbnPpv5ZcnHrl5eb.nJXpm26XTrlhyYeTp1j37eG_np6ZXTrJi9MrvpydNE6KowA--">
+
+	                <om:phenomenonTime>
+                <gml:TimeInstant gml:id="weather-3-phenomenon-time">
+                    <gml:timePosition>2026-11-11T10:15:00Z</gml:timePosition>
+                </gml:TimeInstant>                   
+            </om:phenomenonTime>            
+            <om:resultTime>
+                <gml:TimeInstant gml:id="result-time-3">
+                    <gml:timePosition>2026-11-11T10:15:00Z</gml:timePosition>
+                </gml:TimeInstant>        
+            </om:resultTime>                      
+
+            <om:procedure xlink:href="http://xml.fmi.fi/inspire/process/suomi_dbz_eureffin"/>
+	    
+
+
+
+
+            <om:parameter>
+	             <om:NamedValue>
+                        <om:name xlink:href="https://inspire.ec.europa.eu/codeList/ProcessParameterValue/value/radar/linearTransformationGain"/>
+                        <om:value>
+                                <gml:Measure uom="double">0.5</gml:Measure>
+                        </om:value>
+                     </om:NamedValue>
+                 </om:parameter>
+            <om:parameter>
+                     <om:NamedValue>
+                        <om:name xlink:href="https://inspire.ec.europa.eu/codeList/ProcessParameterValue/value/radar/linearTransformationOffset"/>
+                        <om:value>
+                                <gml:Measure uom="double">-32</gml:Measure>
+                        </om:value>
+                     </om:NamedValue>
+                 </om:parameter>
+
+	    <om:observedProperty xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz"/>
+	     <om:featureOfInterest>                
+                <sams:SF_SpatialSamplingFeature gml:id="sampling-feature-3">
+                    <sam:sampledFeature>
+                        <target:SurfaceWeatherTargetArea gml:id="sampled-feature-surface-3">
+                            <target:geometry>
+                                <gml:Polygon  gml:id="sampled-feature-surface-polygon-3" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2" axisLabels="Easting Northing">
+                                    <gml:exterior>
+                                        <gml:LinearRing>
+                                            <gml:coordinates>
+                                                -196593.004000 8084432.005000 1044176.941000 8084432.005000 1044176.941000 6255329.699000 -196593.004000 6255329.699000 -196593.004000 8084432.005000 
+                                            </gml:coordinates>
+                                        </gml:LinearRing>
+                                    </gml:exterior>
+                                </gml:Polygon>
+                            </target:geometry>
+
+                            <target:observableProperty xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz"/>
+                        </target:SurfaceWeatherTargetArea>                        
+                    </sam:sampledFeature>                                    
+                    <sams:shape>                        
+                        <gml:Polygon gml:id="sampling-feature-polygon-3" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2" axisLabels="Easting Northing">
+                            <gml:exterior>
+                                <gml:LinearRing>                                    
+                                    <gml:coordinates>
+                                        -196593.004000 8084432.005000 1044176.941000 8084432.005000 1044176.941000 6255329.699000 -196593.004000 6255329.699000 -196593.004000 8084432.005000 
+                                    </gml:coordinates>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>        
+                    </sams:shape>            
+                </sams:SF_SpatialSamplingFeature>
+            </om:featureOfInterest>
+           
+                        <om:result>        
+                <gmlcov:RectifiedGridCoverage gml:id="grid-coverage-3">
+                    <gml:domainSet>
+                        <gml:RectifiedGrid gml:id="grid-3" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" dimension="2">
+                            <gml:limits>
+                                <gml:GridEnvelope>
+                                    <gml:low>0 0</gml:low>
+					    <gml:high>4963 7316</gml:high>
+                                </gml:GridEnvelope>
+                            </gml:limits>                          
+                            <gml:axisLabels>Easting Northing</gml:axisLabels>
+                            <gml:origin>
+                                <gml:Point gml:id="origin-point-3" srsName="http://www.opengis.net/def/crs/EPSG/0/3067" srsDimension="2">
+                                   <!-- Upper right corner -->
+                                    <gml:pos>-196593.004 8084432.005</gml:pos>
+                                </gml:Point>
+                            </gml:origin>
+                            <!-- Vector with dx and dy in the returned grid. -->
+                            <gml:offsetVector>250.004018739 0</gml:offsetVector>
+                            <gml:offsetVector>0 -250.013983871</gml:offsetVector>
+                        </gml:RectifiedGrid>
+                    </gml:domainSet>
+                    <gml:rangeSet>           
+                        <gml:File>
+                            <gml:rangeParameters/>
+                            <gml:fileReference>https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&amp;version=1.3.0&amp;request=GetMap&amp;layers=Radar:suomi_dbz_eureffin&amp;styles=raster&amp;bbox=-196593.004,6255329.699,1044176.941,8084432.005&amp;srs=EPSG:3067&amp;format=image%2Fgeotiff&amp;time=2026-11-11T10:15:00Z&amp;width=4963&amp;height=7316</gml:fileReference>     
+                            <gml:fileStructure/>
+                            <gml:mimeType>image/geotiff</gml:mimeType>
+                        </gml:File>
+                    </gml:rangeSet>
+                    <gml:coverageFunction>
+                        <gml:CoverageMappingRule>
+                            <gml:ruleDefinition>Linear</gml:ruleDefinition>
+                        </gml:CoverageMappingRule>
+                    </gml:coverageFunction>
+                    <gmlcov:rangeType>
+                        <swe:DataRecord>
+                            <swe:field name="dbz" xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=dbz&amp;"/>
+                        </swe:DataRecord>
+                    </gmlcov:rangeType>              
+                </gmlcov:RectifiedGridCoverage>
+            </om:result>
+
+        </omso:GridSeriesObservation>
+    </wfs:member>
+</wfs:FeatureCollection>

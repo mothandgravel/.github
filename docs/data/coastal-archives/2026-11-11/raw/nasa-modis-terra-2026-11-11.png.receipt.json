@@ -1,0 +1,15 @@
+{
+  "url": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&SRS=EPSG%3A4326&BBOX=23%2C59%2C28.5%2C61&WIDTH=1100&HEIGHT=400&FORMAT=image%2Fpng&TRANSPARENT=TRUE&TIME=2026-11-11",
+  "requestedAt": "2026-11-13T16:10:08.145150+00:00",
+  "file": "nasa-modis-terra-2026-11-11.png",
+  "status": 200,
+  "finalUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&SRS=EPSG%3A4326&BBOX=23%2C59%2C28.5%2C61&WIDTH=1100&HEIGHT=400&FORMAT=image%2Fpng&TRANSPARENT=TRUE&TIME=2026-11-11",
+  "serverDate": "Fri, 13 Nov 2026 16:10:08 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "image/png",
+  "completedAt": "2026-11-13T16:10:11.063285+00:00",
+  "bytes": 849172,
+  "sha256": "d01124eaaf86d06ccffd9cfbc1e80138f74203f3f3dc33d0b91d1a4d8cf74d56",
+  "wireSha256": "d01124eaaf86d06ccffd9cfbc1e80138f74203f3f3dc33d0b91d1a4d8cf74d56"
+}

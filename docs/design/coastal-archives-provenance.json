@@ -1,0 +1,209 @@
+{
+  "schema": "mg.coastal-archives-provenance.v1",
+  "date": "2026-11-11",
+  "source": "Keskkonnaagentuur / Iowa Environmental Mesonet / Finnish Meteorological Institute / NASA GIBS",
+  "transformation": "Provider originals retained. Hourly means and METAR clocks normalized without interpolation. TIFF single-band pixels copied to .bin and rendered with the documented palette; no smoothing. NASA PNGs unchanged.",
+  "paletteDBZ": [
+    [
+      -20,
+      [
+        74,
+        106,
+        128
+      ]
+    ],
+    [
+      -5,
+      [
+        122,
+        172,
+        183
+      ]
+    ],
+    [
+      10,
+      [
+        205,
+        220,
+        191
+      ]
+    ],
+    [
+      25,
+      [
+        221,
+        183,
+        112
+      ]
+    ],
+    [
+      40,
+      [
+        180,
+        102,
+        69
+      ]
+    ]
+  ],
+  "noDataCode": 0,
+  "rasterColourClamping": "Below -20 and above 40 dBZ share endpoint colours; original pixel codes retained.",
+  "clockMeaning": "New captures retain UTC request start and download completion, not station receipt or first publication. NASA acquisition times remain null.",
+  "scope": "Environmental context. Four archive products share upstream providers with other views. Not an incident reconstruction or vessel track.",
+  "files": [
+    {
+      "path": "data/coastal-archives/2026-11-11/fmi-radar-1000-gulf.bin",
+      "bytes": 440000,
+      "sha256": "8b7bf1aed856e20a3239ae35670f8f2ed186f82582c0663afc7bfce6fdaf4b84"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/fmi-radar-1000-gulf.png",
+      "bytes": 106085,
+      "sha256": "5058fbd43d2c0e0ade2c83310fb9b573c8575fe574c66fc7be8bc720763367cc"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/fmi-radar-1005-gulf.bin",
+      "bytes": 440000,
+      "sha256": "cdde0f2a43c6c344da008dd6ee0fc64dec1a9bbd9f428bd89b276d07c9723ead"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/fmi-radar-1005-gulf.png",
+      "bytes": 108868,
+      "sha256": "7d59453186caa871838a339f42199de8b88f610d95ff97feee24c55c86e4959c"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/fmi-radar-1010-gulf.bin",
+      "bytes": 440000,
+      "sha256": "c0261390253674c6e5b1fd1c5243a9f8f3eabda6c5af765f1c5bf243fa874ed3"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/fmi-radar-1010-gulf.png",
+      "bytes": 105876,
+      "sha256": "55357667b4714d467d217df39cb589c15c15c46808f9ea64ed9979ff9783013a"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/fmi-radar-1015-gulf.bin",
+      "bytes": 440000,
+      "sha256": "d6788482a967419be653d350daebf57c9605a76f1f5370e45a0425485d755018"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/fmi-radar-1015-gulf.png",
+      "bytes": 105585,
+      "sha256": "5731a08b6bb8f24b8e79a35233bab134b50fe7efbaa9459f5855cee9bc33fc9d"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/notebook.json",
+      "bytes": 80411,
+      "sha256": "01bb7de96c8d11337e6205adefb73fe7b7a974d70890f810ac49fa6181327eac"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/estonia-3stations-2026-11-11.json",
+      "bytes": 54286,
+      "sha256": "d7d3cfc7fc4ca23d6d15067e312eb192d12d5c70f06e0be18fdfdb65d8da35d3"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/estonia-3stations-2026-11-11.json.receipt.json",
+      "bytes": 1138,
+      "sha256": "0e010696dd0a9c1a61a4c3824157c7e9f08f153723ddb19e36520317034c9660"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-radar-1000-gulf.tif",
+      "bytes": 440484,
+      "sha256": "51b63d1790abdfb269f3556d211da6ebb687d50cd643f9cdae2b6f62efac21c3"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-radar-1000-gulf.tif.receipt.json",
+      "bytes": 1034,
+      "sha256": "1c39b2113421913ec4316fe2c95a072dd4124d3664b3bb65dca475327b0e8ecd"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-radar-1005-gulf.tif",
+      "bytes": 440484,
+      "sha256": "3a74c48a859ae490cc5500af1c5b9ba5ce70c0760ae63277a3c19740da8ec8fb"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-radar-1005-gulf.tif.receipt.json",
+      "bytes": 1034,
+      "sha256": "26a5473965a3f6ab7fba5dc22785fb665488b782caf098cfe470c4aa86bf981d"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-radar-1010-gulf.tif",
+      "bytes": 440484,
+      "sha256": "1beae8082b16201db320a731019fd66ccc94f734fca2b3ef29c322630dddcd19"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-radar-1010-gulf.tif.receipt.json",
+      "bytes": 1034,
+      "sha256": "7cae854aae4e9d6cc5751d98d5f474ce131072c1dd1dda844c9fc8f9ad2f6b81"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-radar-1015-gulf.tif",
+      "bytes": 440484,
+      "sha256": "7c01984354c79ec8901d1fbfb1857bcb9f8151814dd512576bf53e40b3cc7629"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-radar-1015-gulf.tif.receipt.json",
+      "bytes": 1034,
+      "sha256": "792266f8f918504e0cc4dfdfe92b35b41ac4a620c32cb24317912d0b75014901"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-weather-radar-2026-11-11.xml",
+      "bytes": 30707,
+      "sha256": "aac422bde54f58d5eecd9cb273f7f5949068408a2c1315e29b9e50a4e9ae7cec"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/fmi-weather-radar-2026-11-11.xml.receipt.json",
+      "bytes": 973,
+      "sha256": "0908aad926bf0796e1ca50040b3a7b66659265bf0dce78c84203a694aa1be0e8"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/metar-EFHK-EETN-2026-11-11.csv",
+      "bytes": 10221,
+      "sha256": "0eabe7dea93af949a51162b20352dbaf51cb7f7379554aac981f13ffeef824fb"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/metar-EFHK-EETN-2026-11-11.csv.receipt.json",
+      "bytes": 977,
+      "sha256": "28c91ad0f713d2223a324c96eba393a6a7b0ae1bae5a1547bc97c31c2f5236a1"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/nasa-modis-aqua-2026-11-11.png",
+      "bytes": 699741,
+      "sha256": "accce35e8d06b6c6d440a964589a4e7302bc08af8c1f0cd683b9e957825791d2"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/nasa-modis-aqua-2026-11-11.png.receipt.json",
+      "bytes": 1058,
+      "sha256": "ced55f9d9f883edfe99121c60a3d2630f7626f682c3d1682a157cd619536d406"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/nasa-modis-aqua-domains-rawslash.xml",
+      "bytes": 306,
+      "sha256": "10193a8581bfb116e58a2a42d9fac869f389112f97ad9a6ee144ad48ee840204"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/nasa-modis-aqua-domains-rawslash.xml.receipt.json",
+      "bytes": 968,
+      "sha256": "dc1295025d9cdc8a1a921c7dc5e8b183033a0091ae5b173062053dcdd82d15f3"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/nasa-modis-terra-2026-11-11.png",
+      "bytes": 849172,
+      "sha256": "d01124eaaf86d06ccffd9cfbc1e80138f74203f3f3dc33d0b91d1a4d8cf74d56"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/nasa-modis-terra-2026-11-11.png.receipt.json",
+      "bytes": 1061,
+      "sha256": "b064df9a0a096248cebdfb734a2eb7a30f3a4c3b591e8cbb177b786a913104e4"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/nasa-modis-terra-domains-rawslash.xml",
+      "bytes": 306,
+      "sha256": "8d93bd353d06413cb90dcfdda12226611031c2ee881431515388cc92c7e609e8"
+    },
+    {
+      "path": "data/coastal-archives/2026-11-11/raw/nasa-modis-terra-domains-rawslash.xml.receipt.json",
+      "bytes": 971,
+      "sha256": "b982945726b03cfe8873b5add9c7fd86096c2fe24762cb40f483b6e3f3029782"
+    }
+  ]
+}

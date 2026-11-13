@@ -1,0 +1,16 @@
+{
+  "url": "https://keskkonnaandmed.envir.ee/f_hydroseire?jaam_kood=in.%2886094%2C41801%2C26045%29&aegrida_nimi=in.%28%22WL+avg%22%2C%22WT+avg%22%29&timeline_ts_utc=gte.2026-11-10T22%3A00%3A00&timeline_ts_utc=lt.2026-11-11T22%3A00%3A00&order=jaam_nimi%2Caegrida_nimi%2Ctimeline_ts_utc&limit=300",
+  "requestedAt": "2026-11-13T16:13:53.333349+00:00",
+  "file": "estonia-3stations-2026-11-11.json",
+  "status": 200,
+  "finalUrl": "https://keskkonnaandmed.envir.ee/f_hydroseire?jaam_kood=in.%2886094%2C41801%2C26045%29&aegrida_nimi=in.%28%22WL+avg%22%2C%22WT+avg%22%29&timeline_ts_utc=gte.2026-11-10T22%3A00%3A00&timeline_ts_utc=lt.2026-11-11T22%3A00%3A00&order=jaam_nimi%2Caegrida_nimi%2Ctimeline_ts_utc&limit=300",
+  "serverDate": "Fri, 13 Nov 2026 16:14:04 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "application/json; charset=utf-8",
+  "contentRange": "0-143/144",
+  "completedAt": "2026-11-13T16:14:04.673218+00:00",
+  "bytes": 54286,
+  "sha256": "d7d3cfc7fc4ca23d6d15067e312eb192d12d5c70f06e0be18fdfdb65d8da35d3",
+  "wireSha256": "d7d3cfc7fc4ca23d6d15067e312eb192d12d5c70f06e0be18fdfdb65d8da35d3"
+}

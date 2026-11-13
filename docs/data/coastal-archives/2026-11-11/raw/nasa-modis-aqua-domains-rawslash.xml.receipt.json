@@ -1,0 +1,16 @@
+{
+  "url": "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=DescribeDomains&Version=1.0.0&layer=MODIS_Aqua_CorrectedReflectance_TrueColor&tilematrixset=250m&TIME=2026-11-11/2026-11-12",
+  "requestedAt": "2026-11-13T16:14:56.279588+00:00",
+  "file": "nasa-modis-aqua-domains-rawslash.xml",
+  "status": 200,
+  "finalUrl": "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=DescribeDomains&Version=1.0.0&layer=MODIS_Aqua_CorrectedReflectance_TrueColor&tilematrixset=250m&TIME=2026-11-11/2026-11-12",
+  "serverDate": "Fri, 13 Nov 2026 16:14:56 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "text/xml; charset=UTF-8",
+  "contentRange": null,
+  "completedAt": "2026-11-13T16:14:56.851229+00:00",
+  "bytes": 306,
+  "sha256": "10193a8581bfb116e58a2a42d9fac869f389112f97ad9a6ee144ad48ee840204",
+  "wireSha256": "9145a9d685d2f592fdcc3ac20dc343041fa2561dd3f2fd6fc9898c5d6cd93bda"
+}

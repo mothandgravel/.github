@@ -89,11 +89,14 @@ async function start(){
     const land=await json(new URL('./coastal-replay-land.json',import.meta.url)).catch(()=>null);drawMap(land);sourceLedger();
     $('cs-workbench').hidden=false;$('cs-loading').hidden=true;
     $('cs-channel').addEventListener('change',()=>{channel=$('cs-channel').value;render(true);});
-    $('cs-hour').addEventListener('input',()=>{hour=Number($('cs-hour').value);render();});
-    for(const b of document.querySelectorAll('[data-hour]'))b.addEventListener('click',()=>{hour=Number(b.dataset.hour);render(true);});
+    const shareHour=()=>document.dispatchEvent(new CustomEvent('coastal-fmi-hour',{detail:{utc:measured(CHANNELS.wind).points[hour].observedAt}}));
+    $('cs-hour').addEventListener('input',()=>{hour=Number($('cs-hour').value);render();shareHour();});
+    for(const b of document.querySelectorAll('[data-hour]'))b.addEventListener('click',()=>{hour=Number(b.dataset.hour);render(true);shareHour();});
     for(const b of document.querySelectorAll('[data-channel]'))b.addEventListener('click',()=>{channel=CHANNELS[b.dataset.channel];render(true);});
     $('cs-try-gap').addEventListener('click',()=>{channel=CHANNELS.loviisa;const gap=measured(channel).points.findIndex(p=>p.value===null);hour=gap<0?0:gap;render(true);});
     $('cs-try-datum').addEventListener('click',()=>{channel=channel===CHANNELS.mean?CHANNELS.level:CHANNELS.mean;render(true);});
+    document.addEventListener('coastal-archive-clock',e=>{const next=Math.floor((Date.parse(e.detail.utc)-Date.parse(data.windowStartUtc))/3600000);if(next>=0&&next<24){hour=next;render();}});
+    if(document.documentElement.dataset.coastalMinute!==undefined)hour=Math.floor(Number(document.documentElement.dataset.coastalMinute)/60);
     window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{if(Math.round($('cs-plot').getBoundingClientRect().width)!==lastPlotWidth)redrawPlot();});});render();
   }catch(error){text('cs-loading','The saved records could not be opened. The source downloads below remain available.');console.error(error);}
 }

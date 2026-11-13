@@ -1,0 +1,2262 @@
+{
+  "schema": "mg.coastal-archives.v1",
+  "dateLocal": "2026-11-11",
+  "timezone": "Europe/Helsinki",
+  "windowStartUtc": "2026-11-10T22:00:00Z",
+  "windowEndUtcExclusive": "2026-11-11T22:00:00Z",
+  "gauges": [
+    {
+      "id": "26045:WL avg",
+      "stationCode": "26045",
+      "station": "Kunda",
+      "latitude": 59.526419,
+      "longitude": 26.543928,
+      "parameter": "WL avg",
+      "unit": "cm",
+      "statistic": "hourly mean",
+      "intervalEdge": null,
+      "gaugeZeroMetresEH2000": -5,
+      "sourceFile": "estonia-3stations-2026-11-11.json",
+      "points": [
+        {
+          "labelledAt": "2026-11-10T22:00:00Z",
+          "localLabel": "2026-11-11T00:00:00+02:00",
+          "value": 522.38,
+          "rawValue": "522.380"
+        },
+        {
+          "labelledAt": "2026-11-10T23:00:00Z",
+          "localLabel": "2026-11-11T01:00:00+02:00",
+          "value": 521.99,
+          "rawValue": "521.990"
+        },
+        {
+          "labelledAt": "2026-11-11T00:00:00Z",
+          "localLabel": "2026-11-11T02:00:00+02:00",
+          "value": 521.66,
+          "rawValue": "521.660"
+        },
+        {
+          "labelledAt": "2026-11-11T01:00:00Z",
+          "localLabel": "2026-11-11T03:00:00+02:00",
+          "value": 520.1,
+          "rawValue": "520.100"
+        },
+        {
+          "labelledAt": "2026-11-11T02:00:00Z",
+          "localLabel": "2026-11-11T04:00:00+02:00",
+          "value": 517.68,
+          "rawValue": "517.680"
+        },
+        {
+          "labelledAt": "2026-11-11T03:00:00Z",
+          "localLabel": "2026-11-11T05:00:00+02:00",
+          "value": 516.04,
+          "rawValue": "516.040"
+        },
+        {
+          "labelledAt": "2026-11-11T04:00:00Z",
+          "localLabel": "2026-11-11T06:00:00+02:00",
+          "value": 514.52,
+          "rawValue": "514.520"
+        },
+        {
+          "labelledAt": "2026-11-11T05:00:00Z",
+          "localLabel": "2026-11-11T07:00:00+02:00",
+          "value": 511.9,
+          "rawValue": "511.900"
+        },
+        {
+          "labelledAt": "2026-11-11T06:00:00Z",
+          "localLabel": "2026-11-11T08:00:00+02:00",
+          "value": 509.98,
+          "rawValue": "509.980"
+        },
+        {
+          "labelledAt": "2026-11-11T07:00:00Z",
+          "localLabel": "2026-11-11T09:00:00+02:00",
+          "value": 508.45,
+          "rawValue": "508.450"
+        },
+        {
+          "labelledAt": "2026-11-11T08:00:00Z",
+          "localLabel": "2026-11-11T10:00:00+02:00",
+          "value": 508.22,
+          "rawValue": "508.220"
+        },
+        {
+          "labelledAt": "2026-11-11T09:00:00Z",
+          "localLabel": "2026-11-11T11:00:00+02:00",
+          "value": 508.47,
+          "rawValue": "508.470"
+        },
+        {
+          "labelledAt": "2026-11-11T10:00:00Z",
+          "localLabel": "2026-11-11T12:00:00+02:00",
+          "value": 509.3,
+          "rawValue": "509.300"
+        },
+        {
+          "labelledAt": "2026-11-11T11:00:00Z",
+          "localLabel": "2026-11-11T13:00:00+02:00",
+          "value": 510.71,
+          "rawValue": "510.710"
+        },
+        {
+          "labelledAt": "2026-11-11T12:00:00Z",
+          "localLabel": "2026-11-11T14:00:00+02:00",
+          "value": 512.0,
+          "rawValue": "512.000"
+        },
+        {
+          "labelledAt": "2026-11-11T13:00:00Z",
+          "localLabel": "2026-11-11T15:00:00+02:00",
+          "value": 513.36,
+          "rawValue": "513.360"
+        },
+        {
+          "labelledAt": "2026-11-11T14:00:00Z",
+          "localLabel": "2026-11-11T16:00:00+02:00",
+          "value": 515.14,
+          "rawValue": "515.140"
+        },
+        {
+          "labelledAt": "2026-11-11T15:00:00Z",
+          "localLabel": "2026-11-11T17:00:00+02:00",
+          "value": 516.6,
+          "rawValue": "516.600"
+        },
+        {
+          "labelledAt": "2026-11-11T16:00:00Z",
+          "localLabel": "2026-11-11T18:00:00+02:00",
+          "value": 519.14,
+          "rawValue": "519.140"
+        },
+        {
+          "labelledAt": "2026-11-11T17:00:00Z",
+          "localLabel": "2026-11-11T19:00:00+02:00",
+          "value": 521.61,
+          "rawValue": "521.610"
+        },
+        {
+          "labelledAt": "2026-11-11T18:00:00Z",
+          "localLabel": "2026-11-11T20:00:00+02:00",
+          "value": 523.72,
+          "rawValue": "523.720"
+        },
+        {
+          "labelledAt": "2026-11-11T19:00:00Z",
+          "localLabel": "2026-11-11T21:00:00+02:00",
+          "value": 525.64,
+          "rawValue": "525.640"
+        },
+        {
+          "labelledAt": "2026-11-11T20:00:00Z",
+          "localLabel": "2026-11-11T22:00:00+02:00",
+          "value": 527.02,
+          "rawValue": "527.020"
+        },
+        {
+          "labelledAt": "2026-11-11T21:00:00Z",
+          "localLabel": "2026-11-11T23:00:00+02:00",
+          "value": 528.33,
+          "rawValue": "528.330"
+        }
+      ]
+    },
+    {
+      "id": "26045:WT avg",
+      "stationCode": "26045",
+      "station": "Kunda",
+      "latitude": 59.526419,
+      "longitude": 26.543928,
+      "parameter": "WT avg",
+      "unit": "°C",
+      "statistic": "hourly mean",
+      "intervalEdge": null,
+      "gaugeZeroMetresEH2000": null,
+      "sourceFile": "estonia-3stations-2026-11-11.json",
+      "points": [
+        {
+          "labelledAt": "2026-11-10T22:00:00Z",
+          "localLabel": "2026-11-11T00:00:00+02:00",
+          "value": 7.3,
+          "rawValue": "7.300"
+        },
+        {
+          "labelledAt": "2026-11-10T23:00:00Z",
+          "localLabel": "2026-11-11T01:00:00+02:00",
+          "value": 7.2,
+          "rawValue": "7.200"
+        },
+        {
+          "labelledAt": "2026-11-11T00:00:00Z",
+          "localLabel": "2026-11-11T02:00:00+02:00",
+          "value": 7.2,
+          "rawValue": "7.200"
+        },
+        {
+          "labelledAt": "2026-11-11T01:00:00Z",
+          "localLabel": "2026-11-11T03:00:00+02:00",
+          "value": 7.4,
+          "rawValue": "7.400"
+        },
+        {
+          "labelledAt": "2026-11-11T02:00:00Z",
+          "localLabel": "2026-11-11T04:00:00+02:00",
+          "value": 7.6,
+          "rawValue": "7.600"
+        },
+        {
+          "labelledAt": "2026-11-11T03:00:00Z",
+          "localLabel": "2026-11-11T05:00:00+02:00",
+          "value": 7.7,
+          "rawValue": "7.700"
+        },
+        {
+          "labelledAt": "2026-11-11T04:00:00Z",
+          "localLabel": "2026-11-11T06:00:00+02:00",
+          "value": 7.6,
+          "rawValue": "7.600"
+        },
+        {
+          "labelledAt": "2026-11-11T05:00:00Z",
+          "localLabel": "2026-11-11T07:00:00+02:00",
+          "value": 7.7,
+          "rawValue": "7.700"
+        },
+        {
+          "labelledAt": "2026-11-11T06:00:00Z",
+          "localLabel": "2026-11-11T08:00:00+02:00",
+          "value": 7.7,
+          "rawValue": "7.700"
+        },
+        {
+          "labelledAt": "2026-11-11T07:00:00Z",
+          "localLabel": "2026-11-11T09:00:00+02:00",
+          "value": 7.7,
+          "rawValue": "7.700"
+        },
+        {
+          "labelledAt": "2026-11-11T08:00:00Z",
+          "localLabel": "2026-11-11T10:00:00+02:00",
+          "value": 7.7,
+          "rawValue": "7.700"
+        },
+        {
+          "labelledAt": "2026-11-11T09:00:00Z",
+          "localLabel": "2026-11-11T11:00:00+02:00",
+          "value": 7.7,
+          "rawValue": "7.700"
+        },
+        {
+          "labelledAt": "2026-11-11T10:00:00Z",
+          "localLabel": "2026-11-11T12:00:00+02:00",
+          "value": 7.8,
+          "rawValue": "7.800"
+        },
+        {
+          "labelledAt": "2026-11-11T11:00:00Z",
+          "localLabel": "2026-11-11T13:00:00+02:00",
+          "value": 7.8,
+          "rawValue": "7.800"
+        },
+        {
+          "labelledAt": "2026-11-11T12:00:00Z",
+          "localLabel": "2026-11-11T14:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T13:00:00Z",
+          "localLabel": "2026-11-11T15:00:00+02:00",
+          "value": 8.0,
+          "rawValue": "8.000"
+        },
+        {
+          "labelledAt": "2026-11-11T14:00:00Z",
+          "localLabel": "2026-11-11T16:00:00+02:00",
+          "value": 8.1,
+          "rawValue": "8.100"
+        },
+        {
+          "labelledAt": "2026-11-11T15:00:00Z",
+          "localLabel": "2026-11-11T17:00:00+02:00",
+          "value": 8.1,
+          "rawValue": "8.100"
+        },
+        {
+          "labelledAt": "2026-11-11T16:00:00Z",
+          "localLabel": "2026-11-11T18:00:00+02:00",
+          "value": 8.2,
+          "rawValue": "8.200"
+        },
+        {
+          "labelledAt": "2026-11-11T17:00:00Z",
+          "localLabel": "2026-11-11T19:00:00+02:00",
+          "value": 8.3,
+          "rawValue": "8.300"
+        },
+        {
+          "labelledAt": "2026-11-11T18:00:00Z",
+          "localLabel": "2026-11-11T20:00:00+02:00",
+          "value": 8.4,
+          "rawValue": "8.400"
+        },
+        {
+          "labelledAt": "2026-11-11T19:00:00Z",
+          "localLabel": "2026-11-11T21:00:00+02:00",
+          "value": 8.5,
+          "rawValue": "8.500"
+        },
+        {
+          "labelledAt": "2026-11-11T20:00:00Z",
+          "localLabel": "2026-11-11T22:00:00+02:00",
+          "value": 8.46,
+          "rawValue": "8.460"
+        },
+        {
+          "labelledAt": "2026-11-11T21:00:00Z",
+          "localLabel": "2026-11-11T23:00:00+02:00",
+          "value": 8.41,
+          "rawValue": "8.410"
+        }
+      ]
+    },
+    {
+      "id": "41801:WL avg",
+      "stationCode": "41801",
+      "station": "Narva-Jõesuu",
+      "latitude": 59.468375,
+      "longitude": 28.042447,
+      "parameter": "WL avg",
+      "unit": "cm",
+      "statistic": "hourly mean",
+      "intervalEdge": null,
+      "gaugeZeroMetresEH2000": -5,
+      "sourceFile": "estonia-3stations-2026-11-11.json",
+      "points": [
+        {
+          "labelledAt": "2026-11-10T22:00:00Z",
+          "localLabel": "2026-11-11T00:00:00+02:00",
+          "value": 528.56,
+          "rawValue": "528.560"
+        },
+        {
+          "labelledAt": "2026-11-10T23:00:00Z",
+          "localLabel": "2026-11-11T01:00:00+02:00",
+          "value": 527.68,
+          "rawValue": "527.680"
+        },
+        {
+          "labelledAt": "2026-11-11T00:00:00Z",
+          "localLabel": "2026-11-11T02:00:00+02:00",
+          "value": 526.71,
+          "rawValue": "526.710"
+        },
+        {
+          "labelledAt": "2026-11-11T01:00:00Z",
+          "localLabel": "2026-11-11T03:00:00+02:00",
+          "value": 525.38,
+          "rawValue": "525.380"
+        },
+        {
+          "labelledAt": "2026-11-11T02:00:00Z",
+          "localLabel": "2026-11-11T04:00:00+02:00",
+          "value": 522.63,
+          "rawValue": "522.630"
+        },
+        {
+          "labelledAt": "2026-11-11T03:00:00Z",
+          "localLabel": "2026-11-11T05:00:00+02:00",
+          "value": 519.18,
+          "rawValue": "519.180"
+        },
+        {
+          "labelledAt": "2026-11-11T04:00:00Z",
+          "localLabel": "2026-11-11T06:00:00+02:00",
+          "value": 516.56,
+          "rawValue": "516.560"
+        },
+        {
+          "labelledAt": "2026-11-11T05:00:00Z",
+          "localLabel": "2026-11-11T07:00:00+02:00",
+          "value": 514.34,
+          "rawValue": "514.340"
+        },
+        {
+          "labelledAt": "2026-11-11T06:00:00Z",
+          "localLabel": "2026-11-11T08:00:00+02:00",
+          "value": 512.33,
+          "rawValue": "512.330"
+        },
+        {
+          "labelledAt": "2026-11-11T07:00:00Z",
+          "localLabel": "2026-11-11T09:00:00+02:00",
+          "value": 510.19,
+          "rawValue": "510.190"
+        },
+        {
+          "labelledAt": "2026-11-11T08:00:00Z",
+          "localLabel": "2026-11-11T10:00:00+02:00",
+          "value": 510.05,
+          "rawValue": "510.050"
+        },
+        {
+          "labelledAt": "2026-11-11T09:00:00Z",
+          "localLabel": "2026-11-11T11:00:00+02:00",
+          "value": 510.43,
+          "rawValue": "510.430"
+        },
+        {
+          "labelledAt": "2026-11-11T10:00:00Z",
+          "localLabel": "2026-11-11T12:00:00+02:00",
+          "value": 510.92,
+          "rawValue": "510.920"
+        },
+        {
+          "labelledAt": "2026-11-11T11:00:00Z",
+          "localLabel": "2026-11-11T13:00:00+02:00",
+          "value": 512.13,
+          "rawValue": "512.130"
+        },
+        {
+          "labelledAt": "2026-11-11T12:00:00Z",
+          "localLabel": "2026-11-11T14:00:00+02:00",
+          "value": 514.18,
+          "rawValue": "514.180"
+        },
+        {
+          "labelledAt": "2026-11-11T13:00:00Z",
+          "localLabel": "2026-11-11T15:00:00+02:00",
+          "value": 514.9,
+          "rawValue": "514.900"
+        },
+        {
+          "labelledAt": "2026-11-11T14:00:00Z",
+          "localLabel": "2026-11-11T16:00:00+02:00",
+          "value": 515.5,
+          "rawValue": "515.500"
+        },
+        {
+          "labelledAt": "2026-11-11T15:00:00Z",
+          "localLabel": "2026-11-11T17:00:00+02:00",
+          "value": 518.49,
+          "rawValue": "518.490"
+        },
+        {
+          "labelledAt": "2026-11-11T16:00:00Z",
+          "localLabel": "2026-11-11T18:00:00+02:00",
+          "value": 520.63,
+          "rawValue": "520.630"
+        },
+        {
+          "labelledAt": "2026-11-11T17:00:00Z",
+          "localLabel": "2026-11-11T19:00:00+02:00",
+          "value": 521.88,
+          "rawValue": "521.880"
+        },
+        {
+          "labelledAt": "2026-11-11T18:00:00Z",
+          "localLabel": "2026-11-11T20:00:00+02:00",
+          "value": 525.22,
+          "rawValue": "525.220"
+        },
+        {
+          "labelledAt": "2026-11-11T19:00:00Z",
+          "localLabel": "2026-11-11T21:00:00+02:00",
+          "value": 528.11,
+          "rawValue": "528.110"
+        },
+        {
+          "labelledAt": "2026-11-11T20:00:00Z",
+          "localLabel": "2026-11-11T22:00:00+02:00",
+          "value": 529.05,
+          "rawValue": "529.050"
+        },
+        {
+          "labelledAt": "2026-11-11T21:00:00Z",
+          "localLabel": "2026-11-11T23:00:00+02:00",
+          "value": 529.68,
+          "rawValue": "529.680"
+        }
+      ]
+    },
+    {
+      "id": "41801:WT avg",
+      "stationCode": "41801",
+      "station": "Narva-Jõesuu",
+      "latitude": 59.468375,
+      "longitude": 28.042447,
+      "parameter": "WT avg",
+      "unit": "°C",
+      "statistic": "hourly mean",
+      "intervalEdge": null,
+      "gaugeZeroMetresEH2000": null,
+      "sourceFile": "estonia-3stations-2026-11-11.json",
+      "points": [
+        {
+          "labelledAt": "2026-11-10T22:00:00Z",
+          "localLabel": "2026-11-11T00:00:00+02:00",
+          "value": 5.5,
+          "rawValue": "5.500"
+        },
+        {
+          "labelledAt": "2026-11-10T23:00:00Z",
+          "localLabel": "2026-11-11T01:00:00+02:00",
+          "value": 5.5,
+          "rawValue": "5.500"
+        },
+        {
+          "labelledAt": "2026-11-11T00:00:00Z",
+          "localLabel": "2026-11-11T02:00:00+02:00",
+          "value": 5.5,
+          "rawValue": "5.500"
+        },
+        {
+          "labelledAt": "2026-11-11T01:00:00Z",
+          "localLabel": "2026-11-11T03:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T02:00:00Z",
+          "localLabel": "2026-11-11T04:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T03:00:00Z",
+          "localLabel": "2026-11-11T05:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T04:00:00Z",
+          "localLabel": "2026-11-11T06:00:00+02:00",
+          "value": 5.5,
+          "rawValue": "5.500"
+        },
+        {
+          "labelledAt": "2026-11-11T05:00:00Z",
+          "localLabel": "2026-11-11T07:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T06:00:00Z",
+          "localLabel": "2026-11-11T08:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T07:00:00Z",
+          "localLabel": "2026-11-11T09:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T08:00:00Z",
+          "localLabel": "2026-11-11T10:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T09:00:00Z",
+          "localLabel": "2026-11-11T11:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T10:00:00Z",
+          "localLabel": "2026-11-11T12:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T11:00:00Z",
+          "localLabel": "2026-11-11T13:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T12:00:00Z",
+          "localLabel": "2026-11-11T14:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T13:00:00Z",
+          "localLabel": "2026-11-11T15:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T14:00:00Z",
+          "localLabel": "2026-11-11T16:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T15:00:00Z",
+          "localLabel": "2026-11-11T17:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T16:00:00Z",
+          "localLabel": "2026-11-11T18:00:00+02:00",
+          "value": 5.4,
+          "rawValue": "5.400"
+        },
+        {
+          "labelledAt": "2026-11-11T17:00:00Z",
+          "localLabel": "2026-11-11T19:00:00+02:00",
+          "value": 5.3,
+          "rawValue": "5.300"
+        },
+        {
+          "labelledAt": "2026-11-11T18:00:00Z",
+          "localLabel": "2026-11-11T20:00:00+02:00",
+          "value": 5.3,
+          "rawValue": "5.300"
+        },
+        {
+          "labelledAt": "2026-11-11T19:00:00Z",
+          "localLabel": "2026-11-11T21:00:00+02:00",
+          "value": 5.3,
+          "rawValue": "5.300"
+        },
+        {
+          "labelledAt": "2026-11-11T20:00:00Z",
+          "localLabel": "2026-11-11T22:00:00+02:00",
+          "value": 5.3,
+          "rawValue": "5.300"
+        },
+        {
+          "labelledAt": "2026-11-11T21:00:00Z",
+          "localLabel": "2026-11-11T23:00:00+02:00",
+          "value": 5.3,
+          "rawValue": "5.300"
+        }
+      ]
+    },
+    {
+      "id": "86094:WL avg",
+      "stationCode": "86094",
+      "station": "Pirita",
+      "latitude": 59.46887,
+      "longitude": 24.820797,
+      "parameter": "WL avg",
+      "unit": "cm",
+      "statistic": "hourly mean",
+      "intervalEdge": null,
+      "gaugeZeroMetresEH2000": -5,
+      "sourceFile": "estonia-3stations-2026-11-11.json",
+      "points": [
+        {
+          "labelledAt": "2026-11-10T22:00:00Z",
+          "localLabel": "2026-11-11T00:00:00+02:00",
+          "value": 515.17,
+          "rawValue": "515.170"
+        },
+        {
+          "labelledAt": "2026-11-10T23:00:00Z",
+          "localLabel": "2026-11-11T01:00:00+02:00",
+          "value": 514.76,
+          "rawValue": "514.760"
+        },
+        {
+          "labelledAt": "2026-11-11T00:00:00Z",
+          "localLabel": "2026-11-11T02:00:00+02:00",
+          "value": 513.28,
+          "rawValue": "513.280"
+        },
+        {
+          "labelledAt": "2026-11-11T01:00:00Z",
+          "localLabel": "2026-11-11T03:00:00+02:00",
+          "value": 512.33,
+          "rawValue": "512.330"
+        },
+        {
+          "labelledAt": "2026-11-11T02:00:00Z",
+          "localLabel": "2026-11-11T04:00:00+02:00",
+          "value": 511.69,
+          "rawValue": "511.690"
+        },
+        {
+          "labelledAt": "2026-11-11T03:00:00Z",
+          "localLabel": "2026-11-11T05:00:00+02:00",
+          "value": 511.28,
+          "rawValue": "511.280"
+        },
+        {
+          "labelledAt": "2026-11-11T04:00:00Z",
+          "localLabel": "2026-11-11T06:00:00+02:00",
+          "value": 510.69,
+          "rawValue": "510.690"
+        },
+        {
+          "labelledAt": "2026-11-11T05:00:00Z",
+          "localLabel": "2026-11-11T07:00:00+02:00",
+          "value": 510.68,
+          "rawValue": "510.680"
+        },
+        {
+          "labelledAt": "2026-11-11T06:00:00Z",
+          "localLabel": "2026-11-11T08:00:00+02:00",
+          "value": 509.93,
+          "rawValue": "509.930"
+        },
+        {
+          "labelledAt": "2026-11-11T07:00:00Z",
+          "localLabel": "2026-11-11T09:00:00+02:00",
+          "value": 509.6,
+          "rawValue": "509.600"
+        },
+        {
+          "labelledAt": "2026-11-11T08:00:00Z",
+          "localLabel": "2026-11-11T10:00:00+02:00",
+          "value": 509.7,
+          "rawValue": "509.700"
+        },
+        {
+          "labelledAt": "2026-11-11T09:00:00Z",
+          "localLabel": "2026-11-11T11:00:00+02:00",
+          "value": 509.86,
+          "rawValue": "509.860"
+        },
+        {
+          "labelledAt": "2026-11-11T10:00:00Z",
+          "localLabel": "2026-11-11T12:00:00+02:00",
+          "value": 509.65,
+          "rawValue": "509.650"
+        },
+        {
+          "labelledAt": "2026-11-11T11:00:00Z",
+          "localLabel": "2026-11-11T13:00:00+02:00",
+          "value": 509.56,
+          "rawValue": "509.560"
+        },
+        {
+          "labelledAt": "2026-11-11T12:00:00Z",
+          "localLabel": "2026-11-11T14:00:00+02:00",
+          "value": 510.33,
+          "rawValue": "510.330"
+        },
+        {
+          "labelledAt": "2026-11-11T13:00:00Z",
+          "localLabel": "2026-11-11T15:00:00+02:00",
+          "value": 511.6,
+          "rawValue": "511.600"
+        },
+        {
+          "labelledAt": "2026-11-11T14:00:00Z",
+          "localLabel": "2026-11-11T16:00:00+02:00",
+          "value": 513.06,
+          "rawValue": "513.060"
+        },
+        {
+          "labelledAt": "2026-11-11T15:00:00Z",
+          "localLabel": "2026-11-11T17:00:00+02:00",
+          "value": 515.54,
+          "rawValue": "515.540"
+        },
+        {
+          "labelledAt": "2026-11-11T16:00:00Z",
+          "localLabel": "2026-11-11T18:00:00+02:00",
+          "value": 518.52,
+          "rawValue": "518.520"
+        },
+        {
+          "labelledAt": "2026-11-11T17:00:00Z",
+          "localLabel": "2026-11-11T19:00:00+02:00",
+          "value": 520.37,
+          "rawValue": "520.370"
+        },
+        {
+          "labelledAt": "2026-11-11T18:00:00Z",
+          "localLabel": "2026-11-11T20:00:00+02:00",
+          "value": 522.29,
+          "rawValue": "522.290"
+        },
+        {
+          "labelledAt": "2026-11-11T19:00:00Z",
+          "localLabel": "2026-11-11T21:00:00+02:00",
+          "value": 522.9,
+          "rawValue": "522.900"
+        },
+        {
+          "labelledAt": "2026-11-11T20:00:00Z",
+          "localLabel": "2026-11-11T22:00:00+02:00",
+          "value": 523.16,
+          "rawValue": "523.160"
+        },
+        {
+          "labelledAt": "2026-11-11T21:00:00Z",
+          "localLabel": "2026-11-11T23:00:00+02:00",
+          "value": 523.44,
+          "rawValue": "523.440"
+        }
+      ]
+    },
+    {
+      "id": "86094:WT avg",
+      "stationCode": "86094",
+      "station": "Pirita",
+      "latitude": 59.46887,
+      "longitude": 24.820797,
+      "parameter": "WT avg",
+      "unit": "°C",
+      "statistic": "hourly mean",
+      "intervalEdge": null,
+      "gaugeZeroMetresEH2000": null,
+      "sourceFile": "estonia-3stations-2026-11-11.json",
+      "points": [
+        {
+          "labelledAt": "2026-11-10T22:00:00Z",
+          "localLabel": "2026-11-11T00:00:00+02:00",
+          "value": 8.5,
+          "rawValue": "8.500"
+        },
+        {
+          "labelledAt": "2026-11-10T23:00:00Z",
+          "localLabel": "2026-11-11T01:00:00+02:00",
+          "value": 8.5,
+          "rawValue": "8.500"
+        },
+        {
+          "labelledAt": "2026-11-11T00:00:00Z",
+          "localLabel": "2026-11-11T02:00:00+02:00",
+          "value": 8.5,
+          "rawValue": "8.500"
+        },
+        {
+          "labelledAt": "2026-11-11T01:00:00Z",
+          "localLabel": "2026-11-11T03:00:00+02:00",
+          "value": 8.5,
+          "rawValue": "8.500"
+        },
+        {
+          "labelledAt": "2026-11-11T02:00:00Z",
+          "localLabel": "2026-11-11T04:00:00+02:00",
+          "value": 8.4,
+          "rawValue": "8.400"
+        },
+        {
+          "labelledAt": "2026-11-11T03:00:00Z",
+          "localLabel": "2026-11-11T05:00:00+02:00",
+          "value": 8.3,
+          "rawValue": "8.300"
+        },
+        {
+          "labelledAt": "2026-11-11T04:00:00Z",
+          "localLabel": "2026-11-11T06:00:00+02:00",
+          "value": 8.2,
+          "rawValue": "8.200"
+        },
+        {
+          "labelledAt": "2026-11-11T05:00:00Z",
+          "localLabel": "2026-11-11T07:00:00+02:00",
+          "value": 8.3,
+          "rawValue": "8.300"
+        },
+        {
+          "labelledAt": "2026-11-11T06:00:00Z",
+          "localLabel": "2026-11-11T08:00:00+02:00",
+          "value": 8.2,
+          "rawValue": "8.200"
+        },
+        {
+          "labelledAt": "2026-11-11T07:00:00Z",
+          "localLabel": "2026-11-11T09:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T08:00:00Z",
+          "localLabel": "2026-11-11T10:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T09:00:00Z",
+          "localLabel": "2026-11-11T11:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T10:00:00Z",
+          "localLabel": "2026-11-11T12:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T11:00:00Z",
+          "localLabel": "2026-11-11T13:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T12:00:00Z",
+          "localLabel": "2026-11-11T14:00:00+02:00",
+          "value": 8.0,
+          "rawValue": "8.000"
+        },
+        {
+          "labelledAt": "2026-11-11T13:00:00Z",
+          "localLabel": "2026-11-11T15:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T14:00:00Z",
+          "localLabel": "2026-11-11T16:00:00+02:00",
+          "value": 8.0,
+          "rawValue": "8.000"
+        },
+        {
+          "labelledAt": "2026-11-11T15:00:00Z",
+          "localLabel": "2026-11-11T17:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T16:00:00Z",
+          "localLabel": "2026-11-11T18:00:00+02:00",
+          "value": 8.0,
+          "rawValue": "8.000"
+        },
+        {
+          "labelledAt": "2026-11-11T17:00:00Z",
+          "localLabel": "2026-11-11T19:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T18:00:00Z",
+          "localLabel": "2026-11-11T20:00:00+02:00",
+          "value": 7.9,
+          "rawValue": "7.900"
+        },
+        {
+          "labelledAt": "2026-11-11T19:00:00Z",
+          "localLabel": "2026-11-11T21:00:00+02:00",
+          "value": 8.1,
+          "rawValue": "8.100"
+        },
+        {
+          "labelledAt": "2026-11-11T20:00:00Z",
+          "localLabel": "2026-11-11T22:00:00+02:00",
+          "value": 8.11,
+          "rawValue": "8.110"
+        },
+        {
+          "labelledAt": "2026-11-11T21:00:00Z",
+          "localLabel": "2026-11-11T23:00:00+02:00",
+          "value": 8.13,
+          "rawValue": "8.130"
+        }
+      ]
+    }
+  ],
+  "reports": [
+    {
+      "id": "EFHK:2026-11-10T22:20:00Z:0",
+      "station": "EFHK",
+      "observedAt": "2026-11-10T22:20:00Z",
+      "archiveValidAt": "2026-11-10T22:20:00Z",
+      "raw": "EFHK 102220Z 20010KT 9999 BKN020 05/03 Q1007 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-10T22:20:00Z:1",
+      "station": "EETN",
+      "observedAt": "2026-11-10T22:20:00Z",
+      "archiveValidAt": "2026-11-10T22:20:00Z",
+      "raw": "EETN 102220Z 19008KT 9999 SCT044 02/M01 Q1008",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-10T22:50:00Z:2",
+      "station": "EFHK",
+      "observedAt": "2026-11-10T22:50:00Z",
+      "archiveValidAt": "2026-11-10T22:50:00Z",
+      "raw": "EFHK 102250Z 20009KT 9999 -DZ BKN023 05/03 Q1006 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-10T22:50:00Z:3",
+      "station": "EETN",
+      "observedAt": "2026-11-10T22:50:00Z",
+      "archiveValidAt": "2026-11-10T22:50:00Z",
+      "raw": "EETN 102250Z 19007KT 9999 SCT044 02/M01 Q1007",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-10T23:20:00Z:4",
+      "station": "EETN",
+      "observedAt": "2026-11-10T23:20:00Z",
+      "archiveValidAt": "2026-11-10T23:20:00Z",
+      "raw": "EETN 102320Z 18006KT 9999 SCT048 02/M01 Q1007",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-10T23:20:00Z:5",
+      "station": "EFHK",
+      "observedAt": "2026-11-10T23:20:00Z",
+      "archiveValidAt": "2026-11-10T23:20:00Z",
+      "raw": "EFHK 102320Z 21007KT 9999 -RA BKN025 05/03 Q1006 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-10T23:50:00Z:6",
+      "station": "EETN",
+      "observedAt": "2026-11-10T23:50:00Z",
+      "archiveValidAt": "2026-11-10T23:50:00Z",
+      "raw": "EETN 102350Z 19006KT 9999 FEW048 02/M01 Q1007",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-10T23:50:00Z:7",
+      "station": "EFHK",
+      "observedAt": "2026-11-10T23:50:00Z",
+      "archiveValidAt": "2026-11-10T23:50:00Z",
+      "raw": "EFHK 102350Z 20008KT 170V230 9999 -RA FEW015 BKN020 05/03 Q1006 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T00:20:00Z:8",
+      "station": "EETN",
+      "observedAt": "2026-11-11T00:20:00Z",
+      "archiveValidAt": "2026-11-11T00:20:00Z",
+      "raw": "EETN 110020Z 18006KT CAVOK 01/M01 Q1007",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T00:20:00Z:9",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T00:20:00Z",
+      "archiveValidAt": "2026-11-11T00:20:00Z",
+      "raw": "EFHK 110020Z 19008KT 9999 -RA FEW015 BKN020 BKN035 05/03 Q1006 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T00:50:00Z:10",
+      "station": "EETN",
+      "observedAt": "2026-11-11T00:50:00Z",
+      "archiveValidAt": "2026-11-11T00:50:00Z",
+      "raw": "EETN 110050Z VRB02KT CAVOK 01/M01 Q1007",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T00:50:00Z:11",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T00:50:00Z",
+      "archiveValidAt": "2026-11-11T00:50:00Z",
+      "raw": "EFHK 110050Z 19010KT 9999 -DZRA FEW009 BKN017 BKN038 04/03 Q1006 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T01:20:00Z:12",
+      "station": "EETN",
+      "observedAt": "2026-11-11T01:20:00Z",
+      "archiveValidAt": "2026-11-11T01:20:00Z",
+      "raw": "EETN 110120Z 13003KT CAVOK 00/M01 Q1006",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T01:20:00Z:13",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T01:20:00Z",
+      "archiveValidAt": "2026-11-11T01:20:00Z",
+      "raw": "EFHK 110120Z 19007KT 7000 -DZRA BKN007 BKN017 04/04 Q1006 TEMPO 9000 SCT007 BKN017",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T01:50:00Z:14",
+      "station": "EETN",
+      "observedAt": "2026-11-11T01:50:00Z",
+      "archiveValidAt": "2026-11-11T01:50:00Z",
+      "raw": "EETN 110150Z 15003KT CAVOK 01/M01 Q1006",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T01:50:00Z:15",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T01:50:00Z",
+      "archiveValidAt": "2026-11-11T01:50:00Z",
+      "raw": "EFHK 110150Z 19007KT 5000 -DZRA BKN005 BKN017 BKN040 04/04 Q1006 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T02:20:00Z:16",
+      "station": "EETN",
+      "observedAt": "2026-11-11T02:20:00Z",
+      "archiveValidAt": "2026-11-11T02:20:00Z",
+      "raw": "EETN 110220Z 17004KT CAVOK 01/M01 Q1006",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T02:20:00Z:17",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T02:20:00Z",
+      "archiveValidAt": "2026-11-11T02:20:00Z",
+      "raw": "EFHK 110220Z 20007KT 6000 -DZ VCSH SCT005 FEW020TCU BKN042 04/04 Q1005 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T02:50:00Z:18",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T02:50:00Z",
+      "archiveValidAt": "2026-11-11T02:50:00Z",
+      "raw": "EFHK 110250Z 20006KT 9999 -RA FEW006 FEW020TCU BKN026 04/04 Q1005 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T02:50:00Z:19",
+      "station": "EETN",
+      "observedAt": "2026-11-11T02:50:00Z",
+      "archiveValidAt": "2026-11-11T02:50:00Z",
+      "raw": "EETN 110250Z 16004KT 9999 BKN021 01/M01 Q1006",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T03:20:00Z:20",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T03:20:00Z",
+      "archiveValidAt": "2026-11-11T03:20:00Z",
+      "raw": "EFHK 110320Z 18004KT 9999 -RA BKN025 BKN043 04/03 Q1005 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T03:20:00Z:21",
+      "station": "EETN",
+      "observedAt": "2026-11-11T03:20:00Z",
+      "archiveValidAt": "2026-11-11T03:20:00Z",
+      "raw": "EETN 110320Z 12003KT 9999 SCT020 01/M01 Q1006",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T03:50:00Z:22",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T03:50:00Z",
+      "archiveValidAt": "2026-11-11T03:50:00Z",
+      "raw": "EFHK 110350Z 14005KT 9999 -RA VCSH FEW020TCU BKN026 04/03 Q1004 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T03:50:00Z:23",
+      "station": "EETN",
+      "observedAt": "2026-11-11T03:50:00Z",
+      "archiveValidAt": "2026-11-11T03:50:00Z",
+      "raw": "EETN 110350Z 14003KT 9999 SCT020 01/M01 Q1005 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T04:20:00Z:24",
+      "station": "EETN",
+      "observedAt": "2026-11-11T04:20:00Z",
+      "archiveValidAt": "2026-11-11T04:20:00Z",
+      "raw": "EETN 110420Z 17004KT 9999 SCT019 01/M01 Q1005 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T04:20:00Z:25",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T04:20:00Z",
+      "archiveValidAt": "2026-11-11T04:20:00Z",
+      "raw": "EFHK 110420Z 18004KT 9999 -RADZ SCT020 BKN030 04/04 Q1004 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T04:50:00Z:26",
+      "station": "EETN",
+      "observedAt": "2026-11-11T04:50:00Z",
+      "archiveValidAt": "2026-11-11T04:50:00Z",
+      "raw": "EETN 110450Z 16004KT 9999 BKN019 01/M01 Q1005 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T04:50:00Z:27",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T04:50:00Z",
+      "archiveValidAt": "2026-11-11T04:50:00Z",
+      "raw": "EFHK 110450Z 15006KT 7000 -DZ FEW010 BKN020 04/04 Q1004 TEMPO BKN009",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T05:20:00Z:28",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T05:20:00Z",
+      "archiveValidAt": "2026-11-11T05:20:00Z",
+      "raw": "EFHK 110520Z 19003KT 170V250 9999 -RADZ SCT006 BKN040 04/04 Q1004 TEMPO 7000 BKN010",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T05:20:00Z:29",
+      "station": "EETN",
+      "observedAt": "2026-11-11T05:20:00Z",
+      "archiveValidAt": "2026-11-11T05:20:00Z",
+      "raw": "EETN 110520Z 16005KT 9999 BKN019 01/M01 Q1005 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T05:50:00Z:30",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T05:50:00Z",
+      "archiveValidAt": "2026-11-11T05:50:00Z",
+      "raw": "EFHK 110550Z 14003KT 110V190 6000 -RADZ SCT009 BKN040 04/04 Q1004 TEMPO 9999 BKN010",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T05:50:00Z:31",
+      "station": "EETN",
+      "observedAt": "2026-11-11T05:50:00Z",
+      "archiveValidAt": "2026-11-11T05:50:00Z",
+      "raw": "EETN 110550Z 17006KT 9999 OVC020 01/M01 Q1005 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T06:20:00Z:32",
+      "station": "EETN",
+      "observedAt": "2026-11-11T06:20:00Z",
+      "archiveValidAt": "2026-11-11T06:20:00Z",
+      "raw": "EETN 110620Z 15005KT 9999 BKN023 01/M01 Q1004 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T06:20:00Z:33",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T06:20:00Z",
+      "archiveValidAt": "2026-11-11T06:20:00Z",
+      "raw": "EFHK 110620Z 10003KT 4500 -RADZ FEW008 BKN010 BKN043 04/04 Q1003 TEMPO 9999",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T06:50:00Z:34",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T06:50:00Z",
+      "archiveValidAt": "2026-11-11T06:50:00Z",
+      "raw": "EFHK 110650Z 14005KT 6000 -RADZ FEW008 BKN010 BKN045 04/04 Q1003 BECMG 9999",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T06:50:00Z:35",
+      "station": "EETN",
+      "observedAt": "2026-11-11T06:50:00Z",
+      "archiveValidAt": "2026-11-11T06:50:00Z",
+      "raw": "EETN 110650Z 16006KT 120V190 9999 BKN025 01/M01 Q1004 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T07:20:00Z:36",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T07:20:00Z",
+      "archiveValidAt": "2026-11-11T07:20:00Z",
+      "raw": "EFHK 110720Z 15005KT 9000 -RADZ FEW008 BKN011 BKN020 04/04 Q1003 TEMPO 7000",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T07:20:00Z:37",
+      "station": "EETN",
+      "observedAt": "2026-11-11T07:20:00Z",
+      "archiveValidAt": "2026-11-11T07:20:00Z",
+      "raw": "EETN 110720Z 16005KT 130V190 9999 OVC023 01/M01 Q1004 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T07:50:00Z:38",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T07:50:00Z",
+      "archiveValidAt": "2026-11-11T07:50:00Z",
+      "raw": "EFHK 110750Z 14007KT 9999 -RADZ FEW008 BKN013 BKN020 05/04 Q1003 TEMPO 7000",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T07:50:00Z:39",
+      "station": "EETN",
+      "observedAt": "2026-11-11T07:50:00Z",
+      "archiveValidAt": "2026-11-11T07:50:00Z",
+      "raw": "EETN 110750Z 18004KT 150V210 9999 BKN026 01/M01 Q1004 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T08:20:00Z:40",
+      "station": "EETN",
+      "observedAt": "2026-11-11T08:20:00Z",
+      "archiveValidAt": "2026-11-11T08:20:00Z",
+      "raw": "EETN 110820Z 16005KT 9999 FEW007 BKN023 01/M01 Q1004 TEMPO BKN006",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T08:20:00Z:41",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T08:20:00Z",
+      "archiveValidAt": "2026-11-11T08:20:00Z",
+      "raw": "EFHK 110820Z 14006KT 9999 -RADZ FEW009 BKN013 BKN020 05/04 Q1003 TEMPO 7000",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T08:50:00Z:42",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T08:50:00Z",
+      "archiveValidAt": "2026-11-11T08:50:00Z",
+      "raw": "EFHK 110850Z 15006KT 9999 -RADZ FEW009 BKN014 BKN018 05/04 Q1003 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T08:50:00Z:43",
+      "station": "EETN",
+      "observedAt": "2026-11-11T08:50:00Z",
+      "archiveValidAt": "2026-11-11T08:50:00Z",
+      "raw": "EETN 110850Z 16006KT 9999 BKN022 01/M00 Q1004 TEMPO BKN007",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T09:20:00Z:44",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T09:20:00Z",
+      "archiveValidAt": "2026-11-11T09:20:00Z",
+      "raw": "EFHK 110920Z 17005KT 9999 -RADZ BKN010 BKN018 05/04 Q1003 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T09:20:00Z:45",
+      "station": "EETN",
+      "observedAt": "2026-11-11T09:20:00Z",
+      "archiveValidAt": "2026-11-11T09:20:00Z",
+      "raw": "EETN 110920Z 15005KT 9999 BKN020 01/M00 Q1004 TEMPO BKN007",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T09:50:00Z:46",
+      "station": "EETN",
+      "observedAt": "2026-11-11T09:50:00Z",
+      "archiveValidAt": "2026-11-11T09:50:00Z",
+      "raw": "EETN 110950Z 16005KT 9999 FEW020 01/M00 Q1003 TEMPO BKN007",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T09:50:00Z:47",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T09:50:00Z",
+      "archiveValidAt": "2026-11-11T09:50:00Z",
+      "raw": "EFHK 110950Z 18006KT 9999 FEW009 BKN018 05/04 Q1003 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T10:20:00Z:48",
+      "station": "EETN",
+      "observedAt": "2026-11-11T10:20:00Z",
+      "archiveValidAt": "2026-11-11T10:20:00Z",
+      "raw": "EETN 111020Z 17005KT 130V190 9999 FEW006 SCT020 02/00 Q1003 TEMPO BKN006",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T10:20:00Z:49",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T10:20:00Z",
+      "archiveValidAt": "2026-11-11T10:20:00Z",
+      "raw": "EFHK 111020Z 16006KT 9999 FEW014 BKN018 05/04 Q1002 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T10:50:00Z:50",
+      "station": "EETN",
+      "observedAt": "2026-11-11T10:50:00Z",
+      "archiveValidAt": "2026-11-11T10:50:00Z",
+      "raw": "EETN 111050Z 17007KT 130V190 9999 BKN006 BKN014 OVC019 02/00 Q1003 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T10:50:00Z:51",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T10:50:00Z",
+      "archiveValidAt": "2026-11-11T10:50:00Z",
+      "raw": "EFHK 111050Z 17006KT 140V200 9999 SCT014 BKN020 05/04 Q1002 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T11:20:00Z:52",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T11:20:00Z",
+      "archiveValidAt": "2026-11-11T11:20:00Z",
+      "raw": "EFHK 111120Z 17006KT 9999 SCT013 BKN018 05/03 Q1002 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T11:20:00Z:53",
+      "station": "EETN",
+      "observedAt": "2026-11-11T11:20:00Z",
+      "archiveValidAt": "2026-11-11T11:20:00Z",
+      "raw": "EETN 111120Z 15006KT 9000 BKN007 OVC015 02/01 Q1003 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T11:50:00Z:54",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T11:50:00Z",
+      "archiveValidAt": "2026-11-11T11:50:00Z",
+      "raw": "EFHK 111150Z 19007KT 9999 FEW013 SCT016 BKN029 05/03 Q1002 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T11:50:00Z:55",
+      "station": "EETN",
+      "observedAt": "2026-11-11T11:50:00Z",
+      "archiveValidAt": "2026-11-11T11:50:00Z",
+      "raw": "EETN 111150Z 15006KT 9000 OVC007 02/01 Q1002 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T12:20:00Z:56",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T12:20:00Z",
+      "archiveValidAt": "2026-11-11T12:20:00Z",
+      "raw": "EFHK 111220Z 18006KT 9999 FEW014 BKN016 BKN028 05/03 Q1002 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T12:20:00Z:57",
+      "station": "EETN",
+      "observedAt": "2026-11-11T12:20:00Z",
+      "archiveValidAt": "2026-11-11T12:20:00Z",
+      "raw": "EETN 111220Z 15006KT 9999 BKN007 02/01 Q1002 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T12:50:00Z:58",
+      "station": "EETN",
+      "observedAt": "2026-11-11T12:50:00Z",
+      "archiveValidAt": "2026-11-11T12:50:00Z",
+      "raw": "EETN 111250Z 16005KT 9999 SCT007 BKN048 02/01 Q1002 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T12:50:00Z:59",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T12:50:00Z",
+      "archiveValidAt": "2026-11-11T12:50:00Z",
+      "raw": "EFHK 111250Z 18007KT 150V210 9999 BKN018 BKN028 05/02 Q1001 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T13:20:00Z:60",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T13:20:00Z",
+      "archiveValidAt": "2026-11-11T13:20:00Z",
+      "raw": "EFHK 111320Z 19006KT 9999 SCT018 BKN028 05/02 Q1001 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T13:20:00Z:61",
+      "station": "EETN",
+      "observedAt": "2026-11-11T13:20:00Z",
+      "archiveValidAt": "2026-11-11T13:20:00Z",
+      "raw": "EETN 111320Z 16006KT 9999 FEW007 02/01 Q1002 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T13:50:00Z:62",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T13:50:00Z",
+      "archiveValidAt": "2026-11-11T13:50:00Z",
+      "raw": "EFHK 111350Z 17004KT 9999 SCT024 04/02 Q1001 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T13:50:00Z:63",
+      "station": "EETN",
+      "observedAt": "2026-11-11T13:50:00Z",
+      "archiveValidAt": "2026-11-11T13:50:00Z",
+      "raw": "EETN 111350Z 15006KT 9000 FEW017 SCT023 02/01 Q1002 NOSIG",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T14:20:00Z:64",
+      "station": "EETN",
+      "observedAt": "2026-11-11T14:20:00Z",
+      "archiveValidAt": "2026-11-11T14:20:00Z",
+      "raw": "EETN 111420Z 15006KT 9000 BKN015 02/01 Q1002 TEMPO BKN008",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T14:20:00Z:65",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T14:20:00Z",
+      "archiveValidAt": "2026-11-11T14:20:00Z",
+      "raw": "EFHK 111420Z 13004KT 9999 FEW017 BKN025 04/02 Q1001 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T14:50:00Z:66",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T14:50:00Z",
+      "archiveValidAt": "2026-11-11T14:50:00Z",
+      "raw": "EFHK 111450Z 13004KT 100V180 9999 SCT017 SCT025 04/02 Q1001 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T14:50:00Z:67",
+      "station": "EETN",
+      "observedAt": "2026-11-11T14:50:00Z",
+      "archiveValidAt": "2026-11-11T14:50:00Z",
+      "raw": "EETN 111450Z 15007KT 9000 FEW007 BKN016 02/01 Q1001 TEMPO BKN007",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T15:20:00Z:68",
+      "station": "EETN",
+      "observedAt": "2026-11-11T15:20:00Z",
+      "archiveValidAt": "2026-11-11T15:20:00Z",
+      "raw": "EETN 111520Z 15006KT 120V180 9000 SCT006 BKN013 02/01 Q1001 TEMPO BKN006",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T15:20:00Z:69",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T15:20:00Z",
+      "archiveValidAt": "2026-11-11T15:20:00Z",
+      "raw": "EFHK 111520Z 14003KT 100V200 9999 SCT014 SCT030 04/03 Q1001 TEMPO BKN014",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T15:50:00Z:70",
+      "station": "EETN",
+      "observedAt": "2026-11-11T15:50:00Z",
+      "archiveValidAt": "2026-11-11T15:50:00Z",
+      "raw": "EETN 111550Z 15006KT 8000 SCT006 OVC014 02/01 Q1001 TEMPO BKN005",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T15:50:00Z:71",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T15:50:00Z",
+      "archiveValidAt": "2026-11-11T15:50:00Z",
+      "raw": "EFHK 111550Z 12004KT 9999 FEW014 SCT020 BKN028 04/03 Q1000 TEMPO BKN014",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T16:20:00Z:72",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T16:20:00Z",
+      "archiveValidAt": "2026-11-11T16:20:00Z",
+      "raw": "EFHK 111620Z 14005KT 9999 SCT014 BKN026 04/03 Q1000 TEMPO BKN014",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T16:20:00Z:73",
+      "station": "EETN",
+      "observedAt": "2026-11-11T16:20:00Z",
+      "archiveValidAt": "2026-11-11T16:20:00Z",
+      "raw": "EETN 111620Z 15005KT 110V180 8000 SCT006 BKN014 OVC018 02/01 Q1001 TEMPO BKN005",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T16:50:00Z:74",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T16:50:00Z",
+      "archiveValidAt": "2026-11-11T16:50:00Z",
+      "raw": "EFHK 111650Z 16004KT 9999 FEW028 04/02 Q1000 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T16:50:00Z:75",
+      "station": "EETN",
+      "observedAt": "2026-11-11T16:50:00Z",
+      "archiveValidAt": "2026-11-11T16:50:00Z",
+      "raw": "EETN 111650Z 15005KT 120V180 6000 SCT006 BKN012 OVC036 02/01 Q1001 TEMPO 4000 BR BKN004",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T17:20:00Z:76",
+      "station": "EETN",
+      "observedAt": "2026-11-11T17:20:00Z",
+      "archiveValidAt": "2026-11-11T17:20:00Z",
+      "raw": "EETN 111720Z 16006KT 7000 SCT005 BKN020 BKN035 02/01 Q1000 TEMPO 4000 BR BKN004",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T17:20:00Z:77",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T17:20:00Z",
+      "archiveValidAt": "2026-11-11T17:20:00Z",
+      "raw": "EFHK 111720Z 12004KT 9999 FEW017 BKN020 03/02 Q1000 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T17:50:00Z:78",
+      "station": "EETN",
+      "observedAt": "2026-11-11T17:50:00Z",
+      "archiveValidAt": "2026-11-11T17:50:00Z",
+      "raw": "EETN 111750Z 15006KT 6000 OVC006 02/01 Q1000 TEMPO 4000 BR",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T17:50:00Z:79",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T17:50:00Z",
+      "archiveValidAt": "2026-11-11T17:50:00Z",
+      "raw": "EFHK 111750Z 11005KT 9999 FEW017 03/02 Q1000 NOSIG",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T18:20:00Z:80",
+      "station": "EETN",
+      "observedAt": "2026-11-11T18:20:00Z",
+      "archiveValidAt": "2026-11-11T18:20:00Z",
+      "raw": "EETN 111820Z 16005KT 6000 BKN006 02/01 Q1000 TEMPO 4000 BR BKN004",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T18:20:00Z:81",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T18:20:00Z",
+      "archiveValidAt": "2026-11-11T18:20:00Z",
+      "raw": "EFHK 111820Z 12004KT 9999 FEW017 03/02 Q1000 TEMPO BKN014",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T18:50:00Z:82",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T18:50:00Z",
+      "archiveValidAt": "2026-11-11T18:50:00Z",
+      "raw": "EFHK 111850Z 11004KT 9999 FEW014 SCT024 03/02 Q1000 TEMPO BKN012",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T18:50:00Z:83",
+      "station": "EETN",
+      "observedAt": "2026-11-11T18:50:00Z",
+      "archiveValidAt": "2026-11-11T18:50:00Z",
+      "raw": "EETN 111850Z 16005KT 6000 BKN006 02/01 Q1000 TEMPO 4000 BR BKN004",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T19:20:00Z:84",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T19:20:00Z",
+      "archiveValidAt": "2026-11-11T19:20:00Z",
+      "raw": "EFHK 111920Z 11004KT 9999 FEW013 03/02 Q0999 TEMPO 7000 -SHRA BKN012 FEW020CB",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T19:20:00Z:85",
+      "station": "EETN",
+      "observedAt": "2026-11-11T19:20:00Z",
+      "archiveValidAt": "2026-11-11T19:20:00Z",
+      "raw": "EETN 111920Z 16007KT 5000 BR OVC004 02/02 Q1000 TEMPO 3000",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T19:50:00Z:86",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T19:50:00Z",
+      "archiveValidAt": "2026-11-11T19:50:00Z",
+      "raw": "EFHK 111950Z 14005KT 9999 FEW013 03/02 Q0999 TEMPO BKN012 FEW020TCU",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T19:50:00Z:87",
+      "station": "EETN",
+      "observedAt": "2026-11-11T19:50:00Z",
+      "archiveValidAt": "2026-11-11T19:50:00Z",
+      "raw": "EETN 111950Z 16006KT 5000 BR OVC004 02/02 Q1000 TEMPO 3000",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T20:20:00Z:88",
+      "station": "EETN",
+      "observedAt": "2026-11-11T20:20:00Z",
+      "archiveValidAt": "2026-11-11T20:20:00Z",
+      "raw": "EETN 112020Z 17007KT 5000 BR OVC004 02/02 Q0999 TEMPO 3000",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T20:20:00Z:89",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T20:20:00Z",
+      "archiveValidAt": "2026-11-11T20:20:00Z",
+      "raw": "EFHK 112020Z 12004KT 9999 FEW011 03/02 Q0999 TEMPO BKN012 FEW020TCU",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T20:50:00Z:90",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T20:50:00Z",
+      "archiveValidAt": "2026-11-11T20:50:00Z",
+      "raw": "EFHK 112050Z 12004KT 9999 FEW011 SCT016 02/02 Q0999 TEMPO BKN012 FEW020TCU",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T20:50:00Z:91",
+      "station": "EETN",
+      "observedAt": "2026-11-11T20:50:00Z",
+      "archiveValidAt": "2026-11-11T20:50:00Z",
+      "raw": "EETN 112050Z 16007KT 5000 BR OVC004 02/02 Q0999 TEMPO 3000",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T21:20:00Z:92",
+      "station": "EETN",
+      "observedAt": "2026-11-11T21:20:00Z",
+      "archiveValidAt": "2026-11-11T21:20:00Z",
+      "raw": "EETN 112120Z 15007KT 4200 BR OVC004 02/02 Q0999 TEMPO 2000",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T21:20:00Z:93",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T21:20:00Z",
+      "archiveValidAt": "2026-11-11T21:20:00Z",
+      "raw": "EFHK 112120Z 11004KT 9999 FEW016 SCT036 01/01 Q0999 TEMPO BKN012 FEW020CB",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EETN:2026-11-11T21:50:00Z:94",
+      "station": "EETN",
+      "observedAt": "2026-11-11T21:50:00Z",
+      "archiveValidAt": "2026-11-11T21:50:00Z",
+      "raw": "EETN 112150Z 16007KT 3400 BR OVC003 02/02 Q0999 TEMPO 2000",
+      "latitude": 59.4133,
+      "longitude": 24.8328,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    },
+    {
+      "id": "EFHK:2026-11-11T21:50:00Z:95",
+      "station": "EFHK",
+      "observedAt": "2026-11-11T21:50:00Z",
+      "archiveValidAt": "2026-11-11T21:50:00Z",
+      "raw": "EFHK 112150Z 11004KT 9999 FEW016 BKN035 03/02 Q0999 TEMPO BKN012 FEW020CB",
+      "latitude": 60.3172,
+      "longitude": 24.9633,
+      "sourceFile": "metar-EFHK-EETN-2026-11-11.csv"
+    }
+  ],
+  "frames": [
+    {
+      "id": "2026-11-11T10:00:00Z",
+      "observedAt": "2026-11-11T10:00:00Z",
+      "sourceFile": "fmi-radar-1000-gulf.tif",
+      "metadataFile": "fmi-weather-radar-2026-11-11.xml",
+      "image": "fmi-radar-1000-gulf.png",
+      "pixels": "fmi-radar-1000-gulf.bin",
+      "width": 1100,
+      "height": 400,
+      "noDataCode": 0,
+      "gain": 0.5,
+      "offset": -32,
+      "bbox": [
+        23,
+        59,
+        28.5,
+        61
+      ],
+      "crs": "EPSG:4326",
+      "pixelSizeDegrees": 0.005
+    },
+    {
+      "id": "2026-11-11T10:05:00Z",
+      "observedAt": "2026-11-11T10:05:00Z",
+      "sourceFile": "fmi-radar-1005-gulf.tif",
+      "metadataFile": "fmi-weather-radar-2026-11-11.xml",
+      "image": "fmi-radar-1005-gulf.png",
+      "pixels": "fmi-radar-1005-gulf.bin",
+      "width": 1100,
+      "height": 400,
+      "noDataCode": 0,
+      "gain": 0.5,
+      "offset": -32,
+      "bbox": [
+        23,
+        59,
+        28.5,
+        61
+      ],
+      "crs": "EPSG:4326",
+      "pixelSizeDegrees": 0.005
+    },
+    {
+      "id": "2026-11-11T10:10:00Z",
+      "observedAt": "2026-11-11T10:10:00Z",
+      "sourceFile": "fmi-radar-1010-gulf.tif",
+      "metadataFile": "fmi-weather-radar-2026-11-11.xml",
+      "image": "fmi-radar-1010-gulf.png",
+      "pixels": "fmi-radar-1010-gulf.bin",
+      "width": 1100,
+      "height": 400,
+      "noDataCode": 0,
+      "gain": 0.5,
+      "offset": -32,
+      "bbox": [
+        23,
+        59,
+        28.5,
+        61
+      ],
+      "crs": "EPSG:4326",
+      "pixelSizeDegrees": 0.005
+    },
+    {
+      "id": "2026-11-11T10:15:00Z",
+      "observedAt": "2026-11-11T10:15:00Z",
+      "sourceFile": "fmi-radar-1015-gulf.tif",
+      "metadataFile": "fmi-weather-radar-2026-11-11.xml",
+      "image": "fmi-radar-1015-gulf.png",
+      "pixels": "fmi-radar-1015-gulf.bin",
+      "width": 1100,
+      "height": 400,
+      "noDataCode": 0,
+      "gain": 0.5,
+      "offset": -32,
+      "bbox": [
+        23,
+        59,
+        28.5,
+        61
+      ],
+      "crs": "EPSG:4326",
+      "pixelSizeDegrees": 0.005
+    }
+  ],
+  "images": [
+    {
+      "id": "terra",
+      "platform": "Terra",
+      "instrument": "MODIS",
+      "layer": "MODIS_Terra_CorrectedReflectance_TrueColor",
+      "productDateUtc": "2026-11-11",
+      "acquiredAt": null,
+      "publishedAt": null,
+      "sourceFile": "nasa-modis-terra-2026-11-11.png",
+      "domainFile": "nasa-modis-terra-domains-rawslash.xml",
+      "bbox": [
+        23,
+        59,
+        28.5,
+        61
+      ],
+      "crs": "EPSG:4326",
+      "width": 1100,
+      "height": 400
+    },
+    {
+      "id": "aqua",
+      "platform": "Aqua",
+      "instrument": "MODIS",
+      "layer": "MODIS_Aqua_CorrectedReflectance_TrueColor",
+      "productDateUtc": "2026-11-11",
+      "acquiredAt": null,
+      "publishedAt": null,
+      "sourceFile": "nasa-modis-aqua-2026-11-11.png",
+      "domainFile": "nasa-modis-aqua-domains-rawslash.xml",
+      "bbox": [
+        23,
+        59,
+        28.5,
+        61
+      ],
+      "crs": "EPSG:4326",
+      "width": 1100,
+      "height": 400
+    }
+  ],
+  "receipts": {
+    "estonia-3stations-2026-11-11.json": {
+      "url": "https://keskkonnaandmed.envir.ee/f_hydroseire?jaam_kood=in.%2886094%2C41801%2C26045%29&aegrida_nimi=in.%28%22WL+avg%22%2C%22WT+avg%22%29&timeline_ts_utc=gte.2026-11-10T22%3A00%3A00&timeline_ts_utc=lt.2026-11-11T22%3A00%3A00&order=jaam_nimi%2Caegrida_nimi%2Ctimeline_ts_utc&limit=300",
+      "requestedAt": "2026-11-13T16:13:53.333349+00:00",
+      "file": "estonia-3stations-2026-11-11.json",
+      "status": 200,
+      "finalUrl": "https://keskkonnaandmed.envir.ee/f_hydroseire?jaam_kood=in.%2886094%2C41801%2C26045%29&aegrida_nimi=in.%28%22WL+avg%22%2C%22WT+avg%22%29&timeline_ts_utc=gte.2026-11-10T22%3A00%3A00&timeline_ts_utc=lt.2026-11-11T22%3A00%3A00&order=jaam_nimi%2Caegrida_nimi%2Ctimeline_ts_utc&limit=300",
+      "serverDate": "Fri, 13 Nov 2026 16:14:04 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "application/json; charset=utf-8",
+      "contentRange": "0-143/144",
+      "completedAt": "2026-11-13T16:14:04.673218+00:00",
+      "bytes": 54286,
+      "sha256": "d7d3cfc7fc4ca23d6d15067e312eb192d12d5c70f06e0be18fdfdb65d8da35d3",
+      "wireSha256": "d7d3cfc7fc4ca23d6d15067e312eb192d12d5c70f06e0be18fdfdb65d8da35d3"
+    },
+    "metar-EFHK-EETN-2026-11-11.csv": {
+      "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EFHK&station=EETN&data=metar&sts=2026-11-10T22%3A00%3A00Z&ets=2026-11-11T22%3A00%3A00Z&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&direct=no",
+      "requestedAt": "2026-11-13T16:10:07.596407+00:00",
+      "file": "metar-EFHK-EETN-2026-11-11.csv",
+      "status": 200,
+      "finalUrl": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EFHK&station=EETN&data=metar&sts=2026-11-10T22%3A00%3A00Z&ets=2026-11-11T22%3A00%3A00Z&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&direct=no",
+      "serverDate": "Fri, 13 Nov 2026 16:10:08 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "text/plain; charset=UTF-8",
+      "completedAt": "2026-11-13T16:10:08.461865+00:00",
+      "bytes": 10221,
+      "sha256": "0eabe7dea93af949a51162b20352dbaf51cb7f7379554aac981f13ffeef824fb",
+      "wireSha256": "0eabe7dea93af949a51162b20352dbaf51cb7f7379554aac981f13ffeef824fb"
+    },
+    "fmi-weather-radar-2026-11-11.xml": {
+      "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi%3A%3Aradar%3A%3Acomposite%3A%3Adbz&starttime=2026-11-11T10%3A00%3A00Z&endtime=2026-11-11T10%3A15%3A00Z",
+      "requestedAt": "2026-11-13T16:13:53.335326+00:00",
+      "file": "fmi-weather-radar-2026-11-11.xml",
+      "status": 200,
+      "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi%3A%3Aradar%3A%3Acomposite%3A%3Adbz&starttime=2026-11-11T10%3A00%3A00Z&endtime=2026-11-11T10%3A15%3A00Z",
+      "serverDate": "Fri, 13 Nov 2026 16:13:53 GMT",
+      "lastModified": "Fri, 13 Nov 2026 16:13:53 GMT",
+      "etag": null,
+      "contentType": "text/xml; charset=UTF-8",
+      "contentRange": null,
+      "completedAt": "2026-11-13T16:13:53.724618+00:00",
+      "bytes": 30707,
+      "sha256": "aac422bde54f58d5eecd9cb273f7f5949068408a2c1315e29b9e50a4e9ae7cec",
+      "wireSha256": "57c93c47bc500e44085042b047bc1fdbbd8054baafeaf3b3b92f230bd1255c7e"
+    },
+    "fmi-radar-1000-gulf.tif": {
+      "url": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A00%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+      "requestedAt": "2026-11-13T16:14:56.852849+00:00",
+      "file": "fmi-radar-1000-gulf.tif",
+      "status": 200,
+      "finalUrl": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A00%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+      "serverDate": "Fri, 13 Nov 2026 16:14:57 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "image/geotiff",
+      "contentRange": null,
+      "completedAt": "2026-11-13T16:14:57.271360+00:00",
+      "bytes": 440484,
+      "sha256": "51b63d1790abdfb269f3556d211da6ebb687d50cd643f9cdae2b6f62efac21c3",
+      "wireSha256": "3fbdeab6127a02ccb5b8d8b0157dcd3fc16516e2c68d276cac7dde586bcfc026"
+    },
+    "fmi-radar-1005-gulf.tif": {
+      "url": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A05%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+      "requestedAt": "2026-11-13T16:14:56.905116+00:00",
+      "file": "fmi-radar-1005-gulf.tif",
+      "status": 200,
+      "finalUrl": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A05%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+      "serverDate": "Fri, 13 Nov 2026 16:14:57 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "image/geotiff",
+      "contentRange": null,
+      "completedAt": "2026-11-13T16:14:57.322740+00:00",
+      "bytes": 440484,
+      "sha256": "3a74c48a859ae490cc5500af1c5b9ba5ce70c0760ae63277a3c19740da8ec8fb",
+      "wireSha256": "bef71fb9a4e4176d390ed2e993b376dffba2b6f8db80b73c0e46e8e1ccb7ea10"
+    },
+    "fmi-radar-1010-gulf.tif": {
+      "url": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A10%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+      "requestedAt": "2026-11-13T16:14:57.071937+00:00",
+      "file": "fmi-radar-1010-gulf.tif",
+      "status": 200,
+      "finalUrl": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A10%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+      "serverDate": "Fri, 13 Nov 2026 16:14:57 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "image/geotiff",
+      "contentRange": null,
+      "completedAt": "2026-11-13T16:14:57.424707+00:00",
+      "bytes": 440484,
+      "sha256": "1beae8082b16201db320a731019fd66ccc94f734fca2b3ef29c322630dddcd19",
+      "wireSha256": "f67a5deeb7d32d250771066dfa6ab40edb859f8d27b5bad59886ff331702a9af"
+    },
+    "fmi-radar-1015-gulf.tif": {
+      "url": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A15%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+      "requestedAt": "2026-11-13T16:14:57.273585+00:00",
+      "file": "fmi-radar-1015-gulf.tif",
+      "status": 200,
+      "finalUrl": "https://openwms.fmi.fi/geoserver/Radar/wms?service=WMS&version=1.1.1&request=GetMap&layers=Radar%3Asuomi_dbz_eureffin&styles=raster&srs=EPSG%3A4326&format=image%2Fgeotiff&time=2026-11-11T10%3A15%3A00Z&bbox=23%2C59%2C28.5%2C61&width=1100&height=400",
+      "serverDate": "Fri, 13 Nov 2026 16:14:57 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "image/geotiff",
+      "contentRange": null,
+      "completedAt": "2026-11-13T16:14:57.612353+00:00",
+      "bytes": 440484,
+      "sha256": "7c01984354c79ec8901d1fbfb1857bcb9f8151814dd512576bf53e40b3cc7629",
+      "wireSha256": "cdcc813f9a8d72ba4e619588a94c4eb60507782481b8da811ee1809ecee43064"
+    },
+    "nasa-modis-terra-2026-11-11.png": {
+      "url": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&SRS=EPSG%3A4326&BBOX=23%2C59%2C28.5%2C61&WIDTH=1100&HEIGHT=400&FORMAT=image%2Fpng&TRANSPARENT=TRUE&TIME=2026-11-11",
+      "requestedAt": "2026-11-13T16:10:08.145150+00:00",
+      "file": "nasa-modis-terra-2026-11-11.png",
+      "status": 200,
+      "finalUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor&STYLES=&SRS=EPSG%3A4326&BBOX=23%2C59%2C28.5%2C61&WIDTH=1100&HEIGHT=400&FORMAT=image%2Fpng&TRANSPARENT=TRUE&TIME=2026-11-11",
+      "serverDate": "Fri, 13 Nov 2026 16:10:08 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "image/png",
+      "completedAt": "2026-11-13T16:10:11.063285+00:00",
+      "bytes": 849172,
+      "sha256": "d01124eaaf86d06ccffd9cfbc1e80138f74203f3f3dc33d0b91d1a4d8cf74d56",
+      "wireSha256": "d01124eaaf86d06ccffd9cfbc1e80138f74203f3f3dc33d0b91d1a4d8cf74d56"
+    },
+    "nasa-modis-terra-domains-rawslash.xml": {
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=DescribeDomains&Version=1.0.0&layer=MODIS_Terra_CorrectedReflectance_TrueColor&tilematrixset=250m&TIME=2026-11-11/2026-11-12",
+      "requestedAt": "2026-11-13T16:14:56.279004+00:00",
+      "file": "nasa-modis-terra-domains-rawslash.xml",
+      "status": 200,
+      "finalUrl": "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=DescribeDomains&Version=1.0.0&layer=MODIS_Terra_CorrectedReflectance_TrueColor&tilematrixset=250m&TIME=2026-11-11/2026-11-12",
+      "serverDate": "Fri, 13 Nov 2026 16:14:56 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "text/xml; charset=UTF-8",
+      "contentRange": null,
+      "completedAt": "2026-11-13T16:14:56.903479+00:00",
+      "bytes": 306,
+      "sha256": "8d93bd353d06413cb90dcfdda12226611031c2ee881431515388cc92c7e609e8",
+      "wireSha256": "8902fdffd7170604aae7ec7f6b193be49d30ffca14a19b5656419890edfdbeeb"
+    },
+    "nasa-modis-aqua-2026-11-11.png": {
+      "url": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=MODIS_Aqua_CorrectedReflectance_TrueColor&STYLES=&SRS=EPSG%3A4326&BBOX=23%2C59%2C28.5%2C61&WIDTH=1100&HEIGHT=400&FORMAT=image%2Fpng&TRANSPARENT=TRUE&TIME=2026-11-11",
+      "requestedAt": "2026-11-13T16:10:08.463799+00:00",
+      "file": "nasa-modis-aqua-2026-11-11.png",
+      "status": 200,
+      "finalUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=MODIS_Aqua_CorrectedReflectance_TrueColor&STYLES=&SRS=EPSG%3A4326&BBOX=23%2C59%2C28.5%2C61&WIDTH=1100&HEIGHT=400&FORMAT=image%2Fpng&TRANSPARENT=TRUE&TIME=2026-11-11",
+      "serverDate": "Fri, 13 Nov 2026 16:10:09 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "image/png",
+      "completedAt": "2026-11-13T16:10:10.844750+00:00",
+      "bytes": 699741,
+      "sha256": "accce35e8d06b6c6d440a964589a4e7302bc08af8c1f0cd683b9e957825791d2",
+      "wireSha256": "accce35e8d06b6c6d440a964589a4e7302bc08af8c1f0cd683b9e957825791d2"
+    },
+    "nasa-modis-aqua-domains-rawslash.xml": {
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=DescribeDomains&Version=1.0.0&layer=MODIS_Aqua_CorrectedReflectance_TrueColor&tilematrixset=250m&TIME=2026-11-11/2026-11-12",
+      "requestedAt": "2026-11-13T16:14:56.279588+00:00",
+      "file": "nasa-modis-aqua-domains-rawslash.xml",
+      "status": 200,
+      "finalUrl": "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=DescribeDomains&Version=1.0.0&layer=MODIS_Aqua_CorrectedReflectance_TrueColor&tilematrixset=250m&TIME=2026-11-11/2026-11-12",
+      "serverDate": "Fri, 13 Nov 2026 16:14:56 GMT",
+      "lastModified": null,
+      "etag": null,
+      "contentType": "text/xml; charset=UTF-8",
+      "contentRange": null,
+      "completedAt": "2026-11-13T16:14:56.851229+00:00",
+      "bytes": 306,
+      "sha256": "10193a8581bfb116e58a2a42d9fac869f389112f97ad9a6ee144ad48ee840204",
+      "wireSha256": "9145a9d685d2f592fdcc3ac20dc343041fa2561dd3f2fd6fc9898c5d6cd93bda"
+    }
+  },
+  "sources": {
+    "gauges": {
+      "origin": "Keskkonnaagentuur / Estonian Environment Agency",
+      "distribution": "Keskkonnaportaal",
+      "licence": "CC BY 4.0",
+      "definitionUrl": "https://keskkonnaportaal.ee/et/avaandmed/hudroloogilise-seire-andmestik/hudroloogilise-seire-andmestiku-kirjeldus",
+      "licenceUrl": "https://keskkonnaportaal.ee/et/avaandmed/hudroloogilise-seire-andmestik",
+      "limits": "Operational hourly means; averaging interval edge unverified. Gauge zero is -5 m EH2000. No N2000 conversion. Later quality control may revise values."
+    },
+    "reports": {
+      "origin": "Airport weather observations / EFHK and EETN",
+      "distribution": "Iowa Environmental Mesonet, Iowa State University",
+      "licence": "IEM public-domain materials policy; attribution retained",
+      "licenceUrl": "https://mesonet.agron.iastate.edu/disclaimer.php",
+      "definitionUrl": "https://mesonet.agron.iastate.edu/request/download.phtml?network=FI__ASOS",
+      "limits": "As-is redistribution with little quality control. Airport conditions, not over-water measurements. Original feed receipt, first publication and upstream message route unknown."
+    },
+    "radar": {
+      "origin": "Finnish Meteorological Institute / weather radar network",
+      "distribution": "FMI WFS and WMS",
+      "licence": "CC BY 4.0",
+      "licenceUrl": "https://en.ilmatieteenlaitos.fi/radar-data-on-aws-s3",
+      "definitionUrl": "https://en.ilmatieteenlaitos.fi/open-data-manual-radar-data",
+      "limits": "Four saved weather-reflectivity frames only. Provider-resampled 0.005 degree crop. Pixel 0 is declared no-data, not dry weather. Not vessel radar or surface rainfall."
+    },
+    "imagery": {
+      "origin": "NASA / Terra MODIS and Aqua MODIS",
+      "distribution": "NASA GIBS / EOSDIS",
+      "licence": "NASA imagery / media usage guidelines; no endorsement implied",
+      "licenceUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "definitionUrl": "https://nasa-gibs.github.io/gibs-api-docs/access-basics/",
+      "limits": "Daily UTC corrected-reflectance products. Regional per-pixel acquisition times unresolved. A date is not an overpass time. Product availability checked separately from WMS nearest-date behaviour."
+    }
+  }
+}

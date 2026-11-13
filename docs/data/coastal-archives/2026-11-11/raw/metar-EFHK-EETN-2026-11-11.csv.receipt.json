@@ -1,0 +1,15 @@
+{
+  "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EFHK&station=EETN&data=metar&sts=2026-11-10T22%3A00%3A00Z&ets=2026-11-11T22%3A00%3A00Z&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&direct=no",
+  "requestedAt": "2026-11-13T16:10:07.596407+00:00",
+  "file": "metar-EFHK-EETN-2026-11-11.csv",
+  "status": 200,
+  "finalUrl": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=EFHK&station=EETN&data=metar&sts=2026-11-10T22%3A00%3A00Z&ets=2026-11-11T22%3A00%3A00Z&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&direct=no",
+  "serverDate": "Fri, 13 Nov 2026 16:10:08 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "text/plain; charset=UTF-8",
+  "completedAt": "2026-11-13T16:10:08.461865+00:00",
+  "bytes": 10221,
+  "sha256": "0eabe7dea93af949a51162b20352dbaf51cb7f7379554aac981f13ffeef824fb",
+  "wireSha256": "0eabe7dea93af949a51162b20352dbaf51cb7f7379554aac981f13ffeef824fb"
+}
