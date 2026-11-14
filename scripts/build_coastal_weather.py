@@ -46,7 +46,7 @@ def generate():
     plan=json.loads((OUT/'capture.json').read_text(encoding='utf8'))
     assert plan['schema']=='mg.coastal-weather-capture.v1'
     raw=OUT/'raw';receipts={}
-    for path in raw.glob('*.receipt.json'):
+    for path in sorted(raw.glob('*.receipt.json')):
         r=json.loads(path.read_text(encoding='utf8'));name=path.name.removesuffix('.receipt.json');assert name==r['file']
         if r.get('sha256'):
             data=(raw/name).read_bytes();assert sha(data)==r['sha256'] and len(data)==r['bytes'],name
@@ -174,7 +174,14 @@ def main():
             else:shutil.copyfile(source,target)
     outputs=generate()
     for name,data in outputs.items():
-        if args.check:assert (OUT/name).read_bytes()==data,'Derived file drift: '+name
+        if args.check:
+            previous=(OUT/name).read_bytes()
+            if previous!=data:
+                at=next((i for i,(a,b) in enumerate(zip(previous,data)) if a!=b),min(len(previous),len(data)))
+                print(f'Derived mismatch at byte {at}: {name}',file=sys.stderr)
+                print('Saved: '+repr(previous[max(0,at-60):at+160]),file=sys.stderr)
+                print('Rebuilt: '+repr(data[max(0,at-60):at+160]),file=sys.stderr)
+            assert previous==data,'Derived file drift: '+name
         else:(OUT/name).write_bytes(data)
     inventory=[{'path':p.relative_to(ROOT/'docs').as_posix(),'bytes':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(OUT.rglob('*')) if p.is_file()]
     provenance={'schema':'mg.coastal-weather-provenance.v1','dateLocal':'2026-11-11',
