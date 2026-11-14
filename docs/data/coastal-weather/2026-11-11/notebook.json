@@ -1390,7 +1390,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -1476,7 +1478,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -1562,7 +1566,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -1648,7 +1654,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -1734,7 +1742,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -1820,7 +1830,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -1906,7 +1918,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -1992,7 +2006,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -2078,7 +2094,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -2164,7 +2182,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -2250,7 +2270,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -2336,7 +2358,9 @@
           1127576.135,
           1125557.319
         ],
-        "limit": "Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling."
+        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
+        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
+        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
@@ -7149,6 +7173,7 @@
     "noFutureSelection": true,
     "interpolation": false,
     "waveDirectionConvention": "from, clockwise degrees from north",
+    "noFutureSelectionAppliesTo": "Declared product labels, completed radar intervals and buoy sample labels. Unknown per-pixel acquisition times are excluded.",
     "waveIllustration": "A labelled schematic of reported height and modal period; not a recorded surface or spectrum."
   },
   "sources": {

@@ -14,12 +14,25 @@ const clock = (time,zone='UTC',seconds=true) => new Intl.DateTimeFormat('en-GB',
 const number = value => value === null ? 'Missing' : new Intl.NumberFormat('en-GB',{maximumFractionDigits:4}).format(value);
 const age = seconds => seconds < 60 ? `${seconds} s` : `${Math.floor(seconds/60)} min ${seconds%60} s`;
 let data,cloudImage,cloudVersion=0,radarVersion=0,pixelVersion=0,playVersion=0,timer,inspection,selectedCell=null,broadcasting=false,resizeFrame,pendingExternalSecond=null;
-const images = new Map(), cells = new Map();
+const images = new Map(), cells = new Map(), imageUrls = new Set();
 async function json(url) { const r = await fetch(url); if (!r.ok) throw Error(`Saved data HTTP ${r.status}`); return r.json(); }
+function cleanImages() {
+  const live=new Set([...images.values()].map(entry=>entry.url));live.add(cloudImage?.getAttribute('href'));live.add($('cw-radar-image').src);
+  for(const url of imageUrls)if(!live.has(url)){URL.revokeObjectURL(url);imageUrls.delete(url);}
+}
 function loadImage(url) {
-  const key = String(url); if (images.has(key)) return images.get(key);
-  const p = new Promise((resolve,reject) => { const img = new Image(); img.onload = () => img.decode().then(() => resolve(img),reject); img.onerror = () => reject(Error('Saved image could not be opened')); img.src = url; });
-  images.set(key,p); p.catch(() => images.delete(key)); if (images.size > 8) images.delete(images.keys().next().value); return p;
+  const key=String(url);if(images.has(key))return images.get(key).promise;
+  const entry={url:null,promise:null};
+  entry.promise=(async()=>{
+    const r=await fetch(url);if(!r.ok)throw Error('Saved image could not be opened');
+    const bytes=await r.arrayBuffer();if(bytes.byteLength>2_000_000||bytes.byteLength<24)throw Error('Unexpected image size');
+    const signature=new Uint8Array(bytes,0,8);if(signature.join(',')!=='137,80,78,71,13,10,26,10')throw Error('Saved file is not PNG');
+    entry.url=URL.createObjectURL(new Blob([bytes],{type:'image/png'}));imageUrls.add(entry.url);
+    const img=new Image();img.src=entry.url;await img.decode();return {url:entry.url,width:img.naturalWidth,height:img.naturalHeight};
+  })();
+  images.set(key,entry);entry.promise.catch(()=>{if(images.get(key)===entry)images.delete(key);cleanImages();});
+  if(images.size>8){const old=images.get(images.keys().next().value);images.delete(images.keys().next().value);old.promise.finally(cleanImages).catch(()=>{});}
+  return entry.promise;
 }
 function buildMap(land) {
   const target = $('cw-cloud-map'),x = lon => (lon-23)/5.5*1100,y = lat => (61-lat)/2*400;
@@ -32,7 +45,7 @@ function buildMap(land) {
   }
   for (const lon of [24,25,26,27,28]) target.append(svg('line',{x1:x(lon),x2:x(lon),y1:0,y2:400,class:'cw-map-grid'}));
   for (const lat of [59.5,60,60.5]) target.append(svg('line',{x1:0,x2:1100,y1:y(lat),y2:y(lat),class:'cw-map-grid'}));
-  for (const [label,lon,lat] of [['HELSINKI',24.94,60.17],['TALLINN',24.75,59.44]]) target.append(svg('text',{x:x(lon)-18,y:y(lat)-13,class:'cw-map-label'},label));
+  for (const [label,lon,lat] of [['HELSINKI',24.94,60.17],['TALLINN',24.75,59.44]]) target.append(svg('circle',{cx:x(lon),cy:y(lat),r:2.5,class:'cw-map-city'}),svg('text',{x:x(lon)-18,y:y(lat)-13,class:'cw-map-label'},label));
   for (const b of data.buoys) target.append(svg('circle',{cx:x(b.longitude),cy:y(b.latitude),r:5,class:'cw-map-buoy'}),svg('circle',{cx:x(b.longitude),cy:y(b.latitude),r:11,class:'cw-map-buoy-ring','data-cw-buoy-ring':b.id}));
   target.append(svg('text',{x:650,y:225,class:'cw-map-label cw-map-label-small','text-anchor':'middle'},'GULF OF FINLAND'));
   if (!land) text('cw-map-desc','EUMETSAT cloud context. Context coastline unavailable; buoy coordinates still come from FMI.');
@@ -45,14 +58,14 @@ async function renderCloud() {
   cloudImage.setAttribute('visibility','hidden'); $('cw-cloud-map').setAttribute('aria-busy',String(Boolean(f)));
   $('cw-cloud-message').hidden = false; $('cw-cloud-retry').hidden = true;
   text('cw-cloud-stamp',`EUMETSAT / ${f ? clock(f.productTimeUtc)+' UTC PRODUCT' : 'NO ELIGIBLE CLOUD FRAME'}`);
-  text('cw-cloud-age',f ? `${age(state.second-secondAtUtc(f.productTimeUtc))} before cursor / saved RGB product` : `Expected ${clock(expected.productTimeUtc)} UTC product / unavailable`);
+  text('cw-cloud-age',f ? `Product label / ${age(state.second-secondAtUtc(f.productTimeUtc))} before cursor` : `Expected ${clock(expected.productTimeUtc)} UTC product / unavailable`);
   text('cw-cloud-message-title',f ? 'Opening this cloud frame…' : 'A frame is missing.');
   text('cw-cloud-message-detail',f ? 'The previous picture is hidden while this file opens.' : 'No earlier image has been stretched across the gap.');
   if (!f) { $('cw-cloud-map').setAttribute('aria-busy','false'); $('cw-sky').dataset.ready='false'; return; }
   try {
-    const url = new URL('raw/'+f.sourceFile,root); await loadImage(url);
+    const loaded=await loadImage(new URL('raw/'+f.sourceFile,root));if(loaded.width!==1100||loaded.height!==400)throw Error('Unexpected cloud dimensions');
     if (version !== cloudVersion) return;
-    cloudImage.setAttribute('href',url);cloudImage.setAttribute('visibility','visible');$('cw-cloud-message').hidden=true;$('cw-sky').dataset.ready='true';
+    cloudImage.setAttribute('href',loaded.url);cloudImage.setAttribute('visibility','visible');$('cw-cloud-message').hidden=true;$('cw-sky').dataset.ready='true';cleanImages();
     const next = data.clouds[data.clouds.indexOf(f)+1]; if (next?.available) loadImage(new URL('raw/'+next.sourceFile,root)).catch(() => {});
   } catch {
     if (version !== cloudVersion) return;
@@ -63,6 +76,9 @@ async function renderCloud() {
 async function renderRadar() {
   const version = ++radarVersion,f = radarAt(data,state.second); ++pixelVersion;selectedCell=null;
   $('cw-cell-marker').style.display='none';
+  $('cw-scan').value=f?.id??'';
+  $('cw-scan-prev').disabled=!data.radar.some(f=>secondAtUtc(f.scanEndUtc)<state.second);
+  $('cw-scan-next').disabled=!data.radar.some(f=>secondAtUtc(f.scanEndUtc)>state.second);
   $('cw-radar-image').hidden=true;$('cw-radar-pick').hidden=true;$('cw-radar-empty').hidden=false;$('cw-radar-retry').hidden=true;$('cw-radar-stage').setAttribute('aria-busy',String(Boolean(f)));
   if (!f) {
     text('cw-radar-clock',`Saved ends ${clock(data.radar[0].scanEndUtc)}–${clock(data.radar.at(-1).scanEndUtc)} UTC / browse time outside an eligible scan.`);
@@ -72,10 +88,10 @@ async function renderRadar() {
   text('cw-radar-clock',`${clock(f.scanStartUtc)}–${clock(f.scanEndUtc)} UTC scan / finished ${age(state.second-secondAtUtc(f.scanEndUtc))} before cursor.`);
   text('cw-radar-image-status','Opening the saved native grid…');
   try {
-    const url=new URL(f.image,root);await loadImage(url);if(version!==radarVersion)return;
-    const img=$('cw-radar-image');img.src=url;img.alt=`Estonian radar-derived rain-rate composite, scan ${f.scanStartUtc} to ${f.scanEndUtc}. Native row/column grid, geographic placement unresolved.`;img.hidden=false;
+    const loaded=await loadImage(new URL(f.image,root));if(loaded.width!==720||loaded.height!==720)throw Error('Unexpected radar dimensions');if(version!==radarVersion)return;
+    const img=$('cw-radar-image');img.src=loaded.url;img.alt=`Estonian radar-derived rain-rate composite, scan ${f.scanStartUtc} to ${f.scanEndUtc}. Native row/column grid, geographic placement unresolved.`;img.hidden=false;cleanImages();
     $('cw-radar-empty').hidden=true;$('cw-radar-pick').hidden=false;
-    text('cw-radar-image-status',`${f.cellCounts.missing.toLocaleString('en-GB')} cells have no data. Below detection is a separate class. Palette capped at 10 mm/h; original floats retained.`);
+    text('cw-radar-image-status',`${f.cellCounts.missing.toLocaleString('en-GB')} cells have no data. Below detection is separate. Seven discrete rate bands; last band >5 mm/h. Original floats retained.`);
     if ($('cw-cell-details').open) await inspectCell();
   } catch {
     if(version!==radarVersion)return;if(state.playing)stop('Playback paused: a saved radar image could not open. Retry or choose another time.');text('cw-radar-image-status','The saved radar image could not open. Its original and receipt remain available.');$('cw-radar-retry').hidden=false;
@@ -86,7 +102,10 @@ function drawRibbons() {
   for (const kind of ['cloud','radar','buoy']) {
     const target=$(`cw-${kind}-ribbon`);target.setAttribute('preserveAspectRatio','none');target.replaceChildren(svg('line',{x1:0,x2:1000,y1:10,y2:10,class:'cw-ribbon-base'}));
     if(kind==='cloud') for(const f of data.clouds) target.append(svg('rect',{x:x(secondAtUtc(f.productTimeUtc)),y:5,width:Math.max(2,x(600)-1),height:10,class:f.available?'cw-ribbon-saved':'cw-ribbon-gap'}));
-    if(kind==='radar') for(const f of data.radar) target.append(svg('rect',{x:x(secondAtUtc(f.scanStartUtc)),y:2,width:Math.max(2,x(240)),height:16,class:'cw-ribbon-strip'}));
+    if(kind==='radar')for(const [i,f]of data.radar.entries()){
+      const start=secondAtUtc(f.scanEndUtc),end=Math.min(start+300,secondAtUtc(data.radar[i+1]?.scanEndUtc??data.radar.at(-1).scanEndUtc));
+      const bar=svg('rect',{x:x(start),y:2,width:Math.max(1,x(end-start)),height:16,class:'cw-ribbon-strip'});bar.append(svg('title',{},`${f.scanEndUtc}; no hold beyond the saved strip.`));target.append(bar);
+    }
     if(kind==='buoy') for(const p of data.buoys.find(b=>b.id===state.station).series.find(s=>s.parameter==='WaveHs').points) target.append(svg('rect',{x:x(secondAtUtc(p.observedAt)),y:5,width:x(3600)-2,height:10,class:p.value===null?'cw-ribbon-gap':'cw-ribbon-saved'}));
     target.append(svg('line',{x1:x(state.second),x2:x(state.second),y1:0,y2:20,class:'cw-ribbon-cursor'}));
   }
@@ -105,7 +124,7 @@ function compass(direction,spread) {
 }
 function history(parameter,targetId,max) {
   const target=$(targetId),s=data.buoys.find(b=>b.id===state.station).series.find(s=>s.parameter===parameter),x=i=>8+i/24*584,y=v=>80-v/max*68;
-  target.replaceChildren(svg('line',{x1:8,x2:592,y1:80,y2:80,class:'cw-wave-baseline'}));let path='';
+  target.setAttribute('preserveAspectRatio','none');target.replaceChildren(svg('line',{x1:8,x2:592,y1:80,y2:80,class:'cw-wave-baseline'}));let path='';
   for(const [i,p]of s.points.entries()) {if(p.value===null){if(path)target.append(svg('path',{d:path,class:'cw-history-line'}));path='';continue;}path+=`${path?'L':'M'}${x(i)} ${y(p.value)} `;target.append(svg('circle',{cx:x(i),cy:y(p.value),r:Math.floor(state.second/3600)===i?4:2,class:Math.floor(state.second/3600)===i?'cw-history-selected':'cw-history-dot'}));}
   if(path)target.append(svg('path',{d:path,class:'cw-history-line'}));target.append(svg('line',{x1:x(state.second/3600),x2:x(state.second/3600),y1:5,y2:84,class:'cw-history-cursor'}));
 }
@@ -116,8 +135,8 @@ function renderBuoy() {
   text('cw-direction',d?`From ${d.fromDegrees}° / ${d.cardinal}`:'Direction missing');text('cw-spread',p.WHDD.value===null?'Spread missing':`Reported spread / ${number(p.WHDD.value)}°`);
   compass(p.ModalWDi.value,p.WHDD.value);
   const wave=$('cw-wave');wave.replaceChildren(svg('title',{id:'cw-wave-title'},'Schematic, not a recorded waveform'),svg('line',{x1:0,x2:600,y1:70,y2:70,class:'cw-wave-baseline'}));
-  if(height!==null&&period!==null&&period>0){let path='';for(let x=0;x<=600;x+=2)path+=`${x?'L':'M'}${x} ${70-Math.sin(x/600*20/period*Math.PI*2)*height/2*48} `;wave.append(svg('path',{d:path,class:'cw-wave-line'}),svg('text',{x:0,y:133,class:'cw-wave-note'},'20 seconds / illustrative shape'));}
-  else wave.append(svg('text',{x:10,y:75,class:'cw-wave-note'},'No waveform drawn from a missing sample.'));
+  if(height!==null&&period!==null&&period>0){let path='';for(let x=0;x<=600;x+=2)path+=`${x?'L':'M'}${x} ${70-Math.sin(x/600*20/period*Math.PI*2)*height/2*48} `;wave.append(svg('path',{d:path,class:'cw-wave-line'}));text('cw-wave-span','20 seconds / illustrative shape');}
+  else text('cw-wave-span','No waveform drawn from a missing sample.');
   history('WaveHs','cw-height-history',2);history('WTP','cw-period-history',6);
   const numeric=b.series.find(s=>s.parameter==='WaveHs').points.filter(p=>p.value!==null).length;
   text('cw-buoy-gap',`${numeric} of 24 saved height samples are numeric. ${height===null?'This hour is missing; an earlier value has not been carried forward.':'The spaces between hourly samples are not measured wave histories.'}`);
@@ -138,7 +157,7 @@ function renderReceipt() {
   else{sourceTime=selected.points.WaveHs.observedAt;description=`${selected.station} / ${sourceTime} · hourly requested sample`;}
   text('cw-receipt-clock',description);text('cw-lineage',`${source.origin} → ${source.distribution} → saved original → this inspection`);text('cw-receipt-limit',source.limits);
   const dl=$('cw-clocks');dl.replaceChildren();
-  for(const [label,value]of [['Browse UTC',inspection.browseTimeUtc],['Source clock',sourceTime??'No eligible record'],['Requested UTC',receipt?.requestedAt??(state.source==='buoys'?selected.sourceRecords[0].retrievedAt:'No eligible record')],['Downloaded UTC',receipt?.completedAt??'Unknown'],['Pixel acquisition',state.source==='clouds'?'Unknown / not the product clock':'Not assigned'],['Station receipt','Unknown'],['First publication','Unknown']])dl.append(el('dt',label),el('dd',value));
+  for(const [label,value]of [['Browse UTC',inspection.browseTimeUtc],['Source clock',sourceTime??'No eligible record'],[state.source==='buoys'?'Retrieved UTC':'Requested UTC',receipt?.requestedAt??(state.source==='buoys'?selected.sourceRecords[0].retrievedAt:'No eligible record')],['Downloaded UTC',receipt?.completedAt??'Unknown'],['Pixel acquisition',state.source==='clouds'?'Unknown / not the product clock':'Not assigned'],['Station receipt','Unknown'],['First publication','Unknown']])dl.append(el('dt',label),el('dd',value));
   const file=state.source==='buoys'?data.buoys.find(b=>b.id===state.station).series[0].sourceFile:record?.sourceFile;
   for(const id of ['cw-original','cw-http'])$(id).hidden=!file;
   if(file){const base=state.source==='buoys'?buoyRoot:new URL('raw/',root);$('cw-original').href=new URL(file,base);$('cw-http').href=new URL(file+'.receipt.json',base);}
@@ -173,7 +192,7 @@ async function inspectCell() {
   renderReceipt();
 }
 function stop(message='Playback paused.') {
-  state.playing=false;++playVersion;clearTimeout(timer);text('cw-play','Play the day ▶');$('cw-play').setAttribute('aria-pressed','false');
+  state.playing=false;++playVersion;clearTimeout(timer);text('cw-play','Play the day ▶');text('cw-scan-play','Play all 12 scans ▶');$('cw-play').setAttribute('aria-pressed','false');$('cw-scan-play').setAttribute('aria-pressed','false');
   for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','polite');if(message)text('cw-play-status',message);
 }
 async function setSecond(second,{external=false,playing=false}={}) {
@@ -186,13 +205,15 @@ async function setSecond(second,{external=false,playing=false}={}) {
   if(!external){broadcasting=true;try{document.dispatchEvent(new CustomEvent('coastal-fmi-hour',{detail:{utc}}));}finally{broadcasting=false;}}
   await Promise.allSettled([renderCloud(),renderRadar()]);
 }
-async function play() {
+async function play(scope='day') {
   if(state.playing){stop();return;}if(state.second>=86399)await setSecond(0);
-  state.playing=true;const version=++playVersion;text('cw-play','Pause the day Ⅱ');$('cw-play').setAttribute('aria-pressed','true');for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','off');text('cw-play-status','Ten minutes per step. Saved frames; no interpolation.');
+  if(scope==='radar')await setSecond(secondAtUtc(data.radar[0].scanEndUtc));let scanIndex=0;
+  state.playing=true;const version=++playVersion;text('cw-play',scope==='radar'?'Pause the strip Ⅱ':'Pause the day Ⅱ');text('cw-scan-play',scope==='radar'?'Pause the strip Ⅱ':'Pause playback Ⅱ');$('cw-play').setAttribute('aria-pressed','true');$('cw-scan-play').setAttribute('aria-pressed','true');for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','off');text('cw-play-status',scope==='radar'?'All 12 completed scans, in order. Saved frames; no interpolation.':'Ten minutes per step. Saved frames; no interpolation.');
   const tick=async()=>{
     if(!state.playing||version!==playVersion)return;
-    const next=Math.min(86399,state.second+600);await setSecond(next,{playing:true});
+    const next=scope==='radar'?secondAtUtc(data.radar[++scanIndex].scanEndUtc):Math.min(86399,state.second+600);await setSecond(next,{playing:true});
     if(!state.playing||version!==playVersion)return;
+    if(scope==='radar'&&scanIndex===data.radar.length-1){stop('All 12 scans shown. End of the saved strip; last scan remains selected at its exact end time.');return;}
     if(next===86399){stop('End of the saved day.');return;}timer=setTimeout(tick,900);
   };timer=setTimeout(tick,900);
 }
@@ -204,14 +225,20 @@ async function start() {
     text('cw-availability',`${data.clouds.filter(f=>f.available).length} cloud frames / ${data.radar.length} radar composites / 3 buoys`);
     $('cw-workbench').hidden=false;$('cw-loading').hidden=true;
     $('cw-second').oninput=()=>{setSecond(Number($('cw-second').value));};
-    $('cw-play').onclick=play;for(const [id,step]of [['cw-back',-600],['cw-next',600]])$(id).onclick=()=>setSecond(state.second+step);
+    $('cw-play').onclick=()=>play('day');for(const [id,step]of [['cw-back',-600],['cw-next',600]])$(id).onclick=()=>setSecond(state.second+step);
+    const scan=$('cw-scan');scan.replaceChildren();const none=el('option','No completed scan at this cursor');none.value='';none.disabled=true;scan.append(none);
+    for(const f of data.radar){const o=el('option',`${clock(f.scanEndUtc)} UTC / ${clock(f.scanEndUtc,'Europe/Helsinki')} EET`);o.value=f.id;scan.append(o);}
+    scan.onchange=()=>{const f=data.radar.find(f=>f.id===scan.value);if(f)setSecond(secondAtUtc(f.scanEndUtc));};
+    $('cw-scan-prev').onclick=()=>{const f=data.radar.filter(f=>secondAtUtc(f.scanEndUtc)<state.second).at(-1);if(f)setSecond(secondAtUtc(f.scanEndUtc));};
+    $('cw-scan-next').onclick=()=>{const f=data.radar.find(f=>secondAtUtc(f.scanEndUtc)>state.second);if(f)setSecond(secondAtUtc(f.scanEndUtc));};
+    $('cw-scan-play').onclick=()=>play('radar');
     $('cw-radar-jump').onclick=()=>setSecond(secondAtUtc(data.radar[2].scanEndUtc)+5);
-    $('cw-gap-jump').onclick=()=>{state.station='108495';const series=data.buoys.find(b=>b.id===state.station).series.find(s=>s.parameter==='WaveHs');const p=series.points.find(p=>p.value===null);if(p)setSecond(secondAtUtc(p.observedAt));};
+    $('cw-gap-jump').onclick=()=>{state.station='108495';const series=data.buoys.find(b=>b.id===state.station).series.find(s=>s.parameter==='WaveHs');const p=series.points.find(p=>p.value===null);if(p)setSecond(secondAtUtc(p.observedAt));text('cw-play-status','Selected Loviisa / Orrengrund at its first saved gap.');};
     $('cw-buoy').onchange=()=>{state.station=$('cw-buoy').value;setSecond(state.second);};
     $('cw-cloud-retry').onclick=()=>renderCloud();$('cw-radar-retry').onclick=()=>renderRadar();$('cw-cell-retry').onclick=inspectCell;
     for(const id of ['cw-cell-x','cw-cell-y'])$(id).oninput=inspectCell;
     $('cw-cell-details').ontoggle=()=>{if($('cw-cell-details').open)inspectCell();};
-    $('cw-radar-pick').onclick=e=>{const rect=$('cw-radar-pick').getBoundingClientRect();if(e.detail>0){$('cw-cell-x').value=String(Math.min(719,Math.floor((e.clientX-rect.x)/rect.width*720)));$('cw-cell-y').value=String(Math.min(719,Math.floor((e.clientY-rect.y)/rect.height*720)));}$('cw-cell-details').open=true;stop();inspectCell();$('cw-cell-x').focus();};
+    $('cw-radar-pick').onclick=e=>{const rect=$('cw-radar-pick').getBoundingClientRect();if(e.detail>0){$('cw-cell-x').value=String(Math.min(719,Math.floor((e.clientX-rect.x)/rect.width*720)));$('cw-cell-y').value=String(Math.min(719,Math.floor((e.clientY-rect.y)/rect.height*720)));}$('cw-cell-details').open=true;stop();inspectCell();if(e.detail===0)$('cw-cell-x').focus();};
     for(const b of document.querySelectorAll('[data-cw-source]'))b.onclick=()=>{state.source=b.dataset.cwSource;stop();renderReceipt();};
     $('cw-export').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({...inspection,selectedSource:state.source},null,2)+'\n'],{type:'application/json'}));const a=el('a');a.href=url;a.download='coastal-watch-weather-2026-11-11.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};
     await setSecond(pendingExternalSecond ?? state.second);if(restoreFocus)$('cw-second').focus({preventScroll:true});

@@ -3,62 +3,63 @@
   "dateLocal": "2026-11-11",
   "transformation": "Cloud PNGs unchanged from WMS. Radar float32 cells copied in native order to deterministic gzip; palette PNGs preserve missing/below-detection classifications. No geographic radar warp. Buoy samples copied unchanged.",
   "paletteRateMMH": [
-    [
-      0.05,
-      [
+    {
+      "maximumInclusiveMMH": 0.05,
+      "colour": [
         130,
         165,
         169
       ]
-    ],
-    [
-      0.2,
-      [
+    },
+    {
+      "maximumInclusiveMMH": 0.2,
+      "colour": [
         173,
         197,
         183
       ]
-    ],
-    [
-      0.5,
-      [
+    },
+    {
+      "maximumInclusiveMMH": 0.5,
+      "colour": [
         211,
         208,
         161
       ]
-    ],
-    [
-      1,
-      [
+    },
+    {
+      "maximumInclusiveMMH": 1,
+      "colour": [
         225,
         179,
         112
       ]
-    ],
-    [
-      2,
-      [
+    },
+    {
+      "maximumInclusiveMMH": 2,
+      "colour": [
         213,
         131,
         79
       ]
-    ],
-    [
-      5,
-      [
+    },
+    {
+      "maximumInclusiveMMH": 5,
+      "colour": [
         157,
         77,
         64
       ]
-    ],
-    [
-      10,
-      [
+    },
+    {
+      "minimumExclusiveMMH": 5,
+      "maximumInclusiveMMH": null,
+      "colour": [
         104,
         53,
         67
       ]
-    ]
+    }
   ],
   "scope": "Environmental context. No vessel association, incident attribution or damage assessment.",
   "clockMeaning": "Product and scan clocks kept separate from retrieval receipts. First publication and original station reception remain unknown.",
@@ -191,8 +192,8 @@
     },
     {
       "path": "data/coastal-weather/2026-11-11/notebook.json",
-      "bytes": 320971,
-      "sha256": "921d7a521ee575a7f4d3e2002f6e2e7d47e39ab1d08919e58abf0241c2511bda"
+      "bytes": 324241,
+      "sha256": "ec150f42bac68fec2b4d17141c0277ba4c23ba98180f848b73f52511214f4005"
     },
     {
       "path": "data/coastal-weather/2026-11-11/raw/comp.20261111100006.CAP.1256.h5",
@@ -1776,8 +1777,8 @@
     },
     {
       "path": "data/coastal-weather/2026-11-11/README.md",
-      "bytes": 5021,
-      "sha256": "46e8a8ed7e0c5481fddb76a8da0501e24e1ba913926af75142868be1a665c072"
+      "bytes": 5589,
+      "sha256": "f908c57652394178e6941308a5cb837a962b98d4491a55b461c74244c75cb5c1"
     }
   ]
 }

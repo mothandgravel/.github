@@ -23,7 +23,8 @@ except ImportError:
 START=datetime(2026,11,10,22,tzinfo=timezone.utc)
 PARAMETERS=['WaveHs','ModalWDi','WTP','WHDD','TWATER']
 STATIONS=['134221','103976','108495']
-PALETTE=[(.05,(130,165,169)),(.2,(173,197,183)),(.5,(211,208,161)),(1,(225,179,112)),(2,(213,131,79)),(5,(157,77,64)),(10,(104,53,67))]
+PALETTE=[(.05,(130,165,169)),(.2,(173,197,183)),(.5,(211,208,161)),(1,(225,179,112)),(2,(213,131,79)),(5,(157,77,64))]
+ABOVE_COLOUR=(104,53,67)
 def dump(v):return (json.dumps(v,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode('utf8')
 def sha(data):return hashlib.sha256(data).hexdigest()
 def stamp(value):return datetime.fromisoformat(value.replace('Z','+00:00')).isoformat().replace('+00:00','Z')
@@ -82,7 +83,7 @@ def generate():
             for i,cut in enumerate(PALETTE):
                 lo=0 if i==0 else PALETTE[i-1][0]
                 pick=measured&(values>lo)&(values<=cut[0]);colours[pick]=[*cut[1],255]
-            colours[measured&(values>PALETTE[-1][0])]=[*PALETTE[-1][1],255]
+            colours[measured&(values>PALETTE[-1][0])]=[*ABOVE_COLOUR,255]
             # All native cells remain in native row/column order. No geographic warp.
             prefix=name.removesuffix('.h5');derived[prefix+'.png']=png(720,720,colours.tobytes())
             float_bytes=matrix.astype('<f4',copy=False).tobytes(order='C')
@@ -105,7 +106,10 @@ def generate():
                 'quantitativeRange':[float(values[measured].min()),float(values[measured].max())],
                 'sourceNodes':how['nodes'].split(','),'globalWhat':global_what,'datasetWhat':what,'where':where,
                 'georeferencing':{'verified':consistent,'presentation':'native grid only','declaredGridSpanMetres':declared,
-                    'projectedCornerSpanMetres':[round(v,3) for v in corner],'limit':'Declared grid spacing and projected corner extents conflict. No geographic overlay or location-level sampling.'},
+                    'projectedCornerSpanMetres':[round(v,3) for v in corner],
+                    'diagnostic':'Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.',
+                    'candidateExplanation':'A ground-distance scale convention may explain part of the difference; not confirmed.',
+                    'limit':'Projection and scale convention unresolved. No geographic overlay or location-level sampling.'},
                 'originalReceiverTimeUtc':None,'firstPublicationUtc':None})
     radar.sort(key=lambda r:r['scanEndUtc']);assert len(radar)==12
     original=ROOT/'docs/data/coastal-sources/2026-11-11/environment-observations.json'
@@ -126,6 +130,7 @@ def generate():
         'policies':{'cloudMaxAgeSecondsExclusive':600,'radarMaxAgeSecondsExclusive':300,
             'radarOutsideSavedSpan':'unavailable','buoyMaxAgeSecondsExclusive':3600,
             'noFutureSelection':True,'interpolation':False,'waveDirectionConvention':'from, clockwise degrees from north',
+            'noFutureSelectionAppliesTo':'Declared product labels, completed radar intervals and buoy sample labels. Unknown per-pixel acquisition times are excluded.',
             'waveIllustration':'A labelled schematic of reported height and modal period; not a recorded surface or spectrum.'},
         'sources':{
             'clouds':{'origin':'EUMETSAT / Meteosat Third Generation FCI','distribution':'EUMETView / Geo Colour RGB',
@@ -174,7 +179,8 @@ def main():
     inventory=[{'path':p.relative_to(ROOT/'docs').as_posix(),'bytes':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(OUT.rglob('*')) if p.is_file()]
     provenance={'schema':'mg.coastal-weather-provenance.v1','dateLocal':'2026-11-11',
         'transformation':'Cloud PNGs unchanged from WMS. Radar float32 cells copied in native order to deterministic gzip; palette PNGs preserve missing/below-detection classifications. No geographic radar warp. Buoy samples copied unchanged.',
-        'paletteRateMMH':PALETTE,'scope':'Environmental context. No vessel association, incident attribution or damage assessment.',
+        'paletteRateMMH':[{'maximumInclusiveMMH':upper,'colour':colour} for upper,colour in PALETTE]+[{'minimumExclusiveMMH':5,'maximumInclusiveMMH':None,'colour':ABOVE_COLOUR}],
+        'scope':'Environmental context. No vessel association, incident attribution or damage assessment.',
         'clockMeaning':'Product and scan clocks kept separate from retrieval receipts. First publication and original station reception remain unknown.',
         'dependencies':'tools/specimens/coastal-weather-requirements.txt','files':inventory}
     target=ROOT/'docs/design/coastal-weather-provenance.json'
