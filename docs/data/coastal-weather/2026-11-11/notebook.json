@@ -1383,7 +1383,7 @@
       "mapImage": "comp.20261111100006.CAP.1256.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "b2163f5372814b85b715be57e497b24c1f819c2873ba066aa7d8d924f3987276",
+      "mapImageSha256": "76c0d4416b1a6d5eb63c409818ffe8c791511f777c4783074b601431dfbf9a80",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -1421,13 +1421,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -1603,7 +1612,7 @@
       "mapImage": "comp.20261111100503.CAP.1264.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "aedb9eb10f93ff27495683ac033bc3dfcd3d102c5650e68c512e0f6a05d4eb35",
+      "mapImageSha256": "d02917fe1f5b4595ce1eea49dda2dff246f03aaac258ee8000deaa6f3d31f477",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -1641,13 +1650,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -1823,7 +1841,7 @@
       "mapImage": "comp.20261111101001.CAP.1271.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "8e79782a5c88a043e061148488cf324e6217c5a4a8ec35e6a9972c6a80c52448",
+      "mapImageSha256": "0f7d25885b44862863111f6ed8b7806da1ac518d554b6ae5362c30376b383c50",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -1861,13 +1879,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -2043,7 +2070,7 @@
       "mapImage": "comp.20261111101506.CAP.1277.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "c902241033ccb1f9fbd624b41c61e39334826568eb447e727975797dae478cb1",
+      "mapImageSha256": "ce6883bd6a3a6d831caa2f957ebf90a72dc7be2f0759582711daf1d3c14b36bf",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -2081,13 +2108,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -2263,7 +2299,7 @@
       "mapImage": "comp.20261111102003.CAP.1283.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "f86b5319d365950114c7ead893fa4b0c00e87bac15a731b254ca1681c4954950",
+      "mapImageSha256": "08c3f84dbc657788a374bcca07e074dd32f9c1c34d9a9cab7570e0f5ca0287f2",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -2301,13 +2337,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -2483,7 +2528,7 @@
       "mapImage": "comp.20261111102501.CAP.1292.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "f714075b7a47a974cea5589354b9b01456e091c3996f59ca859d4d091af17065",
+      "mapImageSha256": "0497ccb5f69ef359cfa033283d27782817f52daea0b55eb72b629cb7fd787669",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -2521,13 +2566,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -2703,7 +2757,7 @@
       "mapImage": "comp.20261111103006.CAP.1299.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "df373b940e4c6b97e1eceebda9302a0db5f9d280646d3a643c4100e9fea4d7d8",
+      "mapImageSha256": "bfdb051194788e2ae804f4ef60c9a48e8dcfcc5e401bc3741654020a432274f4",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -2741,13 +2795,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -2923,7 +2986,7 @@
       "mapImage": "comp.20261111103504.CAP.1306.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "3ea0427161d47a38bcac44c5b873fe3f61b4f115ec7cb6d79c9070be725deb01",
+      "mapImageSha256": "58347dd43f4abba75c10d85f92fc66aefd440761a41cc6973429b85c1d1bdfff",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -2961,13 +3024,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -3143,7 +3215,7 @@
       "mapImage": "comp.20261111104001.CAP.1313.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "25248a799604b328e0d18c12248b176df943b4aebb10b767c2b03fa7e7660f53",
+      "mapImageSha256": "807cb99fdad3323a7e82c41b3c61df85c7f680f9b7f51f35d1deb51621f1da6d",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -3181,13 +3253,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -3363,7 +3444,7 @@
       "mapImage": "comp.20261111104506.CAP.1318.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "19c236f4c99f89d0e17a7a49836d8c8c9451f1e93d40fbbc55711fdb924fbc48",
+      "mapImageSha256": "ec57400f0798e54525b4f1e51dc432485687fe39bfe35d0a1031dd9192ee0e72",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -3401,13 +3482,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -3583,7 +3673,7 @@
       "mapImage": "comp.20261111105003.CAP.1325.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "fce6e17397d82fff9708a603a1dad1ef996e0e62915f437c496821476fef2ce8",
+      "mapImageSha256": "e1322401511aaa8ead0c77fb85b22282e117310af87d1c1f1d4dd375868fd68a",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -3621,13 +3711,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
@@ -3803,7 +3902,7 @@
       "mapImage": "comp.20261111105501.CAP.1334.map.png",
       "mapImageWidth": 1100,
       "mapImageHeight": 400,
-      "mapImageSha256": "fe7af90ee0bb22ebc212eb79ff0cf252ae418a222a912243ca8a5f54fb8d1b11",
+      "mapImageSha256": "20eea0368c4d85aa66a51444c55fefcb1cfe1b3a188fac9ecf39bb65a2cd5a04",
       "georeferencing": {
         "method": "mg.corner-mercator.v1",
         "presentation": "corner-anchored Mercator registration",
@@ -3841,13 +3940,22 @@
           60.24960983785623
         ],
         "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
         "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
         "projectedCornerSpanMetres": [
           1127576.1350981388,
           1125557.3194681946
         ],
         "unusedLowerRightLatitude": 56.51391796118129,
-        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.",
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
         "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
         "evidenceUrls": [
           "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",

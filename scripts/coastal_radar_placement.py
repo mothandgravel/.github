@@ -55,6 +55,8 @@ def summary(w,matrix):
         controls.append({'column':col,'row':row,'longitude':lon,'latitude':lat,'agencyLatitude':float(alternative),
                          'alternativeSeparationMetres':round(geod.inv(lon,lat,lon,float(alternative))[2],3)})
     ratios=np.array([w['xscale']*720/(right-left),w['yscale']*720/(top-bottom)])
+    rows=np.arange(720);lons,lats=coordinate(w,np.full(720,350),rows);_,alternates=coordinate(w,np.full(720,350),rows,True)
+    in_map=(lats>=59)&(lats<=61);separations=geod.inv(lons[in_map],lats[in_map],lons[in_map],alternates[in_map])[2]
     return {'method':METHOD,'presentation':'corner-anchored Mercator registration','verified':False,
         'placementStatus':'metadata-derived / footprint checked / not surveyed',
         'metadataReconciled':False,'providerConfirmed':False,'surveyValidated':False,
@@ -65,10 +67,11 @@ def summary(w,matrix):
         'declaredToCornerScaleRatios':ratios.tolist(),
         'sphericalEquivalentTrueScaleLatitudesDegrees':np.degrees(np.arccos(ratios)).tolist(),
         'axisScaleRatioDisagreementPercent':float((ratios.max()/ratios.min()-1)*100),
+        'mapLatitudeSensitivityMetres':{'minimum':round(float(separations.min()),3),'maximum':round(float(separations.max()),3),'latitudeBand':[59,61],'meaning':'Separation between two interpretations for native cell centres, not an accuracy interval.'},
         'scaleDiagnosticLimit':'Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.',
         'projectedCornerSpanMetres':[right-left,top-bottom],
         'unusedLowerRightLatitude':w['LR_lat'],
-        'selection':'Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Do not use contradictory metre scales or LR latitude.',
+        'selection':'Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.',
         'alternative':'Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.',
         'evidenceUrls':[AGENCY,ODIM,'https://proj.org/en/stable/operations/projections/merc.html'],
         'radars':RADARS,'footprintChecks':checks,
@@ -87,9 +90,9 @@ def crop(w,matrix,colours,bbox,width=1100,height=400):
     out[valid]=colours[y[valid],x[valid]]
     raw=np.full((height,width),65535,dtype=np.float32);raw[valid]=matrix[y[valid],x[valid]]
     row,col=np.indices((height,width));hatch=(row+col)%10<2
-    dots=(row%8<2)&(col%8<2)
-    out[raw==0]=[108,153,160,12]
-    out[(raw==0)&dots]=[108,153,160,210]
+    ruled=row%12==0
+    out[raw==0]=[0,0,0,0]
+    out[(raw==0)&ruled]=[35,46,51,180]
     out[(raw==65535)&hatch]=[188,180,160,110]
     out[(raw==65535)&~hatch]=[0,0,0,0]
     return out.tobytes()

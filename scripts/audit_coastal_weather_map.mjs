@@ -11,7 +11,7 @@ const settle=p=>p.waitForFunction(()=>document.getElementById('cw-cloud-map').ge
 const second=async(p,v)=>{await p.locator('#cw-second').evaluate((e,v)=>{e.value=String(v);e.dispatchEvent(new Event('input',{bubbles:true}));},v);await settle(p);};
 const shot=async(p,name,selector='#cw-workbench')=>{await p.locator(selector).evaluate(e=>scrollTo({top:scrollY+e.getBoundingClientRect().top-110,behavior:'instant'}));await p.screenshot({path:`${out}/${name}.png`});};
 try{
- for(const [width,theme]of [[1440,'night'],[1440,'afterlight'],[390,'night'],[390,'afterlight'],[320,'night'],[320,'afterlight']]){
+ for(const [width,theme]of [[1440,'night'],[1440,'afterlight'],[844,'night'],[844,'afterlight'],[390,'night'],[390,'afterlight'],[320,'night'],[320,'afterlight']]){
   const page=await browser.newPage({viewport:{width,height:1080},reducedMotion:'reduce'}),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.addInitScript(t=>localStorage.setItem('moth-and-gravel-theme',t),theme);await page.goto(origin+path);await page.locator('#cw-workbench').waitFor({state:'visible'});await settle(page);
   const rain=page.locator('#cw-map-rain');assert.equal(await rain.getAttribute('visibility'),'visible');assert.equal(await rain.getAttribute('data-frame-id'),data.radar[0].id);
@@ -47,6 +47,14 @@ try{
   await page.locator('[data-cw-map-buoy="108495"]').click();assert.equal(await page.locator('#cw-buoy').inputValue(),'108495');assert.match(await page.locator('[data-cw-map-buoy="108495"] strong').textContent(),/Missing height/);
   for(const s of [43205,44103,45003,45903,46502]){await second(page,s);assert.equal(await rain.getAttribute('visibility'),'hidden');assert.equal(await rain.getAttribute('data-frame-id'),null);}
   await second(page,43206);assert.equal(await rain.getAttribute('visibility'),'visible');
+  // Seed geometry outside the saved strip, then enter it: origin and cell must agree.
+  await page.locator('#cw-cell-details summary').click();await page.locator('#cw-map-inspect').click();await second(page,0);await page.locator('#cw-map-inspect').click();
+  const seeded=radarGridAt(data.radar[0],26.3916,60.2333);assert.equal(await page.locator('#cw-cell-x').inputValue(),String(seeded.column));assert.equal(await page.locator('#cw-cell-y').inputValue(),String(seeded.row));
+  await second(page,43206);await page.waitForFunction(()=>/Column/.test(document.getElementById('cw-map-cell-context').textContent));assert.match(await page.locator('#cw-map-cell-context').textContent(),/Started at.*not rainfall measured by the buoy/);
+  await page.locator('#cw-map-native-controls').click();assert.match(await page.locator('#cw-map-cell-context').textContent(),/Started at/,'Opening controls does not rewrite the selection origin');
+  const edge=radarGridAt(data.radar[0],23.01,60);await page.locator('#cw-cell-x').fill(String(edge.column));await page.locator('#cw-cell-y').fill(String(edge.row));await page.waitForFunction(()=>/Column/.test(document.getElementById('cw-map-cell-context').textContent));
+  if(width<1000)assert.match(await page.locator('#cw-map-cell-position').textContent(),/Outside the current map crop/);
+  assert.equal(await page.locator('#cw-map-cell-value').getAttribute('aria-live'),'off');assert.equal(await page.locator('#cw-map-status').getAttribute('aria-live'),'off');
   await page.addScriptTag({content:axe.source});const a11y=await page.evaluate(async()=>axe.run(document.getElementById('cw-passage'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}));
   const violations=a11y.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))}));assert.deepEqual(violations,[]);assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   reports.push({width,theme,errors,violations});await writeFile(out+'/audit.json',JSON.stringify(reports,null,2));await page.close();
@@ -74,5 +82,9 @@ try{
  await scrub.waitForFunction(id=>document.getElementById('cw-map-rain').dataset.frameId===id&&document.getElementById('cw-radar-image').dataset.frameId===id&&document.getElementById('cw-radar-stage').getAttribute('aria-busy')==='false',data.radar.at(-1).id);
  assert.equal(await scrub.locator('#cw-map-rain').getAttribute('visibility'),'visible');
  assert.equal(await scrub.locator('#cw-map-rain').evaluate(async e=>(await fetch(e.getAttribute('href'))).status),200,'Rapid scrub retains the current decoded blob after cache eviction');await scrub.close();
- console.log('Shared weather map: six responsive/theme configurations; georeferenced picks, separate clocks, layers, metadata sensitivity, real gaps, SHA rejection and async failure/retry passed.');
+ const nativeFailure=await browser.newPage({viewport:{width:390,height:900},reducedMotion:'reduce'});
+ await nativeFailure.route(/comp\..*\.CAP\.\d+\.png$/,r=>r.abort());await nativeFailure.goto(origin+path);await nativeFailure.locator('#cw-workbench').waitFor({state:'visible'});await settle(nativeFailure);await nativeFailure.locator('#cw-map-inspect').click();await second(nativeFailure,43503);
+ assert.equal(await nativeFailure.locator('#cw-radar-image').isVisible(),false);assert.equal(await nativeFailure.locator('#cw-map-rain').getAttribute('visibility'),'visible');assert.match(await nativeFailure.locator('#cw-map-cell-context').textContent(),/Column/);
+ assert.equal(JSON.parse(await nativeFailure.locator('#cw-json').textContent()).radar.selectedCell.frameId,data.radar[1].id);await nativeFailure.close();
+ console.log('Shared weather map: eight responsive/theme configurations; georeferenced picks, separate clocks, layers, metadata sensitivity, seed provenance, real crops, real gaps, SHA rejection and async failure/retry passed.');
 }finally{await browser.close();}

@@ -108,10 +108,9 @@ async function renderRadar() {
     const img=$('cw-radar-image');img.dataset.frameId=f.id;img.src=loaded.url;img.alt=`Estonian radar-derived rain-rate composite in its unchanged native grid, supplied product interval ${f.intervalStartUtc} to ${f.intervalEndUtc}. Underlying sweep time unknown. Approximate map registration is shown separately.`;img.hidden=false;cleanImages();
     $('cw-radar-empty').hidden=true;$('cw-radar-pick').hidden=false;
     text('cw-radar-image-status',`${f.cellCounts.missing.toLocaleString('en-GB')} cells have no data. Below detection is separate. Seven discrete rate bands; last band >5 mm/h. Original floats retained.`);
-    if ($('cw-cell-details').open||weatherMap.inspectionActive()) await inspectCell();
   } catch {
     if(version!==radarVersion)return;if(state.playing)stop('Playback paused: a saved radar image could not open. Retry or choose another time.');heading.textContent='This image could not open.';detail.textContent='A source record exists at this cursor. Retry, or inspect its original.';text('cw-radar-image-status','The saved radar image could not open. Its original and receipt remain available.');$('cw-radar-retry').hidden=false;
-  } finally {await mapRender;if(version===radarVersion){$('cw-radar-stage').setAttribute('aria-busy','false');cleanImages();}}
+  } finally {await mapRender;if(version===radarVersion){if($('cw-cell-details').open||weatherMap.inspectionActive())await inspectCell();if(version===radarVersion)$('cw-radar-stage').setAttribute('aria-busy','false');cleanImages();}}
 }
 function drawRibbons() {
   const x = second => second/86400*1000;
@@ -212,7 +211,8 @@ async function inspectCell() {
 }
 function stop(message=null) {
   const wasPlaying=state.playing;state.playing=false;++playVersion;clearTimeout(timer);text('cw-play','Play the day ▶');text('cw-scan-play','Play all 12 composites ▶');$('cw-play').setAttribute('aria-pressed','false');$('cw-scan-play').setAttribute('aria-pressed','false');
-  for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status','cw-map-status','cw-map-cell-value'])$(id).setAttribute('aria-live','polite');if(message||wasPlaying)text('cw-play-status',message??'Playback paused.');
+  text('cw-map-strip-play','Play the rain strip ▶');$('cw-map-strip-play').setAttribute('aria-pressed','false');
+  for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','polite');weatherMap?.setAnnouncements(true);if(message||wasPlaying)text('cw-play-status',message??'Playback paused.');
 }
 async function setSecond(second,{external=false,playing=false}={}) {
   if(!playing&&state.playing)stop();state.second=Math.max(0,Math.min(86399,Math.round(second)));
@@ -226,7 +226,8 @@ async function setSecond(second,{external=false,playing=false}={}) {
 }
 async function play(scope='day') {
   if(state.playing){stop();return;}if(state.second>=86399)await setSecond(0);
-  let scanIndex=0;state.playing=true;const version=++playVersion;text('cw-play',scope==='radar'?'Pause the strip Ⅱ':'Pause the day Ⅱ');text('cw-scan-play',scope==='radar'?'Pause the strip Ⅱ':'Pause playback Ⅱ');$('cw-play').setAttribute('aria-pressed','true');$('cw-scan-play').setAttribute('aria-pressed','true');for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status','cw-map-status','cw-map-cell-value'])$(id).setAttribute('aria-live','off');text('cw-play-status',scope==='radar'?'All 12 saved composites, in order. No interpolation.':'Ten minutes per step. Saved frames; no interpolation.');
+  let scanIndex=0;state.playing=true;const version=++playVersion;text('cw-play',scope==='radar'?'Pause the strip Ⅱ':'Pause the day Ⅱ');text('cw-scan-play',scope==='radar'?'Pause the strip Ⅱ':'Pause playback Ⅱ');$('cw-play').setAttribute('aria-pressed','true');$('cw-scan-play').setAttribute('aria-pressed','true');for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','off');text('cw-play-status',scope==='radar'?'All 12 saved composites, in order. No interpolation.':'Ten minutes per step. Saved frames; no interpolation.');
+  weatherMap.setAnnouncements(false);text('cw-map-strip-play',scope==='radar'?'Pause the strip Ⅱ':'Pause playback Ⅱ');$('cw-map-strip-play').setAttribute('aria-pressed','true');
   if(scope==='radar'){await setSecond(secondAtUtc(data.radar[0].intervalEndUtc),{playing:true});if(!state.playing||version!==playVersion)return;}
   const tick=async()=>{
     if(!state.playing||version!==playVersion)return;
@@ -243,8 +244,8 @@ async function start() {
     data=readWeather(await json(new URL('notebook.json',root)));const land=await json(new URL('./coastal-replay-land.json',import.meta.url)).catch(()=>null);buildMap(land);
     text('cw-availability',`${data.clouds.filter(f=>f.available).length} cloud frames / ${data.radar.length} radar composites / 3 buoys`);
     $('cw-workbench').hidden=false;$('cw-loading').hidden=true;
-    $('cw-second').oninput=()=>{for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status','cw-map-status','cw-map-cell-value'])$(id).setAttribute('aria-live','off');setSecond(Number($('cw-second').value));};
-    $('cw-second').onchange=()=>{if(!state.playing)for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status','cw-map-status','cw-map-cell-value'])$(id).setAttribute('aria-live','polite');};
+    $('cw-second').oninput=()=>{if(state.playing)stop();for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','off');weatherMap.setAnnouncements(false);setSecond(Number($('cw-second').value));};
+    $('cw-second').onchange=()=>{if(!state.playing){for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','polite');weatherMap.setAnnouncements(true);}};
     $('cw-play').onclick=()=>play('day');for(const [id,step]of [['cw-back',-600],['cw-next',600]])$(id).onclick=()=>setSecond(state.second+step);
     const scan=$('cw-scan');scan.replaceChildren();const none=el('option','No completed scan at this cursor');none.value='';none.disabled=true;scan.append(none);
     for(const f of data.radar){const o=el('option',`${clock(f.intervalEndUtc)} UTC / ${clock(f.intervalEndUtc,'Europe/Helsinki')} EET`);o.value=f.id;scan.append(o);}
@@ -252,6 +253,7 @@ async function start() {
     $('cw-scan-prev').onclick=()=>{const f=data.radar.filter(f=>secondAtUtc(f.intervalEndUtc)<state.second).at(-1);if(f)setSecond(secondAtUtc(f.intervalEndUtc));};
     $('cw-scan-next').onclick=()=>{const f=data.radar.find(f=>secondAtUtc(f.intervalEndUtc)>state.second);if(f)setSecond(secondAtUtc(f.intervalEndUtc));};
     $('cw-scan-play').onclick=()=>play('radar');
+    $('cw-map-strip-play').onclick=()=>play('radar');
     $('cw-radar-jump').onclick=()=>setSecond(secondAtUtc(data.radar[2].intervalEndUtc)+5);
     $('cw-gap-jump').onclick=()=>{state.station='108495';const series=data.buoys.find(b=>b.id===state.station).series.find(s=>s.parameter==='WaveHs');const p=series.points.find(p=>p.value===null);if(p)setSecond(secondAtUtc(p.observedAt));text('cw-play-status','Selected Loviisa / Orrengrund at its first saved gap.');};
     $('cw-buoy').onchange=()=>{state.station=$('cw-buoy').value;weatherMap.prepareStation(state.station);setSecond(state.second);};
