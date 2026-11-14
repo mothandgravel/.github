@@ -1,0 +1,17 @@
+{
+  "file": "eumetsat-geocolour-times.xml",
+  "url": "https://view.eumetsat.int/geoserver/gwc/service/wmts?service=WMTS&version=1.0.0&request=GetDomainValues&layer=mtg_fd:rgb_geocolour&domain=time&time=2026-11-10T22:00:00Z/2026-11-11T21:59:59Z&limit=200",
+  "requestedAt": "2026-11-14T10:24:18.005660+00:00",
+  "status": 200,
+  "finalUrl": "https://view.eumetsat.int/geoserver/gwc/service/wmts?service=WMTS&version=1.0.0&request=GetDomainValues&layer=mtg_fd:rgb_geocolour&domain=time&time=2026-11-10T22:00:00Z/2026-11-11T21:59:59Z&limit=200",
+  "serverDate": "Sat, 14 Nov 2026 10:24:18 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "text/xml",
+  "contentRange": null,
+  "warnings": [],
+  "bytes": 3914,
+  "sha256": "037a3e18bebfadab15b427c2ca4716699f862d934a9c12be0ec0186ce4db7178",
+  "wireSha256": "4bd0008d3c60bf5ebf86f0852a3bf3961616614ec318df00937b2be74f6ff395",
+  "completedAt": "2026-11-14T10:24:18.351180+00:00"
+}

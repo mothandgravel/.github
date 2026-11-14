@@ -1,0 +1,17 @@
+{
+  "file": "comp.20261111102501.CAP.1292.h5",
+  "url": "https://avaandmed.keskkonnaportaal.ee/dhs/Active/_layouts/RM/Content.aspx?ListId=228b4970-73de-44a4-83e1-9513be360001&ID=18001296&fileId=1",
+  "requestedAt": "2026-11-14T10:27:45.366992+00:00",
+  "status": 200,
+  "finalUrl": "https://avaandmed.keskkonnaportaal.ee/dhs/Active/_layouts/RM/Content.aspx?ListId=228b4970-73de-44a4-83e1-9513be360001&ID=18001296&fileId=1",
+  "serverDate": "Sat, 14 Nov 2026 10:27:44 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "binary/octet-stream",
+  "contentRange": null,
+  "warnings": [],
+  "bytes": 395864,
+  "sha256": "74ace3ce1c8c609b802217e9f6821d7b17cfc5dbc2c1a5f6f66e6157284a99c2",
+  "wireSha256": "74ace3ce1c8c609b802217e9f6821d7b17cfc5dbc2c1a5f6f66e6157284a99c2",
+  "completedAt": "2026-11-14T10:27:45.813540+00:00"
+}

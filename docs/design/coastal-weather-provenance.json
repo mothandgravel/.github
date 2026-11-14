@@ -1,0 +1,1784 @@
+{
+  "schema": "mg.coastal-weather-provenance.v1",
+  "dateLocal": "2026-11-11",
+  "transformation": "Cloud PNGs unchanged from WMS. Radar float32 cells copied in native order to deterministic gzip; palette PNGs preserve missing/below-detection classifications. No geographic radar warp. Buoy samples copied unchanged.",
+  "paletteRateMMH": [
+    {
+      "maximumInclusiveMMH": 0.05,
+      "colour": [
+        130,
+        165,
+        169
+      ]
+    },
+    {
+      "maximumInclusiveMMH": 0.2,
+      "colour": [
+        173,
+        197,
+        183
+      ]
+    },
+    {
+      "maximumInclusiveMMH": 0.5,
+      "colour": [
+        211,
+        208,
+        161
+      ]
+    },
+    {
+      "maximumInclusiveMMH": 1,
+      "colour": [
+        225,
+        179,
+        112
+      ]
+    },
+    {
+      "maximumInclusiveMMH": 2,
+      "colour": [
+        213,
+        131,
+        79
+      ]
+    },
+    {
+      "maximumInclusiveMMH": 5,
+      "colour": [
+        157,
+        77,
+        64
+      ]
+    },
+    {
+      "minimumExclusiveMMH": 5,
+      "maximumInclusiveMMH": null,
+      "colour": [
+        104,
+        53,
+        67
+      ]
+    }
+  ],
+  "scope": "Environmental context. No vessel association, incident attribution or damage assessment.",
+  "clockMeaning": "Declared product labels and supplied radar product intervals kept separate from retrieval receipts. Underlying radar sweep, per-pixel acquisition, first publication and original station reception remain unknown.",
+  "dependencies": "tools/specimens/coastal-weather-requirements.txt",
+  "files": [
+    {
+      "path": "data/coastal-weather/2026-11-11/README.md",
+      "bytes": 5783,
+      "sha256": "eb7f75b28a6b53e5e8713224eddcf1105e5c04864e43f2253aac719de53cdd5d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/capture.json",
+      "bytes": 18803,
+      "sha256": "42a6a6c19acf70a5c5367b2a0f71665316f75fd667ea8ace5bea1778b04ab881"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111100006.CAP.1256.f32.gz",
+      "bytes": 361507,
+      "sha256": "f739c694573fd3460da008ea783a78c3eedcb1ed577c11c11c6185f02dffcff0"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111100006.CAP.1256.png",
+      "bytes": 30187,
+      "sha256": "3e62b7a90e155371a058332c6ea9072a33bf3d47073a2646572345fa5bf8dbb9"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111100503.CAP.1264.f32.gz",
+      "bytes": 378920,
+      "sha256": "93a80ee0c0bdf2f6eedd785d5275438d59f89fc530045d15ca8c14359aaeb539"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111100503.CAP.1264.png",
+      "bytes": 30976,
+      "sha256": "c4e53907070929811f5a2944c56426dc1d181fcbc9829d54b789d6977887a680"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111101001.CAP.1271.f32.gz",
+      "bytes": 376729,
+      "sha256": "979fb45c7ec8e1de2db5ace9b8d613c8c66d9b498ccb2129a83cd849747f3f66"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111101001.CAP.1271.png",
+      "bytes": 30110,
+      "sha256": "5f6d6338be270a658e8c2525c6bae763753ad75c9935fa099bf8a43b1b839217"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111101506.CAP.1277.f32.gz",
+      "bytes": 375111,
+      "sha256": "0bf079b572cf5088a4d174ee3c30045546ae043e98340b03cad9055729c0270c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111101506.CAP.1277.png",
+      "bytes": 30242,
+      "sha256": "cef03442fd718e9b05555b9b537979e6ffc9c47419594c0654428d8130dd22e0"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111102003.CAP.1283.f32.gz",
+      "bytes": 384627,
+      "sha256": "9ae36634eb53b1bfb2a4f51ccfbb7fbd48900d8459ec8b8817d8ced84b16cef9"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111102003.CAP.1283.png",
+      "bytes": 30591,
+      "sha256": "73a24a3ea4be735c0bac3fed89b280aeb287b877c9a6444d37b674bb1c10b807"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111102501.CAP.1292.f32.gz",
+      "bytes": 379436,
+      "sha256": "15074f05851fd0808bca292296cf6bc1eb397a9fb548be30e8da36a1f3e8d238"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111102501.CAP.1292.png",
+      "bytes": 29840,
+      "sha256": "42a4f3eff5ecb4717cef34d855361c7406de5002055eb9c145ede102a9480845"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111103006.CAP.1299.f32.gz",
+      "bytes": 371316,
+      "sha256": "b5139d6e354ca63ed6e5687b3faa7e7cf684d60715eec68470b0df229b5203b1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111103006.CAP.1299.png",
+      "bytes": 29774,
+      "sha256": "37244d6f28cdc03c3c6495636c37456b17dd3edcfdadaa94eeeea27b102ee49f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111103504.CAP.1306.f32.gz",
+      "bytes": 383344,
+      "sha256": "138eee37ab1798851ca8ec281f8c07ce89975356b599ffb0c5ae8f07ad5b2257"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111103504.CAP.1306.png",
+      "bytes": 29775,
+      "sha256": "1584763c1333704dba1b31520bd756db502eb83ea273866c47cab61e37bffe69"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111104001.CAP.1313.f32.gz",
+      "bytes": 375865,
+      "sha256": "2bbb4ef80dfab041354809799e22788cec3b5f29cd8717a92bc3ac733f1ad4c6"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111104001.CAP.1313.png",
+      "bytes": 29347,
+      "sha256": "7c073aa9f983f1161937a8f8b0d8964d6712961fcc0b30b44fbb4c1a71da8c56"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111104506.CAP.1318.f32.gz",
+      "bytes": 370623,
+      "sha256": "ec1683c360b5e678ad31438f1d953e7ff4b505013449b346d67ef04ae369a710"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111104506.CAP.1318.png",
+      "bytes": 29663,
+      "sha256": "9e777ce506061b63d911a001c9a84ba3f783ac865e40d16d0c763bce331cdf03"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111105003.CAP.1325.f32.gz",
+      "bytes": 389024,
+      "sha256": "108caf7b8bff7659a8423c730bd5ffe507d9f95c8c078af8178ffe656e4ca4bf"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111105003.CAP.1325.png",
+      "bytes": 29929,
+      "sha256": "c21785de99557e53997f4a4751751b48de059d395000754ce02cb78ad0492953"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111105501.CAP.1334.f32.gz",
+      "bytes": 387513,
+      "sha256": "f610ecc916a90696db6b94a5ac69c034263efae321720acdcbf33ba660342ca5"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111105501.CAP.1334.png",
+      "bytes": 30145,
+      "sha256": "fc579773875e1bb6a6bc2a2938aa0a2f52324aaf48f13291415c09d2a958103d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/notebook.json",
+      "bytes": 326936,
+      "sha256": "5863e24b3bd70d18b13f906b3ea4011685bd9d8de85748a337ad219ce6ffffaa"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111100006.CAP.1256.h5",
+      "bytes": 378059,
+      "sha256": "6609a21b145f558883dc62e21a6a419f69fa6ca4014754fad19b0c5aa3bcbe6f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111100006.CAP.1256.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "5cf00ff7d1d7022ebf63c64f5f3441448a35edad1dbe9d3493416accacc7a397"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111100503.CAP.1264.h5",
+      "bytes": 395283,
+      "sha256": "74f0931792b4f9d24f96ca54ffba6bf88d8f6135d48be708a4ded987dfa32c3c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111100503.CAP.1264.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "d4fa94503db5f2dc15dac6e87215ad78a4be0e79fadd47cf1043a005ea78ac63"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111101001.CAP.1271.h5",
+      "bytes": 393062,
+      "sha256": "e63865d17be1fd1132fb12d2231ed621258438d594e50e2ff4f4ec7acbc00328"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111101001.CAP.1271.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "3e2db2d8681942355588a3794edc22cd32bb8383eb8085e8081608f685644a02"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111101506.CAP.1277.h5",
+      "bytes": 391590,
+      "sha256": "e302263490a293608a0d8c8ac545abd0dfe5468837e91908917bb5e5fa628c89"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111101506.CAP.1277.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "5c2c85ee41749e14d6f794135f5e986660b1385ce79e4839e7b060903d71b5df"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111102003.CAP.1283.h5",
+      "bytes": 400920,
+      "sha256": "ea3a801edb5cf6320faffd5f4e38817af709a69532db3c5b53ebfc1f71d8155f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111102003.CAP.1283.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "d1856780207a8d3a824eb7aafb57f25d7b5ff1b703eac995657c301729ea7437"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111102501.CAP.1292.h5",
+      "bytes": 395864,
+      "sha256": "74ace3ce1c8c609b802217e9f6821d7b17cfc5dbc2c1a5f6f66e6157284a99c2"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111102501.CAP.1292.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "f262d32f793dbed5e0148ba194edb24bc941d38f24b282d4aa36eda14d54fd48"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111103006.CAP.1299.h5",
+      "bytes": 387741,
+      "sha256": "cbafbb0e4141670cd29c0ca6a558c11341690dc89cab3239aafddb59daeda3d0"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111103006.CAP.1299.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "fe11657d40c2d2caa94b270987be57a6b7bb08c8c5e7939f8d5ec0cf4c59dcfa"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111103504.CAP.1306.h5",
+      "bytes": 399613,
+      "sha256": "a340e11f14c67a9057214496833973cd48ea1d3a24034d76152e4e6f46301b88"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111103504.CAP.1306.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "c456cb1ccb2c50721133082a84d339ddc613796b30e59402976977f158521cfd"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111104001.CAP.1313.h5",
+      "bytes": 392400,
+      "sha256": "f9d01b87f325f1c13f8dd5b1369a677689350f20f320b58a197e93c3827ccfce"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111104001.CAP.1313.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "c7994dc892fa8f29fe8e41d42324fa9afff3c5d079d8f956fbbcbfadbbf0c3ae"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111104506.CAP.1318.h5",
+      "bytes": 387031,
+      "sha256": "ab65b6fda476813f52511fb8871e4d4e823e2874d801f170f0f5cea7087f2de5"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111104506.CAP.1318.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "1d99edddb07cd893868d90679f5d9a135064c6be2a433cbf7aecbeddfd3b04a6"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111105003.CAP.1325.h5",
+      "bytes": 405166,
+      "sha256": "65e7aaaa4b394e09bdac936d20a6658b5aea4df9e490ee1599e152bcdfb12f22"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111105003.CAP.1325.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "86f81235b9cef6f58a545e50cebb7f01c6bdee9aa8d8d825388daeec09f62e69"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111105501.CAP.1334.h5",
+      "bytes": 403765,
+      "sha256": "2b8d4dbfc3a6588c465b973e9c2e529546b53c4c9b8d5e83d368da95af8f493a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/comp.20261111105501.CAP.1334.h5.receipt.json",
+      "bytes": 832,
+      "sha256": "231ef4b78e53c9e8bb9e042cf2d0cd6c4ec6d8de16063f1b58c49461d24fe6cf"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/estonia-precipitation-1000-hour-list.json",
+      "bytes": 9278,
+      "sha256": "533c012bbedc0fcd3a76f0985b84f5bf1e73a17ffbc7c0ec778c3eae24c892cf"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/estonia-precipitation-1000-hour-list.json.receipt.json",
+      "bytes": 2389,
+      "sha256": "e8d391651a395f88ae603d522f9a2d2b1bbd41191cafe67ad83399c0a76acc46"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2200.png",
+      "bytes": 156435,
+      "sha256": "5b7dff69c9087f8ba1d03609a935e22398b2cb43e0ed4c26bbe8c96c805caae3"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2200.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "eec296b0e700e86b59e821328c238702e39e76cc7091246975cdc8c18e143619"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2210.png",
+      "bytes": 156512,
+      "sha256": "83f0f30326cdcbc9c8c052b4bae87430e92dfa37642c0ea1986d4cf79390c806"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2210.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "93871adc8a806b465856f022f8b7d19c8de20ccd5d7248809972d9852c48bff8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2220.png",
+      "bytes": 155835,
+      "sha256": "d3198c3bde2c507b03164dc1fb3007b37b21e4b7fafd03a07274deb6328ff74e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2220.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8f55bb78e31ec03a7bfeae6d13899440fac0edaf83253cdbde15bfbb038888f1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2230.png",
+      "bytes": 155672,
+      "sha256": "ff263e2b47642053c3afa91f65c25398f2855ef6dee16df9a11a85ef42d374e7"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2230.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "b279a00cdbd753bfa79383a8520e2b7d7f3abddc77bf6ef6217f2616d9250d55"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2240.png",
+      "bytes": 156236,
+      "sha256": "a4fb231f21dfe8cc2e13cde1c41d9b0d81db6468879251c30c11f0b584d32841"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2240.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8cd2c7494d6b8e60a2f4fed92cd8c8ffa464e2ae5428db495c005fb345a73e79"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2250.png",
+      "bytes": 155613,
+      "sha256": "553d4cf57c12b9c6d51b041bfcee8d20f671128199b78472a7267ef9bb79c78d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2250.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "558869b2114fe18e13c7b369632a2103f2be0e130ef7cfb43963e2cf5d2321fe"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2300.png",
+      "bytes": 156003,
+      "sha256": "b537338fdda75c16147552ac1f695f94c4f7cf8ceabcf2093ce9c371edcfd6da"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2300.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "76d8586c8460bb4c913effd4eb8f7d0a9aebeb7302823220d2a7de25177756da"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2310.png",
+      "bytes": 155704,
+      "sha256": "e223f6f618051fccb51eba5cf4ada86482b84164832a98ac975f82a25dee6e4a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2310.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "e0b2e3653fd31b91f11d561dc2575c5f04de267d8e01e222b0de4f0793ffa166"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2320.png",
+      "bytes": 154761,
+      "sha256": "14f0517a1e45be232f3e7743e998f2849b977ac698dab707d2abb69fbfa3238b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2320.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "b8167b5c1ee49da96c4a2bc05001dba85fb606df15b3703a45979888d46b8d0b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2330.png",
+      "bytes": 153487,
+      "sha256": "117f2474d99d0242162adb44c64e51c2972d20a4404b838b0fe8360dc7c47979"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2330.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "01d411d9e64360e4f63460ebe94fc2ecb2ce204c0e176cea860841561b792de2"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2340.png",
+      "bytes": 154227,
+      "sha256": "22af0d4eaba73cfbb3428d07fc301925900f27c61fba6ed7686961cc09d0c5e6"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2340.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "431b80b5e22959fe1facbff80971e85856db3485577ffb4b4efebd50a1b22bb1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2350.png",
+      "bytes": 153993,
+      "sha256": "83e93f01cdf54134aa6e571637cfdbdaf2defdcab704a98e442ae4df90b1e4da"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261110-2350.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "fbabfc446043913bee95a3dc4cf7b0c8518b6dd5bfd3975a700fcc38801ed9d2"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0000.png",
+      "bytes": 153977,
+      "sha256": "18763cda510c37727b4b502bcb0ed7509e970583e5d740054b0ecdc8e306e242"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0000.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "0176c3deac2f17ed559cc33d79dca9782ae2111ef0662d57df336970dd259af9"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0010.png",
+      "bytes": 155799,
+      "sha256": "1c604e2f313d6e04b4cbe5588f063cfb9322788ef08bae345ce4367c7181fcf0"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0010.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "7ca118d56744af3ca525a77f7cd9ba3136e56503bd357db012872c815a8eff1d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0020.png",
+      "bytes": 155230,
+      "sha256": "3b57c2ec5c8a178de4e987a98ff37c0a5039cf14d86241bf6e74998376084906"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0020.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "3fdd69500cab2adda473b7e8855d47f6ff336762407fde68e5074d3fa431751f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0030.png",
+      "bytes": 153923,
+      "sha256": "c8857b1e9f40ac4975b9ea4c307b28265dd3d09d42dc4bbdce612ed5ff837de4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0030.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "632bdbc36e1d1e877a0e0ba7dbc24447f7015b530318407193a6eee20cfaf695"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0040.png",
+      "bytes": 154292,
+      "sha256": "464b27157c08de0916af862e924af3b69289e5d2f381ca1f496a2a8da5cb62b4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0040.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "11e5bc1fddc27e6bace00df7e83517be6b3074e8be3dd4138e16cc3921ca44ba"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0050.png",
+      "bytes": 154647,
+      "sha256": "2b7bd96c267dfcaff1b537f695d0b596061c2cd2c322dab849a96b064a57ac33"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0050.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "672d32c25f60b7bb040e29feb9ddaddb6b4dbd06acb9044b1a12d11d8c89b99f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0100.png",
+      "bytes": 155695,
+      "sha256": "fd6f68f49a8dced1547d9c768da28baf523a88ae0d4f85a4ed3907b12dd1f852"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0100.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "50aa2744db0f18824434398fed790500856d20c23322a6534b185f7f377451c1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0110.png",
+      "bytes": 156380,
+      "sha256": "eb536045006ba7452c33b35b714a0e6d4045572009acc2fbd8e4603d18f93af5"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0110.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "103a351ae8dfebc6ad3cbf0d9ae8310edc7036df922f36b16b733f48365d8f4a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0120.png",
+      "bytes": 155885,
+      "sha256": "877a655ced264c80efd4de38c870e89d165725e5f8b644083173d2e11175c496"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0120.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "24634e6d87d10f734528f497dfccfda55379188e332b7be0a5988a4dc3e6c1bf"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0130.png",
+      "bytes": 156081,
+      "sha256": "7f48ee18bb7bada61801d7056715fef3eed58f1dc34c0e798dd53c2869bf5617"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0130.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "1153a07601e52d37b6e4556f00beb92140a5a68b752e91424349c323da2f677b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0140.png",
+      "bytes": 155631,
+      "sha256": "e7b74e19fe3d534fbf3ea3a27e35c2be1cd37226a6cffa5df0709f6b5991b0d4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0140.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "aaf4a3c8e29d0ec6149ee86d4cca0a6f8f22ac250c5dce4736f20168efab139b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0150.png",
+      "bytes": 156346,
+      "sha256": "4cbcb69ccd784b714f7958c36f357d3a9cb58b1751ef1b474925062ac7c54484"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0150.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "90971a9a82ba35cb8448b8d8db68ee595d6eb9420e6f9ce1cf57a2ec45be8ad8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0200.png",
+      "bytes": 156137,
+      "sha256": "bd9a05ce2319a1509fc781db7c49b6d82cefcf8d5b63f059299ca85cab2f449a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0200.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "a3cd4563f32ad7400589120becb685b83f011a56a6291067ea3729f33ddb9249"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0210.png",
+      "bytes": 155986,
+      "sha256": "915da7bc91bd7bc28cd4b12c71c8be07cf42afd91b02bb2fb813c2ce98981f15"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0210.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "1b7e19cc054fa0284194a89629aaf2acd5915d55a228289ae490ef3a9cc66e9c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0220.png",
+      "bytes": 154799,
+      "sha256": "9d9d7f3256f64ef9403208cb40180c7a84df24d4a02a6b56d3ac33df42063e01"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0220.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "19d034a2c2c973242335cbbf3a593eaf3a2becf395fa6bc3bff9e2b98a5f3cb2"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0230.png",
+      "bytes": 155002,
+      "sha256": "f850d96bceadd57b192bd0b7e7d4d05b321560288e9c1dcad52ad207c1bc0857"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0230.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "b58ccbef5ac6782e98d2d156adbfab5493b36d74987655863fafa5a39612d146"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0240.png",
+      "bytes": 154845,
+      "sha256": "d1eb0772a194d0d0734d734c34df613a4dd05619107d85809d640ec59c553b6c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0240.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "7f56ab114a697ed9dd871c2998743c2928c863a04ab00b1bee27fbb90f6be574"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0250.png",
+      "bytes": 154596,
+      "sha256": "eea110f5ef7e4cef2c8528f1ac52b372d210abc149a58ea0481be97d74209e34"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0250.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "a97a965a4ac3ed5206297d9361af594c94c470c4afc8c70f436b5478648b72ce"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0300.png",
+      "bytes": 153559,
+      "sha256": "600cfd0393a3895d48ef5ce06ff53f46cdfd7be141f9e39e46038e13028a9ae0"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0300.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "c9af97c668db63db1289bd42bc2677dcfd163cea842f6ef6be1052519c237fef"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0310.png",
+      "bytes": 153366,
+      "sha256": "2a2d1de92d0546a3e55faf265d74ea2f627bc84e02ccaf7fb964dc3ffeeb7f77"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0310.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "cd580f25d83cdf074081f29d34d9a83c0f76cabab3184946eecf13968a8eb1ff"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0320.png",
+      "bytes": 153535,
+      "sha256": "ca7061eb04b58807381e5ffc899d9aac8f5b87e27f563fa6cc6c13ea8fafe28f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0320.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "b7d7bc4432e9e1a68147d9c5fac55218c7db4df0a660a7a50992c92e860e3b05"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0330.png",
+      "bytes": 152454,
+      "sha256": "b1f66123f947cbc938432e16b9cc3bf1edacd54ab1b2db91cc88f5a8b05b63d3"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0330.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "5b679a4e9dbc4bbf132aa1a043b03d6907a80eb8336dc9c8344b5bb5c759908d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0340.png",
+      "bytes": 153448,
+      "sha256": "bb324441468a3399562b4d65eb04ce1ceab6d404454a2253cc82f65e1697ab80"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0340.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "4c5068626410915a96e39eeca2ae9777eb07059dd92e06d7dde5765bc5c2eb83"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0350.png",
+      "bytes": 153819,
+      "sha256": "390be71897fa4bdf4086b8ce48e81a4864bf90be3db5513ca81e416f67b838af"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0350.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "38b503161a5240e127e6b53cedf044a89361c99787fa561c0a328e12127433e0"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0400.png",
+      "bytes": 154093,
+      "sha256": "a0115e802cba298249cfca9be15ec05dce0381db4d86ad60bca83bf345f62bee"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0400.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "50f389f1e44e52287acdaf44c71ef768414ec02fde97076302db1702847da6a1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0410.png",
+      "bytes": 154744,
+      "sha256": "3d46ec9ccbb8eefd8db2475d7db3b67c90e76def37a2c38aaf9667210c85fbba"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0410.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "e6e5e81d855932fca15f1250da3448f41e5bab56dbbf270170db129d678cbf41"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0420.png",
+      "bytes": 155944,
+      "sha256": "59b30261c206507739d444699964c729bdd4b0743c8197092de691a7caef5eba"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0420.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "0add69e5f2239613a37d3e10ad28bac716d98f811bba0982670c70701557c415"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0430.png",
+      "bytes": 155590,
+      "sha256": "97f8e51f1d9736c0eb295a4d2542d499ba39f66ec0bbea86de483aee823ae647"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0430.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "dc7aec699ac6114f2bfc4e247bf83d33d92abbfa6b8ce725eb13055bca036822"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0440.png",
+      "bytes": 155913,
+      "sha256": "721fdb3a4c05aae897be2f5a8c4a8937f8675844e9e956b1c49743ccc2a3fb7d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0440.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "c02077ff55024de50d4c17c9c326321151a52ca5683539af64858358ba06475c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0450.png",
+      "bytes": 156583,
+      "sha256": "e4f3ff017a22bbbb50a78ba73a0fe925de2925a1df7f06502f01bb380546126f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0450.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "0643db8c4b82d9ba698275bc5e5e7bbf84ccfd708d5129fe9ba48e89a57a5ff6"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0500.png",
+      "bytes": 156776,
+      "sha256": "465c14335f77b87afd166a87cb9bf3a0ef83638f117cc57b58193497f09780d6"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0500.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "4c032bc18e1ccfc9638e91af33919f94fb64cac6a0f150aacecfe73f59f80d1d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0510.png",
+      "bytes": 156690,
+      "sha256": "e4265c01bd684670d9ebf09c0729d22a4cd061b7efb1cde8fbaa85edd6ce3cc6"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0510.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "d69d52a67dc72405f65bf4b8e42cde646b215737c4cffb108b690f784a394622"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0520.png",
+      "bytes": 156490,
+      "sha256": "45dd3fa562ac357797b659e0a8cb0bc57df3324747ebaea59121132cee2cbe48"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0520.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "bb8305284690e61eae504bc3cef7083be605b0bc97775c5298e2f8973cfb4c12"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0530.png",
+      "bytes": 157198,
+      "sha256": "df39ef505f6b6c93f9a5591fd75a0aca151926bf53c3edcc1fbd8ab3afa8c211"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0530.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "4fe1ca708551ef4305fcc57b4b61079456eeb364ddddfd54a8f96a7596467474"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0540.png",
+      "bytes": 155553,
+      "sha256": "6ec1587e54733dfd62c5756dc5b8862228bcc3e8d1f27651f1212ce3b8d69528"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0540.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "e5fb07011802b8ae24e2665150914e183a6c1d16f29a21b4caaf2736ea02bb4f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0550.png",
+      "bytes": 155578,
+      "sha256": "6fd45530cd4248c06b0999f61d4b0964795347bfff9b770b1a992560be12cd73"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0550.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "b6af55848f6d8c75ca6d42b3586a72f0903f312416cca15845cde02ffe09c95f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0600.png",
+      "bytes": 154830,
+      "sha256": "61217a3a2fce18eefd7c38d6182a6778c32415b9768ca7f1d7ab84e13f782198"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0600.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "a9fbecc88ac9d62a41f71b434caca8d184e951e148bb0f571e602d7d1fc4a88b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0610.png",
+      "bytes": 153993,
+      "sha256": "61f16550f823ef83a25d47a7954a7db066a2f40935e4a16625bdf43720918a99"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0610.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "c5a07d69b8026bfeae4fad0a3cabbea7e27642e21d0a11f93a2489f90e86bfee"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0620.png",
+      "bytes": 153407,
+      "sha256": "2d74ef1e198049cd384a10979a1e505c4abba7aa3783ff6129127ba6858b8e22"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0620.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "f61094c662cffbe4763b0df9871c8bd073a99c99d5c73195028ac9ccfb82a3b3"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0630.png",
+      "bytes": 151528,
+      "sha256": "1941381e010772252e3615227ac91857578783f885d05f500a4c6f38ae28ad0f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0630.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "3f7c6b71666b69d4246e45a6aae630371ce49eb81b02bcdf70ad1284701a5221"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0640.png",
+      "bytes": 148478,
+      "sha256": "409db4c5f0060c5fede81a6f42d30230bf83fd4f1bef274e97a3575d14054d0c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0640.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "5d6d3a0852f14f1a98a878fe376fcc8fb0a550e2c8bd6dd8ca29dc1995d80231"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0650.png",
+      "bytes": 146062,
+      "sha256": "a92072f76d5b3befe5f331ed95dac0a9eda06db8533fb55ce1dfc6bc93287788"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0650.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "23b4f01c8e879debf6ea7ec06a5389009798510763596abbebc23bf4c077ffa2"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0700.png",
+      "bytes": 144909,
+      "sha256": "d73bf1c35d96b56be1f91d7b1774dfb800ef4667f6f542c7d171eb30a3431952"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0700.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8bcde5d851a24ab04c863243edc9caf2081902aee91238dd3ba308b77ebeae54"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0710.png",
+      "bytes": 144277,
+      "sha256": "7fcfef376dbb8fb120278cc616c5e1aeca4d6584515988ad14d1c3c24fa1fade"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0710.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "f3114e407d860d22b2b71cde5cc1cedbed6746a141f4e3244bd88bf21375ea1b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0720.png",
+      "bytes": 143624,
+      "sha256": "7e390f37fe850d2522e5a7a2386ee8929e81e0f50ce5668a492dc160f6da0325"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0720.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "119f891a40311115dda660d9fc81e89f1e4aeca2ba3ab1958ecc86eca53a796a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0730.png",
+      "bytes": 142200,
+      "sha256": "06f8e7596980b163a1cca4169e31945d4d9925cfd6a6a8e94dc32e5606158b6d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0730.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "a5a2a6a1a6329d953be1db39b5d3caa1b90ebed7656391d3ab364daf18610989"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0740.png",
+      "bytes": 142724,
+      "sha256": "960f5b77c7a62495160d59aa1e9ea99e8a7dab3771db8f3c8cb6d012c49ef023"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0740.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "4cd1a13ecc7cd4c835211693b1a35467cbc1879adb7a417691a68f389cf375f2"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0750.png",
+      "bytes": 142132,
+      "sha256": "a8db8b2a2487c35c1e5ceb5b3f41cb148ee3d7adce16db4f862b97876b67af85"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0750.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "f62c654d9a01529470ba82c240be080d3cd62121c50a3ca0c48806917cdbc576"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0800.png",
+      "bytes": 142453,
+      "sha256": "b83a29fa02bb81d330f48b769d3771488ffb26150898fdf1cb6e07fecdf7a987"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0800.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "f289092b89b1429eb6bd5eeb25aae92f7de43677c95d5d977b3618d9f11545c3"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0810.png",
+      "bytes": 141798,
+      "sha256": "b2a0f356cbe12ad02cc3280ecb7902219e6e32b2c4226dac252726315fc21065"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0810.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "40e2ea87aef12cc26becc215f5af58253774b190d57b16663cbbd1dd5a4d8c53"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0820.png",
+      "bytes": 141998,
+      "sha256": "d8410aa352bd9d8a37b4d09234af8830ba4c7802fb148f87220130254e5ba5a8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0820.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "b2fdc3c711c0a9545540def97ec0d76eded5f52df4aae143c4404ca0876ea6b7"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0830.png",
+      "bytes": 140778,
+      "sha256": "262d529e817b8aee31969835490238060022a7db922b0cd1bbceba6e94133c2c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0830.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8681016a9290e72a07c831ced44e62614b1aa76a9755f55a38872a19223fc0b8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0840.png",
+      "bytes": 141718,
+      "sha256": "1a4900d5b340848958a69c5e805097202192b1ff1b8ef58f26b8f3c0c6b3365d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0840.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "f81105056900c9410662633e71dcb7690f38496d0131d103556b143c4e09b9de"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0850.png",
+      "bytes": 140405,
+      "sha256": "b35589952a767e58d6a9a59a9a954367a89025379d42ee868282f3a07d617b66"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0850.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "145f90d31c51ce504cc13349dab7fb36d79d20c75cae782ea7bd452a7fb43411"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0900.png",
+      "bytes": 139279,
+      "sha256": "25fe51932c1a94ac49d159b5ff5aeaadceb9990cae4a13432c62051fe6d6c304"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0900.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "bb2fbcad0fa608be380e507e3f0a6d8cff3a803b6054581d7d18d699c3850e70"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0910.png",
+      "bytes": 138380,
+      "sha256": "4a2f4809d512af6fed84a4ed2bbe5563f0178b23c7d0ceb981d00f4ae5b03cc6"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0910.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "c68bd510de1123fe307187103fd6b166d0432d842a48ea7094623fa006ba0594"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0920.png",
+      "bytes": 138320,
+      "sha256": "bd446c569381e1951c11f5d556291eb8dd431b5de3a529ac64ebea9a70a73866"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0920.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "7100c77f26378838341c5a3184476b6b0b6839507d3beea3ec71cb05cc8af8fe"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0930.png",
+      "bytes": 138412,
+      "sha256": "6dcea04259bf54eea87af228af8c8a5d1d785788fb42b18a9e0f4853ad94547d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0930.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "f2129c9ffb4fcc0ff171e7f69795c41a71d7fda0b90d5d767dbb8de1dfa70a66"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0940.png",
+      "bytes": 138254,
+      "sha256": "cfe73cc47e624438d06823883cf3ed7b05ed1c2aa43aa68cfa2fe80aa1099a4a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0940.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "0e4c40874dc2360e743e8708a5b57fc47ffcc6e8c66ca6bfe183e2c8b660ba3c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0950.png",
+      "bytes": 138241,
+      "sha256": "079327dec08243a00c4da180a4a1d41121e23a0270143936f0aad9dd23c7e097"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-0950.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "857f186f4259383e867d8c69f6f11627e22c0d05b7c34156449708ae0d6016fc"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1000.png",
+      "bytes": 137206,
+      "sha256": "21252a5da9b8e73f241b4c3a6b492a322b0a76a66fd21117bda3070e0ad22424"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1000.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "a28d3135ee905ee18dafd16a2935a32f15850f5d3a1a635498ac7459aaa546e8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1010.png",
+      "bytes": 136756,
+      "sha256": "e718b5d675599e6738aa71bdcb6576ab5049a7edb637d240f3426311c846737e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1010.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "7afe0453ab46c13fdec6061bca64c181c568e820faebf63111769408f9f937b4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1020.png",
+      "bytes": 136546,
+      "sha256": "0c3be17d79d4109e49c376c623fbf0808a43884928e54bf5fb630ec1bef032d3"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1020.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "7a84678575a0d1756351267bf98536841a51eac1225d8094dd8c0267cedb8790"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1030.png",
+      "bytes": 136415,
+      "sha256": "b120466d97d61a9754691d9a320dabe3a39d927b0f5386d202f8ad54b1f6e2f8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1030.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "fa19cd0c328fc2c9ab5e0067a305839c1f7eea9f3f03ade7c04d06ed0594ffa9"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1040.png",
+      "bytes": 136607,
+      "sha256": "28034754611f23759e9699318bcaa1cc65877e3b24630576a33c26e8831448c3"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1040.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "171358698332a3b633ec1bcfd680bfd8ee33577a93cc74791d22b40c4e775f6f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1050.png",
+      "bytes": 135425,
+      "sha256": "508d7fa33411cbb6d8805464aab25500e66623525d4b862c907052e75402c9d4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1050.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "87476a154d927da634ed57cf95cd28fe706596f1a28807506b5e31765462b3b7"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1100.png",
+      "bytes": 135898,
+      "sha256": "3789d5b76d4a51caebdb8425c9839b229e60af6ae943a1b6a9fa41b513712709"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1100.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "e94436e494e26fef0ea3cc4ad51593ddf6d07be8c2a0912f094cf2bd391d789e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1110.png",
+      "bytes": 136051,
+      "sha256": "323fa1001f8457167bebe38cc8cbb6a93c729599b49159132b912247d219dbe8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1110.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "6f1ce22e8029badea4eeab4d726671da4f615dae1bb23bc732ca3e2625e69b27"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1120.png",
+      "bytes": 136076,
+      "sha256": "c1d69870272fb931f8fe718ef5cd608236a4abcdd6d5e0f0fe189aed156182bf"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1120.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "0c29ee7af48fb2c2e81b11fb6a1258b9412633b02c8f1e1f953d71ac13df971d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1130.png",
+      "bytes": 136715,
+      "sha256": "7b86beb72604367624dc7f1605389faf801e05d771c12f71254d83904b1e291e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1130.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "0390ab3a9457cea47960490763d1151530eee613502c96a79a91754da9489b85"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1140.png",
+      "bytes": 137104,
+      "sha256": "b3ce418d1832a76ce2b4663213274afc26c2fcf0dbda531026e6f62a24595130"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1140.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "27b73ed3760504860906eecba6a23ad57adb23977432b45841947bae76c8b23d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1150.png",
+      "bytes": 138597,
+      "sha256": "db4020a3f8db6393743b91436f9d9ee64676beb13f50d3a8ac13cd2a60d36d0b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1150.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "309aa866c832f3a3a847e47f289ee0dea08a13811d1f39d15f301ee76cdf6b01"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1200.png",
+      "bytes": 138645,
+      "sha256": "37582232761d556c04c5f7615f81ca880a735828e8d7446d4a32b00da388c8b7"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1200.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "66bc0f65f6fad387401ec7c2ea236a1085fedb61865a8674a8ab8dd3caf71a11"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1210.png",
+      "bytes": 138945,
+      "sha256": "f74b2ed61d663b5fac6343f13320025b094f27067bf3930f6ddd6284e9f418ba"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1210.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "364c1d645d1cd843fb7c701471dd34eb46d09121e8df4aa16374eb10864df3d2"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1220.png",
+      "bytes": 140327,
+      "sha256": "89f4e54c33daec7486e0550b96c2c00400bdaae4eb3edf7a4ed54e78db54f050"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1220.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "06e06827b0c01b905d0249801cd7efdc8e699c928f8ad9ed99585999b016d388"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1230.png",
+      "bytes": 140326,
+      "sha256": "20aead0f63c7237dffdcec1f9e49b2da0651f0b96e3fd78da93364cc2e66cf6a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1230.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "d866daca397144024903bcc45225709ac73dd4e227aa08605ea4818799474da2"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1240.png",
+      "bytes": 141414,
+      "sha256": "99ff8f206fc75f02f2250bc6892f4f0b60984a53832d51070fa08be3b5165070"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1240.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "1fa97b3425e889be67a90a2e9db2d7d64366c9c4396c8cd1f0c49b94ddcd8c52"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1250.png",
+      "bytes": 142342,
+      "sha256": "970b7685b534d2adf815fd3483bff41a1da9d719f4244b8de1f75b02a101a3fa"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1250.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8d412f6d3cb0e0d34c5483eb0ec4667b08833f93173339187b84d6d7a9c66437"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1300.png",
+      "bytes": 142595,
+      "sha256": "b7bba5db5333ecebdec38adb9a99b8fafae8c577ed5d8b6b6a16737023315784"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1300.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "b1db00ac6c294a8f6b544f44de76dad8e1a1e524f8d9bc3fd554bce738b0100b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1310.png",
+      "bytes": 144036,
+      "sha256": "83b9155e8019556e480297295a86b5ead32e7692b2d674bd205a6d07cd6fa6f0"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1310.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "540bbc7480f923c29bf284df8f3f0372f70b36af8cd05355c6dc543929259ae9"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1320.png",
+      "bytes": 145510,
+      "sha256": "b881ed521ec3ac60be7e34fd42639a52f9a2530508d9c804e83c6ef5b1e42b05"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1320.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "90f7450f05ba3de7f9bbcf3fce2801ea8d95e50fc139507d2c7e44c3e0f02b47"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1330.png",
+      "bytes": 147183,
+      "sha256": "4a4bd5961232848c9e173be107da1b00b54e124ebf7bcb5a15c73cf1bcda6b30"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1330.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "0a483a337a89b82c7c2d3765dfdbe8cbc4139f7347f284b4acd2f4f5a252095f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1340.png",
+      "bytes": 149530,
+      "sha256": "99386d6ade8d5205cab8833ab5ee3aeeeab03cfc0c6af2700f91ae3e0f4df95c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1340.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "7f0d1d7ebc3d7db125598148aca72dcc7589357fdae334408a6ace67bd28a5a8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1350.png",
+      "bytes": 149762,
+      "sha256": "208a594befc1a14e129f5ed3373dd2e3b5ec2c4e4e02095b6fc9802e4bf3cb06"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1350.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8d0298a99a53bc9b806eefa3972d82abcffc3934ebec98a6feb95ac1a5eb2c92"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1400.png",
+      "bytes": 149561,
+      "sha256": "5340861b31e9576a2d6c45da52925ede3074c5c64cfadf4ce39cb60a4cf95367"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1400.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "a4290e333c15075d9e877b3f83ca631f97f41f1e2b98fa99d6b07a2127eacf7a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1410.png",
+      "bytes": 148580,
+      "sha256": "c09694e84f08543cabffad8d10ef2a5318c877aea79ffa3c2149e97b44769a29"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1410.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "5b0de5a35cc580152305bd4dc993e3e84a26fd87fd002e1805b8af1afdd11ef7"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1420.png",
+      "bytes": 149735,
+      "sha256": "8e20da1ad69dbec70fccf051e36351a716fc3025492e798ae45399039b8f9d58"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1420.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "1193029a0f38ae63fec8c49643ae5b34b287aa57e32a1265fd3236ae757418e3"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1430.png",
+      "bytes": 149255,
+      "sha256": "4136a3ba5ba3499d384237baf8e775c10e3b747aa91ee7cfc2c9ba5280472adc"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1430.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "bd051d44b5ca344ddc423e703243bde8f20088d784d50720b524112858716291"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1440.png",
+      "bytes": 150619,
+      "sha256": "646d9134a7f0138641d51e0d45266561f071ebe62c1bbafd13daa497bc1452c8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1440.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "3d217535501c0a5f065795104cae59edfd5d5fdbb68cfc990aeea39988a8f43b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1450.png",
+      "bytes": 149926,
+      "sha256": "3a8ba90a5298f620b3fcefd89d48d7af3371431941cb2d74adbe6e11acd739e8"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1450.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "ff104449f3b87fc443ebea8c5988df76cb332a413687540c7427240543fa8959"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1500.png",
+      "bytes": 149759,
+      "sha256": "c999301ac744f0aeeb5a4fcfe7424fbe5e655236f853a1ba1519d6da0c92b935"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1500.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "a83c730617e44c6d5412b571aa4e6047235bada0f4b580fe2bdb3796276b1644"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1510.png",
+      "bytes": 150549,
+      "sha256": "6f6e2a2cd0aaebe29b4407166d5c275806f059abe3a3182a97e1c25f8f88a5d1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1510.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "4447286801209b850eee3799273b0900e9e767cf2791e0071b76d9382669bbbd"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1520.png",
+      "bytes": 150695,
+      "sha256": "f0d782ed37e7abed0a0049822f926af327747e6b0c6b8eb6b08dff5ba659b15e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1520.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "4c58728f653b3e915eb74fe82e91a6d209fc031a807b748db84387deef4cdb53"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1530.png",
+      "bytes": 151021,
+      "sha256": "2a86b3de72c3b7d4958adefe1a4df1e3ab51dd0db6169ac8dc43430dd11b1754"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1530.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "05cdeef8fcf2019ab56b5784d440ae2354a901b9559b659015f4686ab8a51c64"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1540.png",
+      "bytes": 149981,
+      "sha256": "a9821bfca1db92bca208fe04e71da92af982826371e275724ea4fed772803570"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1540.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "91402fe3e3e92f5fc98917e85194753776163f123aefc92291efea26dc7d5ab4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1550.png",
+      "bytes": 150557,
+      "sha256": "826779aba8b1889e0c9297e5ebb85f904984e8507c8b590ed0c5165b5d3c53a1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1550.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "10b03a039b948b2e29322e6d40f0534d8f6159380eb638accabc950f675d80da"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1600.png",
+      "bytes": 151972,
+      "sha256": "8eac76815ced5d7bf81533c7c0f4cd400da9e657b8de8830588ab29675f06512"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1600.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "134d9c19cd48f8ddb1c6af354269ea72457eb522b412beeeea52d77eb4e09781"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1610.png",
+      "bytes": 151850,
+      "sha256": "42dda82fa96f09d9d3b44bf4a62043b6e53f7cccd4b92e5d775ad4ddb8f708fc"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1610.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "34c182cc707dfdc2b2fefa56eeecc2c8820b1e6c6f71c70f9dcffb93c6dbab59"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1620.png",
+      "bytes": 152283,
+      "sha256": "e899760b3db57ba8f3074a53c14e200ca890458bb5d13f96832a46e6dcd00a25"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1620.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "6165274ed0921b26a94f1e820d13ab66eb43f1200679c10688d1e4c5f4b0b5ab"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1630.png",
+      "bytes": 152947,
+      "sha256": "853f971301a642cec9ef0850e0b5a3b8a4221d310ce5b3c980f20e35bab55241"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1630.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "0de01b90d0894289d025096f3c983c4025e26237860f145d59d9a09a1c094ab0"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1640.png",
+      "bytes": 152796,
+      "sha256": "b20f0b4b73162c69105bbe60346c75ce2a74d955be854df5f9b9eb2bacefaa2e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1640.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "3a132ba11adc5190a3479bf6f92594265239393d95f9f6d6cafd5c5d9246831b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1650.png",
+      "bytes": 153105,
+      "sha256": "63c0ba8500f005f5f62f5efc3f51e3d1dd5a9bf9ea630788dc525819dd82e2e3"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1650.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8a33819beb5c3f55fdd8fd4af7fe3973ccfc67cb07f7d4d7f653273473830dec"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1700.png",
+      "bytes": 152874,
+      "sha256": "d130af16d467ea01d0be404c814775ce480ddc6e7f77ac32d015ff2e1aef03c2"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1700.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "4bdfca1ac61576a5c9b82b63f407f8049e5176532594fa17981f8f6e6ddfda9e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1710.png",
+      "bytes": 153904,
+      "sha256": "83b560ceb2c1c03d65ed6d557caaba40c6083e0d49162ecdffffdd294e4000da"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1710.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "3bca8ccf98462a326a5a7dd57427b882f94ef9314b7a276c1ba9e6355e534f48"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1720.png",
+      "bytes": 154249,
+      "sha256": "729aa761d43a3d0dad5b07b43759270c14c465700d9c893188cece64a73c57a4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1720.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "88ecc9a4e6c9868fe5fb1fe810d62115d791d58d312814fd4e60cec0aa1ae1a4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1730.png",
+      "bytes": 155383,
+      "sha256": "5d2db04084e2e3dd2b58d3d959710ace86003bd70ed7db58cb5d66013616bae1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1730.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "bba38841b7b734aea346125466f44df61851c0c32a3cde867f543ea2d4e85d9f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1740.png",
+      "bytes": 155049,
+      "sha256": "9df4e7ef56a83fd31f4c1ee7e549907f2ef1524ddf876e5b96b6e95c2aa9e6c4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1740.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "3cfcbb625f68859fec24bfabd47ddc73e3d7c62f7f641f26e4eaf4b6d61a3f75"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1750.png",
+      "bytes": 155057,
+      "sha256": "0d92bea2c9e8779f1ca47d869382b65b480a489129083df531bb7d8ba3334207"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1750.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "08629889eede9756fd643066782a21cea57affb6ccedd3529ef250f581a5d05e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1800.png",
+      "bytes": 156320,
+      "sha256": "4cbe4da75244302f9077c50ae6bc168adf9db1b902095223496d8de6e01f07a4"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1800.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "eb63abdd5e246f50d0d84673bfacb4447fdaea3700114ea23367b2e0bb029065"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1810.png",
+      "bytes": 155805,
+      "sha256": "aa7458a33b9bfc0fa8a8c575f1f193a5dd380c4376fe19eea6638e44f7de9567"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1810.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "128f227a8b1a8a97799b30497e8f981f76b8ff3d86e9f71426f890f1efede201"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1820.png",
+      "bytes": 156529,
+      "sha256": "773d30b261bbe177c09573e2f5480306de6328d56944358c21ad5892aee1b589"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1820.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "5007e718917e23cfd09685c9e333a447678b45b2bd728306caea17728aa719ef"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1830.png",
+      "bytes": 156074,
+      "sha256": "43ef6600d1107162cf34344c714723d879b0ad9d99f3a6dec1bc048e7257205e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1830.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "adb30c5054cc4450c44c7b17e3406cfcd9b4d6f02dd3e014826551d185e68769"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1840.png",
+      "bytes": 155937,
+      "sha256": "589d795dc8936983c0df9f50b6d2fa1b08a15792920ce33de456e4459d6b490b"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1840.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8ce7bb0d7a01b120ab45c229b0f9fba728a89e2d0413e3195934234daad89cf1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1850.png",
+      "bytes": 157098,
+      "sha256": "6502ef19978f574b4b336e189eaf5cdd40c81902af4f33b17f9a4dbe13e76828"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1850.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "520899bec9487fffcd3fc88ec48215b48d5cb01a823199e47d01e458fe5beffa"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1900.png",
+      "bytes": 156662,
+      "sha256": "c05d83f5e12acd9f74e50c27ae4147bd1e89598eaca4c51c1e9dc8a5c6e142a5"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1900.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "3364830257b8c313bdb9db7f1ae72bc4be1566aa39f74f2fdae5d137ea88d43a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1910.png",
+      "bytes": 156844,
+      "sha256": "aa765457bdd9ff8bdd97ea2e9bddca537d102d4fa336a41166bd82dbe3625478"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1910.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "3130554dc5deac489683bbc269e8f16cbe3560015f666c73ad6a2ac66b345a6f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1920.png",
+      "bytes": 157182,
+      "sha256": "f9a1004e6ffb6f67c6ce38a061903886d50d391a147fca4e09101262bebba58f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1920.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "272d4bd19eabc66a6b669327587126ce66049fe9aceb8979fec06c65bcf150d6"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1930.png",
+      "bytes": 158044,
+      "sha256": "e789a615151e9862bacd3abd3f15d536cf0b75e642a96d4f1e4738dc1108efd5"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1930.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "4ff77846be35298d041c3ccf24c5401e8310c14a32deefe031400fee9e4c84dc"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1940.png",
+      "bytes": 158462,
+      "sha256": "8069d72532d716cda3526c3ba99041f1a8fcd6a18e4003446ab3b32deffe504a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1940.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "6401058bba1c383536b524187a5f584e08aa026698add539ef38f467ff6dc8e9"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1950.png",
+      "bytes": 158578,
+      "sha256": "8e7bdceef580a42343f815caea5ec00127677fc5c0e06e1ee7920d1e6beaf8d7"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-1950.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "948ed2c7f659a3585acacd7eb96db3c7dbc5b43df3f36d97cd6aca12dd16a588"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2000.png",
+      "bytes": 159189,
+      "sha256": "0fea9a3ae2055b6f861fe61582aff7e7a95f6ee8892bc38baa655848f05cf585"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2000.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "d19585b103bab1d0b60e6e22a16e364ae4b72f7c618b696f31117c33692c7ffc"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2010.png",
+      "bytes": 159200,
+      "sha256": "a78fe1cf7b02258eefd09a14abfa0e0dfbc67e1ca077692c9d8e7fb41e7d7344"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2010.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8622ac5dfc9172f9d3b94cceb61e88542309cc0f87a05fbd8cc5cbf17077cf7f"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2020.png",
+      "bytes": 159695,
+      "sha256": "a2e07524303a6eb8bf59a3149a4769c1a72f70509192c60ec2fe07c0aa01bdd1"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2020.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "867db6752df9f7aaa99ab4a1ae6d7cac388d4cbea055fd6f61c59f98adb1d95a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2030.png",
+      "bytes": 160047,
+      "sha256": "97f80ac3f9bcbe5127a1d71091c00c7dcb3b255689471ef7b70cb43e34975ddd"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2030.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "0566100b62882e68711a5de4a42d0e9558b9c8143326ee122b6e99ec3e5cecbf"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2040.png",
+      "bytes": 159962,
+      "sha256": "4a84ea4e66dc8925cdf574fb3577bf6c6a1347b084866a5ba3243e18b842e775"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2040.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "18339e7c021c0a1db220e7621c789392ae1e318418f9ecf5aaf2afe5355bd94a"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2050.png",
+      "bytes": 159889,
+      "sha256": "2d0efc76d8457d7110a07fa7f8b5640b6e2caf1f05df9452e327f5bf67700212"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2050.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "8ac6f05d02c80fc893bc0a229af12d7fefa682c17e8438b947ecea28ccd2f455"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2100.png",
+      "bytes": 160031,
+      "sha256": "bb39ad3206a7212004daf9e5474abe3d3bbe4770f754a664f43ad4b3ed5eaa60"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2100.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "025aa8fa0393bb40e1689cbf38e1f290ba8135fe0be63f52290889465b49b507"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2110.png",
+      "bytes": 160584,
+      "sha256": "a22e83882335df5b7850accd0651da1acbc132088c370c2fb0156dd1258f584e"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2110.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "de5d6cd92ae6cb354c81de968d44c7b9d4cf6501a809f4bc3c0642dd78d53b97"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2120.png",
+      "bytes": 160935,
+      "sha256": "84f576ac143e31e05617dfbe9ada5da32d7521c3d9028a8e4cef6eb775d77a25"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2120.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "de6932f737c186aaefdfedb52a3522cc8cf63fa9f2de386d0d7be81fe60643ee"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2130.png",
+      "bytes": 161340,
+      "sha256": "1e2bf12b761149f3407dead7095b9cba54bf4c4ab802cd0a2d2a1ae5e6692dec"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2130.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "1945702f661b81a36ca28ca4c503a05c97f5dc92e5b4ed4575de1262ffba51b6"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2140.png",
+      "bytes": 161064,
+      "sha256": "12322b964ba19180192aba8737024d1832c92fe5cd1846ecfb69c79456433b00"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2140.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "eb0f35ebfda06bcf2a8de91496ca506c40303571eb454d8ad2957cfabca7b3cb"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2150.png",
+      "bytes": 161475,
+      "sha256": "56b7272835bdee4eddf3b8e1fc3426753c96f817ecb3a242374a2db974388d80"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-20261111-2150.png.receipt.json",
+      "bytes": 1037,
+      "sha256": "de47d15cc9b543923863bb6c9fc5c431eedffc750399d6529222ca820896d98d"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-geocolour-times.xml",
+      "bytes": 3914,
+      "sha256": "037a3e18bebfadab15b427c2ca4716699f862d934a9c12be0ec0186ce4db7178"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/raw/eumetsat-geocolour-times.xml.receipt.json",
+      "bytes": 938,
+      "sha256": "ad511767125d453858b51e5135a9c0f567b27c375fff43793f9541f985e033ce"
+    }
+  ]
+}

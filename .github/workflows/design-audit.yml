@@ -68,7 +68,7 @@ jobs:
           case "$AUDIT_GROUP" in
             navigation) audits="wayfinding reading visual rooms connection" ;;
             materials) audits="moth handling moth_volume mapping" ;;
-            coastal) audits="coastal_replay coastal_transport shadow_inquiry coastal_identity coastal_haxr coastal_sources coastal_archives thread" ;;
+            coastal) audits="coastal_replay coastal_transport shadow_inquiry coastal_identity coastal_haxr coastal_sources coastal_archives coastal_weather thread" ;;
             studio) audits="maintenance loose_end studio_note maritime playground sohva" ;;
             *) exit 2 ;;
           esac

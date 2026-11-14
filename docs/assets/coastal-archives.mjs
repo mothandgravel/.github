@@ -270,11 +270,11 @@ function render(announce = false) {
   if (announce) text('ca-announcement', `${clock(utc, 'Europe/Helsinki')} Helsinki. ${state.view}. ${$('ca-receipt-clock').textContent}`);
 }
 
-function setMinute(minute, announce = false, fromPlayback = false) {
+function setMinute(minute, announce = false, fromPlayback = false, initial = false) {
   if (!fromPlayback && timer !== null) stopReplay('Stepping paused. Browse time changed.');
   state.minute = minute; state.reportId = null; render(announce);
   document.documentElement.dataset.coastalMinute = String(minute);
-  document.dispatchEvent(new CustomEvent('coastal-archive-clock', {detail: {utc: currentUtc()}}));
+  document.dispatchEvent(new CustomEvent('coastal-archive-clock', {detail: {utc: currentUtc(), initial}}));
 }
 function selectReport(report) {
   setMinute(minuteAtUtc(report.observedAt)); state.reportId = report.id; render(true);
@@ -312,7 +312,7 @@ async function start() {
     window.addEventListener('resize', () => { cancelAnimationFrame(resizeRequest); resizeRequest = requestAnimationFrame(() => { if (state.view === 'gauges') renderGauges(); if (state.view === 'radar') mapTypography(); }); });
     document.addEventListener('coastal-fmi-hour', e => { const minute = minuteAtUtc(e.detail.utc); if (Number.isInteger(minute) && minute >= 0 && minute <= 1439) setMinute(minute); });
     $('ca-export').addEventListener('click', () => { const url = URL.createObjectURL(new Blob([JSON.stringify(inspection, null, 2) + '\n'], {type: 'application/json'})); const a = element('a'); a.href = url; a.download = `coastal-watch-${state.view}-2026-11-11.json`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); });
-    $('ca-desk').hidden = false; $('ca-loading').hidden = true; setMinute(state.minute);
+    $('ca-desk').hidden = false; $('ca-loading').hidden = true; setMinute(Number(document.documentElement.dataset.coastalMinute ?? state.minute), false, false, true);
     if (restoreFocus) $('ca-minute').focus();
   } catch (error) {
     $('ca-desk').hidden = true; $('ca-retry').hidden = false;

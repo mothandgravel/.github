@@ -1,0 +1,659 @@
+{
+  "schema": "mg.coastal-weather-capture.v1",
+  "dateLocal": "2026-11-11",
+  "timezone": "Europe/Helsinki",
+  "cloudDomainFile": "eumetsat-geocolour-times.xml",
+  "clouds": [
+    {
+      "productTimeUtc": "2026-11-10T22:00:00.000Z",
+      "sourceFile": "eumetsat-20261110-2200.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T22:10:00.000Z",
+      "sourceFile": "eumetsat-20261110-2210.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T22:20:00.000Z",
+      "sourceFile": "eumetsat-20261110-2220.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T22:30:00.000Z",
+      "sourceFile": "eumetsat-20261110-2230.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T22:40:00.000Z",
+      "sourceFile": "eumetsat-20261110-2240.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T22:50:00.000Z",
+      "sourceFile": "eumetsat-20261110-2250.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T23:00:00.000Z",
+      "sourceFile": "eumetsat-20261110-2300.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T23:10:00.000Z",
+      "sourceFile": "eumetsat-20261110-2310.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T23:20:00.000Z",
+      "sourceFile": "eumetsat-20261110-2320.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T23:30:00.000Z",
+      "sourceFile": "eumetsat-20261110-2330.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T23:40:00.000Z",
+      "sourceFile": "eumetsat-20261110-2340.png"
+    },
+    {
+      "productTimeUtc": "2026-11-10T23:50:00.000Z",
+      "sourceFile": "eumetsat-20261110-2350.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T00:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0000.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T00:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0010.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T00:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0020.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T00:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0030.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T00:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0040.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T00:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0050.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T01:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0100.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T01:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0110.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T01:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0120.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T01:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0130.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T01:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0140.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T01:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0150.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T02:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0200.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T02:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0210.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T02:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0220.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T02:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0230.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T02:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0240.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T02:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0250.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T03:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0300.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T03:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0310.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T03:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0320.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T03:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0330.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T03:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0340.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T03:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0350.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T04:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0400.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T04:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0410.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T04:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0420.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T04:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0430.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T04:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0440.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T04:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0450.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T05:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0500.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T05:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0510.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T05:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0520.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T05:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0530.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T05:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0540.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T05:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0550.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T06:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0600.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T06:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0610.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T06:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0620.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T06:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0630.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T06:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0640.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T06:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0650.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T07:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0700.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T07:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0710.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T07:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0720.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T07:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0730.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T07:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0740.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T07:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0750.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T08:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0800.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T08:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0810.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T08:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0820.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T08:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0830.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T08:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0840.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T08:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0850.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T09:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-0900.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T09:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-0910.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T09:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-0920.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T09:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-0930.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T09:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-0940.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T09:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-0950.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T10:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1000.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T10:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1010.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T10:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1020.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T10:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1030.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T10:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1040.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T10:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1050.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T11:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1100.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T11:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1110.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T11:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1120.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T11:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1130.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T11:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1140.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T11:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1150.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T12:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1200.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T12:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1210.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T12:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1220.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T12:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1230.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T12:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1240.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T12:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1250.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T13:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1300.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T13:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1310.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T13:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1320.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T13:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1330.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T13:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1340.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T13:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1350.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T14:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1400.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T14:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1410.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T14:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1420.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T14:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1430.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T14:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1440.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T14:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1450.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T15:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1500.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T15:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1510.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T15:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1520.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T15:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1530.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T15:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1540.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T15:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1550.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T16:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1600.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T16:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1610.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T16:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1620.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T16:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1630.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T16:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1640.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T16:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1650.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T17:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1700.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T17:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1710.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T17:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1720.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T17:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1730.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T17:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1740.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T17:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1750.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T18:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1800.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T18:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1810.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T18:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1820.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T18:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1830.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T18:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1840.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T18:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1850.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T19:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-1900.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T19:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-1910.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T19:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-1920.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T19:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-1930.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T19:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-1940.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T19:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-1950.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T20:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-2000.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T20:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-2010.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T20:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-2020.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T20:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-2030.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T20:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-2040.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T20:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-2050.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T21:00:00.000Z",
+      "sourceFile": "eumetsat-20261111-2100.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T21:10:00.000Z",
+      "sourceFile": "eumetsat-20261111-2110.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T21:20:00.000Z",
+      "sourceFile": "eumetsat-20261111-2120.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T21:30:00.000Z",
+      "sourceFile": "eumetsat-20261111-2130.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T21:40:00.000Z",
+      "sourceFile": "eumetsat-20261111-2140.png"
+    },
+    {
+      "productTimeUtc": "2026-11-11T21:50:00.000Z",
+      "sourceFile": "eumetsat-20261111-2150.png"
+    }
+  ],
+  "radarIndexFile": "estonia-precipitation-1000-hour-list.json",
+  "radar": [
+    {
+      "sourceFile": "comp.20261111105501.CAP.1334.h5",
+      "catalogueId": "18001410",
+      "catalogueUiTime": "11.11.2026 12:55",
+      "catalogueBytes": 403765
+    },
+    {
+      "sourceFile": "comp.20261111105003.CAP.1325.h5",
+      "catalogueId": "18001370",
+      "catalogueUiTime": "11.11.2026 12:50",
+      "catalogueBytes": 405166
+    },
+    {
+      "sourceFile": "comp.20261111104506.CAP.1318.h5",
+      "catalogueId": "18001368",
+      "catalogueUiTime": "11.11.2026 12:45",
+      "catalogueBytes": 387031
+    },
+    {
+      "sourceFile": "comp.20261111104001.CAP.1313.h5",
+      "catalogueId": "18001350",
+      "catalogueUiTime": "11.11.2026 12:40",
+      "catalogueBytes": 392400
+    },
+    {
+      "sourceFile": "comp.20261111103504.CAP.1306.h5",
+      "catalogueId": "18001335",
+      "catalogueUiTime": "11.11.2026 12:35",
+      "catalogueBytes": 399613
+    },
+    {
+      "sourceFile": "comp.20261111103006.CAP.1299.h5",
+      "catalogueId": "18001314",
+      "catalogueUiTime": "11.11.2026 12:30",
+      "catalogueBytes": 387741
+    },
+    {
+      "sourceFile": "comp.20261111102501.CAP.1292.h5",
+      "catalogueId": "18001296",
+      "catalogueUiTime": "11.11.2026 12:25",
+      "catalogueBytes": 395864
+    },
+    {
+      "sourceFile": "comp.20261111102003.CAP.1283.h5",
+      "catalogueId": "18001280",
+      "catalogueUiTime": "11.11.2026 12:20",
+      "catalogueBytes": 400920
+    },
+    {
+      "sourceFile": "comp.20261111101506.CAP.1277.h5",
+      "catalogueId": "18001246",
+      "catalogueUiTime": "11.11.2026 12:15",
+      "catalogueBytes": 391590
+    },
+    {
+      "sourceFile": "comp.20261111101001.CAP.1271.h5",
+      "catalogueId": "18001242",
+      "catalogueUiTime": "11.11.2026 12:10",
+      "catalogueBytes": 393062
+    },
+    {
+      "sourceFile": "comp.20261111100503.CAP.1264.h5",
+      "catalogueId": "18001220",
+      "catalogueUiTime": "11.11.2026 12:05",
+      "catalogueBytes": 395283
+    },
+    {
+      "sourceFile": "comp.20261111100006.CAP.1256.h5",
+      "catalogueId": "18001202",
+      "catalogueUiTime": "11.11.2026 12:00",
+      "catalogueBytes": 378059
+    }
+  ]
+}

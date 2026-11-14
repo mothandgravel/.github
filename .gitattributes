@@ -34,3 +34,6 @@ docs/design/coastal-source-notebook-provenance.json text eol=lf
 # Four additional archives: provider bytes, masks and derived rasters stay exact.
 docs/data/coastal-archives/** -text -whitespace
 docs/design/coastal-archives-provenance.json text eol=lf
+# Weather passage originals and native floats are receipt-bound across platforms.
+docs/data/coastal-weather/** -text -whitespace
+docs/design/coastal-weather-provenance.json text eol=lf

@@ -1,0 +1,17 @@
+{
+  "file": "eumetsat-20261111-0830.png",
+  "url": "https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetMap&layers=mtg_fd%3Argb_geocolour&styles=&format=image%2Fpng&crs=CRS%3A84&bbox=23%2C59%2C28.5%2C61&width=1100&height=400&time=2026-11-11T08%3A30%3A00.000Z&transparent=true",
+  "requestedAt": "2026-11-14T10:25:46.374644+00:00",
+  "status": 200,
+  "finalUrl": "https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetMap&layers=mtg_fd%3Argb_geocolour&styles=&format=image%2Fpng&crs=CRS%3A84&bbox=23%2C59%2C28.5%2C61&width=1100&height=400&time=2026-11-11T08%3A30%3A00.000Z&transparent=true",
+  "serverDate": "Sat, 14 Nov 2026 10:25:47 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "image/png",
+  "contentRange": null,
+  "warnings": [],
+  "bytes": 140778,
+  "sha256": "262d529e817b8aee31969835490238060022a7db922b0cd1bbceba6e94133c2c",
+  "wireSha256": "262d529e817b8aee31969835490238060022a7db922b0cd1bbceba6e94133c2c",
+  "completedAt": "2026-11-14T10:25:52.594519+00:00"
+}
