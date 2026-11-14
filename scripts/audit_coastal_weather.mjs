@@ -53,6 +53,7 @@ try{
       for(const f of data.radar){await page.locator('#cw-scan').selectOption(f.id);await settle(page);assert.equal(JSON.parse(await page.locator('#cw-json').textContent()).radar.record.id,f.id);}
       await page.evaluate(()=>{window.__seenScans=[];window.__imageSamplesTimer=setInterval(()=>{const image=document.getElementById('cw-radar-image'),n=document.getElementById('cw-scan').value;if(n&&!image.hidden&&image.complete&&image.naturalWidth===720&&image.dataset.frameId===n&&!window.__seenScans.includes(n))window.__seenScans.push(n);},40);});
       await page.locator('#cw-scan-play').click();await page.waitForFunction(()=>document.getElementById('cw-play-status').textContent.startsWith('All 12 composites shown.'),null,{timeout:30000});await settle(page);
+      await page.waitForFunction(()=>window.__seenScans.length===12,null,{timeout:3000});
       assert.equal((await page.evaluate(()=>window.__seenScans)).length,12);assert.equal(await page.locator('#cw-scan').inputValue(),data.radar.at(-1).id);assert.equal(await page.locator('#cw-radar-image').isVisible(),true);
       await page.evaluate(()=>clearInterval(window.__imageSamplesTimer));
     }
