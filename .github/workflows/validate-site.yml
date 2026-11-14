@@ -98,7 +98,9 @@ jobs:
           node --check scripts/audit_coastal_archives.mjs
           node --check docs/assets/coastal-weather.mjs
           node --check docs/assets/coastal-weather-model.mjs
+          node --check docs/assets/coastal-weather-map.mjs
           node --check scripts/audit_coastal_weather.mjs
+          node --check scripts/audit_coastal_weather_map.mjs
           node --check docs/assets/coastal-replay-model.mjs
           node --check scripts/audit_coastal_replay.mjs
           node --check scripts/audit_coastal_transport.mjs

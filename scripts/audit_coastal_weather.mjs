@@ -95,7 +95,7 @@ try{
         await page.locator('#cw-cell-details summary').click();await page.locator('#cw-cell-retry').waitFor({state:'visible'});assert.match(await page.locator('#cw-cell-value').textContent(),/No physical value assigned/);await page.unroute(pattern);await page.locator('#cw-cell-retry').click();await page.waitForFunction(()=>/Column/.test(document.getElementById('cw-cell-value').textContent));
       }else{
         const retry=failed==='cloud'?'#cw-cloud-retry':'#cw-radar-retry';await page.locator(retry).waitFor({state:'visible'});
-        if(failed==='cloud')assert.equal(await page.locator('#cw-cloud-map image').getAttribute('visibility'),'hidden');else assert.equal(await page.locator('#cw-radar-image').isVisible(),false);
+        if(failed==='cloud')assert.equal(await page.locator('#cw-cloud-map image').first().getAttribute('visibility'),'hidden');else assert.equal(await page.locator('#cw-radar-image').isVisible(),false);
         if(failed==='radar'){
           assert.match(await page.locator('#cw-radar-empty').textContent(),/image could not open.*source record exists/);
           await page.locator('#cw-scan-play').click();await page.waitForFunction(()=>document.getElementById('cw-play-status').textContent.startsWith('Playback paused:'));
@@ -114,7 +114,7 @@ try{
   const interrupted=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'});
   await interrupted.route('**/raw/eumetsat-20261111-1010.png',route=>route.abort());await interrupted.goto(origin+'/specimens/coastal-watch/source-notebook/#cw-passage');await interrupted.locator('#cw-workbench').waitFor({state:'visible'});await settle(interrupted);
   await interrupted.locator('#cw-play').click();await interrupted.waitForFunction(()=>document.getElementById('cw-play-status').textContent.startsWith('Playback paused:'));
-  assert.equal(await interrupted.locator('#cw-play').getAttribute('aria-pressed'),'false');assert.equal(await interrupted.locator('#cw-cloud-map image').getAttribute('visibility'),'hidden');await interrupted.close();
+  assert.equal(await interrupted.locator('#cw-play').getAttribute('aria-pressed'),'false');assert.equal(await interrupted.locator('#cw-cloud-map image').first().getAttribute('visibility'),'hidden');await interrupted.close();
   const delayed=await browser.newPage({viewport:{width:390,height:660},reducedMotion:'reduce'});let release;
   const gate=new Promise(resolve=>{release=resolve;});await delayed.route('**/comp.20261111100006.CAP.1256.png',async route=>{await gate;await route.continue();});
   await delayed.goto(origin+'/specimens/coastal-watch/source-notebook/#cw-passage');await delayed.locator('#cw-workbench').waitFor({state:'visible'});

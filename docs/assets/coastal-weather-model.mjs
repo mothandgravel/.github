@@ -18,7 +18,11 @@ export function readWeather(data) {
   const ids = new Set();
   for (const f of data.radar) {
     receipt(f.sourceFile);
-    if (ids.has(f.id) || f.id !== f.sourceFile || !stamp(f.intervalStartUtc) || !stamp(f.intervalEndUtc) || Date.parse(f.intervalStartUtc) > Date.parse(f.intervalEndUtc) || !name(f.image) || !name(f.pixels) || !hash(f.pixelsUncompressedSha256) || f.width !== 720 || f.height !== 720 || f.pixelsUncompressedBytes !== 720 * 720 * 4 || f.quantity !== 'RATE' || f.unit !== 'mm/h' || f.noDataCode !== 65535 || f.undetectCode !== 0 || f.gain !== 1 || f.offset !== 0 || f.georeferencing?.presentation !== 'native grid only') throw Error('Invalid native radar');
+    if (ids.has(f.id) || f.id !== f.sourceFile || !stamp(f.intervalStartUtc) || !stamp(f.intervalEndUtc) || Date.parse(f.intervalStartUtc) > Date.parse(f.intervalEndUtc) || !name(f.image) || !name(f.pixels) || !hash(f.pixelsUncompressedSha256) || f.width !== 720 || f.height !== 720 || f.pixelsUncompressedBytes !== 720 * 720 * 4 || f.quantity !== 'RATE' || f.unit !== 'mm/h' || f.noDataCode !== 65535 || f.undetectCode !== 0 || f.gain !== 1 || f.offset !== 0) throw Error('Invalid native radar');
+    const g=f.georeferencing;
+    if(!hash(f.imageSha256)||!name(f.mapImage)||!hash(f.mapImageSha256)||f.mapImageWidth!==1100||f.mapImageHeight!==400||g?.method!=='mg.corner-mercator.v1'||g.metadataReconciled!==false||g.providerConfirmed!==false||g.surveyValidated!==false||g.verified!==false||!Array.isArray(g.projectedBoundsMetres)||g.projectedBoundsMetres.length!==4||!g.projectedBoundsMetres.every(finite)||g.projectedBoundsMetres[2]<=g.projectedBoundsMetres[0]||g.projectedBoundsMetres[3]<=g.projectedBoundsMetres[1])throw Error('Invalid radar registration');
+    const w=f.where,expected=w&&[A*w.LL_lon*RAD,mercatorY(w.LL_lat),A*w.UR_lon*RAD,mercatorY(w.UR_lat)];
+    if(w?.projdef!=='+proj=merc +a=6378137 +lat_0=0 +lon_0=0 +rf=298.257224'||!expected.every(finite)||expected.some((n,i)=>Math.abs(n-g.projectedBoundsMetres[i])>1e-6)||JSON.stringify(g.boundsLongitudeLatitude)!==JSON.stringify([w.LL_lon,w.LL_lat,w.UR_lon,w.UR_lat]))throw Error('Registration differs from source corners');
     if (Object.values(f.cellCounts).reduce((sum,n) => sum + n,0) !== 720 * 720 || f.sourceNodes.join(',') !== 'eesyr,eehar') throw Error('Invalid radar lineage');
     if(f.underlyingSweepAcquisitionUtc!==null||f.perPixelAcquisitionUtc!==null)throw Error('Unestablished radar acquisition clock');
     ids.add(f.id);
@@ -65,6 +69,35 @@ export function radarCell(frame, code) {
   if (code === frame.noDataCode) return {kind:'missing',rawValue:code,value:null,unit:frame.unit};
   if (code === frame.undetectCode) return {kind:'below detection',rawValue:code,value:null,unit:frame.unit};
   return {kind:'quantitative',rawValue:code,value:code * frame.gain + frame.offset,unit:frame.unit};
+}
+
+// This packet's supplied ellipsoid, independently checked against Pyproj.
+// Corners anchor the grid. The contradictory declared metre scales are unused.
+const A=6378137,F=1/298.257224,E=Math.sqrt(F*(2-F)),RAD=Math.PI/180;
+const mercatorY=latitude=>{const phi=latitude*RAD,s=Math.sin(phi);return A*(Math.log(Math.tan(Math.PI/4+phi/2))-E/2*Math.log((1+E*s)/(1-E*s)));};
+function inverseMercatorY(y){const t=Math.exp(-y/A);let phi=Math.PI/2-2*Math.atan(t);for(let i=0;i<12;i++){const s=E*Math.sin(phi);phi=Math.PI/2-2*Math.atan(t*((1-s)/(1+s))**(E/2));}return phi/RAD;}
+export function radarGridAt(frame,longitude,latitude){
+  if(!finite(longitude)||!finite(latitude)||Math.abs(latitude)>=90)return null;
+  const [left,bottom,right,top]=frame.georeferencing.projectedBoundsMetres;
+  const x=A*longitude*RAD,y=mercatorY(latitude),column=Math.floor((x-left)/(right-left)*frame.width),row=Math.floor((top-y)/(top-bottom)*frame.height);
+  return column>=0&&column<frame.width&&row>=0&&row<frame.height?{column,row}:null;
+}
+export function radarCellLocation(frame,column,row){
+  if(!Number.isInteger(column)||!Number.isInteger(row)||column<0||column>=frame.width||row<0||row>=frame.height)throw Error('Invalid radar coordinate');
+  const [left,bottom,right,top]=frame.georeferencing.projectedBoundsMetres,u=(column+.5)/frame.width,v=(row+.5)/frame.height;
+  const longitude=(left+u*(right-left))/A/RAD,latitude=inverseMercatorY(top-v*(top-bottom));
+  const [west,south,east,north]=frame.georeferencing.boundsLongitudeLatitude;
+  const agencyLongitude=west+u*(east-west),agencyLatitude=north-v*(north-south);
+  return {longitude,latitude,agencyLongitude,agencyLatitude,approximate:true,method:frame.georeferencing.method,
+    alternativeMethod:'agency PlateCarree LL/UR example',accuracyMetres:null,
+    limit:'Difference between interpretations, not a geolocation error bound. No provider or survey validation.'};
+}
+export function mapBearingVector(degrees,latitude){
+  if(!finite(degrees)||!finite(latitude)||Math.abs(latitude)>=90)return null;
+  const p=latitude*RAD,a=degrees*RAD,s=Math.sin(p),den=1-E*E*s*s;
+  const meridional=A*(1-E*E)/den**1.5,primeVertical=A/Math.sqrt(den);
+  const dx=Math.sin(a)*meridional/(primeVertical*Math.cos(p)),dy=-Math.cos(a),length=Math.hypot(dx,dy);
+  return {dx:dx/length,dy:dy/length}; // local bearing projected into this equal-degree CRS:84 crop
 }
 export function waveDirectionFrom(degrees, spread = null) {
   if (!finite(degrees) || degrees < 0 || degrees > 360 || (spread !== null && (!finite(spread) || spread < 0 || spread > 180))) return null;

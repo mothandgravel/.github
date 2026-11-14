@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
-import {readWeather,utcAtSecond,secondAtUtc,cloudAt,radarAt,buoyAt,radarCell,waveDirectionFrom,inspectWeather} from '../docs/assets/coastal-weather-model.mjs';
+import {readWeather,utcAtSecond,secondAtUtc,cloudAt,radarAt,buoyAt,radarCell,radarGridAt,radarCellLocation,waveDirectionFrom,mapBearingVector,inspectWeather} from '../docs/assets/coastal-weather-model.mjs';
 const root=new URL('../docs/data/coastal-weather/2026-11-11/',import.meta.url);
 const data=readWeather(JSON.parse(await readFile(new URL('notebook.json',root),'utf8')));
 
@@ -37,8 +37,37 @@ test('native float32 pixels retain missing, below-detection and quantitative val
   for(let i=0;i<bytes.length;i+=4){const v=bytes.readFloatLE(i),cell=radarCell(f,v);counts[cell.kind]++;if(cell.kind==='quantitative')positive=cell;else assert.equal(cell.value,null);}
   assert.equal(counts.missing,f.cellCounts.missing);assert.equal(counts['below detection'],f.cellCounts.belowDetection);assert.equal(counts.quantitative,f.cellCounts.quantitative);
   assert.equal(positive.value,positive.rawValue*f.gain+f.offset);assert.equal(radarCell(f,0).value,null);assert.equal(radarCell(f,65535).value,null);
-  assert.equal(f.georeferencing.verified,false);assert.equal(f.georeferencing.presentation,'native grid only');
+  assert.equal(f.georeferencing.verified,false);assert.equal(f.georeferencing.method,'mg.corner-mercator.v1');
   assert.equal(f.underlyingSweepAcquisitionUtc,null);assert.equal(f.perPixelAcquisitionUtc,null);
+});
+
+test('corner registration matches independent Pyproj controls with explicit unknown accuracy',()=>{
+  for(const f of data.radar){
+    assert.equal(f.georeferencing.metadataReconciled,false);assert.equal(f.georeferencing.providerConfirmed,false);assert.equal(f.georeferencing.surveyValidated,false);
+    for(const p of f.georeferencing.controlPoints){
+      const c=radarCellLocation(f,p.column,p.row);
+      assert.ok(Math.abs(c.longitude-p.longitude)<1e-9);assert.ok(Math.abs(c.latitude-p.latitude)<1e-9);assert.ok(Math.abs(c.agencyLatitude-p.agencyLatitude)<1e-9);
+      assert.deepEqual(radarGridAt(f,c.longitude,c.latitude),{column:p.column,row:p.row});assert.equal(c.accuracyMetres,null);assert.equal(c.approximate,true);
+    }
+    assert.equal(radarGridAt(f,0,0),null);assert.equal(radarGridAt(f,24,90),null);assert.equal(radarGridAt(f,NaN,60),null);assert.throws(()=>radarCellLocation(f,720,0));
+    const g=f.georeferencing;assert.ok(g.footprintChecks.cornerMercator.p90AbsoluteRangeResidualMetres<2000);
+    assert.ok(g.footprintChecks.literalMetreScales.medianAbsoluteRangeResidualMetres>50000);
+  }
+});
+
+test('registration rejects a changed projection contract instead of silently locating cells',()=>{
+  for(const mutate of [d=>{d.radar[0].georeferencing.method='unknown';},d=>{d.radar[0].georeferencing.metadataReconciled=true;},d=>{d.radar[0].georeferencing.projectedBoundsMetres[0]=NaN;},d=>{d.radar[0].mapImage='../unsafe.png';},d=>{d.radar[0].where.projdef='+proj=longlat';},d=>{d.radar[0].georeferencing.projectedBoundsMetres[0]+=100;}]){
+    const changed=structuredClone(data);mutate(changed);assert.throws(()=>readWeather(changed));
+  }
+});
+
+test('wave bearings follow the equal-degree map tangent instead of raw compass screen angles',()=>{
+  const v=mapBearingVector(208,59.965);
+  // Independent WGS84 Pyproj Geod forward: 10 m from 25.235 E,59.965 N at 208 degrees.
+  assert.ok(Math.abs(v.dx-(-.7275556800939953))<2e-6);assert.ok(Math.abs(v.dy-.6860486370243468)<2e-6);
+  assert.ok(Math.abs(v.dx-Math.sin(208*Math.PI/180))>.2);
+  assert.ok(Math.abs(mapBearingVector(0,60).dx)<1e-12);assert.equal(mapBearingVector(0,60).dy,-1);
+  assert.ok(Math.abs(mapBearingVector(90,60).dx-1)<1e-12);assert.equal(mapBearingVector(null,60),null);
 });
 test('Orrengrund gaps remain missing instead of retaining an earlier valid sample',()=>{
   const station=data.buoys.find(b=>b.id==='108495'),series=station.series.find(s=>s.parameter==='WaveHs'),gap=series.points.find(p=>p.value===null);

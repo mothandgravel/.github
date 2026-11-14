@@ -14,11 +14,11 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'docs/data/coastal-weather/2026-11-11'
 try:
     import h5py,numpy as np
-    from pyproj import CRS,Transformer
 except ImportError:
     sys.path.insert(0,str(ROOT/'artifacts/research/coastal-weather-tools'))
     import h5py,numpy as np
-    from pyproj import CRS,Transformer
+
+from coastal_radar_placement import summary as placement_summary,crop as placement_crop
 
 START=datetime(2026,11,10,22,tzinfo=timezone.utc)
 PARAMETERS=['WaveHs','ModalWDi','WTP','WHDD','TWATER']
@@ -88,11 +88,7 @@ def generate():
             prefix=name.removesuffix('.h5');derived[prefix+'.png']=png(720,720,colours.tobytes())
             float_bytes=matrix.astype('<f4',copy=False).tobytes(order='C')
             derived[prefix+'.f32.gz']=gzip_bytes(float_bytes)
-            transform=Transformer.from_crs('EPSG:4326',CRS.from_proj4(where['projdef']),always_xy=True)
-            ul=transform.transform(where['UL_lon'],where['UL_lat']);ur=transform.transform(where['UR_lon'],where['UR_lat']);ll=transform.transform(where['LL_lon'],where['LL_lat'])
-            declared=[where['xsize']*where['xscale'],where['ysize']*where['yscale']]
-            corner=[ur[0]-ul[0],ul[1]-ll[1]]
-            consistent=all(abs(a-b)/max(abs(a),abs(b))<.01 for a,b in zip(declared,corner))
+            derived[prefix+'.map.png']=png(1100,400,placement_crop(where,matrix,colours,[23,59,28.5,61]))
             begin=odim_time(what['startdate'],what['starttime']);end=odim_time(what['enddate'],what['endtime'])
             assert datetime.fromisoformat(begin.replace('Z','+00:00'))<=datetime.fromisoformat(end.replace('Z','+00:00'))
             assert abs(datetime.fromisoformat(begin.replace('Z','+00:00')).timestamp()-how['startepochs'])<1
@@ -100,20 +96,25 @@ def generate():
             radar.append({**item,'id':name,'intervalStartUtc':begin,'intervalEndUtc':end,'productTimeUtc':odim_time(global_what['date'],global_what['time']),
                 'width':720,'height':720,'quantity':'RATE','unit':'mm/h','gain':what['gain'],'offset':what['offset'],
                 'noDataCode':what['nodata'],'undetectCode':what['undetect'],'image':prefix+'.png','pixels':prefix+'.f32.gz',
+                'imageSha256':sha(derived[prefix+'.png']),
                 'pixelsEncoding':'gzip little-endian IEEE754 float32, row-major, native 720 x 720',
                 'pixelsUncompressedBytes':len(float_bytes),'pixelsUncompressedSha256':sha(float_bytes),
                 'cellCounts':{'missing':int(missing.sum()),'belowDetection':int(below.sum()),'quantitative':int(measured.sum())},
                 'quantitativeRange':[float(values[measured].min()),float(values[measured].max())],
                 'sourceNodes':how['nodes'].split(','),'globalWhat':global_what,'datasetWhat':what,'where':where,
-                'georeferencing':{'verified':consistent,'presentation':'native grid only','declaredGridSpanMetres':declared,
-                    'projectedCornerSpanMetres':[round(v,3) for v in corner],
-                    'diagnostic':'Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.',
-                    'candidateExplanation':'A ground-distance scale convention may explain part of the difference; not confirmed.',
-                    'limit':'Projection and scale convention unresolved. No geographic overlay or location-level sampling.'},
+                'mapImage':prefix+'.map.png','mapImageWidth':1100,'mapImageHeight':400,
+                'mapImageSha256':sha(derived[prefix+'.map.png']),
+                'georeferencing':placement_summary(where,matrix),
                 'timeMeaning':'ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.',
                 'underlyingSweepAcquisitionUtc':None,'perPixelAcquisitionUtc':None,
                 'originalReceiverTimeUtc':None,'firstPublicationUtc':None})
     radar.sort(key=lambda r:r['intervalEndUtc']);assert len(radar)==12
+    evidence=json.loads((OUT/'placement-evidence.json').read_text(encoding='utf8'))
+    assert evidence['schema']=='mg.coastal-radar-placement-evidence.v1'
+    assert [r['source'] for r in evidence['records']]==['agency','proj','odim']
+    for r in evidence['records']:
+        assert r['status']==200 and r['bytes']>0 and len(r['sha256'])==64 and r['firstPublicationUtc'] is None
+        assert datetime.fromisoformat(r['requestedAtUtc'])<=datetime.fromisoformat(r['downloadCompletedAtUtc'])
     original=ROOT/'docs/data/coastal-sources/2026-11-11/environment-observations.json'
     environment=json.loads(original.read_text(encoding='utf8'))
     buoys=[]
@@ -146,7 +147,8 @@ def generate():
                 'credit':'Keskkonnaagentuur radar products 2026 / CC BY 4.0','licence':'CC BY 4.0',
                 'licenceUrl':'https://keskkonnaportaal.ee/et/avaandmed/meteoroloogiliste-radarite-andmestik',
                 'definitionUrl':'https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus',
-                'limits':'Radar-derived rain-rate estimates, not rain-gauge accumulations. Two contributing radars, one derived composite. Projection/scale convention unresolved; native grid. ODIM product-interval labels are retained; underlying sweep and pixel acquisition unknown. No-data and below-detection cells remain distinct.'},
+                'placementEvidenceFile':'placement-evidence.json',
+                'limits':'Radar-derived rain-rate estimates, not rain-gauge accumulations. Two contributing radars, one derived composite. Corner-anchored Mercator registration, footprint checked but not surveyed or provider-confirmed. Source scales and LR latitude still conflict. Approximate map-cell coordinates only. ODIM product-interval labels retained; underlying sweep and pixel acquisition unknown. No-data and below-detection remain distinct.'},
             'buoys':{'origin':'Finnish Meteorological Institute / wave buoys','distribution':'FMI WFS',
                 'credit':'Finnish Meteorological Institute / CC BY 4.0','licence':'CC BY 4.0',
                 'licenceUrl':'https://en.ilmatieteenlaitos.fi/open-data-licence',
@@ -187,7 +189,7 @@ def main():
         else:(OUT/name).write_bytes(data)
     inventory=[{'path':p.relative_to(ROOT/'docs').as_posix(),'bytes':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(OUT.rglob('*'),key=lambda p:p.relative_to(OUT).as_posix()) if p.is_file()]
     provenance={'schema':'mg.coastal-weather-provenance.v1','dateLocal':'2026-11-11',
-        'transformation':'Cloud PNGs unchanged from WMS. Radar float32 cells copied in native order to deterministic gzip; palette PNGs preserve missing/below-detection classifications. No geographic radar warp. Buoy samples copied unchanged.',
+        'transformation':'Cloud PNGs unchanged from WMS. Radar float32 cells copied in native order to deterministic gzip. Native palette PNGs preserved; map PNGs use corner-anchored ellipsoidal Mercator registration and nearest native-cell sampling into the CRS:84 cloud crop. No-data hatching and below-detection horizontal ruling are distinct display classes, not physical values. All source attributes retained; unconfirmed scale convention and conflicting LR latitude excluded explicitly. Buoy samples unchanged.',
         'paletteRateMMH':[{'maximumInclusiveMMH':upper,'colour':colour} for upper,colour in PALETTE]+[{'minimumExclusiveMMH':5,'maximumInclusiveMMH':None,'colour':ABOVE_COLOUR}],
         'scope':'Environmental context. No vessel association, incident attribution or damage assessment.',
         'clockMeaning':'Declared product labels and supplied radar product intervals kept separate from retrieval receipts. Underlying radar sweep, per-pixel acquisition, first publication and original station reception remain unknown.',

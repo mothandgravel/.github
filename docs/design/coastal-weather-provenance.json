@@ -1,7 +1,7 @@
 {
   "schema": "mg.coastal-weather-provenance.v1",
   "dateLocal": "2026-11-11",
-  "transformation": "Cloud PNGs unchanged from WMS. Radar float32 cells copied in native order to deterministic gzip; palette PNGs preserve missing/below-detection classifications. No geographic radar warp. Buoy samples copied unchanged.",
+  "transformation": "Cloud PNGs unchanged from WMS. Radar float32 cells copied in native order to deterministic gzip. Native palette PNGs preserved; map PNGs use corner-anchored ellipsoidal Mercator registration and nearest native-cell sampling into the CRS:84 cloud crop. No-data hatching and below-detection horizontal ruling are distinct display classes, not physical values. All source attributes retained; unconfirmed scale convention and conflicting LR latitude excluded explicitly. Buoy samples unchanged.",
   "paletteRateMMH": [
     {
       "maximumInclusiveMMH": 0.05,
@@ -67,8 +67,8 @@
   "files": [
     {
       "path": "data/coastal-weather/2026-11-11/README.md",
-      "bytes": 5783,
-      "sha256": "eb7f75b28a6b53e5e8713224eddcf1105e5c04864e43f2253aac719de53cdd5d"
+      "bytes": 9955,
+      "sha256": "bc545198a9a756deb74b7ff767aad03c5a3cc749e0645f55657ecb134c661e01"
     },
     {
       "path": "data/coastal-weather/2026-11-11/capture.json",
@@ -81,6 +81,11 @@
       "sha256": "f739c694573fd3460da008ea783a78c3eedcb1ed577c11c11c6185f02dffcff0"
     },
     {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111100006.CAP.1256.map.png",
+      "bytes": 14775,
+      "sha256": "76c0d4416b1a6d5eb63c409818ffe8c791511f777c4783074b601431dfbf9a80"
+    },
+    {
       "path": "data/coastal-weather/2026-11-11/comp.20261111100006.CAP.1256.png",
       "bytes": 30187,
       "sha256": "3e62b7a90e155371a058332c6ea9072a33bf3d47073a2646572345fa5bf8dbb9"
@@ -89,6 +94,11 @@
       "path": "data/coastal-weather/2026-11-11/comp.20261111100503.CAP.1264.f32.gz",
       "bytes": 378920,
       "sha256": "93a80ee0c0bdf2f6eedd785d5275438d59f89fc530045d15ca8c14359aaeb539"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111100503.CAP.1264.map.png",
+      "bytes": 15315,
+      "sha256": "d02917fe1f5b4595ce1eea49dda2dff246f03aaac258ee8000deaa6f3d31f477"
     },
     {
       "path": "data/coastal-weather/2026-11-11/comp.20261111100503.CAP.1264.png",
@@ -101,6 +111,11 @@
       "sha256": "979fb45c7ec8e1de2db5ace9b8d613c8c66d9b498ccb2129a83cd849747f3f66"
     },
     {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111101001.CAP.1271.map.png",
+      "bytes": 15160,
+      "sha256": "0f7d25885b44862863111f6ed8b7806da1ac518d554b6ae5362c30376b383c50"
+    },
+    {
       "path": "data/coastal-weather/2026-11-11/comp.20261111101001.CAP.1271.png",
       "bytes": 30110,
       "sha256": "5f6d6338be270a658e8c2525c6bae763753ad75c9935fa099bf8a43b1b839217"
@@ -109,6 +124,11 @@
       "path": "data/coastal-weather/2026-11-11/comp.20261111101506.CAP.1277.f32.gz",
       "bytes": 375111,
       "sha256": "0bf079b572cf5088a4d174ee3c30045546ae043e98340b03cad9055729c0270c"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111101506.CAP.1277.map.png",
+      "bytes": 14893,
+      "sha256": "ce6883bd6a3a6d831caa2f957ebf90a72dc7be2f0759582711daf1d3c14b36bf"
     },
     {
       "path": "data/coastal-weather/2026-11-11/comp.20261111101506.CAP.1277.png",
@@ -121,6 +141,11 @@
       "sha256": "9ae36634eb53b1bfb2a4f51ccfbb7fbd48900d8459ec8b8817d8ced84b16cef9"
     },
     {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111102003.CAP.1283.map.png",
+      "bytes": 15045,
+      "sha256": "08c3f84dbc657788a374bcca07e074dd32f9c1c34d9a9cab7570e0f5ca0287f2"
+    },
+    {
       "path": "data/coastal-weather/2026-11-11/comp.20261111102003.CAP.1283.png",
       "bytes": 30591,
       "sha256": "73a24a3ea4be735c0bac3fed89b280aeb287b877c9a6444d37b674bb1c10b807"
@@ -129,6 +154,11 @@
       "path": "data/coastal-weather/2026-11-11/comp.20261111102501.CAP.1292.f32.gz",
       "bytes": 379436,
       "sha256": "15074f05851fd0808bca292296cf6bc1eb397a9fb548be30e8da36a1f3e8d238"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111102501.CAP.1292.map.png",
+      "bytes": 15022,
+      "sha256": "0497ccb5f69ef359cfa033283d27782817f52daea0b55eb72b629cb7fd787669"
     },
     {
       "path": "data/coastal-weather/2026-11-11/comp.20261111102501.CAP.1292.png",
@@ -141,6 +171,11 @@
       "sha256": "b5139d6e354ca63ed6e5687b3faa7e7cf684d60715eec68470b0df229b5203b1"
     },
     {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111103006.CAP.1299.map.png",
+      "bytes": 14968,
+      "sha256": "bfdb051194788e2ae804f4ef60c9a48e8dcfcc5e401bc3741654020a432274f4"
+    },
+    {
       "path": "data/coastal-weather/2026-11-11/comp.20261111103006.CAP.1299.png",
       "bytes": 29774,
       "sha256": "37244d6f28cdc03c3c6495636c37456b17dd3edcfdadaa94eeeea27b102ee49f"
@@ -149,6 +184,11 @@
       "path": "data/coastal-weather/2026-11-11/comp.20261111103504.CAP.1306.f32.gz",
       "bytes": 383344,
       "sha256": "138eee37ab1798851ca8ec281f8c07ce89975356b599ffb0c5ae8f07ad5b2257"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111103504.CAP.1306.map.png",
+      "bytes": 15105,
+      "sha256": "58347dd43f4abba75c10d85f92fc66aefd440761a41cc6973429b85c1d1bdfff"
     },
     {
       "path": "data/coastal-weather/2026-11-11/comp.20261111103504.CAP.1306.png",
@@ -161,6 +201,11 @@
       "sha256": "2bbb4ef80dfab041354809799e22788cec3b5f29cd8717a92bc3ac733f1ad4c6"
     },
     {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111104001.CAP.1313.map.png",
+      "bytes": 15029,
+      "sha256": "807cb99fdad3323a7e82c41b3c61df85c7f680f9b7f51f35d1deb51621f1da6d"
+    },
+    {
       "path": "data/coastal-weather/2026-11-11/comp.20261111104001.CAP.1313.png",
       "bytes": 29347,
       "sha256": "7c073aa9f983f1161937a8f8b0d8964d6712961fcc0b30b44fbb4c1a71da8c56"
@@ -169,6 +214,11 @@
       "path": "data/coastal-weather/2026-11-11/comp.20261111104506.CAP.1318.f32.gz",
       "bytes": 370623,
       "sha256": "ec1683c360b5e678ad31438f1d953e7ff4b505013449b346d67ef04ae369a710"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111104506.CAP.1318.map.png",
+      "bytes": 15064,
+      "sha256": "ec57400f0798e54525b4f1e51dc432485687fe39bfe35d0a1031dd9192ee0e72"
     },
     {
       "path": "data/coastal-weather/2026-11-11/comp.20261111104506.CAP.1318.png",
@@ -181,6 +231,11 @@
       "sha256": "108caf7b8bff7659a8423c730bd5ffe507d9f95c8c078af8178ffe656e4ca4bf"
     },
     {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111105003.CAP.1325.map.png",
+      "bytes": 15604,
+      "sha256": "e1322401511aaa8ead0c77fb85b22282e117310af87d1c1f1d4dd375868fd68a"
+    },
+    {
       "path": "data/coastal-weather/2026-11-11/comp.20261111105003.CAP.1325.png",
       "bytes": 29929,
       "sha256": "c21785de99557e53997f4a4751751b48de059d395000754ce02cb78ad0492953"
@@ -191,14 +246,24 @@
       "sha256": "f610ecc916a90696db6b94a5ac69c034263efae321720acdcbf33ba660342ca5"
     },
     {
+      "path": "data/coastal-weather/2026-11-11/comp.20261111105501.CAP.1334.map.png",
+      "bytes": 15645,
+      "sha256": "20eea0368c4d85aa66a51444c55fefcb1cfe1b3a188fac9ecf39bb65a2cd5a04"
+    },
+    {
       "path": "data/coastal-weather/2026-11-11/comp.20261111105501.CAP.1334.png",
       "bytes": 30145,
       "sha256": "fc579773875e1bb6a6bc2a2938aa0a2f52324aaf48f13291415c09d2a958103d"
     },
     {
       "path": "data/coastal-weather/2026-11-11/notebook.json",
-      "bytes": 326936,
-      "sha256": "5863e24b3bd70d18b13f906b3ea4011685bd9d8de85748a337ad219ce6ffffaa"
+      "bytes": 399149,
+      "sha256": "92c530dc38519834abd93611810011ed92ea3f25b55b8a00329e27a65b260939"
+    },
+    {
+      "path": "data/coastal-weather/2026-11-11/placement-evidence.json",
+      "bytes": 2521,
+      "sha256": "3ecf41b9c8314b2031b58b6aa72f451ad629b5d08ff3ed6a09728306fbd2428f"
     },
     {
       "path": "data/coastal-weather/2026-11-11/raw/comp.20261111100006.CAP.1256.h5",

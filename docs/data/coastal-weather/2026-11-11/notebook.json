@@ -1328,6 +1328,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111100006.CAP.1256.png",
       "pixels": "comp.20261111100006.CAP.1256.f32.gz",
+      "imageSha256": "3e62b7a90e155371a058332c6ea9072a33bf3d47073a2646572345fa5bf8dbb9",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "9f2439320ce444d14123c5fd8c0daf3bd0517fc59b5ee8dd77873ba5868d04a3",
@@ -1379,20 +1380,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111100006.CAP.1256.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "76c0d4416b1a6d5eb63c409818ffe8c791511f777c4783074b601431dfbf9a80",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -1419,6 +1557,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111100503.CAP.1264.png",
       "pixels": "comp.20261111100503.CAP.1264.f32.gz",
+      "imageSha256": "c4e53907070929811f5a2944c56426dc1d181fcbc9829d54b789d6977887a680",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "f88ed5ad770a26ed2cbd602bbdd409f9c650c3cf12b74a6a9efcb118281b8688",
@@ -1470,20 +1609,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111100503.CAP.1264.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "d02917fe1f5b4595ce1eea49dda2dff246f03aaac258ee8000deaa6f3d31f477",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -1510,6 +1786,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111101001.CAP.1271.png",
       "pixels": "comp.20261111101001.CAP.1271.f32.gz",
+      "imageSha256": "5f6d6338be270a658e8c2525c6bae763753ad75c9935fa099bf8a43b1b839217",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "1a32c8a7c1b73f7b40689ee3c72e028266c9f29e10135e0a4e6f358426e21899",
@@ -1561,20 +1838,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111101001.CAP.1271.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "0f7d25885b44862863111f6ed8b7806da1ac518d554b6ae5362c30376b383c50",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -1601,6 +2015,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111101506.CAP.1277.png",
       "pixels": "comp.20261111101506.CAP.1277.f32.gz",
+      "imageSha256": "cef03442fd718e9b05555b9b537979e6ffc9c47419594c0654428d8130dd22e0",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "9a657f24740482756d76cd5fdc5d71ec6925ce16cea6d8956092d2502983d6eb",
@@ -1652,20 +2067,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111101506.CAP.1277.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "ce6883bd6a3a6d831caa2f957ebf90a72dc7be2f0759582711daf1d3c14b36bf",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -1692,6 +2244,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111102003.CAP.1283.png",
       "pixels": "comp.20261111102003.CAP.1283.f32.gz",
+      "imageSha256": "73a24a3ea4be735c0bac3fed89b280aeb287b877c9a6444d37b674bb1c10b807",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "b88806e61cbb2693699bcd449f62f792cfd0cefc2b6862d1454f743e8db5c5f9",
@@ -1743,20 +2296,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111102003.CAP.1283.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "08c3f84dbc657788a374bcca07e074dd32f9c1c34d9a9cab7570e0f5ca0287f2",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -1783,6 +2473,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111102501.CAP.1292.png",
       "pixels": "comp.20261111102501.CAP.1292.f32.gz",
+      "imageSha256": "42a4f3eff5ecb4717cef34d855361c7406de5002055eb9c145ede102a9480845",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "adb4f0ba050c1afc1fa3f17131d1f6026610940090f8ceb4d319bf29e4378ff7",
@@ -1834,20 +2525,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111102501.CAP.1292.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "0497ccb5f69ef359cfa033283d27782817f52daea0b55eb72b629cb7fd787669",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -1874,6 +2702,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111103006.CAP.1299.png",
       "pixels": "comp.20261111103006.CAP.1299.f32.gz",
+      "imageSha256": "37244d6f28cdc03c3c6495636c37456b17dd3edcfdadaa94eeeea27b102ee49f",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "17ef79b3cb427940317630f5281fe9b18e3eaf3a5a99c6136c23630816180255",
@@ -1925,20 +2754,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111103006.CAP.1299.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "bfdb051194788e2ae804f4ef60c9a48e8dcfcc5e401bc3741654020a432274f4",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -1965,6 +2931,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111103504.CAP.1306.png",
       "pixels": "comp.20261111103504.CAP.1306.f32.gz",
+      "imageSha256": "1584763c1333704dba1b31520bd756db502eb83ea273866c47cab61e37bffe69",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "ae9bedfbd91891f373459a5942d884ae561f46d88f8e2eac51c281e66bc4204e",
@@ -2016,20 +2983,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111103504.CAP.1306.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "58347dd43f4abba75c10d85f92fc66aefd440761a41cc6973429b85c1d1bdfff",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -2056,6 +3160,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111104001.CAP.1313.png",
       "pixels": "comp.20261111104001.CAP.1313.f32.gz",
+      "imageSha256": "7c073aa9f983f1161937a8f8b0d8964d6712961fcc0b30b44fbb4c1a71da8c56",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "697be79d6f94db24b32abd991c0b322733c8a7cd7aaec104403715e7b50060b3",
@@ -2107,20 +3212,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111104001.CAP.1313.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "807cb99fdad3323a7e82c41b3c61df85c7f680f9b7f51f35d1deb51621f1da6d",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -2147,6 +3389,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111104506.CAP.1318.png",
       "pixels": "comp.20261111104506.CAP.1318.f32.gz",
+      "imageSha256": "9e777ce506061b63d911a001c9a84ba3f783ac865e40d16d0c763bce331cdf03",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "a4c4557950201069b2012de96dd38d7b8926f0c6da394d513ab621e77ca561ec",
@@ -2198,20 +3441,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111104506.CAP.1318.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "ec57400f0798e54525b4f1e51dc432485687fe39bfe35d0a1031dd9192ee0e72",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -2238,6 +3618,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111105003.CAP.1325.png",
       "pixels": "comp.20261111105003.CAP.1325.f32.gz",
+      "imageSha256": "c21785de99557e53997f4a4751751b48de059d395000754ce02cb78ad0492953",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "7fdc6073155efab37449da3c562e93dbfca632d057e4339d854cc69370a65282",
@@ -2289,20 +3670,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111105003.CAP.1325.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "e1322401511aaa8ead0c77fb85b22282e117310af87d1c1f1d4dd375868fd68a",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -2329,6 +3847,7 @@
       "undetectCode": 0.0,
       "image": "comp.20261111105501.CAP.1334.png",
       "pixels": "comp.20261111105501.CAP.1334.f32.gz",
+      "imageSha256": "fc579773875e1bb6a6bc2a2938aa0a2f52324aaf48f13291415c09d2a958103d",
       "pixelsEncoding": "gzip little-endian IEEE754 float32, row-major, native 720 x 720",
       "pixelsUncompressedBytes": 2073600,
       "pixelsUncompressedSha256": "39ed7337584c79f93e2544bdd7f2eea4fb5cc20ef248029a3d006e6f693297b3",
@@ -2380,20 +3899,157 @@
         "yscale": 775.7316279801419,
         "ysize": 720
       },
+      "mapImage": "comp.20261111105501.CAP.1334.map.png",
+      "mapImageWidth": 1100,
+      "mapImageHeight": 400,
+      "mapImageSha256": "20eea0368c4d85aa66a51444c55fefcb1cfe1b3a188fac9ecf39bb65a2cd5a04",
       "georeferencing": {
+        "method": "mg.corner-mercator.v1",
+        "presentation": "corner-anchored Mercator registration",
         "verified": false,
-        "presentation": "native grid only",
+        "placementStatus": "metadata-derived / footprint checked / not surveyed",
+        "metadataReconciled": false,
+        "providerConfirmed": false,
+        "surveyValidated": false,
+        "boundsLongitudeLatitude": [
+          19.992505676766545,
+          56.288151550042855,
+          30.121694438437306,
+          61.50867591352509
+        ],
+        "projectedBoundsMetres": [
+          2225555.551619283,
+          7580421.044044612,
+          3353131.6867174217,
+          8705978.363512807
+        ],
+        "derivedProjectedPixelMetres": [
+          1566.0779654140817,
+          1563.274054816937
+        ],
         "declaredGridSpanMetres": [
           580003.1999999844,
           558526.7721457022
         ],
-        "projectedCornerSpanMetres": [
-          1127576.135,
-          1125557.319
+        "declaredToCornerScaleRatios": [
+          0.5143805211428173,
+          0.49622241576252724
         ],
-        "diagnostic": "Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.",
-        "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
-        "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
+        "sphericalEquivalentTrueScaleLatitudesDegrees": [
+          59.04394285742765,
+          60.24960983785623
+        ],
+        "axisScaleRatioDisagreementPercent": 3.6592674581996,
+        "mapLatitudeSensitivityMetres": {
+          "minimum": 4092.85,
+          "maximum": 11043.263,
+          "latitudeBand": [
+            59,
+            61
+          ],
+          "meaning": "Separation between two interpretations for native cell centres, not an accuracy interval."
+        },
+        "scaleDiagnosticLimit": "Most of the factor-of-two difference is compatible with Mercator ground/projected scale near 60 N. This does not confirm a ground-scale convention; differing axis ratios and the LR latitude remain unexplained. Literal-metre interpretation is a diagnostic, not evidence of a 58 km geolocation error.",
+        "projectedCornerSpanMetres": [
+          1127576.1350981388,
+          1125557.3194681946
+        ],
+        "unusedLowerRightLatitude": 56.51391796118129,
+        "selection": "Use supplied Mercator CRS, LL/UR outer pixel corners and native north-to-south row order. Infer projected increments from bounds. Declared scales may be ground distances but their convention is unconfirmed; do not use them or the conflicting LR latitude.",
+        "alternative": "Agency example uses the same LL/UR rectangle directly in PlateCarree. Inspect its alternative latitude for the same native cell. This is sensitivity to an interpretation, not an error bound.",
+        "evidenceUrls": [
+          "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+          "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+          "https://proj.org/en/stable/operations/projections/merc.html"
+        ],
+        "radars": [
+          {
+            "id": "eehar",
+            "name": "Harku",
+            "longitude": 24.602777777777778,
+            "latitude": 59.39805555555556,
+            "documentedRangeMetres": 250000
+          },
+          {
+            "id": "eesyr",
+            "name": "Sürgavere",
+            "longitude": 25.51861111111111,
+            "latitude": 58.48222222222223,
+            "documentedRangeMetres": 250000
+          }
+        ],
+        "footprintChecks": {
+          "cornerMercator": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 512.413,
+            "p90AbsoluteRangeResidualMetres": 1156.672,
+            "maximumAbsoluteRangeResidualMetres": 1933.177
+          },
+          "agencyPlateCarree": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 2246.293,
+            "p90AbsoluteRangeResidualMetres": 4253.517,
+            "maximumAbsoluteRangeResidualMetres": 6779.928
+          },
+          "literalMetreScales": {
+            "boundaryCellCount": 1698,
+            "medianAbsoluteRangeResidualMetres": 57816.379,
+            "p90AbsoluteRangeResidualMetres": 210744.487,
+            "maximumAbsoluteRangeResidualMetres": 247783.339
+          }
+        },
+        "footprintCheckLimit": "Geometric consistency only. Same source mask, not independent geolocation evidence. Candidates share longitudes, so this does not discriminate east/west placement. Northern/southern range extremes are cropped and excluded; small range residuals can coexist with several kilometres of latitude disagreement. Residuals approach the roughly 0.8 km ground-cell quantisation. Nominal range, holes and beam geometry affect residuals. No calibration fitted; no accuracy inferred.",
+        "controlPoints": [
+          {
+            "column": 0,
+            "row": 0,
+            "longitude": 19.999539835628816,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 719,
+            "row": 0,
+            "longitude": 30.114660279575038,
+            "latitude": 61.505321128529005,
+            "agencyLatitude": 61.50505054938378,
+            "alternativeSeparationMetres": 30.153
+          },
+          {
+            "column": 0,
+            "row": 719,
+            "longitude": 19.999539835628816,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 719,
+            "row": 719,
+            "longitude": 30.114660279575038,
+            "latitude": 56.292056524403584,
+            "agencyLatitude": 56.29177691418416,
+            "alternativeSeparationMetres": 31.134
+          },
+          {
+            "column": 350,
+            "row": 300,
+            "longitude": 24.923451039218772,
+            "latitude": 59.42599968531214,
+            "agencyLatitude": 59.329832064599515,
+            "alternativeSeparationMetres": 10713.232
+          },
+          {
+            "column": 445,
+            "row": 208,
+            "longitude": 26.25994122305033,
+            "latitude": 60.077910222135266,
+            "agencyLatitude": 59.99689906660002,
+            "alternativeSeparationMetres": 9025.69
+          }
+        ],
+        "limit": "Registration is reproducible, not a geolocation accuracy certificate. Source scales and LR corner still conflict. Approximate cell coordinates only; no navigation or site-level rainfall claim."
       },
       "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
       "underlyingSweepAcquisitionUtc": null,
@@ -7231,7 +8887,8 @@
       "licence": "CC BY 4.0",
       "licenceUrl": "https://keskkonnaportaal.ee/et/avaandmed/meteoroloogiliste-radarite-andmestik",
       "definitionUrl": "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
-      "limits": "Radar-derived rain-rate estimates, not rain-gauge accumulations. Two contributing radars, one derived composite. Projection/scale convention unresolved; native grid. ODIM product-interval labels are retained; underlying sweep and pixel acquisition unknown. No-data and below-detection cells remain distinct."
+      "placementEvidenceFile": "placement-evidence.json",
+      "limits": "Radar-derived rain-rate estimates, not rain-gauge accumulations. Two contributing radars, one derived composite. Corner-anchored Mercator registration, footprint checked but not surveyed or provider-confirmed. Source scales and LR latitude still conflict. Approximate map-cell coordinates only. ODIM product-interval labels retained; underlying sweep and pixel acquisition unknown. No-data and below-detection remain distinct."
     },
     "buoys": {
       "origin": "Finnish Meteorological Institute / wave buoys",
