@@ -29,6 +29,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Install media inspection tools for published audio
         run: bash scripts/install_audit_media.sh
+      - name: Prepare the bounded offline weather decoder
+        run: |
+          python3 -m venv /tmp/coastal-weather-tools
+          /tmp/coastal-weather-tools/bin/python -m pip install --disable-pip-version-check -r tools/specimens/coastal-weather-requirements.txt
       - name: Verify generated editorial slots and archive behavior
         run: |
           python3 scripts/build_notes.py --check
@@ -40,9 +44,11 @@ jobs:
           node --test scripts/coastal_haxr.test.mjs scripts/coastal_haxr_motion.test.mjs
           python3 scripts/check_coastal_sources.py
           python3 scripts/build_coastal_archives.py --check
+          /tmp/coastal-weather-tools/bin/python scripts/build_coastal_weather.py --check
           python3 scripts/monitor_coastal_sources.test.py
           node --test scripts/coastal_sources.test.mjs
           node --test scripts/coastal_archives.test.mjs
+          node --test scripts/coastal_weather.test.mjs
           node --test scripts/field_power.test.mjs
           node --test scripts/maintenance_acceptance.test.mjs
           python3 scripts/maintenance/contracts_test.py
@@ -90,6 +96,9 @@ jobs:
           node --check docs/assets/coastal-archives.mjs
           node --check docs/assets/coastal-archives-model.mjs
           node --check scripts/audit_coastal_archives.mjs
+          node --check docs/assets/coastal-weather.mjs
+          node --check docs/assets/coastal-weather-model.mjs
+          node --check scripts/audit_coastal_weather.mjs
           node --check docs/assets/coastal-replay-model.mjs
           node --check scripts/audit_coastal_replay.mjs
           node --check scripts/audit_coastal_transport.mjs

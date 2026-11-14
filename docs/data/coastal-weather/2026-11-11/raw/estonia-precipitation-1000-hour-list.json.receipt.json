@@ -1,0 +1,17 @@
+{
+  "file": "estonia-precipitation-1000-hour-list.json",
+  "url": "https://avaandmed.keskkonnaportaal.ee/dhs/active/_layouts/15/RM/MFLLoader.ashx?handler=docs&list=1&view=501c5fca-0010-4abf-829d-6e90b7dbf08a&fpbookmark=c778fbcd-76a0-44fc-abf1-1059dc69e292&state=%7B%22UrlParam%22%3A%22mfl0%22%2C%22Filters%22%3A%7B%22RMTitle%22%3A%22%2A2026111110%2A%22%7D%2C%22UseUrlFiltering%22%3Atrue%2C%22SelectionModes%22%3A%5B%7B%22AttributeName%22%3A%22selectable-for-download%22%2C%22Type%22%3A3%7D%5D%2C%22ShowTopPagingBar%22%3Atrue%2C%22ShowBottomPagingBar%22%3Atrue%2C%22EverythingSelected%22%3Afalse%2C%22SelectedIds%22%3A%5B%5D%2C%22DeselectedIds%22%3A%5B%5D%2C%22PageSize%22%3A20%2C%22SortBy%22%3A%22Timestamp%22%2C%22SortDesc%22%3Atrue%2C%22ExtensionState%22%3A%7B%22additional-filter%22%3Anull%2C%22choice-count-url%22%3A%22%2Fdhs%2FActive%2F_vti_bin%2FChoiceCounts%3Fhandler%3Ddocs%26list%3D1%26view%3D501c5fca-0010-4abf-829d-6e90b7dbf08a%22%2C%22search-term%22%3Anull%7D%7D&page=0",
+  "requestedAt": "2026-11-14T10:27:43.629133+00:00",
+  "status": 200,
+  "finalUrl": "https://avaandmed.keskkonnaportaal.ee/dhs/active/_layouts/15/RM/MFLLoader.ashx?handler=docs&list=1&view=501c5fca-0010-4abf-829d-6e90b7dbf08a&fpbookmark=c778fbcd-76a0-44fc-abf1-1059dc69e292&state=%7B%22UrlParam%22%3A%22mfl0%22%2C%22Filters%22%3A%7B%22RMTitle%22%3A%22%2A2026111110%2A%22%7D%2C%22UseUrlFiltering%22%3Atrue%2C%22SelectionModes%22%3A%5B%7B%22AttributeName%22%3A%22selectable-for-download%22%2C%22Type%22%3A3%7D%5D%2C%22ShowTopPagingBar%22%3Atrue%2C%22ShowBottomPagingBar%22%3Atrue%2C%22EverythingSelected%22%3Afalse%2C%22SelectedIds%22%3A%5B%5D%2C%22DeselectedIds%22%3A%5B%5D%2C%22PageSize%22%3A20%2C%22SortBy%22%3A%22Timestamp%22%2C%22SortDesc%22%3Atrue%2C%22ExtensionState%22%3A%7B%22additional-filter%22%3Anull%2C%22choice-count-url%22%3A%22%2Fdhs%2FActive%2F_vti_bin%2FChoiceCounts%3Fhandler%3Ddocs%26list%3D1%26view%3D501c5fca-0010-4abf-829d-6e90b7dbf08a%22%2C%22search-term%22%3Anull%7D%7D&page=0",
+  "serverDate": "Sat, 14 Nov 2026 10:27:43 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "application/json",
+  "contentRange": null,
+  "warnings": [],
+  "bytes": 9278,
+  "sha256": "533c012bbedc0fcd3a76f0985b84f5bf1e73a17ffbc7c0ec778c3eae24c892cf",
+  "wireSha256": "533c012bbedc0fcd3a76f0985b84f5bf1e73a17ffbc7c0ec778c3eae24c892cf",
+  "completedAt": "2026-11-14T10:27:44.000175+00:00"
+}
