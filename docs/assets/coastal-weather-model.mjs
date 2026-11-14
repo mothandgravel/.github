@@ -18,11 +18,12 @@ export function readWeather(data) {
   const ids = new Set();
   for (const f of data.radar) {
     receipt(f.sourceFile);
-    if (ids.has(f.id) || f.id !== f.sourceFile || !stamp(f.scanStartUtc) || !stamp(f.scanEndUtc) || Date.parse(f.scanStartUtc) > Date.parse(f.scanEndUtc) || !name(f.image) || !name(f.pixels) || !hash(f.pixelsUncompressedSha256) || f.width !== 720 || f.height !== 720 || f.pixelsUncompressedBytes !== 720 * 720 * 4 || f.quantity !== 'RATE' || f.unit !== 'mm/h' || f.noDataCode !== 65535 || f.undetectCode !== 0 || f.gain !== 1 || f.offset !== 0 || f.georeferencing?.presentation !== 'native grid only') throw Error('Invalid native radar');
+    if (ids.has(f.id) || f.id !== f.sourceFile || !stamp(f.intervalStartUtc) || !stamp(f.intervalEndUtc) || Date.parse(f.intervalStartUtc) > Date.parse(f.intervalEndUtc) || !name(f.image) || !name(f.pixels) || !hash(f.pixelsUncompressedSha256) || f.width !== 720 || f.height !== 720 || f.pixelsUncompressedBytes !== 720 * 720 * 4 || f.quantity !== 'RATE' || f.unit !== 'mm/h' || f.noDataCode !== 65535 || f.undetectCode !== 0 || f.gain !== 1 || f.offset !== 0 || f.georeferencing?.presentation !== 'native grid only') throw Error('Invalid native radar');
     if (Object.values(f.cellCounts).reduce((sum,n) => sum + n,0) !== 720 * 720 || f.sourceNodes.join(',') !== 'eesyr,eehar') throw Error('Invalid radar lineage');
+    if(f.underlyingSweepAcquisitionUtc!==null||f.perPixelAcquisitionUtc!==null)throw Error('Unestablished radar acquisition clock');
     ids.add(f.id);
   }
-  if (!data.radar.every((f,i,a) => i === 0 || Date.parse(f.scanEndUtc) > Date.parse(a[i-1].scanEndUtc))) throw Error('Radar not ordered');
+  if (!data.radar.every((f,i,a) => i === 0 || Date.parse(f.intervalEndUtc) > Date.parse(a[i-1].intervalEndUtc))) throw Error('Radar not ordered');
   if (data.policies?.cloudMaxAgeSecondsExclusive !== 600 || data.policies.radarMaxAgeSecondsExclusive !== 300 || data.policies.buoyMaxAgeSecondsExclusive !== 3600 || data.policies.interpolation !== false || data.policies.noFutureSelection !== true) throw Error('Invalid clock policy');
   const stations = new Set();
   for (const b of data.buoys) {
@@ -49,9 +50,9 @@ export function cloudAt(data, second) {
 }
 export function radarAt(data, second) {
   const time = Date.parse(utcAtSecond(second)), frames = data.radar;
-  if (time < Date.parse(frames[0].scanEndUtc) || time > Date.parse(frames.at(-1).scanEndUtc)) return null;
-  const f = frames.filter(f => Date.parse(f.scanEndUtc) <= time).at(-1);
-  return f && time - Date.parse(f.scanEndUtc) < 300000 ? f : null;
+  if (time < Date.parse(frames[0].intervalEndUtc) || time > Date.parse(frames.at(-1).intervalEndUtc)) return null;
+  const f = frames.filter(f => Date.parse(f.intervalEndUtc) <= time).at(-1);
+  return f && time - Date.parse(f.intervalEndUtc) < 300000 ? f : null;
 }
 export function buoyAt(data, stationId, second) {
   utcAtSecond(second);
@@ -60,7 +61,7 @@ export function buoyAt(data, stationId, second) {
   return {station: b, points: Object.fromEntries(b.series.map(s => [s.parameter, s.points[Math.floor(second / 3600)]]))};
 }
 export function radarCell(frame, code) {
-  if (!finite(code)) throw Error('Invalid native radar code');
+  if (!finite(code)||code<0) throw Error('Invalid native radar code');
   if (code === frame.noDataCode) return {kind:'missing',rawValue:code,value:null,unit:frame.unit};
   if (code === frame.undetectCode) return {kind:'below detection',rawValue:code,value:null,unit:frame.unit};
   return {kind:'quantitative',rawValue:code,value:code * frame.gain + frame.offset,unit:frame.unit};
@@ -78,7 +79,7 @@ export function inspectWeather(data, second, stationId) {
     clouds:{record:cloud,expectedProductTimeUtc:data.clouds[Math.floor(second/600)].productTimeUtc,
       ageSeconds:cloud ? second-secondAtUtc(cloud.productTimeUtc) : null,
       httpReceipt:cloud ? data.receipts[cloud.sourceFile] : null,source:data.sources.clouds},
-    radar:{record:radar,ageSeconds:radar ? second-secondAtUtc(radar.scanEndUtc) : null,
+    radar:{record:radar,ageSeconds:radar ? second-secondAtUtc(radar.intervalEndUtc) : null,
       httpReceipt:radar ? data.receipts[radar.sourceFile] : null,source:data.sources.radar},
     buoy:{stationId,station:buoy.station.station,points:buoy.points,source:data.sources.buoys,
       sourceRecords:buoy.station.series.map(s => ({parameter:s.parameter,sourceFile:s.sourceFile,sourceSha256:s.sourceSha256,retrievedAt:s.retrievedAt,completedAt:null,publicationTime:s.publicationTime ?? null}))}};

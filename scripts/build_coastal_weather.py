@@ -46,7 +46,7 @@ def generate():
     plan=json.loads((OUT/'capture.json').read_text(encoding='utf8'))
     assert plan['schema']=='mg.coastal-weather-capture.v1'
     raw=OUT/'raw';receipts={}
-    for path in sorted(raw.glob('*.receipt.json')):
+    for path in sorted(raw.glob('*.receipt.json'),key=lambda p:p.name):
         r=json.loads(path.read_text(encoding='utf8'));name=path.name.removesuffix('.receipt.json');assert name==r['file']
         if r.get('sha256'):
             data=(raw/name).read_bytes();assert sha(data)==r['sha256'] and len(data)==r['bytes'],name
@@ -97,7 +97,7 @@ def generate():
             assert datetime.fromisoformat(begin.replace('Z','+00:00'))<=datetime.fromisoformat(end.replace('Z','+00:00'))
             assert abs(datetime.fromisoformat(begin.replace('Z','+00:00')).timestamp()-how['startepochs'])<1
             assert abs(datetime.fromisoformat(end.replace('Z','+00:00')).timestamp()-how['endepochs'])<1
-            radar.append({**item,'id':name,'scanStartUtc':begin,'scanEndUtc':end,'productTimeUtc':odim_time(global_what['date'],global_what['time']),
+            radar.append({**item,'id':name,'intervalStartUtc':begin,'intervalEndUtc':end,'productTimeUtc':odim_time(global_what['date'],global_what['time']),
                 'width':720,'height':720,'quantity':'RATE','unit':'mm/h','gain':what['gain'],'offset':what['offset'],
                 'noDataCode':what['nodata'],'undetectCode':what['undetect'],'image':prefix+'.png','pixels':prefix+'.f32.gz',
                 'pixelsEncoding':'gzip little-endian IEEE754 float32, row-major, native 720 x 720',
@@ -110,8 +110,10 @@ def generate():
                     'diagnostic':'Grid span versus corner span under the supplied CRS, with a 1% diagnostic tolerance. A mismatch is not proof of corrupt metadata.',
                     'candidateExplanation':'A ground-distance scale convention may explain part of the difference; not confirmed.',
                     'limit':'Projection and scale convention unresolved. No geographic overlay or location-level sampling.'},
+                'timeMeaning':'ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.',
+                'underlyingSweepAcquisitionUtc':None,'perPixelAcquisitionUtc':None,
                 'originalReceiverTimeUtc':None,'firstPublicationUtc':None})
-    radar.sort(key=lambda r:r['scanEndUtc']);assert len(radar)==12
+    radar.sort(key=lambda r:r['intervalEndUtc']);assert len(radar)==12
     original=ROOT/'docs/data/coastal-sources/2026-11-11/environment-observations.json'
     environment=json.loads(original.read_text(encoding='utf8'))
     buoys=[]
@@ -130,7 +132,7 @@ def generate():
         'policies':{'cloudMaxAgeSecondsExclusive':600,'radarMaxAgeSecondsExclusive':300,
             'radarOutsideSavedSpan':'unavailable','buoyMaxAgeSecondsExclusive':3600,
             'noFutureSelection':True,'interpolation':False,'waveDirectionConvention':'from, clockwise degrees from north',
-            'noFutureSelectionAppliesTo':'Declared product labels, completed radar intervals and buoy sample labels. Unknown per-pixel acquisition times are excluded.',
+            'noFutureSelectionAppliesTo':'Declared cloud product labels, radar product-interval end labels and buoy sample labels. Unknown physical acquisition times are excluded.',
             'waveIllustration':'A labelled schematic of reported height and modal period; not a recorded surface or spectrum.'},
         'sources':{
             'clouds':{'origin':'EUMETSAT / Meteosat Third Generation FCI','distribution':'EUMETView / Geo Colour RGB',
@@ -144,7 +146,7 @@ def generate():
                 'credit':'Keskkonnaagentuur radar products 2026 / CC BY 4.0','licence':'CC BY 4.0',
                 'licenceUrl':'https://keskkonnaportaal.ee/et/avaandmed/meteoroloogiliste-radarite-andmestik',
                 'definitionUrl':'https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus',
-                'limits':'Radar-derived rain-rate estimates, not rain-gauge accumulations. Two contributing radars, one derived composite. Native grid because georeferencing metadata conflict. No-data and below-detection cells remain distinct.'},
+                'limits':'Radar-derived rain-rate estimates, not rain-gauge accumulations. Two contributing radars, one derived composite. Projection/scale convention unresolved; native grid. ODIM product-interval labels are retained; underlying sweep and pixel acquisition unknown. No-data and below-detection cells remain distinct.'},
             'buoys':{'origin':'Finnish Meteorological Institute / wave buoys','distribution':'FMI WFS',
                 'credit':'Finnish Meteorological Institute / CC BY 4.0','licence':'CC BY 4.0',
                 'licenceUrl':'https://en.ilmatieteenlaitos.fi/open-data-licence',
@@ -183,12 +185,12 @@ def main():
                 print('Rebuilt: '+repr(data[max(0,at-60):at+160]),file=sys.stderr)
             assert previous==data,'Derived file drift: '+name
         else:(OUT/name).write_bytes(data)
-    inventory=[{'path':p.relative_to(ROOT/'docs').as_posix(),'bytes':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(OUT.rglob('*')) if p.is_file()]
+    inventory=[{'path':p.relative_to(ROOT/'docs').as_posix(),'bytes':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(OUT.rglob('*'),key=lambda p:p.relative_to(OUT).as_posix()) if p.is_file()]
     provenance={'schema':'mg.coastal-weather-provenance.v1','dateLocal':'2026-11-11',
         'transformation':'Cloud PNGs unchanged from WMS. Radar float32 cells copied in native order to deterministic gzip; palette PNGs preserve missing/below-detection classifications. No geographic radar warp. Buoy samples copied unchanged.',
         'paletteRateMMH':[{'maximumInclusiveMMH':upper,'colour':colour} for upper,colour in PALETTE]+[{'minimumExclusiveMMH':5,'maximumInclusiveMMH':None,'colour':ABOVE_COLOUR}],
         'scope':'Environmental context. No vessel association, incident attribution or damage assessment.',
-        'clockMeaning':'Product and scan clocks kept separate from retrieval receipts. First publication and original station reception remain unknown.',
+        'clockMeaning':'Declared product labels and supplied radar product intervals kept separate from retrieval receipts. Underlying radar sweep, per-pixel acquisition, first publication and original station reception remain unknown.',
         'dependencies':'tools/specimens/coastal-weather-requirements.txt','files':inventory}
     target=ROOT/'docs/design/coastal-weather-provenance.json'
     if args.check:assert target.read_bytes()==dump(provenance),'Provenance drift'

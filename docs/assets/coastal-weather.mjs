@@ -77,24 +77,29 @@ async function renderRadar() {
   const version = ++radarVersion,f = radarAt(data,state.second); ++pixelVersion;selectedCell=null;
   $('cw-cell-marker').style.display='none';
   $('cw-scan').value=f?.id??'';
-  $('cw-scan-prev').disabled=!data.radar.some(f=>secondAtUtc(f.scanEndUtc)<state.second);
-  $('cw-scan-next').disabled=!data.radar.some(f=>secondAtUtc(f.scanEndUtc)>state.second);
+  $('cw-scan-prev').setAttribute('aria-disabled',String(!data.radar.some(f=>secondAtUtc(f.intervalEndUtc)<state.second)));
+  $('cw-scan-next').setAttribute('aria-disabled',String(!data.radar.some(f=>secondAtUtc(f.intervalEndUtc)>state.second)));
   $('cw-radar-image').hidden=true;$('cw-radar-pick').hidden=true;$('cw-radar-empty').hidden=false;$('cw-radar-retry').hidden=true;$('cw-radar-stage').setAttribute('aria-busy',String(Boolean(f)));
+  const message=$('cw-radar-empty'),heading=message.querySelector('strong'),detail=message.querySelector('span');
   if (!f) {
-    text('cw-radar-clock',`Saved ends ${clock(data.radar[0].scanEndUtc)}–${clock(data.radar.at(-1).scanEndUtc)} UTC / browse time outside an eligible scan.`);
-    text('cw-radar-image-status','No saved scan at this cursor. This does not mean no rain.');$('cw-radar-stage').setAttribute('aria-busy','false');
+    const inside=state.second>=secondAtUtc(data.radar[0].intervalEndUtc)&&state.second<=secondAtUtc(data.radar.at(-1).intervalEndUtc);
+    heading.textContent=inside?'Between eligible product labels.':'Outside the saved strip.';
+    detail.textContent=inside?'The previous label is at least five minutes old; the next is later. Nothing carried forward.':'No composite selected. This does not mean no rain.';
+    text('cw-radar-clock',`Saved end labels ${clock(data.radar[0].intervalEndUtc)}–${clock(data.radar.at(-1).intervalEndUtc)} UTC / ${inside?'age-limit gap':'outside saved coverage'}.`);
+    text('cw-radar-image-status',inside?'Age limit reached before the next product label.':'Outside saved radar coverage.');$('cw-radar-stage').setAttribute('aria-busy','false');
     text('cw-cell-value','No eligible saved radar frame. Physical value unknown.');renderReceipt();return;
   }
-  text('cw-radar-clock',`${clock(f.scanStartUtc)}–${clock(f.scanEndUtc)} UTC scan / finished ${age(state.second-secondAtUtc(f.scanEndUtc))} before cursor.`);
+  heading.textContent='Opening the saved composite…';detail.textContent='Its source record exists. The previous image is hidden while this file opens.';
+  text('cw-radar-clock',`${clock(f.intervalStartUtc)}–${clock(f.intervalEndUtc)} UTC product interval / end label ${age(state.second-secondAtUtc(f.intervalEndUtc))} before cursor. Sweep acquisition unknown.`);
   text('cw-radar-image-status','Opening the saved native grid…');
   try {
     const loaded=await loadImage(new URL(f.image,root));if(loaded.width!==720||loaded.height!==720)throw Error('Unexpected radar dimensions');if(version!==radarVersion)return;
-    const img=$('cw-radar-image');img.src=loaded.url;img.alt=`Estonian radar-derived rain-rate composite, scan ${f.scanStartUtc} to ${f.scanEndUtc}. Native row/column grid, geographic placement unresolved.`;img.hidden=false;cleanImages();
+    const img=$('cw-radar-image');img.dataset.frameId=f.id;img.src=loaded.url;img.alt=`Estonian radar-derived rain-rate composite, supplied product interval ${f.intervalStartUtc} to ${f.intervalEndUtc}. Underlying sweep time and geographic placement unresolved.`;img.hidden=false;cleanImages();
     $('cw-radar-empty').hidden=true;$('cw-radar-pick').hidden=false;
     text('cw-radar-image-status',`${f.cellCounts.missing.toLocaleString('en-GB')} cells have no data. Below detection is separate. Seven discrete rate bands; last band >5 mm/h. Original floats retained.`);
     if ($('cw-cell-details').open) await inspectCell();
   } catch {
-    if(version!==radarVersion)return;if(state.playing)stop('Playback paused: a saved radar image could not open. Retry or choose another time.');text('cw-radar-image-status','The saved radar image could not open. Its original and receipt remain available.');$('cw-radar-retry').hidden=false;
+    if(version!==radarVersion)return;if(state.playing)stop('Playback paused: a saved radar image could not open. Retry or choose another time.');heading.textContent='This image could not open.';detail.textContent='A source record exists at this cursor. Retry, or inspect its original.';text('cw-radar-image-status','The saved radar image could not open. Its original and receipt remain available.');$('cw-radar-retry').hidden=false;
   } finally {if(version===radarVersion)$('cw-radar-stage').setAttribute('aria-busy','false');}
 }
 function drawRibbons() {
@@ -103,8 +108,8 @@ function drawRibbons() {
     const target=$(`cw-${kind}-ribbon`);target.setAttribute('preserveAspectRatio','none');target.replaceChildren(svg('line',{x1:0,x2:1000,y1:10,y2:10,class:'cw-ribbon-base'}));
     if(kind==='cloud') for(const f of data.clouds) target.append(svg('rect',{x:x(secondAtUtc(f.productTimeUtc)),y:5,width:Math.max(2,x(600)-1),height:10,class:f.available?'cw-ribbon-saved':'cw-ribbon-gap'}));
     if(kind==='radar')for(const [i,f]of data.radar.entries()){
-      const start=secondAtUtc(f.scanEndUtc),end=Math.min(start+300,secondAtUtc(data.radar[i+1]?.scanEndUtc??data.radar.at(-1).scanEndUtc));
-      const bar=svg('rect',{x:x(start),y:2,width:Math.max(1,x(end-start)),height:16,class:'cw-ribbon-strip'});bar.append(svg('title',{},`${f.scanEndUtc}; no hold beyond the saved strip.`));target.append(bar);
+      const start=secondAtUtc(f.intervalEndUtc),end=Math.min(start+300,secondAtUtc(data.radar[i+1]?.intervalEndUtc??data.radar.at(-1).intervalEndUtc));
+      const bar=svg('rect',{x:x(start),y:2,width:Math.max(1,x(end-start)),height:16,class:'cw-ribbon-strip'});bar.append(svg('title',{},`${f.intervalEndUtc}; no hold beyond the saved strip.`));target.append(bar);
     }
     if(kind==='buoy') for(const p of data.buoys.find(b=>b.id===state.station).series.find(s=>s.parameter==='WaveHs').points) target.append(svg('rect',{x:x(secondAtUtc(p.observedAt)),y:5,width:x(3600)-2,height:10,class:p.value===null?'cw-ribbon-gap':'cw-ribbon-saved'}));
     target.append(svg('line',{x1:x(state.second),x2:x(state.second),y1:0,y2:20,class:'cw-ribbon-cursor'}));
@@ -153,11 +158,11 @@ function renderReceipt() {
   const record=selected.record,receipt=selected.httpReceipt;
   let description,sourceTime;
   if(state.source==='clouds'){sourceTime=record?.productTimeUtc ?? null;description=record?`Cloud product / ${sourceTime} · per-pixel acquisition unknown`:`Cloud product unavailable at this cursor / expected ${selected.expectedProductTimeUtc}`;}
-  else if(state.source==='radar'){sourceTime=record?`${record.scanStartUtc} – ${record.scanEndUtc}`:null;description=record?`Radar scan / ${sourceTime} · native grid`:'No eligible radar scan in the saved strip at this cursor.';}
+  else if(state.source==='radar'){sourceTime=record?`${record.intervalStartUtc} – ${record.intervalEndUtc}`:null;description=record?`Radar product interval / ${sourceTime} · sweep acquisition unknown`:'No eligible radar product in the saved strip at this cursor.';}
   else{sourceTime=selected.points.WaveHs.observedAt;description=`${selected.station} / ${sourceTime} · hourly requested sample`;}
   text('cw-receipt-clock',description);text('cw-lineage',`${source.origin} → ${source.distribution} → saved original → this inspection`);text('cw-receipt-limit',source.limits);
   const dl=$('cw-clocks');dl.replaceChildren();
-  for(const [label,value]of [['Browse UTC',inspection.browseTimeUtc],['Source clock',sourceTime??'No eligible record'],[state.source==='buoys'?'Retrieved UTC':'Requested UTC',receipt?.requestedAt??(state.source==='buoys'?selected.sourceRecords[0].retrievedAt:'No eligible record')],['Downloaded UTC',receipt?.completedAt??'Unknown'],['Pixel acquisition',state.source==='clouds'?'Unknown / not the product clock':'Not assigned'],['Station receipt','Unknown'],['First publication','Unknown']])dl.append(el('dt',label),el('dd',value));
+  for(const [label,value]of [['Browse UTC',inspection.browseTimeUtc],['Source clock',sourceTime??'No eligible record'],[state.source==='buoys'?'Retrieved UTC':'Requested UTC',receipt?.requestedAt??(state.source==='buoys'?selected.sourceRecords[0].retrievedAt:'No eligible record')],['Downloaded UTC',receipt?.completedAt??'Unknown'],['Pixel acquisition',state.source==='buoys'?'Not assigned':'Unknown / not the product clock'],['Station receipt','Unknown'],['First publication','Unknown']])dl.append(el('dt',label),el('dd',value));
   const file=state.source==='buoys'?data.buoys.find(b=>b.id===state.station).series[0].sourceFile:record?.sourceFile;
   for(const id of ['cw-original','cw-http'])$(id).hidden=!file;
   if(file){const base=state.source==='buoys'?buoyRoot:new URL('raw/',root);$('cw-original').href=new URL(file,base);$('cw-http').href=new URL(file+'.receipt.json',base);}
@@ -184,20 +189,20 @@ async function inspectCell() {
   text('cw-cell-value','Opening the original float32 cells…');
   try{
     const view=await nativeCells(f);if(version!==pixelVersion)return;
-    const cell=radarCell(f,view.getFloat32((y*720+x)*4,true));selectedCell={frameId:f.id,x,y,...cell,scanStartUtc:f.scanStartUtc,scanEndUtc:f.scanEndUtc};
-    const prefix=`Column ${x}, row ${y} / scan ends ${clock(f.scanEndUtc)} UTC. `;
+    const cell=radarCell(f,view.getFloat32((y*720+x)*4,true));selectedCell={frameId:f.id,x,y,...cell,intervalStartUtc:f.intervalStartUtc,intervalEndUtc:f.intervalEndUtc};
+    const prefix=`Column ${x}, row ${y} / product end label ${clock(f.intervalEndUtc)} UTC. `;
     text('cw-cell-value',prefix+(cell.kind==='missing'?'Code 65535 / no data. Physical value unknown.':cell.kind==='below detection'?'Code 0 / below detection. No measured zero assigned.':`Stored float ${cell.rawValue} × ${f.gain} + ${f.offset} = ${number(cell.value)} mm/h. Display rounded; full float in export.`));
     $('cw-cell-marker').style.cssText=`display:block;left:${(x+.5)/720*100}%;top:${(y+.5)/720*100}%`;
   }catch{if(version!==pixelVersion)return;text('cw-cell-value','Native cells could not be read or verified. No physical value assigned.');$('cw-cell-retry').hidden=false;}
   renderReceipt();
 }
-function stop(message='Playback paused.') {
-  state.playing=false;++playVersion;clearTimeout(timer);text('cw-play','Play the day ▶');text('cw-scan-play','Play all 12 scans ▶');$('cw-play').setAttribute('aria-pressed','false');$('cw-scan-play').setAttribute('aria-pressed','false');
-  for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','polite');if(message)text('cw-play-status',message);
+function stop(message=null) {
+  const wasPlaying=state.playing;state.playing=false;++playVersion;clearTimeout(timer);text('cw-play','Play the day ▶');text('cw-scan-play','Play all 12 composites ▶');$('cw-play').setAttribute('aria-pressed','false');$('cw-scan-play').setAttribute('aria-pressed','false');
+  for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','polite');if(message||wasPlaying)text('cw-play-status',message??'Playback paused.');
 }
 async function setSecond(second,{external=false,playing=false}={}) {
   if(!playing&&state.playing)stop();state.second=Math.max(0,Math.min(86399,Math.round(second)));
-  const utc=utcAtSecond(state.second);$('cw-second').value=String(state.second);text('cw-local',clock(utc,'Europe/Helsinki',false));text('cw-local-seconds',`:${String(state.second%60).padStart(2,'0')} EET`);text('cw-utc',clock(utc)+' UTC');
+  const utc=utcAtSecond(state.second);$('cw-second').value=String(state.second);text('cw-local',clock(utc,'Europe/Helsinki',false));text('cw-local-seconds',`:${String(state.second%60).padStart(2,'0')} EET`);text('cw-control-local',clock(utc,'Europe/Helsinki')+' EET');text('cw-utc',clock(utc)+' UTC');
   $('cw-second').setAttribute('aria-valuetext',`${clock(utc,'Europe/Helsinki')} Helsinki, ${utc}. Source times differ.`);
   $('cw-back').disabled=state.second===0;$('cw-next').disabled=state.second===86399;
   document.documentElement.dataset.coastalMinute=String(Math.floor(state.second/60));
@@ -207,13 +212,13 @@ async function setSecond(second,{external=false,playing=false}={}) {
 }
 async function play(scope='day') {
   if(state.playing){stop();return;}if(state.second>=86399)await setSecond(0);
-  if(scope==='radar')await setSecond(secondAtUtc(data.radar[0].scanEndUtc));let scanIndex=0;
-  state.playing=true;const version=++playVersion;text('cw-play',scope==='radar'?'Pause the strip Ⅱ':'Pause the day Ⅱ');text('cw-scan-play',scope==='radar'?'Pause the strip Ⅱ':'Pause playback Ⅱ');$('cw-play').setAttribute('aria-pressed','true');$('cw-scan-play').setAttribute('aria-pressed','true');for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','off');text('cw-play-status',scope==='radar'?'All 12 completed scans, in order. Saved frames; no interpolation.':'Ten minutes per step. Saved frames; no interpolation.');
+  let scanIndex=0;state.playing=true;const version=++playVersion;text('cw-play',scope==='radar'?'Pause the strip Ⅱ':'Pause the day Ⅱ');text('cw-scan-play',scope==='radar'?'Pause the strip Ⅱ':'Pause playback Ⅱ');$('cw-play').setAttribute('aria-pressed','true');$('cw-scan-play').setAttribute('aria-pressed','true');for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','off');text('cw-play-status',scope==='radar'?'All 12 saved composites, in order. No interpolation.':'Ten minutes per step. Saved frames; no interpolation.');
+  if(scope==='radar'){await setSecond(secondAtUtc(data.radar[0].intervalEndUtc),{playing:true});if(!state.playing||version!==playVersion)return;}
   const tick=async()=>{
     if(!state.playing||version!==playVersion)return;
-    const next=scope==='radar'?secondAtUtc(data.radar[++scanIndex].scanEndUtc):Math.min(86399,state.second+600);await setSecond(next,{playing:true});
+    const next=scope==='radar'?secondAtUtc(data.radar[++scanIndex].intervalEndUtc):Math.min(86399,state.second+600);await setSecond(next,{playing:true});
     if(!state.playing||version!==playVersion)return;
-    if(scope==='radar'&&scanIndex===data.radar.length-1){stop('All 12 scans shown. End of the saved strip; last scan remains selected at its exact end time.');return;}
+    if(scope==='radar'&&scanIndex===data.radar.length-1){stop('All 12 composites shown. Last product remains selected at its exact end label.');return;}
     if(next===86399){stop('End of the saved day.');return;}timer=setTimeout(tick,900);
   };timer=setTimeout(tick,900);
 }
@@ -224,15 +229,16 @@ async function start() {
     data=readWeather(await json(new URL('notebook.json',root)));const land=await json(new URL('./coastal-replay-land.json',import.meta.url)).catch(()=>null);buildMap(land);
     text('cw-availability',`${data.clouds.filter(f=>f.available).length} cloud frames / ${data.radar.length} radar composites / 3 buoys`);
     $('cw-workbench').hidden=false;$('cw-loading').hidden=true;
-    $('cw-second').oninput=()=>{setSecond(Number($('cw-second').value));};
+    $('cw-second').oninput=()=>{for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','off');setSecond(Number($('cw-second').value));};
+    $('cw-second').onchange=()=>{if(!state.playing)for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','polite');};
     $('cw-play').onclick=()=>play('day');for(const [id,step]of [['cw-back',-600],['cw-next',600]])$(id).onclick=()=>setSecond(state.second+step);
     const scan=$('cw-scan');scan.replaceChildren();const none=el('option','No completed scan at this cursor');none.value='';none.disabled=true;scan.append(none);
-    for(const f of data.radar){const o=el('option',`${clock(f.scanEndUtc)} UTC / ${clock(f.scanEndUtc,'Europe/Helsinki')} EET`);o.value=f.id;scan.append(o);}
-    scan.onchange=()=>{const f=data.radar.find(f=>f.id===scan.value);if(f)setSecond(secondAtUtc(f.scanEndUtc));};
-    $('cw-scan-prev').onclick=()=>{const f=data.radar.filter(f=>secondAtUtc(f.scanEndUtc)<state.second).at(-1);if(f)setSecond(secondAtUtc(f.scanEndUtc));};
-    $('cw-scan-next').onclick=()=>{const f=data.radar.find(f=>secondAtUtc(f.scanEndUtc)>state.second);if(f)setSecond(secondAtUtc(f.scanEndUtc));};
+    for(const f of data.radar){const o=el('option',`${clock(f.intervalEndUtc)} UTC / ${clock(f.intervalEndUtc,'Europe/Helsinki')} EET`);o.value=f.id;scan.append(o);}
+    scan.onchange=()=>{const f=data.radar.find(f=>f.id===scan.value);if(f)setSecond(secondAtUtc(f.intervalEndUtc));};
+    $('cw-scan-prev').onclick=()=>{const f=data.radar.filter(f=>secondAtUtc(f.intervalEndUtc)<state.second).at(-1);if(f)setSecond(secondAtUtc(f.intervalEndUtc));};
+    $('cw-scan-next').onclick=()=>{const f=data.radar.find(f=>secondAtUtc(f.intervalEndUtc)>state.second);if(f)setSecond(secondAtUtc(f.intervalEndUtc));};
     $('cw-scan-play').onclick=()=>play('radar');
-    $('cw-radar-jump').onclick=()=>setSecond(secondAtUtc(data.radar[2].scanEndUtc)+5);
+    $('cw-radar-jump').onclick=()=>setSecond(secondAtUtc(data.radar[2].intervalEndUtc)+5);
     $('cw-gap-jump').onclick=()=>{state.station='108495';const series=data.buoys.find(b=>b.id===state.station).series.find(s=>s.parameter==='WaveHs');const p=series.points.find(p=>p.value===null);if(p)setSecond(secondAtUtc(p.observedAt));text('cw-play-status','Selected Loviisa / Orrengrund at its first saved gap.');};
     $('cw-buoy').onchange=()=>{state.station=$('cw-buoy').value;setSecond(state.second);};
     $('cw-cloud-retry').onclick=()=>renderCloud();$('cw-radar-retry').onclick=()=>renderRadar();$('cw-cell-retry').onclick=inspectCell;
@@ -245,6 +251,6 @@ async function start() {
   }catch(error){$('cw-workbench').hidden=true;text('cw-loading','The weather passage could not open. The saved notebook and original source files remain available below.');$('cw-retry').hidden=false;if(restoreFocus)$('cw-retry').focus({preventScroll:true});console.error(error);}
 }
 document.addEventListener('coastal-archive-clock',e=>{if(!broadcasting&&!e.detail.initial){const s=secondAtUtc(e.detail.utc);if(Number.isInteger(s)&&s>=0&&s<=86399){pendingExternalSecond=s;if(data)setSecond(s,{external:true});}}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden)stop('Playback stopped while the page was away.');});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.playing)stop('Playback stopped while the page was away.');});
 window.addEventListener('pagehide',()=>{if(data)stop();});window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{if(data)resizeMap();});});
 $('cw-retry').onclick=start;start();

@@ -1315,8 +1315,8 @@
       "catalogueUiTime": "11.11.2026 12:00",
       "catalogueBytes": 378059,
       "id": "comp.20261111100006.CAP.1256.h5",
-      "scanStartUtc": "2026-11-11T10:00:02Z",
-      "scanEndUtc": "2026-11-11T10:00:06Z",
+      "intervalStartUtc": "2026-11-11T10:00:02Z",
+      "intervalEndUtc": "2026-11-11T10:00:06Z",
       "productTimeUtc": "2026-11-11T10:00:06Z",
       "width": 720,
       "height": 720,
@@ -1394,6 +1394,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -1403,8 +1406,8 @@
       "catalogueUiTime": "11.11.2026 12:05",
       "catalogueBytes": 395283,
       "id": "comp.20261111100503.CAP.1264.h5",
-      "scanStartUtc": "2026-11-11T10:05:02Z",
-      "scanEndUtc": "2026-11-11T10:05:03Z",
+      "intervalStartUtc": "2026-11-11T10:05:02Z",
+      "intervalEndUtc": "2026-11-11T10:05:03Z",
       "productTimeUtc": "2026-11-11T10:05:03Z",
       "width": 720,
       "height": 720,
@@ -1482,6 +1485,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -1491,8 +1497,8 @@
       "catalogueUiTime": "11.11.2026 12:10",
       "catalogueBytes": 393062,
       "id": "comp.20261111101001.CAP.1271.h5",
-      "scanStartUtc": "2026-11-11T10:10:01Z",
-      "scanEndUtc": "2026-11-11T10:10:01Z",
+      "intervalStartUtc": "2026-11-11T10:10:01Z",
+      "intervalEndUtc": "2026-11-11T10:10:01Z",
       "productTimeUtc": "2026-11-11T10:10:01Z",
       "width": 720,
       "height": 720,
@@ -1570,6 +1576,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -1579,8 +1588,8 @@
       "catalogueUiTime": "11.11.2026 12:15",
       "catalogueBytes": 391590,
       "id": "comp.20261111101506.CAP.1277.h5",
-      "scanStartUtc": "2026-11-11T10:15:01Z",
-      "scanEndUtc": "2026-11-11T10:15:06Z",
+      "intervalStartUtc": "2026-11-11T10:15:01Z",
+      "intervalEndUtc": "2026-11-11T10:15:06Z",
       "productTimeUtc": "2026-11-11T10:15:06Z",
       "width": 720,
       "height": 720,
@@ -1658,6 +1667,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -1667,8 +1679,8 @@
       "catalogueUiTime": "11.11.2026 12:20",
       "catalogueBytes": 400920,
       "id": "comp.20261111102003.CAP.1283.h5",
-      "scanStartUtc": "2026-11-11T10:20:01Z",
-      "scanEndUtc": "2026-11-11T10:20:03Z",
+      "intervalStartUtc": "2026-11-11T10:20:01Z",
+      "intervalEndUtc": "2026-11-11T10:20:03Z",
       "productTimeUtc": "2026-11-11T10:20:03Z",
       "width": 720,
       "height": 720,
@@ -1746,6 +1758,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -1755,8 +1770,8 @@
       "catalogueUiTime": "11.11.2026 12:25",
       "catalogueBytes": 395864,
       "id": "comp.20261111102501.CAP.1292.h5",
-      "scanStartUtc": "2026-11-11T10:25:01Z",
-      "scanEndUtc": "2026-11-11T10:25:01Z",
+      "intervalStartUtc": "2026-11-11T10:25:01Z",
+      "intervalEndUtc": "2026-11-11T10:25:01Z",
       "productTimeUtc": "2026-11-11T10:25:01Z",
       "width": 720,
       "height": 720,
@@ -1834,6 +1849,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -1843,8 +1861,8 @@
       "catalogueUiTime": "11.11.2026 12:30",
       "catalogueBytes": 387741,
       "id": "comp.20261111103006.CAP.1299.h5",
-      "scanStartUtc": "2026-11-11T10:30:02Z",
-      "scanEndUtc": "2026-11-11T10:30:06Z",
+      "intervalStartUtc": "2026-11-11T10:30:02Z",
+      "intervalEndUtc": "2026-11-11T10:30:06Z",
       "productTimeUtc": "2026-11-11T10:30:06Z",
       "width": 720,
       "height": 720,
@@ -1922,6 +1940,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -1931,8 +1952,8 @@
       "catalogueUiTime": "11.11.2026 12:35",
       "catalogueBytes": 399613,
       "id": "comp.20261111103504.CAP.1306.h5",
-      "scanStartUtc": "2026-11-11T10:35:02Z",
-      "scanEndUtc": "2026-11-11T10:35:04Z",
+      "intervalStartUtc": "2026-11-11T10:35:02Z",
+      "intervalEndUtc": "2026-11-11T10:35:04Z",
       "productTimeUtc": "2026-11-11T10:35:04Z",
       "width": 720,
       "height": 720,
@@ -2010,6 +2031,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -2019,8 +2043,8 @@
       "catalogueUiTime": "11.11.2026 12:40",
       "catalogueBytes": 392400,
       "id": "comp.20261111104001.CAP.1313.h5",
-      "scanStartUtc": "2026-11-11T10:40:01Z",
-      "scanEndUtc": "2026-11-11T10:40:01Z",
+      "intervalStartUtc": "2026-11-11T10:40:01Z",
+      "intervalEndUtc": "2026-11-11T10:40:01Z",
       "productTimeUtc": "2026-11-11T10:40:01Z",
       "width": 720,
       "height": 720,
@@ -2098,6 +2122,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -2107,8 +2134,8 @@
       "catalogueUiTime": "11.11.2026 12:45",
       "catalogueBytes": 387031,
       "id": "comp.20261111104506.CAP.1318.h5",
-      "scanStartUtc": "2026-11-11T10:45:01Z",
-      "scanEndUtc": "2026-11-11T10:45:06Z",
+      "intervalStartUtc": "2026-11-11T10:45:01Z",
+      "intervalEndUtc": "2026-11-11T10:45:06Z",
       "productTimeUtc": "2026-11-11T10:45:06Z",
       "width": 720,
       "height": 720,
@@ -2186,6 +2213,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -2195,8 +2225,8 @@
       "catalogueUiTime": "11.11.2026 12:50",
       "catalogueBytes": 405166,
       "id": "comp.20261111105003.CAP.1325.h5",
-      "scanStartUtc": "2026-11-11T10:50:01Z",
-      "scanEndUtc": "2026-11-11T10:50:03Z",
+      "intervalStartUtc": "2026-11-11T10:50:01Z",
+      "intervalEndUtc": "2026-11-11T10:50:03Z",
       "productTimeUtc": "2026-11-11T10:50:03Z",
       "width": 720,
       "height": 720,
@@ -2274,6 +2304,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     },
@@ -2283,8 +2316,8 @@
       "catalogueUiTime": "11.11.2026 12:55",
       "catalogueBytes": 403765,
       "id": "comp.20261111105501.CAP.1334.h5",
-      "scanStartUtc": "2026-11-11T10:55:01Z",
-      "scanEndUtc": "2026-11-11T10:55:01Z",
+      "intervalStartUtc": "2026-11-11T10:55:01Z",
+      "intervalEndUtc": "2026-11-11T10:55:01Z",
       "productTimeUtc": "2026-11-11T10:55:01Z",
       "width": 720,
       "height": 720,
@@ -2362,6 +2395,9 @@
         "candidateExplanation": "A ground-distance scale convention may explain part of the difference; not confirmed.",
         "limit": "Projection and scale convention unresolved. No geographic overlay or location-level sampling."
       },
+      "timeMeaning": "ODIM dataset product interval as supplied; underlying radar sweep and per-pixel acquisition unknown.",
+      "underlyingSweepAcquisitionUtc": null,
+      "perPixelAcquisitionUtc": null,
       "originalReceiverTimeUtc": null,
       "firstPublicationUtc": null
     }
@@ -7173,7 +7209,7 @@
     "noFutureSelection": true,
     "interpolation": false,
     "waveDirectionConvention": "from, clockwise degrees from north",
-    "noFutureSelectionAppliesTo": "Declared product labels, completed radar intervals and buoy sample labels. Unknown per-pixel acquisition times are excluded.",
+    "noFutureSelectionAppliesTo": "Declared cloud product labels, radar product-interval end labels and buoy sample labels. Unknown physical acquisition times are excluded.",
     "waveIllustration": "A labelled schematic of reported height and modal period; not a recorded surface or spectrum."
   },
   "sources": {
@@ -7195,7 +7231,7 @@
       "licence": "CC BY 4.0",
       "licenceUrl": "https://keskkonnaportaal.ee/et/avaandmed/meteoroloogiliste-radarite-andmestik",
       "definitionUrl": "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
-      "limits": "Radar-derived rain-rate estimates, not rain-gauge accumulations. Two contributing radars, one derived composite. Native grid because georeferencing metadata conflict. No-data and below-detection cells remain distinct."
+      "limits": "Radar-derived rain-rate estimates, not rain-gauge accumulations. Two contributing radars, one derived composite. Projection/scale convention unresolved; native grid. ODIM product-interval labels are retained; underlying sweep and pixel acquisition unknown. No-data and below-detection cells remain distinct."
     },
     "buoys": {
       "origin": "Finnish Meteorological Institute / wave buoys",

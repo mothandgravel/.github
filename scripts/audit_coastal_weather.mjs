@@ -51,9 +51,10 @@ try{
     await page.locator('#cw-radar-pick').focus();await page.keyboard.press('Enter');assert.equal(await page.locator('#cw-cell-x').evaluate(e=>e===document.activeElement),true,'Keyboard selection enters the cell controls');
     if(width===1440&&theme==='night'){
       for(const f of data.radar){await page.locator('#cw-scan').selectOption(f.id);await settle(page);assert.equal(JSON.parse(await page.locator('#cw-json').textContent()).radar.record.id,f.id);}
-      await page.evaluate(()=>{window.__seenScans=[];new MutationObserver(()=>{const n=document.getElementById('cw-scan').value;if(n&&!window.__seenScans.includes(n))window.__seenScans.push(n);}).observe(document.getElementById('cw-utc'),{childList:true,subtree:true});});
-      await page.locator('#cw-scan-play').click();await page.waitForFunction(()=>document.getElementById('cw-play-status').textContent.startsWith('All 12 scans shown.'),null,{timeout:30000});await settle(page);
+      await page.evaluate(()=>{window.__seenScans=[];window.__imageSamplesTimer=setInterval(()=>{const image=document.getElementById('cw-radar-image'),n=document.getElementById('cw-scan').value;if(n&&!image.hidden&&image.complete&&image.naturalWidth===720&&image.dataset.frameId===n&&!window.__seenScans.includes(n))window.__seenScans.push(n);},40);});
+      await page.locator('#cw-scan-play').click();await page.waitForFunction(()=>document.getElementById('cw-play-status').textContent.startsWith('All 12 composites shown.'),null,{timeout:30000});await settle(page);
       assert.equal((await page.evaluate(()=>window.__seenScans)).length,12);assert.equal(await page.locator('#cw-scan').inputValue(),data.radar.at(-1).id);assert.equal(await page.locator('#cw-radar-image').isVisible(),true);
+      await page.evaluate(()=>clearInterval(window.__imageSamplesTimer));
     }
     await set(page,43205);await settle(page);assert.equal(await page.locator('#cw-radar-image').isVisible(),false);
     await page.locator('#cw-radar-jump').click();await settle(page);assert.equal(await page.locator('#cw-utc').textContent(),'10:10:06 UTC');
@@ -94,6 +95,11 @@ try{
       }else{
         const retry=failed==='cloud'?'#cw-cloud-retry':'#cw-radar-retry';await page.locator(retry).waitFor({state:'visible'});
         if(failed==='cloud')assert.equal(await page.locator('#cw-cloud-map image').getAttribute('visibility'),'hidden');else assert.equal(await page.locator('#cw-radar-image').isVisible(),false);
+        if(failed==='radar'){
+          assert.match(await page.locator('#cw-radar-empty').textContent(),/image could not open.*source record exists/);
+          await page.locator('#cw-scan-play').click();await page.waitForFunction(()=>document.getElementById('cw-play-status').textContent.startsWith('Playback paused:'));
+          assert.equal(await page.locator('#cw-scan-play').getAttribute('aria-pressed'),'false','First composite failure pauses strip playback');
+        }
         await page.unroute(pattern);await page.locator(retry).click();await settle(page);
         if(failed==='cloud')assert.equal(await page.locator('#cw-sky').getAttribute('data-ready'),'true');else assert.equal(await page.locator('#cw-radar-image').isVisible(),true);
       }
@@ -108,5 +114,11 @@ try{
   await interrupted.route('**/raw/eumetsat-20261111-1010.png',route=>route.abort());await interrupted.goto(origin+'/specimens/coastal-watch/source-notebook/#cw-passage');await interrupted.locator('#cw-workbench').waitFor({state:'visible'});await settle(interrupted);
   await interrupted.locator('#cw-play').click();await interrupted.waitForFunction(()=>document.getElementById('cw-play-status').textContent.startsWith('Playback paused:'));
   assert.equal(await interrupted.locator('#cw-play').getAttribute('aria-pressed'),'false');assert.equal(await interrupted.locator('#cw-cloud-map image').getAttribute('visibility'),'hidden');await interrupted.close();
+  const delayed=await browser.newPage({viewport:{width:390,height:660},reducedMotion:'reduce'});let release;
+  const gate=new Promise(resolve=>{release=resolve;});await delayed.route('**/comp.20261111100006.CAP.1256.png',async route=>{await gate;await route.continue();});
+  await delayed.goto(origin+'/specimens/coastal-watch/source-notebook/#cw-passage');await delayed.locator('#cw-workbench').waitFor({state:'visible'});
+  assert.match(await delayed.locator('#cw-radar-empty').textContent(),/Opening the saved composite.*source record exists/);release();await settle(delayed);
+  for(const second of [44103,45003,45903]){await set(delayed,second);await settle(delayed);assert.match(await delayed.locator('#cw-radar-empty').textContent(),/Between eligible product labels/);assert.equal(await delayed.locator('#cw-radar-image').isVisible(),false);}
+  await delayed.close();
   console.log('Weather passage: 6 viewport/theme configurations, native cells, clock boundaries, playback, export, source links, gaps and four failure/retry paths passed.');
 }finally{await browser.close();}

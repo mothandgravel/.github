@@ -62,9 +62,14 @@
     }
   ],
   "scope": "Environmental context. No vessel association, incident attribution or damage assessment.",
-  "clockMeaning": "Product and scan clocks kept separate from retrieval receipts. First publication and original station reception remain unknown.",
+  "clockMeaning": "Declared product labels and supplied radar product intervals kept separate from retrieval receipts. Underlying radar sweep, per-pixel acquisition, first publication and original station reception remain unknown.",
   "dependencies": "tools/specimens/coastal-weather-requirements.txt",
   "files": [
+    {
+      "path": "data/coastal-weather/2026-11-11/README.md",
+      "bytes": 5783,
+      "sha256": "eb7f75b28a6b53e5e8713224eddcf1105e5c04864e43f2253aac719de53cdd5d"
+    },
     {
       "path": "data/coastal-weather/2026-11-11/capture.json",
       "bytes": 18803,
@@ -192,8 +197,8 @@
     },
     {
       "path": "data/coastal-weather/2026-11-11/notebook.json",
-      "bytes": 324241,
-      "sha256": "ec150f42bac68fec2b4d17141c0277ba4c23ba98180f848b73f52511214f4005"
+      "bytes": 326936,
+      "sha256": "5863e24b3bd70d18b13f906b3ea4011685bd9d8de85748a337ad219ce6ffffaa"
     },
     {
       "path": "data/coastal-weather/2026-11-11/raw/comp.20261111100006.CAP.1256.h5",
@@ -1774,11 +1779,6 @@
       "path": "data/coastal-weather/2026-11-11/raw/eumetsat-geocolour-times.xml.receipt.json",
       "bytes": 938,
       "sha256": "ad511767125d453858b51e5135a9c0f567b27c375fff43793f9541f985e033ce"
-    },
-    {
-      "path": "data/coastal-weather/2026-11-11/README.md",
-      "bytes": 5589,
-      "sha256": "f908c57652394178e6941308a5cb837a962b98d4491a55b461c74244c75cb5c1"
     }
   ]
 }

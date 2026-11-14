@@ -21,13 +21,14 @@ test('a missing cloud slot never acquires a previous or future image',()=>{
   assert.equal(cloudAt(changed,600),null);assert.equal(cloudAt(changed,1199),null);
   assert.equal(cloudAt(changed,1200).productTimeUtc,utcAtSecond(1200));
 });
-test('radar selection waits for completed scans and stops at the saved boundaries',()=>{
+test('radar selection respects product-interval end labels and saved boundaries',()=>{
   const first=data.radar[0],last=data.radar.at(-1);
-  assert.equal(radarAt(data,secondAtUtc(first.scanEndUtc)-1),null);
-  assert.equal(radarAt(data,secondAtUtc(first.scanEndUtc)),first);
-  assert.equal(radarAt(data,secondAtUtc(last.scanEndUtc)),last);
-  assert.equal(radarAt(data,secondAtUtc(last.scanEndUtc)+1),null);
-  for(let second=0;second<86400;second+=13){const f=radarAt(data,second);if(f)assert.ok(secondAtUtc(f.scanEndUtc)<=second);}
+  assert.equal(radarAt(data,secondAtUtc(first.intervalEndUtc)-1),null);
+  assert.equal(radarAt(data,secondAtUtc(first.intervalEndUtc)),first);
+  assert.equal(radarAt(data,secondAtUtc(last.intervalEndUtc)),last);
+  assert.equal(radarAt(data,secondAtUtc(last.intervalEndUtc)+1),null);
+  for(const second of [44103,45003,45903])assert.equal(radarAt(data,second),null);
+  for(let second=0;second<86400;second+=13){const f=radarAt(data,second);if(f)assert.ok(secondAtUtc(f.intervalEndUtc)<=second);}
 });
 test('native float32 pixels retain missing, below-detection and quantitative values',async()=>{
   const f=data.radar[0],bytes=gunzipSync(await readFile(new URL(f.pixels,root)));
@@ -37,6 +38,7 @@ test('native float32 pixels retain missing, below-detection and quantitative val
   assert.equal(counts.missing,f.cellCounts.missing);assert.equal(counts['below detection'],f.cellCounts.belowDetection);assert.equal(counts.quantitative,f.cellCounts.quantitative);
   assert.equal(positive.value,positive.rawValue*f.gain+f.offset);assert.equal(radarCell(f,0).value,null);assert.equal(radarCell(f,65535).value,null);
   assert.equal(f.georeferencing.verified,false);assert.equal(f.georeferencing.presentation,'native grid only');
+  assert.equal(f.underlyingSweepAcquisitionUtc,null);assert.equal(f.perPixelAcquisitionUtc,null);
 });
 test('Orrengrund gaps remain missing instead of retaining an earlier valid sample',()=>{
   const station=data.buoys.find(b=>b.id==='108495'),series=station.series.find(s=>s.parameter==='WaveHs'),gap=series.points.find(p=>p.value===null);
