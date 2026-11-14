@@ -1,0 +1,45 @@
+{
+  "schema": "mg.coastal-radar-placement-evidence.v1",
+  "records": [
+    {
+      "source": "agency",
+      "url": "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+      "finalUrl": "https://keskkonnaportaal.ee/et/avaandmed/radariandmestik/radariandmete-kirjeldus",
+      "status": 200,
+      "requestedAtUtc": "2026-11-14T11:55:19.169466+00:00",
+      "downloadCompletedAtUtc": "2026-11-14T11:55:19.996177+00:00",
+      "bytes": 344236,
+      "sha256": "0523e73bd248f389974144727225c7dc72e88d684ead602612bb11d7cac78e32",
+      "firstPublicationUtc": null,
+      "originalResponseRetainedPrivately": true
+    },
+    {
+      "source": "proj",
+      "url": "https://proj.org/en/stable/operations/projections/merc.html",
+      "finalUrl": "https://proj.org/en/stable/operations/projections/merc.html",
+      "status": 200,
+      "requestedAtUtc": "2026-11-14T11:55:19.997222+00:00",
+      "downloadCompletedAtUtc": "2026-11-14T11:55:20.344974+00:00",
+      "bytes": 39958,
+      "sha256": "89d33317d9ab335cf7d60ec51cbf4981bf69b0d107491b3997068d60977fb090",
+      "firstPublicationUtc": null,
+      "originalResponseRetainedPrivately": true
+    },
+    {
+      "source": "odim",
+      "url": "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+      "finalUrl": "https://www.eumetnet.eu/wp-content/uploads/2026/01/ODIM_H5_v2.4.2_final.pdf",
+      "status": 200,
+      "requestedAtUtc": "2026-11-14T11:55:20.346127+00:00",
+      "downloadCompletedAtUtc": "2026-11-14T11:55:21.569659+00:00",
+      "bytes": 1175550,
+      "sha256": "2177a1c53c00f0ef8fa46b554ecbc5f85102f8cbbb9be7a43a833fcaaab9c2e7",
+      "firstPublicationUtc": null,
+      "originalResponseRetainedPrivately": true
+    }
+  ],
+  "agencyCodeLocation": "Section 3, composite visualisation, code cells 27: img_extent from LL_lon, UR_lon, LL_lat, UR_lat; imshow transform PlateCarree. Section 1 supplies station coordinates and nominal 250 km ranges.",
+  "odimLocation": "Table 5: corners are outer pixel corners; scales in projected metres. Section 5.2: native rows north-to-south, columns west-to-east.",
+  "projLocation": "Ellipsoidal Mercator forward and inverse definitions; source ellipsoid parameters are retained.",
+  "interpretation": "Corner-anchored ellipsoidal Mercator is our explicit inference. Provider confirmation, survey accuracy and reconciliation of contradictory scales / LR latitude remain unknown. No parameter fitted to the mask."
+}

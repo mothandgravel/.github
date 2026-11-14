@@ -1,4 +1,5 @@
 import {readWeather,utcAtSecond,secondAtUtc,cloudAt,radarAt,buoyAt,radarCell,waveDirectionFrom,inspectWeather} from './coastal-weather-model.mjs';
+import {createWeatherMap} from './coastal-weather-map.mjs';
 
 const $ = id => document.getElementById(id), NS = 'http://www.w3.org/2000/svg';
 const root = new URL('../data/coastal-weather/2026-11-11/',import.meta.url);
@@ -13,32 +14,41 @@ const svg = (tag,attrs={},value) => {
 const clock = (time,zone='UTC',seconds=true) => new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',...(seconds?{second:'2-digit'}:{}),hourCycle:'h23'}).format(new Date(time));
 const number = value => value === null ? 'Missing' : new Intl.NumberFormat('en-GB',{maximumFractionDigits:4}).format(value);
 const age = seconds => seconds < 60 ? `${seconds} s` : `${Math.floor(seconds/60)} min ${seconds%60} s`;
-let data,cloudImage,cloudVersion=0,radarVersion=0,pixelVersion=0,playVersion=0,timer,inspection,selectedCell=null,broadcasting=false,resizeFrame,pendingExternalSecond=null;
+let data,cloudImage,weatherMap,cloudVersion=0,radarVersion=0,pixelVersion=0,playVersion=0,imageLoads=0,timer,inspection,selectedCell=null,broadcasting=false,resizeFrame,pendingExternalSecond=null;
 const images = new Map(), cells = new Map(), imageUrls = new Set();
 async function json(url) { const r = await fetch(url); if (!r.ok) throw Error(`Saved data HTTP ${r.status}`); return r.json(); }
 function cleanImages() {
-  const live=new Set([...images.values()].map(entry=>entry.url));live.add(cloudImage?.getAttribute('href'));live.add($('cw-radar-image').src);
+  if(imageLoads)return;
+  const live=new Set([...images.values()].map(entry=>entry.url));for(const image of $('cw-cloud-map').querySelectorAll('image'))live.add(image.getAttribute('href'));live.add($('cw-radar-image').src);
   for(const url of imageUrls)if(!live.has(url)){URL.revokeObjectURL(url);imageUrls.delete(url);}
 }
-function loadImage(url) {
-  const key=String(url);if(images.has(key))return images.get(key).promise;
+function loadImage(url,expectedSha=null) {
+  const key=String(url),check=result=>{if(expectedSha&&result.sha256!==expectedSha){if(images.get(key)?.url===result.url)images.delete(key);cleanImages();throw Error('Saved image failed its SHA-256 check');}return result;};if(images.has(key))return images.get(key).promise.then(check);
   const entry={url:null,promise:null};
+  imageLoads++;
   entry.promise=(async()=>{
     const r=await fetch(url);if(!r.ok)throw Error('Saved image could not be opened');
     const bytes=await r.arrayBuffer();if(bytes.byteLength>2_000_000||bytes.byteLength<24)throw Error('Unexpected image size');
     const signature=new Uint8Array(bytes,0,8);if(signature.join(',')!=='137,80,78,71,13,10,26,10')throw Error('Saved file is not PNG');
     entry.url=URL.createObjectURL(new Blob([bytes],{type:'image/png'}));imageUrls.add(entry.url);
-    const img=new Image();img.src=entry.url;await img.decode();return {url:entry.url,width:img.naturalWidth,height:img.naturalHeight};
+    const digest=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');
+    const img=new Image();img.src=entry.url;await img.decode();return {url:entry.url,width:img.naturalWidth,height:img.naturalHeight,sha256:digest};
   })();
   images.set(key,entry);entry.promise.catch(()=>{if(images.get(key)===entry)images.delete(key);cleanImages();});
-  if(images.size>8){const old=images.get(images.keys().next().value);images.delete(images.keys().next().value);old.promise.finally(cleanImages).catch(()=>{});}
-  return entry.promise;
+  entry.promise.finally(()=>{imageLoads--;setTimeout(cleanImages,0);}).catch(()=>{});
+  if(images.size>8)images.delete(images.keys().next().value);
+  return entry.promise.then(check);
 }
 function buildMap(land) {
   const target = $('cw-cloud-map'),x = lon => (lon-23)/5.5*1100,y = lat => (61-lat)/2*400;
-  target.replaceChildren(svg('title',{id:'cw-map-title'},'Saved clouds above the Gulf of Finland'),svg('desc',{id:'cw-map-desc'},'EUMETSAT product imagery. Context coastline and actual FMI buoy positions; mobile layout crops the image. Not a navigation chart.'));
+  target.replaceChildren(svg('title',{id:'cw-map-title'},'Saved clouds, estimated rain and buoy conditions above the Gulf of Finland'),svg('desc',{id:'cw-map-desc'},'Three separately timed sources. Rain uses approximate corner-anchored Mercator registration, not surveyed. Buoy arrows are schematic from-directions, not motion vectors. Map controls and exact native-cell controls follow. Mobile layout crops the image. Not a navigation chart.'));
   target.setAttribute('preserveAspectRatio','xMidYMid slice');
   cloudImage = svg('image',{width:1100,height:400,x:0,y:0,visibility:'hidden',preserveAspectRatio:'none'}); target.append(cloudImage);
+  weatherMap=createWeatherMap({target,data,cloudImage,loadImage,root,
+    onCell:(column,row)=>{stop();$('cw-cell-x').value=String(column);$('cw-cell-y').value=String(row);inspectCell();},
+    onStation:async id=>{state.station=id;weatherMap.prepareStation(id);stop();await setSecond(state.second);},
+    onPresentationChange:renderReceipt,
+    onFailure:()=>{$('cw-radar-retry').hidden=false;if(state.playing&&weatherMap.layerVisible('rain'))stop('Playback paused: a saved rain map could not open. Retry or choose another time.');}});
   if (land) for (const polygon of land.polygons) {
     const d = polygon.map(ring => ring.map(([lon,lat],i) => `${i?'L':'M'}${x(lon).toFixed(2)} ${y(lat).toFixed(2)}`).join(' ')+'Z').join(' ');
     target.append(svg('path',{d,class:'cw-map-land'}),svg('path',{d,class:'cw-map-coast'}));
@@ -46,12 +56,12 @@ function buildMap(land) {
   for (const lon of [24,25,26,27,28]) target.append(svg('line',{x1:x(lon),x2:x(lon),y1:0,y2:400,class:'cw-map-grid'}));
   for (const lat of [59.5,60,60.5]) target.append(svg('line',{x1:0,x2:1100,y1:y(lat),y2:y(lat),class:'cw-map-grid'}));
   for (const [label,lon,lat] of [['HELSINKI',24.94,60.17],['TALLINN',24.75,59.44]]) target.append(svg('circle',{cx:x(lon),cy:y(lat),r:2.5,class:'cw-map-city'}),svg('text',{x:x(lon)-18,y:y(lat)-13,class:'cw-map-label'},label));
-  for (const b of data.buoys) target.append(svg('circle',{cx:x(b.longitude),cy:y(b.latitude),r:5,class:'cw-map-buoy'}),svg('circle',{cx:x(b.longitude),cy:y(b.latitude),r:11,class:'cw-map-buoy-ring','data-cw-buoy-ring':b.id}));
   target.append(svg('text',{x:650,y:225,class:'cw-map-label cw-map-label-small','text-anchor':'middle'},'GULF OF FINLAND'));
+  weatherMap.finish();
   if (!land) text('cw-map-desc','EUMETSAT cloud context. Context coastline unavailable; buoy coordinates still come from FMI.');
   resizeMap();
 }
-function resizeMap() { $('cw-cloud-map').setAttribute('viewBox',innerWidth <= 760 ? '230 0 550 400' : '0 0 1100 400'); }
+function resizeMap() { $('cw-cloud-map').setAttribute('viewBox',innerWidth <= 760 ? '230 0 550 400' : '0 0 1100 400');weatherMap?.relayout(); }
 
 async function renderCloud() {
   const version = ++cloudVersion,f = cloudAt(data,state.second),expected = data.clouds[Math.floor(state.second/600)];
@@ -63,18 +73,19 @@ async function renderCloud() {
   text('cw-cloud-message-detail',f ? 'The previous picture is hidden while this file opens.' : 'No earlier image has been stretched across the gap.');
   if (!f) { $('cw-cloud-map').setAttribute('aria-busy','false'); $('cw-sky').dataset.ready='false'; return; }
   try {
-    const loaded=await loadImage(new URL('raw/'+f.sourceFile,root));if(loaded.width!==1100||loaded.height!==400)throw Error('Unexpected cloud dimensions');
+    const loaded=await loadImage(new URL('raw/'+f.sourceFile,root),data.receipts[f.sourceFile].sha256);if(loaded.width!==1100||loaded.height!==400)throw Error('Unexpected cloud dimensions');
     if (version !== cloudVersion) return;
     cloudImage.setAttribute('href',loaded.url);cloudImage.setAttribute('visibility','visible');$('cw-cloud-message').hidden=true;$('cw-sky').dataset.ready='true';cleanImages();
-    const next = data.clouds[data.clouds.indexOf(f)+1]; if (next?.available) loadImage(new URL('raw/'+next.sourceFile,root)).catch(() => {});
+    const next = data.clouds[data.clouds.indexOf(f)+1]; if (next?.available) loadImage(new URL('raw/'+next.sourceFile,root),data.receipts[next.sourceFile].sha256).catch(() => {});
   } catch {
     if (version !== cloudVersion) return;
-    if(state.playing)stop('Playback paused: a saved cloud frame could not open. Retry or choose another time.');
+    if(state.playing&&weatherMap.layerVisible('clouds'))stop('Playback paused: a saved cloud frame could not open. Retry or choose another time.');
     text('cw-cloud-message-title','This saved frame could not open.');text('cw-cloud-message-detail','Its source record remains available below.');$('cw-cloud-retry').hidden=false;$('cw-sky').dataset.ready='false';
   } finally { if (version === cloudVersion) $('cw-cloud-map').setAttribute('aria-busy','false'); }
 }
 async function renderRadar() {
   const version = ++radarVersion,f = radarAt(data,state.second); ++pixelVersion;selectedCell=null;
+  const mapRender=weatherMap.renderRain(f);
   $('cw-cell-marker').style.display='none';
   $('cw-scan').value=f?.id??'';
   $('cw-scan-prev').setAttribute('aria-disabled',String(!data.radar.some(f=>secondAtUtc(f.intervalEndUtc)<state.second)));
@@ -87,20 +98,20 @@ async function renderRadar() {
     detail.textContent=inside?'The previous label is at least five minutes old; the next is later. Nothing carried forward.':'No composite selected. This does not mean no rain.';
     text('cw-radar-clock',`Saved end labels ${clock(data.radar[0].intervalEndUtc)}–${clock(data.radar.at(-1).intervalEndUtc)} UTC / ${inside?'age-limit gap':'outside saved coverage'}.`);
     text('cw-radar-image-status',inside?'Age limit reached before the next product label.':'Outside saved radar coverage.');$('cw-radar-stage').setAttribute('aria-busy','false');
-    text('cw-cell-value','No eligible saved radar frame. Physical value unknown.');renderReceipt();return;
+    text('cw-cell-value','No eligible saved radar frame. Physical value unknown.');await mapRender;renderReceipt();return;
   }
   heading.textContent='Opening the saved composite…';detail.textContent='Its source record exists. The previous image is hidden while this file opens.';
   text('cw-radar-clock',`${clock(f.intervalStartUtc)}–${clock(f.intervalEndUtc)} UTC product interval / end label ${age(state.second-secondAtUtc(f.intervalEndUtc))} before cursor. Sweep acquisition unknown.`);
   text('cw-radar-image-status','Opening the saved native grid…');
   try {
-    const loaded=await loadImage(new URL(f.image,root));if(loaded.width!==720||loaded.height!==720)throw Error('Unexpected radar dimensions');if(version!==radarVersion)return;
-    const img=$('cw-radar-image');img.dataset.frameId=f.id;img.src=loaded.url;img.alt=`Estonian radar-derived rain-rate composite, supplied product interval ${f.intervalStartUtc} to ${f.intervalEndUtc}. Underlying sweep time and geographic placement unresolved.`;img.hidden=false;cleanImages();
+    const loaded=await loadImage(new URL(f.image,root),f.imageSha256);if(loaded.width!==720||loaded.height!==720)throw Error('Unexpected radar dimensions');if(version!==radarVersion)return;
+    const img=$('cw-radar-image');img.dataset.frameId=f.id;img.src=loaded.url;img.alt=`Estonian radar-derived rain-rate composite in its unchanged native grid, supplied product interval ${f.intervalStartUtc} to ${f.intervalEndUtc}. Underlying sweep time unknown. Approximate map registration is shown separately.`;img.hidden=false;cleanImages();
     $('cw-radar-empty').hidden=true;$('cw-radar-pick').hidden=false;
     text('cw-radar-image-status',`${f.cellCounts.missing.toLocaleString('en-GB')} cells have no data. Below detection is separate. Seven discrete rate bands; last band >5 mm/h. Original floats retained.`);
-    if ($('cw-cell-details').open) await inspectCell();
+    if ($('cw-cell-details').open||weatherMap.inspectionActive()) await inspectCell();
   } catch {
     if(version!==radarVersion)return;if(state.playing)stop('Playback paused: a saved radar image could not open. Retry or choose another time.');heading.textContent='This image could not open.';detail.textContent='A source record exists at this cursor. Retry, or inspect its original.';text('cw-radar-image-status','The saved radar image could not open. Its original and receipt remain available.');$('cw-radar-retry').hidden=false;
-  } finally {if(version===radarVersion)$('cw-radar-stage').setAttribute('aria-busy','false');}
+  } finally {await mapRender;if(version===radarVersion){$('cw-radar-stage').setAttribute('aria-busy','false');cleanImages();}}
 }
 function drawRibbons() {
   const x = second => second/86400*1000;
@@ -152,6 +163,7 @@ function renderBuoy() {
 }
 function renderReceipt() {
   inspection=inspectWeather(data,state.second,state.station);
+  inspection.presentation=weatherMap?.snapshot();
   if(selectedCell?.frameId===inspection.radar.record?.id)inspection.radar.selectedCell=selectedCell;
   for(const button of document.querySelectorAll('[data-cw-source]'))button.setAttribute('aria-pressed',String(button.dataset.cwSource===state.source));
   const selected=inspection[state.source==='buoys'?'buoy':state.source],source=data.sources[state.source];
@@ -184,6 +196,7 @@ async function nativeCells(f) {
 }
 async function inspectCell() {
   const version=++pixelVersion,f=radarAt(data,state.second),x=Number($('cw-cell-x').value),y=Number($('cw-cell-y').value);selectedCell=null;$('cw-cell-retry').hidden=true;$('cw-cell-marker').style.display='none';
+  weatherMap.clearSelection();
   if(!Number.isInteger(x)||!Number.isInteger(y)||x<0||y<0||x>719||y>719||!$('cw-cell-x').value||!$('cw-cell-y').value){text('cw-cell-value','Choose an integer row and column from 0 to 719.');renderReceipt();return;}
   if(!f){text('cw-cell-value','No eligible saved radar frame. Physical value unknown.');renderReceipt();return;}
   text('cw-cell-value','Opening the original float32 cells…');
@@ -192,13 +205,14 @@ async function inspectCell() {
     const cell=radarCell(f,view.getFloat32((y*720+x)*4,true));selectedCell={frameId:f.id,x,y,...cell,intervalStartUtc:f.intervalStartUtc,intervalEndUtc:f.intervalEndUtc};
     const prefix=`Column ${x}, row ${y} / product end label ${clock(f.intervalEndUtc)} UTC. `;
     text('cw-cell-value',prefix+(cell.kind==='missing'?'Code 65535 / no data. Physical value unknown.':cell.kind==='below detection'?'Code 0 / below detection. No measured zero assigned.':`Stored float ${cell.rawValue} × ${f.gain} + ${f.offset} = ${number(cell.value)} mm/h. Display rounded; full float in export.`));
+    selectedCell.location=weatherMap.selectCell(f,selectedCell,$('cw-cell-value').textContent);
     $('cw-cell-marker').style.cssText=`display:block;left:${(x+.5)/720*100}%;top:${(y+.5)/720*100}%`;
-  }catch{if(version!==pixelVersion)return;text('cw-cell-value','Native cells could not be read or verified. No physical value assigned.');$('cw-cell-retry').hidden=false;}
+  }catch{if(version!==pixelVersion)return;text('cw-cell-value','Native cells could not be read or verified. No physical value assigned.');weatherMap.cellFailure();$('cw-cell-retry').hidden=false;}
   renderReceipt();
 }
 function stop(message=null) {
   const wasPlaying=state.playing;state.playing=false;++playVersion;clearTimeout(timer);text('cw-play','Play the day ▶');text('cw-scan-play','Play all 12 composites ▶');$('cw-play').setAttribute('aria-pressed','false');$('cw-scan-play').setAttribute('aria-pressed','false');
-  for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','polite');if(message||wasPlaying)text('cw-play-status',message??'Playback paused.');
+  for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status','cw-map-status','cw-map-cell-value'])$(id).setAttribute('aria-live','polite');if(message||wasPlaying)text('cw-play-status',message??'Playback paused.');
 }
 async function setSecond(second,{external=false,playing=false}={}) {
   if(!playing&&state.playing)stop();state.second=Math.max(0,Math.min(86399,Math.round(second)));
@@ -206,13 +220,13 @@ async function setSecond(second,{external=false,playing=false}={}) {
   $('cw-second').setAttribute('aria-valuetext',`${clock(utc,'Europe/Helsinki')} Helsinki, ${utc}. Source times differ.`);
   $('cw-back').disabled=state.second===0;$('cw-next').disabled=state.second===86399;
   document.documentElement.dataset.coastalMinute=String(Math.floor(state.second/60));
-  drawRibbons();renderBuoy();renderReceipt();
+  drawRibbons();renderBuoy();weatherMap.update(state.second,state.station);renderReceipt();
   if(!external){broadcasting=true;try{document.dispatchEvent(new CustomEvent('coastal-fmi-hour',{detail:{utc}}));}finally{broadcasting=false;}}
   await Promise.allSettled([renderCloud(),renderRadar()]);
 }
 async function play(scope='day') {
   if(state.playing){stop();return;}if(state.second>=86399)await setSecond(0);
-  let scanIndex=0;state.playing=true;const version=++playVersion;text('cw-play',scope==='radar'?'Pause the strip Ⅱ':'Pause the day Ⅱ');text('cw-scan-play',scope==='radar'?'Pause the strip Ⅱ':'Pause playback Ⅱ');$('cw-play').setAttribute('aria-pressed','true');$('cw-scan-play').setAttribute('aria-pressed','true');for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','off');text('cw-play-status',scope==='radar'?'All 12 saved composites, in order. No interpolation.':'Ten minutes per step. Saved frames; no interpolation.');
+  let scanIndex=0;state.playing=true;const version=++playVersion;text('cw-play',scope==='radar'?'Pause the strip Ⅱ':'Pause the day Ⅱ');text('cw-scan-play',scope==='radar'?'Pause the strip Ⅱ':'Pause playback Ⅱ');$('cw-play').setAttribute('aria-pressed','true');$('cw-scan-play').setAttribute('aria-pressed','true');for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status','cw-map-status','cw-map-cell-value'])$(id).setAttribute('aria-live','off');text('cw-play-status',scope==='radar'?'All 12 saved composites, in order. No interpolation.':'Ten minutes per step. Saved frames; no interpolation.');
   if(scope==='radar'){await setSecond(secondAtUtc(data.radar[0].intervalEndUtc),{playing:true});if(!state.playing||version!==playVersion)return;}
   const tick=async()=>{
     if(!state.playing||version!==playVersion)return;
@@ -229,8 +243,8 @@ async function start() {
     data=readWeather(await json(new URL('notebook.json',root)));const land=await json(new URL('./coastal-replay-land.json',import.meta.url)).catch(()=>null);buildMap(land);
     text('cw-availability',`${data.clouds.filter(f=>f.available).length} cloud frames / ${data.radar.length} radar composites / 3 buoys`);
     $('cw-workbench').hidden=false;$('cw-loading').hidden=true;
-    $('cw-second').oninput=()=>{for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','off');setSecond(Number($('cw-second').value));};
-    $('cw-second').onchange=()=>{if(!state.playing)for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status'])$(id).setAttribute('aria-live','polite');};
+    $('cw-second').oninput=()=>{for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status','cw-map-status','cw-map-cell-value'])$(id).setAttribute('aria-live','off');setSecond(Number($('cw-second').value));};
+    $('cw-second').onchange=()=>{if(!state.playing)for(const id of ['cw-cell-value','cw-cloud-message','cw-radar-image-status','cw-map-status','cw-map-cell-value'])$(id).setAttribute('aria-live','polite');};
     $('cw-play').onclick=()=>play('day');for(const [id,step]of [['cw-back',-600],['cw-next',600]])$(id).onclick=()=>setSecond(state.second+step);
     const scan=$('cw-scan');scan.replaceChildren();const none=el('option','No completed scan at this cursor');none.value='';none.disabled=true;scan.append(none);
     for(const f of data.radar){const o=el('option',`${clock(f.intervalEndUtc)} UTC / ${clock(f.intervalEndUtc,'Europe/Helsinki')} EET`);o.value=f.id;scan.append(o);}
@@ -240,13 +254,13 @@ async function start() {
     $('cw-scan-play').onclick=()=>play('radar');
     $('cw-radar-jump').onclick=()=>setSecond(secondAtUtc(data.radar[2].intervalEndUtc)+5);
     $('cw-gap-jump').onclick=()=>{state.station='108495';const series=data.buoys.find(b=>b.id===state.station).series.find(s=>s.parameter==='WaveHs');const p=series.points.find(p=>p.value===null);if(p)setSecond(secondAtUtc(p.observedAt));text('cw-play-status','Selected Loviisa / Orrengrund at its first saved gap.');};
-    $('cw-buoy').onchange=()=>{state.station=$('cw-buoy').value;setSecond(state.second);};
+    $('cw-buoy').onchange=()=>{state.station=$('cw-buoy').value;weatherMap.prepareStation(state.station);setSecond(state.second);};
     $('cw-cloud-retry').onclick=()=>renderCloud();$('cw-radar-retry').onclick=()=>renderRadar();$('cw-cell-retry').onclick=inspectCell;
-    for(const id of ['cw-cell-x','cw-cell-y'])$(id).oninput=inspectCell;
+    for(const id of ['cw-cell-x','cw-cell-y'])$(id).oninput=()=>{weatherMap.setSelectionOrigin('Chosen with native row / column controls');inspectCell();};
     $('cw-cell-details').ontoggle=()=>{if($('cw-cell-details').open)inspectCell();};
-    $('cw-radar-pick').onclick=e=>{const rect=$('cw-radar-pick').getBoundingClientRect();if(e.detail>0){$('cw-cell-x').value=String(Math.min(719,Math.floor((e.clientX-rect.x)/rect.width*720)));$('cw-cell-y').value=String(Math.min(719,Math.floor((e.clientY-rect.y)/rect.height*720)));}$('cw-cell-details').open=true;stop();inspectCell();if(e.detail===0)$('cw-cell-x').focus();};
+    $('cw-radar-pick').onclick=e=>{const rect=$('cw-radar-pick').getBoundingClientRect();if(e.detail>0){$('cw-cell-x').value=String(Math.min(719,Math.floor((e.clientX-rect.x)/rect.width*720)));$('cw-cell-y').value=String(Math.min(719,Math.floor((e.clientY-rect.y)/rect.height*720)));}weatherMap.setSelectionOrigin('Chosen in the unchanged native radar grid');$('cw-cell-details').open=true;stop();inspectCell();if(e.detail===0)$('cw-cell-x').focus();};
     for(const b of document.querySelectorAll('[data-cw-source]'))b.onclick=()=>{state.source=b.dataset.cwSource;stop();renderReceipt();};
-    $('cw-export').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({...inspection,selectedSource:state.source},null,2)+'\n'],{type:'application/json'}));const a=el('a');a.href=url;a.download='coastal-watch-weather-2026-11-11.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+    $('cw-export').onclick=()=>{renderReceipt();const url=URL.createObjectURL(new Blob([JSON.stringify({...inspection,selectedSource:state.source},null,2)+'\n'],{type:'application/json'}));const a=el('a');a.href=url;a.download='coastal-watch-weather-2026-11-11.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};
     await setSecond(pendingExternalSecond ?? state.second);if(restoreFocus)$('cw-second').focus({preventScroll:true});
   }catch(error){$('cw-workbench').hidden=true;text('cw-loading','The weather passage could not open. The saved notebook and original source files remain available below.');$('cw-retry').hidden=false;if(restoreFocus)$('cw-retry').focus({preventScroll:true});console.error(error);}
 }
