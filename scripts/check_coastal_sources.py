@@ -66,4 +66,30 @@ assert manifest['catalogues'][0]['cloudMin'] is None and manifest['catalogues'][
 optical=json.loads((DATA/'raw/sentinel-2-l2a-day-catalogue.json').read_text(encoding='utf-8'))
 clouds=[f['properties']['eo:cloud_cover'] for f in optical['features']]
 assert manifest['catalogues'][1]['cloudMin']==min(clouds) and manifest['catalogues'][1]['cloudMax']==max(clouds)
+
+# The later AIS scan is an additive receipt. Bind the dated listings to their bytes.
+follow_up = DATA / 'follow-ups/danish-ais'
+coverage = json.loads((follow_up / 'coverage.json').read_text(encoding='utf-8'))
+assert coverage['schema'] == 'mg.coastal-danish-ais-coverage.v1'
+original = coverage['originalListing']
+original_receipt = manifest['receipts']['danish-november-archive-list.xml']
+assert original['sha256'] == original_receipt['sha256']
+assert original['requestStartedAtUtc'] == original_receipt['retrievedAt']
+first = coverage['firstSeenListing']
+listing = (follow_up / first['listingFile']).read_bytes()
+assert hashlib.sha256(listing).hexdigest() == first['sha256']
+archive, scan = coverage['archive'], coverage['scan']
+entry, = [item for item in ET.fromstring(listing).findall('{*}Contents')
+          if item.findtext('{*}Key') == archive['filename']]
+assert entry.findtext('{*}ETag') == archive['etag']
+assert int(entry.findtext('{*}Size')) == scan['archiveBytes']
+assert entry.findtext('{*}LastModified') == archive['lastModifiedUtc'].replace('+00:00', '.000Z')
+assert archive['providerChecksumBase64'] == archive['localChecksumBase64']
+assert first['firstPublicationUtc'] is None and scan['csvTimeLabels']['timezone'] is None
+assert scan['readToEndWithZipCrcValidation'] is True
+counts = scan['counts']
+assert counts['allRows'] == counts['validCoordinateRows'] + counts['invalidCoordinateRows']
+assert counts['allRows'] == sum(scan['csvTimeLabels']['rowCountsByLabelDate'].values())
+assert counts['boundingRectangleRows'] == counts['gulfRows'] == counts['weatherMapRectangleRows'] == 0
 print('Coastal sources: all 2,400 pairs and CSV rows exact; 525 nulls, 20 zeros preserved; 7 verified-unit channels; all file hashes match.')
+print('Danish AIS follow-up: listing bytes, object metadata, clock limits and aggregate scan counts agree.')

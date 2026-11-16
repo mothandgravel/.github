@@ -1,0 +1,104 @@
+{
+  "schema": "mg.coastal-danish-ais-coverage.v1",
+  "scope": "Complete census of the archive named for 11 November. Test reported coordinates against rectangles. A zero in the enclosing rectangle rules out valid coordinates within the published Gulf polygon for this file.",
+  "studyWindow": {
+    "timezone": "Europe/Helsinki",
+    "startUtc": "2026-11-10T22:00:00Z",
+    "endUtcExclusive": "2026-11-11T22:00:00Z",
+    "windowEquivalenceToArchive": null
+  },
+  "originalListing": {
+    "requestStartedAtUtc": "2026-11-13T05:11:47.355334+00:00",
+    "serverDate": "Fri, 13 Nov 2026 05:11:48 GMT",
+    "sha256": "cd3a362091dfe87a5241f58d872ac2eaeb3e76670b8a583fe1d425d238025b80",
+    "studyDateListed": false,
+    "latestListedDate": "2026-11-10",
+    "publishedSnapshot": "../../raw/danish-november-archive-list.xml"
+  },
+  "lastCheckedAbsent": {
+    "retrievedAtUtc": "2026-11-13T23:38:31.718531+00:00",
+    "sha256": "cd3a362091dfe87a5241f58d872ac2eaeb3e76670b8a583fe1d425d238025b80"
+  },
+  "firstSeenListing": {
+    "retrievedAtUtc": "2026-11-14T01:34:08.972316+00:00",
+    "url": "http://aisdata.ais.dk.s3.eu-central-1.amazonaws.com/?list-type=2&prefix=aisdk-2026-11-&max-keys=40",
+    "httpStatus": 200,
+    "serverDate": "Sat, 14 Nov 2026 01:34:09 GMT",
+    "sha256": "48b64ae7ce0c38faa66bca77c053f0694ea1119ca7162fff75efba50379261d1",
+    "listingFile": "first-listed.xml",
+    "firstPublicationUtc": null
+  },
+  "archive": {
+    "filename": "aisdk-2026-11-11.zip",
+    "sourceDocumentation": "https://www.brs.dk/da/om-os/organisation/sikre-farvande/ais-data/",
+    "url": "https://s3.eu-central-1.amazonaws.com/aisdata.ais.dk/aisdk-2026-11-11.zip",
+    "getHttpStatus": 200,
+    "serverDate": "Mon, 16 Nov 2026 05:53:49 GMT",
+    "downloadFileLastWriteAtUtc": "2026-11-16T05:57:01.622619+00:00",
+    "downloadDurationSeconds": 192.234672,
+    "lastModifiedUtc": "2026-11-14T00:18:00+00:00",
+    "etag": "\"4959f890995b5073a3a8d65b63f928e9-74\"",
+    "providerChecksumAlgorithm": "CRC64NVME",
+    "providerChecksumScope": "FULL_OBJECT",
+    "providerChecksumBase64": "uYfJew3iK+A=",
+    "localChecksumBase64": "uYfJew3iK+A=",
+    "checksumHeadServerDate": "Mon, 16 Nov 2026 05:58:14 GMT"
+  },
+  "region": {
+    "source": "Flanders Marine Institute / Marine Regions, IHO Sea Areas v3",
+    "doi": "https://doi.org/10.14284/323",
+    "recordUrl": "https://www.marineregions.org/gazetteer.php?id=2407&p=details",
+    "geometryUrl": "https://geo.vliz.be/geoserver/MarineRegions/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=MarineRegions:iho&outputFormat=application%2Fjson&srsName=EPSG%3A4326&CQL_FILTER=mrgid%3D2407",
+    "coordinateOrder": "WGS 84 longitude, latitude",
+    "responseTimestamp": "2026-11-16T05:54:41.043Z"
+  },
+  "scan": {
+    "archiveSha256": "9952e3556deae34aa64187577b97d214818072eaa561fcef3bdc7c41752f4772",
+    "archiveBytes": 618159387,
+    "csvMember": "aisdk-2026-11-11.csv",
+    "csvBytes": 3098406758,
+    "csvCrc32": "0874d499",
+    "readToEndWithZipCrcValidation": true,
+    "regionMrgid": 2407,
+    "regionGeojsonSha256": "9843f4b25e6c1ebdd38546cdf5eb63ba9bd1a408a50d7db4e88e8f8b52e807b2",
+    "boundsWestSouthEastNorth": [
+      22.91001232,
+      59.21459424,
+      37.46891356,
+      62.91577494
+    ],
+    "weatherMapBoundsWestSouthEastNorth": [
+      23,
+      59,
+      28.5,
+      61
+    ],
+    "counts": {
+      "allRows": 17033149,
+      "validCoordinateRows": 17015583,
+      "invalidCoordinateRows": 17566,
+      "boundingRectangleRows": 0,
+      "gulfRows": 0,
+      "weatherMapRectangleRows": 0
+    },
+    "csvTimeLabels": {
+      "field": "# Timestamp",
+      "format": "DD/MM/YYYY HH:MM:SS",
+      "earliest": "2026-11-11T00:00:00",
+      "latest": "2026-11-11T23:59:58",
+      "timezone": null,
+      "rowCountsByLabelDate": {
+        "2026-11-11": 17033149
+      }
+    },
+    "scanCompletedAtUtc": "2026-11-16T05:58:53.748901+00:00",
+    "reproducedAtUtc": "2026-11-16T06:01:41.309247+00:00"
+  },
+  "interpretation": {
+    "coordinateRule": "Finite latitude within ±90 and longitude within ±180. Missing and out-of-range coordinates are counted separately. Each CSV row counts once. Bounds are inclusive.",
+    "methodScript": "scripts/check_danish_ais_coverage.py",
+    "meaningOfZero": "The inspected archive contains zero usable coordinates in the tested regions. Independent receiver availability and the presence of vessels remain unknown.",
+    "csvClock": "The archive timestamp strings carry no timezone suffix. This check has not established their timezone or original receiver-clock semantics. The date in the filename is a label.",
+    "publicationClock": "The first listing seen by this notebook, the S3 object modification time and this download are distinct. Exact first publication remains unknown."
+  }
+}
