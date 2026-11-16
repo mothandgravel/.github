@@ -57,6 +57,27 @@ try{
     assert.equal(coverage.scan.csvTimeLabels.timezone, null);
     assert.equal(coverage.firstSeenListing.firstPublicationUtc, null);
     assert.equal(await coverageNote.locator('dl time').count(), 3);
+    await page.getByRole('link', {name:/what the hourly extract missed/}).click();
+    assert.equal(new URL(page.url()).hash, '#cs-orrengrund');
+    await page.locator('#orr-view').waitFor({state:'visible'});
+    for(const [state,count] of [['orr-hour',5],['orr-extra',11],['orr-missing',32]]){
+      assert.equal(await page.locator(`#orr-chart .${state}`).count(),count);
+    }
+    assert.deepEqual(await page.locator('.orr-reading time').evaluateAll(nodes=>nodes.map(n=>n.dateTime)),
+      ['2026-11-11T00:00:00Z','2026-11-11T00:30:00Z']);
+    assert.deepEqual(await page.locator('.orr-height').allTextContents(),['Missing / NaN','1.0 m']);
+    await page.locator('#orr-find').press('Enter');
+    assert.match(await page.locator('#orr-announcement').textContent(),/06:00 EET/);
+    await page.locator('#orr-hour').press('Home');
+    assert.equal(await page.locator('.orr-reading time').first().getAttribute('datetime'),'2026-11-10T22:00:00Z');
+    await page.locator('#orr-view summary').press('Enter');
+    assert.equal(await page.locator('#orr-rows tr').count(),48);
+    assert.equal(await page.locator('#orr-rows tr[data-additional]').count(),11);
+    await page.locator('.orr-receipts summary').press('Enter');
+    for(const link of await page.locator('.orr-receipts a[href$=".xml"],.orr-receipts a[href$=".json"]').all()){
+      const href=await link.getAttribute('href');
+      assert.equal((await page.request.get(new URL(href,page.url()).href)).status(),200);
+    }
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
     await page.addScriptTag({content:axe.source});
     const result=await page.evaluate(async()=>axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}));
@@ -65,6 +86,11 @@ try{
     assert.deepEqual(errors,[]);assert.deepEqual(violations,[]);
     await coverageNote.evaluate(element => element.scrollIntoView({block:'start', behavior:'instant'}));
     await page.screenshot({path:`${out}/coastal-ais-coverage-${width}-${theme}.png`});
+    await page.locator('#orr-find').press('Enter');
+    await page.locator('#orr-view summary').press('Enter');
+    await page.locator('.orr-receipts summary').press('Enter');
+    await page.locator('#cs-orrengrund').evaluate(element => element.scrollIntoView({block:'start', behavior:'instant'}));
+    await page.screenshot({path:`${out}/coastal-orrengrund-${width}-${theme}.png`});
     await page.locator('#cs-channel').selectOption({index:4});
     await page.locator('#cs-hour').press('Home');
     await page.locator('#cs-channel').scrollIntoViewIfNeeded();
