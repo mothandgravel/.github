@@ -1,0 +1,660 @@
+{
+  "schema": "mg.coastal-orrengrund.v1",
+  "station": "Loviisa Orrengrund aaltopoiju",
+  "stationId": "108495",
+  "dateLocal": "2026-11-11",
+  "timezone": "Europe/Helsinki",
+  "startUtc": "2026-11-10T22:00:00Z",
+  "endUtcExclusive": "2026-11-11T22:00:00Z",
+  "channels": [
+    "WaveHs",
+    "ModalWDi",
+    "WTP",
+    "WHDD",
+    "TWATER"
+  ],
+  "counts": {
+    "WaveHs": {
+      "originalNumeric": 5,
+      "originalMissing": 19,
+      "halfHourlyNumeric": 16,
+      "halfHourlyMissing": 32,
+      "additionalAtHalfPast": 11,
+      "hoursWithMissingOnHourAndNumericHalfPast": 9
+    },
+    "ModalWDi": {
+      "originalNumeric": 5,
+      "originalMissing": 19,
+      "halfHourlyNumeric": 16,
+      "halfHourlyMissing": 32,
+      "additionalAtHalfPast": 11,
+      "hoursWithMissingOnHourAndNumericHalfPast": 9
+    },
+    "WTP": {
+      "originalNumeric": 5,
+      "originalMissing": 19,
+      "halfHourlyNumeric": 16,
+      "halfHourlyMissing": 32,
+      "additionalAtHalfPast": 11,
+      "hoursWithMissingOnHourAndNumericHalfPast": 9
+    },
+    "WHDD": {
+      "originalNumeric": 5,
+      "originalMissing": 19,
+      "halfHourlyNumeric": 16,
+      "halfHourlyMissing": 32,
+      "additionalAtHalfPast": 11,
+      "hoursWithMissingOnHourAndNumericHalfPast": 9
+    },
+    "TWATER": {
+      "originalNumeric": 5,
+      "originalMissing": 19,
+      "halfHourlyNumeric": 16,
+      "halfHourlyMissing": 32,
+      "additionalAtHalfPast": 11,
+      "hoursWithMissingOnHourAndNumericHalfPast": 9
+    }
+  },
+  "hours": [
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-10T22:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-10T22:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-10T23:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-10T23:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T00:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T00:30:00Z",
+        "raw": {
+          "WaveHs": "1.0",
+          "ModalWDi": "207.0",
+          "WTP": "4.4",
+          "WHDD": "26.0",
+          "TWATER": "9.9"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T01:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T01:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T02:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T02:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T03:00:00Z",
+        "raw": {
+          "WaveHs": "0.7",
+          "ModalWDi": "224.0",
+          "WTP": "4.9",
+          "WHDD": "26.1",
+          "TWATER": "9.9"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T03:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T04:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T04:30:00Z",
+        "raw": {
+          "WaveHs": "0.6",
+          "ModalWDi": "223.0",
+          "WTP": "4.4",
+          "WHDD": "23.7",
+          "TWATER": "9.7"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T05:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T05:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T06:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T06:30:00Z",
+        "raw": {
+          "WaveHs": "0.6",
+          "ModalWDi": "194.0",
+          "WTP": "3.1",
+          "WHDD": "32.8",
+          "TWATER": "9.7"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T07:00:00Z",
+        "raw": {
+          "WaveHs": "0.5",
+          "ModalWDi": "181.0",
+          "WTP": "2.9",
+          "WHDD": "30.6",
+          "TWATER": "9.7"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T07:30:00Z",
+        "raw": {
+          "WaveHs": "0.5",
+          "ModalWDi": "181.0",
+          "WTP": "3.0",
+          "WHDD": "29.4",
+          "TWATER": "9.7"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T08:00:00Z",
+        "raw": {
+          "WaveHs": "0.6",
+          "ModalWDi": "171.0",
+          "WTP": "3.1",
+          "WHDD": "31.4",
+          "TWATER": "9.7"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T08:30:00Z",
+        "raw": {
+          "WaveHs": "0.6",
+          "ModalWDi": "180.0",
+          "WTP": "3.1",
+          "WHDD": "28.1",
+          "TWATER": "9.7"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T09:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T09:30:00Z",
+        "raw": {
+          "WaveHs": "0.6",
+          "ModalWDi": "175.0",
+          "WTP": "3.6",
+          "WHDD": "26.9",
+          "TWATER": "9.7"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T10:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T10:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T11:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T11:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T12:00:00Z",
+        "raw": {
+          "WaveHs": "0.7",
+          "ModalWDi": "181.0",
+          "WTP": "4.0",
+          "WHDD": "27.6",
+          "TWATER": "9.7"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T12:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T13:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T13:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T14:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T14:30:00Z",
+        "raw": {
+          "WaveHs": "0.5",
+          "ModalWDi": "182.0",
+          "WTP": "3.7",
+          "WHDD": "32.4",
+          "TWATER": "9.6"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T15:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T15:30:00Z",
+        "raw": {
+          "WaveHs": "0.5",
+          "ModalWDi": "179.0",
+          "WTP": "3.8",
+          "WHDD": "29.6",
+          "TWATER": "9.7"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T16:00:00Z",
+        "raw": {
+          "WaveHs": "0.5",
+          "ModalWDi": "164.0",
+          "WTP": "3.9",
+          "WHDD": "45.4",
+          "TWATER": "9.6"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T16:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T17:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T17:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T18:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T18:30:00Z",
+        "raw": {
+          "WaveHs": "0.7",
+          "ModalWDi": "178.0",
+          "WTP": "3.5",
+          "WHDD": "27.5",
+          "TWATER": "9.7"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T19:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T19:30:00Z",
+        "raw": {
+          "WaveHs": "0.7",
+          "ModalWDi": "170.0",
+          "WTP": "3.7",
+          "WHDD": "35.7",
+          "TWATER": "9.7"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T20:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T20:30:00Z",
+        "raw": {
+          "WaveHs": "0.7",
+          "ModalWDi": "157.0",
+          "WTP": "3.5",
+          "WHDD": "37.6",
+          "TWATER": "9.7"
+        }
+      }
+    },
+    {
+      "hourly": {
+        "observedAtUtc": "2026-11-11T21:00:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      },
+      "halfHour": {
+        "observedAtUtc": "2026-11-11T21:30:00Z",
+        "raw": {
+          "WaveHs": "NaN",
+          "ModalWDi": "NaN",
+          "WTP": "NaN",
+          "WHDD": "NaN",
+          "TWATER": "NaN"
+        }
+      }
+    }
+  ],
+  "sources": {
+    "original": {
+      "file": "../../raw/finnish-wave-observations.xml",
+      "responseTimestampUtc": "2026-11-13T04:50:49Z",
+      "fmiResultTimeLabelsUtc": [
+        "2026-11-11T21:59:59Z"
+      ],
+      "requestedAtUtc": "2026-11-13T04:50:48.754256+00:00",
+      "downloadCompletedAtUtc": null,
+      "sha256": "461f94c61ec636ac1e2550a806fb535d85d8d7d95f08ce0174be56a1fbab8696"
+    },
+    "halfHourly": {
+      "file": "half-hourly.xml",
+      "responseTimestampUtc": "2026-11-16T06:21:53Z",
+      "fmiResultTimeLabelsUtc": [
+        "2026-11-11T21:59:59Z"
+      ],
+      "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&fmisid=108495&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER&timestep=30",
+      "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&fmisid=108495&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER&timestep=30",
+      "status": 200,
+      "requestedAtUtc": "2026-11-16T06:21:53.483012+00:00",
+      "downloadCompletedAtUtc": "2026-11-16T06:21:53.991807+00:00",
+      "serverDate": "Mon, 16 Nov 2026 06:21:53 GMT",
+      "lastModified": "Mon, 16 Nov 2026 06:21:53 GMT",
+      "contentType": "text/xml; charset=UTF-8",
+      "sha256": "0f63d93f3adbf26edd1d543f4c95b6b079eb19867a68d672dde5b80108476564",
+      "bytes": 93076,
+      "firstPublicationUtc": null,
+      "originalReceiverTimeUtc": null
+    },
+    "hourlyControl": {
+      "file": "hourly-control.xml",
+      "responseTimestampUtc": "2026-11-16T06:21:53Z",
+      "fmiResultTimeLabelsUtc": [
+        "2026-11-11T21:59:59Z"
+      ],
+      "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&fmisid=108495&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER&timestep=60",
+      "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&fmisid=108495&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER&timestep=60",
+      "status": 200,
+      "requestedAtUtc": "2026-11-16T06:21:53.484106+00:00",
+      "downloadCompletedAtUtc": "2026-11-16T06:21:53.979247+00:00",
+      "serverDate": "Mon, 16 Nov 2026 06:21:53 GMT",
+      "lastModified": "Mon, 16 Nov 2026 06:21:53 GMT",
+      "contentType": "text/xml; charset=UTF-8",
+      "sha256": "ef2c153f54518f83f092ac4d540e1e5083bd070069a64548561c79553b5b33b4",
+      "bytes": 54167,
+      "firstPublicationUtc": null,
+      "originalReceiverTimeUtc": null
+    },
+    "defaultCadence": {
+      "file": "default-cadence.xml",
+      "responseTimestampUtc": "2026-11-16T06:21:53Z",
+      "fmiResultTimeLabelsUtc": [
+        "2026-11-11T21:59:59Z"
+      ],
+      "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&fmisid=108495&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER",
+      "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-10T22%3A00%3A00Z&endtime=2026-11-11T21%3A59%3A59Z&fmisid=108495&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER",
+      "status": 200,
+      "requestedAtUtc": "2026-11-16T06:21:53.484793+00:00",
+      "downloadCompletedAtUtc": "2026-11-16T06:21:53.945915+00:00",
+      "serverDate": "Mon, 16 Nov 2026 06:21:53 GMT",
+      "lastModified": "Mon, 16 Nov 2026 06:21:53 GMT",
+      "contentType": "text/xml; charset=UTF-8",
+      "sha256": "39effd07330fcb3424a158f19713c8fa287eed929357c6bab67344b5431c73a8",
+      "bytes": 41228,
+      "firstPublicationUtc": null,
+      "originalReceiverTimeUtc": null
+    }
+  },
+  "originalReceiverTimeUtc": null,
+  "firstPublicationUtc": null,
+  "method": "Exact UTC labels and unchanged source strings. The :00 row is the saved hourly response and agrees with both later stepped requests. The :30 row is the later half-hour response. Every numeric value also agrees with the query without a time step. NaN is missing."
+}
