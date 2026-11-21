@@ -1,0 +1,20 @@
+{
+  "file": "press-evening-photo.jpg",
+  "url": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/sammutustyot-sparta-ii-aluksella-illalla-21.11.2026.jpg",
+  "requestedAtUtc": "2026-11-21T20:03:15.723946+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/sammutustyot-sparta-ii-aluksella-illalla-21.11.2026.jpg",
+  "downloadCompletedAtUtc": "2026-11-21T20:03:16.803429+00:00",
+  "bytes": 474730,
+  "sha256": "ca2f2bcfae5e8f4104a43dcc484b6f0b899c9c513bff885f9a4deedb9103b634",
+  "wireBytes": 474730,
+  "wireSha256": "ca2f2bcfae5e8f4104a43dcc484b6f0b899c9c513bff885f9a4deedb9103b634",
+  "contentEncoding": null,
+  "serverDate": "Sat, 21 Nov 2026 20:03:16 GMT",
+  "lastModified": "Sat, 21 Nov 2026 18:21:07 GMT",
+  "etag": "\"6b01e113-73e6a\"",
+  "contentType": "image/jpeg",
+  "contentRange": null
+}

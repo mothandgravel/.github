@@ -1,0 +1,250 @@
+{
+  "schema": "mg.coastal-watch.official-fire-record-check.v1",
+  "incidentDate": "2026-11-21",
+  "publisher": "Finnish Border Guard / Rajavartiolaitos",
+  "releases": [
+    {
+      "source": {
+        "url": "https://raja.fi/-/vaurioitunut-venalainen-rahtialus-suomenlahdella",
+        "finalUrl": "https://raja.fi/-/vaurioitunut-venalainen-rahtialus-suomenlahdella",
+        "status": 200,
+        "contentType": "text/html;charset=UTF-8",
+        "bytes": 133874,
+        "sha256": "2f95df83f11f7f4eaf4cc31c87266ac87cafe7525028d5c0cae4742aecdc5aec",
+        "requestedAtUtc": "2026-11-21T20:01:00.599260+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:01:01.225464+00:00",
+        "lastModified": "Sat, 21 Nov 2026 20:00:58 GMT"
+      },
+      "publishedAt": "2026-11-21T12:56+0200",
+      "modifiedAt": "2026-11-21T13:10+0200",
+      "summary": "The agency reports a cargo ship on fire."
+    },
+    {
+      "source": {
+        "url": "https://raja.fi/-/rajavartiolaitos-johtaa-palavan-aluksen-meripelastustoimia-suomenlahdella",
+        "finalUrl": "https://raja.fi/-/rajavartiolaitos-johtaa-palavan-aluksen-meripelastustoimia-suomenlahdella",
+        "status": 200,
+        "contentType": "text/html;charset=UTF-8",
+        "bytes": 135218,
+        "sha256": "ffc6064d319adee82ae9381697c684534a519b3063cdee2e22f45e9a679e9758",
+        "requestedAtUtc": "2026-11-21T20:01:00.597918+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:01:01.233334+00:00",
+        "lastModified": "Sat, 21 Nov 2026 19:58:52 GMT"
+      },
+      "publishedAt": "2026-11-21T14:58+0200",
+      "modifiedAt": "2026-11-21T18:48+0200",
+      "summary": "The agency names Sparta II and confirms a fire aboard. This release links to the agency press photographs for media use.",
+      "englishSource": {
+        "url": "https://raja.fi/en/-/finnish-border-guard-is-leading-maritime-rescue",
+        "finalUrl": "https://raja.fi/en/-/finnish-border-guard-is-leading-maritime-rescue",
+        "status": 200,
+        "contentType": "text/html;charset=UTF-8",
+        "bytes": 127503,
+        "sha256": "1d33a4370f48dc602ff8bcc24f7aa160b67eccca38b175a4775f2662e33b562e",
+        "requestedAtUtc": "2026-11-21T20:06:35.394843+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:06:35.947825+00:00",
+        "lastModified": "Sat, 21 Nov 2026 20:04:18 GMT",
+        "publishedAt": "2026-11-21T14:58:00+02:00",
+        "modifiedAt": "2026-11-21T18:48:00.906+02:00"
+      }
+    },
+    {
+      "source": {
+        "url": "https://www.epressi.com/tiedotteet/turvallisuus/rajavartiolaitos-johtaa-palavan-aluksen-meripelastustoimia-suomenlahdella.html",
+        "finalUrl": "https://www.epressi.com/tiedotteet/turvallisuus/rajavartiolaitos-johtaa-palavan-aluksen-meripelastustoimia-suomenlahdella.html",
+        "status": 200,
+        "contentType": "text/html; charset=UTF-8",
+        "bytes": 44081,
+        "sha256": "64272c626d3052988b985a6143cc40aa42d0daa573817a103892001e60daf797",
+        "requestedAtUtc": "2026-11-21T19:58:52.090926+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T19:58:52.635366+00:00",
+        "lastModified": null
+      },
+      "publishedAt": "2026-11-21T15:03:00+02:00",
+      "modifiedAt": "2026-11-21T15:03:59+02:00",
+      "summary": "The ePressi copy has its own later publication clock."
+    },
+    {
+      "source": {
+        "url": "https://raja.fi/-/rajavartiolaitos-jatkaa-pelastustoiminnan-johtamista-suomenlahdella",
+        "finalUrl": "https://raja.fi/-/rajavartiolaitos-jatkaa-pelastustoiminnan-johtamista-suomenlahdella",
+        "status": 200,
+        "contentType": "text/html;charset=UTF-8",
+        "bytes": 138737,
+        "sha256": "7e174876f279a4f835316e94b7c680c2e709488e2b07fc4684abbb21db6790b9",
+        "requestedAtUtc": "2026-11-21T20:05:21.496721+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:05:21.869971+00:00",
+        "lastModified": "Sat, 21 Nov 2026 20:02:49 GMT"
+      },
+      "publishedAt": "2026-11-21T20:42:00+02:00",
+      "modifiedAt": "2026-11-21T20:49:55.681+02:00",
+      "summary": "The agency reports continuing firefighting that evening. Its release includes the official evening photograph.",
+      "englishSource": {
+        "url": "https://raja.fi/en/-/the-finnish-border-guard-continues-to-lead-the-rescue-operations-in-the-gulf-of-finland",
+        "finalUrl": "https://raja.fi/en/-/the-finnish-border-guard-continues-to-lead-the-rescue-operations-in-the-gulf-of-finland",
+        "status": 200,
+        "contentType": "text/html;charset=UTF-8",
+        "bytes": 127289,
+        "sha256": "5924704cab265dc9055e0ac729c2f3a86071694579eeb9516a9da87d5e61babb",
+        "requestedAtUtc": "2026-11-21T20:06:35.395955+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:06:36.719839+00:00",
+        "lastModified": null,
+        "publishedAt": "2026-11-21T20:42:00+02:00",
+        "modifiedAt": "2026-11-21T20:49:55.681+02:00"
+      }
+    }
+  ],
+  "pressFolder": {
+    "source": {
+      "url": "https://www.epressi.com/uutishuoneet/rajavartiolaitos.html?tab=js-tabs-img&folder=Sparta-II",
+      "finalUrl": "https://www.epressi.com/uutishuoneet/rajavartiolaitos.html?tab=js-tabs-img&folder=Sparta-II",
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "bytes": 72058,
+      "sha256": "7ab0d3d5897ba5f39a48c9551fea00b500c9c8df4c5bd16c9777c634d8c52a67",
+      "requestedAtUtc": "2026-11-21T20:01:30.206002+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:01:31.206322+00:00",
+      "lastModified": null
+    },
+    "imageList": {
+      "url": "https://www.epressi.com/cms/ajax.html?block=8&customer-id=1708&folder=Sparta-II",
+      "finalUrl": "https://www.epressi.com/cms/ajax.html?block=8&customer-id=1708&folder=Sparta-II",
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "bytes": 31417,
+      "sha256": "4886e45910fcf6df9965bb6db9176d15d0e1b9670456959facbcf7bf220e2318",
+      "requestedAtUtc": "2026-11-21T20:02:45.941644+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:02:48.271438+00:00",
+      "lastModified": null
+    },
+    "fileList": {
+      "url": "https://www.epressi.com/cms/ajax.html?block=10&customer-id=1708&folder=Sparta-II",
+      "finalUrl": "https://www.epressi.com/cms/ajax.html?block=10&customer-id=1708&folder=Sparta-II",
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "bytes": 25,
+      "sha256": "912c6f51a2a86c34c3e86137fda7989db9fd935ee1cf8a00508c29042701e5ad",
+      "requestedAtUtc": "2026-11-21T20:04:00.735580+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:04:01.875374+00:00",
+      "lastModified": null
+    },
+    "imageCount": 7,
+    "fileListResult": "No Results",
+    "reuse": "The Border Guard labels the incident photographs for media use. The agency's media information page identifies its ePressi pictures and videos as free to publish with credit to Rajavartiolaitos. No general open licence was stated.",
+    "reuseTermsSource": {
+      "url": "https://raja.fi/medialle",
+      "finalUrl": "https://raja.fi/medialle",
+      "status": 200,
+      "contentType": "text/html;charset=UTF-8",
+      "bytes": 153747,
+      "sha256": "d67a9393790f7cf4ad27eddc88feef3f010e265385a09a527c2021de2ea38731",
+      "requestedAtUtc": "2026-11-21T20:05:39.972646+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:05:41.264679+00:00",
+      "lastModified": null
+    }
+  },
+  "images": [
+    {
+      "source": {
+        "url": "https://raja.fi/documents/44957406/64710481/Vaurioitunut+ven%C3%A4l%C3%A4inen+rahtialus+Suomenlahdella.jpg/09fd6901-3d7d-bc30-6521-cfb976d7a4da?t=1795258526242",
+        "finalUrl": "https://raja.fi/documents/44957406/64710481/Vaurioitunut+ven%C3%A4l%C3%A4inen+rahtialus+Suomenlahdella.jpg/09fd6901-3d7d-bc30-6521-cfb976d7a4da?t=1795258526242",
+        "status": 200,
+        "contentType": "image/jpeg",
+        "bytes": 207399,
+        "sha256": "e938bd7f6e5f6deefa59d02a4643dbafe0f1c43fc9d8f7e52f1d98cf295a618b",
+        "requestedAtUtc": "2026-11-21T20:02:23.325314+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:02:24.083106+00:00",
+        "lastModified": "Sat, 21 Nov 2026 10:55:26 GMT"
+      },
+      "sameBytesAt": {
+        "url": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/vaurioitunut-alus-sparta-ii-suomenlahdella-21-11-2026-kuva04.jpg",
+        "finalUrl": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/vaurioitunut-alus-sparta-ii-suomenlahdella-21-11-2026-kuva04.jpg",
+        "status": 200,
+        "contentType": "image/jpeg",
+        "bytes": 207399,
+        "sha256": "e938bd7f6e5f6deefa59d02a4643dbafe0f1c43fc9d8f7e52f1d98cf295a618b",
+        "requestedAtUtc": "2026-11-21T20:03:15.722107+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:03:16.562176+00:00",
+        "lastModified": "Sat, 21 Nov 2026 14:43:45 GMT"
+      },
+      "displayedCameraLabel": null,
+      "cameraTimestampUtc": null,
+      "description": "Agency-published view of the burning vessel. The agency website and press-room copy are one image, not independent observations."
+    },
+    {
+      "source": {
+        "url": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/vaurioitunut-alus-sparta-ii-suomenlahdella-21-11-2026-kuva05.jpg",
+        "finalUrl": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/vaurioitunut-alus-sparta-ii-suomenlahdella-21-11-2026-kuva05.jpg",
+        "status": 200,
+        "contentType": "image/jpeg",
+        "bytes": 424887,
+        "sha256": "67716aa5ee3d4e0c6f5c8e51eee70e16774dcbcd03cca837165c4150845b5dde",
+        "requestedAtUtc": "2026-11-21T20:03:15.723210+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:03:16.803374+00:00",
+        "lastModified": "Sat, 21 Nov 2026 14:44:56 GMT"
+      },
+      "displayedCameraLabel": "21/11/26 16:38:09:08",
+      "cameraTimestampUtc": null,
+      "description": "Original press photograph showing flames and smoke on the vessel. The frame does not declare the clock offset or meaning of the final field.",
+      "broadcasterPage": {
+        "source": {
+          "url": "https://yle.fi/a/74-20258284/64-3-313876",
+          "finalUrl": "https://yle.fi/a/74-20258284/64-3-313876",
+          "status": 200,
+          "contentType": "text/html; charset=utf-8",
+          "bytes": 329332,
+          "sha256": "d484e9543e31282df90c10bfef1c6f41db68fd099c1215177666f3056692a7fd",
+          "requestedAtUtc": "2026-11-21T19:58:52.089374+00:00",
+          "downloadCompletedAtUtc": "2026-11-21T19:58:52.720117+00:00",
+          "lastModified": null
+        },
+        "itemPublishedAt": "2026-11-21T17:52:50.907567Z"
+      }
+    },
+    {
+      "source": {
+        "url": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/sammutustyot-sparta-ii-aluksella-illalla-21.11.2026.jpg",
+        "finalUrl": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/sammutustyot-sparta-ii-aluksella-illalla-21.11.2026.jpg",
+        "status": 200,
+        "contentType": "image/jpeg",
+        "bytes": 474730,
+        "sha256": "ca2f2bcfae5e8f4104a43dcc484b6f0b899c9c513bff885f9a4deedb9103b634",
+        "requestedAtUtc": "2026-11-21T20:03:15.723946+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:03:16.803429+00:00",
+        "lastModified": "Sat, 21 Nov 2026 18:21:07 GMT"
+      },
+      "displayedCameraLabel": null,
+      "cameraTimestampUtc": null,
+      "description": "Official photograph labelled evening of 21 November 2026. It shows two water jets directed at the cargo vessel. No exact camera timestamp is supplied.",
+      "sameBytesAt": {
+        "url": "https://raja.fi/documents/44957406/64710481/Sammutusty%C3%B6t+Sparta+II+aluksella+illalla+21.11.2026.jpg/6c4022a7-e42b-eac3-94ac-f50718d6d12f?t=1795285589475",
+        "finalUrl": "https://raja.fi/documents/44957406/64710481/Sammutusty%C3%B6t+Sparta+II+aluksella+illalla+21.11.2026.jpg/6c4022a7-e42b-eac3-94ac-f50718d6d12f?t=1795285589475",
+        "status": 200,
+        "contentType": "image/jpeg",
+        "bytes": 474730,
+        "sha256": "ca2f2bcfae5e8f4104a43dcc484b6f0b899c9c513bff885f9a4deedb9103b634",
+        "requestedAtUtc": "2026-11-21T20:05:39.971571+00:00",
+        "downloadCompletedAtUtc": "2026-11-21T20:05:40.987587+00:00",
+        "lastModified": "Sat, 21 Nov 2026 18:26:29 GMT"
+      },
+      "authorityPage": "https://raja.fi/-/rajavartiolaitos-jatkaa-pelastustoiminnan-johtamista-suomenlahdella"
+    }
+  ],
+  "movingImageReport": {
+    "source": {
+      "url": "https://yle.fi/a/74-20258284/64-3-313886",
+      "finalUrl": "https://yle.fi/a/74-20258284/64-3-313886",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 324727,
+      "sha256": "ecdde66097130e5169765f10c0c3590a4a31c006b2d2a6f73c0a454512dc4ad9",
+      "requestedAtUtc": "2026-11-21T19:58:52.087987+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T19:58:52.754985+00:00",
+      "lastModified": null
+    },
+    "itemPublishedAt": "2026-11-21T19:31:39.791983Z",
+    "creditAsReported": "Gulf of Finland Coast Guard / Suomenlahden merivartiosto",
+    "directRecordingVerified": false,
+    "summary": "Yle reports that the Coast Guard released firefighting video. A directly accessible recording was not verified in this check. The verified stills and publication times are separate."
+  }
+}

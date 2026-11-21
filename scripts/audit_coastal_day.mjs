@@ -48,6 +48,8 @@ try {
     assert.equal(await page.locator('#cdf-utc').getAttribute('datetime'),'2026-11-21T08:00:00Z');
     assert.match(await page.locator('#cdf-cloud-image').getAttribute('src'),/cloud-0800\.png$/);
     assert.equal(await page.locator('.cdf-gauge-grid tbody tr').count(),12);
+    assert.equal(await page.locator('#cd-fire-evidence img').count(),4);
+    assert.equal(await page.locator('.cdf-fire-official code').textContent(),'21/11/26 16:38:09:08');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
     assert.equal(overflow,false,`${width}/${theme} horizontal overflow`);
     await page.addScriptTag({content:axe.source});
@@ -60,6 +62,7 @@ try {
       await page.screenshot({path:`${out}/${width}-${theme}-page.png`,fullPage:true});
       await page.locator('.cd-map-wrap').screenshot({path:`${out}/${width}-${theme}-map.png`});
       await page.locator('.cdf-cloud').screenshot({path:`${out}/${width}-${theme}-follow-up.png`});
+      await page.locator('.cdf-fire-official').screenshot({path:`${out}/${width}-${theme}-fire-record.png`});
     }
     results.push({width,theme,accessibilityViolations:0,horizontalOverflow:false,errors});
     await page.close();
@@ -100,6 +103,9 @@ try {
   assert.equal(await noJs.locator('#cd-loading').isVisible(),false);
   assert.match(await noJs.locator('[data-cdf-time="08:00"]').getAttribute('href'),/cloud-0800\.png$/);
   assert.equal(await noJs.locator('.cdf-gauge-grid tbody tr').count(),12);
+  await noJs.locator('#cd-fire-evidence details summary').first().click();
+  const photoReceipt=await noJs.locator('#cd-fire-evidence').getByText('Flame still receipt').getAttribute('href');
+  assert.equal((await noJs.request.get(new URL(photoReceipt,noJs.url()).href)).ok(),true);
   await noJs.locator('#cd-fallback summary').click();assert.equal(await noJs.locator('#cd-fallback .cd-static-links a').first().isVisible(),true);await noJs.close();
   await writeFile(`${out}/audit.json`,JSON.stringify({origin,results,failedFetchRecovery:true,rawLinksVerified,fallbackLinksVerified,noCoastWorks:true,noJavaScriptWorks:true},null,2)+'\n');
   console.log(`Coastal day: ${results.length} responsive/theme passes; source-time gates, gaps, no drift, raw links and failed-fetch recovery passed.`);

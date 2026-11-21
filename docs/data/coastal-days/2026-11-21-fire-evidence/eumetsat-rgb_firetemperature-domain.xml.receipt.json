@@ -1,0 +1,20 @@
+{
+  "file": "eumetsat-rgb_firetemperature-domain.xml",
+  "url": "https://view.eumetsat.int/geoserver/gwc/service/wmts?service=WMTS&version=1.0.0&request=GetDomainValues&layer=mtg_fd%3Argb_firetemperature&domain=time&time=2026-11-20T22%3A00%3A00Z%2F2026-11-21T21%3A59%3A59Z&limit=200",
+  "requestedAtUtc": "2026-11-21T19:58:58.446700+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://view.eumetsat.int/geoserver/gwc/service/wmts?service=WMTS&version=1.0.0&request=GetDomainValues&layer=mtg_fd%3Argb_firetemperature&domain=time&time=2026-11-20T22%3A00%3A00Z%2F2026-11-21T21%3A59%3A59Z&limit=200",
+  "downloadCompletedAtUtc": "2026-11-21T19:58:59.134117+00:00",
+  "bytes": 3589,
+  "sha256": "f47b3d0a739516f859a557b35baade2f361575a698917f482f3d0b7e1ab51472",
+  "wireBytes": 615,
+  "wireSha256": "06fa3d2e3242bd9f428eeb07db24f83e89009f1f78ce1ef18589d4bcbdd2810c",
+  "contentEncoding": "gzip",
+  "serverDate": "Sat, 21 Nov 2026 19:58:59 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "text/xml",
+  "contentRange": null
+}

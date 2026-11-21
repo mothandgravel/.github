@@ -61,9 +61,29 @@ html[data-theme=afterlight] .cd-page { --cd-blue:#315b6a; --cd-sea:#e1eaeb; }
 .cdf-result-grid .cdf-panel { margin: 0; }
 .cdf-result-grid .cd-kicker { margin-bottom: 10px; }
 .cdf-end { margin-top: 18px; }
+.cdf-fire-official, .cdf-fire-thermal {
+  display: grid;
+  gap: clamp(14px, 2.5vw, 32px);
+  align-items: start;
+}
+.cdf-fire-official { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+.cdf-fire-thermal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cdf-fire-photo { margin: 0; border: 1px solid var(--line); background: var(--surface-2); }
+.cdf-fire-photo > a { display: block; }
+.cdf-fire-photo img { display: block; width: 100%; height: auto; background: #121719; }
+.cdf-fire-photo figcaption { padding: 14px 16px; }
+.cdf-fire-photo figcaption strong { display: block; margin: 7px 0; font-size: clamp(14px, 3vw, 23px); }
+.cdf-fire-photo figcaption strong code { font-size: inherit; }
+.cdf-fire-photo figcaption p { margin: 6px 0 0; font-size: 14px; line-height: 1.6; }
+.cdf-fire-clocks { margin: 16px 0 0; }
+.cdf-fire-clocks div { border-top: 1px solid var(--line); padding: 12px 0; }
+.cdf-fire-clocks dt { color: var(--gold-bright); font: 400 24px/1.2 var(--serif); }
+.cdf-fire-clocks dt span { margin-left: 9px; color: var(--secondary); font: 12px/1.4 var(--mono); white-space: nowrap; }
+.cdf-fire-clocks dd { margin: 5px 0 0; color: var(--secondary); font-size: 14px; line-height: 1.6; }
+.cdf-fire-metrics { margin-bottom: 20px; }
 #cd-unfinished { scroll-margin-top: 130px; }
 @media (max-width: 710px) {
-  .cdf-notes, .cdf-nasa, .cdf-gauge-grid, .cdf-result-grid { grid-template-columns: 1fr; }
+  .cdf-notes, .cdf-nasa, .cdf-gauge-grid, .cdf-result-grid, .cdf-fire-official, .cdf-fire-thermal { grid-template-columns: 1fr; }
   .cdf-frames { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .cdf-frames a { font-size: 12px; }
   .cdf-summary { grid-template-columns: 1fr; }
