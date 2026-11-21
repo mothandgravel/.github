@@ -103,7 +103,10 @@ def build(check=False):
                             for i, n in enumerate(items)]}]
                 page['mainEntity'] = {'@id': url + '#entries'}
             elif '/specimens/' in url:
-                crumbs += [('Specimens', DOMAIN + 'specimens/'), (title, url)]
+                crumbs += [('Specimens', DOMAIN + 'specimens/')]
+                if url.endswith('/source-notebook/21-november/'):
+                    crumbs += [('Coastal watch', DOMAIN + 'specimens/coastal-watch/')]
+                crumbs += [(title, url)]
         if len(crumbs) > 1:
             graph += [{'@type': 'BreadcrumbList', 'itemListElement':
                        [{'@type': 'ListItem', 'position': i + 1, 'name': label, 'item': link}

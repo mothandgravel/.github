@@ -28,10 +28,10 @@ function map(land) {
   for(const id of ['108495:WaveHs','134221:WaveHs','134254:WLEVN2K_PT1S_INSTANT']) {
     const s=value(id), [x,y]=project([s.longitude,s.latitude]);
     svg('circle',{cx:x,cy:y,r:4,class:'cd-station'},group);
-    svg('text',{x:x+10,y:y-10,class:'cd-station-label'},group,s.stationId==='108495'?'Orrengrund buoy':s.stationId==='134221'?'Gulf buoy':'Hamina gauge');
+    svg('text',{x:x+(s.stationId==='108495'?12:10),y:y+(s.stationId==='108495'?22:-10),class:'cd-station-label',...(s.stationId==='108495'?{id:'cd-map-buoy-label'}:{})},group,s.stationId==='108495'?'Orrengrund buoy':s.stationId==='134221'?'Gulf buoy':'Hamina gauge');
   }
   const [wx,wy]=project([value('101039:ws_10min').longitude,value('101039:ws_10min').latitude]);
-  svg('rect',{x:wx-3,y:wy-3,width:6,height:6,class:'cd-station'},group);
+  svg('rect',{x:wx-3,y:wy-3,width:6,height:6,class:'cd-station',id:'cd-map-wind-symbol'},group);
   svg('path',{d:`M${wx+5},${wy-5}L${wx+40},${wy-35}L${wx+185},${wy-35}`,class:'cd-wind-leader'},group);
   svg('text',{x:wx+45,y:wy-42,class:'cd-station-label'},group,'Orrengrund wind');
   const [x,y]=project(data.ais.response.features[0].geometry.coordinates);
@@ -128,7 +128,7 @@ function render() {
   for(const card of cards) {
     const s=value(card.id),state=at(data,s,second);card.button.setAttribute('aria-pressed',String(card.id===channel));
     card.number.textContent=state.kind==='reading'?`${state.point.raw} ${s.unit}`:state.kind==='missing'?'Source NaN':'Not collected';
-    card.state.textContent=state.point?`${clock(state.point.time)} EET label / ${state.kind==='missing'?'cause or delay unknown':elapsed(state.ageSeconds)+' before browse time'}`:'After 19:00 EET query cutoff';
+    card.state.textContent=state.point?`${clock(state.point.time)} EET ${state.kind==='reading'&&s.parameter==='WaveHs'?'series-start label / period statistic':'label / '+(state.kind==='missing'?'cause or delay unknown':elapsed(state.ageSeconds)+' before browse time')}`:'After 19:00 EET query cutoff';
   }
   const a=aisAt(data,second);mapLayers.ais.setAttribute('visibility',a.kind==='saved'?'visible':'hidden');
   $('cd-ais-age').textContent=a.kind==='saved'?`${elapsed(a.ageSeconds)} after source time`:a.kind==='before'?'Before the saved source time':'Outside the saved query window';
@@ -136,7 +136,7 @@ function render() {
   const s=value(channel),[x,y]=project([s.longitude,s.latitude]);mapLayers.focus.setAttribute('cx',x);mapLayers.focus.setAttribute('cy',y);
   plot(s);receipt(s);
   const report=metarAt(data,station,second);
-  $('cd-metar').textContent=report?.metar??'No saved message at or before this browse time.';
+  $('cd-metar').textContent=report?.metar??(second>68400?'After the 19:00 EET query cutoff. Later airport messages were not requested.':'No saved message at or before this browse time.');
   $('cd-metar-time').textContent=report?`${report.time} / ${elapsed((Date.parse(stamp())-Date.parse(report.time))/1000)} before browse time`:'Outside message coverage at this time';
 }
 async function boot() {

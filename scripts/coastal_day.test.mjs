@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {readDay, at, aisAt, metarAt} from '../docs/assets/coastal-day-model.mjs';
 const data = readDay(JSON.parse(await readFile(new URL('../docs/data/coastal-days/2026-11-21/notebook.json', import.meta.url), 'utf8')));
 const series = id => data.series.find(s => s.id === id);
@@ -35,4 +37,11 @@ test('METAR selection cannot pull a later observation into an earlier picture',(
 test('corrupted raw values and changed source dates are rejected',()=>{
   const bad=structuredClone(data);bad.series[0].points[0].value=999;assert.throws(()=>readDay(bad));
   const other=structuredClone(data);other.dateLocal='2026-11-11';assert.throws(()=>readDay(other));
+});
+test('a bare builder run refuses to replace a frozen snapshot or its inventory',async()=>{
+  const files=['../docs/data/coastal-days/2026-11-21/notebook.json','../docs/design/coastal-day-20261121-provenance.json'].map(f=>new URL(f,import.meta.url));
+  const before=await Promise.all(files.map(f=>readFile(f)));
+  const result=spawnSync(process.platform==='win32'?'python':'python3',['scripts/build_coastal_day.py'],{cwd:fileURLToPath(new URL('..',import.meta.url)),encoding:'utf8'});
+  assert.equal(result.status,1);assert.match(result.stderr,/Frozen snapshot already exists/);
+  const after=await Promise.all(files.map(f=>readFile(f)));assert.deepEqual(after,before);
 });

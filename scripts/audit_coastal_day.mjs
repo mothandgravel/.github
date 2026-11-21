@@ -16,6 +16,10 @@ try {
     assert.equal(await page.locator('audio,video').count(),0);
     assert.equal(await page.locator('#cd-report-rows tr').count(),76);
     assert.equal(await page.locator('#cd-ledger article').count(),15);
+    assert.equal(await page.evaluate(()=>{
+      const a=document.getElementById('cd-map-buoy-label').getBBox(),b=document.getElementById('cd-map-wind-symbol').getBBox();
+      return a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y;
+    }),false,'Buoy label must not obscure the wind symbol');
     assert.match(await page.locator('[data-channel="108495:WaveHs"] .cd-number').textContent(),/^0.8 m$/);
     const center=await page.locator('#cd-ais-mark circle').last().getAttribute('cx');
     await page.locator('[data-second="32400"]').click();
@@ -31,6 +35,7 @@ try {
     await page.locator('[data-second="72000"]').click();
     assert.equal(await page.locator('.cd-number').allTextContents().then(x=>x.every(v=>v==='Not collected')),true);
     assert.equal(await page.locator('#cd-ais-mark').getAttribute('visibility'),'hidden');
+    assert.match(await page.locator('#cd-metar').textContent(),/Later airport messages were not requested/);
     await page.locator('#cd-time').focus();await page.locator('#cd-time').press('End');
     assert.equal(await page.locator('#cd-time-label').textContent(),'23:59:59 EET');
     assert.match(await page.locator('#cd-time').getAttribute('aria-valuetext'),/outside saved query/);
@@ -67,6 +72,9 @@ try {
   for(const a of await page.locator('#cd-ledger article>a').all()) {
     const response=await page.request.get(await a.getAttribute('href'));assert.equal(response.ok(),true);
     rawLinksVerified++;
+  }
+  for(const a of await page.locator('#cd-failures a').all()) {
+    const response=await page.request.get(new URL(await a.getAttribute('href'),page.url()).href);assert.equal(response.ok(),true);
   }
   await page.close();
   const noCoast=await browser.newPage();

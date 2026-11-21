@@ -21,7 +21,7 @@ Each response has its own request and download clocks. This is not a live feed.
 - Digitraffic: one latest-returned point for MMSI 273394890, metadata
   matching SPARTA II / IMO 9160994, identical latest-response control and
   an empty query from 08:00 UTC. `timestampExternal` is a source clock,
-  not a verified vessel transmission or impact time. No historical track
+  not a verified vessel transmission time. No historical track
   or transmission-cessation inference is supported by these responses.
 - IEM: 76 original EFHK/EETN METAR messages; redistribution and publication
   clocks are not known. Airport weather is not offshore weather.
@@ -41,7 +41,7 @@ Each response has its own request and download clocks. This is not a live feed.
 FMI and Fintraffic Digitraffic observations: CC BY 4.0; retain attribution.
 Copernicus metadata, IEM messages and agency listings retain their source
 attribution in receipts. Natural Earth context coastline is public domain.
-No attacker, cargo, drift path or incident position is inferred.
+The reported incident and the vessel's later path are not independently verified.
 
 `python scripts/build_coastal_day.py --check` verifies original payload
 hashes, units, station identities, complete requested label grids, raw

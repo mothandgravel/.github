@@ -157,6 +157,8 @@ def build():
 
 
 def run(capture=None, check=False):
+    if not capture and not check and ((DAY / 'notebook.json').exists() or PROVENANCE.exists()):
+        raise SystemExit('Frozen snapshot already exists. Use --check; store later retrievals as separate follow-ups.')
     if capture:
         assert not DAY.exists(), 'Never overwrite a published snapshot; use a separate follow-up'
         raw = DAY / 'raw'
