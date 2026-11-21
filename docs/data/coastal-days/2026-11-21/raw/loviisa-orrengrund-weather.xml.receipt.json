@@ -1,0 +1,20 @@
+{
+  "file": "loviisa-orrengrund-weather.xml",
+  "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Aweather%3A%3Atimevaluepair&starttime=2026-11-20T22%3A00%3A00Z&endtime=2026-11-21T17%3A00%3A00Z&fmisid=101039&timestep=10&parameters=ws_10min%2Cwg_10min%2Cwd_10min%2Cvis%2Ct2m",
+  "requestedAtUtc": "2026-11-21T17:28:31.051922+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Aweather%3A%3Atimevaluepair&starttime=2026-11-20T22%3A00%3A00Z&endtime=2026-11-21T17%3A00%3A00Z&fmisid=101039&timestep=10&parameters=ws_10min%2Cwg_10min%2Cwd_10min%2Cvis%2Ct2m",
+  "downloadCompletedAtUtc": "2026-11-21T17:28:31.343184+00:00",
+  "bytes": 204308,
+  "sha256": "0138fba7b7fd0626256b4984c8882636d126b04197b2f640f02adb6affed901b",
+  "wireBytes": 11621,
+  "wireSha256": "0adaaef500a9f095ce968b46c78eccb2757f2e37cf20754ab3c1807c93e26a18",
+  "contentEncoding": "gzip",
+  "serverDate": "Sat, 21 Nov 2026 17:28:31 GMT",
+  "lastModified": "Sat, 21 Nov 2026 17:28:31 GMT",
+  "etag": null,
+  "contentType": "text/xml; charset=UTF-8",
+  "contentRange": null
+}

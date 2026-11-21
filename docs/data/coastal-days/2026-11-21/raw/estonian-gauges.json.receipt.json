@@ -1,0 +1,17 @@
+{
+  "file": "estonian-gauges.json",
+  "url": "https://keskkonnaandmed.envir.ee/f_hydroseire?jaam_kood=in.%2886094%2C41801%2C26045%29&aegrida_nimi=in.%28%22WL+avg%22%2C%22WT+avg%22%29&timeline_ts_utc=gte.2026-11-20T22%3A00%3A00&order=jaam_nimi%2Caegrida_nimi%2Ctimeline_ts_utc&limit=300&timeline_ts_utc=lte.2026-11-21T17%3A00%3A00",
+  "requestedAtUtc": "2026-11-21T17:24:55.579147+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://keskkonnaandmed.envir.ee/f_hydroseire?jaam_kood=in.%2886094%2C41801%2C26045%29&aegrida_nimi=in.%28%22WL+avg%22%2C%22WT+avg%22%29&timeline_ts_utc=gte.2026-11-20T22%3A00%3A00&order=jaam_nimi%2Caegrida_nimi%2Ctimeline_ts_utc&limit=300&timeline_ts_utc=lte.2026-11-21T17%3A00%3A00",
+  "downloadCompletedAtUtc": "2026-11-21T17:25:02.715266+00:00",
+  "bytes": 2,
+  "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "serverDate": "Sat, 21 Nov 2026 17:25:02 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "application/json; charset=utf-8",
+  "contentRange": "*/*"
+}

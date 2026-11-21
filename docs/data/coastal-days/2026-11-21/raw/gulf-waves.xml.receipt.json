@@ -1,0 +1,17 @@
+{
+  "file": "gulf-waves.xml",
+  "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-20T22%3A00%3A00Z&endtime=2026-11-21T17%3A00%3A00Z&fmisid=134221&timestep=30&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER",
+  "requestedAtUtc": "2026-11-21T17:24:54.721825+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-20T22%3A00%3A00Z&endtime=2026-11-21T17%3A00%3A00Z&fmisid=134221&timestep=30&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER",
+  "downloadCompletedAtUtc": "2026-11-21T17:24:55.363214+00:00",
+  "bytes": 78492,
+  "sha256": "63fa5e9e5c98e2b60aab61cacee3d518570bf81fe740367f1f2964cfc012a23a",
+  "serverDate": "Sat, 21 Nov 2026 17:24:55 GMT",
+  "lastModified": "Sat, 21 Nov 2026 17:24:55 GMT",
+  "etag": null,
+  "contentType": "text/xml; charset=UTF-8",
+  "contentRange": null
+}

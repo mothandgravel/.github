@@ -21,6 +21,7 @@ on:
       - "scripts/audit_shadow_inquiry.mjs"
       - "scripts/audit_coastal_identity.mjs"
       - "scripts/audit_coastal_haxr.mjs"
+      - "scripts/audit_coastal_day.mjs"
       - "scripts/audit_thread.mjs"
       - "scripts/audit_reading.mjs"
       - "scripts/audit_maritime.mjs"
@@ -68,7 +69,7 @@ jobs:
           case "$AUDIT_GROUP" in
             navigation) audits="wayfinding reading visual rooms connection" ;;
             materials) audits="moth handling moth_volume mapping" ;;
-            coastal) audits="coastal_replay coastal_transport shadow_inquiry coastal_identity coastal_haxr coastal_sources coastal_archives coastal_weather coastal_weather_map thread" ;;
+            coastal) audits="coastal_replay coastal_transport shadow_inquiry coastal_identity coastal_haxr coastal_sources coastal_day coastal_archives coastal_weather coastal_weather_map thread" ;;
             studio) audits="maintenance loose_end studio_note maritime playground sohva" ;;
             *) exit 2 ;;
           esac

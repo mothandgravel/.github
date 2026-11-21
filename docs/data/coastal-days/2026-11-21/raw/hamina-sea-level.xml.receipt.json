@@ -1,0 +1,17 @@
+{
+  "file": "hamina-sea-level.xml",
+  "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Amareograph%3A%3Atimevaluepair&starttime=2026-11-20T22%3A00%3A00Z&endtime=2026-11-21T17%3A00%3A00Z&fmisid=134254&timestep=30&parameters=WLEVN2K_PT1S_INSTANT%2CWATLEV",
+  "requestedAtUtc": "2026-11-21T17:24:55.347120+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Amareograph%3A%3Atimevaluepair&starttime=2026-11-20T22%3A00%3A00Z&endtime=2026-11-21T17%3A00%3A00Z&fmisid=134254&timestep=30&parameters=WLEVN2K_PT1S_INSTANT%2CWATLEV",
+  "downloadCompletedAtUtc": "2026-11-21T17:24:55.569567+00:00",
+  "bytes": 33065,
+  "sha256": "f98ac37d2b7e63fad38fb7ec107056a8d627f75a44a6906bbe1ae3f64e5aaa67",
+  "serverDate": "Sat, 21 Nov 2026 17:24:55 GMT",
+  "lastModified": "Sat, 21 Nov 2026 17:24:55 GMT",
+  "etag": null,
+  "contentType": "text/xml; charset=UTF-8",
+  "contentRange": null
+}
