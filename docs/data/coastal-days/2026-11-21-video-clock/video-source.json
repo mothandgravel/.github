@@ -1,0 +1,130 @@
+{
+  "schema": "mg.coastal-watch.firefighting-video-verification.v1",
+  "yleItem": {
+    "id": "64-3-313886",
+    "source": {
+      "url": "https://yle.fi/a/74-20258284/64-3-313886",
+      "finalUrl": "https://yle.fi/a/74-20258284/64-3-313886",
+      "status": 200,
+      "bytes": 322781,
+      "sha256": "f329813f52503c2bc83a4c75d5851e5b4cf7505ff8ddb1a9190ebba65e7ceb3a",
+      "contentType": "text/html; charset=utf-8",
+      "requestedAtUtc": "2026-11-21T20:47:07.484190+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:47:08.282979+00:00",
+      "lastModified": null
+    },
+    "publishedAtUtc": "2026-11-21T19:31:39.791983Z",
+    "publishedAtEet": "2026-11-21T21:31:39.791983+02:00",
+    "editedAtUtc": "2026-11-21T19:31:55.856733Z",
+    "embedUrl": "https://x.com/Merivartiosto/status/2124217067708522514"
+  },
+  "officialPost": {
+    "publisher": "Gulf of Finland Coast Guard",
+    "handle": "@Merivartiosto",
+    "url": "https://x.com/Merivartiosto/status/2124217067708522514",
+    "watchUrl": "https://x.com/Merivartiosto/status/2124217067708522514/video/1",
+    "publishedAtUtc": "2026-11-21T19:03:09.000Z",
+    "publishedAtEet": "2026-11-21T21:03:09+02:00",
+    "cameraCreditAsPublished": "Alfons Håkans / @AlfonsHakans",
+    "source": {
+      "url": "https://x.com/Merivartiosto/status/2124217067708522514",
+      "finalUrl": "https://x.com/Merivartiosto/status/2124217067708522514",
+      "status": 200,
+      "bytes": 262559,
+      "sha256": "2b59f4c400b21b20826a0c5120e9cd95d505346e72db752d96ea9b7c565c34e4",
+      "contentType": "text/html; charset=UTF-8",
+      "requestedAtUtc": "2026-11-21T20:47:07.485209+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:47:08.542066+00:00",
+      "lastModified": null
+    },
+    "watchSource": {
+      "url": "https://x.com/Merivartiosto/status/2124217067708522514/video/1",
+      "finalUrl": "https://x.com/Merivartiosto/status/2124217067708522514",
+      "status": 200,
+      "bytes": 262558,
+      "sha256": "7775113cfe3b85f4697b89e6593c7f454307a13ac97abf50d50e2778977e8658",
+      "contentType": "text/html; charset=UTF-8",
+      "requestedAtUtc": "2026-11-21T20:50:12.801527+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:50:14.708145+00:00",
+      "lastModified": null
+    },
+    "oEmbed": {
+      "url": "https://publish.twitter.com/oembed?url=https%3A%2F%2Fx.com%2FMerivartiosto%2Fstatus%2F2124217067708522514&omit_script=true",
+      "finalUrl": "https://publish.x.com/oembed?url=https%3A%2F%2Fx.com%2FMerivartiosto%2Fstatus%2F2124217067708522514&omit_script=true",
+      "status": 200,
+      "bytes": 837,
+      "sha256": "a8ea0c4098266b6bb3ba88908290040b17a0810f84b81e14fc4fbf350fdb39e6",
+      "contentType": "application/json; charset=utf-8",
+      "requestedAtUtc": "2026-11-21T20:47:07.486199+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:47:08.735377+00:00",
+      "lastModified": "Sat, 21 Nov 2026 20:47:08 GMT"
+    },
+    "syndication": {
+      "url": "https://cdn.syndication.twimg.com/tweet-result?id=2124217067708522514&lang=en&token=55dfagexnc",
+      "finalUrl": "https://cdn.syndication.twimg.com/tweet-result?id=2124217067708522514&lang=en&token=55dfagexnc",
+      "status": 200,
+      "bytes": 6426,
+      "sha256": "75ec4391e42b22ed6afaefbfa30a55b7fe0b19d1ebd0120565af44e483daaf9d",
+      "contentType": "application/json; charset=utf-8",
+      "requestedAtUtc": "2026-11-21T20:47:08.284855+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:47:08.978294+00:00",
+      "lastModified": null
+    },
+    "readableMediaVerified": true
+  },
+  "video": {
+    "source": {
+      "url": "https://video.twimg.com/amplify_video/2124217051329789952/vid/avc1/1024x576/l0zc4K0BvjzhFmsJ.mp4",
+      "finalUrl": "https://video.twimg.com/amplify_video/2124217051329789952/vid/avc1/1024x576/l0zc4K0BvjzhFmsJ.mp4",
+      "status": 200,
+      "bytes": 1276469,
+      "sha256": "9b968910951b17c709b2b98dc4cc051207ccc7a2989da80c22b546ee5c328435",
+      "contentType": "video/mp4",
+      "requestedAtUtc": "2026-11-21T20:47:42.496042+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:47:43.157798+00:00",
+      "lastModified": "Sat, 21 Nov 2026 19:01:05 GMT"
+    },
+    "width": 1024,
+    "height": 576,
+    "publishedDurationMilliseconds": 9258,
+    "containerDurationSeconds": 9.301333,
+    "containerCreationLabelUtc": "2026-11-21T19:03:46.000000Z",
+    "videoMuxerLabel": "Twitter-vork muxer",
+    "cameraTimeUtc": null,
+    "cameraOffset": null,
+    "hasAudioTrack": true,
+    "review": "Muted frame extraction at two samples per second shows firefighting water spray at night. The hull name is readable in later frames. No camera time overlay was visible. The UTC creation label belongs to the platform MP4 and provides no camera clock evidence.",
+    "reuse": "Linked to the Coast Guard publication. Permission to rehost the Alfons Håkans credited video is unverified."
+  },
+  "daylightStillClock": {
+    "source": {
+      "url": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/vaurioitunut-alus-sparta-ii-suomenlahdella-21-11-2026-kuva05.jpg",
+      "finalUrl": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/vaurioitunut-alus-sparta-ii-suomenlahdella-21-11-2026-kuva05.jpg",
+      "status": 200,
+      "bytes": 424887,
+      "sha256": "67716aa5ee3d4e0c6f5c8e51eee70e16774dcbcd03cca837165c4150845b5dde",
+      "contentType": "image/jpeg",
+      "requestedAtUtc": "2026-11-21T20:03:15.723210+00:00",
+      "downloadCompletedAtUtc": "2026-11-21T20:03:16.803374+00:00",
+      "lastModified": "Sat, 21 Nov 2026 14:44:56 GMT"
+    },
+    "visibleCameraLabel": "21/11/26 16:38:09:08",
+    "visibleClockOffset": null,
+    "visibleClockFinalField": null,
+    "visibleCameraTimeUtc": null,
+    "exifTextFields": {
+      "DateTimeOriginal": "2026:11:21 15:48:16",
+      "DateTimeDigitized": "2026:11:21 15:48:16",
+      "OffsetTime": "+02:00",
+      "OffsetTimeOriginal": "+02:00",
+      "OffsetTimeDigitized": "+02:00",
+      "SubSecTime": "000",
+      "SubSecTimeOriginal": "000",
+      "SubSecTimeDigitized": "000"
+    },
+    "exifOriginalAtUtc": "2026-11-21T13:48:16+00:00",
+    "exifOriginalAtOffset": "2026-11-21T15:48:16+02:00",
+    "serverLastModifiedAtUtc": "2026-11-21T14:44:56+00:00",
+    "interpretation": "The +02:00 offset applies to the EXIF date fields in the published JPEG. The on-image clock disagrees with these fields and carries no zone. The HTTP modification label describes the served file. None correlates the visible clock with the capture time or timezone of the separately published firefighting video."
+  }
+}

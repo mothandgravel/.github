@@ -1,0 +1,43 @@
+{
+  "schema": "mg.coastal-watch.camera-clock-evidence.v1",
+  "sourcePhoto": {
+    "id": "press-photo-05.jpg",
+    "url": "https://www.epressi.com/media/mediabankfiles/122/images/sparta-ii/vaurioitunut-alus-sparta-ii-suomenlahdella-21-11-2026-kuva05.jpg",
+    "sha256": "67716aa5ee3d4e0c6f5c8e51eee70e16774dcbcd03cca837165c4150845b5dde",
+    "httpLastModified": "Sat, 21 Nov 2026 14:44:56 GMT",
+    "downloadCompletedAtUtc": "2026-11-21T20:03:16.803374+00:00"
+  },
+  "visibleOverlay": {
+    "label": "21/11/26 16:38:09:08",
+    "offset": null,
+    "finalFieldMeaning": null
+  },
+  "jpegExif": {
+    "tags": {
+      "DateTimeOriginal": "2026:11:21 15:48:16",
+      "DateTimeDigitized": "2026:11:21 15:48:16",
+      "OffsetTime": "+02:00",
+      "OffsetTimeOriginal": "+02:00",
+      "OffsetTimeDigitized": "+02:00"
+    },
+    "datetimeOriginalUtc": "2026-11-21T13:48:16+00:00",
+    "scope": "These tags are part of the published JPEG. Their relation to its visible camera label is unknown."
+  },
+  "interpretations": [
+    {
+      "assumedZone": "EET (+02:00)",
+      "wouldBeUtc": "2026-11-21T14:38:09+00:00",
+      "wouldBeEet": "2026-11-21T16:38:09+02:00",
+      "secondsUntilHttpLastModified": 407,
+      "secondsAfterJpegExifDateTimeOriginal": 2993
+    },
+    {
+      "assumedZone": "UTC (+00:00)",
+      "wouldBeUtc": "2026-11-21T16:38:09+00:00",
+      "wouldBeEet": "2026-11-21T18:38:09+02:00",
+      "secondsUntilHttpLastModified": -6793,
+      "secondsAfterJpegExifDateTimeOriginal": 10193
+    }
+  ],
+  "finding": "EET is consistent with the HTTP Last-Modified value occurring after the displayed clock time. The UTC interpretation places the displayed time after that header value. The header describes the served file. The JPEG EXIF time and the visible overlay differ, and the source gives no verified offset for the overlay. Calculations use the displayed date, hour, minute and second only."
+}

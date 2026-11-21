@@ -81,9 +81,25 @@ html[data-theme=afterlight] .cd-page { --cd-blue:#315b6a; --cd-sea:#e1eaeb; }
 .cdf-fire-clocks dt span { margin-left: 9px; color: var(--secondary); font: 12px/1.4 var(--mono); white-space: nowrap; }
 .cdf-fire-clocks dd { margin: 5px 0 0; color: var(--secondary); font-size: 14px; line-height: 1.6; }
 .cdf-fire-metrics { margin-bottom: 20px; }
+#cd-video-clock { scroll-margin-top: 130px; }
+.cdf-video-record, .cdf-offset-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.cdf-video-record > div, .cdf-offset-grid > div { min-width: 0; background: var(--surface-2); padding: clamp(15px, 3vw, 28px); }
+.cdf-video-source > p:first-child, .cdf-video-scope > p:first-child { margin-top: 0; }
+.cdf-video-time { margin: 9px 0 15px; }
+.cdf-video-time time { display: block; color: var(--gold-bright); font: 400 clamp(31px, 5vw, 58px)/1.05 var(--serif); }
+.cdf-video-time span { color: var(--secondary); font: 12px/1.6 var(--mono); }
+.cdf-video-links { display: flex; flex-wrap: wrap; gap: 15px 22px; align-items: center; }
+.cdf-video-links .cdf-watch { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--gold); }
+.cdf-camera-reading { margin-top: 26px; }
+.cdf-camera-reading h4 { margin: 0; font: 400 clamp(22px, 4vw, 32px)/1.2 var(--serif); }
+.cdf-offset-grid { margin: 18px 0; }
+.cdf-offset-grid dt { color: var(--secondary); font: 13px/1.5 var(--mono); }
+.cdf-offset-grid dd { margin: 4px 0 0; }
+.cdf-offset-grid dd strong { display: block; font: 400 clamp(25px, 4vw, 37px)/1.2 var(--serif); }
+.cdf-offset-grid dd span { color: var(--secondary); font-size: 14px; }
 #cd-unfinished { scroll-margin-top: 130px; }
 @media (max-width: 710px) {
-  .cdf-notes, .cdf-nasa, .cdf-gauge-grid, .cdf-result-grid, .cdf-fire-official, .cdf-fire-thermal { grid-template-columns: 1fr; }
+  .cdf-notes, .cdf-nasa, .cdf-gauge-grid, .cdf-result-grid, .cdf-fire-official, .cdf-fire-thermal, .cdf-video-record, .cdf-offset-grid { grid-template-columns: 1fr; }
   .cdf-frames { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .cdf-frames a { font-size: 12px; }
   .cdf-summary { grid-template-columns: 1fr; }
