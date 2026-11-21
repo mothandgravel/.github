@@ -1,0 +1,20 @@
+{
+  "file": "fire-rgb-0700.png",
+  "url": "https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetMap&layers=mtg_fd%3Argb_firetemperature&styles=&format=image%2Fpng&crs=CRS%3A84&bbox=23%2C59%2C28.5%2C61&width=1100&height=400&time=2026-11-21T07%3A00%3A00.000Z&transparent=true",
+  "requestedAtUtc": "2026-11-21T19:59:47.769465+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetMap&layers=mtg_fd%3Argb_firetemperature&styles=&format=image%2Fpng&crs=CRS%3A84&bbox=23%2C59%2C28.5%2C61&width=1100&height=400&time=2026-11-21T07%3A00%3A00.000Z&transparent=true",
+  "downloadCompletedAtUtc": "2026-11-21T19:59:48.918335+00:00",
+  "bytes": 218197,
+  "sha256": "faab5a62fd306c8e40237a02e900c51d6e70266397e18c4c2987d94a61c6d2e7",
+  "wireBytes": 218197,
+  "wireSha256": "faab5a62fd306c8e40237a02e900c51d6e70266397e18c4c2987d94a61c6d2e7",
+  "contentEncoding": null,
+  "serverDate": "Sat, 21 Nov 2026 19:59:48 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "image/png",
+  "contentRange": null
+}

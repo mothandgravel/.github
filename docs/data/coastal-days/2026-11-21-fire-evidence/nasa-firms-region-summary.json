@@ -1,0 +1,196 @@
+{
+  "dataSchema": "coastal-nasa-firms-region-summary.v1",
+  "windowStartUtc": "2026-11-20T22:00:00+00:00",
+  "windowEndUtc": "2026-11-21T22:00:00+00:00",
+  "windowEndExclusive": true,
+  "regionWgs84": [
+    23,
+    59,
+    28.5,
+    61
+  ],
+  "coordinatePolicy": "Aggregate by regional rectangle and land mask only; no detection coordinates retained in this summary.",
+  "coastline": {
+    "source": "Natural Earth 1:10m land, clipped and simplified in prior Coastal watch work",
+    "file": "docs/assets/coastal-replay-land.json",
+    "sha256": "d20758b5d318be382719f2b8cfbe7156b9dc2556851562eefd1acf0d04c0d722"
+  },
+  "rollingExports": [
+    {
+      "file": "J1_VIIRS_C2_Europe_48h.csv",
+      "providerUrl": "https://firms.modaps.eosdis.nasa.gov/data/active_fire/noaa-20-viirs-c2/csv/J1_VIIRS_C2_Europe_48h.csv",
+      "retrievedAtUtc": "2026-11-21T20:02:04.125901+00:00",
+      "sourceSha256": "13a98e7e32fbff844497cb627ffa6777e3b2a839321474b6646640d7037fe217",
+      "europeWindowRows": 888,
+      "localDayEuropeRows": 355,
+      "localDayEuropeMinSourceLabelUtc": "2026-11-20T23:56:00+00:00",
+      "localDayEuropeMaxSourceLabelUtc": "2026-11-21T13:08:00+00:00",
+      "regionalRows": 6,
+      "regionalCountsByCentroidMask": {
+        "mappedLand": 6
+      },
+      "regionalCountsByConfidence": {
+        "nominal": 6
+      },
+      "platformRows": {
+        "N20": 888
+      },
+      "regionalMinSourceLabelUtc": "2026-11-20T23:56:00+00:00",
+      "regionalMaxSourceLabelUtc": "2026-11-21T01:36:00+00:00",
+      "minDistanceToMappedLandBoundaryKmApprox": 27.0
+    },
+    {
+      "file": "J2_VIIRS_C2_Europe_48h.csv",
+      "providerUrl": "https://firms.modaps.eosdis.nasa.gov/data/active_fire/noaa-21-viirs-c2/csv/J2_VIIRS_C2_Europe_48h.csv",
+      "retrievedAtUtc": "2026-11-21T20:02:04.126426+00:00",
+      "sourceSha256": "806436c38f5ea662b0fd4e12ae2ce6ea2e1e471b1a1740ea1758134101a5b3df",
+      "europeWindowRows": 753,
+      "localDayEuropeRows": 335,
+      "localDayEuropeMinSourceLabelUtc": "2026-11-20T22:58:00+00:00",
+      "localDayEuropeMaxSourceLabelUtc": "2026-11-21T13:52:00+00:00",
+      "regionalRows": 3,
+      "regionalCountsByCentroidMask": {
+        "mappedLand": 3
+      },
+      "regionalCountsByConfidence": {
+        "nominal": 3
+      },
+      "platformRows": {
+        "N21": 753
+      },
+      "regionalMinSourceLabelUtc": "2026-11-21T00:39:00+00:00",
+      "regionalMaxSourceLabelUtc": "2026-11-21T00:39:00+00:00",
+      "minDistanceToMappedLandBoundaryKmApprox": 27.2
+    },
+    {
+      "file": "MODIS_C6_1_Europe_48h.csv",
+      "providerUrl": "https://firms.modaps.eosdis.nasa.gov/data/active_fire/modis-c6.1/csv/MODIS_C6_1_Europe_48h.csv",
+      "retrievedAtUtc": "2026-11-21T20:02:03.585142+00:00",
+      "sourceSha256": "cedbec44d5481ec058f8c1309cce8de1eedb7f62a1d65397bdeb3efdbe887684",
+      "europeWindowRows": 53,
+      "localDayEuropeRows": 11,
+      "localDayEuropeMinSourceLabelUtc": "2026-11-21T04:23:00+00:00",
+      "localDayEuropeMaxSourceLabelUtc": "2026-11-21T13:52:00+00:00",
+      "regionalRows": 0,
+      "regionalCountsByCentroidMask": {},
+      "regionalCountsByConfidence": {},
+      "platformRows": {
+        "A": 32,
+        "T": 21
+      },
+      "regionalMinSourceLabelUtc": null,
+      "regionalMaxSourceLabelUtc": null,
+      "minDistanceToMappedLandBoundaryKmApprox": null
+    }
+  ],
+  "granuleCatalogues": [
+    {
+      "file": "cmr-VJ114IMG_NRT.json",
+      "providerUrl": "https://cmr.earthdata.nasa.gov/search/granules.json?short_name=VJ114IMG_NRT&bounding_box=23%2C59%2C28.5%2C61&temporal=2026-11-20T22%3A00%3A00Z%2C2026-11-21T21%3A59%3A59Z&page_size=100",
+      "retrievedAtUtc": "2026-11-21T19:58:59.614810+00:00",
+      "sourceSha256": "7dab6625cb11925d45b8ebd18c347b23c8278d8e7e24d7ee249d7afe85e24c45",
+      "entryCount": 7,
+      "entries": [
+        {
+          "id": "VJ114IMG_NRT.A2026324.2354.002.2026325025104.nc",
+          "startsUtc": "2026-11-20T23:54:00.000Z",
+          "endsUtc": "2026-11-21T00:00:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T02:51:41.970Z"
+        },
+        {
+          "id": "VJ114IMG_NRT.A2026325.0130.002.2026325112923.nc",
+          "startsUtc": "2026-11-21T01:30:00.000Z",
+          "endsUtc": "2026-11-21T01:36:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T11:30:08.320Z"
+        },
+        {
+          "id": "VJ114IMG_NRT.A2026325.0136.002.2026325112923.nc",
+          "startsUtc": "2026-11-21T01:36:00.000Z",
+          "endsUtc": "2026-11-21T01:42:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T11:29:57.100Z"
+        },
+        {
+          "id": "VJ114IMG_NRT.A2026325.0312.002.2026325112929.nc",
+          "startsUtc": "2026-11-21T03:12:00.000Z",
+          "endsUtc": "2026-11-21T03:18:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T11:30:08.320Z"
+        },
+        {
+          "id": "VJ114IMG_NRT.A2026325.0942.002.2026325122029.nc",
+          "startsUtc": "2026-11-21T09:42:00.000Z",
+          "endsUtc": "2026-11-21T09:48:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T12:22:34.980Z"
+        },
+        {
+          "id": "VJ114IMG_NRT.A2026325.0948.002.2026325125921.nc",
+          "startsUtc": "2026-11-21T09:48:00.000Z",
+          "endsUtc": "2026-11-21T09:54:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T13:00:10.340Z"
+        },
+        {
+          "id": "VJ114IMG_NRT.A2026325.1124.002.2026325135010.nc",
+          "startsUtc": "2026-11-21T11:24:00.000Z",
+          "endsUtc": "2026-11-21T11:30:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T13:51:10.870Z"
+        }
+      ]
+    },
+    {
+      "file": "cmr-VJ214IMG_NRT.json",
+      "providerUrl": "https://cmr.earthdata.nasa.gov/search/granules.json?short_name=VJ214IMG_NRT&bounding_box=23%2C59%2C28.5%2C61&temporal=2026-11-20T22%3A00%3A00Z%2C2026-11-21T21%3A59%3A59Z&page_size=100",
+      "retrievedAtUtc": "2026-11-21T19:58:59.629514+00:00",
+      "sourceSha256": "6fd7466441f22d217c9295399e5b330f0b96585a52d4845c5e211029aac2fe16",
+      "entryCount": 8,
+      "entries": [
+        {
+          "id": "VJ214IMG_NRT.A2026324.2254.002.2026325012028.nc",
+          "startsUtc": "2026-11-20T22:54:00.000Z",
+          "endsUtc": "2026-11-20T23:00:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T01:21:02.410Z"
+        },
+        {
+          "id": "VJ214IMG_NRT.A2026325.0036.002.2026325030708.nc",
+          "startsUtc": "2026-11-21T00:36:00.000Z",
+          "endsUtc": "2026-11-21T00:42:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T03:07:42.690Z"
+        },
+        {
+          "id": "VJ214IMG_NRT.A2026325.0212.002.2026325044928.nc",
+          "startsUtc": "2026-11-21T02:12:00.000Z",
+          "endsUtc": "2026-11-21T02:18:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T04:50:01.400Z"
+        },
+        {
+          "id": "VJ214IMG_NRT.A2026325.0218.002.2026325044829.nc",
+          "startsUtc": "2026-11-21T02:18:00.000Z",
+          "endsUtc": "2026-11-21T02:24:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T04:49:07.440Z"
+        },
+        {
+          "id": "VJ214IMG_NRT.A2026325.0848.002.2026325111815.nc",
+          "startsUtc": "2026-11-21T08:48:00.000Z",
+          "endsUtc": "2026-11-21T08:54:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T11:19:03.890Z"
+        },
+        {
+          "id": "VJ214IMG_NRT.A2026325.1030.002.2026325130315.nc",
+          "startsUtc": "2026-11-21T10:30:00.000Z",
+          "endsUtc": "2026-11-21T10:36:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T13:04:04.270Z"
+        },
+        {
+          "id": "VJ214IMG_NRT.A2026325.1206.002.2026325143952.nc",
+          "startsUtc": "2026-11-21T12:06:00.000Z",
+          "endsUtc": "2026-11-21T12:12:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T14:40:40.380Z"
+        },
+        {
+          "id": "VJ214IMG_NRT.A2026325.1212.002.2026325144925.nc",
+          "startsUtc": "2026-11-21T12:12:00.000Z",
+          "endsUtc": "2026-11-21T12:18:00.000Z",
+          "catalogueUpdatedUtc": "2026-11-21T14:50:05.860Z"
+        }
+      ]
+    }
+  ]
+}
