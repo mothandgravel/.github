@@ -1,0 +1,20 @@
+{
+  "file": "sparta-location-gzip.json",
+  "url": "https://meri.digitraffic.fi/api/ais/v1/locations?mmsi=273394890&from=1795212000000&to=1795280400000",
+  "requestedAtUtc": "2026-11-21T17:25:39.695796+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://meri.digitraffic.fi/api/ais/v1/locations?mmsi=273394890&from=1795212000000&to=1795280400000",
+  "downloadCompletedAtUtc": "2026-11-21T17:25:40.144669+00:00",
+  "bytes": 520,
+  "sha256": "558120a7bedf22d9d4e49843efcd1ca065443f9d8a7f42fa7abb3172315d65c9",
+  "wireBytes": 520,
+  "wireSha256": "558120a7bedf22d9d4e49843efcd1ca065443f9d8a7f42fa7abb3172315d65c9",
+  "contentEncoding": null,
+  "serverDate": "Sat, 21 Nov 2026 17:25:40 GMT",
+  "lastModified": "Sat, 21 Nov 2026 07:01:43 GMT",
+  "etag": "\"0ecb12fea9336f7eddabeae080791b477\"",
+  "contentType": "application/json;charset=UTF-8",
+  "contentRange": null
+}

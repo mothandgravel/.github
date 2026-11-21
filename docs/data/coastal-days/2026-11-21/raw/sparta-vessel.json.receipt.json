@@ -1,0 +1,20 @@
+{
+  "file": "sparta-vessel.json",
+  "url": "https://meri.digitraffic.fi/api/ais/v1/vessels/273394890",
+  "requestedAtUtc": "2026-11-21T17:26:07.911230+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://meri.digitraffic.fi/api/ais/v1/vessels/273394890",
+  "downloadCompletedAtUtc": "2026-11-21T17:26:08.312993+00:00",
+  "bytes": 324,
+  "sha256": "7aac04fedf0882b235884c75ebc920e3063a22a5feb7dc7355601136de5049b5",
+  "wireBytes": 324,
+  "wireSha256": "7aac04fedf0882b235884c75ebc920e3063a22a5feb7dc7355601136de5049b5",
+  "contentEncoding": null,
+  "serverDate": "Sat, 21 Nov 2026 17:26:08 GMT",
+  "lastModified": "Sat, 21 Nov 2026 07:25:46 GMT",
+  "etag": "\"0377c363c7712dccdc657d8b80f50ea39\"",
+  "contentType": "application/json;charset=UTF-8",
+  "contentRange": null
+}

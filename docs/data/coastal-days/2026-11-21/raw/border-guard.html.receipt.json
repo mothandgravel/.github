@@ -1,0 +1,20 @@
+{
+  "file": "border-guard.html",
+  "url": "https://www.epressi.com/tiedotteet/turvallisuus/vaurioitunut-venalainen-rahtialus-suomenlahdella.html",
+  "requestedAtUtc": "2026-11-21T17:25:40.145590+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://www.epressi.com/tiedotteet/turvallisuus/vaurioitunut-venalainen-rahtialus-suomenlahdella.html",
+  "downloadCompletedAtUtc": "2026-11-21T17:25:40.732637+00:00",
+  "bytes": 43880,
+  "sha256": "95bf2af01b75de7b1a19825ac86464f527d8d222580634669676de8db4fe0e31",
+  "wireBytes": 8452,
+  "wireSha256": "e3c22a458a71558bf99b9e5f0f5d1137118e811814127771f582ff41a274d06d",
+  "contentEncoding": "gzip",
+  "serverDate": "Sat, 21 Nov 2026 17:25:40 GMT",
+  "lastModified": null,
+  "etag": "W/\"66a4c83ad0b02cdd29fd7ac71c271beb\"",
+  "contentType": "text/html; charset=UTF-8",
+  "contentRange": null
+}

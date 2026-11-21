@@ -1,0 +1,16 @@
+{
+  "callSign" : "UAXX",
+  "destination" : "RUBLT",
+  "draught" : 69,
+  "eta" : 768192,
+  "imo" : 9160994,
+  "mmsi" : 273394890,
+  "name" : "SPARTA II",
+  "posType" : 0,
+  "referencePointA" : 10,
+  "referencePointB" : 112,
+  "referencePointC" : 11,
+  "referencePointD" : 8,
+  "shipType" : 70,
+  "timestamp" : 1795245945060
+}

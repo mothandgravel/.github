@@ -37,3 +37,5 @@ docs/design/coastal-archives-provenance.json text eol=lf
 # Weather passage originals and native floats are receipt-bound across platforms.
 docs/data/coastal-weather/** -text -whitespace
 docs/design/coastal-weather-provenance.json text eol=lf
+docs/data/coastal-days/** -text -whitespace
+docs/design/coastal-day-20261121-provenance.json text eol=lf

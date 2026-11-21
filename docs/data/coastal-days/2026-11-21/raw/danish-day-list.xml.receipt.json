@@ -1,0 +1,17 @@
+{
+  "file": "danish-day-list.xml",
+  "url": "https://s3.eu-central-1.amazonaws.com/aisdata.ais.dk/?list-type=2&prefix=aisdk-2026-11-21&max-keys=10",
+  "requestedAtUtc": "2026-11-21T17:24:55.571021+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://s3.eu-central-1.amazonaws.com/aisdata.ais.dk/?list-type=2&prefix=aisdk-2026-11-21&max-keys=10",
+  "downloadCompletedAtUtc": "2026-11-21T17:25:03.086522+00:00",
+  "bytes": 259,
+  "sha256": "6059de289d6828b6d900ff178aee199d39b7804bf6fca7446ea66fb8eb1ea6b1",
+  "serverDate": "Sat, 21 Nov 2026 17:25:03 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "application/xml",
+  "contentRange": null
+}

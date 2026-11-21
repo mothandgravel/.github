@@ -1,0 +1,20 @@
+{
+  "file": "iltalehti.html",
+  "url": "https://www.iltalehti.fi/ulkomaat/a/f6514cc0-038d-4dc3-8f0e-a12c6e763e75",
+  "requestedAtUtc": "2026-11-21T17:29:34.990691+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://www.iltalehti.fi/ulkomaat/a/f6514cc0-038d-4dc3-8f0e-a12c6e763e75",
+  "downloadCompletedAtUtc": "2026-11-21T17:29:35.192131+00:00",
+  "bytes": 396661,
+  "sha256": "7c042c6c68699261f5c3bfe72a043dbd309044b86c7922a4484fa0638960b3a3",
+  "wireBytes": 81184,
+  "wireSha256": "a45570dc09d46715ccdbe1450447ac3c8e661e66033e3b8df2c77bff26f118ed",
+  "contentEncoding": "gzip",
+  "serverDate": "Sat, 21 Nov 2026 17:28:37 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "text/html",
+  "contentRange": null
+}

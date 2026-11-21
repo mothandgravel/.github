@@ -1,0 +1,20 @@
+{
+  "file": "orrengrund-hourly.xml",
+  "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-20T22%3A00%3A00Z&endtime=2026-11-21T17%3A00%3A00Z&fmisid=108495&timestep=60&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER",
+  "requestedAtUtc": "2026-11-21T18:33:18.834236+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi%3A%3Aobservations%3A%3Awave%3A%3Atimevaluepair&starttime=2026-11-20T22%3A00%3A00Z&endtime=2026-11-21T17%3A00%3A00Z&fmisid=108495&timestep=60&parameters=WaveHs%2CModalWDi%2CWTP%2CWHDD%2CTWATER",
+  "downloadCompletedAtUtc": "2026-11-21T18:33:18.987794+00:00",
+  "bytes": 47705,
+  "sha256": "34eedf3ba22729b13aca56f68a52020dc05ba8e2be6c4b513fe2a32cc738c20a",
+  "wireBytes": 3579,
+  "wireSha256": "607da6f48a80664fdd4bf737004ab158e3b2a921f5af156d733b6b969e413aad",
+  "contentEncoding": "gzip",
+  "serverDate": "Sat, 21 Nov 2026 18:33:18 GMT",
+  "lastModified": "Sat, 21 Nov 2026 18:33:18 GMT",
+  "etag": null,
+  "contentType": "text/xml; charset=UTF-8",
+  "contentRange": null
+}
