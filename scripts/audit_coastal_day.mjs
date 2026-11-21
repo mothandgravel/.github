@@ -56,6 +56,9 @@ try {
       assert.ok(await image.evaluate(img=>img.naturalWidth>=1100));
     }
     assert.equal(await page.locator('.cdf-fire-official code').textContent(),'21/11/26 16:38:09:08');
+    assert.equal(await page.locator('#cd-video-clock .cdf-watch').getAttribute('href'),'https://x.com/Merivartiosto/status/2124217067708522514/video/1');
+    assert.equal(await page.locator('#cd-video-clock time').first().getAttribute('datetime'),'2026-11-21T21:03:09+02:00');
+    assert.equal(await page.locator('#cd-video-clock .cdf-offset-grid dd strong').allTextContents().then(times=>times.join('|')),'14:38:09 UTC|18:38:09 EET');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
     assert.equal(overflow,false,`${width}/${theme} horizontal overflow`);
     await page.addScriptTag({content:axe.source});
@@ -71,6 +74,7 @@ try {
       const fireRecord=page.locator(width>=900?'.cdf-fire-official':'.cdf-fire-official > figure');
       await fireRecord.scrollIntoViewIfNeeded();
       await fireRecord.screenshot({path:`${out}/${width}-${theme}-fire-record.png`});
+      await page.locator('.cdf-video-record').screenshot({path:`${out}/${width}-${theme}-video-clock.png`});
     }
     results.push({width,theme,accessibilityViolations:0,horizontalOverflow:false,errors});
     await page.close();
@@ -114,6 +118,10 @@ try {
   await noJs.locator('#cd-fire-evidence details summary').first().click();
   const photoReceipt=await noJs.locator('#cd-fire-evidence').getByText('Flame still receipt').getAttribute('href');
   assert.equal((await noJs.request.get(new URL(photoReceipt,noJs.url()).href)).ok(),true);
+  const cameraReceipt=await noJs.locator('#cd-video-clock').getByText('Exact EXIF fields and clock comparison').getAttribute('href');
+  const cameraResponse=await noJs.request.get(new URL(cameraReceipt,noJs.url()).href);
+  assert.equal(cameraResponse.ok(),true);
+  assert.equal((await cameraResponse.json()).visibleOverlay.offset,null);
   await noJs.locator('#cd-fallback summary').click();assert.equal(await noJs.locator('#cd-fallback .cd-static-links a').first().isVisible(),true);await noJs.close();
   await writeFile(`${out}/audit.json`,JSON.stringify({origin,results,failedFetchRecovery:true,rawLinksVerified,fallbackLinksVerified,noCoastWorks:true,noJavaScriptWorks:true},null,2)+'\n');
   console.log(`Coastal day: ${results.length} responsive/theme passes; source-time gates, gaps, no drift, raw links and failed-fetch recovery passed.`);

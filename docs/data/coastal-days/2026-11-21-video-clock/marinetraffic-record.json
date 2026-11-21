@@ -1,0 +1,79 @@
+{
+  "schema": "mg.coastal-watch.marinetraffic-media.v1",
+  "mediaId": "C0D6suL7",
+  "description": "MarineTraffic-credited route replay carried by Iltalehti",
+  "durationSeconds": 50,
+  "playerPubdateUnixSeconds": 1795263238,
+  "playerPubdateUtc": "2026-11-21T12:13:58Z",
+  "playerSource": {
+    "file": "marinetraffic-player.json",
+    "url": "https://cdn.jwplayer.com/v2/media/C0D6suL7",
+    "requestedAtUtc": "2026-11-21T20:50:31.874176+00:00",
+    "firstPublicationUtc": null,
+    "originalReceiverTimeUtc": null,
+    "status": 200,
+    "finalUrl": "https://cdn.jwplayer.com/v2/media/C0D6suL7",
+    "downloadCompletedAtUtc": "2026-11-21T20:50:32.453169+00:00",
+    "bytes": 2666,
+    "sha256": "daed2f9659e1963ab35874bd75370aea24ca3351ee25edfb6ea934157b3bc2a6",
+    "wireBytes": 840,
+    "wireSha256": "f9aa8bdcc9611a337614588a509395bbd61ddee7027b1bbc896c87046222c4cc",
+    "contentEncoding": "gzip",
+    "serverDate": "Sat, 21 Nov 2026 20:50:32 GMT",
+    "lastModified": null,
+    "etag": null,
+    "contentType": "application/json; charset=utf-8",
+    "contentRange": null
+  },
+  "articleEmbeds": [
+    {
+      "source": {
+        "file": "live.html",
+        "url": "https://www.iltalehti.fi/ulkomaat/a/6dae7b11-8d27-44f6-8b9c-a52aa49b62b8",
+        "requestedAtUtc": "2026-11-21T20:49:19.056950+00:00",
+        "firstPublicationUtc": null,
+        "originalReceiverTimeUtc": null,
+        "status": 200,
+        "finalUrl": "https://www.iltalehti.fi/ulkomaat/a/6dae7b11-8d27-44f6-8b9c-a52aa49b62b8",
+        "downloadCompletedAtUtc": "2026-11-21T20:49:19.605417+00:00",
+        "bytes": 382149,
+        "sha256": "fb1873a38ba9fbbb523d82785715a1e1bae0751a2a89304eb370b3ec1a5205e3",
+        "wireBytes": 79422,
+        "wireSha256": "75e547c61b71bf9cf5e99dec38ca6798fa895899fce29bd8f4705fda67f470d4",
+        "contentEncoding": "gzip",
+        "serverDate": "Sat, 21 Nov 2026 20:49:00 GMT",
+        "lastModified": null,
+        "etag": null,
+        "contentType": "text/html",
+        "contentRange": null
+      },
+      "labelAsPublished": "2026-11-21T12:17:19+02:00",
+      "field": "VideoObject.uploadDate"
+    },
+    {
+      "source": {
+        "file": "profile.html",
+        "url": "https://www.iltalehti.fi/ulkomaat/a/56220e87-4370-43b0-b297-483e70ef85aa",
+        "requestedAtUtc": "2026-11-21T20:49:19.055355+00:00",
+        "firstPublicationUtc": null,
+        "originalReceiverTimeUtc": null,
+        "status": 200,
+        "finalUrl": "https://www.iltalehti.fi/ulkomaat/a/56220e87-4370-43b0-b297-483e70ef85aa",
+        "downloadCompletedAtUtc": "2026-11-21T20:49:19.605476+00:00",
+        "bytes": 396172,
+        "sha256": "505af11c2f88dade623a7199afb345b35821a7afab29762de473e1488758ad05",
+        "wireBytes": 81674,
+        "wireSha256": "b92b357cbcf4946acf33268225cb4111ecbb3f47edeeed6ca48a6778e1e6c736",
+        "contentEncoding": "gzip",
+        "serverDate": "Sat, 21 Nov 2026 20:49:18 GMT",
+        "lastModified": null,
+        "etag": null,
+        "contentType": "text/html",
+        "contentRange": null
+      },
+      "labelAsPublished": "2026-11-21T14:54:11+02:00",
+      "field": "VideoObject.uploadDate"
+    }
+  ],
+  "exactSuppliedBlobMatched": false
+}

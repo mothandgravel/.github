@@ -47,6 +47,7 @@ jobs:
           python3 scripts/build_coastal_day.py --check
           python3 scripts/check_coastal_day_followup.py
           python3 scripts/check_coastal_fire_evidence.py
+          python3 scripts/check_coastal_video_clock.py
           node --test scripts/coastal_day.test.mjs
           python3 scripts/build_coastal_archives.py --check
           /tmp/coastal-weather-tools/bin/python scripts/build_coastal_weather.py --check
