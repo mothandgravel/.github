@@ -1,0 +1,20 @@
+{
+  "file": "operational-coast-table.html",
+  "url": "https://www.ilmateenistus.ee/meri/vaatlusandmed/kogu-rannik/andmed-tabelis/?lang=en",
+  "requestedAtUtc": "2026-11-21T19:23:14.832448+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://www.ilmateenistus.ee/meri/vaatlusandmed/kogu-rannik/andmed-tabelis/?lang=en",
+  "downloadCompletedAtUtc": "2026-11-21T19:23:15.794200+00:00",
+  "bytes": 187808,
+  "sha256": "23f75a89f6172fd07db3dba617a2bbc77e641bebd4c8d3a88aabe1d34f4084ca",
+  "wireBytes": 24061,
+  "wireSha256": "d446b19ba7c70d6d56c702b141b5c7751f1de239b77cfded650966758736c1b4",
+  "contentEncoding": "gzip",
+  "serverDate": "Sat, 21 Nov 2026 19:23:15 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "text/html; charset=UTF-8",
+  "contentRange": null
+}

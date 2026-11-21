@@ -1,0 +1,20 @@
+{
+  "file": "eumetsat-domain.xml",
+  "url": "https://view.eumetsat.int/geoserver/gwc/service/wmts?service=WMTS&version=1.0.0&request=GetDomainValues&layer=mtg_fd:rgb_geocolour&domain=time&time=2026-11-20T22:00:00Z/2026-11-21T21:59:59Z&limit=200",
+  "requestedAtUtc": "2026-11-21T19:22:08.931025+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://view.eumetsat.int/geoserver/gwc/service/wmts?service=WMTS&version=1.0.0&request=GetDomainValues&layer=mtg_fd:rgb_geocolour&domain=time&time=2026-11-20T22:00:00Z/2026-11-21T21:59:59Z&limit=200",
+  "downloadCompletedAtUtc": "2026-11-21T19:22:10.354568+00:00",
+  "bytes": 3489,
+  "sha256": "0e44bdfbeba5024bc19995041d79f1f8fac80d6a0c4cb4b46fe7066c73df3261",
+  "wireBytes": 606,
+  "wireSha256": "eab2a6f966339d206705ffa69f05f1041630b3157999bf5b0a4cb443e9a1be19",
+  "contentEncoding": "gzip",
+  "serverDate": "Sat, 21 Nov 2026 19:22:10 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "text/xml",
+  "contentRange": null
+}

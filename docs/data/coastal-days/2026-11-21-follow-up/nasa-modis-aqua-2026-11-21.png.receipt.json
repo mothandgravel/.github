@@ -1,0 +1,20 @@
+{
+  "file": "nasa-modis-aqua-2026-11-21.png",
+  "url": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=MODIS_Aqua_CorrectedReflectance_TrueColor&STYLES=&SRS=EPSG%3A4326&BBOX=23%2C59%2C28.5%2C61&WIDTH=1100&HEIGHT=400&FORMAT=image%2Fpng&TRANSPARENT=TRUE&TIME=2026-11-21",
+  "requestedAtUtc": "2026-11-21T19:22:06.576570+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=MODIS_Aqua_CorrectedReflectance_TrueColor&STYLES=&SRS=EPSG%3A4326&BBOX=23%2C59%2C28.5%2C61&WIDTH=1100&HEIGHT=400&FORMAT=image%2Fpng&TRANSPARENT=TRUE&TIME=2026-11-21",
+  "downloadCompletedAtUtc": "2026-11-21T19:22:09.585509+00:00",
+  "bytes": 1029927,
+  "sha256": "463f3c80dadb9afb40fe54715dd47a021e489eacbf3c5a3145f120c2990318dc",
+  "wireBytes": 1029927,
+  "wireSha256": "463f3c80dadb9afb40fe54715dd47a021e489eacbf3c5a3145f120c2990318dc",
+  "contentEncoding": null,
+  "serverDate": "Sat, 21 Nov 2026 19:22:08 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "image/png",
+  "contentRange": null
+}

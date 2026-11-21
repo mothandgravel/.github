@@ -1,0 +1,151 @@
+{
+  "format": "coastal-watch-operational-gauges-v1",
+  "source": "Keskkonnaagentuur / Estonian Environment Agency",
+  "sourceDatasetUrl": "https://keskkonnaportaal.ee/et/avaandmed/hudroloogilise-seire-andmestik",
+  "sourceDescriptionUrl": "https://keskkonnaportaal.ee/et/avaandmed/hudroloogilise-seire-andmestik/hudroloogilise-seire-andmestiku-kirjeldus",
+  "licence": "CC BY 4.0",
+  "dateLocal": "2026-11-21",
+  "localZone": "Europe/Tallinn",
+  "sourceCadenceDescription": "Four separately retrieved hour labels from the agency coastline observations table. Operational data, with provider display precision. Hourly averaging and exact sensor times for these display values are unspecified.",
+  "columns": {
+    "seaLevelEh2000CmText": "Table sea level already referenced to EH2000, in cm. No gauge-zero correction is applied.",
+    "waterTemperatureCText": "Table water temperature in degrees Celsius, retaining the exact source decimal comma."
+  },
+  "archiveComparison": {
+    "originalResponseSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "refreshedResponseFiles": [
+      "original-window.json",
+      "elapsed-window.json",
+      "civil-day.json"
+    ],
+    "refreshedRows": 0,
+    "latestProbeFile": "latest-labels.json",
+    "latestLabelSeenUtc": "2026-11-19T21:00:00Z",
+    "latestProbeGroupsAtMaxLabel": 5,
+    "knownDateControlFile": "known-day-control.json",
+    "knownDateControlRows": 144,
+    "knownDateControlEqualToSaved11November": true
+  },
+  "snapshots": [
+    {
+      "sourceUtcDisplayLabel": "UTC 21.11.2026 07:00",
+      "labelledAtUtc": "2026-11-21T07:00:00Z",
+      "labelledAtEet": "2026-11-21T09:00:00+02:00",
+      "retrievedAtUtc": "2026-11-21T19:24:03.994214+00:00",
+      "sourceUrl": "https://www.ilmateenistus.ee/meri/vaatlusandmed/kogu-rannik/andmed-tabelis/?lang=en&filter%5Bdate%5D=21.11.2026&filter%5Bhour%5D=09%3A00&filter%5BmaxDate%5D=21.11.2026&filter%5BminDate%5D=16.11.2007",
+      "sourceHtmlFile": "coast-table-09eet.html",
+      "sourceHtmlSha256": "821e8b12ae5860413d08319dc5473171a282248f979bf85720c15800cadb98a4",
+      "receiptFile": "coast-table-09eet.html.receipt.json",
+      "observations": [
+        {
+          "station": "Pirita",
+          "agencyStationCode": "86094",
+          "seaLevelEh2000CmText": "55",
+          "waterTemperatureCText": "6,9"
+        },
+        {
+          "station": "Kunda",
+          "agencyStationCode": "26045",
+          "seaLevelEh2000CmText": "62",
+          "waterTemperatureCText": "6,4"
+        },
+        {
+          "station": "Narva-Jõesuu",
+          "agencyStationCode": "41801",
+          "seaLevelEh2000CmText": "61",
+          "waterTemperatureCText": "4"
+        }
+      ]
+    },
+    {
+      "sourceUtcDisplayLabel": "UTC 21.11.2026 10:00",
+      "labelledAtUtc": "2026-11-21T10:00:00Z",
+      "labelledAtEet": "2026-11-21T12:00:00+02:00",
+      "retrievedAtUtc": "2026-11-21T19:24:04.041463+00:00",
+      "sourceUrl": "https://www.ilmateenistus.ee/meri/vaatlusandmed/kogu-rannik/andmed-tabelis/?lang=en&filter%5Bdate%5D=21.11.2026&filter%5Bhour%5D=12%3A00&filter%5BmaxDate%5D=21.11.2026&filter%5BminDate%5D=16.11.2007",
+      "sourceHtmlFile": "coast-table-12eet.html",
+      "sourceHtmlSha256": "b6e52832a8b2759342b2880fd9086a61c0bcc466f7504c0c486654e4336445e8",
+      "receiptFile": "coast-table-12eet.html.receipt.json",
+      "observations": [
+        {
+          "station": "Pirita",
+          "agencyStationCode": "86094",
+          "seaLevelEh2000CmText": "44",
+          "waterTemperatureCText": "6,4"
+        },
+        {
+          "station": "Kunda",
+          "agencyStationCode": "26045",
+          "seaLevelEh2000CmText": "52",
+          "waterTemperatureCText": "6,6"
+        },
+        {
+          "station": "Narva-Jõesuu",
+          "agencyStationCode": "41801",
+          "seaLevelEh2000CmText": "51",
+          "waterTemperatureCText": "4"
+        }
+      ]
+    },
+    {
+      "sourceUtcDisplayLabel": "UTC 21.11.2026 15:00",
+      "labelledAtUtc": "2026-11-21T15:00:00Z",
+      "labelledAtEet": "2026-11-21T17:00:00+02:00",
+      "retrievedAtUtc": "2026-11-21T19:24:03.977973+00:00",
+      "sourceUrl": "https://www.ilmateenistus.ee/meri/vaatlusandmed/kogu-rannik/andmed-tabelis/?lang=en&filter%5Bdate%5D=21.11.2026&filter%5Bhour%5D=17%3A00&filter%5BmaxDate%5D=21.11.2026&filter%5BminDate%5D=16.11.2007",
+      "sourceHtmlFile": "coast-table-17eet.html",
+      "sourceHtmlSha256": "ad887f43a23329be8c3e46b448eb26de5ce418ebd1be409e8e499af990b8f26e",
+      "receiptFile": "coast-table-17eet.html.receipt.json",
+      "observations": [
+        {
+          "station": "Pirita",
+          "agencyStationCode": "86094",
+          "seaLevelEh2000CmText": "42",
+          "waterTemperatureCText": "7,4"
+        },
+        {
+          "station": "Kunda",
+          "agencyStationCode": "26045",
+          "seaLevelEh2000CmText": "43",
+          "waterTemperatureCText": "6,9"
+        },
+        {
+          "station": "Narva-Jõesuu",
+          "agencyStationCode": "41801",
+          "seaLevelEh2000CmText": "40",
+          "waterTemperatureCText": "4,2"
+        }
+      ]
+    },
+    {
+      "sourceUtcDisplayLabel": "UTC 21.11.2026 19:00",
+      "labelledAtUtc": "2026-11-21T19:00:00Z",
+      "labelledAtEet": "2026-11-21T21:00:00+02:00",
+      "retrievedAtUtc": "2026-11-21T19:23:15.794200+00:00",
+      "sourceUrl": "https://www.ilmateenistus.ee/meri/vaatlusandmed/kogu-rannik/andmed-tabelis/?lang=en",
+      "sourceHtmlFile": "operational-coast-table.html",
+      "sourceHtmlSha256": "23f75a89f6172fd07db3dba617a2bbc77e641bebd4c8d3a88aabe1d34f4084ca",
+      "receiptFile": "operational-coast-table.html.receipt.json",
+      "observations": [
+        {
+          "station": "Pirita",
+          "agencyStationCode": "86094",
+          "seaLevelEh2000CmText": "49",
+          "waterTemperatureCText": "7,2"
+        },
+        {
+          "station": "Kunda",
+          "agencyStationCode": "26045",
+          "seaLevelEh2000CmText": "51",
+          "waterTemperatureCText": "7"
+        },
+        {
+          "station": "Narva-Jõesuu",
+          "agencyStationCode": "41801",
+          "seaLevelEh2000CmText": "48",
+          "waterTemperatureCText": "4"
+        }
+      ]
+    }
+  ]
+}
