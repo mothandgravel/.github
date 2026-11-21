@@ -48,7 +48,13 @@ try {
     assert.equal(await page.locator('#cdf-utc').getAttribute('datetime'),'2026-11-21T08:00:00Z');
     assert.match(await page.locator('#cdf-cloud-image').getAttribute('src'),/cloud-0800\.png$/);
     assert.equal(await page.locator('.cdf-gauge-grid tbody tr').count(),12);
-    assert.equal(await page.locator('#cd-fire-evidence img').count(),4);
+    const fireImages=await page.locator('#cd-fire-evidence img').all();
+    assert.equal(fireImages.length,4);
+    for(const image of fireImages) {
+      await image.scrollIntoViewIfNeeded();
+      await image.evaluate(img=>img.decode());
+      assert.ok(await image.evaluate(img=>img.naturalWidth>=1100));
+    }
     assert.equal(await page.locator('.cdf-fire-official code').textContent(),'21/11/26 16:38:09:08');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
     assert.equal(overflow,false,`${width}/${theme} horizontal overflow`);
@@ -62,7 +68,9 @@ try {
       await page.screenshot({path:`${out}/${width}-${theme}-page.png`,fullPage:true});
       await page.locator('.cd-map-wrap').screenshot({path:`${out}/${width}-${theme}-map.png`});
       await page.locator('.cdf-cloud').screenshot({path:`${out}/${width}-${theme}-follow-up.png`});
-      await page.locator('.cdf-fire-official').screenshot({path:`${out}/${width}-${theme}-fire-record.png`});
+      const fireRecord=page.locator(width>=900?'.cdf-fire-official':'.cdf-fire-official > figure');
+      await fireRecord.scrollIntoViewIfNeeded();
+      await fireRecord.screenshot({path:`${out}/${width}-${theme}-fire-record.png`});
     }
     results.push({width,theme,accessibilityViolations:0,horizontalOverflow:false,errors});
     await page.close();
