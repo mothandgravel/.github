@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import axe from 'axe-core';
 import {launchAuditBrowser} from './audit_browser.mjs';
-const origin=process.env.SITE_URL??'http://127.0.0.1:8797', route='/specimens/coastal-watch/source-notebook/21-november/', out='artifacts/design-review/coastal-day';
+const origin=process.env.SITE_URL??'http://127.0.0.1:8793', route='/specimens/coastal-watch/source-notebook/21-november/', out='artifacts/design-review/coastal-day';
 await mkdir(out,{recursive:true});
 const browser=await launchAuditBrowser();
 const results=[];
