@@ -43,6 +43,11 @@ try {
     assert.equal(await page.locator('#cd-time-label').textContent(),'09:10:00 EET');
     await page.locator('[data-second="32503"]').click();
     await page.locator('[data-channel="108495:WaveHs"]').click();
+    await page.locator('[data-cdf-time="08:00"]').press('Enter');
+    await page.locator('#cdf-frame-status').getByText('Showing 10:00 EET / 08:00 UTC.').waitFor();
+    assert.equal(await page.locator('#cdf-utc').getAttribute('datetime'),'2026-11-21T08:00:00Z');
+    assert.match(await page.locator('#cdf-cloud-image').getAttribute('src'),/cloud-0800\.png$/);
+    assert.equal(await page.locator('.cdf-gauge-grid tbody tr').count(),12);
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
     assert.equal(overflow,false,`${width}/${theme} horizontal overflow`);
     await page.addScriptTag({content:axe.source});
@@ -54,6 +59,7 @@ try {
       await page.screenshot({path:`${out}/${width}-${theme}-hero.png`});
       await page.screenshot({path:`${out}/${width}-${theme}-page.png`,fullPage:true});
       await page.locator('.cd-map-wrap').screenshot({path:`${out}/${width}-${theme}-map.png`});
+      await page.locator('.cdf-cloud').screenshot({path:`${out}/${width}-${theme}-follow-up.png`});
     }
     results.push({width,theme,accessibilityViolations:0,horizontalOverflow:false,errors});
     await page.close();
@@ -76,6 +82,14 @@ try {
   for(const a of await page.locator('#cd-failures a').all()) {
     const response=await page.request.get(new URL(await a.getAttribute('href'),page.url()).href);assert.equal(response.ok(),true);
   }
+  await page.route('**/2026-11-21-follow-up/cloud-0730.png',route=>route.abort());
+  await page.locator('[data-cdf-time="07:30"]').click();
+  await page.locator('#cdf-frame-status').getByText(/could not open/).waitFor();
+  assert.equal(await page.locator('#cdf-utc').getAttribute('datetime'),'2026-11-21T07:00:00Z');
+  assert.equal(await page.locator('[data-cdf-time="07:00"]').getAttribute('aria-current'),'true');
+  await page.unroute('**/2026-11-21-follow-up/cloud-0730.png');
+  await page.locator('[data-cdf-time="07:30"]').click();
+  await page.locator('#cdf-frame-status').getByText('Showing 09:30 EET / 07:30 UTC.').waitFor();
   await page.close();
   const noCoast=await browser.newPage();
   await noCoast.route('**/coastal-replay-land.json',r=>r.abort());
@@ -84,6 +98,8 @@ try {
   assert.equal(await noCoast.locator('.cd-instrument').count(),4);await noCoast.close();
   const noJs=await browser.newPage({javaScriptEnabled:false});await noJs.goto(origin+route);
   assert.equal(await noJs.locator('#cd-loading').isVisible(),false);
+  assert.match(await noJs.locator('[data-cdf-time="08:00"]').getAttribute('href'),/cloud-0800\.png$/);
+  assert.equal(await noJs.locator('.cdf-gauge-grid tbody tr').count(),12);
   await noJs.locator('#cd-fallback summary').click();assert.equal(await noJs.locator('#cd-fallback .cd-static-links a').first().isVisible(),true);await noJs.close();
   await writeFile(`${out}/audit.json`,JSON.stringify({origin,results,failedFetchRecovery:true,rawLinksVerified,fallbackLinksVerified,noCoastWorks:true,noJavaScriptWorks:true},null,2)+'\n');
   console.log(`Coastal day: ${results.length} responsive/theme passes; source-time gates, gaps, no drift, raw links and failed-fetch recovery passed.`);

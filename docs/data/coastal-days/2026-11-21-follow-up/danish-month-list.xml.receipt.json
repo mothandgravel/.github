@@ -1,0 +1,20 @@
+{
+  "file": "danish-month-list.xml",
+  "url": "https://s3.eu-central-1.amazonaws.com/aisdata.ais.dk/?list-type=2&prefix=aisdk-2026-11-&max-keys=40",
+  "requestedAtUtc": "2026-11-21T19:22:16.932285+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://s3.eu-central-1.amazonaws.com/aisdata.ais.dk/?list-type=2&prefix=aisdk-2026-11-&max-keys=40",
+  "downloadCompletedAtUtc": "2026-11-21T19:22:17.402799+00:00",
+  "bytes": 5874,
+  "sha256": "fa5c89b231dd556cd877c93e51bb0f6c76d1375429915440b4f14e74f0403bbb",
+  "wireBytes": 5874,
+  "wireSha256": "fa5c89b231dd556cd877c93e51bb0f6c76d1375429915440b4f14e74f0403bbb",
+  "contentEncoding": null,
+  "serverDate": "Sat, 21 Nov 2026 19:22:18 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "application/xml",
+  "contentRange": null
+}

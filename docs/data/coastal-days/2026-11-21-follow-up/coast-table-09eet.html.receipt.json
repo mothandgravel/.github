@@ -1,0 +1,20 @@
+{
+  "file": "coast-table-09eet.html",
+  "url": "https://www.ilmateenistus.ee/meri/vaatlusandmed/kogu-rannik/andmed-tabelis/?lang=en&filter%5Bdate%5D=21.11.2026&filter%5Bhour%5D=09%3A00&filter%5BmaxDate%5D=21.11.2026&filter%5BminDate%5D=16.11.2007",
+  "requestedAtUtc": "2026-11-21T19:24:00.763369+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://www.ilmateenistus.ee/meri/vaatlusandmed/kogu-rannik/andmed-tabelis/?lang=en&filter%5Bdate%5D=21.11.2026&filter%5Bhour%5D=09%3A00&filter%5BmaxDate%5D=21.11.2026&filter%5BminDate%5D=16.11.2007",
+  "downloadCompletedAtUtc": "2026-11-21T19:24:03.994214+00:00",
+  "bytes": 187853,
+  "sha256": "821e8b12ae5860413d08319dc5473171a282248f979bf85720c15800cadb98a4",
+  "wireBytes": 24087,
+  "wireSha256": "0be1b47ec8d985ba737a5fc2bf8b2e6c448768b49864e6ea38ee9bd093a1f60b",
+  "contentEncoding": "gzip",
+  "serverDate": "Sat, 21 Nov 2026 19:24:03 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "text/html; charset=UTF-8",
+  "contentRange": null
+}

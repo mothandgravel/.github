@@ -1,0 +1,20 @@
+{
+  "file": "sparta-1000-to-1300-eet.json",
+  "url": "https://meri.digitraffic.fi/api/ais/v1/locations?mmsi=273394890&from=1795248000000&to=1795258800000",
+  "requestedAtUtc": "2026-11-21T19:22:53.986998+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://meri.digitraffic.fi/api/ais/v1/locations?mmsi=273394890&from=1795248000000&to=1795258800000",
+  "downloadCompletedAtUtc": "2026-11-21T19:22:54.364407+00:00",
+  "bytes": 100,
+  "sha256": "18b296cfe5ef311511f415350d3c1f28458902fcc42eef5cc2f2ec828945881c",
+  "wireBytes": 100,
+  "wireSha256": "18b296cfe5ef311511f415350d3c1f28458902fcc42eef5cc2f2ec828945881c",
+  "contentEncoding": null,
+  "serverDate": "Sat, 21 Nov 2026 19:22:54 GMT",
+  "lastModified": "Thu, 01 Jan 1970 00:00:00 GMT",
+  "etag": "\"02ddfa8c771b781e3691941a2531d7245\"",
+  "contentType": "application/json;charset=UTF-8",
+  "contentRange": null
+}
