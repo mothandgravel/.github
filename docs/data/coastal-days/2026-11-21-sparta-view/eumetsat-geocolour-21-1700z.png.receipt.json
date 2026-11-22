@@ -1,0 +1,20 @@
+{
+  "file": "eumetsat-geocolour-21-1700z.png",
+  "url": "https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetMap&layers=mtg_fd%3Argb_geocolour&styles=&format=image%2Fpng&crs=CRS%3A84&bbox=23%2C59%2C28.5%2C61&width=1100&height=400&time=2026-11-21T17%3A00%3A00.000Z&transparent=true",
+  "requestedAtUtc": "2026-11-22T12:19:47.768028+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetMap&layers=mtg_fd%3Argb_geocolour&styles=&format=image%2Fpng&crs=CRS%3A84&bbox=23%2C59%2C28.5%2C61&width=1100&height=400&time=2026-11-21T17%3A00%3A00.000Z&transparent=true",
+  "downloadCompletedAtUtc": "2026-11-22T12:19:49.293207+00:00",
+  "bytes": 163120,
+  "sha256": "3fa056335ae1d78685224258317e1da36249da5f13e6d2cf767fd806b5604787",
+  "wireBytes": 163120,
+  "wireSha256": "3fa056335ae1d78685224258317e1da36249da5f13e6d2cf767fd806b5604787",
+  "contentEncoding": null,
+  "serverDate": "Sun, 22 Nov 2026 12:19:48 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "image/png",
+  "contentRange": null
+}

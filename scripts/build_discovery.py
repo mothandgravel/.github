@@ -47,6 +47,7 @@ def build(check=False):
              (ROOT / 'docs/specimens/coastal-watch/radar-replay/index.html', DOMAIN + 'specimens/coastal-watch/radar-replay/', 'The water, twice recorded.', None),
              (ROOT / 'docs/specimens/coastal-watch/source-notebook/index.html', DOMAIN + 'specimens/coastal-watch/source-notebook/', 'The day, as recorded.', None),
              (ROOT / 'docs/specimens/coastal-watch/source-notebook/21-november/index.html', DOMAIN + 'specimens/coastal-watch/source-notebook/21-november/', 'The day is still arriving.', None),
+             (ROOT / 'docs/specimens/coastal-watch/source-notebook/21-november/sparta-ii/index.html', DOMAIN + 'specimens/coastal-watch/source-notebook/21-november/sparta-ii/', 'Sparta II. A point and a fire.', None),
              (ROOT / 'docs/specimens/data-center/index.html', DOMAIN + 'specimens/data-center/', 'Where the power goes.', None),
              (ROOT / 'docs/specimens/field-power/index.html', DOMAIN + 'specimens/field-power/', 'What stays on.', None),
              (ROOT / 'docs/specimens/maintenance-acceptance/index.html', DOMAIN + 'specimens/maintenance-acceptance/', 'The action may already have happened.', None),
@@ -104,8 +105,10 @@ def build(check=False):
                 page['mainEntity'] = {'@id': url + '#entries'}
             elif '/specimens/' in url:
                 crumbs += [('Specimens', DOMAIN + 'specimens/')]
-                if url.endswith('/source-notebook/21-november/'):
+                if '/source-notebook/21-november/' in url:
                     crumbs += [('Coastal watch', DOMAIN + 'specimens/coastal-watch/')]
+                if url.endswith('/21-november/sparta-ii/'):
+                    crumbs += [('The day is still arriving.', DOMAIN + 'specimens/coastal-watch/source-notebook/21-november/')]
                 crumbs += [(title, url)]
         if len(crumbs) > 1:
             graph += [{'@type': 'BreadcrumbList', 'itemListElement':
