@@ -30,15 +30,23 @@ try {
     assert.match(await page.locator('.sv-clock-gap strong').innerText(), /12 h 01 min 26\.356 s/);
     assert.equal(await page.locator('video, audio, iframe').count(), 0);
     assert.match(await page.getByRole('link', { name: 'Watch the source clip' }).getAttribute('href'), /2124217067708522514\/video\/1$/);
+    assert.equal(await page.locator('#sv-tow-title').isVisible(), true);
+    assert.equal(await page.locator('.sv-tow-stages dt').count(), 3);
+    assert.equal(await page.locator('#sv-afternoon-title time').getAttribute('datetime'), '2026-11-22T12:30:00Z');
 
     await page.locator('img[loading="lazy"]').evaluateAll(images =>
       images.forEach(image => { image.loading = 'eager'; }));
     await page.locator('main img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
-    assert.equal(await page.locator('main img').count(), 7);
+    assert.equal(await page.locator('main img').count(), 10);
     assert.deepEqual(outside, []);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
 
     await page.screenshot({ path: `${out}/${name}.png`, fullPage: true });
+    const followupPaths = await page.locator('#sparta-press a[href$="/official.json"], #sparta-satellite a[href$="/satellite.json"]').evaluateAll(links =>
+      links.map(link => link.href));
+    assert.equal(followupPaths.length, 2);
+    const followupResponses = await Promise.all(followupPaths.map(url => page.request.get(url)));
+    assert.equal(followupResponses.every(response => response.ok()), true);
     await page.getByText('Inspect the other frames and regional catalogues', { exact: true }).click();
     assert.equal(await page.locator('.sv-frame-table tbody tr').count(), 5);
     const ledgerPath = await page.getByRole('link', { name: 'All catalogue bodies, frame receipts and licences' }).getAttribute('href');
