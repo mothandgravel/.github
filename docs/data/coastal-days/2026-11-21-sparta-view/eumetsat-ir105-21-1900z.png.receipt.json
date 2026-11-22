@@ -1,0 +1,20 @@
+{
+  "file": "eumetsat-ir105-21-1900z.png",
+  "url": "https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetMap&layers=mtg_fd%3Air105_hrfi&styles=&format=image%2Fpng&crs=CRS%3A84&bbox=23%2C59%2C28.5%2C61&width=1100&height=400&time=2026-11-21T19%3A00%3A00.000Z&transparent=true",
+  "requestedAtUtc": "2026-11-22T12:19:49.294981+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetMap&layers=mtg_fd%3Air105_hrfi&styles=&format=image%2Fpng&crs=CRS%3A84&bbox=23%2C59%2C28.5%2C61&width=1100&height=400&time=2026-11-21T19%3A00%3A00.000Z&transparent=true",
+  "downloadCompletedAtUtc": "2026-11-22T12:19:50.326411+00:00",
+  "bytes": 34090,
+  "sha256": "956fd21e9cf6b1017b1c6333626a58b37b57d2746db5c00f12ce2ae973429082",
+  "wireBytes": 34090,
+  "wireSha256": "956fd21e9cf6b1017b1c6333626a58b37b57d2746db5c00f12ce2ae973429082",
+  "contentEncoding": null,
+  "serverDate": "Sun, 22 Nov 2026 12:19:50 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "image/png",
+  "contentRange": null
+}

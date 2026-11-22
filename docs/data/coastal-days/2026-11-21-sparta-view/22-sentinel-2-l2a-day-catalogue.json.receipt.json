@@ -1,0 +1,20 @@
+{
+  "file": "22-sentinel-2-l2a-day-catalogue.json",
+  "url": "https://stac.dataspace.copernicus.eu/v1/search?collections=sentinel-2-l2a&datetime=2026-11-21T22%3A00%3A00Z%2F2026-11-22T21%3A59%3A59.999000Z&bbox=21%2C58%2C31%2C61&limit=50&fields=id%2Ccollection%2Cproperties%2Clinks",
+  "requestedAtUtc": "2026-11-22T12:19:47.352095+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://stac.dataspace.copernicus.eu/v1/search?collections=sentinel-2-l2a&datetime=2026-11-21T22%3A00%3A00Z%2F2026-11-22T21%3A59%3A59.999000Z&bbox=21%2C58%2C31%2C61&limit=50&fields=id%2Ccollection%2Cproperties%2Clinks",
+  "downloadCompletedAtUtc": "2026-11-22T12:19:47.618010+00:00",
+  "bytes": 430,
+  "sha256": "173c72e49fb6fbfc25f8ec323728191a4783d73f656918948917176b986f7fd0",
+  "wireBytes": 268,
+  "wireSha256": "475363769284dc26e94dd654f4e79839c3bb4862b5624a4211503128321af4c8",
+  "contentEncoding": "gzip",
+  "serverDate": "Sun, 22 Nov 2026 12:19:47 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "application/json",
+  "contentRange": null
+}
