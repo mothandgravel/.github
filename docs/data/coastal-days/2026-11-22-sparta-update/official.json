@@ -20,7 +20,8 @@
       "url": "https://yle.fi/a/74-20258284/64-3-313937",
       "publishedAtUtc": "2026-11-22T11:47:29.993362Z",
       "claim": "Yle relayed Ilja Iljin’s STT interview on preparations for a tow."
-    }
+    },
+    "latestEvidence": "laterReports.briefingTow"
   },
   "media": {
     "indexUrl": "https://www.epressi.com/uutishuoneet/rajavartiolaitos.html?tab=js-tabs-img&folder=Sparta-II",
@@ -38,7 +39,24 @@
     "gpsDirectoryPresent": false,
     "xmpPresent": false,
     "iptcLocationPresent": false,
-    "scope": "The media-bank files tab is a bounded check. Its empty result leaves recordings published elsewhere unresolved."
+    "scope": "The media-bank files tab is a bounded check. Its empty result leaves recordings published elsewhere unresolved.",
+    "afterBriefingStarted": {
+      "filesTabResult": "Empty listing at retrieval",
+      "photoIndexReceipt": {
+        "url": "https://www.epressi.com/cms/ajax.html?block=8&customer-id=1708&folder=Sparta-II",
+        "status": 200,
+        "bytes": 84631,
+        "sha256": "4ed73c603d5e6cfd2bd7cfa29d02e1b3b254b1c977f4b8f8f475d37d40aafe57",
+        "downloadCompletedAtUtc": "2026-11-22T13:23:44.940181+00:00"
+      },
+      "filesTabReceipt": {
+        "url": "https://www.epressi.com/cms/ajax.html?block=9&customer-id=1708&folder=Sparta-II",
+        "status": 200,
+        "bytes": 4,
+        "sha256": "8493100b11a2fe625bcf97fc313f83b580ba4fd2c016221009db93bfe184ee45",
+        "downloadCompletedAtUtc": "2026-11-22T13:23:44.929536+00:00"
+      }
+    }
   },
   "sourceReceipts": [
     {
@@ -77,5 +95,66 @@
       "sha256": "bcb2e07c0bda66ce5588f33068a1baf3132fcbdeacdb7cdbe6505344c57bf97e",
       "downloadCompletedAtUtc": "2026-11-22T12:55:56.466983+00:00"
     }
-  ]
+  ],
+  "laterReports": {
+    "heatCameraInterview": {
+      "url": "https://yle.fi/a/74-20258284/64-3-313942",
+      "publishedAtUtc": "2026-11-22T12:59:21.744905Z",
+      "modifiedAtUtc": "2026-11-22T13:03:00.047935Z",
+      "recordingAtUtc": null,
+      "containsThermalFrames": false,
+      "claim": "Ilja Iljin told Yle that heat-camera observations informed the agency’s assessment of the fire inside the ship. Towing remained expected.",
+      "sourceReceipt": {
+        "status": 200,
+        "bytes": 300106,
+        "sha256": "ef5f0a4c6dea0e9e4db92c6283970c1cc966332450a6bf20df20946935d6143d",
+        "downloadCompletedAtUtc": "2026-11-22T13:03:47.781450+00:00"
+      }
+    },
+    "briefingOpening": {
+      "url": "https://yle.fi/a/74-20258284/64-3-313943",
+      "publishedAtUtc": "2026-11-22T13:15:24.404692Z",
+      "claim": "Yle reported the start of the Finnish Border Guard briefing.",
+      "sourceReceipt": {
+        "url": "https://yle.fi/a/74-20258284/64-3-313943",
+        "status": 200,
+        "bytes": 302589,
+        "sha256": "cfd43f4fe8c7a041c9b998ee046d2564796ed2a2202ec11694f69c85ad1427b3",
+        "downloadCompletedAtUtc": "2026-11-22T13:20:12.657553+00:00"
+      },
+      "broadcastUrl": "https://areena.yle.fi/1-78863025",
+      "broadcastReceipt": {
+        "url": "https://areena.yle.fi/1-78863025",
+        "status": 200,
+        "bytes": 57293,
+        "sha256": "2347c5c4bb57f89cafa364e371d35b5816a05d6dab24b6a04a0aee5847e967d1",
+        "downloadCompletedAtUtc": "2026-11-22T13:23:44.940428+00:00"
+      },
+      "replayAvailabilityVerified": false
+    },
+    "briefingFire": {
+      "url": "https://yle.fi/a/74-20258284/64-3-313947",
+      "publishedAtUtc": "2026-11-22T13:22:19.973841Z",
+      "claim": "Yle reported Jukka-Pekka Lumilahti saying that visible flames were extinguished Saturday evening, while smoke and heat persisted and suppression continued.",
+      "sourceReceipt": {
+        "url": "https://yle.fi/a/74-20258284/64-3-313947",
+        "status": 200,
+        "bytes": 296680,
+        "sha256": "1ae28dd5c0c4dfdf495fab8eb85cbb78a4c697620a34b71c3df4ae69370e78fc",
+        "downloadCompletedAtUtc": "2026-11-22T13:24:03.211302+00:00"
+      }
+    },
+    "briefingTow": {
+      "url": "https://yle.fi/a/74-20258284/64-3-313948",
+      "publishedAtUtc": "2026-11-22T13:22:46.129287Z",
+      "claim": "Yle reported Jukka-Pekka Lumilahti saying that towing preparations were underway and full extinguishment could only be completed in port. The report gives no tow start time.",
+      "sourceReceipt": {
+        "url": "https://yle.fi/a/74-20258284/64-3-313948",
+        "status": 200,
+        "bytes": 296648,
+        "sha256": "73bfd697f1a7dd53d4d60619fb0e259228f8bf06fb5056dbad24c36fdedeb0df",
+        "downloadCompletedAtUtc": "2026-11-22T13:24:03.202875+00:00"
+      }
+    }
+  }
 }

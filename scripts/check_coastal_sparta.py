@@ -98,6 +98,14 @@ def verify_official_followup():
     assert tow['state'] == 'start-unconfirmed' and tow['startedAtUtc'] is None
     for field in ('plan', 'morningUpdate', 'preparation'):
         assert tow[field]['publishedAtUtc'] in page and tow[field]['url'] in page
+    reports = record['laterReports']
+    for report in reports.values():
+        assert report['publishedAtUtc'] in page and report['url'] in page
+        assert datetime.fromisoformat(report['sourceReceipt']['downloadCompletedAtUtc']) > datetime.fromisoformat(report['publishedAtUtc'])
+    assert tow['latestEvidence'] == 'laterReports.briefingTow'
+    assert reports['heatCameraInterview']['recordingAtUtc'] is None
+    assert reports['heatCameraInterview']['containsThermalFrames'] is False
+    assert reports['briefingOpening']['broadcastUrl'] in page
 
     media = record['media']
     receipt = read_json(FOLLOWUP / media['receipt'])
@@ -105,6 +113,9 @@ def verify_official_followup():
     assert not any(media[field] for field in ('exifPresent', 'gpsDirectoryPresent', 'xmpPresent', 'iptcLocationPresent'))
     assert parsedate_to_datetime(receipt['lastModified']) == datetime.fromisoformat(media['httpLastModifiedUtc'])
     assert media['httpLastModifiedUtc'] in page and media['receipt'] in page
+    recheck = media['afterBriefingStarted']['filesTabReceipt']['downloadCompletedAtUtc']
+    assert datetime.fromisoformat(recheck) > datetime.fromisoformat(reports['briefingTow']['publishedAtUtc'])
+    assert recheck.replace('+00:00', 'Z') in page
 
 
 def verify_clocks():
