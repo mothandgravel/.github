@@ -1,0 +1,115 @@
+{
+  "schema": "mg.coastal-watch.sparta-regional-satellite-followup.v1",
+  "retrievalMinuteUtc": "2026-11-22T12:55:00Z",
+  "retrievalMinuteEet": "2026-11-22T14:55:00+02:00",
+  "earlierRetrievalMinuteUtc": "2026-11-22T12:19:00Z",
+  "regionalBboxWsen": [
+    23,
+    59,
+    28.5,
+    61
+  ],
+  "scope": "Regional EUMETSAT rendered weather products and NASA CMR/Copernicus STAC catalogue listings. Product time is not an individual pixel clock. Catalogue granules are not detections.",
+  "catalogues": [
+    {
+      "provider": "Copernicus Sentinel-2 L2A",
+      "earlierCount": 0,
+      "earlierFile": "../2026-11-21-sparta-view/22-sentinel-2-l2a-day-catalogue.json",
+      "earlierReceipt": "../2026-11-21-sparta-view/22-sentinel-2-l2a-day-catalogue.json.receipt.json",
+      "afternoonCount": 20,
+      "file": "22-sentinel-2-l2a-day-catalogue.json",
+      "receipt": "22-sentinel-2-l2a-day-catalogue.json.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:20.047278+00:00"
+    },
+    {
+      "provider": "Copernicus Sentinel-1 GRD",
+      "earlierCount": 5,
+      "earlierFile": "../2026-11-21-sparta-view/22-sentinel-1-grd-day-catalogue.json",
+      "earlierReceipt": "../2026-11-21-sparta-view/22-sentinel-1-grd-day-catalogue.json.receipt.json",
+      "afternoonCount": 5,
+      "file": "22-sentinel-1-grd-day-catalogue.json",
+      "receipt": "22-sentinel-1-grd-day-catalogue.json.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:19.895737+00:00"
+    },
+    {
+      "provider": "NOAA-20 VIIRS imagery",
+      "earlierCount": 5,
+      "earlierFile": "../2026-11-21-sparta-view/22-cmr-VJ102IMG_NRT.json",
+      "earlierReceipt": "../2026-11-21-sparta-view/22-cmr-VJ102IMG_NRT.json.receipt.json",
+      "afternoonCount": 6,
+      "file": "22-cmr-VJ102IMG_NRT.json",
+      "receipt": "22-cmr-VJ102IMG_NRT.json.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:18.843157+00:00"
+    },
+    {
+      "provider": "NOAA-21 VIIRS imagery",
+      "earlierCount": 4,
+      "earlierFile": "../2026-11-21-sparta-view/22-cmr-VJ202IMG_NRT.json",
+      "earlierReceipt": "../2026-11-21-sparta-view/22-cmr-VJ202IMG_NRT.json.receipt.json",
+      "afternoonCount": 6,
+      "file": "22-cmr-VJ202IMG_NRT.json",
+      "receipt": "22-cmr-VJ202IMG_NRT.json.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:19.416690+00:00"
+    },
+    {
+      "provider": "NOAA-20 VIIRS active-fire granule catalogue",
+      "earlierCount": 5,
+      "earlierFile": "../2026-11-21-sparta-view/22-cmr-VJ114IMG_NRT.json",
+      "earlierReceipt": "../2026-11-21-sparta-view/22-cmr-VJ114IMG_NRT.json.receipt.json",
+      "afternoonCount": 6,
+      "file": "22-cmr-VJ114IMG_NRT.json",
+      "receipt": "22-cmr-VJ114IMG_NRT.json.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:18.856687+00:00"
+    },
+    {
+      "provider": "NOAA-21 VIIRS active-fire granule catalogue",
+      "earlierCount": 4,
+      "earlierFile": "../2026-11-21-sparta-view/22-cmr-VJ214IMG_NRT.json",
+      "earlierReceipt": "../2026-11-21-sparta-view/22-cmr-VJ214IMG_NRT.json.receipt.json",
+      "afternoonCount": 6,
+      "file": "22-cmr-VJ214IMG_NRT.json",
+      "receipt": "22-cmr-VJ214IMG_NRT.json.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:19.491478+00:00"
+    }
+  ],
+  "eumetsatCatalogues": [
+    {
+      "file": "22-eumetsat-domain.xml",
+      "receipt": "22-eumetsat-domain.xml.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:19.554434+00:00"
+    },
+    {
+      "file": "22-eumetsat-ir105_hrfi-domain.xml",
+      "receipt": "22-eumetsat-ir105_hrfi-domain.xml.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:19.729423+00:00"
+    },
+    {
+      "file": "22-eumetsat-rgb_firetemperature-domain.xml",
+      "receipt": "22-eumetsat-rgb_firetemperature-domain.xml.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:19.895136+00:00"
+    }
+  ],
+  "eumetsatRenders": [
+    {
+      "productLabelUtc": "2026-11-22T12:30:00.000Z",
+      "layer": "mtg_fd:rgb_firetemperature",
+      "file": "eumetsat-firetemperature-22-1230z.png",
+      "receipt": "eumetsat-firetemperature-22-1230z.png.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:21.630361+00:00"
+    },
+    {
+      "productLabelUtc": "2026-11-22T12:30:00.000Z",
+      "layer": "mtg_fd:rgb_geocolour",
+      "file": "eumetsat-geocolour-22-1230z.png",
+      "receipt": "eumetsat-geocolour-22-1230z.png.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:20.422984+00:00"
+    },
+    {
+      "productLabelUtc": "2026-11-22T12:30:00.000Z",
+      "layer": "mtg_fd:ir105_hrfi",
+      "file": "eumetsat-ir105-22-1230z.png",
+      "receipt": "eumetsat-ir105-22-1230z.png.receipt.json",
+      "requestedAtUtc": "2026-11-22T12:55:21.098017+00:00"
+    }
+  ]
+}

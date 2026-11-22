@@ -1,0 +1,20 @@
+{
+  "file": "22-sentinel-1-grd-day-catalogue.json",
+  "url": "https://stac.dataspace.copernicus.eu/v1/search?collections=sentinel-1-grd&datetime=2026-11-21T22%3A00%3A00Z%2F2026-11-22T21%3A59%3A59.999000Z&bbox=21%2C58%2C31%2C61&limit=50&fields=id%2Ccollection%2Cproperties%2Clinks",
+  "requestedAtUtc": "2026-11-22T12:55:19.895737+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://stac.dataspace.copernicus.eu/v1/search?collections=sentinel-1-grd&datetime=2026-11-21T22%3A00%3A00Z%2F2026-11-22T21%3A59%3A59.999000Z&bbox=21%2C58%2C31%2C61&limit=50&fields=id%2Ccollection%2Cproperties%2Clinks",
+  "downloadCompletedAtUtc": "2026-11-22T12:55:20.263855+00:00",
+  "bytes": 18877,
+  "sha256": "9784e276bb64dfedb949ec136784475da974cc2ea620e41c29b3fe419b430573",
+  "wireBytes": 2458,
+  "wireSha256": "1c67fb5d11b29b52f0629008e9bccc60c610b36c9244ca8b4776b24b8956ef69",
+  "contentEncoding": "gzip",
+  "serverDate": "Sun, 22 Nov 2026 12:55:20 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "application/json",
+  "contentRange": null
+}

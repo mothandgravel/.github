@@ -1,0 +1,81 @@
+{
+  "schema": "mg.coastal-watch.sparta-official-followup.v1",
+  "checkedAtUtc": "2026-11-22T12:55:57.055255+00:00",
+  "tow": {
+    "state": "start-unconfirmed",
+    "startedAtUtc": null,
+    "plan": {
+      "url": "https://www.epressi.com/tiedotteet/turvallisuus/rajavartiolaitos-jatkaa-pelastustoiminnan-johtamista-suomenlahdella..html",
+      "publishedAtUtc": "2026-11-21T18:42:00Z",
+      "claim": "Finnish Border Guard plan to enable towing into Russia’s area of responsibility."
+    },
+    "morningUpdate": {
+      "url": "https://raja.fi/-/rajavartiolaitos-jatkaa-pelastustoiminnan-johtamista-suomenlahdella-1",
+      "publishedAtUtc": "2026-11-22T07:57:00Z",
+      "modifiedAtUtc": "2026-11-22T08:27:58.181Z",
+      "englishTranslationPublishedAtUtc": "2026-11-22T08:22:00Z",
+      "claim": "Continued firefighting and cooling, with ship stability constraining the use of water."
+    },
+    "preparation": {
+      "url": "https://yle.fi/a/74-20258284/64-3-313937",
+      "publishedAtUtc": "2026-11-22T11:47:29.993362Z",
+      "claim": "Yle relayed Ilja Iljin’s STT interview on preparations for a tow."
+    }
+  },
+  "media": {
+    "indexUrl": "https://www.epressi.com/uutishuoneet/rajavartiolaitos.html?tab=js-tabs-img&folder=Sparta-II",
+    "imageListingCount": 19,
+    "additionalSundayCaptionedImages": 8,
+    "filesTabResult": "No Results",
+    "file": "sunday-photo-07.jpg",
+    "receipt": "sunday-photo-07.jpg.receipt.json",
+    "credit": "Rajavartiolaitos / Finnish Border Guard",
+    "captionDate": "2026-11-22",
+    "captureAtUtc": null,
+    "publishedAtUtc": null,
+    "httpLastModifiedUtc": "2026-11-22T12:44:23Z",
+    "exifPresent": false,
+    "gpsDirectoryPresent": false,
+    "xmpPresent": false,
+    "iptcLocationPresent": false,
+    "scope": "The media-bank files tab is a bounded check. Its empty result leaves recordings published elsewhere unresolved."
+  },
+  "sourceReceipts": [
+    {
+      "url": "https://www.epressi.com/tiedotteet/turvallisuus/pelastustoimet-suomenlahdella-jatkuvat-rajavartiolaitoksen-johtovastuulla.html",
+      "status": 200,
+      "sha256": "d0e345fc48611da02ef51089db61da648c76fd6011a75f9fda3773058d92de02",
+      "downloadCompletedAtUtc": "2026-11-22T12:55:56.523013+00:00"
+    },
+    {
+      "url": "https://www.epressi.com/cms/ajax.html?block=10&customer-id=1708&folder=Sparta-II",
+      "status": 200,
+      "sha256": "912c6f51a2a86c34c3e86137fda7989db9fd935ee1cf8a00508c29042701e5ad",
+      "downloadCompletedAtUtc": "2026-11-22T12:55:56.824065+00:00"
+    },
+    {
+      "url": "https://www.epressi.com/cms/ajax.html?block=8&customer-id=1708&folder=Sparta-II",
+      "status": 200,
+      "sha256": "4ed73c603d5e6cfd2bd7cfa29d02e1b3b254b1c977f4b8f8f475d37d40aafe57",
+      "downloadCompletedAtUtc": "2026-11-22T12:55:56.701568+00:00"
+    },
+    {
+      "url": "https://raja.fi/en/-/rescue-operations-in-the-gulf-of-finland-continue-under-the-leadership-of-the-finnish-border-guard",
+      "status": 200,
+      "sha256": "cb6ce23d6faaf3b2353542fc0cb518f5cf9ccabbf991cf862c8430260c849177",
+      "downloadCompletedAtUtc": "2026-11-22T12:55:57.055255+00:00"
+    },
+    {
+      "url": "https://raja.fi/-/rajavartiolaitos-jatkaa-pelastustoiminnan-johtamista-suomenlahdella-1",
+      "status": 200,
+      "sha256": "41e3ffc0ee3a80f2ffe380ad4c4a0f74ac24d914e37a7bf68771099e61571e82",
+      "downloadCompletedAtUtc": "2026-11-22T12:55:56.466920+00:00"
+    },
+    {
+      "url": "https://raja.fi/uutiset-ja-tiedotteet",
+      "status": 200,
+      "sha256": "bcb2e07c0bda66ce5588f33068a1baf3132fcbdeacdb7cdbe6505344c57bf97e",
+      "downloadCompletedAtUtc": "2026-11-22T12:55:56.466983+00:00"
+    }
+  ]
+}

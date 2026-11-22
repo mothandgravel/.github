@@ -1,0 +1,20 @@
+{
+  "file": "22-cmr-VJ202IMG_NRT.json",
+  "url": "https://cmr.earthdata.nasa.gov/search/granules.json?short_name=VJ202IMG_NRT&bounding_box=23%2C59%2C28.5%2C61&temporal=2026-11-21T22%3A00%3A00Z%2C2026-11-22T21%3A59%3A59Z&page_size=100",
+  "requestedAtUtc": "2026-11-22T12:55:19.416690+00:00",
+  "firstPublicationUtc": null,
+  "originalReceiverTimeUtc": null,
+  "status": 200,
+  "finalUrl": "https://cmr.earthdata.nasa.gov/search/granules.json?short_name=VJ202IMG_NRT&bounding_box=23%2C59%2C28.5%2C61&temporal=2026-11-21T22%3A00%3A00Z%2C2026-11-22T21%3A59%3A59Z&page_size=100",
+  "downloadCompletedAtUtc": "2026-11-22T12:55:19.728497+00:00",
+  "bytes": 11938,
+  "sha256": "993392998bf432936039f7e9ed98c8e1333c89d60794fd982d4a9ac0ad866fd4",
+  "wireBytes": 2211,
+  "wireSha256": "77beb6ae26d33a84ca8d0f2938279454cbc558413cd3bd07a53096d4fc2bd7e0",
+  "contentEncoding": "gzip",
+  "serverDate": "Sun, 22 Nov 2026 12:55:19 GMT",
+  "lastModified": null,
+  "etag": null,
+  "contentType": "application/json;charset=utf-8",
+  "contentRange": null
+}
