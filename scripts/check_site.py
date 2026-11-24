@@ -466,7 +466,7 @@ def main() -> int:
             check(studio['name'] == 'Moth & Gravel' and studio['founder']['name'] == 'slideep',
                   f'{file.name}: public studio identity disagrees with visible copy')
             check(studio['location']['name'] == 'Finland', f'{file.name}: public location differs')
-            # ProfessionalService is allowed; a street address or a plain LocalBusiness needs verification first.
+            # A street address or LocalBusiness classification needs verification first.
             check(all('LocalBusiness' not in types(n) for n in graph) and 'address' not in studio,
                   f'{file.name}: unverified local business claim')
             page = next(n for n in graph if n['@type'] in ('WebPage', 'CollectionPage'))

@@ -18,11 +18,11 @@ Behind Moth & Gravel is [slideep](https://mothandgravel.com/#studio), with 25+ y
 
 One stubborn question, one artifact you can inspect and keep, then a decision about what to do next. Typically 1–2 weeks at a fixed fee. We agree on the scope and deliverable in writing before work starts.
 
-[See how a first piece of work runs](https://mothandgravel.com/#first-piece-of-work)
+[Explore studio services](https://mothandgravel.com/services/) · [See how a first piece of work runs](https://mothandgravel.com/#first-piece-of-work)
 
 ### Specimens
 
-- [Sohva Remote](https://mothandgravel.com/specimens/sohva/) is an interface study of how a phone remote shows what the TV last reported.
+- The [Sohva Remote design study](https://mothandgravel.com/specimens/sohva/) shows how a phone remote presents what the TV last reported. [Sohva Remote for Android](https://mothandgravel.com/sohva/)
 - [Ajo maintenance bench](https://mothandgravel.com/specimens/maintenance-acceptance/) records a real file change with a deliberately interrupted reply and shows the evidence available before trying again.
 - [Coastal watch](https://mothandgravel.com/specimens/coastal-watch/) uses synthetic tracks on a real coastline to show what a chart can tell you after position updates stop.
 

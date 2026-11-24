@@ -21,7 +21,8 @@ class Links(HTMLParser):
 class Wayfinding(unittest.TestCase):
     def test_all_pages_use_the_same_real_destinations(self):
         registry = json.loads((ROOT / 'assets/wayfinding.json').read_text())
-        expected = {x['href'] for group in registry.values() for x in group}
+        expected = {x['href'] for group in ('routes', 'shortcuts', 'studio') for x in registry[group]}
+        expected.add(registry['services']['href'])
         for page in ROOT.rglob('*.html'):
             if page.relative_to(ROOT).parts[0] == 'sohva':
                 continue  # the app's own site, with its own masthead
