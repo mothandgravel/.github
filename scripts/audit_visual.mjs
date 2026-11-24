@@ -215,7 +215,7 @@ try {
         viewportWidth: window.innerWidth,
         documentWidth: document.documentElement.scrollWidth,
         heroHeading: box("#hero-title"),
-        heroImage: box(".hero-visual"),
+        heroImage: box(".hero-portrait"),
         heroAction: box(".button-brass"),
         navVisible: getComputedStyle(document.querySelector(".collection-nav")).display !== "none",
         brandMarkVisible: getComputedStyle(document.querySelector(".brand-stamp")).display !== "none",
@@ -252,6 +252,14 @@ try {
     assert(report.heroHeading.y - report.header.height < 230, viewport.name + ': hero statement is pushed down');
     assert(report.heroActions.y + report.heroActions.height <= viewport.height, viewport.name + ': hero actions fall below the initial viewport');
     assert(await page.locator('.hero-actions a').count() === 2, viewport.name + ': expected two hero actions');
+    const portrait = report.heroImage;
+    assert(portrait?.width > 0, viewport.name + ': studio portrait is missing');
+    if (portrait) {
+      const clearsActions = viewport.width > 900
+        ? portrait.x >= report.heroActions.x + report.heroActions.width
+        : portrait.y >= report.heroActions.y + report.heroActions.height;
+      assert(clearsActions, viewport.name + ': portrait overlaps the hero actions');
+    }
     for (const section of ['studio', 'contact']) {
       assert(await page.locator(`#${section}-title`).evaluate(el => el.scrollWidth <= el.clientWidth + 2),
         viewport.name + ': ' + section + ' heading is clipped');

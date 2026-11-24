@@ -44,7 +44,7 @@ try {
     await page.addInitScript(theme=>{localStorage.setItem('moth-and-gravel-theme',theme);},theme);
     await page.goto(origin,{waitUntil:'networkidle'});
     assert(!requested.some(url=>/moth-(interlude|choreography|rig)/.test(url)),label+': scene fetched during opening');
-    assert(await page.locator('.moth-art').evaluate(el=>getComputedStyle(el).animationName==='none'),label+': hero still loops');
+    assert(await page.locator('.hero .moth-art').count()===0,label+': the retired hero moth plate is present');
     await ready(page);
     await state(page,'playing');
     const questionBefore = await room(page).locator('.moth-question').boundingBox();
