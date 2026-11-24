@@ -34,7 +34,12 @@ def build(check=False):
     website = {'@type': 'WebSite', '@id': DOMAIN + '#website', 'url': DOMAIN,
                'name': 'Moth & Gravel', 'inLanguage': 'en',
                'publisher': {'@id': organization['@id']}}
+    services = DOMAIN + 'services/'
+    telemetry_service = services + 'telemetry-interface-design/'
     pages = [(ROOT / 'docs/index.html', DOMAIN, 'Moth & Gravel — Independent Software & Design Studio', None),
+             (ROOT / 'docs/services/index.html', services, 'Interface Design & Software Engineering | Moth & Gravel', None),
+             (ROOT / 'docs/services/telemetry-interface-design/index.html', telemetry_service,
+              'Operator Interface & Telemetry Dashboard Design | Moth & Gravel', None),
              (ROOT / 'docs/specimens/index.html', DOMAIN + 'specimens/', 'Specimens — Moth & Gravel', None),
              (ROOT / 'docs/threads/something-happened/index.html', DOMAIN + 'threads/something-happened/', 'Something happened. I can’t tell what.', None),
              (ROOT / 'docs/notes/index.html', DOMAIN + 'notes/', 'Field Notes — Moth & Gravel', None),
@@ -88,6 +93,15 @@ def build(check=False):
                 page['mainEntity'] = {'@id': url + '#entries'}
             elif url.endswith('questions/'):
                 crumbs.append(('Shape a brief', url))
+            elif url.startswith(services):
+                crumbs.append(('Services', services))
+                if url == telemetry_service:
+                    name = 'Operator interface and telemetry dashboard design'
+                    crumbs.append((name, url))
+                    service = {'@type': 'Service', '@id': url + '#service', 'url': url, 'name': name,
+                               'serviceType': name, 'provider': {'@id': organization['@id']}}
+                    page['mainEntity'] = {'@id': service['@id']}
+                    graph.append(service)
             elif '/threads/' in url:
                 crumbs.append((title, url))
             elif '/investigations/' in url:

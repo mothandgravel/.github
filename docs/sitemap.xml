@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://mothandgravel.com/</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://mothandgravel.com/</loc><lastmod>2026-11-24</lastmod></url>
+  <url><loc>https://mothandgravel.com/services/</loc></url>
+  <url><loc>https://mothandgravel.com/services/telemetry-interface-design/</loc></url>
   <url><loc>https://mothandgravel.com/sohva/</loc><lastmod>2026-10-27</lastmod></url>
   <url><loc>https://mothandgravel.com/sohva/privacy/</loc><lastmod>2026-10-27</lastmod></url>
   <url><loc>https://mothandgravel.com/sohva/privacy/fi/</loc><lastmod>2026-10-27</lastmod></url>
@@ -22,7 +24,7 @@
   <url><loc>https://mothandgravel.com/notes/005-green-light.html</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://mothandgravel.com/notes/006-map-leaves-room.html</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://mothandgravel.com/notes/007-fast-signals.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://mothandgravel.com/questions/</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://mothandgravel.com/questions/</loc><lastmod>2026-11-24</lastmod></url>
   <url><loc>https://mothandgravel.com/notes/008-one-undo.html</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://mothandgravel.com/notes/009-place-to-stand.html</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://mothandgravel.com/notes/010-almost-the-same.html</loc><lastmod>2026-10-15</lastmod></url>
