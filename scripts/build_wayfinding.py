@@ -14,6 +14,11 @@ def load(name):
     return json.loads((ROOT / 'assets' / name).read_text(encoding='utf-8'))
 
 
+def studio_pages():
+    # Evidence files keep their archived bytes, and Sohva has its own site shell.
+    return sorted(page for page in ROOT.rglob('*.html') if page.relative_to(ROOT).parts[0] not in ('data', 'sohva'))
+
+
 def destination(href):
     url = urlsplit(href)
     assert href.startswith('/') and not url.netloc and not url.query, href
@@ -47,7 +52,7 @@ def local(href, page):
 def current(href, page):
     route = '/' + page.relative_to(ROOT).as_posix()
     route = route.removesuffix('index.html')
-    return href.endswith('/') and (route == href or (href in ['/specimens/', '/notes/'] and route.startswith(href)))
+    return href.endswith('/') and (route == href or (href in ['/services/', '/specimens/', '/notes/'] and route.startswith(href)))
 
 
 def link(item, page, extra=''):
@@ -62,10 +67,11 @@ def header(page, nav):
         label = f'<span class="nav-sheet-index mono" aria-hidden="true">{i:02}</span><span class="nav-sheet-label">{escape(item["label"])}</span><span class="nav-sheet-hint">{escape(item["hint"])}</span>'
         routes.append(link(item, page).replace(escape(item['label']) + '</a>', label + '</a>'))
     shortcuts = ''.join(f'<a class="nav-shortcut" href="{local(x["href"], page)}"><strong>{escape(x["label"])} ↗</strong><span>{escape(x["hint"])}</span></a>' for x in nav['shortcuts'])
-    studio = ''.join(link(x, page) for x in nav['studio'])
+    services = link(nav['services'], page)
+    studio = services + ''.join(link(x, page) for x in nav['studio'])
     return f'''<header class="site-header shared-header" id="top"><div class="header-inner shell">
 <a class="brand" href="{local('/', page)}" title="Moth &amp; Gravel home"><span class="brand-stamp" aria-hidden="true"><img src="{local('/assets/nav-mark.svg', page)}" width="44" height="44" alt=""></span><span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span></a>
-<nav class="collection-nav" aria-label="Collections">{''.join(link(x, page) for x in nav['routes'][:2])}{link(nav['routes'][3], page, ' class="collection-contact"')}</nav>
+<nav class="collection-nav" aria-label="Primary">{services}{''.join(link(x, page) for x in nav['routes'][:2])}{link(nav['routes'][3], page, ' class="collection-contact"')}</nav>
 <p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
 <button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
 <details class="studio-index"><summary class="menu-toggle" id="menu-toggle" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></summary>
@@ -122,15 +128,12 @@ def build(check=False):
         stops.append((path, url.fragment, index, stop))
     assert [x['id'] for x in items] == [f'{i:03}' for i in range(len(items), 0, -1)]
     assert len(nav['routes']) == 4 and len(nav['shortcuts']) == 3
-    for item in nav['routes'] + nav['shortcuts'] + nav['studio'] + items + [c for x in items for c in x.get('children', [])]:
+    for item in [nav['services']] + nav['routes'] + nav['shortcuts'] + nav['studio'] + items + [c for x in items for c in x.get('children', [])]:
         destination(item['href'])
     for item in items:
         if item.get('image'):
             assert (ROOT / item['image']).is_file(), item['image']
-    # The Sohva Remote pages are a faithful copy of the app's own site, with its own masthead and
-    # footer; the studio navigation is not written into them.
-    pages = sorted(p for p in ROOT.rglob('*.html') if p.relative_to(ROOT).parts[0] != 'sohva')
-    for page in pages:
+    for page in studio_pages():
         old = page.read_text(encoding='utf-8')
         text = slot(old, 'shared-header', header(page, nav), lambda s, b: re.sub(r'<header\b[^>]*class="site-header[^\"]*".*?</header>', lambda _: b, s, count=1, flags=re.S))
         assert '<!-- shared-header:start -->' in text, f'Missing masthead: {page}'

@@ -11,14 +11,12 @@ DOMAIN = 'https://mothandgravel.com/'
 def build(check=False):
     notes = sorted(json.loads((ROOT / 'docs/assets/notes.json').read_text()),
                    key=lambda n: int(n['id']), reverse=True)
-    # A professional service with a public enquiry address. ProfessionalService is a
-    # LocalBusiness subtype; it stays without a street address until one is verified.
     # TODO(owner): the founder's real name, the city (address), the Finnish business ID
     # (Y-tunnus, as 'vatID' or 'identifier') and a LinkedIn URL in 'sameAs' once confirmed.
     organization = {
-        '@type': ['Organization', 'ProfessionalService'], '@id': DOMAIN + '#studio',
+        '@type': 'Organization', '@id': DOMAIN + '#studio',
         'name': 'Moth & Gravel', 'url': DOMAIN,
-        'description': 'An independent software and design studio based in Finland. Interface design and software engineering for cloud, mobile and connected-device products, with an invitation to questions from anywhere.',
+        'description': 'An independent studio in Finland offering interface design and software engineering for cloud, mobile and connected products.',
         'logo': DOMAIN + 'assets/nav-mark.svg',
         'image': DOMAIN + 'assets/social-cover.png',
         'email': 'hello@mothandgravel.com',
@@ -36,7 +34,7 @@ def build(check=False):
                'publisher': {'@id': organization['@id']}}
     services = DOMAIN + 'services/'
     telemetry_service = services + 'telemetry-interface-design/'
-    pages = [(ROOT / 'docs/index.html', DOMAIN, 'Moth & Gravel — Independent Software & Design Studio', None),
+    pages = [(ROOT / 'docs/index.html', DOMAIN, 'Moth & Gravel — Design & Software Engineering in Finland', None),
              (ROOT / 'docs/services/index.html', services, 'Interface Design & Software Engineering | Moth & Gravel', None),
              (ROOT / 'docs/services/telemetry-interface-design/index.html', telemetry_service,
               'Operator Interface & Telemetry Dashboard Design | Moth & Gravel', None),

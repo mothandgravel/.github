@@ -16,9 +16,11 @@ try {
     const response=await page.goto(origin+'/specimens/',{waitUntil:'networkidle'});
     assert(response.status()===200,'Collection must return 200');
     assert(await page.locator('.specimen-entry').count()===10,'Ten specimen identities, including Sohva');
-    const links=page.locator('.collection-nav a');
-    for(let i=0;i<2;i++)assert(await links.nth(i).isVisible(),'Persistent collection link');
-    assert(await links.first().getAttribute('aria-current')==='page','Current collection state');
+    const primary=page.getByRole('navigation',{name:'Primary',exact:true});
+    for(const name of ['Services','Specimens','Field notes']) {
+      assert(await primary.getByRole('link',{name,exact:true}).isVisible(),`Persistent ${name} link`);
+    }
+    assert(await primary.getByRole('link',{name:'Specimens',exact:true}).getAttribute('aria-current')==='page','Current collection state');
     assert(await page.locator('.specimens-intro a').evaluate(el=>el.getBoundingClientRect().bottom<900),'Direct TNT action is within first phone screen');
     const closed=await page.locator('#menu-toggle').boundingBox();
     await page.locator('#menu-toggle').click();
@@ -54,7 +56,7 @@ try {
       const page=await browser.newPage({viewport:{width:375,height:850},javaScriptEnabled:fallback!=='no-js'});
       if(fallback==='blocked-script')await page.route('**/assets/site.js',route=>route.abort());
       await page.goto(origin+path,{waitUntil:'networkidle'});
-      assert(await page.locator('.collection-nav a').first().isVisible(),`${path} collection accessible without script`);
+      assert(await page.getByRole('navigation',{name:'Primary',exact:true}).getByRole('link',{name:'Services',exact:true}).isVisible(),`${path} services accessible without script`);
       await page.locator('#menu-toggle').click();
       assert(await page.locator('#primary-nav').isVisible(),`${path} native disclosure opens`);
       assert(await page.locator('.nav-shortcut').count()===3,`${path} shortcuts authored`);
