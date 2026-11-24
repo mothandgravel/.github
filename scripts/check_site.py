@@ -347,7 +347,6 @@ def main() -> int:
 
     check('https://github.com/mothandgravel/.github/tree/main/docs' in html, "Workbench source link is missing")
     check('https://github.com/mothandgravel/.github/tree/main/profile/assets' in html, "Workbench brand assets link is missing")
-    check('class="bench-ledger"' in html, "Early-days status is missing")
     check('notes/001-curiosity-with-calluses.html' in (ROOT / "sitemap.xml").read_text(encoding="utf-8"),
           "Published Field Note missing from sitemap")
 
@@ -488,8 +487,8 @@ def main() -> int:
                       'Machine-readable collection differs from the published archive')
         except (ValueError, KeyError, StopIteration, AttributeError) as error:
             check(False, f'{file.name}: invalid discovery graph ({error})')
-    check('studio-answers' in html and 'based in finland' in html.lower(),
-          'Machine identity must be backed by visible useful answers and location')
+    check('class="studio-copy"' in html and 'slideep in Finland' in html,
+          'Machine identity must be backed by the visible studio bio and location')
     for route in ('questions', 'workbench', 'workbench/return'):
         path = ROOT / route / 'index.html'
         check(path.is_file(), f'Missing {route} journey')
@@ -624,8 +623,11 @@ def main() -> int:
         check((ROOT / f'assets/playground/{toy}.mjs').is_file(), f'Missing playground toy {toy}')
     check('playground' not in re.sub(r'href="[^"]*"', '', html.split('<!-- home-style:end -->')[0]),
           'Toys and their styles must not load on the home page')
-    check('href="#contact">Start a conversation' in html, 'Missing early enquiry invitation')
-    check(html.count('mailto:hello@mothandgravel.com') >= 4, 'Missing private email route in header, band, contact and footer')
+    check({'first-piece-of-work', 'first-work', 'work', 'contact', 'contact-band'} <= parser.ids,
+          'Missing homepage engagement, compatibility, specimens or contact anchor')
+    for area in ('header-mail', 'contact-mail', 'footer-mail'):
+        check(re.search(fr'class="{area}"><a[^>]+href="mailto:hello@mothandgravel\.com[?"]', html),
+              f'Missing private email route in {area}')
     robots = (ROOT / 'robots.txt').read_text()
     check('Allow: /' in robots and 'Disallow: /' not in robots,
           'Published text must be crawlable')

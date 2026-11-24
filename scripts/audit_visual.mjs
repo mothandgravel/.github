@@ -47,13 +47,14 @@ const snap = async (page, name) => {
   await page.screenshot({ path: join(output, `${name}.png`), fullPage: true, animations: "disabled" });
 };
 
-async function inspectFirstWork(page, label, theme, width) {
-  const sheet = page.locator('#first-work');
-  // Bring deferred-rendered content into view before checking its rendered copy.
+async function inspectFirstWork(page, label) {
+  const sheet = page.locator('#first-piece-of-work');
   await sheet.scrollIntoViewIfNeeded();
   assert(await sheet.locator('h2').isVisible(), label + ': first engagement is missing');
+  assert(await sheet.evaluate(el => el.previousElementSibling?.id === 'services'),
+    label + ': first engagement does not follow services');
   const geometry = await sheet.evaluate(el => {
-    const targets = [el, ...el.querySelectorAll('h2,h3,.button')];
+    const targets = [el, ...el.querySelectorAll('h2,h3,h4,p,.button')];
     return targets.every(n => n.scrollWidth <= n.clientWidth + 2) && el.getBoundingClientRect().right <= innerWidth + 1;
   });
   assert(geometry, label + ': first-engagement heading, material or action is clipped');
@@ -61,6 +62,8 @@ async function inspectFirstWork(page, label, theme, width) {
   assert(await sheet.locator('a[href="./questions/"]').count() >= 1, label + ': first engagement does not reach the brief');
   await sheet.locator('.first-work-foot').scrollIntoViewIfNeeded();
   assert(/Before any paid work/.test(await sheet.locator('.first-work-foot').innerText()), label + ': paid-work boundary missing');
+  assert(/Typically 1–2 weeks, fixed fee/.test(await sheet.locator('.first-work-duration').innerText()),
+    label + ': published engagement terms missing');
   assert(/Who it’s for/i.test(await sheet.locator('.first-work-terms').innerText()), label + ': first piece of work does not say who it is for');
   assert(await sheet.locator('.first-work-parts li').count() === 3, label + ': first piece of work does not list what the client receives');
 }
@@ -91,7 +94,7 @@ async function inspectSpecimens(page, label, theme, width) {
 async function captureLandingSections(page, theme, width) {
   if ([390,1440].includes(width)) {
     await page.evaluate(() => document.activeElement?.blur());
-    await page.locator('#first-work').screenshot({path:join(output,`first-work-${width}-${theme}.png`),animations:'disabled',style:'.site-header,.skip-link{visibility:hidden!important}'});
+    await page.locator('#first-piece-of-work').screenshot({path:join(output,`first-work-${width}-${theme}.png`),animations:'disabled',style:'.site-header,.skip-link{visibility:hidden!important}'});
     await page.locator('.work-grid').screenshot({path:join(output, `specimens-${width}-${theme}.png`),animations:'disabled',style:'.site-header,.skip-link{visibility:hidden!important}'});
   }
 }
@@ -222,19 +225,14 @@ try {
           document.querySelector("#hero-title").clientWidth + 2,
         workHeadingFits: document.querySelector("#work-title").scrollWidth <=
           document.querySelector("#work-title").clientWidth + 2,
-        ledgerColumns: getComputedStyle(document.querySelector(".bench-ledger")).gridTemplateColumns.split(/\s+/).length,
+        header: box(".site-header"),
+        heroActions: box(".hero-actions"),
         workColumns: getComputedStyle(document.querySelector(".work-grid")).gridTemplateColumns.split(/\s+/).length,
         workCards: Array.from(document.querySelectorAll(".work-card")).map(card => {
           const rect = card.getBoundingClientRect();
           return { left: Math.round(rect.left), top: Math.round(rect.top),
             bottom: Math.round(rect.bottom), width: Math.round(rect.width) };
         }),
-        bandContentFits: (() => {
-          const band = document.querySelector(".statement-band").getBoundingClientRect();
-          const strong = document.querySelector(".band-inner strong");
-          return strong.getBoundingClientRect().right <= band.right + 1 &&
-            strong.scrollWidth <= strong.clientWidth + 1;
-        })(),
         imagesLoaded: Array.from(document.images).every(img => img.complete && img.naturalWidth > 0),
       };
     });
@@ -245,20 +243,22 @@ try {
     assert(await page.locator(".work-card-link").count() === 3, viewport.name + ": expected 3 related specimen studies");
     assert(await page.locator(`.note-feature .editorial-link[href="./notes/${featured.slug}"]`).count() === 1,
       viewport.name + ": Selected Field Note is not an editorial feature");
-    assert(await page.locator('.bench-ledger a[href="./notes/"]').count() === 1,
-      viewport.name + ": studio status should link to the Field Notes collection");
     assert(await page.locator('#studio h2').isVisible(), viewport.name + ': studio introduction missing');
     assert(await page.locator('#contact a[href*="issues/new?template=signal.yml"]').count() === 1,
       viewport.name + ': public contact route missing');
     assert(await page.locator('#field-notes a[href="./notes/feed.xml"]').count() === 1,
       viewport.name + ': RSS invitation missing');
-    assert(await page.locator(".bench-ledger").count() === 1, viewport.name + ": studio status is not visible");
-    assert(report.bandContentFits, `${viewport.name}: slogan is clipped inside its banner`);
     assert(report.heroHeadingFits, `${viewport.name}: hero headline overflows its container`);
+    assert(report.heroHeading.y - report.header.height < 230, viewport.name + ': hero statement is pushed down');
+    assert(report.heroActions.y + report.heroActions.height <= viewport.height, viewport.name + ': hero actions fall below the initial viewport');
+    assert(await page.locator('.hero-actions a').count() === 2, viewport.name + ': expected two hero actions');
+    for (const section of ['studio', 'contact']) {
+      assert(await page.locator(`#${section}-title`).evaluate(el => el.scrollWidth <= el.clientWidth + 2),
+        viewport.name + ': ' + section + ' heading is clipped');
+    }
     assert(report.workHeadingFits, `${viewport.name}: Workbench headline overflows its container`);
     assert(report.heroHeadingLines === 3,
       `${viewport.name}: headline wraps across ${report.heroHeadingLines} lines; target is 3`);
-    if (viewport.width <= 660) assert(report.ledgerColumns === 1, viewport.name + ": workbench status must use a readable single column");
     const expectedColumns = viewport.width <= 1100 ? 1 : 3;
     assert(report.workColumns === expectedColumns,
       `${viewport.name}: expected ${expectedColumns} work-card columns, found ${report.workColumns}`);
@@ -286,7 +286,7 @@ try {
       `${viewport.name}: hero heading overlaps its action`);
     assert(errors.length === 0, `${viewport.name}: browser errors: ${errors.join("; ")}`);
 
-    await inspectFirstWork(page, viewport.name + " night", "night", viewport.width);
+    await inspectFirstWork(page, viewport.name + " night");
     await inspectSpecimens(page, viewport.name + " night", "night", viewport.width);
     report.nightCardContrast = await sampleCardContrast(page, `${viewport.name} night`);
     if (viewport.name === "wide-desktop" || viewport.name === "phone") {
@@ -311,7 +311,7 @@ try {
       `${viewport.name}: afterlight preference did not persist on reload`);
     assert((await theme.textContent()).trim() === "Theme: Afterlight",
       `${viewport.name}: reloaded theme control does not name the saved setting`);
-    await inspectFirstWork(page, viewport.name + " afterlight", "afterlight", viewport.width);
+    await inspectFirstWork(page, viewport.name + " afterlight");
     await inspectSpecimens(page, viewport.name + " afterlight", "afterlight", viewport.width);
     report.afterlightCardContrast = await sampleCardContrast(page, `${viewport.name} afterlight`);
     if (viewport.name === "wide-desktop" || viewport.name === "phone") {
@@ -652,18 +652,32 @@ try {
   await newNote.close();
   const enquiry = await browser.newPage({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false, reducedMotion: 'reduce' });
   await enquiry.goto(origin, { waitUntil: 'load' });
-  await enquiry.locator('.hero-actions a[href="#contact"]').click();
-  assert(enquiry.url().endsWith('#contact'), 'Hero enquiry does not reach contact');
+  const headingRevealed = heading => enquiry.locator(heading).evaluate(el => {
+    const rect = el.getBoundingClientRect();
+    return rect.top >= document.querySelector('.site-header').getBoundingClientRect().bottom - 1 && rect.bottom <= innerHeight;
+  });
+  const expectAnchor = async (link, hash, heading) => {
+    await link.click();
+    assert(enquiry.url().endsWith(hash), `Link did not reach ${hash}`);
+    assert(await headingRevealed(heading), `Link did not reveal the heading at ${hash}`);
+  };
+  const expectLegacyAnchor = async (hash, heading) => {
+    await enquiry.goto(origin + '/' + hash, { waitUntil: 'load' });
+    assert(await enquiry.locator(hash + ':target').count() === 1, `Legacy anchor ${hash} is missing`);
+    assert(await headingRevealed(heading), `Legacy anchor ${hash} did not reveal its heading`);
+  };
+  await expectAnchor(enquiry.locator('.hero-actions a[href="#work"]'), '#work', '#work-title');
+  await expectAnchor(enquiry.locator('.hero-actions a[href="#first-piece-of-work"]'), '#first-piece-of-work', '#first-work-title');
+  await expectAnchor(enquiry.locator('#services a[href="#first-piece-of-work"]'), '#first-piece-of-work', '#first-work-title');
+  await expectAnchor(enquiry.locator('#first-piece-of-work a[href="#contact"]'), '#contact', '#contact-title');
   assert(await enquiry.locator('#contact a[href^="mailto:hello@mothandgravel.com"]').first().isVisible(), 'Email route is hidden');
   assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Public enquiry route is hidden');
-  await enquiry.locator('#contact a[href="#first-work"]').click();
-  assert(enquiry.url().endsWith('#first-work'), 'Contact does not explain the first engagement');
-  await enquiry.locator('#first-work a[href="./questions/"]').first().click();
+  await expectAnchor(enquiry.locator('#contact a[href="#first-piece-of-work"]'), '#first-piece-of-work', '#first-work-title');
+  await enquiry.locator('#first-piece-of-work a[href="./questions/"]').click();
   assert(enquiry.url().endsWith('/questions/'), 'First engagement does not reach the actual question sheet');
   assert(await enquiry.locator('#making').isVisible(), 'First engagement depends on script-only intake');
-  await enquiry.goto(origin + '/#studio', { waitUntil: 'load' });
-  await enquiry.locator('.studio-answers summary').first().click();
-  assert(await enquiry.locator('.studio-answers details').first().getAttribute('open') !== null, 'Useful answers fail without JavaScript');
+  await expectLegacyAnchor('#first-work', '#first-work-title');
+  await expectLegacyAnchor('#contact-band', '#contact-title');
   await enquiry.close();
   // Ensure this is a real raster asset, not an SVG-only sharing fallback.
   const coverResponse = await browser.newPage();
