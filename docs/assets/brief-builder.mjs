@@ -31,7 +31,11 @@ function readSaved() {
 function values() {
   return Object.fromEntries([
     ...groups.map(name => [name, [...intake.querySelectorAll('input[name="' + name + '"]:checked')].map(input => input.value)]),
-    ...textInputs.map(id => [id, restoredText.get(id) ?? document.getElementById(id).value]),
+    ...textInputs.map(id => {
+      const value = document.getElementById(id).value;
+      const original = restoredText.get(id);
+      return [id, original?.replace(/\n/g, ' ') === value ? original : value];
+    }),
   ]);
 }
 
@@ -78,6 +82,14 @@ let saved = readSaved();
 restore(saved);
 let sections = briefSections(values());
 preview.value = initialBrief(saved, sections);
+
+window.addEventListener('pageshow', () => {
+  // History traversal can restore form values after the module and pageshow run.
+  setTimeout(() => {
+    sections = briefSections(values());
+    updateActions();
+  }, 0);
+});
 
 let copyRequest = 0;
 function refresh() {

@@ -188,6 +188,29 @@ try {
   assert(await history.locator('#difficulty').isVisible(),'Back across the in-page link keeps the active step');
   await history.goBack();
   assert(await history.locator('#making').isVisible(),'Back across a step restores the earlier step');
+  await history.getByLabel('Connected device / telemetry',{exact:true}).check();
+  await step(history,2);
+  await history.getByLabel('Working prototype',{exact:true}).check();
+  const manual = (await preview(history).inputValue()) + '\n\nKeep my manual note.';
+  await preview(history).fill(manual);
+  await history.goto(origin+'/specimens/');
+  await history.goBack();
+  await open(history);
+  await history.waitForFunction(() => {
+    const text = document.getElementById('brief-text').value;
+    const email = new URL(document.getElementById('send-brief').href).searchParams.get('body');
+    return email.replace(/\r\n/g,'\n') === text;
+  });
+  const returned = await preview(history).inputValue();
+  // A full browser history traversal may restore native fields or load them fresh.
+  if (await history.getByLabel('Working prototype',{exact:true}).isChecked()) {
+    assert.equal(returned,manual);
+    await history.locator('#clear-artifact').click();
+    assert.doesNotMatch(await preview(history).inputValue(),/Working prototype/);
+    assert.match(await preview(history).inputValue(),/Keep my manual note/);
+  } else {
+    assert.equal(returned,'');
+  }
   await history.close();
 
   const denied = await browser.newContext({viewport:{width:320,height:740},reducedMotion:'reduce'});
