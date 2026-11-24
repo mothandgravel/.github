@@ -44,7 +44,8 @@ try {
     await page.addInitScript(theme=>{localStorage.setItem('moth-and-gravel-theme',theme);},theme);
     await page.goto(origin,{waitUntil:'networkidle'});
     assert(!requested.some(url=>/moth-(interlude|choreography|rig)/.test(url)),label+': scene fetched during opening');
-    assert(await page.locator('.hero .moth-art').count()===0,label+': the retired hero moth plate is present');
+    assert((await page.locator('.hero .visual-top').innerText()).includes('PLATE 001 / THE TWO NATURES'),label+': original moth plate is missing');
+    assert(await page.locator('.hero .moth-art').evaluate(el=>getComputedStyle(el).animationName==='none'),label+': hero moth animates');
     await ready(page);
     await state(page,'playing');
     const questionBefore = await room(page).locator('.moth-question').boundingBox();
@@ -114,7 +115,7 @@ try {
   await start(page);await room(page).locator('.moth-question a').click();
   await page.locator('#question-next').waitFor({state:'visible'});
   assert(page.url().endsWith('/questions/'),'Flight blocks the actual question route');
-  await page.locator('#question-next').click();await page.locator('#making').waitFor({state:'visible'});
+  await page.locator('#making').waitFor({state:'visible'});
   assert(await page.locator('#making').isVisible(),'Question route cannot reach the editable starting question');
   await page.close();
 

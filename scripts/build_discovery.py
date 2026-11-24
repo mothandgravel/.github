@@ -38,7 +38,7 @@ def build(check=False):
              (ROOT / 'docs/specimens/index.html', DOMAIN + 'specimens/', 'Specimens — Moth & Gravel', None),
              (ROOT / 'docs/threads/something-happened/index.html', DOMAIN + 'threads/something-happened/', 'Something happened. I can’t tell what.', None),
              (ROOT / 'docs/notes/index.html', DOMAIN + 'notes/', 'Field Notes — Moth & Gravel', None),
-             (ROOT / 'docs/questions/index.html', DOMAIN + 'questions/', 'Leave a loose end — Moth & Gravel', None),
+             (ROOT / 'docs/questions/index.html', DOMAIN + 'questions/', 'Shape a brief — Moth & Gravel', None),
              (ROOT / 'docs/specimens/connected-to-what/index.html', DOMAIN + 'specimens/connected-to-what/', 'The connection came back. Did the picture?', None),
              (ROOT / 'docs/specimens/whose-map/index.html', DOMAIN + 'specimens/whose-map/', 'Where are we, according to whom?', None),
              (ROOT / 'docs/specimens/coastal-watch/two-stations/index.html', DOMAIN + 'specimens/coastal-watch/two-stations/', 'Two shores. Different pictures.', None),
@@ -87,7 +87,7 @@ def build(check=False):
                                                for i, n in enumerate(notes)]}]
                 page['mainEntity'] = {'@id': url + '#entries'}
             elif url.endswith('questions/'):
-                crumbs.append(('Leave a loose end', url))
+                crumbs.append(('Shape a brief', url))
             elif '/threads/' in url:
                 crumbs.append((title, url))
             elif '/investigations/' in url:

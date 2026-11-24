@@ -100,6 +100,7 @@ try {
       await atFragment(page,'your-question','Return from note');
       await page.getByRole('link',{name:'Bring your version'}).click();
       await atFragment(page,'signals-context','Question-sheet prompt');
+      await page.locator('#journey-controls').waitFor({state:'visible'});
       assert(await page.locator('#making').inputValue()==='','Prompt does not fill visitor’s words');
       assert(await page.evaluate(()=>sessionStorage.getItem('mg-loose-end-v1'))===null,'Prompt creates no draft');
       await review(page,`thread-prompt-${theme}-${width}`,true);
@@ -107,18 +108,17 @@ try {
       await page.keyboard.press('Enter');
       assert(await page.locator('#signals-context').isVisible(),'Thread prompts remain available while the visitor writes');
       await page.keyboard.press('Tab');
-      assert(await page.evaluate(()=>document.activeElement.name)==='intent','Keyboard handoff reaches the visitor’s answers');
-      await page.locator('#question-next').click();
+      assert(await page.evaluate(()=>Boolean(document.activeElement.closest('#loose-end'))),'Keyboard handoff reaches the brief builder');
       await page.locator('#making').fill('People cannot tell whether their export finished.');
-      await page.locator('#question-back').click();
-      await page.waitForFunction(()=>document.querySelector('#question-progress').textContent.startsWith('1 /'),null,{timeout:5000});
-      assert(await page.locator('input[name="intent"]').first().isVisible(),'One guided Back press returns from the thread entrance to the first question');
-      await page.goForward();
+      await page.locator('#question-next').click();
+      await page.goBack();
       await page.locator('#making').waitFor({state:'visible'});
-      assert(await page.locator('#making').inputValue()==='People cannot tell whether their export finished.','Native Forward preserves the exact question after guided Back');
-      for(let i=0;i<4;i++) await page.locator('#question-next').click();
+      await page.goForward();
+      await page.locator('#difficulty').waitFor({state:'visible'});
+      assert(await page.locator('#making').inputValue()==='People cannot tell whether their export finished.','Native history preserves the exact question');
       const brief=await page.locator('#brief-text').inputValue();
       assert(brief.includes('export finished')&&!brief.includes('LiveConnect')&&!brief.includes('What did the surface say?'),'Brief contains only visitor’s words');
+      await page.locator('.brief-extras summary').click();
       const downloading=page.waitForEvent('download');await page.locator('#download-brief').click();
       assert((await readFile(await (await downloading).path(),'utf8'))===brief,'Download preserves literal brief');
       await page.locator('#carry-question').click();
@@ -126,6 +126,7 @@ try {
       assert(await page.locator('#carried-brief').textContent()===brief,'Workbench carries the exact visitor brief after the thread');
       assert(await page.locator('#original-question').textContent()==='People cannot tell whether their export finished.','Thread material stays separate from the carried question');
       await page.getByRole('link',{name:'Back to your question'}).click();
+      await page.locator('#journey-controls').waitFor({state:'visible'});
       assert(!await page.locator('#signals-context').isVisible(),'Ordinary return does not show an unrequested thread prompt');
       assert(await page.locator('#making').inputValue()==='People cannot tell whether their export finished.','Return keeps the visitor’s question');
     }
@@ -160,9 +161,9 @@ try {
   await page.evaluate(value=>{sessionStorage.setItem('mg-loose-end-v1',value);sessionStorage.setItem('mg-mending-workbench-v1','{"version":1,"note":"Keep this observation"}');},saved);
   await page.goto(origin+route);
   await page.getByRole('link',{name:'Bring your version'}).click();
+  await page.locator('#journey-controls').waitFor({state:'visible'});
   assert(await page.locator('#making').inputValue()==='My own question.','Existing question retained');
   assert(await page.locator('#brief-text').inputValue()==='My edited brief. Keep every word.','Edited brief retained');
-  assert(await page.locator('#materials').inputValue()==='private-marker-thread-201','Existing material retained');
   assert(await page.evaluate(()=>sessionStorage.getItem('mg-loose-end-v1'))===saved,'No draft mutation on arrival');
   assert((await page.evaluate(()=>sessionStorage.getItem('mg-mending-workbench-v1'))).includes('Keep this observation'),'Workbench observation retained');
   await page.getByRole('link',{name:'Write your version below'}).click();
@@ -178,7 +179,7 @@ try {
   await denied.addInitScript(()=>{for(const key of ['sessionStorage','localStorage']) Object.defineProperty(window,key,{get(){throw new Error('Storage blocked');}});});
   const deniedPage=await denied.newPage();
   await deniedPage.goto(origin+route);await deniedPage.getByRole('link',{name:'Bring your version'}).click();
-  await deniedPage.locator('#question-next').click();await deniedPage.locator('#making').fill('My signal is ambiguous.');
+  await deniedPage.locator('#making').fill('My signal is ambiguous.');
   assert(await deniedPage.locator('#making').inputValue()==='My signal is ambiguous.','Works when storage is denied');
   await denied.close();
 

@@ -1,423 +1,245 @@
-/** Browser audit for the actual intake -> local workbench journey. No enquiries sent. */
+/** Browser audit for the live brief builder and its optional, local workbench handoff. */
 import { launchAuditBrowser } from './audit_browser.mjs';
 import axe from 'axe-core';
-import { mkdir, writeFile, readFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { briefText, draftKey, roomKey } from '../docs/assets/loose-end-model-v2.mjs';
+
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
+const route = origin + '/questions/';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 await mkdir(output, { recursive: true });
 const browser = await launchAuditBrowser({ headless: true });
-const results = [], failures = [];
-const assert = (value, label) => { if (!value) failures.push(label); };
-const viewports = [{width:1440,height:900},{width:1024,height:768},{width:768,height:1024},{width:390,height:844},{width:320,height:740}];
-async function audit(page, label, capture = false) {
-  const geometry = await page.evaluate(() => ({ width: innerWidth, content: document.documentElement.scrollWidth }));
-  assert(geometry.content <= geometry.width + 1, label + ': horizontal overflow');
-  const noJS = label.endsWith('no-javascript');
-  if (!noJS) await page.addScriptTag({ content: axe.source });
-  const accessibility = noJS ? [] : await page.evaluate(async () => (await window.axe.run(document, { runOnly: { type:'tag', values:['wcag2a','wcag2aa','wcag21aa','wcag22aa'] } })).violations.map(v => ({id:v.id,targets:v.nodes.map(n=>n.target),details:v.nodes.map(n=>n.failureSummary)})));
-  accessibility.forEach(v => assert(false, label + ': axe ' + JSON.stringify(v)));
-  results.push({ label, geometry, accessibility, axeRan: !noJS });
-  if (capture) {
-    await page.evaluate(()=>{document.activeElement?.blur();window.scrollTo({top:0,behavior:'instant'});});
-    await page.waitForTimeout(100);
-    await page.screenshot({ path:join(output,label+'.png'), fullPage:true, animations:'disabled' });
-  }
+const results = [];
+const sizes = [[1440,900],[1024,768],[768,1024],[390,844],[320,740]];
+const marker = 'draft-only-324';
+const open = button => button.locator('#journey-controls').waitFor({state:'visible'});
+const preview = page => page.locator('#brief-text');
+const extras = page => page.locator('.brief-extras summary');
+const step = (page, i) => page.locator('[data-brief-step="'+i+'"]').click();
+
+function mailParams(href) {
+  const url = new URL(href);
+  assert.equal(url.protocol, 'mailto:');
+  assert.equal(url.pathname, 'hello@mothandgravel.com');
+  return url.searchParams;
 }
-async function next(page) { await page.locator('#question-next').click(); }
-async function makeBrief(page, text = 'A screen that helps someone find their footing.') {
-  await next(page);
-  await page.locator('#making').fill(text);
-  await next(page);
-  await page.locator('#difficulty').fill('The first step assumes too much.');
-  await page.locator('#people').fill('Someone making their first repair note.');
-  await next(page);
-  await page.locator('#outcome').fill('They know what to do next.');
-  await next(page);
-  await page.locator('#constraints').fill('Keep the existing system working.');
-  await next(page);
-}
+
 try {
-  for (const viewport of viewports) for (const theme of ['night','afterlight']) {
-    const context = await browser.newContext({viewport,reducedMotion:'reduce'});
-    await context.addInitScript(theme=>localStorage.setItem('moth-and-gravel-theme',theme),theme);
-    const page = await context.newPage();
-    const errors = [];
-    page.on('pageerror',e=>errors.push(e.message));
-    page.on('request',r=>{if(r.url().includes('private-prototype-marker')) errors.push('Existing material was fetched without an action');});
-    await page.goto(origin+'/questions/');
-    assert(await page.locator('html').getAttribute('data-theme')===theme,'The reviewed appearance matches its actual theme');
-    await page.locator('#question-progress').waitFor({state:'visible'});
-    assert(await page.locator('.question-boundary').isVisible(), 'Local-only boundary is visible before the first answer');
-    assert(await page.locator('#question-meter').evaluate(el=>el.value===1&&el.max===6), 'Progress starts at one of six');
-    assert(await page.locator('[data-question-number]').innerText()==='01','The folio begins at the real first step');
-    assert(await page.locator('.question-preview-fallback').isHidden(),'The native preview fallback does not compete with the explicit carry action');
-    const contrast = await page.evaluate(() => {
-      const link = document.querySelector('.journey-aside a');
-      const foreground=getComputedStyle(link).color, background=getComputedStyle(document.body).backgroundColor;
-      const luminance=color=>color.match(/[\d.]+/g).slice(0,3).map(Number).map(c=>{const v=c/255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((s,c,i)=>s+c*[.2126,.7152,.0722][i],0);
-      const fg=luminance(foreground),bg=luminance(background);
-      return {foreground,background,ratio:(Math.max(fg,bg)+.05)/(Math.min(fg,bg)+.05)};
+  for (const [width,height] of sizes) for (const theme of ['night','afterlight']) {
+    const page = await browser.newPage({viewport:{width,height},reducedMotion:'reduce',
+      colorScheme:theme==='night'?'dark':'light'});
+    const errors = [], requests = [];
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('request', request => requests.push({url:request.url(),method:request.method(),body:request.postData()}));
+    await page.goto(route);
+    await open(page);
+    assert.equal(await page.locator('html').getAttribute('data-theme'),theme);
+    assert.equal(await preview(page).inputValue(),'');
+    assert.equal(await page.locator('#loose-end [required], #loose-end [type=email]').count(),0);
+    assert.equal(await page.locator('[data-step]').count(),4);
+    for(let i=0;i<4;i++){
+      await step(page,i);
+      assert.equal(await page.locator('[data-step]:visible').count(),1);
+      assert.equal(await page.locator('[data-brief-step="'+i+'"]').getAttribute('aria-current'),'step');
+    }
+    await page.locator('#question-next').click();
+    assert(await preview(page).evaluate(el=>document.activeElement===el),'The last step can go straight to the empty editable brief');
+    await step(page,0);
+    await page.getByLabel('Interface where people hesitate',{exact:true}).check();
+    await page.getByLabel('Connected device / telemetry',{exact:true}).check();
+    await page.locator('#making').fill('Operator console for field units '+marker);
+    assert.match(await preview(page).inputValue(),/Interface where people hesitate\n- Connected device \/ telemetry\nOperator console/);
+    await page.getByLabel('Interface where people hesitate',{exact:true}).uncheck();
+    assert.doesNotMatch(await preview(page).inputValue(),/Interface where people hesitate/);
+    await page.locator('#question-next').click();
+    await page.getByLabel('System parts disagree on state',{exact:true}).check();
+    await page.getByLabel('Status looks green, nobody trusts it',{exact:true}).check();
+    await page.locator('#difficulty').fill('Two displays show different results.\nPeople retry the action.');
+    assert.match(await preview(page).inputValue(),/People retry the action\./);
+    await step(page,2);
+    await page.getByLabel('Working prototype',{exact:true}).check();
+    await page.getByLabel('Technical spike',{exact:true}).check();
+    assert.doesNotMatch(await preview(page).inputValue(),/Working prototype/);
+    await page.locator('#clear-artifact').click();
+    assert.doesNotMatch(await preview(page).inputValue(),/Technical spike/);
+    await page.getByLabel('Not sure — help narrow it',{exact:true}).check();
+    await step(page,3);
+    await page.getByLabel('Hardware/firmware is fixed',{exact:true}).check();
+    await page.getByLabel('Open timeline',{exact:true}).check();
+    await page.locator('#constraints').fill('The field terminal stays offline. A + B & C.');
+    let brief = await preview(page).inputValue();
+    assert.match(brief,/## First artifact\n- Not sure — help narrow it/);
+    assert.match(brief,/Hardware\/firmware is fixed\n- Open timeline\nThe field terminal/);
+    assert.equal(mailParams(await page.locator('#send-brief').getAttribute('href')).get('body').replace(/\r\n/g,'\n'),brief);
+    assert.match(mailParams(await page.locator('#send-brief').getAttribute('href')).get('subject'),/^A brief for Moth & Gravel/);
+    await preview(page).fill(brief.replace('People retry the action.','My exact manual note: “do not retry.”'));
+    await page.getByLabel('Open timeline',{exact:true}).uncheck();
+    brief = await preview(page).inputValue();
+    assert.match(brief,/My exact manual note: “do not retry\.”/);
+    assert.doesNotMatch(brief,/- Open timeline/);
+    await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.copiedBrief=text;}},configurable:true}));
+    await page.locator('#copy-brief').click();
+    assert.equal(await page.evaluate(()=>window.copiedBrief),brief);
+    assert.equal(await page.locator('#draft-status').textContent(),'Brief copied.');
+    await step(page,0);
+    const layout = await page.evaluate(() => {
+      const left = document.querySelector('.brief-controls').getBoundingClientRect();
+      const right = document.querySelector('.brief-output').getBoundingClientRect();
+      return { pageFits:document.documentElement.scrollWidth <= innerWidth+1,
+        placement:right.left >= left.right ? 'beside' : right.top >= left.bottom ? 'below' : 'overlap' };
     });
-    assert(contrast.ratio>=4.5,`intake-${theme}-${viewport.width}: rendered contact contrast `+JSON.stringify(contrast));
-    await audit(page,`intake-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
-    await next(page);
-    await next(page);
-    assert(await page.locator('#making').getAttribute('aria-invalid')==='true','Empty brief needs a focused, specific error');
-    assert(await page.locator('#making').evaluate(el=>el===document.activeElement),'Validation must focus the missing starting point');
-    await audit(page,`intake-error-${theme}-${viewport.width}`);
-    await page.locator('#making').fill('A screen that helps someone find their footing.');
-    await next(page);
-    if ([1440,320].includes(viewport.width)) await audit(page,`difficulty-${theme}-${viewport.width}`);
-    await next(page);
-    if ([1440,320].includes(viewport.width)) await audit(page,`outcome-${theme}-${viewport.width}`);
-    await next(page);
-    const withFollowups=[1440,320].includes(viewport.width);
-    if (withFollowups) {
-      for (const [key,value] of Object.entries({timing:'November, with a flexible date.',budget:'USD 2,000–4,000; still scoping.',materials:'https://example.invalid/private-prototype-marker'})) {
-        await page.locator(`[data-followup]:has(#${key}) summary`).click();
-        await page.locator('#'+key).fill(value);
-      }
-      await audit(page,`constraints-${theme}-${viewport.width}`,true);
+    assert.deepEqual(layout,{pageFits:true,placement:width>900?'beside':'below'});
+    await page.addScriptTag({content:axe.source});
+    const violations = await page.evaluate(async()=> (await window.axe.run('#loose-end',{
+      runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}
+    })).violations.map(v=>[v.id,v.nodes.map(n=>n.target)]));
+    assert.deepEqual(violations,[],width+' '+theme);
+    if ([1440,390].includes(width)){
+      await page.evaluate(()=>{document.activeElement.blur();document.getElementById('brief-text').scrollTop=0;scrollTo(0,0);});
+      await page.screenshot({path:join(output,`brief-builder-${width}-${theme}.png`),fullPage:width===390});
     }
-    await next(page);
-    assert(await page.locator('#question-meter').evaluate(el=>el.value===6), 'Review completes the progress meter');
-    assert(await page.locator('[data-question-number]').innerText()==='06','The folio follows the actual review step');
-    const fullBrief=await page.locator('#brief-text').inputValue();
-    assert(withFollowups ? fullBrief.includes('USD 2,000–4,000')&&fullBrief.includes('private-prototype-marker') : !fullBrief.includes('Working budget\n'), 'Optional follow-ups must be included only when answered');
-    await audit(page,`brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
-    await page.locator('#first-work-next summary').focus();
-    await page.keyboard.press('Enter');
-    assert(await page.locator('#first-work-next').getAttribute('open')!==null,'First-work explanation must be keyboard reachable');
-    assert((await page.locator('#brief-text').inputValue())===fullBrief,'Explaining the engagement must preserve the literal brief');
-    assert((await page.locator('#first-work-next').innerText()).includes('Before paid work begins'),'First-work explanation must name the agreement boundary');
-    await audit(page,`first-work-brief-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
-    const downloadPromise = page.waitForEvent('download');
-    await page.locator('#download-brief').click();
-    const download = await downloadPromise;
-    assert((await page.locator('.brief-keep > [data-room-feedback]').innerText()).includes('prepared for download'), 'Download confirmation stays beside the keep actions');
-    assert(await page.locator('.brief-keep > [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Download confirmation is within the visible viewport');
-    assert(await page.locator('[role="status"]').count()===1, 'Feedback has one live announcement channel');
-    const downloaded = await readFile(await download.path(),'utf8');
-    assert(downloaded.includes('find their footing'),'Download must include the visitor’s actual answers');
-    assert(!withFollowups||downloaded.includes('private-prototype-marker'),'Download must retain the material at the end of the brief');
-    await page.locator('#carry-question').click();
-    await page.locator('#your-question').waitFor({state:'visible'});
-    await page.waitForFunction(()=>{const r=document.getElementById('your-question').getBoundingClientRect();return r.top<innerHeight&&r.bottom>0;});
-    assert(new URL(page.url()).hash==='#your-question','The explicit carry arrives at the visitor’s own brief');
-    assert((await page.locator('#your-question').innerText()).includes('find their footing'),'Question handoff lost the visitor’s words');
-    await page.locator('#your-question summary').filter({hasText:'Open your original answers'}).click();
-    assert(!withFollowups||(await page.locator('#your-question dl').innerText()).includes('USD 2,000–4,000'),'Workbench must carry optional commercial context literally');
-    await page.locator('#your-question summary').filter({hasText:'Open your original answers'}).click();
-    await audit(page,`workbench-${theme}-${viewport.width}`,viewport.width===1440||viewport.width===320);
-    await page.locator('input[name="surface"][value="damage"]').check();
-    assert(await page.locator('[data-surface="damage"]').isVisible()&&!await page.locator('[data-surface="item"]').isVisible(),'Prototype selection must show the matching sketch');
-    await page.locator('#mark-wrong').click();
-    await page.locator('#annotation').fill('I do not know which choice fits me.');
-    await audit(page,`observation-${theme}-${viewport.width}`,viewport.width===320);
-    await page.locator('#pin-observation').click();
-    assert((await page.locator('#annotation-record').innerText()).startsWith('Start with the damage:'),'Observation must retain the inspected approach');
-    await page.locator('input[name="choice"][value="open"]').check();
-    assert((await page.locator('#recorded-choice').innerText())==='No draft choice recorded.','Choosing a radio must not silently commit a decision');
-    await page.locator('#record-choice').click();
-    await page.reload();
-    assert((await page.locator('#recorded-choice').innerText()).includes('Keep the question open'),'Recorded local choice must survive same-tab reload');
-    assert((await page.locator('#annotation-record').innerText()).includes('which choice fits me'),'Pinned observation must survive same-tab reload');
-    if (withFollowups) {
-      await page.goto(origin+'/questions/');
-      for (const [key,value] of Object.entries({timing:'November, with a flexible date.',budget:'USD 2,000–4,000; still scoping.',materials:'https://example.invalid/private-prototype-marker'})) {
-        assert(await page.locator('#'+key).inputValue()===value, 'Return must preserve '+key);
-        assert(await page.locator('#'+key).evaluate(el=>el.closest('details').open), 'Return must reopen answered '+key);
-      }
-      await page.goto(origin+'/workbench/');
-      await page.locator('#your-question').waitFor({state:'visible'});
-    }
-    await page.locator('#clear-room').click();
-    assert(!await page.locator('#your-question').isVisible(),'Clear draft must remove the carried question');
-    await page.goto(origin+'/questions/');
-    assert(await page.locator('#making').inputValue()==='','Cleared answers must not return');
-    for (const key of ['timing','budget','materials']) assert(await page.locator('#'+key).inputValue()==='', 'Cleared '+key+' must not return');
-    await page.locator('#clear-draft').click();
-    assert(await page.locator('#clear-draft').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().top>=document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().bottom<=innerHeight),`Clear keeps visible focus in ${theme}/${viewport.width}`);
-    assert(errors.length===0,JSON.stringify({viewport,theme,errors}));
-    await context.close();
-  }
-
-  // Exercise the actual lazy-loaded inbox UI against a wholly intercepted
-  // endpoint and a local challenge fixture. No enquiry reaches a real service.
-  for(const width of [1440,320]) for(const theme of ['night','afterlight']) {
-    const fixture=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
-    await fixture.addInitScript(theme=>{
-      localStorage.setItem('moth-and-gravel-theme',theme);
-      window.turnstile={render:(holder,options)=>{
-        const panel=document.createElement('div');
-        panel.dataset.challengeFixture='true';
-        panel.style.width=options.size==='compact'?'150px':'300px';
-        panel.style.height=options.size==='compact'?'140px':'65px';
-        panel.textContent='Privacy check fixture';
-        holder.append(panel);
-        options.callback('fixture-token');return 'fixture-widget';
-      },remove:()=>document.querySelectorAll('[data-challenge-fixture]').forEach(el=>el.remove()),reset:()=>{}};
-    },theme);
-    const deliveries=[];
-    await fixture.route('**/assets/enquiry-config.json',route=>route.fulfill({json:{enabled:true,endpoint:'https://studio-inbox.invalid/enquiries',turnstileSiteKey:'public-fixture-key'}}));
-    await fixture.route('https://studio-inbox.invalid/**',route=>{
-      if(route.request().method()==='POST') deliveries.push(JSON.parse(route.request().postData()));
-      return route.fulfill({status:200,headers:{'access-control-allow-origin':'*','access-control-allow-headers':'content-type','access-control-allow-methods':'POST, OPTIONS'},json:{ok:true}});
-    });
-    const p=await fixture.newPage();
-    await p.goto(origin+'/questions/');
-    const opening=await p.locator('.question-boundary').innerText();
-    await makeBrief(p,'A fictional report that left its reader uncertain.');
-    await p.locator('.enquiry-identity').waitFor({state:'visible'});
-    await p.waitForFunction(()=>getComputedStyle(document.querySelector('.enquiry-check')).containerType==='inline-size');
-    assert(await p.locator('.question-boundary').innerText()===opening,'The sending boundary stays true and unchanged when the inbox form loads');
-    assert(await p.locator('#brief-text').evaluate(el=>Boolean(el.compareDocumentPosition(document.querySelector('.enquiry-identity')) & Node.DOCUMENT_POSITION_FOLLOWING)),'The visitor reads the finished brief before signing it');
-    const literal='My edited brief.\nKeep the line break, the “words”, and <this text>.';
-    await p.locator('#brief-text').fill(literal);
-    const sendBeforeCheck=await p.locator('#enquiry-form button').evaluate(el=>el.getBoundingClientRect().top+scrollY);
-    await p.locator('#enquiry-name').fill('A fictional visitor');
-    await p.locator('[data-challenge-fixture]').waitFor({state:'visible'});
-    const sendAfterCheck=await p.locator('#enquiry-form button').evaluate(el=>el.getBoundingClientRect().top+scrollY);
-    assert(Math.abs(sendAfterCheck-sendBeforeCheck)<1,'The privacy-check footprint is reserved before signing moves the view');
-    await p.locator('#enquiry-email').fill('visitor@example.test');
-    assert(deliveries.length===0,'Editing and signing never sends the brief automatically');
-    await audit(p,`brief-sign-${theme}-${width}`,true);
-    await p.locator('#enquiry-form button[type="submit"]').click();
-    await p.locator('.enquiry-sent').waitFor({state:'visible'});
-    assert(deliveries.length===1&&deliveries[0].brief===literal,'Explicit fixture delivery preserves the visitor’s exact edited words');
-    assert(await p.locator('#brief-text').inputValue()===literal,'The kept brief is unchanged after fixture delivery');
-    await audit(p,`brief-fixture-sent-${theme}-${width}`);
-    await fixture.close();
-  }
-
-  const context = await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
-  const page = await context.newPage();
-  const requests = [];
-  page.on('request',r=>requests.push({url:r.url(),method:r.method(),body:r.postData()}));
-  await page.goto(origin+'/questions/');
-  const hostile = '<img src=x onerror="window.__draftInjection=1"> private-marker-983';
-  await makeBrief(page,hostile);
-  await page.locator('#brief-text').fill('My edited brief. private-marker-983');
-  await page.locator('#edit-answers').click();
-  await page.locator('#making').waitFor({state:'visible'});
-  await page.locator('#making').fill(hostile+' edited');
-  await next(page);await next(page);await next(page);await next(page);
-  assert(await page.locator('#brief-text').inputValue()==='My edited brief. private-marker-983','Returning from answers must preserve manual brief edits');
-  assert((await page.locator('.brief-document [data-room-feedback]').innerText()).includes('edits. They were kept'), 'Preserved edits are explained beside the brief');
-  await page.locator('#carry-question').click();
-  await page.locator('#your-question').waitFor({state:'visible'});
-  await page.locator('#your-question summary').filter({hasText:'Your edited brief'}).click();
-  assert((await page.locator('#carried-brief').innerText())==='My edited brief. private-marker-983','Handoff must preserve the edited brief separately from original answers');
-  assert(await page.evaluate(()=>!window.__draftInjection),'Visitor text must never execute as HTML');
-  await page.locator('#mark-wrong').click();
-  await page.locator('#annotation').fill(hostile);
-  await page.locator('#cancel-observation').click();
-  assert(await page.locator('#annotation-record').innerText()==='No observation pinned yet.','Cancelled observation must not be recorded');
-  assert(requests.every(r=>r.method==='GET'&&!r.url.includes('private-marker')&&!r.body),'Answers must not travel in requests or URLs');
-  await page.goto(origin+'/questions/');
-  await next(page); await next(page); await next(page); await next(page); await next(page);
-  assert(await page.locator('#brief-text').inputValue()==='My edited brief. private-marker-983','Returning from the room must restore the edited brief');
-  await page.locator('#clear-draft').click();
-  await makeBrief(page,'A replacement question.');
-  await page.locator('#carry-question').click();
-  assert(await page.locator('#annotation-record').innerText()==='No observation pinned yet.','A new question must not inherit an old project annotation');
-  assert(await page.locator('#recorded-choice').innerText()==='No draft choice recorded.','A new question must not inherit an old project choice');
-  results.push({label:'edits-cancellation-replacement-no-transmission',passed:true});
-  await context.close();
-
-  const historyPage = await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
-  await historyPage.goto(origin+'/questions/');
-  await historyPage.locator('input[name="intent"]').first().check();
-  await next(historyPage);
-  assert((await historyPage.locator('#making-help').innerText()).includes('possibility'),'Idea entrance must guide the next prompt');
-  await historyPage.locator('#making').fill('Keep my words when I go back.');
-  await next(historyPage);
-  await historyPage.goBack();
-  await historyPage.locator('#making').waitFor({state:'visible'});
-  assert(await historyPage.locator('#making').inputValue()==='Keep my words when I go back.','Browser Back must restore the preceding question with its answer');
-  await historyPage.goForward();
-  await historyPage.locator('#difficulty').waitFor({state:'visible'});
-  assert(!historyPage.url().includes('Keep'),'Question history must not expose answers in URLs');
-  await historyPage.locator('#clear-draft').click();
-  assert((await historyPage.locator('.question-housekeeping [data-room-feedback]').innerText()).includes('cleared'), 'Clear confirmation is visible beside Clear');
-  await historyPage.goBack();
-  await historyPage.locator('#making').waitFor({state:'visible'});
-  assert(await historyPage.locator('#making').inputValue()==='','History must not recover cleared words');
-  results.push({label:'browser-back-forward',passed:true});
-  await historyPage.close();
-
-  const blocked = await browser.newContext({viewport:{width:320,height:740},reducedMotion:'reduce'});
-  await blocked.addInitScript(() => { for (const key of ['localStorage','sessionStorage']) Object.defineProperty(window,key,{get(){throw new Error('Storage blocked');}}); });
-  const blockedPage=await blocked.newPage();
-  await blockedPage.goto(origin+'/questions/');
-  await makeBrief(blockedPage);
-  const beforeCopy=await blockedPage.locator('#brief-text').inputValue();
-  await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__copiedBrief=text;}},configurable:true}));
-  await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
-  await blockedPage.locator('.brief-keep > [data-room-feedback]').filter({hasText:'Brief copied'}).waitFor({state:'visible'});
-  assert(await blockedPage.evaluate(()=>window.__copiedBrief)===beforeCopy, 'Copy keeps the exact editable brief');
-  await blockedPage.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw new Error('Clipboard denied');}},configurable:true}));
-  // Programmatic clicks model browsers that do not focus a clicked button.
-  await blockedPage.locator('#copy-brief').evaluate(el=>el.click());
-  await blockedPage.locator('.brief-document [data-room-feedback]').filter({hasText:'Select and copy'}).waitFor({state:'visible'});
-  assert(await blockedPage.locator('.brief-document [data-room-feedback]').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}), 'Clipboard recovery stays in view');
-  assert(await blockedPage.locator('#brief-text').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().bottom>document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().top<innerHeight), 'Denied clipboard selects a visible editable brief');
-  await blockedPage.locator('#rebuild-brief').evaluate(el=>el.click());
-  assert((await blockedPage.locator('.brief-keep > [data-room-feedback]').innerText()).includes('rebuilt'), 'Rebuild feedback is independent of click focus');
-  await blockedPage.locator('#carry-question').evaluate(el=>el.click());
-  assert((await blockedPage.locator('.brief-preview [data-room-feedback]').innerText()).includes('cannot carry'), 'Blocked handoff explains recovery beside its action');
-  assert(blockedPage.url().endsWith('/questions/'),'Failed handoff must retain the visitor’s brief');
-  assert((await blockedPage.locator('#draft-status').innerText()).includes('cannot carry'),'Storage failure must offer a truthful recovery');
-  await blockedPage.goto(origin+'/workbench/');
-  await blockedPage.locator('input[name="choice"][value="item"]').check();
-  await blockedPage.locator('#record-choice').click();
-  assert((await blockedPage.locator('#draft-status').innerText()).includes('visit only'),'Unavailable persistence must not claim a saved choice');
-  results.push({label:'storage-denied',passed:true});
-  await blocked.close();
-
-  // A permission prompt may settle after the visitor has moved on.
-  for (const outcome of ['resolve','reject']) for (const action of ['clear','back','edit','rebuild','download','failed-handoff','focus-elsewhere']) {
-    const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
-    await page.goto(origin+'/questions/');
-    await makeBrief(page);
-    await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:()=>new Promise((resolve,reject)=>{window.__copyResolve=resolve;window.__copyReject=reject;})},configurable:true}));
-    await page.locator('#copy-brief').evaluate(el=>el.click());
-    if(action==='clear') await page.locator('#clear-draft').click();
-    if(action==='back') { await page.locator('#question-back').click();await page.locator('#constraints').waitFor({state:'visible'}); }
-    if(action==='focus-elsewhere') await page.locator('#menu-toggle').focus();
-    if(action==='edit') await page.locator('#brief-text').fill('My newer wording.');
-    if(action==='rebuild') await page.locator('#rebuild-brief').click();
-    if(action==='download') { const downloaded=page.waitForEvent('download');await page.locator('#download-brief').click();await downloaded; }
-    if(action==='failed-handoff') {
-      await page.evaluate(()=>{Storage.prototype.setItem=()=>{throw new Error('Storage denied');};});
-      await page.locator('#carry-question').click();
-    }
-    if(action==='clear') assert(await page.locator('#clear-draft').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().top>=document.querySelector('.site-header').getBoundingClientRect().bottom&&el.getBoundingClientRect().bottom<=innerHeight),'Clear retains visible focus beside its confirmation');
-    const before=await page.evaluate(()=>({status:document.getElementById('draft-status').textContent,brief:document.getElementById('brief-text').value}));
-    // Keep the focus reference inside the page rather than serializing a node.
-    await page.evaluate(()=>{window.__focusBeforeCopyResult=document.activeElement;});
-    await page.evaluate(outcome=>{if(outcome==='resolve')window.__copyResolve();else window.__copyReject(new Error('Clipboard denied'));},outcome);
-    assert(await page.locator('#draft-status').innerText()===before.status,`Late copy ${outcome}/${action} must preserve current feedback`);
-    assert(await page.evaluate(()=>document.activeElement===window.__focusBeforeCopyResult),`Late copy ${outcome}/${action} must preserve focus`);
-    assert(await page.locator('#brief-text').inputValue()===before.brief,`Late copy ${outcome}/${action} must preserve the current brief`);
-    results.push({label:`pending-copy-${outcome}-${action}`,passed:true});
+    assert.equal(await page.evaluate(key=>sessionStorage.getItem(key),draftKey),null,'Typing does not store a draft until explicitly carried');
+    assert(requests.every(r=>r.method==='GET'&&!r.body&&!r.url.includes(marker)&&!r.url.includes('enquiry-config')), 'There is no form or draft transmission');
+    assert.deepEqual(errors,[]);
+    results.push({width,theme,accessibility:violations.length});
     await page.close();
   }
-  const latestCopy=await browser.newPage({viewport:{width:390,height:844}});
-  await latestCopy.goto(origin+'/questions/');await makeBrief(latestCopy);
-  await latestCopy.evaluate(()=>{window.__copyRequests=[];Object.defineProperty(navigator,'clipboard',{value:{writeText:()=>new Promise((resolve,reject)=>window.__copyRequests.push({resolve,reject}))},configurable:true});});
-  await latestCopy.locator('#copy-brief').evaluate(el=>{el.click();el.click();});
-  await latestCopy.evaluate(()=>window.__copyRequests[0].reject(new Error('Superseded')));
-  assert(await latestCopy.locator('#draft-status').innerText()==='','An older copy must not interrupt the newest copy');
-  await latestCopy.evaluate(()=>window.__copyRequests[1].resolve());
-  assert((await latestCopy.locator('.brief-keep > [data-room-feedback]').innerText()).includes('Brief copied'),'The newest copy still reports success');
-  results.push({label:'latest-copy-owns-feedback',passed:true});await latestCopy.close();
 
-  // Poison the formerly published module URL, as a browser cache could retain it.
-  const cached=await browser.newContext({viewport:{width:390,height:844}});
-  const staleModule=await readFile(new URL('../docs/assets/loose-end.mjs',import.meta.url),'utf8');
-  let staleRequested=false;
-  await cached.route('**/assets/loose-end-v2.mjs?v=mending',route=>{staleRequested=true;return route.fulfill({contentType:'text/javascript',body:staleModule});});
-  const cachedPage=await cached.newPage();await cachedPage.goto(origin+'/questions/');await makeBrief(cachedPage);
-  await cachedPage.locator('#rebuild-brief').evaluate(el=>el.click());
-  assert(!staleRequested,'The new question sheet must request a fresh feedback module URL');
-  assert((await cachedPage.locator('.brief-keep > [data-room-feedback]').innerText()).includes('rebuilt'),'A prior module cache must not hide local feedback');
-  results.push({label:'stale-module-cache',passed:true});await cached.close();
+  const page = await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  await page.goto(route);
+  await open(page);
+  const answers = {making:'An existing question.',materials:'An old sample to retain.'};
+  const multiline = {...answers, making:'An existing question.\nWith another line.'};
+  await page.evaluate(({key, draft})=>sessionStorage.setItem(key,draft),{
+    key:draftKey, draft:JSON.stringify({version:1,answers:multiline,brief:briefText(multiline)})
+  });
+  await page.reload();
+  await open(page);
+  assert.equal(await page.locator('#making').inputValue(),'An existing question. With another line.');
+  assert.match(await preview(page).inputValue(),/## System\nAn existing question\.\nWith another line\./);
+  await page.getByLabel('Cloud or mobile software',{exact:true}).check();
+  assert.match(await preview(page).inputValue(),/An existing question\.\nWith another line\./);
+  await page.locator('#making').fill('Refined question.');
+  assert.doesNotMatch(await preview(page).inputValue(),/An existing question/);
+  assert.match(await preview(page).inputValue(),/An old sample to retain/);
+  const legacy = JSON.stringify({version:1,answers,brief:'My edited brief. Keep this.'});
+  await page.evaluate(({key,legacy})=>sessionStorage.setItem(key,legacy),{key:draftKey,legacy});
+  await page.reload();
+  await open(page);
+  assert.equal(await page.locator('#making').inputValue(),'An existing question.');
+  assert.equal(await preview(page).inputValue(),'My edited brief. Keep this.');
+  assert.equal(await page.evaluate(key=>sessionStorage.getItem(key),draftKey),legacy);
+  await page.getByLabel('Cloud or mobile software',{exact:true}).check();
+  assert.match(await preview(page).inputValue(),/My edited brief\. Keep this\.[\s\S]*Cloud or mobile software/);
+  await step(page,2);
+  await page.getByLabel('Working prototype',{exact:true}).check();
+  const edited = 'Here is the draft.\nEvery line and punctuation survives. + & 🌒';
+  await preview(page).fill(edited);
+  await extras(page).click();
+  const downloading = page.waitForEvent('download');
+  await page.locator('#download-brief').click();
+  const download = await downloading;
+  assert.equal(await readFile(await download.path(),'utf8'),edited);
+  await page.locator('#carry-question').click();
+  await page.waitForURL(origin+'/workbench/#your-question');
+  assert.equal(await page.locator('#carried-brief').textContent(),edited);
+  assert.match(await page.locator('#your-question dl').textContent(),/An old sample to retain/);
+  assert.match(await page.locator('#your-question dl').textContent(),/Working prototype/);
+  await page.locator('#mark-wrong').click();
+  await page.locator('#annotation').fill('Keep a local observation.');
+  await page.locator('#pin-observation').click();
+  await page.getByRole('link',{name:'Back to your question'}).click();
+  await open(page);
+  assert.equal(await preview(page).inputValue(),edited);
+  assert(await page.getByLabel('Cloud or mobile software',{exact:true}).isChecked());
+  assert.match(await page.evaluate(key=>sessionStorage.getItem(key),roomKey),/Keep a local observation/);
+  await step(page,2);
+  await page.locator('#clear-artifact').click();
+  await extras(page).click();
+  await page.locator('#carry-question').click();
+  await page.waitForURL(origin+'/workbench/#your-question');
+  assert.doesNotMatch(await page.locator('#your-question dl').textContent(),/Working prototype/);
+  await page.getByRole('link',{name:'Back to your question'}).click();
+  await open(page);
+  await extras(page).click();
+  await page.locator('#clear-draft').click();
+  assert.equal(await preview(page).inputValue(),'');
+  assert.equal(await page.evaluate(key=>sessionStorage.getItem(key),draftKey),null);
+  assert.equal(await page.evaluate(key=>sessionStorage.getItem(key),roomKey),null);
+  await page.close();
 
-  for(const theme of ['night','afterlight']) {
-    const page=await browser.newPage({viewport:{width:1024,height:768},reducedMotion:'reduce'});
-    await page.goto(origin+'/questions/');if(theme==='afterlight')await page.locator('#light-switch').click();
-    await next(page);await page.locator('#making').fill('An answer worth keeping on paper.');
-    await page.emulateMedia({media:'print'});
-    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-    assert(await page.locator('[data-step]:visible').count()===6,'Printing includes every question stage');
-    assert(await page.locator('#making').inputValue()==='An answer worth keeping on paper.','Printing preserves the actual answer');
-    const printContrast=await page.evaluate(()=>{
-      const luminance=color=>color.match(/[\d.]+/g).slice(0,3).map(Number).map(c=>{const v=c/255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((sum,c,i)=>sum+c*[.2126,.7152,.0722][i],0);
-      return ['.choice','.question-help','#making','summary'].map(selector=>{
-        const element=document.querySelector(selector),style=getComputedStyle(element);
-        const background=style.backgroundColor==='rgba(0, 0, 0, 0)'?getComputedStyle(document.getElementById('loose-end')).backgroundColor:style.backgroundColor;
-        const foreground=style.color,fg=luminance(foreground),bg=luminance(background);
-        return {selector,foreground,background,ratio:(Math.max(fg,bg)+.05)/(Math.min(fg,bg)+.05)};
-      });
-    });
-    assert(printContrast.every(item=>item.ratio>=4.5),'Printed choices, help, answers and disclosures meet contrast in '+theme+': '+JSON.stringify(printContrast));
-    await audit(page,'questions-print-'+theme,true);await page.close();
+  const history = await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  await history.goto(route);
+  await open(history);
+  await history.locator('#making').fill('Keep this as I go back.');
+  await history.locator('#question-next').click();
+  await history.goBack();
+  await history.locator('#making').waitFor({state:'visible'});
+  assert.equal(await history.locator('#making').inputValue(),'Keep this as I go back.');
+  await history.goForward();
+  await history.locator('#difficulty').waitFor({state:'visible'});
+  assert.equal(history.url(),route);
+  await history.getByRole('link',{name:'go straight to the brief'}).click();
+  assert.equal(new URL(history.url()).hash,'#brief-heading');
+  assert(await history.locator('#difficulty').isVisible(),'An in-page link keeps the active step');
+  await history.goBack();
+  assert(await history.locator('#difficulty').isVisible(),'Back across the in-page link keeps the active step');
+  await history.goBack();
+  assert(await history.locator('#making').isVisible(),'Back across a step restores the earlier step');
+  await history.close();
+
+  const denied = await browser.newContext({viewport:{width:320,height:740},reducedMotion:'reduce'});
+  await denied.addInitScript(()=> {
+    Object.defineProperty(window,'sessionStorage',{get(){throw new Error('Storage denied');}});
+    Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw new Error('Clipboard denied');}},configurable:true});
+  });
+  const fallback = await denied.newPage();
+  await fallback.goto(route);
+  await open(fallback);
+  await preview(fallback).fill('Write directly without using any steps.\n'+'🌒 & + '.repeat(600));
+  const long = await preview(fallback).inputValue();
+  assert.equal(mailParams(await fallback.locator('#send-brief').getAttribute('href')).get('body').replace(/\r\n/g,'\n'),long);
+  assert(await fallback.locator('#send-limit').isVisible());
+  await fallback.locator('#copy-brief').click();
+  assert.match(await fallback.locator('#draft-status').textContent(),/selected for you to copy/);
+  assert(await preview(fallback).evaluate(el=>el.selectionEnd===el.value.length && el.selectionStart===0));
+  await extras(fallback).click();
+  await fallback.locator('#carry-question').click();
+  assert.match(await fallback.locator('#draft-status').textContent(),/cannot carry/);
+  assert.equal(await preview(fallback).inputValue(),long);
+  assert.equal(fallback.url(),route);
+  await denied.close();
+
+  const late = await browser.newPage({viewport:{width:390,height:844}});
+  await late.goto(route);
+  await open(late);
+  await preview(late).fill('Old text');
+  await late.evaluate(()=>Object.defineProperty(navigator,'clipboard',{
+    value:{writeText:()=>new Promise((resolve,reject)=>{window.rejectCopy=reject;})},configurable:true
+  }));
+  await late.locator('#copy-brief').click();
+  await preview(late).fill('Newer text');
+  await late.evaluate(()=>window.rejectCopy(new Error('Late clipboard response')));
+  assert.equal(await preview(late).inputValue(),'Newer text');
+  assert.equal(await late.locator('#draft-status').textContent(),'');
+  await late.close();
+
+  for (const javaScriptEnabled of [false,true]) {
+    const native = await browser.newPage({viewport:{width:320,height:740},javaScriptEnabled});
+    if(javaScriptEnabled) await native.route('**/assets/brief-builder.mjs*',request=>request.abort());
+    await native.goto(route);
+    assert.equal(await native.locator('[data-step]:visible').count(),4);
+    assert(await native.locator('#making').isVisible()&&await preview(native).isEditable());
+    assert(await native.locator('#brief-fallback').isVisible());
+    assert.equal(mailParams(await native.locator('#send-brief').getAttribute('href')).has('body'),false);
+    await extras(native).click();
+    assert(await native.locator('#workbench-fallback').isVisible());
+    await native.close();
   }
-
-  // The native header must not flash open while deferred enhancement loads.
-  for (const mode of ['delayed-site-script','blocked-site-script']) {
-    const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
-    await context.addInitScript(()=>{
-      window.__questionShifts=[];
-      new PerformanceObserver(list=>{for(const entry of list.getEntries())if(!entry.hadRecentInput)window.__questionShifts.push(entry.value);}).observe({type:'layout-shift',buffered:true});
-    });
-    await context.route('**/assets/site.js',async route=>{
-      if(mode==='blocked-site-script') return route.abort();
-      await new Promise(resolve=>setTimeout(resolve,800));
-      await route.continue();
-    });
-    const page=await context.newPage();
-    await page.goto(origin+'/questions/');
-    await page.locator('#question-next').waitFor({state:'visible'});
-    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-    if(mode==='delayed-site-script') assert(await page.evaluate(()=>window.__questionShifts.reduce((sum,value)=>sum+value,0))<=.1,'Deferred navigation must not shift the question entrance');
-    else { await page.locator('#menu-toggle').click(); assert(await page.locator('#primary-nav').isVisible(),'Blocked script leaves a working native menu'); await page.locator('#menu-toggle').click(); }
-    await audit(page,'questions-'+mode,true);
-    await context.close();
-  }
-
-  // A cached six-field page must still be able to use its published modules.
-  const legacy = await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
-  const currentHTML=await readFile(new URL('../docs/questions/index.html',import.meta.url),'utf8');
-  const previousHTML=currentHTML
-    .replace(/  <link rel="stylesheet" href="[^"]*question-room\.css[^"]*">\n/,'')
-    .replace('<body class="question-room">','<body>')
-    .replace(/<div class="question-position".*?<\/div>/s,'<p class="mono question-progress" id="question-progress" data-enhance hidden></p>')
-    .replace(/ data-feedback-scope/g,'').replace(/<p[^>]*data-room-feedback[^>]*><\/p>/g,'');
-  const previous=await browser.newContext({viewport:{width:390,height:844}});
-  await previous.route('**/questions/',route=>route.fulfill({contentType:'text/html',body:previousHTML}));
-  const previousPage=await previous.newPage();await previousPage.goto(origin+'/questions/');await makeBrief(previousPage);
-  await previousPage.locator('#rebuild-brief').evaluate(el=>el.click());
-  assert((await previousPage.locator('#draft-status').innerText()).includes('rebuilt')&&(await previousPage.locator('#draft-status').boundingBox()).width>100,'Current module keeps visible global feedback on the previous page contract');
-  results.push({label:'previous-page-current-module',passed:true});await previous.close();
-  const legacyHTML=previousHTML.replace(/<details data-followup>.*?<\/details>/gs,'').replace('loose-end-v2.mjs','loose-end.mjs');
-  await legacy.route('**/questions/',route=>route.fulfill({contentType:'text/html',body:legacyHTML}));
-  const legacyPage=await legacy.newPage();
-  const legacyErrors=[];legacyPage.on('pageerror',e=>legacyErrors.push(e.message));
-  await legacyPage.goto(origin+'/questions/');
-  await makeBrief(legacyPage,'A question from an older page.');
-  assert((await legacyPage.locator('#brief-text').inputValue()).includes('older page'),'Previously published question modules must remain usable');
-  await legacyPage.locator('#carry-question').click();
-  await legacyPage.locator('#your-question').waitFor({state:'visible'});
-  assert((await legacyPage.locator('#original-question').innerText()).includes('older page'),'Older page must hand its question to the current workbench');
-  assert(legacyErrors.length===0,'Cached older page errors: '+legacyErrors.join(', '));
-  results.push({label:'cached-six-field-page',passed:true});
-  await legacy.close();
-
-  for (const fallback of ['no-javascript','module-unavailable']) {
-    const context=await browser.newContext({viewport:{width:320,height:740},javaScriptEnabled:fallback!=='no-javascript',reducedMotion:'reduce'});
-    if (fallback==='module-unavailable') await context.route('**/assets/loose-end*.mjs*',route=>route.abort());
-    const page=await context.newPage();
-    await page.goto(origin+'/questions/');
-    assert(await page.locator('#making').isVisible()&&await page.locator('#constraints').isVisible(),fallback+': complete question sheet must remain visible');
-    assert(!await page.locator('#question-next').isVisible(),fallback+': dead guided controls must stay hidden');
-    await page.locator('[data-followup]:has(#materials) summary').click();
-    assert(await page.locator('#materials').isVisible(),fallback+': optional material needs a native disclosure');
-    if (fallback==='no-javascript') { await page.locator('#menu-toggle').click(); assert(await page.locator('#primary-nav').isVisible(), 'Native question menu exposes authored links'); await page.locator('#menu-toggle').click(); }
-    await audit(page,'questions-'+fallback,true);
-    await page.goto(origin+'/workbench/');
-    assert(await page.locator('[data-surface="item"]').isVisible()&&await page.locator('[data-surface="damage"]').isVisible(),fallback+': both approaches must remain inspectable');
-    await page.locator('summary').filter({hasText:'What we left aside'}).click();
-    assert(await page.locator('h3').filter({hasText:'A catalogue of repair techniques.'}).isVisible(),fallback+': rejected approach must remain inspectable');
-    await audit(page,'workbench-'+fallback,true);
-    await context.close();
-  }
-} catch(error) { failures.push(error.stack); }
-finally {
-  await writeFile(join(output,'loose-end-audit.json'),JSON.stringify({results,failures},null,2));
-  console.log(JSON.stringify({checks:results.length,failures},null,2));
+  await writeFile(join(output,'loose-end-audit.json'),JSON.stringify({results},null,2));
+  console.log('PASS: four optional steps, live editing, exact output, local handoff, storage and clipboard recovery, and native fallback.');
+} finally {
   await browser.close();
 }
-if(failures.length)process.exitCode=1;
