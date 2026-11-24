@@ -110,10 +110,21 @@ async function assertLandingStyleParity(viewport, label) {
   });
   const measure = () => page.evaluate(() => {
     const properties = ['display', 'font-size', 'font-family', 'line-height', 'color',
-      'background-color', 'padding', 'margin', 'width', 'height', 'grid-template-columns', 'gap'];
+      'background-color', 'padding', 'width', 'height', 'grid-template-columns', 'gap'];
+    const marginProperties = ['margin-top', 'margin-right', 'margin-bottom', 'margin-left'];
     return [...document.querySelectorAll('body *')].filter(el => !['SCRIPT', 'STYLE'].includes(el.tagName))
-      .map(el => ({ name: el.id || el.className?.baseVal || el.className || el.tagName,
-        values: properties.map(property => getComputedStyle(el).getPropertyValue(property)) }));
+      .map(el => {
+        const style = getComputedStyle(el);
+        const computed = el.computedStyleMap();
+        // CSSOM can serialize an auto margin differently after recalculating styles.
+        // Compare the computed margin and the actual horizontal position independently.
+        return {
+          name: el.id || el.className?.baseVal || el.className || el.tagName,
+          values: [...properties.map(property => style.getPropertyValue(property)),
+            ...marginProperties.map(property => String(computed.get(property))),
+            el.getBoundingClientRect().x],
+        };
+      });
   });
   await settled();
   const before = await measure();
