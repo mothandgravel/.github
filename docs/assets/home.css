@@ -5,6 +5,16 @@
 /* The hero says plainly what the studio takes on. */
 .hero-subhead {max-width:560px;margin:0 0 18px;color:var(--ink);font:400 clamp(20px,1.7vw,25px)/1.42 var(--serif);letter-spacing:-.01em}
 .hero-experience {margin:0 0 24px;color:var(--secondary);font-size:15px}
+/* The headline leads. Keep the portrait close to the actions and clear of the text. */
+.hero .hero-grid {min-height:0;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);align-items:end;gap:clamp(36px,8vw,128px);padding-block:clamp(56px,7.1vw,110px) clamp(38px,5vw,72px)}
+.hero .hero-copy {padding:0}
+.hero-portrait {position:relative;width:min(100%,360px,38vh);aspect-ratio:4/5;margin:0;overflow:hidden;border-top:1px solid var(--gold);background:var(--raised)}
+/* The cap and face sit low and left of center in the square source. */
+.hero-portrait-photo {position:absolute;left:-38%;bottom:0;width:205%;height:auto;max-width:none;filter:saturate(.78) contrast(1.04)}
+@media (max-width:900px) {
+  .hero .hero-grid {grid-template-columns:minmax(0,1fr);gap:28px;padding-block:40px 36px}
+  .hero-portrait {width:min(66%,280px);justify-self:end}
+}
 /* What we take on: three lines of work and an example brief for each. */
 .services-section {border-top:1px solid var(--line-soft)}
 .services-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);background:var(--surface)}
