@@ -114,7 +114,7 @@ try {
   // module restores the draft; the revealed controls mark initialization complete.
   let releaseModule;
   const moduleGate = new Promise(resolve => { releaseModule = resolve; });
-  const modulePattern = '**/assets/loose-end-v2.mjs*';
+  const modulePattern = '**/assets/brief-builder.mjs*';
   await page.route(modulePattern, async route => { await moduleGate; await route.continue(); });
   await page.getByRole('link', { name: 'Bring your version' }).click({ noWaitAfter: true });
   await page.waitForURL(origin + '/questions/', { waitUntil: 'commit' });
