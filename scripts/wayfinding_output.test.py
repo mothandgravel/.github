@@ -4,7 +4,7 @@ from pathlib import Path
 from urllib.parse import urljoin, urlsplit
 import json
 import unittest
-from build_wayfinding import ROOT, build
+from build_wayfinding import ROOT, build, studio_pages
 
 
 class Links(HTMLParser):
@@ -23,9 +23,7 @@ class Wayfinding(unittest.TestCase):
         registry = json.loads((ROOT / 'assets/wayfinding.json').read_text())
         expected = {x['href'] for group in ('routes', 'shortcuts', 'studio') for x in registry[group]}
         expected.add(registry['services']['href'])
-        for page in ROOT.rglob('*.html'):
-            if page.relative_to(ROOT).parts[0] == 'sohva':
-                continue  # the app's own site, with its own masthead
+        for page in studio_pages():
             text = page.read_text()
             header = text.split('<!-- shared-header:start -->')[1].split('<!-- shared-header:end -->')[0]
             base = 'https://mothandgravel.com/' + page.relative_to(ROOT).as_posix()
