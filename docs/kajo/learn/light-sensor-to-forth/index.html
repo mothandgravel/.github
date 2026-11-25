@@ -50,13 +50,13 @@
       <p>Each observation is a timed snapshot of the raw reading, the input Forth received and the recorded LED command. Observation 425 comes three observations after 422 in the same Pico capture.</p>
       <div class="replay-table-wrap">
         <table class="replay-table kajo-sensor-table">
-          <caption>Night Light capture · time since recording started</caption>
+          <caption>Night Light capture · time from the first observation</caption>
           <thead>
             <tr><th scope="col">Observation</th><th scope="col">Raw ADC</th><th scope="col">Input byte</th><th scope="col">LED command</th></tr>
           </thead>
           <tbody>
-            <tr><th scope="row">422<small>8.419969 s</small></th><td>1942</td><td>121</td><td><span class="kajo-off">OFF</span></td></tr>
-            <tr class="kajo-sensor-switch"><th scope="row">425<small>8.479979 s</small></th><td>1418</td><td>88</td><td><span class="kajo-on">ON</span></td></tr>
+            <tr><th scope="row">422 <small>8.419969 s</small></th><td>1942</td><td>121</td><td><span class="kajo-off">OFF</span></td></tr>
+            <tr class="kajo-sensor-switch"><th scope="row">425 <small>8.479979 s</small></th><td>1418</td><td>88</td><td><span class="kajo-on">ON</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -86,6 +86,7 @@
 
     <section class="kajo-section kajo-content" id="parts" aria-labelledby="parts-title">
       <h2 id="parts-title">Where the other pieces fit.</h2>
+      <p>The program in this recording is written in Forth.</p>
       <dl class="kajo-sensor-terms">
         <div><dt>Forth and the Forth VM</dt><dd>Forth expresses the rule. The virtual machine, or VM, executes it. Lab can feed it the same captured inputs again so you can step through a decision.</dd></div>
         <div><dt>Rust and the Kajo CPU</dt><dd>Rust is the language used to build Kajo’s Forth machine and firmware. A separate research compiler can also turn a small subset of Rust into instructions for the Kajo CPU, an invented processor.</dd></div>
@@ -95,7 +96,7 @@
 
     <section class="kajo-section kajo-content" id="lab" aria-labelledby="lab-title">
       <h2 id="lab-title">Try it in Kajo Lab.</h2>
-      <p>If you have Kajo Lab, you can inspect the full capture offline without a Pico.</p>
+      <p>If you have Kajo Lab on Windows, you can inspect the full capture offline without a Pico.</p>
       <ol>
         <li>Download the capture and use <strong>Open recording or session…</strong> in Kajo Lab.</li>
         <li>In <strong>Signals</strong>, select a point near 8.45 s. With the trace focused, use the Left and Right arrow keys to find observations 422 and 425. Compare the input and LED command.</li>

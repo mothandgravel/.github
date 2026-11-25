@@ -310,6 +310,8 @@ ol.kajo-sensor-stack {
 .kajo-sensor-terms > div {padding: .6rem 0; border-top: 1px solid var(--line-soft)}
 .kajo-sensor-terms dt {font-weight: 740}
 .kajo-sensor-terms dd {margin: 0 0 .35rem; color: var(--secondary)}
+#references a {text-decoration: underline; text-underline-offset: .22em}
+#references a:hover {color: var(--gold-bright)}
 @media (max-width: 800px) {
   .kajo-hero {grid-template-columns: minmax(0, 1fr)}
   .kajo-title {max-width: none}
