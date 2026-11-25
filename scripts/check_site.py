@@ -544,7 +544,7 @@ def main() -> int:
     check(len(index_items) == 17 and len({name for name, _, _ in index_items}) == 17,
           'Made here must list seventeen distinct projects on the investigations index')
     check(('Kajo Lab', 'study', 'Research preview') in index_items, 'Kajo Lab research preview is missing from Made here')
-    for route in ('kajo/', 'kajo/learn/first-replay/'):
+    for route in ('kajo/', 'kajo/learn/first-replay/', 'kajo/learn/light-sensor-to-forth/'):
         page = ROOT / route / 'index.html'
         url = 'https://mothandgravel.com/' + route
         check(page.is_file() and f'href="{url}"' in page.read_text(encoding='utf-8')
