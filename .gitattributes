@@ -39,3 +39,5 @@ docs/data/coastal-weather/** -text -whitespace
 docs/design/coastal-weather-provenance.json text eol=lf
 docs/data/coastal-days/** -text -whitespace
 docs/design/coastal-day-20261121-provenance.json text eol=lf
+# Public Kajo practice downloads are versioned by their exact bytes.
+docs/kajo/downloads/**/*.capture -text

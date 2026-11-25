@@ -1,0 +1,272 @@
+/* Kajo Lab uses the studio type and spacing, with dedicated colours for the recording. */
+.kajo-page {
+  --kajo-teal: #9cd9cb;
+  --kajo-violet: #d2bdfd;
+  --kajo-chart: #141e26;
+  --kajo-chart-ink: #f4f2ed;
+  --kajo-chart-muted: #b2c2c8;
+  --kajo-chart-line: #34454e;
+  --kajo-chart-teal: #9cd9cb;
+  --kajo-chart-violet: #d2bdfd;
+}
+:root[data-theme="afterlight"] .kajo-page {
+  --kajo-teal: #245e52;
+  --kajo-violet: #5f4985;
+}
+.kajo-main {
+  --shell: 1320px;
+  padding-bottom: clamp(56px, 8vw, 112px);
+}
+.kajo-crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .7rem;
+  padding-block: 1.1rem;
+  border-bottom: 1px solid var(--line-soft);
+  font: 600 .75rem/1.5 var(--mono);
+  color: var(--secondary);
+}
+.kajo-crumb a {text-decoration: underline; text-underline-offset: .2em}
+.kajo-crumb a:hover {color: var(--gold-bright)}
+.kajo-crumb [aria-current="page"] {color: var(--gold-bright)}
+.kajo-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
+  gap: clamp(2rem, 6vw, 5.75rem);
+  align-items: center;
+  padding-block: clamp(3.25rem, 7vw, 7rem);
+}
+.kajo-hero-copy {padding-bottom: .65rem}
+.kajo-eyebrow {
+  margin: 0 0 .85rem;
+  font: 600 .75rem/1.5 var(--mono);
+  color: var(--gold-bright);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.kajo-title {
+  max-width: 17ch;
+  margin: 0 0 1.35rem;
+  font: 900 clamp(2.65rem, 5.3vw, 5.5rem)/.99 var(--sans);
+  letter-spacing: -.045em;
+}
+.kajo-title em {
+  color: var(--gold-bright);
+  font: italic 400 1em/.99 var(--serif);
+  letter-spacing: -.055em;
+}
+.kajo-lede, .kajo-intro > p:not(.kajo-eyebrow) {
+  max-width: 58ch;
+  margin-bottom: 1.55rem;
+  color: var(--secondary);
+  font-size: clamp(1.05rem, 1.35vw, 1.2rem);
+  line-height: 1.65;
+}
+.kajo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .8rem 1.35rem;
+}
+.kajo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  min-height: 50px;
+  padding: .75rem 1rem;
+  color: var(--accent-ink);
+  background: var(--gold-bright);
+  border: 1px solid transparent;
+  font-size: .93rem;
+  font-weight: 730;
+}
+.kajo-button:hover {color: var(--gold-bright); border-color: currentColor; background: transparent}
+.kajo-link {
+  display: inline-block;
+  padding-block: .55rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: .3em;
+}
+.kajo-link:hover {color: var(--gold-bright); text-decoration-color: currentColor}
+.kajo-link span {margin-inline-start: .15rem; color: var(--gold-bright)}
+.kajo-muted, .kajo-prerequisite {color: var(--secondary)}
+.kajo-prerequisite {margin-block: 1rem 0; font-size: .9rem}
+
+.kajo-trace {
+  margin: 0;
+  background: var(--kajo-chart);
+  color: var(--kajo-chart-ink);
+  border: 1px solid var(--kajo-chart-line);
+  box-shadow: .65rem .65rem 0 color-mix(in srgb,var(--gold) 15%,transparent);
+}
+.kajo-trace-label {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  justify-content: space-between;
+  padding: .85rem clamp(.9rem, 2.4vw, 1.6rem);
+  border-bottom: 1px solid var(--kajo-chart-line);
+  font: 600 .72rem/1.5 var(--mono);
+  color: var(--kajo-chart-muted);
+}
+.kajo-trace-body {padding: clamp(1rem, 2.6vw, 1.9rem)}
+.kajo-reading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+}
+.kajo-reading p {margin: 0; font: 600 clamp(.9rem, 2vw, 1rem)/1.35 var(--mono)}
+.kajo-reading small {display: block; margin-top: .3rem; color: var(--kajo-chart-muted); font: 400 .84rem/1.4 var(--body)}
+.kajo-reading strong {
+  color: var(--kajo-chart-teal);
+  font: 600 clamp(2.25rem,5.7vw,4rem)/1 var(--mono);
+  letter-spacing: -.06em;
+}
+.kajo-plot {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: clamp(.16rem, .85vw, .55rem);
+  align-items: end;
+  height: clamp(5.5rem, 14vw, 9rem);
+  margin-top: .8rem;
+  border-bottom: 1px solid var(--kajo-chart-line);
+  background: repeating-linear-gradient(to top, transparent 0 calc(33.3% - 1px), var(--kajo-chart-line) calc(33.3% - 1px) 33.3%);
+}
+.kajo-plot > span {
+  height: var(--level);
+  border-top: 2px solid #80a59f;
+  background: linear-gradient(180deg,#335750 0,#21363c 100%);
+}
+.kajo-plot .kajo-point {
+  background: linear-gradient(180deg,#72b3a2 0,#355a57 100%);
+  border-top-color: var(--kajo-chart-teal);
+}
+.kajo-plot-axis {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: clamp(.16rem, .85vw, .55rem);
+  margin-block: .35rem 1.35rem;
+  text-align: center;
+  font: 400 .69rem/1.25 var(--mono);
+  color: var(--kajo-chart-muted);
+}
+.kajo-plot-axis span:nth-child(2) {grid-column: 5; color: var(--kajo-chart-teal)}
+.kajo-plot-axis span:last-child {grid-column: 10}
+.kajo-commands {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--kajo-chart-line);
+}
+.kajo-commands > div {padding-top: .9rem}
+.kajo-commands > div + div {padding-left: .8rem; border-left: 1px solid var(--kajo-chart-line)}
+.kajo-commands dt {font-size: .8rem; color: var(--kajo-chart-muted)}
+.kajo-commands dd {margin: .25rem 0 0}
+.kajo-commands strong {display: block; font: 800 clamp(1.65rem, 4vw, 2.7rem)/1.1 var(--sans)}
+.kajo-commands span {display: block; margin-top: .2rem; color: var(--kajo-chart-muted); font-size: .78rem}
+.kajo-on {color: var(--kajo-teal)}
+.kajo-off {color: var(--kajo-violet)}
+.kajo-trace .kajo-on {color: var(--kajo-chart-teal)}
+.kajo-trace .kajo-off {color: var(--kajo-chart-violet)}
+
+.kajo-opening {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.15rem clamp(2rem, 6vw, 5.75rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+.kajo-opening h2, .kajo-section h2, .kajo-replay h2, .kajo-content h2 {
+  margin-bottom: .65rem;
+  font: 800 clamp(1.63rem, 3vw, 2.55rem)/1.12 var(--sans);
+  letter-spacing: -.02em;
+}
+.kajo-opening > div:last-child {align-self: end}
+.kajo-opening > div:last-child p {max-width: 60ch; margin-bottom: .65rem; color: var(--secondary)}
+.kajo-footer {display: flex; gap: .8rem; flex-direction: column; padding-block: 1.4rem; border-top: 1px solid var(--line); color: var(--secondary)}
+
+.kajo-lesson-header, .kajo-intro {
+  padding-block: clamp(2.7rem, 6vw, 5rem) clamp(1.8rem, 4vw, 3.1rem);
+}
+.kajo-section, .kajo-content {padding-block: clamp(1.5rem, 4vw, 3rem); border-top: 1px solid var(--line)}
+.kajo-section > p, .kajo-content > p {max-width: 68ch; color: var(--secondary)}
+.kajo-section ol, .kajo-content ol {max-width: 70ch; padding-left: 1.35rem}
+.kajo-section li + li, .kajo-content li + li {margin-top: .65rem}
+.kajo-section code, .kajo-content code {overflow-wrap: anywhere; color: var(--kajo-teal)}
+.kajo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .8rem;
+}
+.kajo-card {
+  padding: clamp(.9rem,3vw,1.6rem);
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.kajo-card h3 {margin-bottom: .45rem; font: 800 1.2rem/1.2 var(--sans)}
+.kajo-card p {margin-bottom: .45rem; color: var(--secondary)}
+.kajo-card a {overflow-wrap: anywhere; text-decoration: underline; text-underline-offset: .22em}
+.kajo-card a:hover {color: var(--gold-bright)}
+.kajo-downloads {margin-block: 1rem}
+
+.kajo-replay {
+  margin-block: 0 clamp(1.5rem, 5vw, 3.5rem);
+  padding: clamp(.9rem, 3.5vw, 2.1rem);
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.kajo-replay > p {max-width: 72ch; color: var(--secondary)}
+.replay-controls {min-inline-size: 0; margin-block: 1.3rem .8rem; padding: 0; border: 0}
+.replay-controls legend {margin: 0 0 .55rem; padding: 0; font-weight: 750}
+.replay-choices {display: flex; flex-wrap: wrap; gap: .6rem}
+.replay-choices label {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  min-height: 45px;
+  padding: .55rem .75rem;
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+.replay-choices label:hover {border-color: var(--gold-bright)}
+.replay-choices label:has(input:checked) {border-color: var(--kajo-teal); background: color-mix(in srgb,var(--kajo-teal) 9%,var(--surface))}
+.replay-choices input[type="radio"] {width: 1.13rem; height: 1.13rem; margin: 0; accent-color: var(--kajo-teal)}
+.replay-choices label:has(input:focus-visible) {outline: 2px solid var(--gold-bright); outline-offset: 3px}
+.kajo-replay .replay-status {
+  max-width: none;
+  min-height: 2.5rem;
+  margin-block: .85rem;
+  padding: .5rem .75rem;
+  border-left: 2px solid var(--kajo-teal);
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.replay-table-wrap {overflow-x: auto}
+.replay-table {width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums}
+.replay-table caption {text-align: left; padding-block: .75rem .4rem; color: var(--secondary); font-size: .9rem}
+.replay-table :is(th,td) {padding: .5rem .55rem; border-bottom: 1px solid var(--line-soft); text-align: left}
+.replay-table thead th {border-bottom-color: var(--line); font-size: .86rem; color: var(--secondary)}
+.replay-table tr[data-difference] {background: color-mix(in srgb,var(--kajo-violet) 13%,var(--surface))}
+.replay-table tr[data-difference] th {box-shadow: inset 2px 0 var(--kajo-violet)}
+.replay-detail {margin-top: 1.15rem}
+.replay-detail summary {width: fit-content; color: var(--gold-bright); cursor: pointer; padding-block: .3rem}
+.replay-detail summary:focus-visible {outline: 2px solid var(--gold-bright); outline-offset: 4px}
+.replay-detail p {max-width: 68ch; margin: .55rem 0 0; color: var(--secondary)}
+@media (max-width: 800px) {
+  .kajo-hero, .kajo-opening {grid-template-columns: minmax(0, 1fr)}
+  .kajo-title {max-width: none}
+  .kajo-trace {max-width: 620px; width: 100%}
+}
+@media (max-width: 480px) {
+  .kajo-main.shell {width: calc(100% - 34px)}
+  .kajo-grid {grid-template-columns: minmax(0, 1fr)}
+  .kajo-trace {box-shadow: .3rem .3rem 0 color-mix(in srgb,var(--gold) 15%,transparent)}
+  .replay-table :is(th,td) {padding-inline: .34rem}
+  .replay-table thead th {font-size: .78rem}
+}

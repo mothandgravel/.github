@@ -541,8 +541,21 @@ def main() -> int:
     # The project register is served by the investigations index.
     index_items = re.findall(r'<li><strong>(?:<a href="[^"]+">)?([^<]+)(?:</a>)?</strong><span class="status" data-status="(\w+)">([^<]+)</span></li>',
                              (ROOT / 'investigations/index.html').read_text())
-    check(len(index_items) == 16 and len({name for name, _, _ in index_items}) == 16,
-          'Made here must list sixteen distinct projects on the investigations index')
+    check(len(index_items) == 17 and len({name for name, _, _ in index_items}) == 17,
+          'Made here must list seventeen distinct projects on the investigations index')
+    check(('Kajo Lab', 'study', 'Research preview') in index_items, 'Kajo Lab research preview is missing from Made here')
+    for route in ('kajo/', 'kajo/learn/first-replay/'):
+        page = ROOT / route / 'index.html'
+        url = 'https://mothandgravel.com/' + route
+        check(page.is_file() and f'href="{url}"' in page.read_text(encoding='utf-8')
+              and f'<loc>{url}</loc>' in sitemap_text, f'{route} needs a canonical page and sitemap entry')
+    for name, sha256 in {
+        'Night-Light-Pico.capture': '3712be60380f2399b6817fcdbddaa4fa601bc967348b665ef82720b73a65ecd3',
+        'Your-First-Replay-Practice.zip': '0068bffeab6fd9bf740f6913239d79e6628ad231541e72e20f3e304211af2fca',
+    }.items():
+        asset = ROOT / 'kajo/downloads/first-replay/v1' / name
+        check(asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() == sha256,
+              f'Published first replay v1 download changed or is missing: {name}')
     check('href="./investigations/#made-here"' in html and 'assets/made-here.mjs' not in html
           and 'data-made-here' not in html, 'Homepage should link to the project register')
     check('run.app' not in html, 'The live Cyber Grid is not linked yet')
