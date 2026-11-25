@@ -236,6 +236,33 @@
   margin: 0;
 }
 
+.service-collaboration {
+  margin-block: 24px;
+  padding-block-start: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.service-collaboration h3 {
+  margin: 0 0 10px;
+  font: 400 1.4rem/1.25 var(--serif);
+  color: var(--ink);
+}
+
+.service-business {
+  max-width: 66ch;
+  margin-block-start: 20px;
+  color: #c6c0b6;
+  font-size: .875rem;
+}
+
+.service-business p {
+  margin: 0 0 4px;
+}
+
+.service-business span {
+  white-space: nowrap;
+}
+
 .service-deliverables li + li {
   margin-top: 10px;
 }
