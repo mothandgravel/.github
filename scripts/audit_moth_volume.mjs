@@ -115,7 +115,7 @@ try {
     assert(await fallback.locator('.moth-traveller svg').isVisible(),fault+': source flight not visible');
     assert(await fallback.locator('.moth-volume').count()===0,fault+': leaked partial GPU surface');
     assert(errors.length===0,fault+': unhandled error '+errors.join(';'));
-    await fallback.locator('.moth-question a').click();assert(fallback.url().endsWith('/questions/'),fault+': question route lost');
+    await fallback.locator('.moth-question a').click();assert(fallback.url().endsWith('/investigations/'),fault+': question route lost');
     await fallback.close();
   }
   const reduced=await browser.newPage({viewport:{width:390,height:900},reducedMotion:'reduce'}),requests=[];

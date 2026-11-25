@@ -79,7 +79,9 @@ try {
     if (await noScript.locator('h1').count() !== 1 || await noScript.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)) fail(target.name, 'unreadable without JavaScript');
   }
   await noScript.goto(origin + '/', { waitUntil: 'load' });
-  if (await noScript.locator('#specimen-maritime-study a[href="./specimens/maritime-study/"]').count() !== 1) fail('home', 'maritime study not on the bench');
+  await noScript.locator('#work .section-lead a[href="./specimens/"]').click();
+  await noScript.locator('#specimen-006 a.specimen-open').click();
+  if (new URL(noScript.url()).pathname !== '/specimens/maritime-study/') fail('home', 'collection does not reach the maritime study');
   await noScript.close();
   await writeFile(`${output}/maritime-review.json`, JSON.stringify({ results, film: filmCheck, noScript: true }, null, 2));
   console.log(`PASS: maritime study and Field Note 014 at ${results.length} page/viewport/theme combinations, films on request (${filmCheck}), no-script access`);

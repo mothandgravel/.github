@@ -127,22 +127,20 @@
     "id": "002",
     "name": "SkyStack",
     "title": "The thing you just tried.",
-    "href": "/#specimen-skystack",
-    "summary": "An earlier homepage exhibit: stamp geometry, replay and a question about what the renderer actually drew.",
+    "href": "/specimens/skystack/",
+    "summary": "Inspect a native stamp replay and see what each footprint can tell you about the renderer’s geometry.",
     "image": "assets/specimens/sky-stamp-footprints.svg",
     "width": 640,
     "height": 420,
     "alt": "Native footprint plot from the SkyStack renderer study.",
-    "boundary": "Native footprint plot, not a game capture.",
-    "exhibit": true
+    "boundary": "Native footprint plot, not a game capture."
   },
   {
     "id": "001",
     "name": "Ajo",
     "title": "An answer is missing. What now?",
-    "href": "/#specimen-ajo",
-    "summary": "An earlier homepage exhibit: a lost reply, a recovered result and one application at the receiver. Inspect the saved simulator record.",
-    "boundary": "Saved simulator record. This exhibit opens on the homepage.",
-    "exhibit": true
+    "href": "/specimens/ajo/",
+    "summary": "A lost reply, a recovered result and one application at the receiver. Inspect the saved simulator record.",
+    "boundary": "Saved simulator record."
   }
 ]

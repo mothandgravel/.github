@@ -4,6 +4,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const origin = process.env.SITE_URL || 'http://127.0.0.1:8793';
+const record = origin + '/specimens/ajo/';
 const output = process.env.AUDIT_OUTPUT || 'artifacts/design-review';
 await mkdir(output, {recursive:true});
 const browser = await launchAuditBrowser();
@@ -22,14 +23,14 @@ try {
     const label = `${width}-${theme}`;
     const page = await browser.newPage({viewport:{width,height:900},reducedMotion:'no-preference'});
     await page.addInitScript(theme => localStorage.setItem('moth-and-gravel-theme',theme),theme);
-    await page.goto(origin,{waitUntil:'networkidle'});
+    await page.goto(record,{waitUntil:'domcontentloaded'});
     // Sample document coordinates while the marker arrives; scroll does not count as a shift.
     await page.evaluate(() => {
       window.handlingFrames=[];
       window.handlingProbe=setInterval(() => {
         const card=document.querySelector('#specimen-ajo');
         const plane=card.querySelector('.specimen-plane');
-        const boxes=[card.querySelector('h3'),card.querySelector('summary'),card.querySelector('figcaption')].map(el=>{
+        const boxes=[card.querySelector('h2'),card.querySelector('summary'),card.querySelector('figcaption')].map(el=>{
           const b=el.getBoundingClientRect();return [b.x+scrollX,b.y+scrollY,b.width,b.height];
         });
         window.handlingFrames.push({boxes,arriving:plane.hasAttribute('data-arriving'),
@@ -50,6 +51,9 @@ try {
     await page.locator('#specimen-ajo summary').focus(); await page.keyboard.press('Enter');
     assert(await page.locator('#specimen-ajo details').getAttribute('open')!==null,label+': record cannot open');
     assert(await page.locator('#specimen-ajo summary').evaluate(el=>getComputedStyle(el).outlineStyle!=='none'),label+': focus invisible');
+    await page.reload({waitUntil:'networkidle'}); await inspect(page); await page.waitForTimeout(100);
+    assert(await page.locator('[data-arriving]').count()===0,label+': restored reload unexpectedly animates');
+    await page.goto(origin,{waitUntil:'networkidle'});
     const link=page.locator('.hero-actions .button');
     await link.scrollIntoViewIfNeeded(); const before=await link.boundingBox();
     await link.hover(); await page.waitForTimeout(250);
@@ -57,15 +61,13 @@ try {
     assert(await link.locator('.button-arrow').evaluate(el=>getComputedStyle(el).transform!=='none'),label+': pointer feedback absent');
     await link.focus(); await page.waitForTimeout(250);
     assert(await link.locator('.button-arrow').evaluate(el=>getComputedStyle(el).transform==='matrix(1, 0, 0, 1, 0, 0)'||getComputedStyle(el).transform==='none'),label+': keyboard arrow still moves');
-    await page.reload({waitUntil:'networkidle'}); await inspect(page); await page.waitForTimeout(100);
-    assert(await page.locator('[data-arriving]').count()===0,label+': restored reload unexpectedly animates');
     await page.locator('#moth-interlude').scrollIntoViewIfNeeded();
     await page.locator('#moth-interlude').screenshot({path:join(output,'light-room-'+label+'.png'),style:'.site-header{visibility:hidden!important}'});
     results.push({label,samples:samples.length}); await page.close();
   }
   for (const action of ['focus','reduced','blur','pagehide','resize','keyboard','leave']) {
     const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
-    await page.goto(origin,{waitUntil:'networkidle'});await inspect(page);await playing(page);
+    await page.goto(record,{waitUntil:'domcontentloaded'});await inspect(page);await playing(page);
     if(action==='focus')await page.locator('#specimen-ajo summary').focus();
     if(action==='reduced')await page.emulateMedia({reducedMotion:'reduce'});
     if(action==='blur')await page.evaluate(()=>dispatchEvent(new Event('blur')));
@@ -81,12 +83,12 @@ try {
   }
   for(const option of ['reduced','hash','no-js','touch']) {
     const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:option==='reduced'?'reduce':'no-preference',javaScriptEnabled:option!=='no-js',hasTouch:option==='touch',isMobile:option==='touch'});
-    await page.goto(origin+(option==='hash'?'/#work':''),{waitUntil:'networkidle'});
+    await page.goto(record+(option==='hash'?'#specimen-ajo':''),{waitUntil:'networkidle'});
     await page.locator('#specimen-ajo .work-specimen').scrollIntoViewIfNeeded();
     if(option!=='no-js')await page.locator('#specimen-ajo [data-depth-ready]').waitFor();
     await page.waitForTimeout(550);
     assert(await page.locator('[data-arriving]').count()===0,option+': arrival should be quiet');
-    assert(await page.locator('#specimen-ajo h3').isVisible(),option+': question unavailable');
+    assert(await page.locator('#specimen-ajo h2').isVisible(),option+': question unavailable');
     if(option==='touch') {
       const link=page.locator('#specimen-ajo .work-card-link');await link.scrollIntoViewIfNeeded();
       await link.dispatchEvent('pointerover',{pointerType:'touch'});

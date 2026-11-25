@@ -64,15 +64,13 @@
   color: var(--gold-bright);
 }
 
-.service-location,
-.service-steps {
+.service-location {
   letter-spacing: .08em;
   text-wrap: balance;
 }
 
 .service-location span,
-.service-term span,
-.service-steps span {
+.service-term span {
   white-space: nowrap;
 }
 
@@ -234,6 +232,38 @@
 
 .service-offer .service-term {
   margin: 0;
+}
+
+.service-offer p.service-steps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px 10px;
+  max-width: none;
+  letter-spacing: normal;
+}
+
+.service-steps > span {
+  text-wrap: balance;
+}
+
+.service-steps strong {
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.service-step-separator {
+  display: none;
+}
+
+@media (min-width: 1101px) {
+  .service-offer p.service-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr) auto) minmax(0, 1fr);
+  }
+
+  .service-step-separator {
+    display: block;
+    color: var(--gold-bright);
+  }
 }
 
 .service-collaboration {

@@ -202,15 +202,20 @@ def main() -> int:
     # Sprint 02: public work must be real and all outbound actions usable.
     note_file = ROOT / "notes" / "001-curiosity-with-calluses.html"
     check(note_file.is_file(), "Field Note 001 is missing")
-    check(html.count('class="work-card-link"') == 3, "All three specimens need a related study")
-    check(html.count('class="work-card"') == 3, "Workbench should display three working specimens")
-
-    for specimen in ('ajo', 'skystack', 'kitronik'):
-        check(f'id="specimen-{specimen}"' in html, f'Missing {specimen} specimen')
-    check(html.count('class="specimen-record"') == 3, 'Each specimen needs a native working record')
+    flagship_specimens = ('field-power', 'coastal-watch', 'maintenance-acceptance', 'sohva')
+    check(html.count('class="work-card home-specimen"') == len(flagship_specimens)
+          and all(f'class="work-card-link" href="./specimens/{name}/"' in html for name in flagship_specimens),
+          'Homepage should show the four flagship specimens')
+    check('class="specimen-record"' not in html and 'href="./specimens/"' in html,
+          'Homepage specimen summaries should link to the collection and keep records on their own pages')
+    for name in ('ajo', 'skystack'):
+        record = (ROOT / f'specimens/{name}/index.html').read_text(encoding='utf-8')
+        check(f'id="specimen-{name}"' in record and 'class="specimen-record"' in record
+              and 'src="../../assets/specimens.mjs"' in record,
+              f'{name} should have a standalone native working record with optional handling')
     provenance = json.loads((ROOT.parent / 'design/working-specimens-provenance.json').read_text())
     check([item['id'] for item in provenance['artifacts']] == ['coastal-watch', 'liveconnect', 'ajo', 'skystack', 'kitronik'],
-          'Specimen provenance must match the visible selection')
+          'Recorded specimen provenance inventory changed')
     for item in provenance['artifacts']:
         if 'asset' in item:
             # Recorded asset paths stay relative to the published docs/design folder they were written in.
@@ -241,7 +246,7 @@ def main() -> int:
                   f'Connection specimen broken destination {relative}')
         check('https://mothandgravel.com/specimens/connected-to-what/' in (ROOT / 'sitemap.xml').read_text(),
               'Inspectable specimen missing from sitemap')
-        check('href="../../#specimen-ajo"' in connection_html, 'Specimen needs its next question')
+        check('href="../ajo/"' in connection_html, 'Specimen needs its next question')
         check('<noscript>' in connection_html and '<table>' in connection_html,
               'Specimen must retain all three readings without JavaScript')
     coastal_page = ROOT / 'specimens/coastal-watch/index.html'
@@ -336,17 +341,21 @@ def main() -> int:
               'Mapping capture study missing from sitemap')
         check('href="../../notes/006-map-leaves-room.html#bench-captures"' in mapping_html,
               'Mapping specimen must return to its visual addendum')
-    check("['.work-grid','./assets/specimens.mjs']" in html, 'Optional specimen handling module missing')
-    check("['#moth-interlude','./assets/moth-interlude.mjs']" in html, 'Optional moth scene loader missing')
+    check('assets/specimens.mjs' not in html, 'Detailed specimen handling should load on the record pages')
+    check("import('./assets/moth-interlude.mjs')" in html, 'Optional moth scene loader missing')
     check('id="moth-interlude"' in html and 'id="moth-question"' in html, 'Moth interlude resting composition missing')
     for path in ('moth-interlude.mjs', 'moth-choreography.mjs', 'moth-interlude.css', 'moth-rig.svg'):
         check((ROOT / 'assets' / path).is_file(), f'Moth scene resource missing: {path}')
+    rig = (ROOT / 'assets/moth-rig.svg').read_text(encoding='utf-8')
+    check('Animation pivots in source coordinates' not in re.sub(r'<!--.*?-->', '', rig, flags=re.S),
+          'Moth rig coordinates belong in a source comment')
     for path in ('moth-webgl.mjs', 'moth-mesh.mjs', 'moth-model.json'):
         check((ROOT / 'assets' / path).is_file(), f'Volumetric moth resource missing: {path}')
     check('animation:float-moth' not in css, 'Hero still has an endless moth loop')
 
-    check('https://github.com/mothandgravel/.github/tree/main/docs' in html, "Workbench source link is missing")
-    check('https://github.com/mothandgravel/.github/tree/main/profile/assets' in html, "Workbench brand assets link is missing")
+    catalogue = (ROOT / 'specimens/index.html').read_text(encoding='utf-8')
+    check('https://github.com/mothandgravel/.github/tree/main/docs' in catalogue, "Specimen source link is missing")
+    check('https://github.com/mothandgravel/.github/tree/main/profile/assets' in catalogue, "Specimen brand assets link is missing")
     check('notes/001-curiosity-with-calluses.html' in (ROOT / "sitemap.xml").read_text(encoding="utf-8"),
           "Published Field Note missing from sitemap")
 
@@ -521,7 +530,7 @@ def main() -> int:
     # own open page, a light index, and room 02 with three lazy toys. Every question is open (no
     # "page coming" anywhere), the live game is not linked, and no organisation names appear.
     QUESTION_PAGES = ('how-old', 'take-it-back', 'green-light')
-    check(len(re.findall(r'<p class="service-ask mono">0[123] / OPEN NOW</p>', html)) == 3
+    check('class="home-investigation-links"' in html
           and all(f'href="./investigations/{slug}/"' in html for slug in QUESTION_PAGES),
           'Home must show three standing questions, each linked to its page')
     for published in ROOT.rglob('*.html'):
@@ -529,16 +538,13 @@ def main() -> int:
               and 'page is coming' not in published.read_text(encoding='utf-8').lower(),
               f'{published.relative_to(ROOT)} still promises a page that is coming')
     check('href="./workbench/">Example workbench</a>' in html, 'Example workbench must remain reachable')
-    # Made here: the homepage renders it after load from assets/made-here.mjs; the static list on
-    # /investigations/ is the no-script route. Both must say the same thing.
-    module_items = re.findall(r"\['([^']+)', '(pr|pl|sd|in|)', '([^']+)'(?:, '[^']+')?\]", (ROOT / 'assets/made-here.mjs').read_text())
+    # The project register is served by the investigations index.
     index_items = re.findall(r'<li><strong>(?:<a href="[^"]+">)?([^<]+)(?:</a>)?</strong><span class="status" data-status="(\w+)">([^<]+)</span></li>',
                              (ROOT / 'investigations/index.html').read_text())
-    kinds = {'pr': 'production', 'pl': 'playable', 'sd': 'study', 'in': 'internal', '': 'prototype'}
-    check(len(module_items) == 16 and [(n, kinds[k], t) for n, k, t in module_items] == index_items,
-          'Made here must list the same sixteen things and statuses on the homepage and the questions index')
-    check('id="made-here" data-made-here' in html and 'href="./investigations/#made-here"' in html
-          and "['#questions','./assets/made-here.mjs']" in html, 'Made here must load when its section nears view, with a no-script link')
+    check(len(index_items) == 16 and len({name for name, _, _ in index_items}) == 16,
+          'Made here must list sixteen distinct projects on the investigations index')
+    check('href="./investigations/#made-here"' in html and 'assets/made-here.mjs' not in html
+          and 'data-made-here' not in html, 'Homepage should link to the project register')
     check('run.app' not in html, 'The live Cyber Grid is not linked yet')
     # Sohva Remote: a faithful copy of the app's own site under /sohva/, with its own styles and
     # masthead. It must stay reachable, keep the not-affiliated line and the privacy contact, link
@@ -625,6 +631,15 @@ def main() -> int:
           'Toys and their styles must not load on the home page')
     check({'first-piece-of-work', 'first-work', 'work', 'contact', 'contact-band'} <= parser.ids,
           'Missing homepage engagement, compatibility, specimens or contact anchor')
+    legacy_specimens = ('ajo', 'skystack', 'kitronik', 'data-center', 'liveconnect', 'maritime-study')
+    check({f'specimen-{name}' for name in (*flagship_specimens, *legacy_specimens)} <= parser.ids,
+          'Missing a homepage specimen anchor')
+    check('class="button button-brass" href="./services/"' in html
+          and 'class="under-link" href="./specimens/"' in html
+          and 'href="./services/#first-engagement"' in html,
+          'Homepage buyer routes must reach Services, Specimens and the canonical engagement terms')
+    services_html = (ROOT / 'services/index.html').read_text(encoding='utf-8')
+    check('id="first-engagement"' in services_html, 'Missing the canonical Services engagement anchor')
     for area in ('header-mail', 'contact-mail', 'footer-mail'):
         check(re.search(fr'class="{area}"><a[^>]+href="mailto:hello@mothandgravel\.com[?"]', html),
               f'Missing private email route in {area}')

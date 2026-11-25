@@ -50,45 +50,28 @@ const snap = async (page, name) => {
 async function inspectFirstWork(page, label) {
   const sheet = page.locator('#first-piece-of-work');
   await sheet.scrollIntoViewIfNeeded();
-  assert(await sheet.locator('h2').isVisible(), label + ': first engagement is missing');
-  assert(await sheet.evaluate(el => el.previousElementSibling?.id === 'services'),
-    label + ': first engagement does not follow services');
-  const geometry = await sheet.evaluate(el => {
-    const targets = [el, ...el.querySelectorAll('h2,h3,h4,p,.button')];
-    return targets.every(n => n.scrollWidth <= n.clientWidth + 2) && el.getBoundingClientRect().right <= innerWidth + 1;
-  });
-  assert(geometry, label + ': first-engagement heading, material or action is clipped');
-  assert(await sheet.locator('a.button[href="#contact"]').count() === 1, label + ': first engagement does not start a conversation');
-  assert(await sheet.locator('a[href="./questions/"]').count() >= 1, label + ': first engagement does not reach the brief');
-  await sheet.locator('.first-work-foot').scrollIntoViewIfNeeded();
-  assert(/Before any paid work/.test(await sheet.locator('.first-work-foot').innerText()), label + ': paid-work boundary missing');
-  assert(/Typically 1–2 weeks, fixed fee/.test(await sheet.locator('.first-work-duration').innerText()),
-    label + ': published engagement terms missing');
-  assert(/Who it’s for/i.test(await sheet.locator('.first-work-terms').innerText()), label + ': first piece of work does not say who it is for');
-  assert(await sheet.locator('.first-work-parts li').count() === 3, label + ': first piece of work does not list what the client receives');
+  assert(await sheet.locator('h3').isVisible(), label + ': first engagement is missing');
+  assert(await sheet.evaluate(el => el.closest('#services') !== null),
+    label + ': first engagement is not part of the short services overview');
+  assert(await page.locator('#services .home-service-lines li').count() === 4, label + ': expected four service lines');
+  assert(await sheet.evaluate(el => el.scrollWidth <= el.clientWidth + 2), label + ': first engagement is clipped');
+  assert(await sheet.locator('a[href="./services/#first-engagement"]').count() === 1,
+    label + ': first engagement does not reach its full terms');
+  assert(/Typically 1–2 weeks at a fixed fee/.test(await sheet.innerText()), label + ': published engagement terms missing');
 }
 
-async function inspectSpecimens(page, label, theme, width) {
-  const cards = page.locator('.work-card');
-  const ids = ['specimen-ajo', 'specimen-skystack', 'specimen-kitronik'];
-  const routes = ['./specimens/maintenance-acceptance/', './notes/008-one-undo.html', './notes/006-map-leaves-room.html'];
-  for (let i = 0; i < ids.length; i++) {
+async function inspectSpecimens(page, label) {
+  const cards = page.locator('.home-specimen');
+  const specimens = ['field-power', 'coastal-watch', 'maintenance-acceptance', 'sohva'];
+  for (let i = 0; i < specimens.length; i++) {
     const card = cards.nth(i);
-    assert(await card.getAttribute('id') === ids[i], label + ': artifact order/identity changed');
-    assert(await card.locator('.work-specimen figcaption').isVisible(), label + ': artifact scope missing');
-    assert(await card.locator(`.work-card-link[href="${routes[i]}"]`).count() === 1, label + ': related study missing');
-    const record = card.locator('.specimen-record');
-    await record.locator('summary').focus();
-    await page.keyboard.press('Enter');
-    assert(await record.getAttribute('open') !== null && await record.locator('p').last().isVisible(), label + ': record cannot be read with keyboard');
-    assert(await card.evaluate(el => [...el.querySelectorAll('h3,p,summary')].every(n => n.scrollWidth <= n.clientWidth + 2)), label + ': artifact text overflows');
-    await page.keyboard.press('Enter');
+    assert(await card.getAttribute('id') === 'specimen-' + specimens[i], label + ': flagship order/identity changed');
+    assert(await card.locator('img').isVisible(), label + ': flagship preview missing');
+    assert(await card.locator(`.work-card-link[href="./specimens/${specimens[i]}/"]`).count() === 1, label + ': related study missing');
+    assert(await card.evaluate(el => [...el.querySelectorAll('h3,p')].every(n => n.scrollWidth <= n.clientWidth + 2)), label + ': artifact text overflows');
   }
-  const drawer = page.locator('.work-sources');
-  await drawer.locator('summary').focus();
-  await page.keyboard.press('Enter');
-  assert(await drawer.locator('a').first().isVisible(), label + ': source drawer cannot be opened');
-  await page.keyboard.press('Enter');
+  assert(await page.locator('#work > .shell > .section-lead a[href="./specimens/"]').count() === 1, label + ': full collection link missing');
+  assert(await page.locator('#work details').count() === 0, label + ': homepage should only have specimen summaries');
 }
 
 async function captureLandingSections(page, theme, width) {
@@ -181,8 +164,7 @@ try {
       }
       const backgroundLightness = luminance(background);
       const selectors = [
-        ".work-card-top span:first-child",
-        ".work-card-top span:last-child",
+        ".home-specimen-name",
         ".work-card-content h3",
         ".work-card-content p",
       ];
@@ -251,7 +233,7 @@ try {
     assert(report.documentWidth <= viewport.width + 2,
       `${viewport.name}: horizontal overflow (${report.documentWidth}px > ${viewport.width}px)`);
     assert(report.imagesLoaded, `${viewport.name}: a brand image did not load`);
-    assert(await page.locator(".work-card-link").count() === 3, viewport.name + ": expected 3 related specimen studies");
+    assert(await page.locator(".work-card-link").count() === 4, viewport.name + ": expected four related specimen studies");
     assert(await page.locator(`.note-feature .editorial-link[href="./notes/${featured.slug}"]`).count() === 1,
       viewport.name + ": Selected Field Note is not an editorial feature");
     assert(await page.locator('#studio h2').isVisible(), viewport.name + ': studio introduction missing');
@@ -271,8 +253,8 @@ try {
         : moth.y >= report.heroActions.y + report.heroActions.height;
       assert(clearsActions, viewport.name + ': moth overlaps the hero actions');
     }
-    assert(await page.locator('#first-piece-of-work .first-work-contact .first-work-portrait img').count() === 1,
-      viewport.name + ': the first-engagement contact is missing its portrait');
+    assert(await page.locator('#studio .studio-portrait img').count() === 1,
+      viewport.name + ': the studio introduction is missing its portrait');
     for (const section of ['studio', 'contact']) {
       assert(await page.locator(`#${section}-title`).evaluate(el => el.scrollWidth <= el.clientWidth + 2),
         viewport.name + ': ' + section + ' heading is clipped');
@@ -280,13 +262,13 @@ try {
     assert(report.workHeadingFits, `${viewport.name}: Workbench headline overflows its container`);
     assert(report.heroHeadingLines === 3,
       `${viewport.name}: headline wraps across ${report.heroHeadingLines} lines; target is 3`);
-    const expectedColumns = viewport.width <= 1100 ? 1 : 3;
+    const expectedColumns = viewport.width <= 660 ? 1 : 2;
     assert(report.workColumns === expectedColumns,
       `${viewport.name}: expected ${expectedColumns} work-card columns, found ${report.workColumns}`);
-    assert(report.workCards.length === 3, `${viewport.name}: expected three working specimens`);
+    assert(report.workCards.length === 4, `${viewport.name}: expected four working specimens`);
     for (let i = 1; i < report.workCards.length; i++) {
       const first = report.workCards[i - 1], second = report.workCards[i];
-      assert(expectedColumns === 3 ? Math.abs(first.top - second.top) <= 2 : second.top >= first.bottom - 1,
+      assert(i % expectedColumns ? Math.abs(first.top - second.top) <= 2 : second.top >= first.bottom - 1,
         `${viewport.name}: Workbench cards overlap or fail to align`);
     }
     assert(await page.locator('#field-notes .note-feature').count() === 1,
@@ -687,17 +669,27 @@ try {
     assert(await enquiry.locator(hash + ':target').count() === 1, `Legacy anchor ${hash} is missing`);
     assert(await headingRevealed(heading), `Legacy anchor ${hash} did not reveal its heading`);
   };
-  await expectAnchor(enquiry.locator('.hero-actions a[href="#work"]'), '#work', '#work-title');
-  await expectAnchor(enquiry.locator('.hero-actions a[href="#first-piece-of-work"]'), '#first-piece-of-work', '#first-work-title');
-  await expectAnchor(enquiry.locator('#services a[href="#first-piece-of-work"]'), '#first-piece-of-work', '#first-work-title');
-  await expectAnchor(enquiry.locator('#first-piece-of-work a[href="#contact"]'), '#contact', '#contact-title');
+  await enquiry.locator('.hero-actions a[href="./services/"]').click();
+  await enquiry.waitForURL(origin + '/services/');
+  await enquiry.goto(origin, { waitUntil: 'load' });
+  await enquiry.locator('.hero-actions a[href="./specimens/"]').click();
+  await enquiry.waitForURL(origin + '/specimens/');
+  const drawer = enquiry.locator('.work-sources');
+  await drawer.locator('summary').press('Enter');
+  assert(await drawer.locator('a').first().isVisible(), 'Specimen source drawer cannot be opened');
+  await enquiry.goto(origin, { waitUntil: 'load' });
+  await enquiry.locator('#first-piece-of-work a[href="./services/#first-engagement"]').click();
+  await enquiry.waitForURL(origin + '/services/#first-engagement');
+  assert(await headingRevealed('#engagement-title'), 'Full engagement heading is obscured');
+  await enquiry.goto(origin, { waitUntil: 'load' });
+  await expectAnchor(enquiry.getByRole('navigation', {name: 'Primary', exact: true}).getByRole('link', {name: 'Contact'}), '#contact', '#contact-title');
   assert(await enquiry.locator('#contact a[href^="mailto:hello@mothandgravel.com"]').first().isVisible(), 'Email route is hidden');
   assert(await enquiry.locator('#contact a[href*="issues/new"]').isVisible(), 'Public enquiry route is hidden');
-  await expectAnchor(enquiry.locator('#contact a[href="#first-piece-of-work"]'), '#first-piece-of-work', '#first-work-title');
-  await enquiry.locator('#first-piece-of-work a[href="./questions/"]').click();
-  assert(enquiry.url().endsWith('/questions/'), 'First engagement does not reach the actual question sheet');
-  assert(await enquiry.locator('#making').isVisible(), 'First engagement depends on script-only intake');
+  await enquiry.locator('#contact a[href="./questions/"]').click();
+  assert(enquiry.url().endsWith('/questions/'), 'Contact does not reach the actual question sheet');
+  assert(await enquiry.locator('#making').isVisible(), 'Contact depends on script-only intake');
   await expectLegacyAnchor('#first-work', '#first-work-title');
+  await expectLegacyAnchor('#first-piece-of-work', '#first-work-title');
   await expectLegacyAnchor('#contact-band', '#contact-title');
   await enquiry.close();
   // Ensure this is a real raster asset, not an SVG-only sharing fallback.
@@ -790,6 +782,7 @@ try {
     handling.on('response', response => { if (response.url().endsWith('/assets/specimens.mjs')) depthFetched = true; });
     await handling.goto(origin,{waitUntil:'networkidle'});
     assert(!depthFetched, 'Handling light: below-fold enhancement was fetched during opening');
+    await handling.goto(origin+'/specimens/skystack/',{waitUntil:'networkidle'});
     const card = handling.locator('#specimen-skystack');
     const plane = card.locator('.specimen-plane');
     await plane.scrollIntoViewIfNeeded();
@@ -798,11 +791,11 @@ try {
     // Let the browser deliver visibility observers after the programmatic scroll.
     await handling.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     const box = await plane.boundingBox();
-    const textBefore = await card.locator('h3').boundingBox();
+    const textBefore = await card.locator('h2').boundingBox();
     await handling.mouse.move(box.x + box.width * .85, box.y + box.height * .25);
     await handling.waitForFunction(()=>document.querySelector('#specimen-skystack .specimen-plane').hasAttribute('data-handled'));
     assert(await plane.evaluate(el=>getComputedStyle(el).transform !== 'none'), 'Handling light: material did not move');
-    assert(JSON.stringify(textBefore) === JSON.stringify(await card.locator('h3').boundingBox()), 'Handling light: reading text moved');
+    assert(JSON.stringify(textBefore) === JSON.stringify(await card.locator('h2').boundingBox()), 'Handling light: reading text moved');
     await handling.emulateMedia({reducedMotion:'reduce'});
     await handling.waitForFunction(()=>!document.querySelector('[data-handled]'));
     assert(await plane.evaluate(el=>getComputedStyle(el).transform === 'none'), 'Handling light: changed motion preference left depth active');
@@ -813,13 +806,13 @@ try {
     const documentBox = selector => card.locator(selector).evaluate(el=>{
       const b=el.getBoundingClientRect();return {x:b.x+scrollX,y:b.y+scrollY,width:b.width,height:b.height};
     });
-    const keyboardTextBefore = await documentBox('h3');
+    const keyboardTextBefore = await documentBox('h2');
     const keyboardControlBefore = await documentBox('summary');
     await card.locator('summary').focus();
     await handling.waitForTimeout(350);
     assert(await plane.getAttribute('data-handled') === null, 'Handling light: keyboard focus did not reset material');
     // Focusing a card must not lift its title or the control itself.
-    assert(JSON.stringify(keyboardTextBefore) === JSON.stringify(await documentBox('h3')), 'Handling light: keyboard focus moved reading text');
+    assert(JSON.stringify(keyboardTextBefore) === JSON.stringify(await documentBox('h2')), 'Handling light: keyboard focus moved reading text');
     assert(JSON.stringify(keyboardControlBefore) === JSON.stringify(await documentBox('summary')), 'Handling light: keyboard focus moved the working-record control');
     assert(await card.evaluate(el=>getComputedStyle(el).transform==='none'), 'Handling light: keyboard focus still transforms the card');
     assert(await card.locator('summary').evaluate(el=>getComputedStyle(el).outlineStyle !== 'none'), 'Working record: keyboard focus has no visible outline');
@@ -858,7 +851,7 @@ try {
   } finally { await handling.close(); }
   const touch = await browser.newPage({viewport:{width:390,height:844},hasTouch:true,isMobile:true,reducedMotion:'no-preference'});
   try {
-    await touch.goto(origin,{waitUntil:'networkidle'});
+    await touch.goto(origin+'/specimens/skystack/',{waitUntil:'networkidle'});
     await touch.locator('#specimen-skystack .specimen-plane').scrollIntoViewIfNeeded();
     assert(await touch.evaluate(()=>!matchMedia('(pointer: fine)').matches), 'Touch audit is not using a coarse pointer');
     const box = await touch.locator('#specimen-skystack .specimen-plane').boundingBox();

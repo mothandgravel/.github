@@ -87,9 +87,10 @@ try {
       await page.getByRole('link',{name:'Next: no answer. Do we try again?'}).click();
       await atFragment(page,'reply','Return from LiveConnect');
       await page.getByRole('link',{name:'Open Ajo’s working record'}).click();
-      await atFragment(page,'specimen-ajo','Ajo native record');
-      assert((await page.locator('#specimen-ajo .thread-context').innerText()).includes(thread.stops[1].label),'Homepage exhibit has static reply context');
-      assert(await page.locator('#specimen-ajo .thread-context a').evaluateAll(links=>{const boxes=links.map(link=>link.getBoundingClientRect());return Math.abs(boxes[0].left-boxes[1].left)<1&&boxes[1].top>=boxes[0].bottom;}),'Homepage return and continuation have a full-width stacked layout');
+      await page.waitForURL(url=>url.pathname==='/specimens/ajo/');
+      await page.locator('#specimen-ajo').waitFor({state:'visible'});
+      assert((await page.locator('#specimen-ajo .thread-context').innerText()).includes(thread.stops[1].label),'Ajo has static reply context');
+      assert(await page.locator('#specimen-ajo .thread-context a').evaluateAll(links=>{const boxes=links.map(link=>link.getBoundingClientRect());return Math.abs(boxes[0].left-boxes[1].left)<1&&boxes[1].top>=boxes[0].bottom;}),'Ajo return and continuation have a full-width stacked layout');
       await page.locator('#specimen-ajo summary').focus();await page.keyboard.press('Enter');
       assert(await page.locator('#specimen-ajo details').getAttribute('open')!==null,'Ajo record opens with keyboard');
       await page.getByRole('link',{name:'Continue the thread: a light’s promise'}).click();
@@ -139,7 +140,7 @@ try {
   const arrivalPage=await arrivals.newPage();
   for (const [path,current,next] of [
     ['/specimens/connected-to-what/','reading','reply'],
-    ['/#specimen-ajo','reply','promise'],
+    ['/specimens/ajo/','reply','promise'],
     ['/notes/005-green-light.html','promise','your-question']
   ]) {
     await arrivalPage.goto(origin+path);

@@ -41,12 +41,10 @@ try {
       await page.locator('#questions').scrollIntoViewIfNeeded();
       await page.waitForTimeout(200);
       if (toyRequests.length) fail(label, { toysOnHomeAfterScroll: toyRequests });
-      // Made here arrives after load into a box that already has its height.
-      await page.locator('#made-here').scrollIntoViewIfNeeded();
-      await page.locator('#made-here ul').waitFor({ timeout: 5000 });
-      const made = await page.evaluate(() => { const box = document.querySelector('#made-here');
-        return { items: box.querySelectorAll('li').length, height: box.getBoundingClientRect().height, reserve: parseFloat(getComputedStyle(box).minHeight) }; });
-      if (made.items !== 16 || made.height > made.reserve + 0.5) fail(label + ' made here', made);
+      // The homepage points to the project register instead of mounting a copy.
+      if (await page.locator('#made-here li').count() ||
+          !(await page.locator('#made-here a[href="./investigations/#made-here"]').isVisible()))
+        fail(label + ' made here', 'Expected only a link to the project register');
     } else if (target.name === 'playground' && width === 1440 && toyRequests.some(url => /playground\/(stamp|week)\.mjs/.test(url)))
       fail(label, { eagerToys: toyRequests });
     if (target.name === 'investigations') {
@@ -112,7 +110,7 @@ try {
           featured: [...document.querySelectorAll('.question-feature>a')].map(a => new URL(a.href).pathname + new URL(a.href).hash),
           // A saved Ajo trace must not borrow SkyStack's footprint preview.
           mismatchedPreview: [...document.querySelectorAll('.question-feature>a')].some(a =>
-            new URL(a.href).hash === '#specimen-ajo' && (!a.querySelector('.question-trace') || a.querySelector('img'))),
+            new URL(a.href).pathname === '/specimens/ajo/' && (!a.querySelector('.question-trace') || a.querySelector('img'))),
           peers: [...document.querySelectorAll('.question-peers>a')].map(a => new URL(a.href).pathname),
           lists: [...document.querySelectorAll('.room-tabs,.question-shelf ul')].every(el => el.getAttribute('role') === 'list'),
         };
@@ -262,5 +260,5 @@ try {
   if (await still.locator('h1').count() !== 1) fail('no-script register journey', 'Sohva Remote did not open');
   await quiet.close();
   await writeFile(`${output}/playground-audit.json`, JSON.stringify({ results, verdicts }, null, 2));
-  console.log(`Playground: ${results.length} page/width/theme checks, zero axe violations, no toys on home, Made here in its reserved box, lazy toys, keyboard play, reduced motion and no-script fallbacks pass.`);
+  console.log(`Playground: ${results.length} page/width/theme checks, zero axe violations, no toys on home, Made here on the investigations index, lazy toys, keyboard play, reduced motion and no-script fallbacks pass.`);
 } finally { await browser.close(); }

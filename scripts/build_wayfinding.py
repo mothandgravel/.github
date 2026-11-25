@@ -14,9 +14,13 @@ def load(name):
     return json.loads((ROOT / 'assets' / name).read_text(encoding='utf-8'))
 
 
+def site_pages():
+    # Evidence files keep their archived bytes.
+    return sorted(page for page in ROOT.rglob('*.html') if page.relative_to(ROOT).parts[0] != 'data')
+
+
 def studio_pages():
-    # Evidence files keep their archived bytes, and Sohva has its own site shell.
-    return sorted(page for page in ROOT.rglob('*.html') if page.relative_to(ROOT).parts[0] not in ('data', 'sohva'))
+    return [page for page in site_pages() if page.relative_to(ROOT).parts[0] != 'sohva']
 
 
 def destination(href):
@@ -55,10 +59,22 @@ def current(href, page):
     return href.endswith('/') and (route == href or (href in ['/services/', '/specimens/', '/notes/'] and route.startswith(href)))
 
 
-def link(item, page, extra=''):
+def link(item, page):
     route = '/' + page.relative_to(ROOT).as_posix().removesuffix('index.html')
     state = f' aria-current="{"page" if route == item["href"] else "location"}"' if current(item['href'], page) else ''
-    return f'<a href="{local(item["href"], page)}"{state}{extra}>{escape(item["label"])}</a>'
+    return f'<a href="{local(item["href"], page)}"{state}>{escape(item["label"])}</a>'
+
+
+def primary_nav(page, nav, layout=''):
+    items = [nav['services'], *nav['routes'][:2], nav['routes'][3]]
+    return f'<nav class="collection-nav{layout}" aria-label="Primary" lang="en">{"".join(link(item, page) for item in items)}</nav>'
+
+
+def footer_business(layout=''):
+    return f'''<div class="footer-business{layout}" lang="en">
+  <p>Based in Finland. We work with teams here and abroad, with calls and documentation in English and Finnish.</p>
+  <p>B2B invoicing through <span>Kissamos Trade Goods</span> (<span><span lang="fi">Y-tunnus</span> 2929371-6</span>). NDA ready.</p>
+</div>'''
 
 
 def header(page, nav):
@@ -71,7 +87,7 @@ def header(page, nav):
     studio = services + ''.join(link(x, page) for x in nav['studio'])
     return f'''<header class="site-header shared-header" id="top"><div class="header-inner shell">
 <a class="brand" href="{local('/', page)}" title="Moth &amp; Gravel home"><span class="brand-stamp" aria-hidden="true"><img src="{local('/assets/nav-mark.svg', page)}" width="44" height="44" alt=""></span><span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span></a>
-<nav class="collection-nav" aria-label="Primary">{services}{''.join(link(x, page) for x in nav['routes'][:2])}{link(nav['routes'][3], page, ' class="collection-contact"')}</nav>
+{primary_nav(page, nav)}
 <p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
 <button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
 <details class="studio-index"><summary class="menu-toggle" id="menu-toggle" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></summary>
@@ -96,7 +112,7 @@ def catalogue(items):
         loading = 'eager' if x == items[0] else 'lazy'
         image = f'<img src="{local("/" + x["image"], page)}" width="{x["width"]}" height="{x["height"]}" alt="{escape(x["alt"], quote=True)}" loading="{loading}">' if x.get('image') else '<div class="specimen-trace" aria-label="Two states from the saved lost-query simulator record"><span>01 / REPLY LOST</span><b>Answer missing.</b><span>02 / RESULT QUERIED</span><b>Result found.</b><span>1 application at the receiver / both states</span></div>'
         children = ''.join(f'<a href="{local(c["href"], page)}">{escape(c["label"])} ↗</a>' for c in x.get('children', []))
-        cards.append(f'''<article class="specimen-entry{' specimen-featured' if x == items[0] else ''}" id="specimen-{x['id']}"><div class="specimen-art">{image}<p>{escape(x['boundary'])}</p></div><div class="specimen-copy"><p class="mono">{x['id']} / {escape(x['name'])}{' / EARLIER EXHIBIT' if x.get('exhibit') else ''}</p><h2><a href="{local(x['href'], page)}">{escape(x['title'])}</a></h2><p>{escape(x['summary'])}</p><a class="specimen-open" href="{local(x['href'], page)}">{'Visit the homepage exhibit' if x.get('exhibit') else 'Open the specimen'} <span aria-hidden="true">↗</span></a>{f'<nav class="specimen-rooms" aria-label="Inside {escape(x["name"])}">{children}</nav>' if children else ''}</div></article>''')
+        cards.append(f'''<article class="specimen-entry{' specimen-featured' if x == items[0] else ''}" id="specimen-{x['id']}"><div class="specimen-art">{image}<p>{escape(x['boundary'])}</p></div><div class="specimen-copy"><p class="mono">{x['id']} / {escape(x['name'])}</p><h2><a href="{local(x['href'], page)}">{escape(x['title'])}</a></h2><p>{escape(x['summary'])}</p><a class="specimen-open" href="{local(x['href'], page)}">Open the specimen <span aria-hidden="true">↗</span></a>{f'<nav class="specimen-rooms" aria-label="Inside {escape(x["name"])}">{children}</nav>' if children else ''}</div></article>''')
     return '\n'.join(cards)
 
 
@@ -133,13 +149,23 @@ def build(check=False):
     for item in items:
         if item.get('image'):
             assert (ROOT / item['image']).is_file(), item['image']
-    for page in studio_pages():
+    for page in site_pages():
         old = page.read_text(encoding='utf-8')
-        text = slot(old, 'shared-header', header(page, nav), lambda s, b: re.sub(r'<header\b[^>]*class="site-header[^\"]*".*?</header>', lambda _: b, s, count=1, flags=re.S))
-        assert '<!-- shared-header:start -->' in text, f'Missing masthead: {page}'
-        footer = '<nav class="shared-footer-nav shell" aria-label="Explore the studio">' + ''.join(link(x, page) for x in nav['routes']) + link({'label':'Example workbench','href':'/workbench/'}, page) + '</nav>'
-        text = slot(text, 'shared-footer', footer, lambda s, b: s.replace('</footer>', b + '\n</footer>'))
-        assert '<!-- shared-footer:start -->' in text, f'Missing footer: {page}'
+        is_product = page.relative_to(ROOT).parts[0] == 'sohva'
+        if is_product:
+            # Keep the product masthead, in-page links and privacy language switch.
+            text = slot(old, 'shared-primary', primary_nav(page, nav, ' wrap'),
+                        lambda s, b: s.replace('</header>', b + '\n</header>', 1))
+            assert '<!-- shared-primary:start -->' in text, f'Missing product masthead: {page}'
+        else:
+            text = slot(old, 'shared-header', header(page, nav), lambda s, b: re.sub(r'<header\b[^>]*class="site-header[^\"]*".*?</header>', lambda _: b, s, count=1, flags=re.S))
+            assert '<!-- shared-header:start -->' in text, f'Missing masthead: {page}'
+            footer = '<nav class="shared-footer-nav shell" aria-label="Explore the studio">' + ''.join(link(x, page) for x in nav['routes']) + link({'label':'Example workbench','href':'/workbench/'}, page) + '</nav>'
+            text = slot(text, 'shared-footer', footer, lambda s, b: s.replace('</footer>', b + '\n</footer>'))
+            assert '<!-- shared-footer:start -->' in text, f'Missing footer: {page}'
+        text = slot(text, 'shared-business', footer_business('' if is_product else ' shell'),
+                    lambda s, b: s.replace('<!-- shared-footer:start -->', b + '\n<!-- shared-footer:start -->', 1))
+        assert '<!-- shared-business:start -->' in text, f'Place the shared-business slot in the footer: {page}'
         for destination_page, fragment, index, stop in stops:
             if page != destination_page:
                 continue

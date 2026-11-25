@@ -95,7 +95,7 @@ try {
       await page.locator('#inspection').screenshot({ path: join(output, label + '-stale.png'), style: '.site-header,.skip-link{visibility:hidden!important}' });
     }
     await page.getByRole('link', { name: 'Inspect Ajo’s saved recovery trace' }).click();
-    assert(new URL(page.url()).hash === '#specimen-ajo', label + ': next question route');
+    assert(new URL(page.url()).pathname === '/specimens/ajo/', label + ': next question route');
     assert(await page.locator('#specimen-ajo').isVisible(), label + ': next specimen not reached');
     assert(!requests.some(r => r.method !== 'GET' || !r.url.startsWith(origin)), label + ': specimen makes external/effect requests');
     assert(!errors.length, label + ': browser errors ' + errors.join('; '));
@@ -116,12 +116,15 @@ try {
   }
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await page.goto(origin, { waitUntil: 'networkidle' });
-  await page.locator('#specimen-liveconnect').scrollIntoViewIfNeeded();
-  await page.locator('#specimen-liveconnect').getByRole('link', {
-    name: 'The connection came back. Did the picture? ↗', exact: true,
+  await page.locator('#work .section-lead a[href="./specimens/"]').click();
+  assert(new URL(page.url()).pathname === '/specimens/', 'Homepage reaches the specimen collection');
+  await page.locator('#specimen-004').getByRole('link', {
+    name: 'The connection came back. Did the picture?', exact: true,
   }).click();
-  assert(new URL(page.url()).pathname === route, 'homepage discovery route');
+  assert(new URL(page.url()).pathname === route, 'Collection discovery route');
   await page.locator('#inspection-controls').waitFor({ state: 'visible' });
+  await page.goBack();
+  assert(new URL(page.url()).pathname === '/specimens/', 'Back returns to the collection');
   await page.goBack();
   assert(new URL(page.url()).pathname === '/', 'Back returns to studio');
   await page.close();

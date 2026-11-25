@@ -45,7 +45,7 @@ img { display: block; max-width: 100%; height: auto; }
 a { color: var(--amber); text-underline-offset: 3px; }
 a:hover { color: var(--amber-hover); }
 :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
-[id] { scroll-margin-top: 5.5rem; }
+[id] { scroll-margin-top: 8rem; }
 .wrap { max-width: 76rem; margin-inline: auto; padding-inline: var(--gutter); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 code { font-size: .9em; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: .1em .35em; overflow-wrap: anywhere; }
@@ -69,6 +69,19 @@ code { font-size: .9em; background: var(--surface-2); border: 1px solid var(--li
 }
 .site-head.is-stuck { border-bottom-color: var(--line); }
 .site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4rem; }
+.site-head .collection-nav {
+  min-height: 44px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0 clamp(.75rem, 3vw, 1.5rem);
+}
+.site-head .collection-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: .8125rem;
+  color: var(--soft);
+}
 .mark { display: inline-flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.05rem; letter-spacing: -.01em; color: var(--text); text-decoration: none; min-height: 44px; }
 .mark:hover { color: var(--text); }
 .mark svg { flex: none; }
@@ -458,6 +471,9 @@ h1, h2, h3 { margin: 0; text-wrap: balance; }
 .site-foot { border-top: 1px solid var(--line); padding-block: 3rem; color: var(--muted); font-size: .94rem; }
 .site-foot .wrap { display: grid; gap: 1.5rem; }
 .site-foot p { margin: 0; max-width: 40rem; }
+.site-foot .footer-business { grid-column: 1 / -1; font-size: .875rem; }
+.site-foot .footer-business p + p { margin-top: .25rem; }
+.site-foot .footer-business span { white-space: nowrap; }
 .site-foot nav { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; }
 .site-foot nav a { display: inline-flex; align-items: center; min-height: 44px; }
 @media (min-width: 900px) { .site-foot .wrap { grid-template-columns: minmax(0, 1fr) auto; align-items: center; } }
