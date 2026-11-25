@@ -77,7 +77,7 @@ try {
           exits: [...document.querySelectorAll('.investigation-exits a')].map(a => new URL(a.href).pathname),
         };
       });
-      if (index.rows !== 3 || JSON.stringify(index.projects) !== '[5,7,4]' || index.register !== 16
+      if (index.rows !== 3 || JSON.stringify(index.projects) !== '[5,7,4]' || index.register !== 17
         || index.stretchedLabels.length || index.escapedContent.length || index.clippedRegister.length
         || JSON.stringify(index.exits) !== '["/notes/","/specimens/","/questions/"]') fail(label + ' index integrity', index);
     }
@@ -243,7 +243,7 @@ try {
   await still.goto(origin + '/');
   if (!(await still.locator('#made-here a[href="./investigations/#made-here"]').isVisible())) fail('no-script', 'Made here link missing on home');
   await still.goto(origin + '/investigations/');
-  if (await still.locator('#made-here li').count() !== 16) fail('no-script', 'Made here list missing on the index');
+  if (await still.locator('#made-here li').count() !== 17) fail('no-script', 'Made here list missing on the index');
   for (const path of ['/notes/', '/specimens/', '/questions/']) {
     const response = await still.request.head(origin + path);
     if (response.status() !== 200) fail('index exit destination', { path, status: response.status() });
@@ -255,9 +255,13 @@ try {
     if (await still.locator('h1').count() !== 1) fail('no-script index journey', slug);
     await still.goBack();
   }
-  await still.locator('#made-here a[href="../sohva/"]').focus(); await still.keyboard.press('Enter');
-  await still.waitForURL(origin + '/sohva/');
-  if (await still.locator('h1').count() !== 1) fail('no-script register journey', 'Sohva Remote did not open');
+  for (const slug of ['sohva', 'kajo']) {
+    const link = still.locator(`#made-here a[href="../${slug}/"]`);
+    await link.focus(); await still.keyboard.press('Enter');
+    await still.waitForURL(origin + `/${slug}/`);
+    if (await still.locator('h1').count() !== 1) fail('no-script register journey', slug);
+    await still.goBack();
+  }
   await quiet.close();
   await writeFile(`${output}/playground-audit.json`, JSON.stringify({ results, verdicts }, null, 2));
   console.log(`Playground: ${results.length} page/width/theme checks, zero axe violations, no toys on home, Made here on the investigations index, lazy toys, keyboard play, reduced motion and no-script fallbacks pass.`);

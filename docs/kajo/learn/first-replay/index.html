@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#17191b">
+  <title>Your first replay in Kajo Lab — Moth &amp; Gravel</title>
+  <meta name="description" content="Try a Night Light recording from a real Raspberry Pi Pico. Change one threshold and compare the recorded and replayed LED commands in your browser.">
+  <link rel="canonical" href="https://mothandgravel.com/kajo/learn/first-replay/">
+  <link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../assets/site.css">
+  <link rel="stylesheet" href="../../kajo.css">
+  <script>(()=>{let t;try{t=localStorage.getItem('moth-and-gravel-theme')}catch(_){}const d=document.documentElement,c=t==='afterlight'||t==='night'?t:'system';d.dataset.themeChoice=c;d.dataset.theme=c!=='system'?c:matchMedia('(prefers-color-scheme: light)').matches?'afterlight':'night'})()</script>
+  <script src="../../../assets/site.js" defer></script>
+  <script src="replay.mjs" type="module"></script>
+</head>
+<body class="kajo-page">
+  <a class="skip-link" href="#main">Skip to the lesson</a>
+<!-- shared-header:start -->
+<header class="site-header shared-header" id="top"><div class="header-inner shell">
+<a class="brand" href="../../../" title="Moth &amp; Gravel home"><span class="brand-stamp" aria-hidden="true"><img src="../../../assets/nav-mark.svg" width="44" height="44" alt=""></span><span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span></a>
+<nav class="collection-nav" aria-label="Primary" lang="en"><a href="../../../services/">Services</a><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../#contact">Contact</a></nav>
+<p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
+<button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
+<details class="studio-index"><summary class="menu-toggle" id="menu-toggle" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></summary>
+<nav class="main-nav studio-sheet" id="primary-nav" aria-label="Studio index"><div class="nav-sheet-heading"><span class="mono">M+G / THE STUDIO INDEX</span><p>A few ways in.</p></div><a href="../../../specimens/"><span class="nav-sheet-index mono" aria-hidden="true">01</span><span class="nav-sheet-label">Specimens</span><span class="nav-sheet-hint">Working pieces you can look into.</span></a><a href="../../../notes/"><span class="nav-sheet-index mono" aria-hidden="true">02</span><span class="nav-sheet-label">Field notes</span><span class="nav-sheet-hint">What we noticed while making. Read or listen.</span></a><a href="../../../threads/something-happened/"><span class="nav-sheet-index mono" aria-hidden="true">03</span><span class="nav-sheet-label">Something happened. I can’t tell what.</span><span class="nav-sheet-hint">One question through several pieces.</span></a><a href="../../../#contact"><span class="nav-sheet-index mono" aria-hidden="true">04</span><span class="nav-sheet-label">Contact</span><span class="nav-sheet-hint">A rough edge, an unfinished idea, a question.</span></a><section class="nav-shortcuts" aria-labelledby="shortcut-heading"><p class="mono" id="shortcut-heading">Straight to.</p><div><a class="nav-shortcut" href="../../../specimens/maintenance-acceptance/tnt/"><strong>The measured TNT replay ↗</strong><span>Inside specimen 009 / 1,000 recorded departures.</span></a><a class="nav-shortcut" href="../../../notes/#listen-archive"><strong>Listen to the field notes ↗</strong><span>AI-narrated readings, conversations and a narration study.</span></a><a class="nav-shortcut" href="../../../investigations/"><strong>Three questions. Still open. ↗</strong><span>Freshness, recovery and the promise of a green light.</span></a></div></section><div class="nav-studio"><a href="../../../services/">Services</a><a href="../../../#ethos">The thinking</a><a href="../../../workbench/">Example workbench</a></div></nav></details>
+</div></header>
+<!-- shared-header:end -->
+  <p class="visually-hidden" role="status"></p>
+  <main class="kajo-main shell" id="main" tabindex="-1">
+    <nav class="kajo-crumb" aria-label="Kajo Lab"><a href="../../">Kajo Lab</a> <span aria-hidden="true">/</span> <span>First replay</span></nav>
+    <header class="kajo-intro kajo-lesson-header">
+      <p class="kajo-eyebrow">Kajo Lab 101</p>
+      <h1 class="kajo-title">Your first replay.</h1>
+      <p class="kajo-lede">A light sensor sends the reading 88. The recorded program says ON. Edit one threshold and see what the same reading does.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="#practice">Try in your browser</a>
+        <a class="kajo-link" href="../../downloads/first-replay/v1/Night-Light-Pico.capture" download>Download the practice recording <span aria-hidden="true">↓</span></a>
+      </div>
+    </header>
+
+    <section class="kajo-replay kajo-section" id="practice" aria-labelledby="practice-title" data-replay>
+      <h2 id="practice-title">Change the rule.</h2>
+      <p>These ten observations are from a real Raspberry Pi Pico recording. Each observation contains one sensor reading and the LED command it produced. What do you expect to happen at 88 if the program turns on only below 80?</p>
+      <fieldset class="replay-controls" data-replay-controls hidden>
+        <legend>Turn on below</legend>
+        <div class="replay-choices">
+          <label><input type="radio" name="on-threshold" value="92" checked><span><strong>92</strong> Original rule</span></label>
+          <label><input type="radio" name="on-threshold" value="80"><span><strong>80</strong> Edited rule</span></label>
+        </div>
+      </fieldset>
+      <p class="replay-status" data-replay-status role="status" aria-atomic="true" hidden></p>
+      <div class="replay-table-wrap">
+        <table class="replay-table">
+          <caption>Night Light recording, observations 421–430</caption>
+          <thead><tr><th scope="col">Observation</th><th scope="col">Input</th><th scope="col">Recorded command</th><th scope="col" data-replay-column hidden>Browser replay</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">421</th><td>134</td><td class="kajo-off">OFF</td><td data-replay-result hidden></td></tr>
+            <tr><th scope="row">422</th><td>121</td><td class="kajo-off">OFF</td><td data-replay-result hidden></td></tr>
+            <tr><th scope="row">423</th><td>109</td><td class="kajo-off">OFF</td><td data-replay-result hidden></td></tr>
+            <tr><th scope="row">424</th><td>98</td><td class="kajo-off">OFF</td><td data-replay-result hidden></td></tr>
+            <tr><th scope="row">425</th><td>88</td><td class="kajo-on">ON</td><td data-replay-result hidden></td></tr>
+            <tr><th scope="row">426</th><td>92</td><td class="kajo-on">ON</td><td data-replay-result hidden></td></tr>
+            <tr><th scope="row">427</th><td>89</td><td class="kajo-on">ON</td><td data-replay-result hidden></td></tr>
+            <tr><th scope="row">428</th><td>85</td><td class="kajo-on">ON</td><td data-replay-result hidden></td></tr>
+            <tr><th scope="row">429</th><td>80</td><td class="kajo-on">ON</td><td data-replay-result hidden></td></tr>
+            <tr><th scope="row">430</th><td>76</td><td class="kajo-on">ON</td><td data-replay-result hidden></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <details class="replay-detail">
+        <summary>See why the command changes</summary>
+        <p>At observation 425, input 88 is below 92, so the original program commands ON. The edited program stays OFF. At 429 it still stays OFF because 80 is equal to the threshold. At 430, input 76 turns it ON. Both rules turn OFF at 116 or above and keep the previous command in between.</p>
+      </details>
+      <p class="kajo-muted">The browser repeats the decision rule over this excerpt, starting at OFF. In Kajo Lab you can replay the full recording with its original timing. The output here is the program’s command to the LED.</p>
+    </section>
+
+    <section class="kajo-section kajo-content" aria-labelledby="desktop-title">
+      <h2 id="desktop-title">Already have Kajo Lab?</h2>
+      <p>Use the full recording in Lab on Windows. You can do this with the Pico unplugged.</p>
+      <ol>
+        <li>Choose <strong>Open recording or session…</strong> and open <code>Night-Light-Pico.capture</code>. In <strong>Signals</strong>, click the trace near <strong>8.45 s</strong>. Use the arrow keys to compare observations <strong>422</strong> and <strong>425</strong>.</li>
+        <li>Open <strong>Program → Forth</strong> and choose <strong>Recorded source</strong>. In <strong>Experimental Forth</strong>, change <code>DUP 92 U&lt;</code> to <code>DUP 80 U&lt;</code>. Leave <code>116</code> as it is.</li>
+        <li>Choose <strong>Compare full recording</strong>, then <strong>First mismatch</strong>. At observation 425 the recorded command is <strong>ON (1)</strong> and the replayed command is <strong>OFF (0)</strong>. Restore 92 to get the original decisions back.</li>
+      </ol>
+      <a class="kajo-link" href="https://youtu.be/8EQGNRgkF3U">Watch the full lesson on YouTube <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="kajo-section kajo-downloads" aria-labelledby="downloads-title">
+      <h2 id="downloads-title">Practice files</h2>
+      <div class="kajo-grid">
+        <article class="kajo-card">
+          <h3><a href="../../downloads/first-replay/v1/Night-Light-Pico.capture" download>Night Light recording <span aria-hidden="true">↓</span></a></h3>
+          <p>The complete Pico recording for desktop replay. CAPTURE file, 60 KiB.</p>
+        </article>
+        <article class="kajo-card">
+          <h3><a href="../../downloads/first-replay/v1/Your-First-Replay-Practice.zip" download>Offline practice kit <span aria-hidden="true">↓</span></a></h3>
+          <p>The recording and a self-contained browser guide. ZIP file, 24 KiB.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-inner"><a class="footer-brand" href="../../../">MOTH <span>&amp;</span> GRAVEL <small>INDEPENDENT WORKS</small></a><div class="footer-end mono"><a href="#top">BACK TO TOP ↑</a></div></div>
+<!-- shared-business:start -->
+<div class="footer-business shell" lang="en">
+  <p>Based in Finland. We work with teams here and abroad, with calls and documentation in English and Finnish.</p>
+  <p>B2B invoicing through <span>Kissamos Trade Goods</span> (<span><span lang="fi">Y-tunnus</span> 2929371-6</span>). NDA ready.</p>
+</div>
+<!-- shared-business:end -->
+<!-- shared-footer:start -->
+<nav class="shared-footer-nav shell" aria-label="Explore the studio"><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../threads/something-happened/">Something happened. I can’t tell what.</a><a href="../../../#contact">Contact</a><a href="../../../workbench/">Example workbench</a></nav>
+<!-- shared-footer:end -->
+  </footer>
+</body>
+</html>
