@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#17191b">
+  <title>From light sensor to Forth replay — Moth &amp; Gravel</title>
+  <meta name="description" content="Follow two readings from a real Raspberry Pi Pico to a Forth decision, then work through a three-step stack exercise in your browser.">
+  <link rel="canonical" href="https://mothandgravel.com/kajo/learn/light-sensor-to-forth/">
+  <link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../assets/site.css">
+  <link rel="stylesheet" href="../../kajo.css">
+  <script>(()=>{let t;try{t=localStorage.getItem('moth-and-gravel-theme')}catch(_){}const d=document.documentElement,c=t==='afterlight'||t==='night'?t:'system';d.dataset.themeChoice=c;d.dataset.theme=c!=='system'?c:matchMedia('(prefers-color-scheme: light)').matches?'afterlight':'night'})()</script>
+  <script src="../../../assets/site.js" defer></script>
+</head>
+<body class="kajo-page">
+  <a class="skip-link" href="#main">Skip to the lesson</a>
+<!-- shared-header:start -->
+<header class="site-header shared-header" id="top"><div class="header-inner shell">
+<a class="brand" href="../../../" title="Moth &amp; Gravel home"><span class="brand-stamp" aria-hidden="true"><img src="../../../assets/nav-mark.svg" width="44" height="44" alt=""></span><span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span></a>
+<nav class="collection-nav" aria-label="Primary" lang="en"><a href="../../../services/">Services</a><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../#contact">Contact</a></nav>
+<p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
+<button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
+<details class="studio-index"><summary class="menu-toggle" id="menu-toggle" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></summary>
+<nav class="main-nav studio-sheet" id="primary-nav" aria-label="Studio index"><div class="nav-sheet-heading"><span class="mono">M+G / THE STUDIO INDEX</span><p>A few ways in.</p></div><a href="../../../specimens/"><span class="nav-sheet-index mono" aria-hidden="true">01</span><span class="nav-sheet-label">Specimens</span><span class="nav-sheet-hint">Working pieces you can look into.</span></a><a href="../../../notes/"><span class="nav-sheet-index mono" aria-hidden="true">02</span><span class="nav-sheet-label">Field notes</span><span class="nav-sheet-hint">What we noticed while making. Read or listen.</span></a><a href="../../../threads/something-happened/"><span class="nav-sheet-index mono" aria-hidden="true">03</span><span class="nav-sheet-label">Something happened. I can’t tell what.</span><span class="nav-sheet-hint">One question through several pieces.</span></a><a href="../../../#contact"><span class="nav-sheet-index mono" aria-hidden="true">04</span><span class="nav-sheet-label">Contact</span><span class="nav-sheet-hint">A rough edge, an unfinished idea, a question.</span></a><section class="nav-shortcuts" aria-labelledby="shortcut-heading"><p class="mono" id="shortcut-heading">Straight to.</p><div><a class="nav-shortcut" href="../../../specimens/maintenance-acceptance/tnt/"><strong>The measured TNT replay ↗</strong><span>Inside specimen 009 / 1,000 recorded departures.</span></a><a class="nav-shortcut" href="../../../notes/#listen-archive"><strong>Listen to the field notes ↗</strong><span>AI-narrated readings, conversations and a narration study.</span></a><a class="nav-shortcut" href="../../../investigations/"><strong>Three questions. Still open. ↗</strong><span>Freshness, recovery and the promise of a green light.</span></a></div></section><div class="nav-studio"><a href="../../../services/">Services</a><a href="../../../#ethos">The thinking</a><a href="../../../workbench/">Example workbench</a></div></nav></details>
+</div></header>
+<!-- shared-header:end -->
+  <p class="visually-hidden" role="status"></p>
+  <main class="kajo-main shell" id="main" tabindex="-1">
+    <nav class="kajo-crumb" aria-label="Kajo Lab"><a href="../../">Kajo Lab</a> <span aria-hidden="true">/</span> <span aria-current="page">Light sensor to Forth replay</span></nav>
+    <header class="kajo-intro kajo-lesson-header">
+      <p class="kajo-eyebrow">Kajo Lab 101</p>
+      <h1 class="kajo-title">From light sensor to Forth replay.</h1>
+      <p class="kajo-lede">Follow one change in light from a sensor to a recorded LED command. Then work through three operations on the Forth data stack.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="#observations">Read the recording</a>
+        <a class="kajo-link" href="https://youtu.be/ypNElAZpomk">Watch the full lesson <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <section class="kajo-section kajo-content" id="circuit" aria-labelledby="circuit-title">
+      <h2 id="circuit-title">From light to a number.</h2>
+      <p>The photoresistor changes resistance with light. Paired with a fixed resistor, it produces a voltage the Pico can read on pin GP26. The analogue-to-digital converter (ADC) converts that voltage to a number from 0 to 4095. The firmware turns it into an input byte from 0 to 255 for the Forth program.</p>
+      <p>The program uses that code and its previous decision to choose the LED command. On the breadboard, the LED has its own connection to GP15 through a series resistor.</p>
+    </section>
+
+    <section class="kajo-section kajo-sensor-reading" id="observations" aria-labelledby="observations-title">
+      <h2 id="observations-title">Follow a change in the recording.</h2>
+      <p>Each observation is a timed snapshot of the raw reading, the input Forth received and the recorded LED command. Observation 425 comes three observations after 422 in the same Pico capture.</p>
+      <div class="replay-table-wrap">
+        <table class="replay-table kajo-sensor-table">
+          <caption>Night Light capture · time from the first observation</caption>
+          <thead>
+            <tr><th scope="col">Observation</th><th scope="col">Raw ADC</th><th scope="col">Input byte</th><th scope="col">LED command</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">422 <small>8.419969 s</small></th><td>1942</td><td>121</td><td><span class="kajo-off">OFF</span></td></tr>
+            <tr class="kajo-sensor-switch"><th scope="row">425 <small>8.479979 s</small></th><td>1418</td><td>88</td><td><span class="kajo-on">ON</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The program requests ON below <strong>92</strong> and OFF at <strong>116</strong> or above. In between, it keeps its previous decision. Which number in observation 425 crossed the ON threshold?</p>
+      <details class="replay-detail">
+        <summary>Check your prediction</summary>
+        <p><strong>88</strong> is the input byte Forth compares with 92. The raw ADC reading was 1418. Because 88 is below 92, the program issued ON. The recorded command describes what the program requested. Visually checking the LED is a separate test.</p>
+      </details>
+    </section>
+
+    <section class="kajo-section kajo-content" id="stack" aria-labelledby="stack-title">
+      <h2 id="stack-title">The data stack in three steps.</h2>
+      <p>Forth works with small operations called <em>words</em>. Its data stack holds values. A word can remove values from the top of the stack and put a result back there.</p>
+      <p class="kajo-sensor-code"><code>2 3 +</code></p>
+      <p>Start with an empty stack. Read the expression from left to right. What is left after the <code>+</code> word runs?</p>
+      <details class="replay-detail">
+        <summary>Step through the stack</summary>
+        <p>Read each stack from bottom to top, with the top value on the right.</p>
+        <ol class="kajo-sensor-stack" role="list">
+          <li><strong>Push 2</strong><code>[2]</code><span>The first number goes on the empty stack.</span></li>
+          <li><strong>Push 3</strong><code>[2 3]</code><span>3 goes above 2 and becomes the top value.</span></li>
+          <li><strong>Run +</strong><code>[5]</code><span>The addition word takes both numbers off the stack and puts their sum back.</span></li>
+        </ol>
+      </details>
+      <p>The Night Light program uses the stack to compare its input with the thresholds. Between observations it remembers the last decision in memory. In Kajo Lab, you can pause and inspect both as the program runs.</p>
+    </section>
+
+    <section class="kajo-section kajo-content" id="parts" aria-labelledby="parts-title">
+      <h2 id="parts-title">Where the other pieces fit.</h2>
+      <p>The program in this recording is written in Forth.</p>
+      <dl class="kajo-sensor-terms">
+        <div><dt>Forth and the Forth VM</dt><dd>Forth expresses the rule. The virtual machine, or VM, executes it. Lab can feed it the same captured inputs again so you can step through a decision.</dd></div>
+        <div><dt>Rust and the Kajo CPU</dt><dd>Rust is the language used to build Kajo’s Forth machine and firmware. A separate research compiler can also turn a small subset of Rust into instructions for the Kajo CPU, an invented processor.</dd></div>
+        <div><dt>Native ARM kernel</dt><dd>Kajo’s experimental kernel runs on the Pico’s own Arm processor. Its scheduler decides which task runs next. When a hardware timer interrupts a task, the kernel can pause it and resume it later.</dd></div>
+      </dl>
+    </section>
+
+    <section class="kajo-section kajo-content" id="lab" aria-labelledby="lab-title">
+      <h2 id="lab-title">Try it in Kajo Lab.</h2>
+      <p>If you have Kajo Lab on Windows, you can inspect the full capture offline without a Pico.</p>
+      <ol>
+        <li>Download the capture and use <strong>Open recording or session…</strong> in Kajo Lab.</li>
+        <li>In <strong>Signals</strong>, select a point near 8.45 s. With the trace focused, use the Left and Right arrow keys to find observations 422 and 425. Compare the input and LED command.</li>
+        <li>At observation 425, open <strong>Program</strong> and choose <strong>Forth</strong>. Use <strong>Inspect observation</strong>, then <strong>Next frame</strong> to follow changes on the data stack.</li>
+      </ol>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="../../downloads/first-replay/v1/Night-Light-Pico.capture" download>Download the Night Light recording <span aria-hidden="true">↓</span></a>
+        <a class="kajo-link" href="../first-replay/">Try changing a threshold in your browser <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section class="kajo-section kajo-content" id="references" aria-labelledby="references-title">
+      <h2 id="references-title">Study references.</h2>
+      <ul>
+        <li><a href="https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html">Raspberry Pi Pico board documentation</a></li>
+        <li><a href="https://www.forth.com/starting-forth/1-forth-stacks-dictionary/">Data and the Forth Stack</a> from <em>Starting Forth</em></li>
+        <li><a href="https://forth-standard.org/standard/core/Plus">Forth standard entry for <code>+</code></a></li>
+        <li><a href="https://doc.rust-lang.org/book/ch03-03-how-functions-work.html">The Rust Programming Language on functions</a></li>
+      </ul>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-inner"><a class="footer-brand" href="../../../">MOTH <span>&amp;</span> GRAVEL <small>INDEPENDENT WORKS</small></a><div class="footer-end mono"><a href="#top">BACK TO TOP ↑</a></div></div>
+<!-- shared-business:start -->
+<div class="footer-business shell" lang="en">
+  <p>Based in Finland. We work with teams here and abroad, with calls and documentation in English and Finnish.</p>
+  <p>B2B invoicing through <span>Kissamos Trade Goods</span> (<span><span lang="fi">Y-tunnus</span> 2929371-6</span>). NDA ready.</p>
+</div>
+<!-- shared-business:end -->
+<!-- shared-footer:start -->
+<nav class="shared-footer-nav shell" aria-label="Explore the studio"><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../threads/something-happened/">Something happened. I can’t tell what.</a><a href="../../../#contact">Contact</a><a href="../../../workbench/">Example workbench</a></nav>
+<!-- shared-footer:end -->
+  </footer>
+</body>
+</html>
