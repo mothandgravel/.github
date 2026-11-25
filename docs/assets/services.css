@@ -64,6 +64,18 @@
   color: var(--gold-bright);
 }
 
+.service-location,
+.service-steps {
+  letter-spacing: .08em;
+  text-wrap: balance;
+}
+
+.service-location span,
+.service-term span,
+.service-steps span {
+  white-space: nowrap;
+}
+
 .service-actions {
   display: flex;
   flex-wrap: wrap;
@@ -123,8 +135,7 @@
   font-size: 13px;
 }
 
-.service-hero-proof figcaption a,
-.service-offer-link a {
+.service-hero-proof figcaption a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -221,8 +232,7 @@
   scroll-margin-top: 32px;
 }
 
-.service-offer .service-term,
-.service-offer .service-offer-link {
+.service-offer .service-term {
   margin: 0;
 }
 
@@ -232,10 +242,6 @@
 
 .service-deliverables strong {
   color: var(--ink);
-}
-
-.service-offer .service-actions + .service-offer-link {
-  margin-top: 8px;
 }
 
 @media (max-width: 900px) {
