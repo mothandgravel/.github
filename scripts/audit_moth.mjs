@@ -113,10 +113,9 @@ try {
   await ready(page);await start(page);await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await quiet(page,'window blur handler');
   await start(page);await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));await quiet(page,'pagehide handler');
   await start(page);await room(page).locator('.moth-question a').click();
-  await page.locator('#question-next').waitFor({state:'visible'});
-  assert(page.url().endsWith('/questions/'),'Flight blocks the actual question route');
-  await page.locator('#making').waitFor({state:'visible'});
-  assert(await page.locator('#making').isVisible(),'Question route cannot reach the editable starting question');
+  await page.locator('main h1').waitFor({state:'visible'});
+  assert(page.url().endsWith('/investigations/'),'Flight blocks the investigations route');
+  assert(await page.locator('.question-index').isVisible(),'Investigations route cannot reach the collection');
   await page.close();
 
   const aborted = await browser.newPage({viewport:{width:390,height:740},reducedMotion:'no-preference'});
@@ -145,7 +144,7 @@ try {
     if(settings.label==='reduced')assert(await fallback.locator('[data-moth-play]').isDisabled(),settings.label+': motion allowed');
     else assert(await fallback.locator('[data-moth-play]').isHidden(),settings.label+': dead motion controls');
     assert(errors.length===0,settings.label+': unhandled browser error '+errors.join(';'));
-    await room(fallback).locator('.moth-question a').click();assert(fallback.url().endsWith('/questions/'),settings.label+': native route broken');
+    await room(fallback).locator('.moth-question a').click();assert(fallback.url().endsWith('/investigations/'),settings.label+': native route broken');
     results.push({label:settings.label,errors});await fallback.close();
   }
   // At 200% equivalent narrow width, content remains readable; a tight route stays quiet.

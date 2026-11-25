@@ -12,14 +12,15 @@ async function sketchSignature(locator) {
   return locator.evaluate(svg=>({viewBox:svg.getAttribute('viewBox'),drawing:[...svg.querySelectorAll('rect,text')].map(el=>({tag:el.tagName,attributes:[...el.attributes].map(a=>[a.name,a.value]).sort(),text:el.textContent}))}));
 }
 async function review(page, label) {
-  await page.addScriptTag({content:axe.source});
-  const violations = await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})));
-  assert.deepEqual(violations,[],label);
-  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),label+' overflow');
+  // Use the same opening view for Axe and the screenshot, regardless of the last focused record.
   await page.evaluate(async()=>{
     document.activeElement?.blur();scrollTo({top:0,behavior:'instant'});
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
   });
+  await page.addScriptTag({content:axe.source});
+  const violations = await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})));
+  assert.deepEqual(violations,[],label);
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),label+' overflow');
   await page.screenshot({path:output+'/'+label+'.png',fullPage:true,animations:'disabled'});
   results.push({label,violations});
 }
@@ -90,6 +91,13 @@ try {
     assert.match(await page.locator('.room-direction [data-room-feedback]').innerText(),/Kept in this tab/);
     assert.match(await page.locator('#return-choice-record').innerText(),/revision 2: Keep damage first/);
     assert.ok(await page.locator('#return-choice-record').evaluate(el=>el===document.activeElement&&el.getBoundingClientRect().top>=document.querySelector('.site-header').getBoundingClientRect().bottom),'The kept direction receives focus below the masthead');
+    await page.keyboard.press('Shift+Tab');
+    assert.ok(await page.locator('#return-choice-form button').evaluate(button=>{
+      const bounds=button.getBoundingClientRect();
+      const headerBottom=document.querySelector('.site-header').getBoundingClientRect().bottom;
+      return button===document.activeElement&&bounds.top>=headerBottom&&
+        button.contains(document.elementFromPoint(bounds.x+bounds.width/2,bounds.y+bounds.height/2));
+    }),'Tabbing back brings the direction button into view below the masthead');
     await review(page,'room-return-'+theme+'-'+width);
     assert.deepEqual(errors,[]);
     await context.close();

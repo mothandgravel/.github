@@ -95,10 +95,11 @@ try{
       assert(!(await page.locator('#light-switch').isVisible()),option+': dead theme control');
       await page.close();continue;
     }
+    await page.goto(origin+'/specimens/skystack/',{waitUntil:'networkidle'});
     const figure=page.locator('#specimen-skystack .work-specimen');await figure.scrollIntoViewIfNeeded();
     await page.locator('#specimen-skystack [data-depth-ready]').waitFor();await page.waitForTimeout(550);
     const card=page.locator('#specimen-skystack'),image=card.locator('img');
-    const targets=card.locator('h3,figcaption,summary,.work-card-link');
+    const targets=card.locator('h2,figcaption,summary,.work-card-link');
     const before=await boxes(targets);
     const bounds=await image.boundingBox();
     await image.hover();await page.waitForTimeout(300);

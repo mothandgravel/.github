@@ -39,6 +39,8 @@ def build(check=False):
              (ROOT / 'docs/services/telemetry-interface-design/index.html', telemetry_service,
               'Operator Interface & Telemetry Dashboard Design | Moth & Gravel', None),
              (ROOT / 'docs/specimens/index.html', DOMAIN + 'specimens/', 'Specimens — Moth & Gravel', None),
+             (ROOT / 'docs/specimens/ajo/index.html', DOMAIN + 'specimens/ajo/', 'An answer is missing. What now?', None),
+             (ROOT / 'docs/specimens/skystack/index.html', DOMAIN + 'specimens/skystack/', 'The thing you just tried.', None),
              (ROOT / 'docs/threads/something-happened/index.html', DOMAIN + 'threads/something-happened/', 'Something happened. I can’t tell what.', None),
              (ROOT / 'docs/notes/index.html', DOMAIN + 'notes/', 'Field Notes — Moth & Gravel', None),
              (ROOT / 'docs/questions/index.html', DOMAIN + 'questions/', 'Shape a brief — Moth & Gravel', None),

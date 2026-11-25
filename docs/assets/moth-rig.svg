@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="120 305 750 430" width="750" height="430" aria-hidden="true" focusable="false">
 <!-- Source-derived rig: moth-mark.svg geometry, separated at the wing roots. The brass moon remains in the studio mark. All wing paths, gravel polygons, body and antenna paths are preserved. -->
-<metadata>Animation pivots in source coordinates: soft fore 486,460; soft hind 486,505; stone fore 522,460; stone hind 524,505. Body heading axis x=500. Wing and vein colors inherit CSS custom properties. Transparent background; no external resources.</metadata>
+<!-- Animation pivots in source coordinates: soft fore 486,460; soft hind 486,505; stone fore 522,460; stone hind 524,505. Body heading axis x=500. Wing and vein colors inherit CSS custom properties. Transparent background; no external resources. -->
 <g id="wing-soft-hind" data-pivot="486 505" stroke-linejoin="round">
 <path d="M479 492 C415 482 356 488 305 512 C248 538 224 575 232 609 C256 652 339 687 404 667 C449 650 470 595 486 532 Z" fill="var(--moth-wing, #F1EEE6)"/>
 <path d="M480 498 Q359 523 264 580" fill="none" stroke="var(--moth-vein, #17191B)" stroke-width="7" stroke-linecap="round" opacity="0.92"/>

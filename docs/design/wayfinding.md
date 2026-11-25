@@ -1,14 +1,13 @@
 # Studio wayfinding
 
-`/specimens/` is the collection for the nine established specimen identities.
-Seven have standalone family pages; Ajo and SkyStack remain homepage exhibits.
+`/specimens/` is the collection for the ten established specimen identities.
+Ajo and SkyStack have their own pages for the detailed records.
 The five additional rooms belong to their parent specimens. TNT is inside 009.
 The one published thread is named directly in the menu; there is no Threads archive.
 
 Thread 01 keeps three stable stops: the ageing reading, the missing reply and
 the reassuring signal. `assets/thread.json` resolves its existing specimen and
-note IDs into native arrival context on each piece. Ajo remains inside its
-homepage exhibit. The context returns to the current stop or continues to the
+note IDs into native arrival context on each piece. The context returns to the current stop or continues to the
 next one; existing continuation links at the end of each piece remain available.
 Each thread handoff states whether it opens a specimen or a written field note.
 Standalone arrival context sits after the piece's own identity; its visible
@@ -44,7 +43,8 @@ link, such as note 015's, is not relabelled as a specimen.
   and full archive both retain specimen and investigation routes with distinct labels.
   If either catalogue fails, the complete authored archive remains available.
 - `scripts/build_wayfinding.py` generates bounded masthead, footer, collection,
-  parent and related-reading slots. It validates destinations and fragments.
+  parent and related-reading slots. The shared business block also appears
+  in the Sohva footer. The generator validates destinations and fragments.
 
 Run `python3 scripts/build_notes.py` after changes. The same command with
 `--check` detects drift, including the homepage's derived critical stylesheet
@@ -60,8 +60,9 @@ trigger. Escape and backward Tab from the first route return to the trigger;
 forward focus leaving the sheet dismisses it without taking focus back.
 
 All four numbered routes share one responsive type rule. The longer thread
-title wraps within that rule. Persistent Specimens and Field notes links stay
-outside the menu, including in a second masthead row on phones. Header space is
+title wraps within that rule. Services, Specimens, Field notes and Contact stay
+outside the menu, including in a second masthead row on phones. Sohva uses the
+same primary links alongside its product navigation. Header space is
 reserved before enhancement; there is no `nav-pending` layout variant.
 
 Ancestor collection links use `aria-current="location"`; a collection's own

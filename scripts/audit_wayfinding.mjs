@@ -17,7 +17,7 @@ try {
     assert(response.status()===200,'Collection must return 200');
     assert(await page.locator('.specimen-entry').count()===10,'Ten specimen identities, including Sohva');
     const primary=page.getByRole('navigation',{name:'Primary',exact:true});
-    for(const name of ['Services','Specimens','Field notes']) {
+    for(const name of ['Services','Specimens','Field notes','Contact']) {
       assert(await primary.getByRole('link',{name,exact:true}).isVisible(),`Persistent ${name} link`);
     }
     assert(await primary.getByRole('link',{name:'Specimens',exact:true}).getAttribute('aria-current')==='page','Current collection state');
