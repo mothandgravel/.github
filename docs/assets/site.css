@@ -252,6 +252,14 @@ button:focus-visible,a:focus-visible {outline:2px solid var(--gold-bright);outli
 .footer-brand {font-family:var(--sans);font-size:clamp(28px,3vw,50px);font-weight:900;letter-spacing:.02em;line-height:1}
 .footer-brand>span {color:#a9936f}
 .footer-brand small {display:block;margin-top:12px;font-family:var(--mono);font-size:12px;letter-spacing:.2em;font-weight:400;color:#a8a096}
+.footer-business {
+  max-width: 66ch;
+  margin-block-start: 20px;
+  color: #c6c0b6;
+  font-size: .875rem;
+}
+.footer-business p {margin: 0 0 4px}
+.footer-business span {white-space: nowrap}
 .footer-links {display:flex;flex-wrap:wrap;gap:28px;margin-top:42px;font-size:12px;color:#eae5d9}
 .footer-end {display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:70px;padding-top:22px;border-top:1px solid #45423e;font-size:12px;color:#aaa49a}
 
