@@ -55,6 +55,16 @@ try{
   const edge=radarGridAt(data.radar[0],23.01,60);await page.locator('#cw-cell-x').fill(String(edge.column));await page.locator('#cw-cell-y').fill(String(edge.row));await page.waitForFunction(()=>/Column/.test(document.getElementById('cw-map-cell-context').textContent));
   if(width<1000)assert.match(await page.locator('#cw-map-cell-position').textContent(),/Outside the current map crop/);
   assert.equal(await page.locator('#cw-map-cell-value').getAttribute('aria-live'),'off');assert.equal(await page.locator('#cw-map-status').getAttribute('aria-live'),'off');
+  for(const selector of ['#cw-scan-prev','#cw-scan-play']){
+    assert.ok(await page.locator(selector).evaluate(button=>{
+      button.scrollIntoView({block:'center',behavior:'instant'});
+      const bounds=button.getBoundingClientRect();
+      return bounds.width>=24&&bounds.height>=44&&
+        button.contains(document.elementFromPoint(bounds.x+bounds.width/2,bounds.y+bounds.height/2));
+    }),`${selector} must be reachable below the sticky controls at ${width}px`);
+  }
+  // Audit the whole passage from a known scroll position after checking the scan controls in view.
+  await page.evaluate(()=>{document.activeElement?.blur();scrollTo({top:0,behavior:'instant'});});
   await page.addScriptTag({content:axe.source});const a11y=await page.evaluate(async()=>axe.run(document.getElementById('cw-passage'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}));
   const violations=a11y.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))}));assert.deepEqual(violations,[]);assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   reports.push({width,theme,errors,violations});await writeFile(out+'/audit.json',JSON.stringify(reports,null,2));await page.close();
