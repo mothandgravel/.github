@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#17191b">
+  <title>From Rust Source to KAF1 — Moth &amp; Gravel</title>
+  <meta name="description" content="Read a real 124-byte KAF1 program image and step the Kajo CPU through the Rust double example in Lab.">
+  <link rel="canonical" href="https://mothandgravel.com/kajo/learn/rust-source-to-kaf1/">
+  <link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../assets/site.css">
+  <link rel="stylesheet" href="../../kajo.css">
+  <script>(()=>{let t;try{t=localStorage.getItem('moth-and-gravel-theme')}catch(_){}const d=document.documentElement,c=t==='afterlight'||t==='night'?t:'system';d.dataset.themeChoice=c;d.dataset.theme=c!=='system'?c:matchMedia('(prefers-color-scheme: light)').matches?'afterlight':'night'})()</script>
+  <script src="../../../assets/site.js" defer></script>
+</head>
+<body class="kajo-page">
+  <a class="skip-link" href="#main">Skip to the lesson</a>
+<!-- shared-header:start -->
+<header class="site-header shared-header" id="top"><div class="header-inner shell">
+<a class="brand" href="../../../" title="Moth &amp; Gravel home"><span class="brand-stamp" aria-hidden="true"><img src="../../../assets/nav-mark.svg" width="44" height="44" alt=""></span><span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span></a>
+<nav class="collection-nav" aria-label="Primary" lang="en"><a href="../../../services/">Services</a><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../#contact">Contact</a></nav>
+<p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
+<button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
+<details class="studio-index"><summary class="menu-toggle" id="menu-toggle" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></summary>
+<nav class="main-nav studio-sheet" id="primary-nav" aria-label="Studio index"><div class="nav-sheet-heading"><span class="mono">M+G / THE STUDIO INDEX</span><p>A few ways in.</p></div><a href="../../../specimens/"><span class="nav-sheet-index mono" aria-hidden="true">01</span><span class="nav-sheet-label">Specimens</span><span class="nav-sheet-hint">Working pieces you can look into.</span></a><a href="../../../notes/"><span class="nav-sheet-index mono" aria-hidden="true">02</span><span class="nav-sheet-label">Field notes</span><span class="nav-sheet-hint">What we noticed while making. Read or listen.</span></a><a href="../../../threads/something-happened/"><span class="nav-sheet-index mono" aria-hidden="true">03</span><span class="nav-sheet-label">Something happened. I can’t tell what.</span><span class="nav-sheet-hint">One question through several pieces.</span></a><a href="../../../#contact"><span class="nav-sheet-index mono" aria-hidden="true">04</span><span class="nav-sheet-label">Contact</span><span class="nav-sheet-hint">A rough edge, an unfinished idea, a question.</span></a><section class="nav-shortcuts" aria-labelledby="shortcut-heading"><p class="mono" id="shortcut-heading">Straight to.</p><div><a class="nav-shortcut" href="../../../specimens/maintenance-acceptance/tnt/"><strong>The measured TNT replay ↗</strong><span>Inside specimen 009 / 1,000 recorded departures.</span></a><a class="nav-shortcut" href="../../../notes/#listen-archive"><strong>Listen to the field notes ↗</strong><span>AI-narrated readings, conversations and a narration study.</span></a><a class="nav-shortcut" href="../../../investigations/"><strong>Three questions. Still open. ↗</strong><span>Freshness, recovery and the promise of a green light.</span></a></div></section><div class="nav-studio"><a href="../../../services/">Services</a><a href="../../../#ethos">The thinking</a><a href="../../../workbench/">Example workbench</a></div></nav></details>
+</div></header>
+<!-- shared-header:end -->
+  <p class="visually-hidden" role="status"></p>
+  <main class="kajo-main shell" id="main" tabindex="-1">
+    <nav class="kajo-crumb" aria-label="Kajo Lab"><a href="../../">Kajo Lab</a> <span aria-hidden="true">/</span> <span aria-current="page">From Rust source to KAF1</span></nav>
+    <header class="kajo-intro kajo-lesson-header">
+      <p class="kajo-eyebrow">Kajo Lab 101</p>
+      <h1 class="kajo-title">From Rust source to KAF1.</h1>
+      <p class="kajo-lede">Follow a short Rust program into a 124-byte program image, then step the Kajo CPU as it turns 7 into 14.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="#image">Read the image</a>
+        <a class="kajo-link" href="https://www.youtube.com/watch?v=OiuL1MMUeEA">Watch the full lesson <span aria-hidden="true">↗</span></a>
+      </div>
+      <p>Use an existing Windows copy of Kajo Lab to follow the app steps with the Pico unplugged. The decoded image, step table and <a class="kajo-link" href="#exercise">prediction exercise</a> also work on this page without Lab.</p>
+    </header>
+
+    <section class="kajo-section kajo-content" id="compile" aria-labelledby="compile-title">
+      <h2 id="compile-title">Start with the Rust source.</h2>
+      <p>When Lab replays an observation, the guest starts at <code>sample</code>. Here it calls <code>double</code> with a fixed number, 7. The recording supplies an observation to replay, while the code supplies the number to double.</p>
+      <pre class="kajo-foundations-code"><code>fn double(n: u16) -&gt; u16 {
+    n.wrapping_add(n)
+}
+
+pub fn sample(_input: u16, _state: u16) -&gt; u16 {
+    double(7u16)
+}</code></pre>
+      <p>Lab’s guest compiler translates a supported subset of Rust into instructions for the Kajo CPU. It stores those instructions and the information needed to load them in a <strong>KAF1 program image</strong>.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="./double.rs" download>Download the Rust source <span aria-hidden="true">↓</span></a>
+        <a class="kajo-link" href="../same-rule-rust-guest/">Review the doubling rule <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section class="kajo-section kajo-content" id="image" aria-labelledby="image-title">
+      <h2 id="image-title">What’s inside the 124 bytes?</h2>
+      <p>The first four bytes spell <code>KAF1</code>. The rest tells the CPU what to run and where to start.</p>
+      <dl class="kajo-grid kajo-kaf1-layout">
+        <div class="kajo-card">
+          <dt><strong>Header</strong> <small>16 bytes</small></dt>
+          <dd>Version 1. Two functions, seven instructions. Starting function <code>#1</code> is <code>sample</code>.</dd>
+        </div>
+        <div class="kajo-card">
+          <dt><strong>Function table</strong> <small>80 bytes</small></dt>
+          <dd><code>#0 double</code> uses instructions 0–3 and takes one argument. <code>#1 sample</code> uses 4–6 and takes two.</dd>
+        </div>
+        <div class="kajo-card">
+          <dt><strong>Instruction table</strong> <small>28 bytes</small></dt>
+          <dd>Seven records of four bytes each. Instruction 4 is <code>Literal(7)</code>. It puts 7 on the operand stack.</dd>
+        </div>
+      </dl>
+      <p>At instruction 4 the bytes are <code>01 00 07 00</code>. The first byte, <code>01</code>, selects <code>Literal</code>. The last two, <code>07 00</code>, encode 7.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="./double.kaf" download>Download the KAF1 image <span aria-hidden="true">↓</span></a>
+        <a class="kajo-link" href="./double-kaf1-inspection.txt" download>Download the decoded image and exercise notes <span aria-hidden="true">↓</span></a>
+      </div>
+      <details class="replay-detail">
+        <summary>Inspect the file with the command-line tool</summary>
+        <p>Run these in the folder containing <code>double.rs</code> and <code>double.kaf</code>. If <code>kajo-frame</code> isn’t on your PATH, use the full path to Lab’s <code>Guest/kajo-frame.exe</code>. Give the new image a fresh filename.</p>
+        <pre class="kajo-foundations-code"><code>kajo-frame inspect double.kaf
+kajo-frame verify double.kaf
+kajo-frame compile double.rs double-local.kaf --entry sample</code></pre>
+      </details>
+    </section>
+
+    <section class="kajo-section kajo-content" id="steps" aria-labelledby="steps-title">
+      <h2 id="steps-title">Step the Kajo CPU in Lab.</h2>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="../../downloads/first-replay/v1/Night-Light-Pico.capture" download>Download the Night Light recording <span aria-hidden="true">↓</span></a>
+      </div>
+      <ol>
+        <li>Choose <strong>Open recording or session…</strong> and open <code>Night-Light-Pico.capture</code>. With that recording selected, go to <strong>Program → Rust guest</strong>. If the replay header shows a different recording, choose <strong>Use Signals recording</strong>.</li>
+        <li>Select <strong>Slew-limited knob · ON at 140</strong> so Lab shows the numeric result as state. Paste the Rust source or choose <strong>Open .rs…</strong> and load <code>double.rs</code>.</li>
+        <li>Set <strong>Observation</strong> to <strong>1</strong> and choose <strong>Pause before observation</strong>. This prepares the guest from the Rust source. Open <strong>Identity</strong> to see <strong>Image SHA-256</strong>, the fingerprint of the compiled image.</li>
+        <li>Return to <strong>Execution</strong> and choose <strong>Instruction step</strong> once per row in the table. The guest starts at instruction 4, the start of <code>sample</code>. Lab’s <strong>PC</strong>, or program counter, tells you which instruction will run next.</li>
+      </ol>
+      <figure class="kajo-lesson-figure kajo-kaf1-identity">
+        <a class="kajo-image-link" href="./kaf1-image-identity.webp">
+          <img src="./kaf1-image-identity.webp" width="448" height="250" loading="lazy" decoding="async" alt="Kajo Lab’s Identity panel shows an Image SHA-256 beginning e0ed7f69 and ending b46685. Open the screenshot full size.">
+          <span class="kajo-image-action" aria-hidden="true">Full size ↗</span>
+        </a>
+        <figcaption>Compare <strong>Image SHA-256</strong> with the full fingerprint in the downloaded decode. The guest compiler using rustc 1.96.0 reproduced this image exactly. If your Lab build gives a different fingerprint, check whether the decoded instructions still match.</figcaption>
+      </figure>
+
+      <p>A <strong>call frame</strong> holds a function’s arguments and local values. The <strong>operand stack</strong> holds numbers the next instructions can use. When <code>sample</code> calls <code>double</code>, the CPU moves 7 into <code>double</code>’s argument slot, <code>n</code>. Two <code>Load(0)</code> instructions copy it back onto the stack.</p>
+      <div class="kajo-grid kajo-kaf1-figures">
+        <figure class="kajo-lesson-figure">
+          <a class="kajo-image-link" href="./kaf1-before-add.webp">
+            <img src="./kaf1-before-add.webp" width="365" height="319" loading="lazy" decoding="async" alt="Kajo Lab before Add. PC 2 points to Binary(Add), the operand stack is [7 7], and the active frame holds n = 7. Open the screenshot full size.">
+            <span class="kajo-image-action" aria-hidden="true">Full size ↗</span>
+          </a>
+          <figcaption><strong>Before Add.</strong> Both copies of 7 are on the stack.</figcaption>
+        </figure>
+        <figure class="kajo-lesson-figure">
+          <a class="kajo-image-link" href="./kaf1-after-add.webp">
+            <img src="./kaf1-after-add.webp" width="365" height="319" loading="lazy" decoding="async" alt="Kajo Lab after Add. The operand stack is [14] and PC 3 points to Return. Open the screenshot full size.">
+            <span class="kajo-image-action" aria-hidden="true">Full size ↗</span>
+          </a>
+          <figcaption><strong>After Add.</strong> The sum is on the stack. The next instruction returns from <code>double</code>.</figcaption>
+        </figure>
+      </div>
+
+      <div class="replay-table-wrap">
+        <table class="replay-table">
+          <caption>Each row starts with the instruction just run and shows what changes after that step.</caption>
+          <thead><tr><th scope="col">Step</th><th scope="col">Just ran</th><th scope="col">Next PC</th><th scope="col">What to look for</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1</th><td><code>Literal(7)</code></td><td>5</td><td><code>[7]</code></td></tr>
+            <tr><th scope="row">2</th><td><code>Call(0)</code></td><td>0</td><td>Empty stack. <code>double</code> has <code>n = 7</code>.</td></tr>
+            <tr><th scope="row">3</th><td>First <code>Load(0)</code></td><td>1</td><td><code>[7]</code></td></tr>
+            <tr><th scope="row">4</th><td>Second <code>Load(0)</code></td><td>2</td><td><code>[7 7]</code></td></tr>
+            <tr><th scope="row">5</th><td><code>Binary(Add)</code></td><td>3</td><td><code>[14]</code></td></tr>
+            <tr><th scope="row">6</th><td><code>Return</code> from <code>double</code></td><td>6</td><td><code>sample</code> gets <code>[14]</code>.</td></tr>
+            <tr><th scope="row">7</th><td><code>Return</code> from <code>sample</code></td><td>—</td><td>Lab saves 14 as the new replay state.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>After the last return, Lab pauses before observation 2. Look for <strong>Replay-derived state 14</strong> and <strong>Last callback: observation 1</strong>. The recording’s original decision is ON. The Rust replay shows OFF because its result, 14, is below the preset’s threshold of 140. For this exercise, follow the numeric result.</p>
+    </section>
+
+    <section class="kajo-section kajo-content kajo-forth-exercise" id="exercise" aria-labelledby="exercise-title">
+      <h2 id="exercise-title">Change 7 to 9.</h2>
+      <p>Replace <code>double(7u16)</code> with <code>double(9u16)</code>. Predict what goes into <code>n</code>, what’s on the stack before Add, and what changes in the image. If you have Lab, set observation back to 1, pause, and repeat the steps.</p>
+      <p>To work away from the site, save the Rust source, image, recording and text notes linked above first.</p>
+      <details class="replay-detail">
+        <summary>What happens to the argument and stack?</summary>
+        <p>The call gives <code>n = 9</code>. After both loads the stack is <code>[9 9]</code>. Add leaves <code>[18]</code>. The guest returns 18 and Lab saves it as the new replay state.</p>
+      </details>
+      <details class="replay-detail">
+        <summary>Which byte changes in the image?</summary>
+        <p>In the recompiled lesson image, offset 114 (<code>0x72</code>) changes from <code>07</code> to <code>09</code>. This is the third byte of instruction 4, which starts at offset 112. The two functions and seven instructions stay in the same places. The image fingerprint changes because the image now contains 9.</p>
+      </details>
+    </section>
+
+    <section class="kajo-section kajo-content" id="references" aria-labelledby="references-title">
+      <h2 id="references-title">Study references.</h2>
+      <ul>
+        <li><a href="../foundations/">Forth, Rust and the Pico</a> shows where the compiler, Kajo CPU and native kernel each fit.</li>
+        <li>The Rust Book introduces <a href="https://doc.rust-lang.org/book/ch03-03-how-functions-work.html">functions and arguments</a>. The standard library explains <a href="https://doc.rust-lang.org/std/primitive.u16.html#method.wrapping_add"><code>u16::wrapping_add</code></a>.</li>
+      </ul>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-inner"><a class="footer-brand" href="../../../">MOTH <span>&amp;</span> GRAVEL <small>INDEPENDENT WORKS</small></a><div class="footer-end mono"><a href="#top">BACK TO TOP ↑</a></div></div>
+<!-- shared-business:start -->
+<div class="footer-business shell" lang="en">
+  <p>Based in Finland. We work with teams here and abroad, with calls and documentation in English and Finnish.</p>
+  <p>B2B invoicing through <span>Kissamos Trade Goods</span> (<span><span lang="fi">Y-tunnus</span> 2929371-6</span>). NDA ready.</p>
+</div>
+<!-- shared-business:end -->
+<!-- shared-footer:start -->
+<nav class="shared-footer-nav shell" aria-label="Explore the studio"><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../threads/something-happened/">Something happened. I can’t tell what.</a><a href="../../../#contact">Contact</a><a href="../../../workbench/">Example workbench</a></nav>
+<!-- shared-footer:end -->
+  </footer>
+</body>
+</html>

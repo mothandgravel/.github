@@ -412,6 +412,16 @@ ol.kajo-foundations-flow {margin: .9rem 0 .2rem; padding-left: 1.25rem; color: v
 }
 .kajo-product-figure figcaption strong {display: block; margin-bottom: .22rem; color: var(--ink); font-size: 1.09rem}
 .kajo-lesson-figure figcaption code {color: var(--kajo-teal)}
+.kajo-kaf1-layout {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  margin-block: 1rem;
+}
+.kajo-kaf1-layout dt {display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .65rem}
+.kajo-kaf1-layout dt small {color: var(--kajo-teal); font-family: var(--mono)}
+.kajo-kaf1-layout dd {margin: .45rem 0 0; color: var(--secondary)}
+.kajo-kaf1-identity {max-width: 448px; margin-block: 1.1rem}
+.kajo-kaf1-figures {max-width: 746px; margin-block: 1rem}
+.kajo-kaf1-figures .kajo-lesson-figure {margin: 0}
 .kajo-forth-vm-stacks {margin-block: 1rem}
 .kajo-forth-vm-stacks > :first-child {border-top: 2px solid var(--kajo-teal)}
 .kajo-forth-vm-stacks > :last-child {border-top: 2px solid var(--kajo-violet)}

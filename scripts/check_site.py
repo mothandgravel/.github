@@ -548,6 +548,7 @@ def main() -> int:
         'kajo/', 'kajo/learn/first-replay/', 'kajo/learn/light-sensor-to-forth/',
         'kajo/learn/foundations/', 'kajo/learn/first-forth-word/',
         'kajo/learn/forth-vm-101/', 'kajo/learn/same-rule-rust-guest/',
+        'kajo/learn/rust-source-to-kaf1/',
     ):
         page = ROOT / route / 'index.html'
         url = 'https://mothandgravel.com/' + route

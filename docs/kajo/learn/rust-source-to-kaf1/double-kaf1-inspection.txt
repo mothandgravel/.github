@@ -1,0 +1,97 @@
+FROM RUST SOURCE TO KAF1
+Actual decode of double.kaf
+
+The compiler chose KAF1 version 1. This 124-byte guest image has 2 function
+records and 7 instructions. Its default starting function is sample.
+Image SHA-256
+e0ed7f6984b072cc6b2b8ab6d42e9beca89fefe33fcc95bf45c94a2cf8b46685
+
+1. Header · bytes 0–15
+   4B 41 46 31 01 00 00 00 02 00 07 00 01 00 00 00
+
+   Bytes 0–3 spell KAF1. Then come version 1, flags 0, function count 2,
+   instruction count 7, default entry function index 1 and reserved 0.
+   Each field after the name is a two-byte unsigned little-endian number.
+   For example, 07 00 encodes seven instructions.
+
+2. Function table · bytes 16–95
+   Index  Name    Arguments  Frame slots  Returns  Instruction indices
+   0      double      1           1         u16     0000–0003
+   1      sample      2           2         u16     0004–0006
+
+   Each record is 40 bytes. Its instruction range tells the CPU where the
+   function begins and ends. The CLI prints a half-open range, so its
+   pc=0..4 means instructions 0 through 3. The argument and slot counts
+   say how many values the call receives and how many places it provides
+   in its frame. Here the declared slots are all u16.
+
+3. Instruction table · bytes 96–123
+   PC    File offset   Bytes         CLI decode
+   0000       96       02 00 00 00   Load(0)
+   0001      100       02 00 00 00   Load(0)
+   0002      104       04 00 00 00   Binary(Add)
+   0003      108       0A 00 00 00   Return
+   0004      112       01 00 07 00   Literal(7)
+   0005      116       07 00 00 00   Call(0)
+   0006      120       0A 00 00 00   Return
+
+   PC means program counter. In this image it counts instructions. Every
+   instruction is four bytes, with an opcode, one auxiliary byte and a
+   two-byte operand. The 7 in Literal(7) is the value encoded by 07 00.
+   The 0 in Call(0) selects function-table row 0, double. The 0 in Load(0)
+   selects slot 0 of the active function frame, holding the argument n.
+
+4. Step from sample and follow the argument
+   Step  Executed PC  Operation     Next PC   Frame count   Operand stack
+     1       0004      Literal(7)       0005         1         [7]
+     2       0005      Call(0)          0000         2         []
+     3       0000      Load(0)          0001         2         [7]
+     4       0001      Load(0)          0002         2         [7, 7]
+     5       0002      Binary(Add)      0003         2         [14]
+     6       0003      Return           0006         1         [14]
+     7       0006      Return            —           0         [14]
+
+   At Call(0), the CPU takes 7 off the operand stack and puts it in
+   double’s argument slot. The two Load instructions put two copies on
+   the stack. Add replaces them with 14. The first Return transfers 14
+   back to sample. The final Return gives 14 to the host. Once Lab
+   commits that result for observation 1 it pauses before observation 2.
+   Check Replay-derived state 14 and Last callback: observation 1.
+   In Lab the PC while paused points to the next instruction.
+
+Try it in Lab
+Open the Night Light practice capture. Choose Program → Rust guest, select
+Slew-limited knob · ON at 140 to use numeric state, then use Open .rs… or
+paste double.rs. At observation 1, choose Pause before observation and
+use Instruction step. The recording supplies the replay context. The
+literal 7 comes from the source, which ignores the recorded input and previous
+state. Read the numeric state separately from the recorded and replayed
+ON/OFF decisions. Use Identity → Image SHA-256 to link this file to the
+image compiled for the run.
+
+Offline exercise
+Save double.rs, double.kaf, the Night Light recording and these notes in
+the same folder. Change double(7u16) to double(9u16) in a copy of the source.
+Predict the value of n, the operand stack before Add, the final state and
+the one byte that will change. In Lab, start again at observation 1, then
+pause and step. You can also work from the trace above on paper.
+
+Check your work
+The call gives n = 9. The two loads give [9, 9], and Add leaves [18]. Lab
+commits state 18. In the recompiled lesson image, the byte at decimal
+offset 114 (hexadecimal 0x72) changes from 07 to 09. The two functions and
+seven instructions stay in the same places.
+
+Optional command-line inspection
+If you run the installed kajo-frame executable directly from a shell, or
+it is on PATH, these are its commands. Choose a new file for compile.
+
+  kajo-frame compile double.rs double-local.kaf --entry sample
+  kajo-frame inspect double.kaf
+  kajo-frame verify double.kaf
+  kajo-frame run double.kaf --args 6,0 --trace
+
+The first captured input byte is 6, and replay starts with state 0.
+This guest ignores both arguments and doubles the literal from the source.
+Lab’s source-highlighting metadata travels with the compiler/debugger
+session. The KAF1 file contains the loadable program image itself.
