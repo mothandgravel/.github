@@ -15,9 +15,9 @@ const finalFrame = 2;
 function render() {
   const number = Number(inputGroup.querySelector('input:checked').value);
   const frames = [
-    { values: [number], note: 'Number pushed. Next is DUP.' },
-    { values: [number, number], note: 'DUP copied the top value. Next is +.' },
-    { values: [number + number], note: '+ replaced the two values with their sum. Done.' },
+    { values: [number], note: `${number} is on the stack. Next is DUP.` },
+    { values: [number, number], note: 'DUP copied the top value. Next is plus (+).' },
+    { values: [number + number], note: 'Plus (+) replaced the two values with their sum. Done.' },
   ];
   const { values, note } = frames[frame];
   stack.textContent = `[${values.join(' ')}]`;

@@ -50,7 +50,7 @@
 
     <section class="kajo-section kajo-content kajo-forth-exercise" id="step" aria-labelledby="step-title" data-forth-double>
       <h2 id="step-title">Follow the data stack.</h2>
-      <p>Start with one number on the stack, then apply <code>DUP</code> and <code>+</code>. Read the stack from bottom to top, with the top value on the right.</p>
+      <p>Start with one number on the stack, then apply <code>DUP</code> and <code>+</code>. The top value is on the right. Try 7 first, then predict the result for 9 before you step.</p>
       <fieldset class="replay-controls" data-forth-input hidden>
         <legend>Starting value</legend>
         <div class="replay-choices">
@@ -85,20 +85,21 @@
     <section class="kajo-section kajo-content" id="lab" aria-labelledby="lab-title">
       <h2 id="lab-title">Run the word in Kajo Lab.</h2>
       <p>On Windows, use the recording to give Lab an observation to inspect. Lab calls <code>on-sample</code> for that observation. This draft uses the fixed number 7, so the sensor value does not affect the exercise.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="../../downloads/first-replay/v1/Night-Light-Pico.capture" download>Download the Night Light recording <span aria-hidden="true">↓</span></a>
+        <a class="kajo-link" href="../first-replay/">Learn to open a recording <span aria-hidden="true">→</span></a>
+      </div>
       <ol>
-        <li>Download the Night Light recording. In Lab, choose <strong>Open recording or session…</strong> and open that file.</li>
+        <li>In Lab, choose <strong>Open recording or session…</strong> and open the downloaded Night Light recording.</li>
         <li>Open <strong>Program</strong>, choose <strong>Forth</strong> and replace the text in <strong>Experimental Forth</strong> with both lines below.</li>
       </ol>
       <pre class="kajo-foundations-code"><code>: double ( n -- 2n ) DUP + ;
 : on-sample 7 double ;</code></pre>
       <ol start="3">
         <li>Set the observation number to <strong>1</strong> and choose <strong>Inspect observation</strong>.</li>
-        <li>Choose <strong>Next frame</strong> until <strong>Data stack</strong> shows <code>[14]</code>. Keep stepping through both returns until Lab shows <strong>This callback: result 14.</strong> The original recording still shows its own result of 1.</li>
+        <li>In <strong>Stacks</strong>, watch the <strong>Data stack</strong> as you choose <strong>Next frame</strong>. It starts empty, then holds 7 while the call enters <code>double</code>. After <code>+</code> it holds <code>[14]</code>.</li>
+        <li>Step through both returns until you see <strong>This callback: result 14.</strong> The saved observation still shows <strong>Recorded callback: result 1</strong>.</li>
       </ol>
-      <div class="kajo-actions">
-        <a class="kajo-button" href="../../downloads/first-replay/v1/Night-Light-Pico.capture" download>Download the practice recording <span aria-hidden="true">↓</span></a>
-        <a class="kajo-link" href="../first-replay/">Learn to open a recording <span aria-hidden="true">→</span></a>
-      </div>
     </section>
 
     <section class="kajo-section kajo-content kajo-forth-exercise" id="challenge" aria-labelledby="challenge-title">
@@ -108,7 +109,7 @@
         <summary>Show the triple solution</summary>
         <pre class="kajo-foundations-code"><code>: triple ( n -- 3n ) DUP DUP + + ;
 : on-sample 7 triple ;</code></pre>
-        <p>Paste both lines into the draft and choose <strong>Inspect observation</strong> again. After the second <code>DUP</code> the stack holds <code>[7 7 7]</code>. The first <code>+</code> leaves <code>[7 14]</code>. The final <code>+</code> leaves <code>[21]</code>, so the callback reports 21.</p>
+        <p>Replace the <strong>Experimental Forth</strong> draft with these two lines and choose <strong>Inspect observation</strong> again. After the second <code>DUP</code> the stack holds <code>[7 7 7]</code>. The first <code>+</code> leaves <code>[7 14]</code>. The final <code>+</code> leaves <code>[21]</code>. Step through both returns to see <strong>This callback: result 21.</strong></p>
       </details>
     </section>
 
