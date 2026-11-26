@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#17191b">
+  <title>Write your first Forth word — Moth &amp; Gravel</title>
+  <meta name="description" content="Write a Forth word, step through its stack in your browser and run it in Kajo Lab with a practice recording.">
+  <link rel="canonical" href="https://mothandgravel.com/kajo/learn/first-forth-word/">
+  <link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../assets/site.css">
+  <link rel="stylesheet" href="../../kajo.css">
+  <script>(()=>{let t;try{t=localStorage.getItem('moth-and-gravel-theme')}catch(_){}const d=document.documentElement,c=t==='afterlight'||t==='night'?t:'system';d.dataset.themeChoice=c;d.dataset.theme=c!=='system'?c:matchMedia('(prefers-color-scheme: light)').matches?'afterlight':'night'})()</script>
+  <script src="../../../assets/site.js" defer></script>
+  <script type="module" src="./forth-word.mjs"></script>
+</head>
+<body class="kajo-page">
+  <a class="skip-link" href="#main">Skip to the lesson</a>
+<!-- shared-header:start -->
+<header class="site-header shared-header" id="top"><div class="header-inner shell">
+<a class="brand" href="../../../" title="Moth &amp; Gravel home"><span class="brand-stamp" aria-hidden="true"><img src="../../../assets/nav-mark.svg" width="44" height="44" alt=""></span><span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span></a>
+<nav class="collection-nav" aria-label="Primary" lang="en"><a href="../../../services/">Services</a><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../#contact">Contact</a></nav>
+<p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
+<button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
+<details class="studio-index"><summary class="menu-toggle" id="menu-toggle" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></summary>
+<nav class="main-nav studio-sheet" id="primary-nav" aria-label="Studio index"><div class="nav-sheet-heading"><span class="mono">M+G / THE STUDIO INDEX</span><p>A few ways in.</p></div><a href="../../../specimens/"><span class="nav-sheet-index mono" aria-hidden="true">01</span><span class="nav-sheet-label">Specimens</span><span class="nav-sheet-hint">Working pieces you can look into.</span></a><a href="../../../notes/"><span class="nav-sheet-index mono" aria-hidden="true">02</span><span class="nav-sheet-label">Field notes</span><span class="nav-sheet-hint">What we noticed while making. Read or listen.</span></a><a href="../../../threads/something-happened/"><span class="nav-sheet-index mono" aria-hidden="true">03</span><span class="nav-sheet-label">Something happened. I can’t tell what.</span><span class="nav-sheet-hint">One question through several pieces.</span></a><a href="../../../#contact"><span class="nav-sheet-index mono" aria-hidden="true">04</span><span class="nav-sheet-label">Contact</span><span class="nav-sheet-hint">A rough edge, an unfinished idea, a question.</span></a><section class="nav-shortcuts" aria-labelledby="shortcut-heading"><p class="mono" id="shortcut-heading">Straight to.</p><div><a class="nav-shortcut" href="../../../specimens/maintenance-acceptance/tnt/"><strong>The measured TNT replay ↗</strong><span>Inside specimen 009 / 1,000 recorded departures.</span></a><a class="nav-shortcut" href="../../../notes/#listen-archive"><strong>Listen to the field notes ↗</strong><span>AI-narrated readings, conversations and a narration study.</span></a><a class="nav-shortcut" href="../../../investigations/"><strong>Three questions. Still open. ↗</strong><span>Freshness, recovery and the promise of a green light.</span></a></div></section><div class="nav-studio"><a href="../../../services/">Services</a><a href="../../../#ethos">The thinking</a><a href="../../../workbench/">Example workbench</a></div></nav></details>
+</div></header>
+<!-- shared-header:end -->
+  <p class="visually-hidden" role="status"></p>
+  <main class="kajo-main shell" id="main" tabindex="-1">
+    <nav class="kajo-crumb" aria-label="Kajo Lab"><a href="../../">Kajo Lab</a> <span aria-hidden="true">/</span> <span aria-current="page">First Forth word</span></nav>
+    <header class="kajo-intro kajo-lesson-header">
+      <p class="kajo-eyebrow">Kajo Lab 101</p>
+      <h1 class="kajo-title">Write your first Forth word.</h1>
+      <p class="kajo-lede">Give two stack operations a name. Step through your new word, then try it in Kajo Lab with a saved recording and no Pico connected.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="#step">Try the stack exercise</a>
+        <a class="kajo-link" href="https://youtu.be/EqAfwivS-AQ">Watch the full lesson <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <section class="kajo-section kajo-content" id="define" aria-labelledby="define-title">
+      <h2 id="define-title">Give the operations a name.</h2>
+      <p>Forth calls each named operation a <em>word</em>. This definition makes a word called <code>double</code>.</p>
+      <pre class="kajo-foundations-code"><code>: double ( n -- 2n ) DUP + ;</code></pre>
+      <p>The colon starts the definition. <code>DUP</code> copies the number at the top of the stack, then <code>+</code> adds the top two numbers. The semicolon completes the definition.</p>
+      <p><code>( n -- 2n )</code> is a comment. It describes the <strong>stack effect</strong>, which is what the word takes from the stack and what it leaves behind. <code>double</code> takes one number and leaves twice that number.</p>
+    </section>
+
+    <section class="kajo-section kajo-content kajo-forth-exercise" id="step" aria-labelledby="step-title" data-forth-double>
+      <h2 id="step-title">Follow the data stack.</h2>
+      <p>Start with one number on the stack, then apply <code>DUP</code> and <code>+</code>. The top value is on the right. Try 7 first, then predict the result for 9 before you step.</p>
+      <fieldset class="replay-controls" data-forth-input hidden>
+        <legend>Starting value</legend>
+        <div class="replay-choices">
+          <label><input type="radio" name="forth-input" value="7" checked><span>7</span></label>
+          <label><input type="radio" name="forth-input" value="9"><span>9</span></label>
+        </div>
+      </fieldset>
+      <div class="kajo-forth-stepper" data-forth-controls hidden>
+        <p class="kajo-forth-readout"><span>Data stack</span> <code data-forth-stack>[7]</code></p>
+        <p role="status" data-forth-status>Start with 7 on the stack.</p>
+        <div class="kajo-forth-controls" role="group" aria-label="Stack controls">
+          <button type="button" data-forth-back>Back</button>
+          <button type="button" data-forth-step>Step</button>
+          <button type="button" data-forth-reset>Reset</button>
+        </div>
+      </div>
+      <details class="replay-detail">
+        <summary>Read the worked example with 7</summary>
+        <ol class="kajo-sensor-stack" role="list">
+          <li><strong>Start with 7</strong><code>[7]</code><span>One value is on the stack.</span></li>
+          <li><strong>Run DUP</strong><code>[7 7]</code><span>The first 7 stays. A copy goes on top.</span></li>
+          <li><strong>Run +</strong><code>[14]</code><span>The two top values are replaced with their sum.</span></li>
+        </ol>
+      </details>
+      <details class="replay-detail">
+        <summary>Check your prediction for 9</summary>
+        <p>Starting with <code>[9]</code>, <code>DUP</code> leaves <code>[9 9]</code> and <code>+</code> leaves <code>[18]</code>.</p>
+      </details>
+      <p class="kajo-muted">The browser exercise shows the two operations inside <code>double</code>. Lab also shows the instructions for entering and returning from the word.</p>
+    </section>
+
+    <section class="kajo-section kajo-content" id="lab" aria-labelledby="lab-title">
+      <h2 id="lab-title">Run the word in Kajo Lab.</h2>
+      <p>On Windows, use the recording to give Lab an observation to inspect. Lab calls <code>on-sample</code> for that observation. This draft uses the fixed number 7, so the sensor value does not affect the exercise.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="../../downloads/first-replay/v1/Night-Light-Pico.capture" download>Download the Night Light recording <span aria-hidden="true">↓</span></a>
+        <a class="kajo-link" href="../first-replay/">Learn to open a recording <span aria-hidden="true">→</span></a>
+      </div>
+      <ol>
+        <li>In Lab, choose <strong>Open recording or session…</strong> and open the downloaded Night Light recording.</li>
+        <li>Open <strong>Program</strong>, choose <strong>Forth</strong> and replace the text in <strong>Experimental Forth</strong> with both lines below.</li>
+      </ol>
+      <pre class="kajo-foundations-code"><code>: double ( n -- 2n ) DUP + ;
+: on-sample 7 double ;</code></pre>
+      <ol start="3">
+        <li>Set the observation number to <strong>1</strong> and choose <strong>Inspect observation</strong>.</li>
+        <li>In <strong>Stacks</strong>, watch the <strong>Data stack</strong> as you choose <strong>Next frame</strong>. It starts empty, then holds 7 while the call enters <code>double</code>. After <code>+</code> it holds <code>[14]</code>.</li>
+        <li>Step through both returns until you see <strong>This callback: result 14.</strong> The saved observation still shows <strong>Recorded callback: result 1</strong>.</li>
+      </ol>
+    </section>
+
+    <section class="kajo-section kajo-content kajo-forth-exercise" id="challenge" aria-labelledby="challenge-title">
+      <h2 id="challenge-title">Write a word that triples its input.</h2>
+      <p>First, change 7 to 9 in <code>on-sample</code>, choose <strong>Inspect observation</strong> again and step through the result. Now write <code>triple</code> with two <code>DUP</code>s and two <code>+</code>s. Give it the stack effect <code>( n -- 3n )</code> and call it from <code>on-sample</code> with 7. Can you predict what the stack holds just before the last <code>+</code>?</p>
+      <details class="replay-detail">
+        <summary>Show the triple solution</summary>
+        <pre class="kajo-foundations-code"><code>: triple ( n -- 3n ) DUP DUP + + ;
+: on-sample 7 triple ;</code></pre>
+        <p>Replace the <strong>Experimental Forth</strong> draft with these two lines and choose <strong>Inspect observation</strong> again. After the second <code>DUP</code> the stack holds <code>[7 7 7]</code>. The first <code>+</code> leaves <code>[7 14]</code>. The final <code>+</code> leaves <code>[21]</code>. Step through both returns to see <strong>This callback: result 21.</strong></p>
+      </details>
+    </section>
+
+    <section class="kajo-section kajo-content" id="references" aria-labelledby="references-title">
+      <h2 id="references-title">Study references.</h2>
+      <ul>
+        <li><a href="../foundations/">Kajo Lab Foundations</a> shows where the Forth virtual machine fits.</li>
+        <li><a href="https://www.forth.com/starting-forth/1-forth-stacks-dictionary/">Data and the Forth Stack</a> introduces words and the stack.</li>
+        <li>Forth standard entries for <a href="https://forth-standard.org/standard/core/Colon"><code>:</code> to start a definition</a>, <a href="https://forth-standard.org/standard/core/Semi"><code>;</code> to end a definition</a>, <a href="https://forth-standard.org/standard/core/DUP"><code>DUP</code> to copy a value</a> and <a href="https://forth-standard.org/standard/core/Plus"><code>+</code> to add</a>.</li>
+      </ul>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-inner"><a class="footer-brand" href="../../../">MOTH <span>&amp;</span> GRAVEL <small>INDEPENDENT WORKS</small></a><div class="footer-end mono"><a href="#top">BACK TO TOP ↑</a></div></div>
+<!-- shared-business:start -->
+<div class="footer-business shell" lang="en">
+  <p>Based in Finland. We work with teams here and abroad, with calls and documentation in English and Finnish.</p>
+  <p>B2B invoicing through <span>Kissamos Trade Goods</span> (<span><span lang="fi">Y-tunnus</span> 2929371-6</span>). NDA ready.</p>
+</div>
+<!-- shared-business:end -->
+<!-- shared-footer:start -->
+<nav class="shared-footer-nav shell" aria-label="Explore the studio"><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../threads/something-happened/">Something happened. I can’t tell what.</a><a href="../../../#contact">Contact</a><a href="../../../workbench/">Example workbench</a></nav>
+<!-- shared-footer:end -->
+  </footer>
+</body>
+</html>
