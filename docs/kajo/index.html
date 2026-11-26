@@ -11,7 +11,11 @@
   <meta property="og:title" content="Kajo Lab — Moth &amp; Gravel">
   <meta property="og:description" content="Replay a Night Light recording and see where the same sensor reading led to two different commands.">
   <meta property="og:url" content="https://mothandgravel.com/kajo/">
-  <meta property="og:image" content="https://mothandgravel.com/assets/social-cover.png">
+  <meta property="og:image" content="https://mothandgravel.com/kajo/images/night-light-workbench.webp">
+  <meta property="og:image:type" content="image/webp">
+  <meta property="og:image:width" content="1916">
+  <meta property="og:image:height" content="952">
+  <meta property="og:image:alt" content="Kajo Lab Workbench showing the Night Light breadboard model on a blue bench mat.">
   <link rel="canonical" href="https://mothandgravel.com/kajo/">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
@@ -85,6 +89,27 @@
       </figure>
     </section>
 
+    <section class="kajo-section" aria-labelledby="kajo-product-title">
+      <h2 id="kajo-product-title">From breadboard to replay.</h2>
+      <p>Lay out a circuit in the Workbench. Then inspect a captured reading and compare what two versions of the program did with it.</p>
+      <div class="kajo-product-gallery">
+        <figure class="kajo-product-figure">
+          <a class="kajo-image-link" href="./images/night-light-workbench.webp">
+            <img src="./images/night-light-workbench.webp" width="1916" height="952" loading="lazy" decoding="async" alt="Enlarge the Kajo Lab Workbench showing a Pico, photoresistor and LED on the Night Light breadboard model.">
+            <span class="kajo-image-action" aria-hidden="true">Full size ↗</span>
+          </a>
+          <figcaption><strong>Workbench</strong> The Night Light circuit model, with its jumper routes on a blue bench mat.</figcaption>
+        </figure>
+        <figure class="kajo-product-figure">
+          <a class="kajo-image-link" href="./images/night-light-compare.webp">
+            <img src="./images/night-light-compare.webp" width="1330" height="738" loading="lazy" decoding="async" alt="Enlarge Kajo Lab’s Compare view at observation 425, with a recorded result of 1 and an experimental result of 0.">
+            <span class="kajo-image-action" aria-hidden="true">Full size ↗</span>
+          </a>
+          <figcaption><strong>Compare</strong> The first mismatch at observation 425. With input 88, the edited rule commands the LED to stay off.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="kajo-section kajo-learning-index" aria-labelledby="kajo-lessons-title">
       <h2 id="kajo-lessons-title">Learn Kajo Lab</h2>
       <div class="kajo-grid">
@@ -107,6 +132,11 @@
           <p class="kajo-eyebrow">Forth</p>
           <h3><a href="./learn/first-forth-word/">Write your first Forth word</a></h3>
           <p>Define <code>double</code> and step through the two operations that turn 7 into 14.</p>
+        </article>
+        <article class="kajo-card">
+          <p class="kajo-eyebrow">Forth VM</p>
+          <h3><a href="./learn/forth-vm-101/">What the two stacks remember</a></h3>
+          <p>Follow a word call and see which stack holds the numbers and which holds the return address.</p>
         </article>
       </div>
     </section>
