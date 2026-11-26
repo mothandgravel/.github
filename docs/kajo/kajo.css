@@ -312,6 +312,35 @@ ol.kajo-sensor-stack {
 .kajo-sensor-terms dd {margin: 0 0 .35rem; color: var(--secondary)}
 #references a {text-decoration: underline; text-underline-offset: .22em}
 #references a:hover {color: var(--gold-bright)}
+
+.kajo-foundations-paths {margin-block: 1.3rem .85rem}
+.kajo-foundations-paths .kajo-card {min-width: 0; border-top: 2px solid var(--line)}
+.kajo-foundations-paths .kajo-card:first-child {border-top-color: var(--kajo-teal)}
+.kajo-foundations-paths .kajo-card:last-child {border-top-color: var(--kajo-violet)}
+.kajo-foundations-code {
+  margin: 1rem 0;
+  padding: .85rem;
+  border: 1px solid var(--kajo-chart-line);
+  background: var(--kajo-chart);
+  font: 500 clamp(.8rem,1.4vw,.94rem)/1.55 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.kajo-foundations-code code {color: var(--kajo-chart-teal)}
+ol.kajo-foundations-flow {margin: .9rem 0 .2rem; padding-left: 1.25rem; color: var(--secondary)}
+.kajo-foundations-flow > li::marker {color: var(--gold-bright)}
+.kajo-foundations-native {margin-top: .85rem; border-left: 2px solid var(--gold-bright)}
+.kajo-foundations-exercise .replay-detail {
+  margin-top: .65rem;
+  padding: .3rem .85rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.kajo-foundations-exercise .replay-detail summary {min-height: 44px; padding-block: .65rem; font-weight: 680}
+.kajo-foundations-exercise .replay-detail p {margin: .45rem 0 .7rem}
+@media (min-width: 801px) {
+  .kajo-learning-index .kajo-grid {grid-template-columns: repeat(3, minmax(0, 1fr))}
+}
 @media (max-width: 800px) {
   .kajo-hero {grid-template-columns: minmax(0, 1fr)}
   .kajo-title {max-width: none}
