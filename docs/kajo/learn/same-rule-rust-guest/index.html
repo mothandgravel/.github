@@ -34,9 +34,10 @@
       <h1 class="kajo-title">Run the same rule as a Rust guest.</h1>
       <p class="kajo-lede">Give 7 to a Forth word and a Rust function. Run both at the same observation in Kajo Lab and find 14 in each.</p>
       <div class="kajo-actions">
-        <a class="kajo-button" href="#lab">Run both drafts in Lab</a>
+        <a class="kajo-button" href="#lab">Go to the Lab steps</a>
         <a class="kajo-link" href="https://www.youtube.com/watch?v=aQQWluRFWng">Watch the full lesson <span aria-hidden="true">↗</span></a>
       </div>
+      <p>Use an existing Windows copy of Kajo Lab for the app steps. Anyone can try the <a class="kajo-link" href="#exercise">prediction exercise</a> on this page.</p>
     </header>
 
     <section class="kajo-section kajo-content" id="rule" aria-labelledby="rule-title">
@@ -53,18 +54,18 @@
           <p><code>double(7u16) → 14</code></p>
         </article>
       </div>
-      <p>Lab runs Forth in its Forth virtual machine. For the Rust draft, a compiler translates the supported Rust source into Kajo CPU instructions. A <strong>guest</strong> is a program that runs on that processor inside Lab.</p>
+      <p>Lab runs Forth in a Forth virtual machine. A separate engine runs the Kajo CPU instructions that Lab’s compiler produces from a supported subset of Rust. The Rust <strong>guest</strong> is the program that runs on that CPU inside Lab.</p>
     </section>
 
     <section class="kajo-section kajo-content" id="lab" aria-labelledby="lab-title">
       <h2 id="lab-title">Run both drafts on the same recording.</h2>
-      <p>Open <code>Night-Light-Pico.capture</code> in Kajo Lab on Windows using <strong>Open recording or session…</strong>. Both drafts use the fixed test number 7. The recording gives you an observation to inspect, and you can leave the Pico unplugged.</p>
+      <p>Open <code>Night-Light-Pico.capture</code> in Kajo Lab using <strong>Open recording or session…</strong>. An <strong>observation</strong> is one saved sensor reading and its recorded output. Lab runs a short piece of code called a <strong>callback</strong> at that observation. Both drafts use the fixed test number 7, so you can leave the Pico unplugged.</p>
       <div class="kajo-actions">
         <a class="kajo-button" href="../../downloads/first-replay/v1/Night-Light-Pico.capture" download>Download the Night Light recording <span aria-hidden="true">↓</span></a>
       </div>
 
       <h3>Run Forth</h3>
-      <p>In <strong>Program</strong>, choose <strong>Forth</strong> and replace <strong>Experimental Forth</strong> with these two lines.</p>
+      <p>In <strong>Program</strong>, choose <strong>Forth</strong> and paste these two lines into the <strong>Experimental Forth</strong> editor, replacing its contents.</p>
       <pre class="kajo-foundations-code"><code>: double ( n -- 2n ) DUP + ;
 : on-sample 7 double ;</code></pre>
       <p><a href="./double.fth" download>Download the Forth draft <span aria-hidden="true">↓</span></a></p>
@@ -75,7 +76,7 @@
       </ol>
 
       <h3>Run the Rust guest</h3>
-      <p>Switch to <strong>Program → Rust guest</strong>. If offered, choose <strong>Use Signals recording</strong> to bring the same recording into this editor. Select <strong>Slew-limited knob · ON at 140</strong> to enable numeric state, then replace the preset source with the draft below.</p>
+      <p>With the <strong>Night-Light-Pico.capture</strong> tab selected, switch to <strong>Program → Rust guest</strong>. Select <strong>Slew-limited knob · ON at 140</strong> so Lab will show the result as a number. Check that the <strong>Replay laboratory</strong> header shows <code>Night-Light-Pico.capture</code> and 1,751 observations. If it shows another recording, choose <strong>Use Signals recording</strong> to bring in the selected Night Light capture. Then replace the preset source with the draft below.</p>
       <pre class="kajo-foundations-code"><code>fn double(n: u16) -&gt; u16 {
     n.wrapping_add(n)
 }
@@ -85,7 +86,7 @@ pub fn sample(_input: u16, _state: u16) -&gt; u16 {
 }</code></pre>
       <p><a href="./double.rs" download>Download the Rust draft <span aria-hidden="true">↓</span></a></p>
       <ol>
-        <li>Set the observation to <strong>1</strong> and choose <strong>Pause before observation</strong>. If you want to see an instruction run, choose <strong>Instruction step</strong> once.</li>
+        <li>Set the observation to <strong>1</strong> and choose <strong>Pause before observation</strong> to prepare the draft for execution. To see one instruction run, choose <strong>Instruction step</strong> once.</li>
         <li>Choose <strong>Continue callback</strong>. After Lab advances to observation 2, look for <strong>Replay-derived state 14</strong> and <strong>Last callback: observation 1</strong>. The state changed from 0 to 14.</li>
       </ol>
       <details class="replay-detail">
@@ -94,10 +95,10 @@ pub fn sample(_input: u16, _state: u16) -&gt; u16 {
       </details>
 
       <h3>Read the two results</h3>
-      <p>Match the Forth callback result of 14 to the Rust replay-derived state of 14. The Rust preset also shows a separate ON/OFF decision using a threshold of 140. For this exercise, read the number. The recording continues to show the output captured on the Pico.</p>
+      <p>Forth reports 14 as the result of observation 1. The Rust callback also returns 14, which Lab carries forward as the state for observation 2. Lab separately shows the Rust decision as OFF because 14 is below the preset threshold of 140. The recorded decision is still ON. Compare the computed numbers for this exercise.</p>
       <figure class="kajo-lesson-figure">
         <a class="kajo-image-link" href="./rust-guest-result.webp">
-          <img src="./rust-guest-result.webp" width="1310" height="250" loading="lazy" decoding="async" alt="Enlarge Kajo Lab after the Rust guest callback. The last callback was observation 1, and it changed state from 0 to 14.">
+          <img src="./rust-guest-result.webp" width="1310" height="250" loading="lazy" decoding="async" alt="Kajo Lab after the Rust callback. The last callback ran at observation 1 and changed state from 0 to 14. Open the screenshot full size.">
           <span class="kajo-image-action" aria-hidden="true">Full size ↗</span>
         </a>
         <figcaption>Lab pauses before observation 2. Read <strong>Last callback: observation 1</strong> to see the result of the callback you just ran.</figcaption>
