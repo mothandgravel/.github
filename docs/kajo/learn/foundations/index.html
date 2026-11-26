@@ -47,12 +47,13 @@
           <h3>Forth and the Forth VM</h3>
           <p>Forth puts values on a data stack. Commands and definitions are called <em>words</em>. Enter these two lines at a Forth prompt.</p>
           <pre class="kajo-foundations-code"><code>: double DUP + ;
-7 double</code></pre>
+7 double .S</code></pre>
           <ol class="kajo-foundations-flow">
             <li>The first line defines a word called <code>double</code>. The colon starts the definition and the semicolon finishes it.</li>
             <li><code>7 double</code> puts 7 on the stack and calls the word.</li>
-            <li>The Forth virtual machine (VM) runs the word. <code>DUP</code> copies the top value. <code>+</code> replaces both sevens with their sum, 14.</li>
+            <li>The Forth virtual machine (VM) runs the word. <code>DUP</code> copies the top value. <code>+</code> replaces both sevens with their sum, 14. <code>.S</code> displays the stack.</li>
           </ol>
+          <p>In Lab’s Forth editor, keep the first line and use <code>: on-sample 7 double ;</code> on the second line to run the word during replay.</p>
         </article>
         <article class="kajo-card">
           <h3>Rust, KAF1 and the Kajo CPU</h3>
@@ -67,7 +68,7 @@ pub fn sample(_input: u16, _state: u16) -&gt; u16 {
           <p><code>u16</code> is a 16-bit whole number with no negative values. Here <code>wrapping_add</code> adds the number to itself.</p>
           <ol class="kajo-foundations-flow">
             <li>The Rust guest compiler translates a small subset of Rust into Kajo instructions.</li>
-            <li>The compiler writes a <strong>KAF1</strong> file. This one holds seven instructions for two functions and names <code>sample</code> as the starting point.</li>
+            <li>The compiler produces a <strong>KAF1</strong> image, a program ready to load. This one holds seven instructions for two functions and names <code>sample</code> as the starting point.</li>
             <li>The <strong>Kajo CPU</strong> is a processor built in software. It executes those instructions, loading 7 twice, adding the values and returning 14.</li>
           </ol>
         </article>
@@ -93,7 +94,7 @@ pub fn sample(_input: u16, _state: u16) -&gt; u16 {
       </details>
       <details class="replay-detail">
         <summary>What order do the Rust guest compiler, KAF1 and Kajo CPU go in?</summary>
-        <p>The Rust guest compiler reads the source and writes a KAF1 file. The Kajo CPU then runs the instructions stored in that file.</p>
+        <p>The Rust guest compiler reads the source and produces a KAF1 image. The Kajo CPU then runs the instructions stored in that image.</p>
       </details>
       <details class="replay-detail">
         <summary>What pauses and resumes a task on the physical Pico?</summary>
