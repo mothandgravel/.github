@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#17191b">
+  <title>Forth VM 101 — Moth &amp; Gravel</title>
+  <meta name="description" content="Step through a Forth word call in Kajo Lab. Watch the data stack hold the numbers and the return stack remember where to continue.">
+  <link rel="canonical" href="https://mothandgravel.com/kajo/learn/forth-vm-101/">
+  <link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../assets/site.css">
+  <link rel="stylesheet" href="../../kajo.css">
+  <script>(()=>{let t;try{t=localStorage.getItem('moth-and-gravel-theme')}catch(_){}const d=document.documentElement,c=t==='afterlight'||t==='night'?t:'system';d.dataset.themeChoice=c;d.dataset.theme=c!=='system'?c:matchMedia('(prefers-color-scheme: light)').matches?'afterlight':'night'})()</script>
+  <script src="../../../assets/site.js" defer></script>
+</head>
+<body class="kajo-page">
+  <a class="skip-link" href="#main">Skip to the lesson</a>
+<!-- shared-header:start -->
+<header class="site-header shared-header" id="top"><div class="header-inner shell">
+<a class="brand" href="../../../" title="Moth &amp; Gravel home"><span class="brand-stamp" aria-hidden="true"><img src="../../../assets/nav-mark.svg" width="44" height="44" alt=""></span><span class="brand-type">MOTH <span class="brand-amp">&amp;</span> GRAVEL<span class="brand-sub">INDEPENDENT WORKS</span></span></a>
+<nav class="collection-nav" aria-label="Primary" lang="en"><a href="../../../services/">Services</a><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../#contact">Contact</a></nav>
+<p class="header-mail"><a class="header-mail-link" href="mailto:hello@mothandgravel.com?subject=A%20question%20for%20Moth%20%26%20Gravel"><span class="header-mail-short">Email </span><span class="header-mail-address">hello@mothandgravel.com</span></a><button class="copy-mail" type="button" data-copy-email hidden>Copy<span class="visually-hidden"> email address</span></button></p>
+<button class="light-switch" id="light-switch" type="button"><span class="switch-orb" aria-hidden="true"></span><span class="switch-label"><span class="visually-hidden">Theme: </span><span data-theme-label>System</span></span></button>
+<details class="studio-index"><summary class="menu-toggle" id="menu-toggle" aria-controls="primary-nav"><span>Menu</span><span class="menu-bars" aria-hidden="true"><span></span><span></span></span></summary>
+<nav class="main-nav studio-sheet" id="primary-nav" aria-label="Studio index"><div class="nav-sheet-heading"><span class="mono">M+G / THE STUDIO INDEX</span><p>A few ways in.</p></div><a href="../../../specimens/"><span class="nav-sheet-index mono" aria-hidden="true">01</span><span class="nav-sheet-label">Specimens</span><span class="nav-sheet-hint">Working pieces you can look into.</span></a><a href="../../../notes/"><span class="nav-sheet-index mono" aria-hidden="true">02</span><span class="nav-sheet-label">Field notes</span><span class="nav-sheet-hint">What we noticed while making. Read or listen.</span></a><a href="../../../threads/something-happened/"><span class="nav-sheet-index mono" aria-hidden="true">03</span><span class="nav-sheet-label">Something happened. I can’t tell what.</span><span class="nav-sheet-hint">One question through several pieces.</span></a><a href="../../../#contact"><span class="nav-sheet-index mono" aria-hidden="true">04</span><span class="nav-sheet-label">Contact</span><span class="nav-sheet-hint">A rough edge, an unfinished idea, a question.</span></a><section class="nav-shortcuts" aria-labelledby="shortcut-heading"><p class="mono" id="shortcut-heading">Straight to.</p><div><a class="nav-shortcut" href="../../../specimens/maintenance-acceptance/tnt/"><strong>The measured TNT replay ↗</strong><span>Inside specimen 009 / 1,000 recorded departures.</span></a><a class="nav-shortcut" href="../../../notes/#listen-archive"><strong>Listen to the field notes ↗</strong><span>AI-narrated readings, conversations and a narration study.</span></a><a class="nav-shortcut" href="../../../investigations/"><strong>Three questions. Still open. ↗</strong><span>Freshness, recovery and the promise of a green light.</span></a></div></section><div class="nav-studio"><a href="../../../services/">Services</a><a href="../../../#ethos">The thinking</a><a href="../../../workbench/">Example workbench</a></div></nav></details>
+</div></header>
+<!-- shared-header:end -->
+  <p class="visually-hidden" role="status"></p>
+  <main class="kajo-main shell" id="main" tabindex="-1">
+    <nav class="kajo-crumb" aria-label="Kajo Lab"><a href="../../">Kajo Lab</a> <span aria-hidden="true">/</span> <span aria-current="page">Forth VM 101</span></nav>
+    <header class="kajo-intro kajo-lesson-header">
+      <p class="kajo-eyebrow">Kajo Lab 101</p>
+      <h1 class="kajo-title">Forth VM 101.</h1>
+      <p class="kajo-lede">One Forth word calls another. Follow what the machine does with the numbers and how it remembers where to resume.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="#trace">Follow the call and return</a>
+        <a class="kajo-link" href="https://www.youtube.com/shorts/NWhcvfk0Fdg">Watch the Forth VM Short <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <figure class="kajo-lesson-figure">
+      <a class="kajo-image-link" href="./kajo-stacks.webp">
+        <img src="./kajo-stacks.webp" width="1330" height="730" loading="lazy" decoding="async" alt="Enlarge Kajo Lab paused after DUP, with two sevens on the data stack and address 38 on the return stack.">
+        <span class="kajo-image-action" aria-hidden="true">Full size ↗</span>
+      </a>
+      <figcaption>After <code>DUP</code>, the data stack holds <code>[7 7]</code>. The return stack still holds <code>[38]</code>, the address where the caller will resume.</figcaption>
+    </figure>
+
+    <section class="kajo-section kajo-content" id="two-stacks" aria-labelledby="two-stacks-title">
+      <h2 id="two-stacks-title">What each stack remembers.</h2>
+      <p>Kajo’s Forth virtual machine (VM) is the software that runs Forth instructions. A stack works like a pile. The last item placed on it is the first one taken off. In Lab, the top of each stack is on the right.</p>
+      <div class="kajo-grid kajo-forth-vm-stacks">
+        <article class="kajo-card">
+          <h3>Data stack</h3>
+          <p>Holds the numbers a word works with and the results it leaves behind. The word <code>twice</code> takes 7 and leaves 14.</p>
+        </article>
+        <article class="kajo-card">
+          <h3>Return stack</h3>
+          <p>For this call, holds the instruction address where the caller should continue after <code>twice</code> finishes.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="kajo-section kajo-content kajo-forth-exercise" id="trace" aria-labelledby="trace-title">
+      <h2 id="trace-title">Follow the call and return.</h2>
+      <p>Lab starts at <code>on-sample</code>. It pushes 7, calls <code>twice</code>, then adds 1 after that word returns.</p>
+      <pre class="kajo-foundations-code"><code>: twice DUP + ;
+: on-sample 7 twice 1 + ;</code></pre>
+      <div class="replay-table-wrap">
+        <table class="replay-table kajo-forth-vm-table">
+          <caption>Both stacks start empty. The table shows their contents after each instruction.</caption>
+          <thead>
+            <tr><th scope="col">After this instruction</th><th scope="col">Data stack</th><th scope="col">Return stack</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Push <code>7</code></th><td><code>[7]</code></td><td>Empty</td></tr>
+            <tr><th scope="row">Call <code>twice</code></th><td><code>[7]</code></td><td><code>[38]</code></td></tr>
+            <tr><th scope="row">Copy the top with <code>DUP</code></th><td><code>[7 7]</code></td><td><code>[38]</code></td></tr>
+            <tr><th scope="row">Run <code>+</code> inside <code>twice</code></th><td><code>[14]</code></td><td><code>[38]</code></td></tr>
+            <tr><th scope="row">Return from <code>twice</code></th><td><code>[14]</code></td><td>Empty</td></tr>
+            <tr><th scope="row">Push <code>1</code></th><td><code>[14 1]</code></td><td>Empty</td></tr>
+            <tr><th scope="row">Run <code>+</code> inside <code>on-sample</code></th><td><code>[15]</code></td><td>Empty</td></tr>
+            <tr><th scope="row">Finish <code>on-sample</code></th><td><code>[15]</code></td><td>Empty</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <details class="replay-detail">
+        <summary>Why does 38 disappear on return?</summary>
+        <p>When <code>twice</code> returns, the VM takes 38 off the return stack and uses it to set the program counter (PC). In this trace, that address points to the instruction that pushes 1. The 14 on the data stack is still there for the caller to use. The number 38 is an address for this trace and can change with the source or Lab build.</p>
+      </details>
+    </section>
+
+    <section class="kajo-section kajo-content" id="lab" aria-labelledby="lab-title">
+      <h2 id="lab-title">Read both stacks in Kajo Lab.</h2>
+      <p>In Kajo Lab on Windows, use a saved recording to give Lab an observation to inspect. The draft uses its own value of 7. You can run it with the Pico unplugged.</p>
+      <div class="kajo-actions">
+        <a class="kajo-button" href="../../downloads/first-replay/v1/Night-Light-Pico.capture" download>Download the Night Light recording <span aria-hidden="true">↓</span></a>
+        <a class="kajo-link" href="../first-forth-word/">Review your first Forth word <span aria-hidden="true">→</span></a>
+      </div>
+      <ol>
+        <li>In Lab, choose <strong>Open recording or session…</strong> and open the downloaded Night Light recording.</li>
+        <li>In <strong>Program</strong>, choose <strong>Forth</strong> and replace <strong>Experimental Forth</strong> with the two lines above.</li>
+        <li>Set the observation number to <strong>1</strong>, choose <strong>Inspect observation</strong> and open <strong>Stacks</strong>.</li>
+        <li>Use <strong>Next frame</strong> to stop at the call, the addition inside <code>twice</code> and the return. Continue through the end of <code>on-sample</code> until Lab shows <strong>This callback: result 15.</strong> The saved observation still shows <strong>Recorded callback: result 1</strong>.</li>
+      </ol>
+    </section>
+
+    <section class="kajo-section kajo-content kajo-forth-exercise" id="exercise" aria-labelledby="exercise-title">
+      <h2 id="exercise-title">Try the same call with 9.</h2>
+      <p>Change 7 to 9 in <code>on-sample</code>. Predict what the VM will do before choosing <strong>Inspect observation</strong> again. You can also work through the questions entirely here.</p>
+      <details class="replay-detail">
+        <summary>What is on the data stack when <code>twice</code> returns?</summary>
+        <p><code>twice</code> leaves <code>[18]</code>. Back in the caller, <code>1 +</code> changes it to <code>[19]</code>. The callback finishes with 19.</p>
+      </details>
+      <details class="replay-detail">
+        <summary>How many addresses does the return stack hold?</summary>
+        <p>It holds one address just after the call and is empty just after the return. The choice of 7 or 9 changes the data, while the machine still has one call to return from.</p>
+      </details>
+    </section>
+
+    <section class="kajo-section kajo-content" id="references" aria-labelledby="references-title">
+      <h2 id="references-title">Study references.</h2>
+      <ul>
+        <li><a href="https://www.forth.com/starting-forth/9-forth-execution/">Execution of Forth Code</a> explains calls and the return stack.</li>
+        <li>The Forth standard describes <a href="https://forth-standard.org/standard/core/Colon">starting a definition</a> and <a href="https://forth-standard.org/standard/core/Semi">returning at its end</a>.</li>
+      </ul>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-inner"><a class="footer-brand" href="../../../">MOTH <span>&amp;</span> GRAVEL <small>INDEPENDENT WORKS</small></a><div class="footer-end mono"><a href="#top">BACK TO TOP ↑</a></div></div>
+<!-- shared-business:start -->
+<div class="footer-business shell" lang="en">
+  <p>Based in Finland. We work with teams here and abroad, with calls and documentation in English and Finnish.</p>
+  <p>B2B invoicing through <span>Kissamos Trade Goods</span> (<span><span lang="fi">Y-tunnus</span> 2929371-6</span>). NDA ready.</p>
+</div>
+<!-- shared-business:end -->
+<!-- shared-footer:start -->
+<nav class="shared-footer-nav shell" aria-label="Explore the studio"><a href="../../../specimens/">Specimens</a><a href="../../../notes/">Field notes</a><a href="../../../threads/something-happened/">Something happened. I can’t tell what.</a><a href="../../../#contact">Contact</a><a href="../../../workbench/">Example workbench</a></nav>
+<!-- shared-footer:end -->
+  </footer>
+</body>
+</html>

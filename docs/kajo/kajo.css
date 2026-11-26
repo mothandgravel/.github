@@ -379,8 +379,49 @@ ol.kajo-foundations-flow {margin: .9rem 0 .2rem; padding-left: 1.25rem; color: v
 .kajo-forth-controls button:not([aria-disabled="true"]):hover {border-color: var(--kajo-chart-violet)}
 .kajo-forth-controls button:focus-visible {outline: 2px solid var(--kajo-chart-violet); outline-offset: 2px}
 .kajo-forth-exercise .replay-detail summary {min-height: 44px; padding-block: .65rem}
-@media (min-width: 1060px) {
-  .kajo-learning-index .kajo-grid {grid-template-columns: repeat(4, minmax(0, 1fr))}
+
+.kajo-product-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(.8rem,2vw,1.5rem);
+  margin-top: 1.25rem;
+}
+.kajo-product-figure, .kajo-lesson-figure {
+  margin: 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.kajo-lesson-figure {margin-bottom: clamp(1.5rem,4vw,3rem)}
+.kajo-image-link {display: block; background: var(--kajo-chart); cursor: zoom-in}
+.kajo-image-link:focus-visible {outline: 3px solid var(--kajo-chart-teal); outline-offset: -4px}
+.kajo-image-link img {display: block; width: 100%; height: auto}
+.kajo-image-action {
+  display: block;
+  padding: .5rem .85rem;
+  border-top: 1px solid var(--kajo-chart-line);
+  color: var(--kajo-chart-teal);
+  text-align: right;
+  font: 650 .76rem/1.4 var(--mono);
+}
+.kajo-image-link:hover .kajo-image-action {text-decoration: underline; text-underline-offset: .22em}
+.kajo-product-figure img {aspect-ratio: 2 / 1; object-fit: contain}
+.kajo-product-figure figcaption, .kajo-lesson-figure figcaption {
+  padding: .85rem clamp(.85rem,2.5vw,1.25rem) 1rem;
+  color: var(--secondary);
+  font-size: .91rem;
+}
+.kajo-product-figure figcaption strong {display: block; margin-bottom: .22rem; color: var(--ink); font-size: 1.09rem}
+.kajo-lesson-figure figcaption code {color: var(--kajo-teal)}
+.kajo-forth-vm-stacks {margin-block: 1rem}
+.kajo-forth-vm-stacks > :first-child {border-top: 2px solid var(--kajo-teal)}
+.kajo-forth-vm-stacks > :last-child {border-top: 2px solid var(--kajo-violet)}
+.kajo-forth-vm-table :is(td,th):nth-child(n+2) {font-family: var(--mono)}
+.kajo-forth-vm-table td:nth-child(3) code {color: var(--kajo-violet)}
+@media (min-width: 760px) {
+  .kajo-learning-index .kajo-grid {grid-template-columns: repeat(3, minmax(0, 1fr))}
+}
+@media (min-width: 1180px) {
+  .kajo-learning-index .kajo-grid {grid-template-columns: repeat(5, minmax(0, 1fr))}
 }
 @media (max-width: 800px) {
   .kajo-hero {grid-template-columns: minmax(0, 1fr)}
@@ -389,7 +430,7 @@ ol.kajo-foundations-flow {margin: .9rem 0 .2rem; padding-left: 1.25rem; color: v
 }
 @media (max-width: 480px) {
   .kajo-main.shell {width: calc(100% - 34px)}
-  .kajo-grid {grid-template-columns: minmax(0, 1fr)}
+  .kajo-grid, .kajo-product-gallery {grid-template-columns: minmax(0, 1fr)}
   .kajo-trace {box-shadow: .3rem .3rem 0 color-mix(in srgb,var(--gold) 15%,transparent)}
   .replay-table :is(th,td) {padding-inline: .34rem}
   .replay-table thead th {font-size: .78rem}
