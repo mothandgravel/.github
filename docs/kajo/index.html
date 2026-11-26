@@ -49,7 +49,7 @@
           <a class="kajo-button" href="./learn/first-replay/">Try your first replay <span aria-hidden="true">↗</span></a>
           <a class="kajo-link" href="https://www.youtube.com/playlist?list=PLKHBQEIeZdas">Watch Kajo Lab 101 <span aria-hidden="true">↗</span></a>
         </div>
-        <p class="kajo-muted kajo-prerequisite">The exercise runs in this browser. No board or installation needed.</p>
+        <p class="kajo-muted kajo-prerequisite">The browser demo uses the included Pico recording. If you already have the Windows app, you can open your own recordings and design circuits.</p>
       </div>
       <figure class="kajo-trace">
         <figcaption class="kajo-trace-label">
@@ -92,6 +92,7 @@
     <section class="kajo-section" aria-labelledby="kajo-product-title">
       <h2 id="kajo-product-title">From breadboard to replay.</h2>
       <p>Lay out a circuit in the Workbench. Then inspect a captured reading and compare what two versions of the program did with it.</p>
+      <p>Replay gives firmware developers the same recorded inputs every time, so you can test a rule change against real sensor data with the board unplugged.</p>
       <div class="kajo-product-gallery">
         <figure class="kajo-product-figure">
           <a class="kajo-image-link" href="./images/night-light-workbench.webp">
@@ -112,6 +113,7 @@
 
     <section class="kajo-section kajo-learning-index" aria-labelledby="kajo-lessons-title">
       <h2 id="kajo-lessons-title">Learn Kajo Lab</h2>
+      <p>Kajo uses Forth because its virtual machine fits on a microcontroller and lets you see what each instruction does. Run the same program on the same recorded inputs and you can repeat each step.</p>
       <div class="kajo-grid">
         <article class="kajo-card">
           <p class="kajo-eyebrow">Start here</p>
@@ -138,6 +140,19 @@
           <h3><a href="./learn/forth-vm-101/">What the two stacks remember</a></h3>
           <p>Follow a word call and see which stack holds the numbers and which holds the return address.</p>
         </article>
+        <article class="kajo-card">
+          <p class="kajo-eyebrow">Rust guest · Windows Lab</p>
+          <h3><a href="./learn/same-rule-rust-guest/">Run the same rule as a Rust guest</a></h3>
+          <p>Double 7 in Forth and Rust, then find where each result appears in Lab.</p>
+        </article>
+      </div>
+    </section>
+    <section class="kajo-section" aria-labelledby="kajo-contact-title">
+      <h2 id="kajo-contact-title">Tell us what you found.</h2>
+      <p>Tell us where a lesson helped or where you got stuck. If your team is building a connected device, we can also help with telemetry and firmware interfaces.</p>
+      <div class="kajo-actions">
+        <a class="kajo-link" href="mailto:hello@mothandgravel.com?subject=Kajo%20Lab%20feedback">Send Kajo Lab feedback</a>
+        <a class="kajo-link" href="../services/">Connected-device and firmware services <span aria-hidden="true">→</span></a>
       </div>
     </section>
   </main>
