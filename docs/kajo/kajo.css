@@ -338,8 +338,49 @@ ol.kajo-foundations-flow {margin: .9rem 0 .2rem; padding-left: 1.25rem; color: v
 }
 .kajo-foundations-exercise .replay-detail summary {min-height: 44px; padding-block: .65rem; font-weight: 680}
 .kajo-foundations-exercise .replay-detail p {margin: .45rem 0 .7rem}
-@media (min-width: 801px) {
-  .kajo-learning-index .kajo-grid {grid-template-columns: repeat(3, minmax(0, 1fr))}
+.kajo-forth-exercise .replay-controls {margin-top: 1.1rem}
+.kajo-forth-stepper {
+  max-width: 48rem;
+  margin-block: 1rem;
+  padding: clamp(1rem,4vw,1.6rem);
+  border: 1px solid var(--kajo-chart-line);
+  background: var(--kajo-chart);
+  color: var(--kajo-chart-ink);
+}
+.kajo-forth-stepper:not([hidden]) {display: grid; gap: .85rem}
+.kajo-forth-stepper p {margin: 0}
+.kajo-forth-readout span {color: var(--kajo-chart-muted); font: 600 .8rem/1.4 var(--mono)}
+.kajo-forth-stepper [data-forth-stack] {
+  display: block;
+  width: fit-content;
+  margin-top: .28rem;
+  color: var(--kajo-chart-teal);
+  font: 650 clamp(1.9rem,5vw,3.2rem)/1.18 var(--mono);
+}
+.kajo-forth-stepper [data-forth-status] {min-height: 2.8rem; color: var(--kajo-chart-muted)}
+.kajo-forth-controls {display: flex; flex-wrap: wrap; gap: .6rem}
+.kajo-forth-controls button {
+  min-height: 44px;
+  min-width: 4.65rem;
+  padding: .45rem .75rem;
+  border: 1px solid var(--kajo-chart-muted);
+  background: transparent;
+  color: var(--kajo-chart-ink);
+  font: 700 .9rem/1.25 var(--body);
+  cursor: pointer;
+}
+.kajo-forth-controls [data-forth-step] {background: var(--kajo-chart-teal); border-color: var(--kajo-chart-teal); color: var(--kajo-chart)}
+.kajo-forth-controls button[aria-disabled="true"] {
+  border-color: var(--kajo-chart-line);
+  background: transparent;
+  color: var(--kajo-chart-muted);
+  cursor: default;
+}
+.kajo-forth-controls button:not([aria-disabled="true"]):hover {border-color: var(--kajo-chart-violet)}
+.kajo-forth-controls button:focus-visible {outline: 2px solid var(--kajo-chart-violet); outline-offset: 2px}
+.kajo-forth-exercise .replay-detail summary {min-height: 44px; padding-block: .65rem}
+@media (min-width: 1060px) {
+  .kajo-learning-index .kajo-grid {grid-template-columns: repeat(4, minmax(0, 1fr))}
 }
 @media (max-width: 800px) {
   .kajo-hero {grid-template-columns: minmax(0, 1fr)}
